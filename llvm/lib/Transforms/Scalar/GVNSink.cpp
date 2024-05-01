@@ -324,20 +324,13 @@ template <typename ModelledPHI> struct DenseMapInfo {
 };
 
 using ModelledPHISet = DenseSet<ModelledPHI, DenseMapInfo<ModelledPHI>>;
-
-//===----------------------------------------------------------------------===//
-//                             ValueTable
-//===----------------------------------------------------------------------===//
-// This is a value number table where the value number is a function of the
-// *uses* of a value, rather than its operands. Thus, if VN(A) == VN(B) we know
-// that the program would be equivalent if we replaced A with PHI(A, B).
-//===----------------------------------------------------------------------===//
+using BasicBlocksSet = SmallPtrSet<const BasicBlock *, 32>;
 
 /// A GVN expression describing how an instruction is used. The operands
 /// field of BasicExpression is used to store uses, not operands.
 ///
 /// This class also contains fields for discriminators used when determining
-/// equivalence of instructions with sideeffects.
+/// equivalence of instructions with side effects.
 class InstructionUseExpr : public GVNExpression::BasicExpression {
   unsigned MemoryUseOrder = -1;
   bool Volatile = false;
@@ -376,8 +369,13 @@ public:
   }
 };
 
-using BasicBlocksSet = SmallPtrSet<const BasicBlock *, 32>;
-
+//===----------------------------------------------------------------------===//
+//                             ValueTable
+//===----------------------------------------------------------------------===//
+// This is a value number table where the value number is a function of the
+// *uses* of a value, rather than its operands. Thus, if VN(A) == VN(B) we know
+// that the program would be equivalent if we replaced A with PHI(A, B).
+//===----------------------------------------------------------------------===//
 class ValueTable {
   DenseMap<Value *, uint32_t> ValueNumbering;
   DenseMap<GVNExpression::Expression *, uint32_t> ExpressionNumbering;
