@@ -115,6 +115,7 @@ extern "C" LLVM_ABI LLVM_EXTERNAL_VISIBILITY void LLVMInitializeRISCVTarget() {
   initializeRISCVPostLegalizerCombinerPass(*PR);
   initializeKCFIPass(*PR);
   initializeRISCVDeadRegisterDefinitionsPass(*PR);
+  initializeRISCVLiveVariablesPass(*PR);
   initializeRISCVLateBranchOptPass(*PR);
   initializeRISCVMakeCompressibleOptPass(*PR);
   initializeRISCVGatherScatterLoweringPass(*PR);
@@ -558,6 +559,7 @@ void RISCVPassConfig::addPreEmitPass() {
   addPass(createRISCVIndirectBranchTrackingPass());
   addPass(&BranchRelaxationPassID);
   addPass(createRISCVMakeCompressibleOptPass());
+  addPass(createRISCVLiveVariablesPass());
 }
 
 void RISCVPassConfig::addPreEmitPass2() {
@@ -587,6 +589,7 @@ void RISCVPassConfig::addMachineSSAOptimization() {
   TargetPassConfig::addMachineSSAOptimization();
 
   if (TM->getTargetTriple().isRISCV64()) {
+    addPass(createRISCVLiveVariablesPass());
     addPass(createRISCVOptWInstrsPass());
   }
 }
