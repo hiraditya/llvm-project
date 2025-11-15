@@ -103,10 +103,10 @@ static cl::opt<bool>
                            cl::desc("Enable Machine Pipeliner for RISC-V"),
                            cl::init(false), cl::Hidden);
 
-static cl::opt<bool>
-EnableRISCVLiveVariables("riscv-live-variables",
-                         cl::desc("Enable Live Variable Analysis for RISC-V"),
-                         cl::init(false), cl::Hidden);
+static cl::opt<bool> EnableRISCVLiveVariables(
+    "riscv-enable-live-variables",
+    cl::desc("Enable Live Variable Analysis for RISC-V"), cl::init(false),
+    cl::Hidden);
 
 extern "C" LLVM_ABI LLVM_EXTERNAL_VISIBILITY void LLVMInitializeRISCVTarget() {
   RegisterTargetMachine<RISCVTargetMachine> X(getTheRISCV32Target());
