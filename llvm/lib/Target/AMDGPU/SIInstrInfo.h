@@ -29,7 +29,6 @@ namespace llvm {
 
 class APInt;
 class GCNSubtarget;
-class LiveVariables;
 class MachineDominatorTree;
 class MachineRegisterInfo;
 class RegScavenger;
@@ -462,7 +461,7 @@ public:
 
   unsigned getMachineCSELookAheadLimit() const override { return 500; }
 
-  MachineInstr *convertToThreeAddress(MachineInstr &MI, LiveVariables *LV,
+  MachineInstr *convertToThreeAddress(MachineInstr &MI,
                                       LiveIntervals *LIS) const override;
 
   bool isSchedulingBoundary(const MachineInstr &MI,
