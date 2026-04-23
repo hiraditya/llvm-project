@@ -1215,26 +1215,8 @@ MachineBasicBlock *MachineBasicBlock::SplitCriticalEdge(
   else if (Analyses.SI)
     Analyses.SI->insertMBBInMaps(NMBB);
 
-  // On some targets like Mips, branches may kill virtual registers. Make sure
-  // that LiveVariables is properly updated after updateTerminator replaces the
-  // terminators.
-  auto *LV = Analyses.LV;
   // Collect a list of virtual registers killed by the terminators.
   SmallVector<Register, 4> KilledRegs;
-  if (LV)
-    for (MachineInstr &MI :
-         llvm::make_range(getFirstInstrTerminator(), instr_end())) {
-      for (MachineOperand &MO : MI.all_uses()) {
-        if (MO.getReg() == 0 || !MO.isKill() || MO.isUndef())
-          continue;
-        Register Reg = MO.getReg();
-        if (Reg.isPhysical() || LV->getVarInfo(Reg).removeKill(MI)) {
-          KilledRegs.push_back(Reg);
-          LLVM_DEBUG(dbgs() << "Removing terminator kill: " << MI);
-          MO.setIsKill(false);
-        }
-      }
-    }
 
   SmallVector<Register, 4> UsedRegs;
   if (LIS) {
@@ -1288,27 +1270,7 @@ MachineBasicBlock *MachineBasicBlock::SplitCriticalEdge(
   for (const auto &LI : Succ->liveins())
     NMBB->addLiveIn(LI);
 
-  // Update LiveVariables.
   const TargetRegisterInfo *TRI = MF->getSubtarget().getRegisterInfo();
-  if (LV) {
-    // Restore kills of virtual registers that were killed by the terminators.
-    while (!KilledRegs.empty()) {
-      Register Reg = KilledRegs.pop_back_val();
-      for (instr_iterator I = instr_end(), E = instr_begin(); I != E;) {
-        if (!(--I)->addRegisterKilled(Reg, TRI, /* AddIfNotFound= */ false))
-          continue;
-        if (Reg.isVirtual())
-          LV->getVarInfo(Reg).Kills.push_back(&*I);
-        LLVM_DEBUG(dbgs() << "Restored terminator kill: " << *I);
-        break;
-      }
-    }
-    // Update relevant live-through information.
-    if (LiveInSets != nullptr)
-      LV->addNewBlock(NMBB, this, Succ, *LiveInSets);
-    else
-      LV->addNewBlock(NMBB, this, Succ);
-  }
 
   if (LIS) {
     // After splitting the edge and updating SlotIndexes, live intervals may be
