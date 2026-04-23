@@ -70,7 +70,6 @@ MACHINE_FUNCTION_ANALYSIS("livedebugvars", LiveDebugVariablesAnalysis())
 MACHINE_FUNCTION_ANALYSIS("live-intervals", LiveIntervalsAnalysis())
 MACHINE_FUNCTION_ANALYSIS("live-reg-matrix", LiveRegMatrixAnalysis())
 MACHINE_FUNCTION_ANALYSIS("live-stacks", LiveStacksAnalysis())
-MACHINE_FUNCTION_ANALYSIS("live-vars", LiveVariablesAnalysis())
 MACHINE_FUNCTION_ANALYSIS("machine-block-freq", MachineBlockFrequencyAnalysis())
 MACHINE_FUNCTION_ANALYSIS("machine-block-hash", MachineBlockHashInfoAnalysis())
 MACHINE_FUNCTION_ANALYSIS("machine-branch-prob",
@@ -143,7 +142,6 @@ MACHINE_FUNCTION_PASS("print<gisel-value-tracking>", GISelValueTrackingPrinterPa
 MACHINE_FUNCTION_PASS("print<livedebugvars>", LiveDebugVariablesPrinterPass(errs()))
 MACHINE_FUNCTION_PASS("print<live-intervals>", LiveIntervalsPrinterPass(errs()))
 MACHINE_FUNCTION_PASS("print<live-stacks>", LiveStacksPrinterPass(errs()))
-MACHINE_FUNCTION_PASS("print<live-vars>", LiveVariablesPrinterPass(errs()))
 MACHINE_FUNCTION_PASS("print<machine-block-freq>",
                       MachineBlockFrequencyPrinterPass(errs()))
 MACHINE_FUNCTION_PASS("print<machine-block-hash>",
