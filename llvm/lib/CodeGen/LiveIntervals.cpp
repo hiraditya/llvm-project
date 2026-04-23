@@ -21,7 +21,6 @@
 #include "llvm/ADT/iterator_range.h"
 #include "llvm/CodeGen/LiveInterval.h"
 #include "llvm/CodeGen/LiveIntervalCalc.h"
-#include "llvm/CodeGen/LiveVariables.h"
 #include "llvm/CodeGen/MachineBasicBlock.h"
 #include "llvm/CodeGen/MachineBlockFrequencyInfo.h"
 #include "llvm/CodeGen/MachineDominators.h"
@@ -111,7 +110,6 @@ cl::opt<bool> llvm::UseSegmentSetForPhysRegs(
 
 void LiveIntervalsWrapperPass::getAnalysisUsage(AnalysisUsage &AU) const {
   AU.setPreservesCFG();
-  AU.addPreserved<LiveVariablesWrapperPass>();
   AU.addPreservedID(MachineLoopInfoID);
   AU.addRequiredTransitiveID(MachineDominatorsID);
   AU.addPreservedID(MachineDominatorsID);

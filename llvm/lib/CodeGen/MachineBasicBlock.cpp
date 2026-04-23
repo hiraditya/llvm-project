@@ -15,7 +15,6 @@
 #include "llvm/ADT/StringExtras.h"
 #include "llvm/CodeGen/LiveIntervals.h"
 #include "llvm/CodeGen/LivePhysRegs.h"
-#include "llvm/CodeGen/LiveVariables.h"
 #include "llvm/CodeGen/MachineDomTreeUpdater.h"
 #include "llvm/CodeGen/MachineDominators.h"
 #include "llvm/CodeGen/MachineFunction.h"
@@ -1180,9 +1179,8 @@ MachineBasicBlock *MachineBasicBlock::SplitCriticalEdge(
   MachineFunction *MF = getParent();
   LiveIntervals *LIS = GET_RESULT(LiveIntervals, getLIS, );
   SlotIndexes *Indexes = GET_RESULT(SlotIndexes, getSI, );
-  LiveVariables *LV = GET_RESULT(LiveVariables, getLV, );
   MachineLoopInfo *MLI = GET_RESULT(MachineLoop, getLI, Info);
-  return SplitCriticalEdge(Succ, {LIS, Indexes, LV, MLI}, LiveInSets, MDTU);
+  return SplitCriticalEdge(Succ, {LIS, Indexes, MLI}, LiveInSets, MDTU);
 #undef GET_RESULT
 }
 
