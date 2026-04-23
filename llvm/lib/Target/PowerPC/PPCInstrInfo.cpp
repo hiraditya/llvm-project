@@ -5362,8 +5362,7 @@ const unsigned MAX_BINOP_DEPTH = 1;
 // than once. This is done to prevent exponential recursion.
 void PPCInstrInfo::promoteInstr32To64ForElimEXTSW(const Register &Reg,
                                                   MachineRegisterInfo *MRI,
-                                                  unsigned BinOpDepth,
-                                                  LiveVariables *LV) const {
+                                                  unsigned BinOpDepth) const {
   if (!Reg.isVirtual())
     return;
 
@@ -5389,7 +5388,7 @@ void PPCInstrInfo::promoteInstr32To64ForElimEXTSW(const Register &Reg,
     for (unsigned I = 1; I < OperandEnd; I += OperandStride) {
       assert(MI->getOperand(I).isReg() && "Operand must be register");
       promoteInstr32To64ForElimEXTSW(MI->getOperand(I).getReg(), MRI,
-                                     BinOpDepth + 1, LV);
+                                     BinOpDepth + 1);
     }
 
     break;
@@ -5405,7 +5404,7 @@ void PPCInstrInfo::promoteInstr32To64ForElimEXTSW(const Register &Reg,
     if (!MF->getSubtarget<PPCSubtarget>().isSVR4ABI()) {
       // If this is a copy from another register, we recursively promote the
       // source.
-      promoteInstr32To64ForElimEXTSW(SrcReg, MRI, BinOpDepth, LV);
+      promoteInstr32To64ForElimEXTSW(SrcReg, MRI, BinOpDepth);
       return;
     }
 
@@ -5415,7 +5414,7 @@ void PPCInstrInfo::promoteInstr32To64ForElimEXTSW(const Register &Reg,
     if (SrcReg != PPC::X3)
       // If this is a copy from another register, we recursively promote the
       // source.
-      promoteInstr32To64ForElimEXTSW(SrcReg, MRI, BinOpDepth, LV);
+      promoteInstr32To64ForElimEXTSW(SrcReg, MRI, BinOpDepth);
     return;
   }
   case PPC::ORI:
@@ -5426,8 +5425,7 @@ void PPCInstrInfo::promoteInstr32To64ForElimEXTSW(const Register &Reg,
   case PPC::XORI8:
   case PPC::ORIS8:
   case PPC::XORIS8:
-    promoteInstr32To64ForElimEXTSW(MI->getOperand(1).getReg(), MRI, BinOpDepth,
-                                   LV);
+    promoteInstr32To64ForElimEXTSW(MI->getOperand(1).getReg(), MRI, BinOpDepth);
     break;
   case PPC::AND:
   case PPC::AND8:
@@ -5435,9 +5433,9 @@ void PPCInstrInfo::promoteInstr32To64ForElimEXTSW(const Register &Reg,
       break;
 
     promoteInstr32To64ForElimEXTSW(MI->getOperand(1).getReg(), MRI,
-                                   BinOpDepth + 1, LV);
+                                   BinOpDepth + 1);
     promoteInstr32To64ForElimEXTSW(MI->getOperand(2).getReg(), MRI,
-                                   BinOpDepth + 1, LV);
+                                   BinOpDepth + 1);
     break;
   }
 
@@ -5544,7 +5542,6 @@ void PPCInstrInfo::promoteInstr32To64ForElimEXTSW(const Register &Reg,
     Register OperandReg = Operand.getReg();
     if (!OperandReg.isVirtual())
       continue;
-    LV->recomputeForSingleDefVirtReg(OperandReg);
   }
 
   MI->eraseFromParent();
@@ -5555,7 +5552,6 @@ void PPCInstrInfo::promoteInstr32To64ForElimEXTSW(const Register &Reg,
   // 32-bit register
   BuildMI(*MBB, ++Iter, DL, TII->get(PPC::COPY), SrcReg)
       .addReg(NewDefinedReg, RegState::Kill, PPC::sub_32);
-  LV->recomputeForSingleDefVirtReg(NewDefinedReg);
 }
 
 // The isSignOrZeroExtended function is recursive. The parameter BinOpDepth
