@@ -31,10 +31,10 @@ define <8 x i32> @stack_fold_valignd_ymm_mask(<8 x i32> %a, <8 x i32> %b, ptr %p
 ; CHECK:       # %bb.0:
 ; CHECK-NEXT:    vmovups %ymm1, {{[-0-9]+}}(%r{{[sb]}}p) # 32-byte Spill
 ; CHECK-NEXT:    vmovups %ymm0, {{[-0-9]+}}(%r{{[sb]}}p) # 32-byte Spill
-; CHECK-NEXT:    kmovd %esi, %k1
 ; CHECK-NEXT:    #APP
 ; CHECK-NEXT:    nop
 ; CHECK-NEXT:    #NO_APP
+; CHECK-NEXT:    kmovd %esi, %k1
 ; CHECK-NEXT:    vmovdqa (%rdi), %ymm1
 ; CHECK-NEXT:    vmovdqu {{[-0-9]+}}(%r{{[sb]}}p), %ymm0 # 32-byte Reload
 ; CHECK-NEXT:    valignd $1, {{[-0-9]+}}(%r{{[sb]}}p), %ymm0, %ymm1 {%k1} # 32-byte Folded Reload
@@ -870,10 +870,10 @@ define <32 x i8> @stack_fold_palignr_mask(<32 x i8> %a0, <32 x i8> %a1, ptr %pas
 ; CHECK:       # %bb.0:
 ; CHECK-NEXT:    vmovups %ymm1, {{[-0-9]+}}(%r{{[sb]}}p) # 32-byte Spill
 ; CHECK-NEXT:    vmovups %ymm0, {{[-0-9]+}}(%r{{[sb]}}p) # 32-byte Spill
-; CHECK-NEXT:    kmovd %esi, %k1
 ; CHECK-NEXT:    #APP
 ; CHECK-NEXT:    nop
 ; CHECK-NEXT:    #NO_APP
+; CHECK-NEXT:    kmovd %esi, %k1
 ; CHECK-NEXT:    vmovdqa (%rdi), %ymm1
 ; CHECK-NEXT:    vmovdqu {{[-0-9]+}}(%r{{[sb]}}p), %ymm0 # 32-byte Reload
 ; CHECK-NEXT:    vpalignr $1, {{[-0-9]+}}(%r{{[sb]}}p), %ymm0, %ymm1 {%k1} # 32-byte Folded Reload
@@ -1799,8 +1799,8 @@ define <2 x i64> @stack_fold_pmaxuq_mask(ptr %passthru, <2 x i64> %a0, <2 x i64>
 ; CHECK-NEXT:    #APP
 ; CHECK-NEXT:    nop
 ; CHECK-NEXT:    #NO_APP
-; CHECK-NEXT:    kmovd %esi, %k1
 ; CHECK-NEXT:    vmovdqa (%rdi), %xmm2
+; CHECK-NEXT:    kmovd %esi, %k1
 ; CHECK-NEXT:    vpmaxuq {{[-0-9]+}}(%r{{[sb]}}p), %xmm0, %xmm2 {%k1} # 16-byte Folded Reload
 ; CHECK-NEXT:    vmovdqa %xmm2, %xmm0
 ; CHECK-NEXT:    retq
@@ -1855,8 +1855,8 @@ define <4 x i64> @stack_fold_pmaxuq_ymm_mask(ptr %passthru, <4 x i64> %a0, <4 x 
 ; CHECK-NEXT:    #APP
 ; CHECK-NEXT:    nop
 ; CHECK-NEXT:    #NO_APP
-; CHECK-NEXT:    kmovd %esi, %k1
 ; CHECK-NEXT:    vmovdqa (%rdi), %ymm2
+; CHECK-NEXT:    kmovd %esi, %k1
 ; CHECK-NEXT:    vpmaxuq {{[-0-9]+}}(%r{{[sb]}}p), %ymm0, %ymm2 {%k1} # 32-byte Folded Reload
 ; CHECK-NEXT:    vmovdqa %ymm2, %ymm0
 ; CHECK-NEXT:    retq
@@ -2790,10 +2790,10 @@ define <4 x i64> @stack_fold_pmuludq_ymm_mask(ptr %passthru, <8 x i32> %a0, <8 x
 ; CHECK:       # %bb.0:
 ; CHECK-NEXT:    vmovups %ymm1, {{[-0-9]+}}(%r{{[sb]}}p) # 32-byte Spill
 ; CHECK-NEXT:    vmovups %ymm0, {{[-0-9]+}}(%r{{[sb]}}p) # 32-byte Spill
-; CHECK-NEXT:    kmovd %esi, %k1
 ; CHECK-NEXT:    #APP
 ; CHECK-NEXT:    nop
 ; CHECK-NEXT:    #NO_APP
+; CHECK-NEXT:    kmovd %esi, %k1
 ; CHECK-NEXT:    vmovdqa (%rdi), %ymm1
 ; CHECK-NEXT:    vmovdqu {{[-0-9]+}}(%r{{[sb]}}p), %ymm0 # 32-byte Reload
 ; CHECK-NEXT:    vpmuludq {{[-0-9]+}}(%r{{[sb]}}p), %ymm0, %ymm1 {%k1} # 32-byte Folded Reload
@@ -2976,8 +2976,8 @@ define <16 x i8> @stack_fold_pshufb_mask(ptr %passthru, <16 x i8> %a0, <16 x i8>
 ; CHECK-NEXT:    #APP
 ; CHECK-NEXT:    nop
 ; CHECK-NEXT:    #NO_APP
-; CHECK-NEXT:    kmovd %esi, %k1
 ; CHECK-NEXT:    vmovdqa (%rdi), %xmm2
+; CHECK-NEXT:    kmovd %esi, %k1
 ; CHECK-NEXT:    vpshufb {{[-0-9]+}}(%r{{[sb]}}p), %xmm0, %xmm2 {%k1} # 16-byte Folded Reload
 ; CHECK-NEXT:    vmovdqa %xmm2, %xmm0
 ; CHECK-NEXT:    retq
@@ -3028,8 +3028,8 @@ define <32 x i8> @stack_fold_pshufb_ymm_mask(ptr %passthru, <32 x i8> %a0, <32 x
 ; CHECK-NEXT:    #APP
 ; CHECK-NEXT:    nop
 ; CHECK-NEXT:    #NO_APP
-; CHECK-NEXT:    kmovd %esi, %k1
 ; CHECK-NEXT:    vmovdqa (%rdi), %ymm2
+; CHECK-NEXT:    kmovd %esi, %k1
 ; CHECK-NEXT:    vpshufb {{[-0-9]+}}(%r{{[sb]}}p), %ymm0, %ymm2 {%k1} # 32-byte Folded Reload
 ; CHECK-NEXT:    vmovdqa %ymm2, %ymm0
 ; CHECK-NEXT:    retq
