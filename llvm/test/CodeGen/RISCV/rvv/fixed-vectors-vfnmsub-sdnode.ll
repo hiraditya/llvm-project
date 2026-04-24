@@ -8,7 +8,8 @@ define <1 x bfloat> @vfnmsub_vv_v1bf16(<1 x bfloat> %va, <1 x bfloat> %vb, <1 x 
 ; CHECK-LABEL: vfnmsub_vv_v1bf16:
 ; CHECK:       # %bb.0:
 ; CHECK-NEXT:    vsetivli zero, 1, e16alt, mf4, ta, ma
-; CHECK-NEXT:    vfnmsub.vv v8, v9, v10
+; CHECK-NEXT:    vfnmsub.vv v9, v8, v10
+; CHECK-NEXT:    vmv1r.v v8, v9
 ; CHECK-NEXT:    ret
   %neg = fneg <1 x bfloat> %va
   %vd = call <1 x bfloat> @llvm.fma.v1bf16(<1 x bfloat> %neg, <1 x bfloat> %vb, <1 x bfloat> %vc)
@@ -32,7 +33,8 @@ define <2 x bfloat> @vfnmsub_vv_v2bf16(<2 x bfloat> %va, <2 x bfloat> %vb, <2 x 
 ; CHECK-LABEL: vfnmsub_vv_v2bf16:
 ; CHECK:       # %bb.0:
 ; CHECK-NEXT:    vsetivli zero, 2, e16alt, mf4, ta, ma
-; CHECK-NEXT:    vfnmsub.vv v8, v9, v10
+; CHECK-NEXT:    vfnmsub.vv v9, v8, v10
+; CHECK-NEXT:    vmv1r.v v8, v9
 ; CHECK-NEXT:    ret
   %neg = fneg <2 x bfloat> %va
   %vd = call <2 x bfloat> @llvm.fma.v2bf16(<2 x bfloat> %neg, <2 x bfloat> %vb, <2 x bfloat> %vc)
@@ -56,7 +58,8 @@ define <4 x bfloat> @vfnmsub_vv_v4bf16(<4 x bfloat> %va, <4 x bfloat> %vb, <4 x 
 ; CHECK-LABEL: vfnmsub_vv_v4bf16:
 ; CHECK:       # %bb.0:
 ; CHECK-NEXT:    vsetivli zero, 4, e16alt, mf2, ta, ma
-; CHECK-NEXT:    vfnmsub.vv v8, v9, v10
+; CHECK-NEXT:    vfnmsub.vv v9, v8, v10
+; CHECK-NEXT:    vmv1r.v v8, v9
 ; CHECK-NEXT:    ret
   %neg = fneg <4 x bfloat> %va
   %vd = call <4 x bfloat> @llvm.fma.v4bf16(<4 x bfloat> %neg, <4 x bfloat> %vb, <4 x bfloat> %vc)
@@ -80,7 +83,8 @@ define <8 x bfloat> @vfnmsub_vv_v8bf16(<8 x bfloat> %va, <8 x bfloat> %vb, <8 x 
 ; CHECK-LABEL: vfnmsub_vv_v8bf16:
 ; CHECK:       # %bb.0:
 ; CHECK-NEXT:    vsetivli zero, 8, e16alt, m1, ta, ma
-; CHECK-NEXT:    vfnmsub.vv v8, v9, v10
+; CHECK-NEXT:    vfnmsub.vv v9, v8, v10
+; CHECK-NEXT:    vmv.v.v v8, v9
 ; CHECK-NEXT:    ret
   %neg = fneg <8 x bfloat> %va
   %vd = call <8 x bfloat> @llvm.fma.v8bf16(<8 x bfloat> %neg, <8 x bfloat> %vb, <8 x bfloat> %vc)
@@ -104,7 +108,8 @@ define <16 x bfloat> @vfnmsub_vv_v16bf16(<16 x bfloat> %va, <16 x bfloat> %vb, <
 ; CHECK-LABEL: vfnmsub_vv_v16bf16:
 ; CHECK:       # %bb.0:
 ; CHECK-NEXT:    vsetivli zero, 16, e16alt, m2, ta, ma
-; CHECK-NEXT:    vfnmsub.vv v8, v10, v12
+; CHECK-NEXT:    vfnmsub.vv v10, v8, v12
+; CHECK-NEXT:    vmv.v.v v8, v10
 ; CHECK-NEXT:    ret
   %neg = fneg <16 x bfloat> %va
   %vd = call <16 x bfloat> @llvm.fma.v16bf16(<16 x bfloat> %neg, <16 x bfloat> %vb, <16 x bfloat> %vc)
@@ -128,7 +133,8 @@ define <1 x bfloat> @vfnmsac_vv_v1bf16(<1 x bfloat> %va, <1 x bfloat> %vb, <1 x 
 ; CHECK-LABEL: vfnmsac_vv_v1bf16:
 ; CHECK:       # %bb.0:
 ; CHECK-NEXT:    vsetivli zero, 1, e16alt, mf4, ta, ma
-; CHECK-NEXT:    vfnmsac.vv v8, v10, v9
+; CHECK-NEXT:    vfnmsub.vv v10, v9, v8
+; CHECK-NEXT:    vmv1r.v v8, v10
 ; CHECK-NEXT:    ret
   %neg = fneg <1 x bfloat> %vb
   %vd = call <1 x bfloat> @llvm.fma.v1bf16(<1 x bfloat> %neg, <1 x bfloat> %vc, <1 x bfloat> %va)
@@ -139,7 +145,8 @@ define <1 x bfloat> @vfnmsac_vf_v1bf16(<1 x bfloat> %va, <1 x bfloat> %vb, bfloa
 ; CHECK-LABEL: vfnmsac_vf_v1bf16:
 ; CHECK:       # %bb.0:
 ; CHECK-NEXT:    vsetivli zero, 1, e16alt, mf4, ta, ma
-; CHECK-NEXT:    vfnmsac.vf v8, fa0, v9
+; CHECK-NEXT:    vfnmsub.vf v9, fa0, v8
+; CHECK-NEXT:    vmv1r.v v8, v9
 ; CHECK-NEXT:    ret
   %head = insertelement <1 x bfloat> poison, bfloat %c, i32 0
   %splat = shufflevector <1 x bfloat> %head, <1 x bfloat> poison, <1 x i32> zeroinitializer
@@ -152,7 +159,8 @@ define <2 x bfloat> @vfnmsac_vv_v2bf16(<2 x bfloat> %va, <2 x bfloat> %vb, <2 x 
 ; CHECK-LABEL: vfnmsac_vv_v2bf16:
 ; CHECK:       # %bb.0:
 ; CHECK-NEXT:    vsetivli zero, 2, e16alt, mf4, ta, ma
-; CHECK-NEXT:    vfnmsac.vv v8, v10, v9
+; CHECK-NEXT:    vfnmsub.vv v10, v9, v8
+; CHECK-NEXT:    vmv1r.v v8, v10
 ; CHECK-NEXT:    ret
   %neg = fneg <2 x bfloat> %vb
   %vd = call <2 x bfloat> @llvm.fma.v2bf16(<2 x bfloat> %neg, <2 x bfloat> %vc, <2 x bfloat> %va)
@@ -163,7 +171,8 @@ define <2 x bfloat> @vfnmsac_vf_v2bf16(<2 x bfloat> %va, <2 x bfloat> %vb, bfloa
 ; CHECK-LABEL: vfnmsac_vf_v2bf16:
 ; CHECK:       # %bb.0:
 ; CHECK-NEXT:    vsetivli zero, 2, e16alt, mf4, ta, ma
-; CHECK-NEXT:    vfnmsac.vf v8, fa0, v9
+; CHECK-NEXT:    vfnmsub.vf v9, fa0, v8
+; CHECK-NEXT:    vmv1r.v v8, v9
 ; CHECK-NEXT:    ret
   %head = insertelement <2 x bfloat> poison, bfloat %c, i32 0
   %splat = shufflevector <2 x bfloat> %head, <2 x bfloat> poison, <2 x i32> zeroinitializer
@@ -176,7 +185,8 @@ define <4 x bfloat> @vfnmsac_vv_v4bf16(<4 x bfloat> %va, <4 x bfloat> %vb, <4 x 
 ; CHECK-LABEL: vfnmsac_vv_v4bf16:
 ; CHECK:       # %bb.0:
 ; CHECK-NEXT:    vsetivli zero, 4, e16alt, mf2, ta, ma
-; CHECK-NEXT:    vfnmsac.vv v8, v10, v9
+; CHECK-NEXT:    vfnmsub.vv v10, v9, v8
+; CHECK-NEXT:    vmv1r.v v8, v10
 ; CHECK-NEXT:    ret
   %neg = fneg <4 x bfloat> %vb
   %vd = call <4 x bfloat> @llvm.fma.v4bf16(<4 x bfloat> %neg, <4 x bfloat> %vc, <4 x bfloat> %va)
@@ -187,7 +197,8 @@ define <4 x bfloat> @vfnmsac_vf_v4bf16(<4 x bfloat> %va, <4 x bfloat> %vb, bfloa
 ; CHECK-LABEL: vfnmsac_vf_v4bf16:
 ; CHECK:       # %bb.0:
 ; CHECK-NEXT:    vsetivli zero, 4, e16alt, mf2, ta, ma
-; CHECK-NEXT:    vfnmsac.vf v8, fa0, v9
+; CHECK-NEXT:    vfnmsub.vf v9, fa0, v8
+; CHECK-NEXT:    vmv1r.v v8, v9
 ; CHECK-NEXT:    ret
   %head = insertelement <4 x bfloat> poison, bfloat %c, i32 0
   %splat = shufflevector <4 x bfloat> %head, <4 x bfloat> poison, <4 x i32> zeroinitializer
@@ -200,7 +211,8 @@ define <8 x bfloat> @vfnmsac_vv_v8bf16(<8 x bfloat> %va, <8 x bfloat> %vb, <8 x 
 ; CHECK-LABEL: vfnmsac_vv_v8bf16:
 ; CHECK:       # %bb.0:
 ; CHECK-NEXT:    vsetivli zero, 8, e16alt, m1, ta, ma
-; CHECK-NEXT:    vfnmsac.vv v8, v10, v9
+; CHECK-NEXT:    vfnmsub.vv v10, v9, v8
+; CHECK-NEXT:    vmv.v.v v8, v10
 ; CHECK-NEXT:    ret
   %neg = fneg <8 x bfloat> %vb
   %vd = call <8 x bfloat> @llvm.fma.v8bf16(<8 x bfloat> %neg, <8 x bfloat> %vc, <8 x bfloat> %va)
@@ -211,7 +223,8 @@ define <8 x bfloat> @vfnmsac_vf_v8bf16(<8 x bfloat> %va, <8 x bfloat> %vb, bfloa
 ; CHECK-LABEL: vfnmsac_vf_v8bf16:
 ; CHECK:       # %bb.0:
 ; CHECK-NEXT:    vsetivli zero, 8, e16alt, m1, ta, ma
-; CHECK-NEXT:    vfnmsac.vf v8, fa0, v9
+; CHECK-NEXT:    vfnmsub.vf v9, fa0, v8
+; CHECK-NEXT:    vmv.v.v v8, v9
 ; CHECK-NEXT:    ret
   %head = insertelement <8 x bfloat> poison, bfloat %c, i32 0
   %splat = shufflevector <8 x bfloat> %head, <8 x bfloat> poison, <8 x i32> zeroinitializer
@@ -224,7 +237,8 @@ define <16 x bfloat> @vfnmsac_vv_v16bf16(<16 x bfloat> %va, <16 x bfloat> %vb, <
 ; CHECK-LABEL: vfnmsac_vv_v16bf16:
 ; CHECK:       # %bb.0:
 ; CHECK-NEXT:    vsetivli zero, 16, e16alt, m2, ta, ma
-; CHECK-NEXT:    vfnmsac.vv v8, v12, v10
+; CHECK-NEXT:    vfnmsub.vv v12, v10, v8
+; CHECK-NEXT:    vmv.v.v v8, v12
 ; CHECK-NEXT:    ret
   %neg = fneg <16 x bfloat> %vb
   %vd = call <16 x bfloat> @llvm.fma.v16bf16(<16 x bfloat> %neg, <16 x bfloat> %vc, <16 x bfloat> %va)
@@ -235,7 +249,8 @@ define <16 x bfloat> @vfnmsac_vf_v16bf16(<16 x bfloat> %va, <16 x bfloat> %vb, b
 ; CHECK-LABEL: vfnmsac_vf_v16bf16:
 ; CHECK:       # %bb.0:
 ; CHECK-NEXT:    vsetivli zero, 16, e16alt, m2, ta, ma
-; CHECK-NEXT:    vfnmsac.vf v8, fa0, v10
+; CHECK-NEXT:    vfnmsub.vf v10, fa0, v8
+; CHECK-NEXT:    vmv.v.v v8, v10
 ; CHECK-NEXT:    ret
   %head = insertelement <16 x bfloat> poison, bfloat %c, i32 0
   %splat = shufflevector <16 x bfloat> %head, <16 x bfloat> poison, <16 x i32> zeroinitializer

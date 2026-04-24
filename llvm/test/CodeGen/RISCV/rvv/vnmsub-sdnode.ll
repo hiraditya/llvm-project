@@ -11,7 +11,8 @@ define <vscale x 1 x i8> @vnmsub_vv_nxv1i8(<vscale x 1 x i8> %va, <vscale x 1 x 
 ; CHECK-LABEL: vnmsub_vv_nxv1i8:
 ; CHECK:       # %bb.0:
 ; CHECK-NEXT:    vsetvli a0, zero, e8, mf8, ta, ma
-; CHECK-NEXT:    vnmsub.vv v8, v9, v10
+; CHECK-NEXT:    vnmsub.vv v9, v8, v10
+; CHECK-NEXT:    vmv1r.v v8, v9
 ; CHECK-NEXT:    ret
   %x = mul <vscale x 1 x i8> %va, %vb
   %y = sub <vscale x 1 x i8> %vc, %x
@@ -35,7 +36,8 @@ define <vscale x 2 x i8> @vnmsub_vv_nxv2i8(<vscale x 2 x i8> %va, <vscale x 2 x 
 ; CHECK-LABEL: vnmsub_vv_nxv2i8:
 ; CHECK:       # %bb.0:
 ; CHECK-NEXT:    vsetvli a0, zero, e8, mf4, ta, ma
-; CHECK-NEXT:    vnmsub.vv v8, v10, v9
+; CHECK-NEXT:    vnmsub.vv v10, v8, v9
+; CHECK-NEXT:    vmv1r.v v8, v10
 ; CHECK-NEXT:    ret
   %x = mul <vscale x 2 x i8> %va, %vc
   %y = sub <vscale x 2 x i8> %vb, %x
@@ -46,7 +48,8 @@ define <vscale x 2 x i8> @vnmsub_vx_nxv2i8(<vscale x 2 x i8> %va, <vscale x 2 x 
 ; CHECK-LABEL: vnmsub_vx_nxv2i8:
 ; CHECK:       # %bb.0:
 ; CHECK-NEXT:    vsetvli a1, zero, e8, mf4, ta, ma
-; CHECK-NEXT:    vnmsac.vx v8, a0, v9
+; CHECK-NEXT:    vnmsub.vx v9, a0, v8
+; CHECK-NEXT:    vmv1r.v v8, v9
 ; CHECK-NEXT:    ret
   %head = insertelement <vscale x 2 x i8> poison, i8 %c, i32 0
   %splat = shufflevector <vscale x 2 x i8> %head, <vscale x 2 x i8> poison, <vscale x 2 x i32> zeroinitializer
@@ -83,7 +86,8 @@ define <vscale x 8 x i8> @vnmsub_vv_nxv8i8(<vscale x 8 x i8> %va, <vscale x 8 x 
 ; CHECK-LABEL: vnmsub_vv_nxv8i8:
 ; CHECK:       # %bb.0:
 ; CHECK-NEXT:    vsetvli a0, zero, e8, m1, ta, ma
-; CHECK-NEXT:    vnmsac.vv v8, v10, v9
+; CHECK-NEXT:    vnmsub.vv v10, v9, v8
+; CHECK-NEXT:    vmv.v.v v8, v10
 ; CHECK-NEXT:    ret
   %x = mul <vscale x 8 x i8> %vb, %vc
   %y = sub <vscale x 8 x i8> %va, %x
@@ -94,7 +98,8 @@ define <vscale x 8 x i8> @vnmsub_vx_nxv8i8(<vscale x 8 x i8> %va, <vscale x 8 x 
 ; CHECK-LABEL: vnmsub_vx_nxv8i8:
 ; CHECK:       # %bb.0:
 ; CHECK-NEXT:    vsetvli a1, zero, e8, m1, ta, ma
-; CHECK-NEXT:    vnmsac.vx v8, a0, v9
+; CHECK-NEXT:    vnmsub.vx v9, a0, v8
+; CHECK-NEXT:    vmv.v.v v8, v9
 ; CHECK-NEXT:    ret
   %head = insertelement <vscale x 8 x i8> poison, i8 %c, i32 0
   %splat = shufflevector <vscale x 8 x i8> %head, <vscale x 8 x i8> poison, <vscale x 8 x i32> zeroinitializer
@@ -131,7 +136,8 @@ define <vscale x 32 x i8> @vnmsub_vv_nxv32i8(<vscale x 32 x i8> %va, <vscale x 3
 ; CHECK-LABEL: vnmsub_vv_nxv32i8:
 ; CHECK:       # %bb.0:
 ; CHECK-NEXT:    vsetvli a0, zero, e8, m4, ta, ma
-; CHECK-NEXT:    vnmsac.vv v8, v16, v12
+; CHECK-NEXT:    vnmsub.vv v12, v16, v8
+; CHECK-NEXT:    vmv.v.v v8, v12
 ; CHECK-NEXT:    ret
   %x = mul <vscale x 32 x i8> %vc, %vb
   %y = sub <vscale x 32 x i8> %va, %x
@@ -142,7 +148,8 @@ define <vscale x 32 x i8> @vnmsub_vx_nxv32i8(<vscale x 32 x i8> %va, <vscale x 3
 ; CHECK-LABEL: vnmsub_vx_nxv32i8:
 ; CHECK:       # %bb.0:
 ; CHECK-NEXT:    vsetvli a1, zero, e8, m4, ta, ma
-; CHECK-NEXT:    vnmsac.vx v8, a0, v12
+; CHECK-NEXT:    vnmsub.vx v12, a0, v8
+; CHECK-NEXT:    vmv.v.v v8, v12
 ; CHECK-NEXT:    ret
   %head = insertelement <vscale x 32 x i8> poison, i8 %c, i32 0
   %splat = shufflevector <vscale x 32 x i8> %head, <vscale x 32 x i8> poison, <vscale x 32 x i32> zeroinitializer
@@ -156,7 +163,8 @@ define <vscale x 64 x i8> @vnmsub_vv_nxv64i8(<vscale x 64 x i8> %va, <vscale x 6
 ; CHECK:       # %bb.0:
 ; CHECK-NEXT:    vl8r.v v24, (a0)
 ; CHECK-NEXT:    vsetvli a0, zero, e8, m8, ta, ma
-; CHECK-NEXT:    vnmsac.vv v8, v16, v24
+; CHECK-NEXT:    vnmsub.vv v24, v16, v8
+; CHECK-NEXT:    vmv.v.v v8, v24
 ; CHECK-NEXT:    ret
   %x = mul <vscale x 64 x i8> %vc, %vb
   %y = sub <vscale x 64 x i8> %va, %x
@@ -167,7 +175,8 @@ define <vscale x 64 x i8> @vnmsub_vx_nxv64i8(<vscale x 64 x i8> %va, <vscale x 6
 ; CHECK-LABEL: vnmsub_vx_nxv64i8:
 ; CHECK:       # %bb.0:
 ; CHECK-NEXT:    vsetvli a1, zero, e8, m8, ta, ma
-; CHECK-NEXT:    vnmsac.vx v8, a0, v16
+; CHECK-NEXT:    vnmsub.vx v16, a0, v8
+; CHECK-NEXT:    vmv.v.v v8, v16
 ; CHECK-NEXT:    ret
   %head = insertelement <vscale x 64 x i8> poison, i8 %c, i32 0
   %splat = shufflevector <vscale x 64 x i8> %head, <vscale x 64 x i8> poison, <vscale x 64 x i32> zeroinitializer
@@ -180,7 +189,8 @@ define <vscale x 1 x i16> @vnmsub_vv_nxv1i16(<vscale x 1 x i16> %va, <vscale x 1
 ; CHECK-LABEL: vnmsub_vv_nxv1i16:
 ; CHECK:       # %bb.0:
 ; CHECK-NEXT:    vsetvli a0, zero, e16, mf4, ta, ma
-; CHECK-NEXT:    vnmsub.vv v8, v9, v10
+; CHECK-NEXT:    vnmsub.vv v9, v8, v10
+; CHECK-NEXT:    vmv1r.v v8, v9
 ; CHECK-NEXT:    ret
   %x = mul <vscale x 1 x i16> %va, %vb
   %y = sub <vscale x 1 x i16> %vc, %x
@@ -204,7 +214,8 @@ define <vscale x 2 x i16> @vnmsub_vv_nxv2i16(<vscale x 2 x i16> %va, <vscale x 2
 ; CHECK-LABEL: vnmsub_vv_nxv2i16:
 ; CHECK:       # %bb.0:
 ; CHECK-NEXT:    vsetvli a0, zero, e16, mf2, ta, ma
-; CHECK-NEXT:    vnmsub.vv v8, v10, v9
+; CHECK-NEXT:    vnmsub.vv v10, v8, v9
+; CHECK-NEXT:    vmv1r.v v8, v10
 ; CHECK-NEXT:    ret
   %x = mul <vscale x 2 x i16> %va, %vc
   %y = sub <vscale x 2 x i16> %vb, %x
@@ -215,7 +226,8 @@ define <vscale x 2 x i16> @vnmsub_vx_nxv2i16(<vscale x 2 x i16> %va, <vscale x 2
 ; CHECK-LABEL: vnmsub_vx_nxv2i16:
 ; CHECK:       # %bb.0:
 ; CHECK-NEXT:    vsetvli a1, zero, e16, mf2, ta, ma
-; CHECK-NEXT:    vnmsac.vx v8, a0, v9
+; CHECK-NEXT:    vnmsub.vx v9, a0, v8
+; CHECK-NEXT:    vmv1r.v v8, v9
 ; CHECK-NEXT:    ret
   %head = insertelement <vscale x 2 x i16> poison, i16 %c, i32 0
   %splat = shufflevector <vscale x 2 x i16> %head, <vscale x 2 x i16> poison, <vscale x 2 x i32> zeroinitializer
@@ -252,7 +264,8 @@ define <vscale x 8 x i16> @vnmsub_vv_nxv8i16(<vscale x 8 x i16> %va, <vscale x 8
 ; CHECK-LABEL: vnmsub_vv_nxv8i16:
 ; CHECK:       # %bb.0:
 ; CHECK-NEXT:    vsetvli a0, zero, e16, m2, ta, ma
-; CHECK-NEXT:    vnmsac.vv v8, v12, v10
+; CHECK-NEXT:    vnmsub.vv v12, v10, v8
+; CHECK-NEXT:    vmv.v.v v8, v12
 ; CHECK-NEXT:    ret
   %x = mul <vscale x 8 x i16> %vb, %vc
   %y = sub <vscale x 8 x i16> %va, %x
@@ -263,7 +276,8 @@ define <vscale x 8 x i16> @vnmsub_vx_nxv8i16(<vscale x 8 x i16> %va, <vscale x 8
 ; CHECK-LABEL: vnmsub_vx_nxv8i16:
 ; CHECK:       # %bb.0:
 ; CHECK-NEXT:    vsetvli a1, zero, e16, m2, ta, ma
-; CHECK-NEXT:    vnmsac.vx v8, a0, v10
+; CHECK-NEXT:    vnmsub.vx v10, a0, v8
+; CHECK-NEXT:    vmv.v.v v8, v10
 ; CHECK-NEXT:    ret
   %head = insertelement <vscale x 8 x i16> poison, i16 %c, i32 0
   %splat = shufflevector <vscale x 8 x i16> %head, <vscale x 8 x i16> poison, <vscale x 8 x i32> zeroinitializer
@@ -301,7 +315,8 @@ define <vscale x 32 x i16> @vnmsub_vv_nxv32i16(<vscale x 32 x i16> %va, <vscale 
 ; CHECK:       # %bb.0:
 ; CHECK-NEXT:    vl8re16.v v24, (a0)
 ; CHECK-NEXT:    vsetvli a0, zero, e16, m8, ta, ma
-; CHECK-NEXT:    vnmsac.vv v8, v16, v24
+; CHECK-NEXT:    vnmsub.vv v24, v16, v8
+; CHECK-NEXT:    vmv.v.v v8, v24
 ; CHECK-NEXT:    ret
   %x = mul <vscale x 32 x i16> %vc, %vb
   %y = sub <vscale x 32 x i16> %va, %x
@@ -312,7 +327,8 @@ define <vscale x 32 x i16> @vnmsub_vx_nxv32i16(<vscale x 32 x i16> %va, <vscale 
 ; CHECK-LABEL: vnmsub_vx_nxv32i16:
 ; CHECK:       # %bb.0:
 ; CHECK-NEXT:    vsetvli a1, zero, e16, m8, ta, ma
-; CHECK-NEXT:    vnmsac.vx v8, a0, v16
+; CHECK-NEXT:    vnmsub.vx v16, a0, v8
+; CHECK-NEXT:    vmv.v.v v8, v16
 ; CHECK-NEXT:    ret
   %head = insertelement <vscale x 32 x i16> poison, i16 %c, i32 0
   %splat = shufflevector <vscale x 32 x i16> %head, <vscale x 32 x i16> poison, <vscale x 32 x i32> zeroinitializer
@@ -325,7 +341,8 @@ define <vscale x 1 x i32> @vnmsub_vv_nxv1i32(<vscale x 1 x i32> %va, <vscale x 1
 ; CHECK-LABEL: vnmsub_vv_nxv1i32:
 ; CHECK:       # %bb.0:
 ; CHECK-NEXT:    vsetvli a0, zero, e32, mf2, ta, ma
-; CHECK-NEXT:    vnmsub.vv v8, v9, v10
+; CHECK-NEXT:    vnmsub.vv v9, v8, v10
+; CHECK-NEXT:    vmv1r.v v8, v9
 ; CHECK-NEXT:    ret
   %x = mul <vscale x 1 x i32> %va, %vb
   %y = sub <vscale x 1 x i32> %vc, %x
@@ -349,7 +366,8 @@ define <vscale x 2 x i32> @vnmsub_vv_nxv2i32(<vscale x 2 x i32> %va, <vscale x 2
 ; CHECK-LABEL: vnmsub_vv_nxv2i32:
 ; CHECK:       # %bb.0:
 ; CHECK-NEXT:    vsetvli a0, zero, e32, m1, ta, ma
-; CHECK-NEXT:    vnmsub.vv v8, v10, v9
+; CHECK-NEXT:    vnmsub.vv v10, v8, v9
+; CHECK-NEXT:    vmv.v.v v8, v10
 ; CHECK-NEXT:    ret
   %x = mul <vscale x 2 x i32> %va, %vc
   %y = sub <vscale x 2 x i32> %vb, %x
@@ -360,7 +378,8 @@ define <vscale x 2 x i32> @vnmsub_vx_nxv2i32(<vscale x 2 x i32> %va, <vscale x 2
 ; CHECK-LABEL: vnmsub_vx_nxv2i32:
 ; CHECK:       # %bb.0:
 ; CHECK-NEXT:    vsetvli a1, zero, e32, m1, ta, ma
-; CHECK-NEXT:    vnmsac.vx v8, a0, v9
+; CHECK-NEXT:    vnmsub.vx v9, a0, v8
+; CHECK-NEXT:    vmv.v.v v8, v9
 ; CHECK-NEXT:    ret
   %head = insertelement <vscale x 2 x i32> poison, i32 %c, i32 0
   %splat = shufflevector <vscale x 2 x i32> %head, <vscale x 2 x i32> poison, <vscale x 2 x i32> zeroinitializer
@@ -397,7 +416,8 @@ define <vscale x 8 x i32> @vnmsub_vv_nxv8i32(<vscale x 8 x i32> %va, <vscale x 8
 ; CHECK-LABEL: vnmsub_vv_nxv8i32:
 ; CHECK:       # %bb.0:
 ; CHECK-NEXT:    vsetvli a0, zero, e32, m4, ta, ma
-; CHECK-NEXT:    vnmsac.vv v8, v16, v12
+; CHECK-NEXT:    vnmsub.vv v16, v12, v8
+; CHECK-NEXT:    vmv.v.v v8, v16
 ; CHECK-NEXT:    ret
   %x = mul <vscale x 8 x i32> %vb, %vc
   %y = sub <vscale x 8 x i32> %va, %x
@@ -408,7 +428,8 @@ define <vscale x 8 x i32> @vnmsub_vx_nxv8i32(<vscale x 8 x i32> %va, <vscale x 8
 ; CHECK-LABEL: vnmsub_vx_nxv8i32:
 ; CHECK:       # %bb.0:
 ; CHECK-NEXT:    vsetvli a1, zero, e32, m4, ta, ma
-; CHECK-NEXT:    vnmsac.vx v8, a0, v12
+; CHECK-NEXT:    vnmsub.vx v12, a0, v8
+; CHECK-NEXT:    vmv.v.v v8, v12
 ; CHECK-NEXT:    ret
   %head = insertelement <vscale x 8 x i32> poison, i32 %c, i32 0
   %splat = shufflevector <vscale x 8 x i32> %head, <vscale x 8 x i32> poison, <vscale x 8 x i32> zeroinitializer
@@ -422,7 +443,8 @@ define <vscale x 16 x i32> @vnmsub_vv_nxv16i32(<vscale x 16 x i32> %va, <vscale 
 ; CHECK:       # %bb.0:
 ; CHECK-NEXT:    vl8re32.v v24, (a0)
 ; CHECK-NEXT:    vsetvli a0, zero, e32, m8, ta, ma
-; CHECK-NEXT:    vnmsub.vv v8, v24, v16
+; CHECK-NEXT:    vnmsub.vv v24, v8, v16
+; CHECK-NEXT:    vmv.v.v v8, v24
 ; CHECK-NEXT:    ret
   %x = mul <vscale x 16 x i32> %vc, %va
   %y = sub <vscale x 16 x i32> %vb, %x
@@ -446,7 +468,8 @@ define <vscale x 1 x i64> @vnmsub_vv_nxv1i64(<vscale x 1 x i64> %va, <vscale x 1
 ; CHECK-LABEL: vnmsub_vv_nxv1i64:
 ; CHECK:       # %bb.0:
 ; CHECK-NEXT:    vsetvli a0, zero, e64, m1, ta, ma
-; CHECK-NEXT:    vnmsub.vv v8, v9, v10
+; CHECK-NEXT:    vnmsub.vv v9, v8, v10
+; CHECK-NEXT:    vmv.v.v v8, v9
 ; CHECK-NEXT:    ret
   %x = mul <vscale x 1 x i64> %va, %vb
   %y = sub <vscale x 1 x i64> %vc, %x
@@ -463,7 +486,8 @@ define <vscale x 1 x i64> @vnmsub_vx_nxv1i64(<vscale x 1 x i64> %va, <vscale x 1
 ; RV32-NEXT:    addi a0, sp, 8
 ; RV32-NEXT:    vsetvli a1, zero, e64, m1, ta, ma
 ; RV32-NEXT:    vlse64.v v10, (a0), zero
-; RV32-NEXT:    vnmsub.vv v8, v10, v9
+; RV32-NEXT:    vnmsub.vv v10, v8, v9
+; RV32-NEXT:    vmv.v.v v8, v10
 ; RV32-NEXT:    addi sp, sp, 16
 ; RV32-NEXT:    .cfi_def_cfa_offset 0
 ; RV32-NEXT:    ret
@@ -484,7 +508,8 @@ define <vscale x 2 x i64> @vnmsub_vv_nxv2i64(<vscale x 2 x i64> %va, <vscale x 2
 ; CHECK-LABEL: vnmsub_vv_nxv2i64:
 ; CHECK:       # %bb.0:
 ; CHECK-NEXT:    vsetvli a0, zero, e64, m2, ta, ma
-; CHECK-NEXT:    vnmsub.vv v8, v12, v10
+; CHECK-NEXT:    vnmsub.vv v12, v8, v10
+; CHECK-NEXT:    vmv.v.v v8, v12
 ; CHECK-NEXT:    ret
   %x = mul <vscale x 2 x i64> %va, %vc
   %y = sub <vscale x 2 x i64> %vb, %x
@@ -501,7 +526,8 @@ define <vscale x 2 x i64> @vnmsub_vx_nxv2i64(<vscale x 2 x i64> %va, <vscale x 2
 ; RV32-NEXT:    addi a0, sp, 8
 ; RV32-NEXT:    vsetvli a1, zero, e64, m2, ta, ma
 ; RV32-NEXT:    vlse64.v v12, (a0), zero
-; RV32-NEXT:    vnmsac.vv v8, v10, v12
+; RV32-NEXT:    vnmsub.vv v12, v10, v8
+; RV32-NEXT:    vmv.v.v v8, v12
 ; RV32-NEXT:    addi sp, sp, 16
 ; RV32-NEXT:    .cfi_def_cfa_offset 0
 ; RV32-NEXT:    ret
@@ -509,7 +535,8 @@ define <vscale x 2 x i64> @vnmsub_vx_nxv2i64(<vscale x 2 x i64> %va, <vscale x 2
 ; RV64-LABEL: vnmsub_vx_nxv2i64:
 ; RV64:       # %bb.0:
 ; RV64-NEXT:    vsetvli a1, zero, e64, m2, ta, ma
-; RV64-NEXT:    vnmsac.vx v8, a0, v10
+; RV64-NEXT:    vnmsub.vx v10, a0, v8
+; RV64-NEXT:    vmv.v.v v8, v10
 ; RV64-NEXT:    ret
   %head = insertelement <vscale x 2 x i64> poison, i64 %c, i32 0
   %splat = shufflevector <vscale x 2 x i64> %head, <vscale x 2 x i64> poison, <vscale x 2 x i32> zeroinitializer
@@ -539,7 +566,8 @@ define <vscale x 4 x i64> @vnmsub_vx_nxv4i64(<vscale x 4 x i64> %va, <vscale x 4
 ; RV32-NEXT:    addi a0, sp, 8
 ; RV32-NEXT:    vsetvli a1, zero, e64, m4, ta, ma
 ; RV32-NEXT:    vlse64.v v16, (a0), zero
-; RV32-NEXT:    vnmsub.vv v8, v16, v12
+; RV32-NEXT:    vnmsub.vv v16, v8, v12
+; RV32-NEXT:    vmv.v.v v8, v16
 ; RV32-NEXT:    addi sp, sp, 16
 ; RV32-NEXT:    .cfi_def_cfa_offset 0
 ; RV32-NEXT:    ret
@@ -561,7 +589,8 @@ define <vscale x 8 x i64> @vnmsub_vv_nxv8i64(<vscale x 8 x i64> %va, <vscale x 8
 ; CHECK:       # %bb.0:
 ; CHECK-NEXT:    vl8re64.v v24, (a0)
 ; CHECK-NEXT:    vsetvli a0, zero, e64, m8, ta, ma
-; CHECK-NEXT:    vnmsac.vv v8, v16, v24
+; CHECK-NEXT:    vnmsub.vv v24, v16, v8
+; CHECK-NEXT:    vmv.v.v v8, v24
 ; CHECK-NEXT:    ret
   %x = mul <vscale x 8 x i64> %vb, %vc
   %y = sub <vscale x 8 x i64> %va, %x
@@ -578,7 +607,8 @@ define <vscale x 8 x i64> @vnmsub_vx_nxv8i64(<vscale x 8 x i64> %va, <vscale x 8
 ; RV32-NEXT:    addi a0, sp, 8
 ; RV32-NEXT:    vsetvli a1, zero, e64, m8, ta, ma
 ; RV32-NEXT:    vlse64.v v24, (a0), zero
-; RV32-NEXT:    vnmsac.vv v8, v16, v24
+; RV32-NEXT:    vnmsub.vv v24, v16, v8
+; RV32-NEXT:    vmv.v.v v8, v24
 ; RV32-NEXT:    addi sp, sp, 16
 ; RV32-NEXT:    .cfi_def_cfa_offset 0
 ; RV32-NEXT:    ret
@@ -586,7 +616,8 @@ define <vscale x 8 x i64> @vnmsub_vx_nxv8i64(<vscale x 8 x i64> %va, <vscale x 8
 ; RV64-LABEL: vnmsub_vx_nxv8i64:
 ; RV64:       # %bb.0:
 ; RV64-NEXT:    vsetvli a1, zero, e64, m8, ta, ma
-; RV64-NEXT:    vnmsac.vx v8, a0, v16
+; RV64-NEXT:    vnmsub.vx v16, a0, v8
+; RV64-NEXT:    vmv.v.v v8, v16
 ; RV64-NEXT:    ret
   %head = insertelement <vscale x 8 x i64> poison, i64 %c, i32 0
   %splat = shufflevector <vscale x 8 x i64> %head, <vscale x 8 x i64> poison, <vscale x 8 x i32> zeroinitializer

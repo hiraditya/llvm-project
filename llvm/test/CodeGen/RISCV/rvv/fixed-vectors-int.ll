@@ -1378,9 +1378,9 @@ define void @mulhs_v2i64(ptr %x) {
 ; RV32-NEXT:    vmv.s.x v10, a1
 ; RV32-NEXT:    vsetvli zero, zero, e64, m1, ta, ma
 ; RV32-NEXT:    vmulh.vv v10, v8, v10
-; RV32-NEXT:    vmadd.vv v11, v8, v10
-; RV32-NEXT:    vsrl.vx v8, v11, a2
-; RV32-NEXT:    vsra.vv v9, v11, v9
+; RV32-NEXT:    vmacc.vv v10, v8, v11
+; RV32-NEXT:    vsrl.vx v8, v10, a2
+; RV32-NEXT:    vsra.vv v9, v10, v9
 ; RV32-NEXT:    vadd.vv v8, v9, v8
 ; RV32-NEXT:    vse64.v v8, (a0)
 ; RV32-NEXT:    ret
@@ -1403,9 +1403,9 @@ define void @mulhs_v2i64(ptr %x) {
 ; RV64-NEXT:    vmv.s.x v10, a2
 ; RV64-NEXT:    vsetvli zero, zero, e64, m1, ta, ma
 ; RV64-NEXT:    vmulh.vv v10, v8, v10
-; RV64-NEXT:    vmadd.vv v11, v8, v10
-; RV64-NEXT:    vsrl.vx v8, v11, a1
-; RV64-NEXT:    vsra.vv v9, v11, v9
+; RV64-NEXT:    vmacc.vv v10, v8, v11
+; RV64-NEXT:    vsrl.vx v8, v10, a1
+; RV64-NEXT:    vsra.vv v9, v10, v9
 ; RV64-NEXT:    vadd.vv v8, v9, v8
 ; RV64-NEXT:    vse64.v v8, (a0)
 ; RV64-NEXT:    ret
@@ -3489,15 +3489,15 @@ define void @mulhs_v4i64(ptr %x) {
 ; RV32-NEXT:    vsext.vf4 v12, v14
 ; RV32-NEXT:    vsetivli zero, 4, e64, m2, ta, ma
 ; RV32-NEXT:    vmulh.vv v10, v8, v10
-; RV32-NEXT:    vmadd.vv v12, v8, v10
+; RV32-NEXT:    vmacc.vv v10, v8, v12
 ; RV32-NEXT:    vsetivli zero, 2, e32, mf2, ta, ma
-; RV32-NEXT:    vmv.v.x v10, a1
+; RV32-NEXT:    vmv.v.x v12, a1
 ; RV32-NEXT:    vsetivli zero, 8, e32, m2, ta, ma
-; RV32-NEXT:    vsext.vf4 v8, v10
+; RV32-NEXT:    vsext.vf4 v8, v12
 ; RV32-NEXT:    vsetivli zero, 4, e64, m2, ta, ma
-; RV32-NEXT:    vsrl.vx v10, v12, a2
-; RV32-NEXT:    vsra.vv v8, v12, v8
-; RV32-NEXT:    vadd.vv v8, v8, v10
+; RV32-NEXT:    vsrl.vx v12, v10, a2
+; RV32-NEXT:    vsra.vv v8, v10, v8
+; RV32-NEXT:    vadd.vv v8, v8, v12
 ; RV32-NEXT:    vse64.v v8, (a0)
 ; RV32-NEXT:    ret
 ;
@@ -3524,12 +3524,12 @@ define void @mulhs_v4i64(ptr %x) {
 ; RV64-NEXT:    addi a2, a2, 256
 ; RV64-NEXT:    vsext.vf8 v12, v14
 ; RV64-NEXT:    vmulh.vv v10, v8, v10
-; RV64-NEXT:    vmadd.vv v12, v8, v10
-; RV64-NEXT:    vmv.s.x v10, a2
-; RV64-NEXT:    vsext.vf8 v8, v10
-; RV64-NEXT:    vsrl.vx v10, v12, a1
-; RV64-NEXT:    vsra.vv v8, v12, v8
-; RV64-NEXT:    vadd.vv v8, v8, v10
+; RV64-NEXT:    vmacc.vv v10, v8, v12
+; RV64-NEXT:    vmv.s.x v12, a2
+; RV64-NEXT:    vsext.vf8 v8, v12
+; RV64-NEXT:    vsrl.vx v12, v10, a1
+; RV64-NEXT:    vsra.vv v8, v10, v8
+; RV64-NEXT:    vadd.vv v8, v8, v12
 ; RV64-NEXT:    vse64.v v8, (a0)
 ; RV64-NEXT:    ret
   %a = load <4 x i64>, ptr %x

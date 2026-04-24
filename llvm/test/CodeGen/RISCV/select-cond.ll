@@ -35,8 +35,8 @@ define signext i32 @select_i32_trunc(i32 signext %cond, i32 signext %x, i32 sign
 ; RV32-XQCICM-LABEL: select_i32_trunc:
 ; RV32-XQCICM:       # %bb.0:
 ; RV32-XQCICM-NEXT:    andi a0, a0, 1
-; RV32-XQCICM-NEXT:    qc.mveqi a1, a0, 0, a2
-; RV32-XQCICM-NEXT:    mv a0, a1
+; RV32-XQCICM-NEXT:    qc.mvnei a2, a0, 0, a1
+; RV32-XQCICM-NEXT:    mv a0, a2
 ; RV32-XQCICM-NEXT:    ret
 ;
 ; RV32-XQCICS-LABEL: select_i32_trunc:
@@ -48,8 +48,8 @@ define signext i32 @select_i32_trunc(i32 signext %cond, i32 signext %x, i32 sign
 ; RV32IXQCI-LABEL: select_i32_trunc:
 ; RV32IXQCI:       # %bb.0:
 ; RV32IXQCI-NEXT:    andi a0, a0, 1
-; RV32IXQCI-NEXT:    qc.mveqi a1, a0, 0, a2
-; RV32IXQCI-NEXT:    mv a0, a1
+; RV32IXQCI-NEXT:    qc.mvnei a2, a0, 0, a1
+; RV32IXQCI-NEXT:    mv a0, a2
 ; RV32IXQCI-NEXT:    ret
 ;
 ; RV64-LABEL: select_i32_trunc:
@@ -93,8 +93,8 @@ define signext i32 @select_i32_param(i1 signext %cond, i32 signext %x, i32 signe
 ; RV32-XQCICM-LABEL: select_i32_param:
 ; RV32-XQCICM:       # %bb.0:
 ; RV32-XQCICM-NEXT:    andi a0, a0, 1
-; RV32-XQCICM-NEXT:    qc.mveqi a1, a0, 0, a2
-; RV32-XQCICM-NEXT:    mv a0, a1
+; RV32-XQCICM-NEXT:    qc.mvnei a2, a0, 0, a1
+; RV32-XQCICM-NEXT:    mv a0, a2
 ; RV32-XQCICM-NEXT:    ret
 ;
 ; RV32-XQCICS-LABEL: select_i32_param:
@@ -106,8 +106,8 @@ define signext i32 @select_i32_param(i1 signext %cond, i32 signext %x, i32 signe
 ; RV32IXQCI-LABEL: select_i32_param:
 ; RV32IXQCI:       # %bb.0:
 ; RV32IXQCI-NEXT:    andi a0, a0, 1
-; RV32IXQCI-NEXT:    qc.mveqi a1, a0, 0, a2
-; RV32IXQCI-NEXT:    mv a0, a1
+; RV32IXQCI-NEXT:    qc.mvnei a2, a0, 0, a1
+; RV32IXQCI-NEXT:    mv a0, a2
 ; RV32IXQCI-NEXT:    ret
 ;
 ; RV64-LABEL: select_i32_param:
@@ -148,8 +148,8 @@ define signext i32 @select_i32_eq(i32 signext %a, i32 signext %b, i32 signext %x
 ;
 ; RV32-XQCICM-LABEL: select_i32_eq:
 ; RV32-XQCICM:       # %bb.0:
-; RV32-XQCICM-NEXT:    qc.mvne a2, a0, a1, a3
-; RV32-XQCICM-NEXT:    mv a0, a2
+; RV32-XQCICM-NEXT:    qc.mveq a3, a0, a1, a2
+; RV32-XQCICM-NEXT:    mv a0, a3
 ; RV32-XQCICM-NEXT:    ret
 ;
 ; RV32-XQCICS-LABEL: select_i32_eq:
@@ -163,8 +163,8 @@ define signext i32 @select_i32_eq(i32 signext %a, i32 signext %b, i32 signext %x
 ;
 ; RV32IXQCI-LABEL: select_i32_eq:
 ; RV32IXQCI:       # %bb.0:
-; RV32IXQCI-NEXT:    qc.mvne a2, a0, a1, a3
-; RV32IXQCI-NEXT:    mv a0, a2
+; RV32IXQCI-NEXT:    qc.mveq a3, a0, a1, a2
+; RV32IXQCI-NEXT:    mv a0, a3
 ; RV32IXQCI-NEXT:    ret
 ;
 ; RV64-LABEL: select_i32_eq:
@@ -205,8 +205,8 @@ define signext i32 @select_i32_ne(i32 signext %a, i32 signext %b, i32 signext %x
 ;
 ; RV32-XQCICM-LABEL: select_i32_ne:
 ; RV32-XQCICM:       # %bb.0:
-; RV32-XQCICM-NEXT:    qc.mveq a2, a0, a1, a3
-; RV32-XQCICM-NEXT:    mv a0, a2
+; RV32-XQCICM-NEXT:    qc.mvne a3, a0, a1, a2
+; RV32-XQCICM-NEXT:    mv a0, a3
 ; RV32-XQCICM-NEXT:    ret
 ;
 ; RV32-XQCICS-LABEL: select_i32_ne:
@@ -220,8 +220,8 @@ define signext i32 @select_i32_ne(i32 signext %a, i32 signext %b, i32 signext %x
 ;
 ; RV32IXQCI-LABEL: select_i32_ne:
 ; RV32IXQCI:       # %bb.0:
-; RV32IXQCI-NEXT:    qc.mveq a2, a0, a1, a3
-; RV32IXQCI-NEXT:    mv a0, a2
+; RV32IXQCI-NEXT:    qc.mvne a3, a0, a1, a2
+; RV32IXQCI-NEXT:    mv a0, a3
 ; RV32IXQCI-NEXT:    ret
 ;
 ; RV64-LABEL: select_i32_ne:
@@ -262,8 +262,8 @@ define signext i32 @select_i32_ugt(i32 signext %a, i32 signext %b, i32 signext %
 ;
 ; RV32-XQCICM-LABEL: select_i32_ugt:
 ; RV32-XQCICM:       # %bb.0:
-; RV32-XQCICM-NEXT:    qc.mvgeu a2, a1, a0, a3
-; RV32-XQCICM-NEXT:    mv a0, a2
+; RV32-XQCICM-NEXT:    qc.mvltu a3, a1, a0, a2
+; RV32-XQCICM-NEXT:    mv a0, a3
 ; RV32-XQCICM-NEXT:    ret
 ;
 ; RV32-XQCICS-LABEL: select_i32_ugt:
@@ -277,8 +277,8 @@ define signext i32 @select_i32_ugt(i32 signext %a, i32 signext %b, i32 signext %
 ;
 ; RV32IXQCI-LABEL: select_i32_ugt:
 ; RV32IXQCI:       # %bb.0:
-; RV32IXQCI-NEXT:    qc.mvgeu a2, a1, a0, a3
-; RV32IXQCI-NEXT:    mv a0, a2
+; RV32IXQCI-NEXT:    qc.mvltu a3, a1, a0, a2
+; RV32IXQCI-NEXT:    mv a0, a3
 ; RV32IXQCI-NEXT:    ret
 ;
 ; RV64-LABEL: select_i32_ugt:
@@ -313,14 +313,14 @@ define signext i32 @select_i32_uge(i32 signext %a, i32 signext %b, i32 signext %
 ; RV32-THEAD-LABEL: select_i32_uge:
 ; RV32-THEAD:       # %bb.0:
 ; RV32-THEAD-NEXT:    sltu a0, a0, a1
-; RV32-THEAD-NEXT:    th.mvnez a2, a3, a0
-; RV32-THEAD-NEXT:    mv a0, a2
+; RV32-THEAD-NEXT:    th.mveqz a3, a2, a0
+; RV32-THEAD-NEXT:    mv a0, a3
 ; RV32-THEAD-NEXT:    ret
 ;
 ; RV32-XQCICM-LABEL: select_i32_uge:
 ; RV32-XQCICM:       # %bb.0:
-; RV32-XQCICM-NEXT:    qc.mvltu a2, a0, a1, a3
-; RV32-XQCICM-NEXT:    mv a0, a2
+; RV32-XQCICM-NEXT:    qc.mvgeu a3, a0, a1, a2
+; RV32-XQCICM-NEXT:    mv a0, a3
 ; RV32-XQCICM-NEXT:    ret
 ;
 ; RV32-XQCICS-LABEL: select_i32_uge:
@@ -334,8 +334,8 @@ define signext i32 @select_i32_uge(i32 signext %a, i32 signext %b, i32 signext %
 ;
 ; RV32IXQCI-LABEL: select_i32_uge:
 ; RV32IXQCI:       # %bb.0:
-; RV32IXQCI-NEXT:    qc.mvltu a2, a0, a1, a3
-; RV32IXQCI-NEXT:    mv a0, a2
+; RV32IXQCI-NEXT:    qc.mvgeu a3, a0, a1, a2
+; RV32IXQCI-NEXT:    mv a0, a3
 ; RV32IXQCI-NEXT:    ret
 ;
 ; RV64-LABEL: select_i32_uge:
@@ -376,8 +376,8 @@ define signext i32 @select_i32_ult(i32 signext %a, i32 signext %b, i32 signext %
 ;
 ; RV32-XQCICM-LABEL: select_i32_ult:
 ; RV32-XQCICM:       # %bb.0:
-; RV32-XQCICM-NEXT:    qc.mvgeu a2, a0, a1, a3
-; RV32-XQCICM-NEXT:    mv a0, a2
+; RV32-XQCICM-NEXT:    qc.mvltu a3, a0, a1, a2
+; RV32-XQCICM-NEXT:    mv a0, a3
 ; RV32-XQCICM-NEXT:    ret
 ;
 ; RV32-XQCICS-LABEL: select_i32_ult:
@@ -391,8 +391,8 @@ define signext i32 @select_i32_ult(i32 signext %a, i32 signext %b, i32 signext %
 ;
 ; RV32IXQCI-LABEL: select_i32_ult:
 ; RV32IXQCI:       # %bb.0:
-; RV32IXQCI-NEXT:    qc.mvgeu a2, a0, a1, a3
-; RV32IXQCI-NEXT:    mv a0, a2
+; RV32IXQCI-NEXT:    qc.mvltu a3, a0, a1, a2
+; RV32IXQCI-NEXT:    mv a0, a3
 ; RV32IXQCI-NEXT:    ret
 ;
 ; RV64-LABEL: select_i32_ult:
@@ -427,14 +427,14 @@ define signext i32 @select_i32_ule(i32 signext %a, i32 signext %b, i32 signext %
 ; RV32-THEAD-LABEL: select_i32_ule:
 ; RV32-THEAD:       # %bb.0:
 ; RV32-THEAD-NEXT:    sltu a0, a1, a0
-; RV32-THEAD-NEXT:    th.mvnez a2, a3, a0
-; RV32-THEAD-NEXT:    mv a0, a2
+; RV32-THEAD-NEXT:    th.mveqz a3, a2, a0
+; RV32-THEAD-NEXT:    mv a0, a3
 ; RV32-THEAD-NEXT:    ret
 ;
 ; RV32-XQCICM-LABEL: select_i32_ule:
 ; RV32-XQCICM:       # %bb.0:
-; RV32-XQCICM-NEXT:    qc.mvltu a2, a1, a0, a3
-; RV32-XQCICM-NEXT:    mv a0, a2
+; RV32-XQCICM-NEXT:    qc.mvgeu a3, a1, a0, a2
+; RV32-XQCICM-NEXT:    mv a0, a3
 ; RV32-XQCICM-NEXT:    ret
 ;
 ; RV32-XQCICS-LABEL: select_i32_ule:
@@ -448,8 +448,8 @@ define signext i32 @select_i32_ule(i32 signext %a, i32 signext %b, i32 signext %
 ;
 ; RV32IXQCI-LABEL: select_i32_ule:
 ; RV32IXQCI:       # %bb.0:
-; RV32IXQCI-NEXT:    qc.mvltu a2, a1, a0, a3
-; RV32IXQCI-NEXT:    mv a0, a2
+; RV32IXQCI-NEXT:    qc.mvgeu a3, a1, a0, a2
+; RV32IXQCI-NEXT:    mv a0, a3
 ; RV32IXQCI-NEXT:    ret
 ;
 ; RV64-LABEL: select_i32_ule:
@@ -490,8 +490,8 @@ define signext i32 @select_i32_sgt(i32 signext %a, i32 signext %b, i32 signext %
 ;
 ; RV32-XQCICM-LABEL: select_i32_sgt:
 ; RV32-XQCICM:       # %bb.0:
-; RV32-XQCICM-NEXT:    qc.mvge a2, a1, a0, a3
-; RV32-XQCICM-NEXT:    mv a0, a2
+; RV32-XQCICM-NEXT:    qc.mvlt a3, a1, a0, a2
+; RV32-XQCICM-NEXT:    mv a0, a3
 ; RV32-XQCICM-NEXT:    ret
 ;
 ; RV32-XQCICS-LABEL: select_i32_sgt:
@@ -505,8 +505,8 @@ define signext i32 @select_i32_sgt(i32 signext %a, i32 signext %b, i32 signext %
 ;
 ; RV32IXQCI-LABEL: select_i32_sgt:
 ; RV32IXQCI:       # %bb.0:
-; RV32IXQCI-NEXT:    qc.mvge a2, a1, a0, a3
-; RV32IXQCI-NEXT:    mv a0, a2
+; RV32IXQCI-NEXT:    qc.mvlt a3, a1, a0, a2
+; RV32IXQCI-NEXT:    mv a0, a3
 ; RV32IXQCI-NEXT:    ret
 ;
 ; RV64-LABEL: select_i32_sgt:
@@ -541,14 +541,14 @@ define signext i32 @select_i32_sge(i32 signext %a, i32 signext %b, i32 signext %
 ; RV32-THEAD-LABEL: select_i32_sge:
 ; RV32-THEAD:       # %bb.0:
 ; RV32-THEAD-NEXT:    slt a0, a0, a1
-; RV32-THEAD-NEXT:    th.mvnez a2, a3, a0
-; RV32-THEAD-NEXT:    mv a0, a2
+; RV32-THEAD-NEXT:    th.mveqz a3, a2, a0
+; RV32-THEAD-NEXT:    mv a0, a3
 ; RV32-THEAD-NEXT:    ret
 ;
 ; RV32-XQCICM-LABEL: select_i32_sge:
 ; RV32-XQCICM:       # %bb.0:
-; RV32-XQCICM-NEXT:    qc.mvlt a2, a0, a1, a3
-; RV32-XQCICM-NEXT:    mv a0, a2
+; RV32-XQCICM-NEXT:    qc.mvge a3, a0, a1, a2
+; RV32-XQCICM-NEXT:    mv a0, a3
 ; RV32-XQCICM-NEXT:    ret
 ;
 ; RV32-XQCICS-LABEL: select_i32_sge:
@@ -562,8 +562,8 @@ define signext i32 @select_i32_sge(i32 signext %a, i32 signext %b, i32 signext %
 ;
 ; RV32IXQCI-LABEL: select_i32_sge:
 ; RV32IXQCI:       # %bb.0:
-; RV32IXQCI-NEXT:    qc.mvlt a2, a0, a1, a3
-; RV32IXQCI-NEXT:    mv a0, a2
+; RV32IXQCI-NEXT:    qc.mvge a3, a0, a1, a2
+; RV32IXQCI-NEXT:    mv a0, a3
 ; RV32IXQCI-NEXT:    ret
 ;
 ; RV64-LABEL: select_i32_sge:
@@ -604,8 +604,8 @@ define signext i32 @select_i32_slt(i32 signext %a, i32 signext %b, i32 signext %
 ;
 ; RV32-XQCICM-LABEL: select_i32_slt:
 ; RV32-XQCICM:       # %bb.0:
-; RV32-XQCICM-NEXT:    qc.mvge a2, a0, a1, a3
-; RV32-XQCICM-NEXT:    mv a0, a2
+; RV32-XQCICM-NEXT:    qc.mvlt a3, a0, a1, a2
+; RV32-XQCICM-NEXT:    mv a0, a3
 ; RV32-XQCICM-NEXT:    ret
 ;
 ; RV32-XQCICS-LABEL: select_i32_slt:
@@ -619,8 +619,8 @@ define signext i32 @select_i32_slt(i32 signext %a, i32 signext %b, i32 signext %
 ;
 ; RV32IXQCI-LABEL: select_i32_slt:
 ; RV32IXQCI:       # %bb.0:
-; RV32IXQCI-NEXT:    qc.mvge a2, a0, a1, a3
-; RV32IXQCI-NEXT:    mv a0, a2
+; RV32IXQCI-NEXT:    qc.mvlt a3, a0, a1, a2
+; RV32IXQCI-NEXT:    mv a0, a3
 ; RV32IXQCI-NEXT:    ret
 ;
 ; RV64-LABEL: select_i32_slt:
@@ -655,14 +655,14 @@ define signext i32 @select_i32_sle(i32 signext %a, i32 signext %b, i32 signext %
 ; RV32-THEAD-LABEL: select_i32_sle:
 ; RV32-THEAD:       # %bb.0:
 ; RV32-THEAD-NEXT:    slt a0, a1, a0
-; RV32-THEAD-NEXT:    th.mvnez a2, a3, a0
-; RV32-THEAD-NEXT:    mv a0, a2
+; RV32-THEAD-NEXT:    th.mveqz a3, a2, a0
+; RV32-THEAD-NEXT:    mv a0, a3
 ; RV32-THEAD-NEXT:    ret
 ;
 ; RV32-XQCICM-LABEL: select_i32_sle:
 ; RV32-XQCICM:       # %bb.0:
-; RV32-XQCICM-NEXT:    qc.mvlt a2, a1, a0, a3
-; RV32-XQCICM-NEXT:    mv a0, a2
+; RV32-XQCICM-NEXT:    qc.mvge a3, a1, a0, a2
+; RV32-XQCICM-NEXT:    mv a0, a3
 ; RV32-XQCICM-NEXT:    ret
 ;
 ; RV32-XQCICS-LABEL: select_i32_sle:
@@ -676,8 +676,8 @@ define signext i32 @select_i32_sle(i32 signext %a, i32 signext %b, i32 signext %
 ;
 ; RV32IXQCI-LABEL: select_i32_sle:
 ; RV32IXQCI:       # %bb.0:
-; RV32IXQCI-NEXT:    qc.mvlt a2, a1, a0, a3
-; RV32IXQCI-NEXT:    mv a0, a2
+; RV32IXQCI-NEXT:    qc.mvge a3, a1, a0, a2
+; RV32IXQCI-NEXT:    mv a0, a3
 ; RV32IXQCI-NEXT:    ret
 ;
 ; RV64-LABEL: select_i32_sle:
@@ -723,11 +723,11 @@ define i64 @select_i64_trunc(i64 %cond, i64 %x, i64 %y) nounwind {
 ;
 ; RV32-XQCICM-LABEL: select_i64_trunc:
 ; RV32-XQCICM:       # %bb.0:
-; RV32-XQCICM-NEXT:    mv a1, a3
+; RV32-XQCICM-NEXT:    mv a1, a5
 ; RV32-XQCICM-NEXT:    andi a0, a0, 1
-; RV32-XQCICM-NEXT:    qc.mveqi a2, a0, 0, a4
-; RV32-XQCICM-NEXT:    qc.mveqi a1, a0, 0, a5
-; RV32-XQCICM-NEXT:    mv a0, a2
+; RV32-XQCICM-NEXT:    qc.mvnei a4, a0, 0, a2
+; RV32-XQCICM-NEXT:    qc.mvnei a1, a0, 0, a3
+; RV32-XQCICM-NEXT:    mv a0, a4
 ; RV32-XQCICM-NEXT:    ret
 ;
 ; RV32-XQCICS-LABEL: select_i64_trunc:
@@ -740,11 +740,11 @@ define i64 @select_i64_trunc(i64 %cond, i64 %x, i64 %y) nounwind {
 ;
 ; RV32IXQCI-LABEL: select_i64_trunc:
 ; RV32IXQCI:       # %bb.0:
-; RV32IXQCI-NEXT:    mv a1, a3
+; RV32IXQCI-NEXT:    mv a1, a5
 ; RV32IXQCI-NEXT:    andi a0, a0, 1
-; RV32IXQCI-NEXT:    qc.mveqi a2, a0, 0, a4
-; RV32IXQCI-NEXT:    qc.mveqi a1, a0, 0, a5
-; RV32IXQCI-NEXT:    mv a0, a2
+; RV32IXQCI-NEXT:    qc.mvnei a4, a0, 0, a2
+; RV32IXQCI-NEXT:    qc.mvnei a1, a0, 0, a3
+; RV32IXQCI-NEXT:    mv a0, a4
 ; RV32IXQCI-NEXT:    ret
 ;
 ; RV64-LABEL: select_i64_trunc:
@@ -792,10 +792,10 @@ define i64 @select_i64_param(i1 %cond, i64 %x, i64 %y) nounwind {
 ; RV32-XQCICM-LABEL: select_i64_param:
 ; RV32-XQCICM:       # %bb.0:
 ; RV32-XQCICM-NEXT:    andi a0, a0, 1
-; RV32-XQCICM-NEXT:    qc.mveqi a1, a0, 0, a3
-; RV32-XQCICM-NEXT:    qc.mveqi a2, a0, 0, a4
-; RV32-XQCICM-NEXT:    mv a0, a1
-; RV32-XQCICM-NEXT:    mv a1, a2
+; RV32-XQCICM-NEXT:    qc.mvnei a3, a0, 0, a1
+; RV32-XQCICM-NEXT:    qc.mvnei a4, a0, 0, a2
+; RV32-XQCICM-NEXT:    mv a0, a3
+; RV32-XQCICM-NEXT:    mv a1, a4
 ; RV32-XQCICM-NEXT:    ret
 ;
 ; RV32-XQCICS-LABEL: select_i64_param:
@@ -810,10 +810,10 @@ define i64 @select_i64_param(i1 %cond, i64 %x, i64 %y) nounwind {
 ; RV32IXQCI-LABEL: select_i64_param:
 ; RV32IXQCI:       # %bb.0:
 ; RV32IXQCI-NEXT:    andi a0, a0, 1
-; RV32IXQCI-NEXT:    qc.mveqi a1, a0, 0, a3
-; RV32IXQCI-NEXT:    qc.mveqi a2, a0, 0, a4
-; RV32IXQCI-NEXT:    mv a0, a1
-; RV32IXQCI-NEXT:    mv a1, a2
+; RV32IXQCI-NEXT:    qc.mvnei a3, a0, 0, a1
+; RV32IXQCI-NEXT:    qc.mvnei a4, a0, 0, a2
+; RV32IXQCI-NEXT:    mv a0, a3
+; RV32IXQCI-NEXT:    mv a1, a4
 ; RV32IXQCI-NEXT:    ret
 ;
 ; RV64-LABEL: select_i64_param:
@@ -866,10 +866,10 @@ define i64 @select_i64_eq(i64 %a, i64 %b, i64 %x, i64 %y) nounwind {
 ; RV32-XQCICM-NEXT:    xor a1, a1, a3
 ; RV32-XQCICM-NEXT:    xor a0, a0, a2
 ; RV32-XQCICM-NEXT:    or a0, a0, a1
-; RV32-XQCICM-NEXT:    qc.mvnei a4, a0, 0, a6
-; RV32-XQCICM-NEXT:    qc.mvnei a5, a0, 0, a7
-; RV32-XQCICM-NEXT:    mv a0, a4
-; RV32-XQCICM-NEXT:    mv a1, a5
+; RV32-XQCICM-NEXT:    qc.mveqi a6, a0, 0, a4
+; RV32-XQCICM-NEXT:    qc.mveqi a7, a0, 0, a5
+; RV32-XQCICM-NEXT:    mv a0, a6
+; RV32-XQCICM-NEXT:    mv a1, a7
 ; RV32-XQCICM-NEXT:    ret
 ;
 ; RV32-XQCICS-LABEL: select_i64_eq:
@@ -887,10 +887,10 @@ define i64 @select_i64_eq(i64 %a, i64 %b, i64 %x, i64 %y) nounwind {
 ; RV32IXQCI-NEXT:    xor a1, a1, a3
 ; RV32IXQCI-NEXT:    xor a0, a0, a2
 ; RV32IXQCI-NEXT:    or a0, a0, a1
-; RV32IXQCI-NEXT:    qc.mvnei a4, a0, 0, a6
-; RV32IXQCI-NEXT:    qc.mvnei a5, a0, 0, a7
-; RV32IXQCI-NEXT:    mv a0, a4
-; RV32IXQCI-NEXT:    mv a1, a5
+; RV32IXQCI-NEXT:    qc.mveqi a6, a0, 0, a4
+; RV32IXQCI-NEXT:    qc.mveqi a7, a0, 0, a5
+; RV32IXQCI-NEXT:    mv a0, a6
+; RV32IXQCI-NEXT:    mv a1, a7
 ; RV32IXQCI-NEXT:    ret
 ;
 ; RV64-LABEL: select_i64_eq:
@@ -943,10 +943,10 @@ define i64 @select_i64_ne(i64 %a, i64 %b, i64 %x, i64 %y) nounwind {
 ; RV32-XQCICM-NEXT:    xor a1, a1, a3
 ; RV32-XQCICM-NEXT:    xor a0, a0, a2
 ; RV32-XQCICM-NEXT:    or a0, a0, a1
-; RV32-XQCICM-NEXT:    qc.mveqi a4, a0, 0, a6
-; RV32-XQCICM-NEXT:    qc.mveqi a5, a0, 0, a7
-; RV32-XQCICM-NEXT:    mv a0, a4
-; RV32-XQCICM-NEXT:    mv a1, a5
+; RV32-XQCICM-NEXT:    qc.mvnei a6, a0, 0, a4
+; RV32-XQCICM-NEXT:    qc.mvnei a7, a0, 0, a5
+; RV32-XQCICM-NEXT:    mv a0, a6
+; RV32-XQCICM-NEXT:    mv a1, a7
 ; RV32-XQCICM-NEXT:    ret
 ;
 ; RV32-XQCICS-LABEL: select_i64_ne:
@@ -964,10 +964,10 @@ define i64 @select_i64_ne(i64 %a, i64 %b, i64 %x, i64 %y) nounwind {
 ; RV32IXQCI-NEXT:    xor a1, a1, a3
 ; RV32IXQCI-NEXT:    xor a0, a0, a2
 ; RV32IXQCI-NEXT:    or a0, a0, a1
-; RV32IXQCI-NEXT:    qc.mveqi a4, a0, 0, a6
-; RV32IXQCI-NEXT:    qc.mveqi a5, a0, 0, a7
-; RV32IXQCI-NEXT:    mv a0, a4
-; RV32IXQCI-NEXT:    mv a1, a5
+; RV32IXQCI-NEXT:    qc.mvnei a6, a0, 0, a4
+; RV32IXQCI-NEXT:    qc.mvnei a7, a0, 0, a5
+; RV32IXQCI-NEXT:    mv a0, a6
+; RV32IXQCI-NEXT:    mv a1, a7
 ; RV32IXQCI-NEXT:    ret
 ;
 ; RV64-LABEL: select_i64_ne:
@@ -1013,9 +1013,9 @@ define i64 @select_i64_ugt(i64 %a, i64 %b, i64 %x, i64 %y) nounwind {
 ; RV32-THEAD-NEXT:    xor t0, a1, a3
 ; RV32-THEAD-NEXT:    sltu a1, a3, a1
 ; RV32-THEAD-NEXT:    sltu a0, a2, a0
-; RV32-THEAD-NEXT:    th.mvnez a0, a1, t0
-; RV32-THEAD-NEXT:    th.mveqz a4, a6, a0
-; RV32-THEAD-NEXT:    th.mveqz a5, a7, a0
+; RV32-THEAD-NEXT:    th.mveqz a1, a0, t0
+; RV32-THEAD-NEXT:    th.mveqz a4, a6, a1
+; RV32-THEAD-NEXT:    th.mveqz a5, a7, a1
 ; RV32-THEAD-NEXT:    mv a0, a4
 ; RV32-THEAD-NEXT:    mv a1, a5
 ; RV32-THEAD-NEXT:    ret
@@ -1024,11 +1024,11 @@ define i64 @select_i64_ugt(i64 %a, i64 %b, i64 %x, i64 %y) nounwind {
 ; RV32-XQCICM:       # %bb.0:
 ; RV32-XQCICM-NEXT:    sltu a0, a2, a0
 ; RV32-XQCICM-NEXT:    sltu a2, a3, a1
-; RV32-XQCICM-NEXT:    qc.mveq a2, a1, a3, a0
-; RV32-XQCICM-NEXT:    qc.mveqi a4, a2, 0, a6
-; RV32-XQCICM-NEXT:    qc.mveqi a5, a2, 0, a7
-; RV32-XQCICM-NEXT:    mv a0, a4
-; RV32-XQCICM-NEXT:    mv a1, a5
+; RV32-XQCICM-NEXT:    qc.mvne a0, a1, a3, a2
+; RV32-XQCICM-NEXT:    qc.mvnei a6, a0, 0, a4
+; RV32-XQCICM-NEXT:    qc.mvnei a7, a0, 0, a5
+; RV32-XQCICM-NEXT:    mv a0, a6
+; RV32-XQCICM-NEXT:    mv a1, a7
 ; RV32-XQCICM-NEXT:    ret
 ;
 ; RV32-XQCICS-LABEL: select_i64_ugt:
@@ -1049,11 +1049,11 @@ define i64 @select_i64_ugt(i64 %a, i64 %b, i64 %x, i64 %y) nounwind {
 ; RV32IXQCI:       # %bb.0:
 ; RV32IXQCI-NEXT:    sltu a0, a2, a0
 ; RV32IXQCI-NEXT:    sltu a2, a3, a1
-; RV32IXQCI-NEXT:    qc.mveq a2, a1, a3, a0
-; RV32IXQCI-NEXT:    qc.mveqi a4, a2, 0, a6
-; RV32IXQCI-NEXT:    qc.mveqi a5, a2, 0, a7
-; RV32IXQCI-NEXT:    mv a0, a4
-; RV32IXQCI-NEXT:    mv a1, a5
+; RV32IXQCI-NEXT:    qc.mvne a0, a1, a3, a2
+; RV32IXQCI-NEXT:    qc.mvnei a6, a0, 0, a4
+; RV32IXQCI-NEXT:    qc.mvnei a7, a0, 0, a5
+; RV32IXQCI-NEXT:    mv a0, a6
+; RV32IXQCI-NEXT:    mv a1, a7
 ; RV32IXQCI-NEXT:    ret
 ;
 ; RV64-LABEL: select_i64_ugt:
@@ -1099,22 +1099,22 @@ define i64 @select_i64_uge(i64 %a, i64 %b, i64 %x, i64 %y) nounwind {
 ; RV32-THEAD-NEXT:    xor t0, a1, a3
 ; RV32-THEAD-NEXT:    sltu a1, a1, a3
 ; RV32-THEAD-NEXT:    sltu a0, a0, a2
-; RV32-THEAD-NEXT:    th.mvnez a0, a1, t0
-; RV32-THEAD-NEXT:    th.mvnez a4, a6, a0
-; RV32-THEAD-NEXT:    th.mvnez a5, a7, a0
-; RV32-THEAD-NEXT:    mv a0, a4
-; RV32-THEAD-NEXT:    mv a1, a5
+; RV32-THEAD-NEXT:    th.mveqz a1, a0, t0
+; RV32-THEAD-NEXT:    th.mveqz a6, a4, a1
+; RV32-THEAD-NEXT:    th.mveqz a7, a5, a1
+; RV32-THEAD-NEXT:    mv a0, a6
+; RV32-THEAD-NEXT:    mv a1, a7
 ; RV32-THEAD-NEXT:    ret
 ;
 ; RV32-XQCICM-LABEL: select_i64_uge:
 ; RV32-XQCICM:       # %bb.0:
 ; RV32-XQCICM-NEXT:    sltu a0, a0, a2
 ; RV32-XQCICM-NEXT:    sltu a2, a1, a3
-; RV32-XQCICM-NEXT:    qc.mveq a2, a1, a3, a0
-; RV32-XQCICM-NEXT:    qc.mvnei a4, a2, 0, a6
-; RV32-XQCICM-NEXT:    qc.mvnei a5, a2, 0, a7
-; RV32-XQCICM-NEXT:    mv a0, a4
-; RV32-XQCICM-NEXT:    mv a1, a5
+; RV32-XQCICM-NEXT:    qc.mvne a0, a1, a3, a2
+; RV32-XQCICM-NEXT:    qc.mveqi a6, a0, 0, a4
+; RV32-XQCICM-NEXT:    qc.mveqi a7, a0, 0, a5
+; RV32-XQCICM-NEXT:    mv a0, a6
+; RV32-XQCICM-NEXT:    mv a1, a7
 ; RV32-XQCICM-NEXT:    ret
 ;
 ; RV32-XQCICS-LABEL: select_i64_uge:
@@ -1135,11 +1135,11 @@ define i64 @select_i64_uge(i64 %a, i64 %b, i64 %x, i64 %y) nounwind {
 ; RV32IXQCI:       # %bb.0:
 ; RV32IXQCI-NEXT:    sltu a0, a0, a2
 ; RV32IXQCI-NEXT:    sltu a2, a1, a3
-; RV32IXQCI-NEXT:    qc.mveq a2, a1, a3, a0
-; RV32IXQCI-NEXT:    qc.mvnei a4, a2, 0, a6
-; RV32IXQCI-NEXT:    qc.mvnei a5, a2, 0, a7
-; RV32IXQCI-NEXT:    mv a0, a4
-; RV32IXQCI-NEXT:    mv a1, a5
+; RV32IXQCI-NEXT:    qc.mvne a0, a1, a3, a2
+; RV32IXQCI-NEXT:    qc.mveqi a6, a0, 0, a4
+; RV32IXQCI-NEXT:    qc.mveqi a7, a0, 0, a5
+; RV32IXQCI-NEXT:    mv a0, a6
+; RV32IXQCI-NEXT:    mv a1, a7
 ; RV32IXQCI-NEXT:    ret
 ;
 ; RV64-LABEL: select_i64_uge:
@@ -1185,9 +1185,9 @@ define i64 @select_i64_ult(i64 %a, i64 %b, i64 %x, i64 %y) nounwind {
 ; RV32-THEAD-NEXT:    xor t0, a1, a3
 ; RV32-THEAD-NEXT:    sltu a1, a1, a3
 ; RV32-THEAD-NEXT:    sltu a0, a0, a2
-; RV32-THEAD-NEXT:    th.mvnez a0, a1, t0
-; RV32-THEAD-NEXT:    th.mveqz a4, a6, a0
-; RV32-THEAD-NEXT:    th.mveqz a5, a7, a0
+; RV32-THEAD-NEXT:    th.mveqz a1, a0, t0
+; RV32-THEAD-NEXT:    th.mveqz a4, a6, a1
+; RV32-THEAD-NEXT:    th.mveqz a5, a7, a1
 ; RV32-THEAD-NEXT:    mv a0, a4
 ; RV32-THEAD-NEXT:    mv a1, a5
 ; RV32-THEAD-NEXT:    ret
@@ -1196,11 +1196,11 @@ define i64 @select_i64_ult(i64 %a, i64 %b, i64 %x, i64 %y) nounwind {
 ; RV32-XQCICM:       # %bb.0:
 ; RV32-XQCICM-NEXT:    sltu a0, a0, a2
 ; RV32-XQCICM-NEXT:    sltu a2, a1, a3
-; RV32-XQCICM-NEXT:    qc.mveq a2, a1, a3, a0
-; RV32-XQCICM-NEXT:    qc.mveqi a4, a2, 0, a6
-; RV32-XQCICM-NEXT:    qc.mveqi a5, a2, 0, a7
-; RV32-XQCICM-NEXT:    mv a0, a4
-; RV32-XQCICM-NEXT:    mv a1, a5
+; RV32-XQCICM-NEXT:    qc.mvne a0, a1, a3, a2
+; RV32-XQCICM-NEXT:    qc.mvnei a6, a0, 0, a4
+; RV32-XQCICM-NEXT:    qc.mvnei a7, a0, 0, a5
+; RV32-XQCICM-NEXT:    mv a0, a6
+; RV32-XQCICM-NEXT:    mv a1, a7
 ; RV32-XQCICM-NEXT:    ret
 ;
 ; RV32-XQCICS-LABEL: select_i64_ult:
@@ -1221,11 +1221,11 @@ define i64 @select_i64_ult(i64 %a, i64 %b, i64 %x, i64 %y) nounwind {
 ; RV32IXQCI:       # %bb.0:
 ; RV32IXQCI-NEXT:    sltu a0, a0, a2
 ; RV32IXQCI-NEXT:    sltu a2, a1, a3
-; RV32IXQCI-NEXT:    qc.mveq a2, a1, a3, a0
-; RV32IXQCI-NEXT:    qc.mveqi a4, a2, 0, a6
-; RV32IXQCI-NEXT:    qc.mveqi a5, a2, 0, a7
-; RV32IXQCI-NEXT:    mv a0, a4
-; RV32IXQCI-NEXT:    mv a1, a5
+; RV32IXQCI-NEXT:    qc.mvne a0, a1, a3, a2
+; RV32IXQCI-NEXT:    qc.mvnei a6, a0, 0, a4
+; RV32IXQCI-NEXT:    qc.mvnei a7, a0, 0, a5
+; RV32IXQCI-NEXT:    mv a0, a6
+; RV32IXQCI-NEXT:    mv a1, a7
 ; RV32IXQCI-NEXT:    ret
 ;
 ; RV64-LABEL: select_i64_ult:
@@ -1271,22 +1271,22 @@ define i64 @select_i64_ule(i64 %a, i64 %b, i64 %x, i64 %y) nounwind {
 ; RV32-THEAD-NEXT:    xor t0, a1, a3
 ; RV32-THEAD-NEXT:    sltu a1, a3, a1
 ; RV32-THEAD-NEXT:    sltu a0, a2, a0
-; RV32-THEAD-NEXT:    th.mvnez a0, a1, t0
-; RV32-THEAD-NEXT:    th.mvnez a4, a6, a0
-; RV32-THEAD-NEXT:    th.mvnez a5, a7, a0
-; RV32-THEAD-NEXT:    mv a0, a4
-; RV32-THEAD-NEXT:    mv a1, a5
+; RV32-THEAD-NEXT:    th.mveqz a1, a0, t0
+; RV32-THEAD-NEXT:    th.mveqz a6, a4, a1
+; RV32-THEAD-NEXT:    th.mveqz a7, a5, a1
+; RV32-THEAD-NEXT:    mv a0, a6
+; RV32-THEAD-NEXT:    mv a1, a7
 ; RV32-THEAD-NEXT:    ret
 ;
 ; RV32-XQCICM-LABEL: select_i64_ule:
 ; RV32-XQCICM:       # %bb.0:
 ; RV32-XQCICM-NEXT:    sltu a0, a2, a0
 ; RV32-XQCICM-NEXT:    sltu a2, a3, a1
-; RV32-XQCICM-NEXT:    qc.mveq a2, a1, a3, a0
-; RV32-XQCICM-NEXT:    qc.mvnei a4, a2, 0, a6
-; RV32-XQCICM-NEXT:    qc.mvnei a5, a2, 0, a7
-; RV32-XQCICM-NEXT:    mv a0, a4
-; RV32-XQCICM-NEXT:    mv a1, a5
+; RV32-XQCICM-NEXT:    qc.mvne a0, a1, a3, a2
+; RV32-XQCICM-NEXT:    qc.mveqi a6, a0, 0, a4
+; RV32-XQCICM-NEXT:    qc.mveqi a7, a0, 0, a5
+; RV32-XQCICM-NEXT:    mv a0, a6
+; RV32-XQCICM-NEXT:    mv a1, a7
 ; RV32-XQCICM-NEXT:    ret
 ;
 ; RV32-XQCICS-LABEL: select_i64_ule:
@@ -1307,11 +1307,11 @@ define i64 @select_i64_ule(i64 %a, i64 %b, i64 %x, i64 %y) nounwind {
 ; RV32IXQCI:       # %bb.0:
 ; RV32IXQCI-NEXT:    sltu a0, a2, a0
 ; RV32IXQCI-NEXT:    sltu a2, a3, a1
-; RV32IXQCI-NEXT:    qc.mveq a2, a1, a3, a0
-; RV32IXQCI-NEXT:    qc.mvnei a4, a2, 0, a6
-; RV32IXQCI-NEXT:    qc.mvnei a5, a2, 0, a7
-; RV32IXQCI-NEXT:    mv a0, a4
-; RV32IXQCI-NEXT:    mv a1, a5
+; RV32IXQCI-NEXT:    qc.mvne a0, a1, a3, a2
+; RV32IXQCI-NEXT:    qc.mveqi a6, a0, 0, a4
+; RV32IXQCI-NEXT:    qc.mveqi a7, a0, 0, a5
+; RV32IXQCI-NEXT:    mv a0, a6
+; RV32IXQCI-NEXT:    mv a1, a7
 ; RV32IXQCI-NEXT:    ret
 ;
 ; RV64-LABEL: select_i64_ule:
@@ -1357,9 +1357,9 @@ define i64 @select_i64_sgt(i64 %a, i64 %b, i64 %x, i64 %y) nounwind {
 ; RV32-THEAD-NEXT:    xor t0, a1, a3
 ; RV32-THEAD-NEXT:    slt a1, a3, a1
 ; RV32-THEAD-NEXT:    sltu a0, a2, a0
-; RV32-THEAD-NEXT:    th.mvnez a0, a1, t0
-; RV32-THEAD-NEXT:    th.mveqz a4, a6, a0
-; RV32-THEAD-NEXT:    th.mveqz a5, a7, a0
+; RV32-THEAD-NEXT:    th.mveqz a1, a0, t0
+; RV32-THEAD-NEXT:    th.mveqz a4, a6, a1
+; RV32-THEAD-NEXT:    th.mveqz a5, a7, a1
 ; RV32-THEAD-NEXT:    mv a0, a4
 ; RV32-THEAD-NEXT:    mv a1, a5
 ; RV32-THEAD-NEXT:    ret
@@ -1368,11 +1368,11 @@ define i64 @select_i64_sgt(i64 %a, i64 %b, i64 %x, i64 %y) nounwind {
 ; RV32-XQCICM:       # %bb.0:
 ; RV32-XQCICM-NEXT:    sltu a0, a2, a0
 ; RV32-XQCICM-NEXT:    slt a2, a3, a1
-; RV32-XQCICM-NEXT:    qc.mveq a2, a1, a3, a0
-; RV32-XQCICM-NEXT:    qc.mveqi a4, a2, 0, a6
-; RV32-XQCICM-NEXT:    qc.mveqi a5, a2, 0, a7
-; RV32-XQCICM-NEXT:    mv a0, a4
-; RV32-XQCICM-NEXT:    mv a1, a5
+; RV32-XQCICM-NEXT:    qc.mvne a0, a1, a3, a2
+; RV32-XQCICM-NEXT:    qc.mvnei a6, a0, 0, a4
+; RV32-XQCICM-NEXT:    qc.mvnei a7, a0, 0, a5
+; RV32-XQCICM-NEXT:    mv a0, a6
+; RV32-XQCICM-NEXT:    mv a1, a7
 ; RV32-XQCICM-NEXT:    ret
 ;
 ; RV32-XQCICS-LABEL: select_i64_sgt:
@@ -1393,11 +1393,11 @@ define i64 @select_i64_sgt(i64 %a, i64 %b, i64 %x, i64 %y) nounwind {
 ; RV32IXQCI:       # %bb.0:
 ; RV32IXQCI-NEXT:    sltu a0, a2, a0
 ; RV32IXQCI-NEXT:    slt a2, a3, a1
-; RV32IXQCI-NEXT:    qc.mveq a2, a1, a3, a0
-; RV32IXQCI-NEXT:    qc.mveqi a4, a2, 0, a6
-; RV32IXQCI-NEXT:    qc.mveqi a5, a2, 0, a7
-; RV32IXQCI-NEXT:    mv a0, a4
-; RV32IXQCI-NEXT:    mv a1, a5
+; RV32IXQCI-NEXT:    qc.mvne a0, a1, a3, a2
+; RV32IXQCI-NEXT:    qc.mvnei a6, a0, 0, a4
+; RV32IXQCI-NEXT:    qc.mvnei a7, a0, 0, a5
+; RV32IXQCI-NEXT:    mv a0, a6
+; RV32IXQCI-NEXT:    mv a1, a7
 ; RV32IXQCI-NEXT:    ret
 ;
 ; RV64-LABEL: select_i64_sgt:
@@ -1443,22 +1443,22 @@ define i64 @select_i64_sge(i64 %a, i64 %b, i64 %x, i64 %y) nounwind {
 ; RV32-THEAD-NEXT:    xor t0, a1, a3
 ; RV32-THEAD-NEXT:    slt a1, a1, a3
 ; RV32-THEAD-NEXT:    sltu a0, a0, a2
-; RV32-THEAD-NEXT:    th.mvnez a0, a1, t0
-; RV32-THEAD-NEXT:    th.mvnez a4, a6, a0
-; RV32-THEAD-NEXT:    th.mvnez a5, a7, a0
-; RV32-THEAD-NEXT:    mv a0, a4
-; RV32-THEAD-NEXT:    mv a1, a5
+; RV32-THEAD-NEXT:    th.mveqz a1, a0, t0
+; RV32-THEAD-NEXT:    th.mveqz a6, a4, a1
+; RV32-THEAD-NEXT:    th.mveqz a7, a5, a1
+; RV32-THEAD-NEXT:    mv a0, a6
+; RV32-THEAD-NEXT:    mv a1, a7
 ; RV32-THEAD-NEXT:    ret
 ;
 ; RV32-XQCICM-LABEL: select_i64_sge:
 ; RV32-XQCICM:       # %bb.0:
 ; RV32-XQCICM-NEXT:    sltu a0, a0, a2
 ; RV32-XQCICM-NEXT:    slt a2, a1, a3
-; RV32-XQCICM-NEXT:    qc.mveq a2, a1, a3, a0
-; RV32-XQCICM-NEXT:    qc.mvnei a4, a2, 0, a6
-; RV32-XQCICM-NEXT:    qc.mvnei a5, a2, 0, a7
-; RV32-XQCICM-NEXT:    mv a0, a4
-; RV32-XQCICM-NEXT:    mv a1, a5
+; RV32-XQCICM-NEXT:    qc.mvne a0, a1, a3, a2
+; RV32-XQCICM-NEXT:    qc.mveqi a6, a0, 0, a4
+; RV32-XQCICM-NEXT:    qc.mveqi a7, a0, 0, a5
+; RV32-XQCICM-NEXT:    mv a0, a6
+; RV32-XQCICM-NEXT:    mv a1, a7
 ; RV32-XQCICM-NEXT:    ret
 ;
 ; RV32-XQCICS-LABEL: select_i64_sge:
@@ -1479,11 +1479,11 @@ define i64 @select_i64_sge(i64 %a, i64 %b, i64 %x, i64 %y) nounwind {
 ; RV32IXQCI:       # %bb.0:
 ; RV32IXQCI-NEXT:    sltu a0, a0, a2
 ; RV32IXQCI-NEXT:    slt a2, a1, a3
-; RV32IXQCI-NEXT:    qc.mveq a2, a1, a3, a0
-; RV32IXQCI-NEXT:    qc.mvnei a4, a2, 0, a6
-; RV32IXQCI-NEXT:    qc.mvnei a5, a2, 0, a7
-; RV32IXQCI-NEXT:    mv a0, a4
-; RV32IXQCI-NEXT:    mv a1, a5
+; RV32IXQCI-NEXT:    qc.mvne a0, a1, a3, a2
+; RV32IXQCI-NEXT:    qc.mveqi a6, a0, 0, a4
+; RV32IXQCI-NEXT:    qc.mveqi a7, a0, 0, a5
+; RV32IXQCI-NEXT:    mv a0, a6
+; RV32IXQCI-NEXT:    mv a1, a7
 ; RV32IXQCI-NEXT:    ret
 ;
 ; RV64-LABEL: select_i64_sge:
@@ -1529,9 +1529,9 @@ define i64 @select_i64_slt(i64 %a, i64 %b, i64 %x, i64 %y) nounwind {
 ; RV32-THEAD-NEXT:    xor t0, a1, a3
 ; RV32-THEAD-NEXT:    slt a1, a1, a3
 ; RV32-THEAD-NEXT:    sltu a0, a0, a2
-; RV32-THEAD-NEXT:    th.mvnez a0, a1, t0
-; RV32-THEAD-NEXT:    th.mveqz a4, a6, a0
-; RV32-THEAD-NEXT:    th.mveqz a5, a7, a0
+; RV32-THEAD-NEXT:    th.mveqz a1, a0, t0
+; RV32-THEAD-NEXT:    th.mveqz a4, a6, a1
+; RV32-THEAD-NEXT:    th.mveqz a5, a7, a1
 ; RV32-THEAD-NEXT:    mv a0, a4
 ; RV32-THEAD-NEXT:    mv a1, a5
 ; RV32-THEAD-NEXT:    ret
@@ -1540,11 +1540,11 @@ define i64 @select_i64_slt(i64 %a, i64 %b, i64 %x, i64 %y) nounwind {
 ; RV32-XQCICM:       # %bb.0:
 ; RV32-XQCICM-NEXT:    sltu a0, a0, a2
 ; RV32-XQCICM-NEXT:    slt a2, a1, a3
-; RV32-XQCICM-NEXT:    qc.mveq a2, a1, a3, a0
-; RV32-XQCICM-NEXT:    qc.mveqi a4, a2, 0, a6
-; RV32-XQCICM-NEXT:    qc.mveqi a5, a2, 0, a7
-; RV32-XQCICM-NEXT:    mv a0, a4
-; RV32-XQCICM-NEXT:    mv a1, a5
+; RV32-XQCICM-NEXT:    qc.mvne a0, a1, a3, a2
+; RV32-XQCICM-NEXT:    qc.mvnei a6, a0, 0, a4
+; RV32-XQCICM-NEXT:    qc.mvnei a7, a0, 0, a5
+; RV32-XQCICM-NEXT:    mv a0, a6
+; RV32-XQCICM-NEXT:    mv a1, a7
 ; RV32-XQCICM-NEXT:    ret
 ;
 ; RV32-XQCICS-LABEL: select_i64_slt:
@@ -1565,11 +1565,11 @@ define i64 @select_i64_slt(i64 %a, i64 %b, i64 %x, i64 %y) nounwind {
 ; RV32IXQCI:       # %bb.0:
 ; RV32IXQCI-NEXT:    sltu a0, a0, a2
 ; RV32IXQCI-NEXT:    slt a2, a1, a3
-; RV32IXQCI-NEXT:    qc.mveq a2, a1, a3, a0
-; RV32IXQCI-NEXT:    qc.mveqi a4, a2, 0, a6
-; RV32IXQCI-NEXT:    qc.mveqi a5, a2, 0, a7
-; RV32IXQCI-NEXT:    mv a0, a4
-; RV32IXQCI-NEXT:    mv a1, a5
+; RV32IXQCI-NEXT:    qc.mvne a0, a1, a3, a2
+; RV32IXQCI-NEXT:    qc.mvnei a6, a0, 0, a4
+; RV32IXQCI-NEXT:    qc.mvnei a7, a0, 0, a5
+; RV32IXQCI-NEXT:    mv a0, a6
+; RV32IXQCI-NEXT:    mv a1, a7
 ; RV32IXQCI-NEXT:    ret
 ;
 ; RV64-LABEL: select_i64_slt:
@@ -1615,22 +1615,22 @@ define i64 @select_i64_sle(i64 %a, i64 %b, i64 %x, i64 %y) nounwind {
 ; RV32-THEAD-NEXT:    xor t0, a1, a3
 ; RV32-THEAD-NEXT:    slt a1, a3, a1
 ; RV32-THEAD-NEXT:    sltu a0, a2, a0
-; RV32-THEAD-NEXT:    th.mvnez a0, a1, t0
-; RV32-THEAD-NEXT:    th.mvnez a4, a6, a0
-; RV32-THEAD-NEXT:    th.mvnez a5, a7, a0
-; RV32-THEAD-NEXT:    mv a0, a4
-; RV32-THEAD-NEXT:    mv a1, a5
+; RV32-THEAD-NEXT:    th.mveqz a1, a0, t0
+; RV32-THEAD-NEXT:    th.mveqz a6, a4, a1
+; RV32-THEAD-NEXT:    th.mveqz a7, a5, a1
+; RV32-THEAD-NEXT:    mv a0, a6
+; RV32-THEAD-NEXT:    mv a1, a7
 ; RV32-THEAD-NEXT:    ret
 ;
 ; RV32-XQCICM-LABEL: select_i64_sle:
 ; RV32-XQCICM:       # %bb.0:
 ; RV32-XQCICM-NEXT:    sltu a0, a2, a0
 ; RV32-XQCICM-NEXT:    slt a2, a3, a1
-; RV32-XQCICM-NEXT:    qc.mveq a2, a1, a3, a0
-; RV32-XQCICM-NEXT:    qc.mvnei a4, a2, 0, a6
-; RV32-XQCICM-NEXT:    qc.mvnei a5, a2, 0, a7
-; RV32-XQCICM-NEXT:    mv a0, a4
-; RV32-XQCICM-NEXT:    mv a1, a5
+; RV32-XQCICM-NEXT:    qc.mvne a0, a1, a3, a2
+; RV32-XQCICM-NEXT:    qc.mveqi a6, a0, 0, a4
+; RV32-XQCICM-NEXT:    qc.mveqi a7, a0, 0, a5
+; RV32-XQCICM-NEXT:    mv a0, a6
+; RV32-XQCICM-NEXT:    mv a1, a7
 ; RV32-XQCICM-NEXT:    ret
 ;
 ; RV32-XQCICS-LABEL: select_i64_sle:
@@ -1651,11 +1651,11 @@ define i64 @select_i64_sle(i64 %a, i64 %b, i64 %x, i64 %y) nounwind {
 ; RV32IXQCI:       # %bb.0:
 ; RV32IXQCI-NEXT:    sltu a0, a2, a0
 ; RV32IXQCI-NEXT:    slt a2, a3, a1
-; RV32IXQCI-NEXT:    qc.mveq a2, a1, a3, a0
-; RV32IXQCI-NEXT:    qc.mvnei a4, a2, 0, a6
-; RV32IXQCI-NEXT:    qc.mvnei a5, a2, 0, a7
-; RV32IXQCI-NEXT:    mv a0, a4
-; RV32IXQCI-NEXT:    mv a1, a5
+; RV32IXQCI-NEXT:    qc.mvne a0, a1, a3, a2
+; RV32IXQCI-NEXT:    qc.mveqi a6, a0, 0, a4
+; RV32IXQCI-NEXT:    qc.mveqi a7, a0, 0, a5
+; RV32IXQCI-NEXT:    mv a0, a6
+; RV32IXQCI-NEXT:    mv a1, a7
 ; RV32IXQCI-NEXT:    ret
 ;
 ; RV64-LABEL: select_i64_sle:

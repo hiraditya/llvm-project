@@ -233,7 +233,8 @@ define i32 @and32(i32 %x, i32 %y, i1 %c) {
 ; RV64XTHEADCONDMOV:       # %bb.0:
 ; RV64XTHEADCONDMOV-NEXT:    andi a2, a2, 1
 ; RV64XTHEADCONDMOV-NEXT:    and a1, a0, a1
-; RV64XTHEADCONDMOV-NEXT:    th.mvnez a0, a1, a2
+; RV64XTHEADCONDMOV-NEXT:    th.mveqz a1, a0, a2
+; RV64XTHEADCONDMOV-NEXT:    mv a0, a1
 ; RV64XTHEADCONDMOV-NEXT:    ret
 ;
 ; RV32ZICOND-LABEL: and32:
@@ -719,7 +720,8 @@ define i64 @and64(i64 %x, i64 %y, i1 %c) {
 ; RV64XTHEADCONDMOV:       # %bb.0:
 ; RV64XTHEADCONDMOV-NEXT:    andi a2, a2, 1
 ; RV64XTHEADCONDMOV-NEXT:    and a1, a0, a1
-; RV64XTHEADCONDMOV-NEXT:    th.mvnez a0, a1, a2
+; RV64XTHEADCONDMOV-NEXT:    th.mveqz a1, a0, a2
+; RV64XTHEADCONDMOV-NEXT:    mv a0, a1
 ; RV64XTHEADCONDMOV-NEXT:    ret
 ;
 ; RV32ZICOND-LABEL: and64:

@@ -312,12 +312,12 @@ define i32 @vdota4u_vv_accum(<16 x i8> %a, <16 x i8> %b, <16 x i32> %x) {
 ; NODOT-LABEL: vdota4u_vv_accum:
 ; NODOT:       # %bb.0: # %entry
 ; NODOT-NEXT:    vsetivli zero, 16, e8, m1, ta, ma
-; NODOT-NEXT:    vwmulu.vv v10, v8, v9
+; NODOT-NEXT:    vwmulu.vv v16, v8, v9
 ; NODOT-NEXT:    vsetvli zero, zero, e16, m2, ta, ma
-; NODOT-NEXT:    vwaddu.wv v12, v12, v10
+; NODOT-NEXT:    vwaddu.wv v8, v12, v16
 ; NODOT-NEXT:    vsetvli zero, zero, e32, m4, ta, ma
-; NODOT-NEXT:    vmv.s.x v8, zero
-; NODOT-NEXT:    vredsum.vs v8, v12, v8
+; NODOT-NEXT:    vmv.s.x v12, zero
+; NODOT-NEXT:    vredsum.vs v8, v8, v12
 ; NODOT-NEXT:    vmv.x.s a0, v8
 ; NODOT-NEXT:    ret
 ;
@@ -1614,12 +1614,12 @@ define i32 @vdota4u_vv_accum_disjoint_or(<16 x i8> %a, <16 x i8> %b, <16 x i32> 
 ; NODOT-LABEL: vdota4u_vv_accum_disjoint_or:
 ; NODOT:       # %bb.0: # %entry
 ; NODOT-NEXT:    vsetivli zero, 16, e8, m1, ta, ma
-; NODOT-NEXT:    vwmulu.vv v10, v8, v9
+; NODOT-NEXT:    vwmulu.vv v16, v8, v9
 ; NODOT-NEXT:    vsetvli zero, zero, e16, m2, ta, ma
-; NODOT-NEXT:    vwaddu.wv v12, v12, v10
+; NODOT-NEXT:    vwaddu.wv v8, v12, v16
 ; NODOT-NEXT:    vsetvli zero, zero, e32, m4, ta, ma
-; NODOT-NEXT:    vmv.s.x v8, zero
-; NODOT-NEXT:    vredsum.vs v8, v12, v8
+; NODOT-NEXT:    vmv.s.x v12, zero
+; NODOT-NEXT:    vredsum.vs v8, v8, v12
 ; NODOT-NEXT:    vmv.x.s a0, v8
 ; NODOT-NEXT:    ret
 ;

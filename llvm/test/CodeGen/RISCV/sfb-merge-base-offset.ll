@@ -110,10 +110,12 @@ define i64 @load_cond_ga_word_zext(i64 %a, i32 %b, i32 %c) {
 ; RV32I-WITH-SFB-NEXT:  # %bb.1:
 ; RV32I-WITH-SFB-NEXT:    lw a0, %lo(ga+12)(a4)
 ; RV32I-WITH-SFB-NEXT:  .LBB2_2:
-; RV32I-WITH-SFB-NEXT:    bne a2, a3, .LBB2_4
+; RV32I-WITH-SFB-NEXT:    li a4, 0
+; RV32I-WITH-SFB-NEXT:    beq a2, a3, .LBB2_4
 ; RV32I-WITH-SFB-NEXT:  # %bb.3:
-; RV32I-WITH-SFB-NEXT:    li a1, 0
+; RV32I-WITH-SFB-NEXT:    mv a4, a1
 ; RV32I-WITH-SFB-NEXT:  .LBB2_4:
+; RV32I-WITH-SFB-NEXT:    mv a1, a4
 ; RV32I-WITH-SFB-NEXT:    ret
 ;
 ; XQCI-WITH-SFB-LABEL: load_cond_ga_word_zext:
@@ -123,10 +125,9 @@ define i64 @load_cond_ga_word_zext(i64 %a, i32 %b, i32 %c) {
 ; XQCI-WITH-SFB-NEXT:  # %bb.1:
 ; XQCI-WITH-SFB-NEXT:    lw a0, 0(a4)
 ; XQCI-WITH-SFB-NEXT:  .LBB2_2:
-; XQCI-WITH-SFB-NEXT:    bne a2, a3, .LBB2_4
-; XQCI-WITH-SFB-NEXT:  # %bb.3:
-; XQCI-WITH-SFB-NEXT:    li a1, 0
-; XQCI-WITH-SFB-NEXT:  .LBB2_4:
+; XQCI-WITH-SFB-NEXT:    li a4, 0
+; XQCI-WITH-SFB-NEXT:    qc.mvne a4, a2, a3, a1
+; XQCI-WITH-SFB-NEXT:    mv a1, a4
 ; XQCI-WITH-SFB-NEXT:    ret
 ;
 ; RV64I-WITH-SFB-LABEL: load_cond_ga_word_zext:

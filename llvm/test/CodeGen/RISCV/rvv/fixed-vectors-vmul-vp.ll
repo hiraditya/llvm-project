@@ -1160,7 +1160,8 @@ define <8 x i64> @vmul_vadd_vx_v8i64_unmasked(<8 x i64> %va, i32 zeroext %evl) {
 ; CHECK-NEXT:    vmv.v.x v12, a1
 ; CHECK-NEXT:    li a1, 7
 ; CHECK-NEXT:    vsetvli zero, a0, e64, m4, ta, ma
-; CHECK-NEXT:    vmadd.vx v8, a1, v12
+; CHECK-NEXT:    vmacc.vx v12, a1, v8
+; CHECK-NEXT:    vmv.v.v v8, v12
 ; CHECK-NEXT:    ret
   %head = insertelement <8 x i1> poison, i1 true, i32 0
   %m = shufflevector <8 x i1> %head, <8 x i1> poison, <8 x i32> zeroinitializer

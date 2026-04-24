@@ -173,14 +173,14 @@ define signext i32 @sad_2block_16xi8_as_i32(ptr %a, ptr %b, i32 signext %stridea
 ; CHECK-NEXT:    vsetvli zero, zero, e16, m2, ta, ma
 ; CHECK-NEXT:    vzext.vf2 v14, v8
 ; CHECK-NEXT:    vsetvli zero, zero, e8, m1, ta, ma
-; CHECK-NEXT:    vsub.vv v16, v9, v10
+; CHECK-NEXT:    vsub.vv v18, v9, v10
 ; CHECK-NEXT:    vsetvli zero, zero, e16, m2, ta, ma
 ; CHECK-NEXT:    vwaddu.vv v8, v14, v12
-; CHECK-NEXT:    vzext.vf2 v12, v16
-; CHECK-NEXT:    vwaddu.wv v8, v8, v12
+; CHECK-NEXT:    vzext.vf2 v16, v18
+; CHECK-NEXT:    vwaddu.wv v12, v8, v16
 ; CHECK-NEXT:    vsetvli zero, zero, e32, m4, ta, ma
-; CHECK-NEXT:    vmv.s.x v12, zero
-; CHECK-NEXT:    vredsum.vs v8, v8, v12
+; CHECK-NEXT:    vmv.s.x v8, zero
+; CHECK-NEXT:    vredsum.vs v8, v12, v8
 ; CHECK-NEXT:    vmv.x.s a0, v8
 ; CHECK-NEXT:    ret
 ;
@@ -294,14 +294,14 @@ define signext i32 @sadu_2block_16xi8_as_i32(ptr %a, ptr %b, i32 signext %stride
 ; CHECK-NEXT:    vsetvli zero, zero, e16, m2, ta, ma
 ; CHECK-NEXT:    vzext.vf2 v14, v8
 ; CHECK-NEXT:    vsetvli zero, zero, e8, m1, ta, ma
-; CHECK-NEXT:    vsub.vv v16, v9, v10
+; CHECK-NEXT:    vsub.vv v18, v9, v10
 ; CHECK-NEXT:    vsetvli zero, zero, e16, m2, ta, ma
 ; CHECK-NEXT:    vwaddu.vv v8, v14, v12
-; CHECK-NEXT:    vzext.vf2 v12, v16
-; CHECK-NEXT:    vwaddu.wv v8, v8, v12
+; CHECK-NEXT:    vzext.vf2 v16, v18
+; CHECK-NEXT:    vwaddu.wv v12, v8, v16
 ; CHECK-NEXT:    vsetvli zero, zero, e32, m4, ta, ma
-; CHECK-NEXT:    vmv.s.x v12, zero
-; CHECK-NEXT:    vredsum.vs v8, v8, v12
+; CHECK-NEXT:    vmv.s.x v8, zero
+; CHECK-NEXT:    vredsum.vs v8, v12, v8
 ; CHECK-NEXT:    vmv.x.s a0, v8
 ; CHECK-NEXT:    ret
 ;

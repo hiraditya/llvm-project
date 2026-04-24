@@ -30,23 +30,26 @@ define signext i8 @smax_i8(i8 signext %a, i8 signext %b) {
 ;
 ; XQCI-LABEL: smax_i8:
 ; XQCI:       # %bb.0:
-; XQCI-NEXT:    qc.mvge a0, a1, a0, a1
+; XQCI-NEXT:    qc.mvlt a1, a1, a0, a0
+; XQCI-NEXT:    mv a0, a1
 ; XQCI-NEXT:    ret
 ;
 ; RV32I-SFB-LABEL: smax_i8:
 ; RV32I-SFB:       # %bb.0:
-; RV32I-SFB-NEXT:    blt a1, a0, .LBB0_2
+; RV32I-SFB-NEXT:    bge a1, a0, .LBB0_2
 ; RV32I-SFB-NEXT:  # %bb.1:
-; RV32I-SFB-NEXT:    mv a0, a1
+; RV32I-SFB-NEXT:    mv a1, a0
 ; RV32I-SFB-NEXT:  .LBB0_2:
+; RV32I-SFB-NEXT:    mv a0, a1
 ; RV32I-SFB-NEXT:    ret
 ;
 ; RV64I-SFB-LABEL: smax_i8:
 ; RV64I-SFB:       # %bb.0:
-; RV64I-SFB-NEXT:    blt a1, a0, .LBB0_2
+; RV64I-SFB-NEXT:    bge a1, a0, .LBB0_2
 ; RV64I-SFB-NEXT:  # %bb.1:
-; RV64I-SFB-NEXT:    mv a0, a1
+; RV64I-SFB-NEXT:    mv a1, a0
 ; RV64I-SFB-NEXT:  .LBB0_2:
+; RV64I-SFB-NEXT:    mv a0, a1
 ; RV64I-SFB-NEXT:    ret
   %c = call i8 @llvm.smax.i8(i8 %a, i8 %b)
   ret i8 %c
@@ -68,23 +71,26 @@ define signext i16 @smax_i16(i16 signext %a, i16 signext %b) {
 ;
 ; XQCI-LABEL: smax_i16:
 ; XQCI:       # %bb.0:
-; XQCI-NEXT:    qc.mvge a0, a1, a0, a1
+; XQCI-NEXT:    qc.mvlt a1, a1, a0, a0
+; XQCI-NEXT:    mv a0, a1
 ; XQCI-NEXT:    ret
 ;
 ; RV32I-SFB-LABEL: smax_i16:
 ; RV32I-SFB:       # %bb.0:
-; RV32I-SFB-NEXT:    blt a1, a0, .LBB1_2
+; RV32I-SFB-NEXT:    bge a1, a0, .LBB1_2
 ; RV32I-SFB-NEXT:  # %bb.1:
-; RV32I-SFB-NEXT:    mv a0, a1
+; RV32I-SFB-NEXT:    mv a1, a0
 ; RV32I-SFB-NEXT:  .LBB1_2:
+; RV32I-SFB-NEXT:    mv a0, a1
 ; RV32I-SFB-NEXT:    ret
 ;
 ; RV64I-SFB-LABEL: smax_i16:
 ; RV64I-SFB:       # %bb.0:
-; RV64I-SFB-NEXT:    blt a1, a0, .LBB1_2
+; RV64I-SFB-NEXT:    bge a1, a0, .LBB1_2
 ; RV64I-SFB-NEXT:  # %bb.1:
-; RV64I-SFB-NEXT:    mv a0, a1
+; RV64I-SFB-NEXT:    mv a1, a0
 ; RV64I-SFB-NEXT:  .LBB1_2:
+; RV64I-SFB-NEXT:    mv a0, a1
 ; RV64I-SFB-NEXT:    ret
   %c = call i16 @llvm.smax.i16(i16 %a, i16 %b)
   ret i16 %c
@@ -106,23 +112,26 @@ define signext i32 @smax_i32(i32 signext %a, i32 signext %b) {
 ;
 ; XQCI-LABEL: smax_i32:
 ; XQCI:       # %bb.0:
-; XQCI-NEXT:    qc.mvge a0, a1, a0, a1
+; XQCI-NEXT:    qc.mvlt a1, a1, a0, a0
+; XQCI-NEXT:    mv a0, a1
 ; XQCI-NEXT:    ret
 ;
 ; RV32I-SFB-LABEL: smax_i32:
 ; RV32I-SFB:       # %bb.0:
-; RV32I-SFB-NEXT:    blt a1, a0, .LBB2_2
+; RV32I-SFB-NEXT:    bge a1, a0, .LBB2_2
 ; RV32I-SFB-NEXT:  # %bb.1:
-; RV32I-SFB-NEXT:    mv a0, a1
+; RV32I-SFB-NEXT:    mv a1, a0
 ; RV32I-SFB-NEXT:  .LBB2_2:
+; RV32I-SFB-NEXT:    mv a0, a1
 ; RV32I-SFB-NEXT:    ret
 ;
 ; RV64I-SFB-LABEL: smax_i32:
 ; RV64I-SFB:       # %bb.0:
-; RV64I-SFB-NEXT:    blt a1, a0, .LBB2_2
+; RV64I-SFB-NEXT:    bge a1, a0, .LBB2_2
 ; RV64I-SFB-NEXT:  # %bb.1:
-; RV64I-SFB-NEXT:    mv a0, a1
+; RV64I-SFB-NEXT:    mv a1, a0
 ; RV64I-SFB-NEXT:  .LBB2_2:
+; RV64I-SFB-NEXT:    mv a0, a1
 ; RV64I-SFB-NEXT:    ret
   %c = call i32 @llvm.smax.i32(i32 %a, i32 %b)
   ret i32 %c
@@ -178,35 +187,40 @@ define i64 @smax_i64(i64 %a, i64 %b) {
 ; XQCI:       # %bb.0:
 ; XQCI-NEXT:    sltu a4, a2, a0
 ; XQCI-NEXT:    slt a5, a3, a1
-; XQCI-NEXT:    qc.mveq a5, a1, a3, a4
-; XQCI-NEXT:    qc.mveqi a0, a5, 0, a2
-; XQCI-NEXT:    qc.mveqi a1, a5, 0, a3
+; XQCI-NEXT:    qc.mvne a4, a1, a3, a5
+; XQCI-NEXT:    qc.mvnei a2, a4, 0, a0
+; XQCI-NEXT:    qc.mvnei a3, a4, 0, a1
+; XQCI-NEXT:    mv a0, a2
+; XQCI-NEXT:    mv a1, a3
 ; XQCI-NEXT:    ret
 ;
 ; RV32I-SFB-LABEL: smax_i64:
 ; RV32I-SFB:       # %bb.0:
 ; RV32I-SFB-NEXT:    sltu a4, a2, a0
 ; RV32I-SFB-NEXT:    slt a5, a3, a1
-; RV32I-SFB-NEXT:    bne a1, a3, .LBB3_2
+; RV32I-SFB-NEXT:    beq a1, a3, .LBB3_2
 ; RV32I-SFB-NEXT:  # %bb.1:
-; RV32I-SFB-NEXT:    mv a5, a4
+; RV32I-SFB-NEXT:    mv a4, a5
 ; RV32I-SFB-NEXT:  .LBB3_2:
-; RV32I-SFB-NEXT:    bnez a5, .LBB3_4
+; RV32I-SFB-NEXT:    beqz a4, .LBB3_4
 ; RV32I-SFB-NEXT:  # %bb.3:
-; RV32I-SFB-NEXT:    mv a0, a2
+; RV32I-SFB-NEXT:    mv a2, a0
 ; RV32I-SFB-NEXT:  .LBB3_4:
-; RV32I-SFB-NEXT:    bnez a5, .LBB3_6
+; RV32I-SFB-NEXT:    beqz a4, .LBB3_6
 ; RV32I-SFB-NEXT:  # %bb.5:
-; RV32I-SFB-NEXT:    mv a1, a3
+; RV32I-SFB-NEXT:    mv a3, a1
 ; RV32I-SFB-NEXT:  .LBB3_6:
+; RV32I-SFB-NEXT:    mv a0, a2
+; RV32I-SFB-NEXT:    mv a1, a3
 ; RV32I-SFB-NEXT:    ret
 ;
 ; RV64I-SFB-LABEL: smax_i64:
 ; RV64I-SFB:       # %bb.0:
-; RV64I-SFB-NEXT:    blt a1, a0, .LBB3_2
+; RV64I-SFB-NEXT:    bge a1, a0, .LBB3_2
 ; RV64I-SFB-NEXT:  # %bb.1:
-; RV64I-SFB-NEXT:    mv a0, a1
+; RV64I-SFB-NEXT:    mv a1, a0
 ; RV64I-SFB-NEXT:  .LBB3_2:
+; RV64I-SFB-NEXT:    mv a0, a1
 ; RV64I-SFB-NEXT:    ret
   %c = call i64 @llvm.smax.i64(i64 %a, i64 %b)
   ret i64 %c
@@ -228,23 +242,26 @@ define signext i8 @smin_i8(i8 signext %a, i8 signext %b) {
 ;
 ; XQCI-LABEL: smin_i8:
 ; XQCI:       # %bb.0:
-; XQCI-NEXT:    qc.mvge a0, a0, a1, a1
+; XQCI-NEXT:    qc.mvlt a1, a0, a1, a0
+; XQCI-NEXT:    mv a0, a1
 ; XQCI-NEXT:    ret
 ;
 ; RV32I-SFB-LABEL: smin_i8:
 ; RV32I-SFB:       # %bb.0:
-; RV32I-SFB-NEXT:    blt a0, a1, .LBB4_2
+; RV32I-SFB-NEXT:    bge a0, a1, .LBB4_2
 ; RV32I-SFB-NEXT:  # %bb.1:
-; RV32I-SFB-NEXT:    mv a0, a1
+; RV32I-SFB-NEXT:    mv a1, a0
 ; RV32I-SFB-NEXT:  .LBB4_2:
+; RV32I-SFB-NEXT:    mv a0, a1
 ; RV32I-SFB-NEXT:    ret
 ;
 ; RV64I-SFB-LABEL: smin_i8:
 ; RV64I-SFB:       # %bb.0:
-; RV64I-SFB-NEXT:    blt a0, a1, .LBB4_2
+; RV64I-SFB-NEXT:    bge a0, a1, .LBB4_2
 ; RV64I-SFB-NEXT:  # %bb.1:
-; RV64I-SFB-NEXT:    mv a0, a1
+; RV64I-SFB-NEXT:    mv a1, a0
 ; RV64I-SFB-NEXT:  .LBB4_2:
+; RV64I-SFB-NEXT:    mv a0, a1
 ; RV64I-SFB-NEXT:    ret
   %c = call i8 @llvm.smin.i8(i8 %a, i8 %b)
   ret i8 %c
@@ -266,23 +283,26 @@ define signext i16 @smin_i16(i16 signext %a, i16 signext %b) {
 ;
 ; XQCI-LABEL: smin_i16:
 ; XQCI:       # %bb.0:
-; XQCI-NEXT:    qc.mvge a0, a0, a1, a1
+; XQCI-NEXT:    qc.mvlt a1, a0, a1, a0
+; XQCI-NEXT:    mv a0, a1
 ; XQCI-NEXT:    ret
 ;
 ; RV32I-SFB-LABEL: smin_i16:
 ; RV32I-SFB:       # %bb.0:
-; RV32I-SFB-NEXT:    blt a0, a1, .LBB5_2
+; RV32I-SFB-NEXT:    bge a0, a1, .LBB5_2
 ; RV32I-SFB-NEXT:  # %bb.1:
-; RV32I-SFB-NEXT:    mv a0, a1
+; RV32I-SFB-NEXT:    mv a1, a0
 ; RV32I-SFB-NEXT:  .LBB5_2:
+; RV32I-SFB-NEXT:    mv a0, a1
 ; RV32I-SFB-NEXT:    ret
 ;
 ; RV64I-SFB-LABEL: smin_i16:
 ; RV64I-SFB:       # %bb.0:
-; RV64I-SFB-NEXT:    blt a0, a1, .LBB5_2
+; RV64I-SFB-NEXT:    bge a0, a1, .LBB5_2
 ; RV64I-SFB-NEXT:  # %bb.1:
-; RV64I-SFB-NEXT:    mv a0, a1
+; RV64I-SFB-NEXT:    mv a1, a0
 ; RV64I-SFB-NEXT:  .LBB5_2:
+; RV64I-SFB-NEXT:    mv a0, a1
 ; RV64I-SFB-NEXT:    ret
   %c = call i16 @llvm.smin.i16(i16 %a, i16 %b)
   ret i16 %c
@@ -304,23 +324,26 @@ define signext i32 @smin_i32(i32 signext %a, i32 signext %b) {
 ;
 ; XQCI-LABEL: smin_i32:
 ; XQCI:       # %bb.0:
-; XQCI-NEXT:    qc.mvge a0, a0, a1, a1
+; XQCI-NEXT:    qc.mvlt a1, a0, a1, a0
+; XQCI-NEXT:    mv a0, a1
 ; XQCI-NEXT:    ret
 ;
 ; RV32I-SFB-LABEL: smin_i32:
 ; RV32I-SFB:       # %bb.0:
-; RV32I-SFB-NEXT:    blt a0, a1, .LBB6_2
+; RV32I-SFB-NEXT:    bge a0, a1, .LBB6_2
 ; RV32I-SFB-NEXT:  # %bb.1:
-; RV32I-SFB-NEXT:    mv a0, a1
+; RV32I-SFB-NEXT:    mv a1, a0
 ; RV32I-SFB-NEXT:  .LBB6_2:
+; RV32I-SFB-NEXT:    mv a0, a1
 ; RV32I-SFB-NEXT:    ret
 ;
 ; RV64I-SFB-LABEL: smin_i32:
 ; RV64I-SFB:       # %bb.0:
-; RV64I-SFB-NEXT:    blt a0, a1, .LBB6_2
+; RV64I-SFB-NEXT:    bge a0, a1, .LBB6_2
 ; RV64I-SFB-NEXT:  # %bb.1:
-; RV64I-SFB-NEXT:    mv a0, a1
+; RV64I-SFB-NEXT:    mv a1, a0
 ; RV64I-SFB-NEXT:  .LBB6_2:
+; RV64I-SFB-NEXT:    mv a0, a1
 ; RV64I-SFB-NEXT:    ret
   %c = call i32 @llvm.smin.i32(i32 %a, i32 %b)
   ret i32 %c
@@ -376,35 +399,40 @@ define i64 @smin_i64(i64 %a, i64 %b) {
 ; XQCI:       # %bb.0:
 ; XQCI-NEXT:    sltu a4, a0, a2
 ; XQCI-NEXT:    slt a5, a1, a3
-; XQCI-NEXT:    qc.mveq a5, a1, a3, a4
-; XQCI-NEXT:    qc.mveqi a0, a5, 0, a2
-; XQCI-NEXT:    qc.mveqi a1, a5, 0, a3
+; XQCI-NEXT:    qc.mvne a4, a1, a3, a5
+; XQCI-NEXT:    qc.mvnei a2, a4, 0, a0
+; XQCI-NEXT:    qc.mvnei a3, a4, 0, a1
+; XQCI-NEXT:    mv a0, a2
+; XQCI-NEXT:    mv a1, a3
 ; XQCI-NEXT:    ret
 ;
 ; RV32I-SFB-LABEL: smin_i64:
 ; RV32I-SFB:       # %bb.0:
 ; RV32I-SFB-NEXT:    sltu a4, a0, a2
 ; RV32I-SFB-NEXT:    slt a5, a1, a3
-; RV32I-SFB-NEXT:    bne a1, a3, .LBB7_2
+; RV32I-SFB-NEXT:    beq a1, a3, .LBB7_2
 ; RV32I-SFB-NEXT:  # %bb.1:
-; RV32I-SFB-NEXT:    mv a5, a4
+; RV32I-SFB-NEXT:    mv a4, a5
 ; RV32I-SFB-NEXT:  .LBB7_2:
-; RV32I-SFB-NEXT:    bnez a5, .LBB7_4
+; RV32I-SFB-NEXT:    beqz a4, .LBB7_4
 ; RV32I-SFB-NEXT:  # %bb.3:
-; RV32I-SFB-NEXT:    mv a0, a2
+; RV32I-SFB-NEXT:    mv a2, a0
 ; RV32I-SFB-NEXT:  .LBB7_4:
-; RV32I-SFB-NEXT:    bnez a5, .LBB7_6
+; RV32I-SFB-NEXT:    beqz a4, .LBB7_6
 ; RV32I-SFB-NEXT:  # %bb.5:
-; RV32I-SFB-NEXT:    mv a1, a3
+; RV32I-SFB-NEXT:    mv a3, a1
 ; RV32I-SFB-NEXT:  .LBB7_6:
+; RV32I-SFB-NEXT:    mv a0, a2
+; RV32I-SFB-NEXT:    mv a1, a3
 ; RV32I-SFB-NEXT:    ret
 ;
 ; RV64I-SFB-LABEL: smin_i64:
 ; RV64I-SFB:       # %bb.0:
-; RV64I-SFB-NEXT:    blt a0, a1, .LBB7_2
+; RV64I-SFB-NEXT:    bge a0, a1, .LBB7_2
 ; RV64I-SFB-NEXT:  # %bb.1:
-; RV64I-SFB-NEXT:    mv a0, a1
+; RV64I-SFB-NEXT:    mv a1, a0
 ; RV64I-SFB-NEXT:  .LBB7_2:
+; RV64I-SFB-NEXT:    mv a0, a1
 ; RV64I-SFB-NEXT:    ret
   %c = call i64 @llvm.smin.i64(i64 %a, i64 %b)
   ret i64 %c
@@ -426,23 +454,26 @@ define i8 @umax_i8(i8 zeroext %a, i8 zeroext %b) {
 ;
 ; XQCI-LABEL: umax_i8:
 ; XQCI:       # %bb.0:
-; XQCI-NEXT:    qc.mvgeu a0, a1, a0, a1
+; XQCI-NEXT:    qc.mvltu a1, a1, a0, a0
+; XQCI-NEXT:    mv a0, a1
 ; XQCI-NEXT:    ret
 ;
 ; RV32I-SFB-LABEL: umax_i8:
 ; RV32I-SFB:       # %bb.0:
-; RV32I-SFB-NEXT:    bltu a1, a0, .LBB8_2
+; RV32I-SFB-NEXT:    bgeu a1, a0, .LBB8_2
 ; RV32I-SFB-NEXT:  # %bb.1:
-; RV32I-SFB-NEXT:    mv a0, a1
+; RV32I-SFB-NEXT:    mv a1, a0
 ; RV32I-SFB-NEXT:  .LBB8_2:
+; RV32I-SFB-NEXT:    mv a0, a1
 ; RV32I-SFB-NEXT:    ret
 ;
 ; RV64I-SFB-LABEL: umax_i8:
 ; RV64I-SFB:       # %bb.0:
-; RV64I-SFB-NEXT:    bltu a1, a0, .LBB8_2
+; RV64I-SFB-NEXT:    bgeu a1, a0, .LBB8_2
 ; RV64I-SFB-NEXT:  # %bb.1:
-; RV64I-SFB-NEXT:    mv a0, a1
+; RV64I-SFB-NEXT:    mv a1, a0
 ; RV64I-SFB-NEXT:  .LBB8_2:
+; RV64I-SFB-NEXT:    mv a0, a1
 ; RV64I-SFB-NEXT:    ret
   %c = call i8 @llvm.umax.i8(i8 %a, i8 %b)
   ret i8 %c
@@ -464,23 +495,26 @@ define i16 @umax_i16(i16 zeroext %a, i16 zeroext %b) {
 ;
 ; XQCI-LABEL: umax_i16:
 ; XQCI:       # %bb.0:
-; XQCI-NEXT:    qc.mvgeu a0, a1, a0, a1
+; XQCI-NEXT:    qc.mvltu a1, a1, a0, a0
+; XQCI-NEXT:    mv a0, a1
 ; XQCI-NEXT:    ret
 ;
 ; RV32I-SFB-LABEL: umax_i16:
 ; RV32I-SFB:       # %bb.0:
-; RV32I-SFB-NEXT:    bltu a1, a0, .LBB9_2
+; RV32I-SFB-NEXT:    bgeu a1, a0, .LBB9_2
 ; RV32I-SFB-NEXT:  # %bb.1:
-; RV32I-SFB-NEXT:    mv a0, a1
+; RV32I-SFB-NEXT:    mv a1, a0
 ; RV32I-SFB-NEXT:  .LBB9_2:
+; RV32I-SFB-NEXT:    mv a0, a1
 ; RV32I-SFB-NEXT:    ret
 ;
 ; RV64I-SFB-LABEL: umax_i16:
 ; RV64I-SFB:       # %bb.0:
-; RV64I-SFB-NEXT:    bltu a1, a0, .LBB9_2
+; RV64I-SFB-NEXT:    bgeu a1, a0, .LBB9_2
 ; RV64I-SFB-NEXT:  # %bb.1:
-; RV64I-SFB-NEXT:    mv a0, a1
+; RV64I-SFB-NEXT:    mv a1, a0
 ; RV64I-SFB-NEXT:  .LBB9_2:
+; RV64I-SFB-NEXT:    mv a0, a1
 ; RV64I-SFB-NEXT:    ret
   %c = call i16 @llvm.umax.i16(i16 %a, i16 %b)
   ret i16 %c
@@ -502,23 +536,26 @@ define signext i32 @umax_i32(i32 signext %a, i32 signext %b) {
 ;
 ; XQCI-LABEL: umax_i32:
 ; XQCI:       # %bb.0:
-; XQCI-NEXT:    qc.mvgeu a0, a1, a0, a1
+; XQCI-NEXT:    qc.mvltu a1, a1, a0, a0
+; XQCI-NEXT:    mv a0, a1
 ; XQCI-NEXT:    ret
 ;
 ; RV32I-SFB-LABEL: umax_i32:
 ; RV32I-SFB:       # %bb.0:
-; RV32I-SFB-NEXT:    bltu a1, a0, .LBB10_2
+; RV32I-SFB-NEXT:    bgeu a1, a0, .LBB10_2
 ; RV32I-SFB-NEXT:  # %bb.1:
-; RV32I-SFB-NEXT:    mv a0, a1
+; RV32I-SFB-NEXT:    mv a1, a0
 ; RV32I-SFB-NEXT:  .LBB10_2:
+; RV32I-SFB-NEXT:    mv a0, a1
 ; RV32I-SFB-NEXT:    ret
 ;
 ; RV64I-SFB-LABEL: umax_i32:
 ; RV64I-SFB:       # %bb.0:
-; RV64I-SFB-NEXT:    bltu a1, a0, .LBB10_2
+; RV64I-SFB-NEXT:    bgeu a1, a0, .LBB10_2
 ; RV64I-SFB-NEXT:  # %bb.1:
-; RV64I-SFB-NEXT:    mv a0, a1
+; RV64I-SFB-NEXT:    mv a1, a0
 ; RV64I-SFB-NEXT:  .LBB10_2:
+; RV64I-SFB-NEXT:    mv a0, a1
 ; RV64I-SFB-NEXT:    ret
   %c = call i32 @llvm.umax.i32(i32 %a, i32 %b)
   ret i32 %c
@@ -574,35 +611,40 @@ define i64 @umax_i64(i64 %a, i64 %b) {
 ; XQCI:       # %bb.0:
 ; XQCI-NEXT:    sltu a4, a2, a0
 ; XQCI-NEXT:    sltu a5, a3, a1
-; XQCI-NEXT:    qc.mveq a5, a1, a3, a4
-; XQCI-NEXT:    qc.mveqi a0, a5, 0, a2
-; XQCI-NEXT:    qc.mveqi a1, a5, 0, a3
+; XQCI-NEXT:    qc.mvne a4, a1, a3, a5
+; XQCI-NEXT:    qc.mvnei a2, a4, 0, a0
+; XQCI-NEXT:    qc.mvnei a3, a4, 0, a1
+; XQCI-NEXT:    mv a0, a2
+; XQCI-NEXT:    mv a1, a3
 ; XQCI-NEXT:    ret
 ;
 ; RV32I-SFB-LABEL: umax_i64:
 ; RV32I-SFB:       # %bb.0:
 ; RV32I-SFB-NEXT:    sltu a4, a2, a0
 ; RV32I-SFB-NEXT:    sltu a5, a3, a1
-; RV32I-SFB-NEXT:    bne a1, a3, .LBB11_2
+; RV32I-SFB-NEXT:    beq a1, a3, .LBB11_2
 ; RV32I-SFB-NEXT:  # %bb.1:
-; RV32I-SFB-NEXT:    mv a5, a4
+; RV32I-SFB-NEXT:    mv a4, a5
 ; RV32I-SFB-NEXT:  .LBB11_2:
-; RV32I-SFB-NEXT:    bnez a5, .LBB11_4
+; RV32I-SFB-NEXT:    beqz a4, .LBB11_4
 ; RV32I-SFB-NEXT:  # %bb.3:
-; RV32I-SFB-NEXT:    mv a0, a2
+; RV32I-SFB-NEXT:    mv a2, a0
 ; RV32I-SFB-NEXT:  .LBB11_4:
-; RV32I-SFB-NEXT:    bnez a5, .LBB11_6
+; RV32I-SFB-NEXT:    beqz a4, .LBB11_6
 ; RV32I-SFB-NEXT:  # %bb.5:
-; RV32I-SFB-NEXT:    mv a1, a3
+; RV32I-SFB-NEXT:    mv a3, a1
 ; RV32I-SFB-NEXT:  .LBB11_6:
+; RV32I-SFB-NEXT:    mv a0, a2
+; RV32I-SFB-NEXT:    mv a1, a3
 ; RV32I-SFB-NEXT:    ret
 ;
 ; RV64I-SFB-LABEL: umax_i64:
 ; RV64I-SFB:       # %bb.0:
-; RV64I-SFB-NEXT:    bltu a1, a0, .LBB11_2
+; RV64I-SFB-NEXT:    bgeu a1, a0, .LBB11_2
 ; RV64I-SFB-NEXT:  # %bb.1:
-; RV64I-SFB-NEXT:    mv a0, a1
+; RV64I-SFB-NEXT:    mv a1, a0
 ; RV64I-SFB-NEXT:  .LBB11_2:
+; RV64I-SFB-NEXT:    mv a0, a1
 ; RV64I-SFB-NEXT:    ret
   %c = call i64 @llvm.umax.i64(i64 %a, i64 %b)
   ret i64 %c
@@ -624,23 +666,26 @@ define zeroext i8 @umin_i8(i8 zeroext %a, i8 zeroext %b) {
 ;
 ; XQCI-LABEL: umin_i8:
 ; XQCI:       # %bb.0:
-; XQCI-NEXT:    qc.mvgeu a0, a0, a1, a1
+; XQCI-NEXT:    qc.mvltu a1, a0, a1, a0
+; XQCI-NEXT:    mv a0, a1
 ; XQCI-NEXT:    ret
 ;
 ; RV32I-SFB-LABEL: umin_i8:
 ; RV32I-SFB:       # %bb.0:
-; RV32I-SFB-NEXT:    bltu a0, a1, .LBB12_2
+; RV32I-SFB-NEXT:    bgeu a0, a1, .LBB12_2
 ; RV32I-SFB-NEXT:  # %bb.1:
-; RV32I-SFB-NEXT:    mv a0, a1
+; RV32I-SFB-NEXT:    mv a1, a0
 ; RV32I-SFB-NEXT:  .LBB12_2:
+; RV32I-SFB-NEXT:    mv a0, a1
 ; RV32I-SFB-NEXT:    ret
 ;
 ; RV64I-SFB-LABEL: umin_i8:
 ; RV64I-SFB:       # %bb.0:
-; RV64I-SFB-NEXT:    bltu a0, a1, .LBB12_2
+; RV64I-SFB-NEXT:    bgeu a0, a1, .LBB12_2
 ; RV64I-SFB-NEXT:  # %bb.1:
-; RV64I-SFB-NEXT:    mv a0, a1
+; RV64I-SFB-NEXT:    mv a1, a0
 ; RV64I-SFB-NEXT:  .LBB12_2:
+; RV64I-SFB-NEXT:    mv a0, a1
 ; RV64I-SFB-NEXT:    ret
   %c = call i8 @llvm.umin.i8(i8 %a, i8 %b)
   ret i8 %c
@@ -662,23 +707,26 @@ define zeroext i16 @umin_i16(i16 zeroext %a, i16 zeroext %b) {
 ;
 ; XQCI-LABEL: umin_i16:
 ; XQCI:       # %bb.0:
-; XQCI-NEXT:    qc.mvgeu a0, a0, a1, a1
+; XQCI-NEXT:    qc.mvltu a1, a0, a1, a0
+; XQCI-NEXT:    mv a0, a1
 ; XQCI-NEXT:    ret
 ;
 ; RV32I-SFB-LABEL: umin_i16:
 ; RV32I-SFB:       # %bb.0:
-; RV32I-SFB-NEXT:    bltu a0, a1, .LBB13_2
+; RV32I-SFB-NEXT:    bgeu a0, a1, .LBB13_2
 ; RV32I-SFB-NEXT:  # %bb.1:
-; RV32I-SFB-NEXT:    mv a0, a1
+; RV32I-SFB-NEXT:    mv a1, a0
 ; RV32I-SFB-NEXT:  .LBB13_2:
+; RV32I-SFB-NEXT:    mv a0, a1
 ; RV32I-SFB-NEXT:    ret
 ;
 ; RV64I-SFB-LABEL: umin_i16:
 ; RV64I-SFB:       # %bb.0:
-; RV64I-SFB-NEXT:    bltu a0, a1, .LBB13_2
+; RV64I-SFB-NEXT:    bgeu a0, a1, .LBB13_2
 ; RV64I-SFB-NEXT:  # %bb.1:
-; RV64I-SFB-NEXT:    mv a0, a1
+; RV64I-SFB-NEXT:    mv a1, a0
 ; RV64I-SFB-NEXT:  .LBB13_2:
+; RV64I-SFB-NEXT:    mv a0, a1
 ; RV64I-SFB-NEXT:    ret
   %c = call i16 @llvm.umin.i16(i16 %a, i16 %b)
   ret i16 %c
@@ -700,23 +748,26 @@ define signext i32 @umin_i32(i32 signext %a, i32 signext %b) {
 ;
 ; XQCI-LABEL: umin_i32:
 ; XQCI:       # %bb.0:
-; XQCI-NEXT:    qc.mvgeu a0, a0, a1, a1
+; XQCI-NEXT:    qc.mvltu a1, a0, a1, a0
+; XQCI-NEXT:    mv a0, a1
 ; XQCI-NEXT:    ret
 ;
 ; RV32I-SFB-LABEL: umin_i32:
 ; RV32I-SFB:       # %bb.0:
-; RV32I-SFB-NEXT:    bltu a0, a1, .LBB14_2
+; RV32I-SFB-NEXT:    bgeu a0, a1, .LBB14_2
 ; RV32I-SFB-NEXT:  # %bb.1:
-; RV32I-SFB-NEXT:    mv a0, a1
+; RV32I-SFB-NEXT:    mv a1, a0
 ; RV32I-SFB-NEXT:  .LBB14_2:
+; RV32I-SFB-NEXT:    mv a0, a1
 ; RV32I-SFB-NEXT:    ret
 ;
 ; RV64I-SFB-LABEL: umin_i32:
 ; RV64I-SFB:       # %bb.0:
-; RV64I-SFB-NEXT:    bltu a0, a1, .LBB14_2
+; RV64I-SFB-NEXT:    bgeu a0, a1, .LBB14_2
 ; RV64I-SFB-NEXT:  # %bb.1:
-; RV64I-SFB-NEXT:    mv a0, a1
+; RV64I-SFB-NEXT:    mv a1, a0
 ; RV64I-SFB-NEXT:  .LBB14_2:
+; RV64I-SFB-NEXT:    mv a0, a1
 ; RV64I-SFB-NEXT:    ret
   %c = call i32 @llvm.umin.i32(i32 %a, i32 %b)
   ret i32 %c
@@ -772,35 +823,40 @@ define i64 @umin_i64(i64 %a, i64 %b) {
 ; XQCI:       # %bb.0:
 ; XQCI-NEXT:    sltu a4, a0, a2
 ; XQCI-NEXT:    sltu a5, a1, a3
-; XQCI-NEXT:    qc.mveq a5, a1, a3, a4
-; XQCI-NEXT:    qc.mveqi a0, a5, 0, a2
-; XQCI-NEXT:    qc.mveqi a1, a5, 0, a3
+; XQCI-NEXT:    qc.mvne a4, a1, a3, a5
+; XQCI-NEXT:    qc.mvnei a2, a4, 0, a0
+; XQCI-NEXT:    qc.mvnei a3, a4, 0, a1
+; XQCI-NEXT:    mv a0, a2
+; XQCI-NEXT:    mv a1, a3
 ; XQCI-NEXT:    ret
 ;
 ; RV32I-SFB-LABEL: umin_i64:
 ; RV32I-SFB:       # %bb.0:
 ; RV32I-SFB-NEXT:    sltu a4, a0, a2
 ; RV32I-SFB-NEXT:    sltu a5, a1, a3
-; RV32I-SFB-NEXT:    bne a1, a3, .LBB15_2
+; RV32I-SFB-NEXT:    beq a1, a3, .LBB15_2
 ; RV32I-SFB-NEXT:  # %bb.1:
-; RV32I-SFB-NEXT:    mv a5, a4
+; RV32I-SFB-NEXT:    mv a4, a5
 ; RV32I-SFB-NEXT:  .LBB15_2:
-; RV32I-SFB-NEXT:    bnez a5, .LBB15_4
+; RV32I-SFB-NEXT:    beqz a4, .LBB15_4
 ; RV32I-SFB-NEXT:  # %bb.3:
-; RV32I-SFB-NEXT:    mv a0, a2
+; RV32I-SFB-NEXT:    mv a2, a0
 ; RV32I-SFB-NEXT:  .LBB15_4:
-; RV32I-SFB-NEXT:    bnez a5, .LBB15_6
+; RV32I-SFB-NEXT:    beqz a4, .LBB15_6
 ; RV32I-SFB-NEXT:  # %bb.5:
-; RV32I-SFB-NEXT:    mv a1, a3
+; RV32I-SFB-NEXT:    mv a3, a1
 ; RV32I-SFB-NEXT:  .LBB15_6:
+; RV32I-SFB-NEXT:    mv a0, a2
+; RV32I-SFB-NEXT:    mv a1, a3
 ; RV32I-SFB-NEXT:    ret
 ;
 ; RV64I-SFB-LABEL: umin_i64:
 ; RV64I-SFB:       # %bb.0:
-; RV64I-SFB-NEXT:    bltu a0, a1, .LBB15_2
+; RV64I-SFB-NEXT:    bgeu a0, a1, .LBB15_2
 ; RV64I-SFB-NEXT:  # %bb.1:
-; RV64I-SFB-NEXT:    mv a0, a1
+; RV64I-SFB-NEXT:    mv a1, a0
 ; RV64I-SFB-NEXT:  .LBB15_2:
+; RV64I-SFB-NEXT:    mv a0, a1
 ; RV64I-SFB-NEXT:    ret
   %c = call i64 @llvm.umin.i64(i64 %a, i64 %b)
   ret i64 %c
@@ -1070,19 +1126,21 @@ define signext i32 @smax_i32_pos_constant(i32 signext %a) {
 ; RV32I-SFB-LABEL: smax_i32_pos_constant:
 ; RV32I-SFB:       # %bb.0:
 ; RV32I-SFB-NEXT:    li a1, 10
-; RV32I-SFB-NEXT:    blt a1, a0, .LBB24_2
+; RV32I-SFB-NEXT:    bge a1, a0, .LBB24_2
 ; RV32I-SFB-NEXT:  # %bb.1:
-; RV32I-SFB-NEXT:    mv a0, a1
+; RV32I-SFB-NEXT:    mv a1, a0
 ; RV32I-SFB-NEXT:  .LBB24_2:
+; RV32I-SFB-NEXT:    mv a0, a1
 ; RV32I-SFB-NEXT:    ret
 ;
 ; RV64I-SFB-LABEL: smax_i32_pos_constant:
 ; RV64I-SFB:       # %bb.0:
 ; RV64I-SFB-NEXT:    li a1, 10
-; RV64I-SFB-NEXT:    blt a1, a0, .LBB24_2
+; RV64I-SFB-NEXT:    bge a1, a0, .LBB24_2
 ; RV64I-SFB-NEXT:  # %bb.1:
-; RV64I-SFB-NEXT:    mv a0, a1
+; RV64I-SFB-NEXT:    mv a1, a0
 ; RV64I-SFB-NEXT:  .LBB24_2:
+; RV64I-SFB-NEXT:    mv a0, a1
 ; RV64I-SFB-NEXT:    ret
   %c = call i32 @llvm.smax.i32(i32 %a, i32 10)
   ret i32 %c
@@ -1160,19 +1218,21 @@ define signext i32 @smin_i32_negone(i32 signext %a) {
 ; RV32I-SFB-LABEL: smin_i32_negone:
 ; RV32I-SFB:       # %bb.0:
 ; RV32I-SFB-NEXT:    li a1, -1
-; RV32I-SFB-NEXT:    bltz a0, .LBB26_2
+; RV32I-SFB-NEXT:    bgez a0, .LBB26_2
 ; RV32I-SFB-NEXT:  # %bb.1:
-; RV32I-SFB-NEXT:    mv a0, a1
+; RV32I-SFB-NEXT:    mv a1, a0
 ; RV32I-SFB-NEXT:  .LBB26_2:
+; RV32I-SFB-NEXT:    mv a0, a1
 ; RV32I-SFB-NEXT:    ret
 ;
 ; RV64I-SFB-LABEL: smin_i32_negone:
 ; RV64I-SFB:       # %bb.0:
 ; RV64I-SFB-NEXT:    li a1, -1
-; RV64I-SFB-NEXT:    bltz a0, .LBB26_2
+; RV64I-SFB-NEXT:    bgez a0, .LBB26_2
 ; RV64I-SFB-NEXT:  # %bb.1:
-; RV64I-SFB-NEXT:    mv a0, a1
+; RV64I-SFB-NEXT:    mv a1, a0
 ; RV64I-SFB-NEXT:  .LBB26_2:
+; RV64I-SFB-NEXT:    mv a0, a1
 ; RV64I-SFB-NEXT:    ret
   %c = call i32 @llvm.smin.i32(i32 %a, i32 -1)
   ret i32 %c
@@ -1221,23 +1281,27 @@ define i64 @smin_i64_negone(i64 %a) {
 ; RV32I-SFB-LABEL: smin_i64_negone:
 ; RV32I-SFB:       # %bb.0:
 ; RV32I-SFB-NEXT:    li a2, -1
-; RV32I-SFB-NEXT:    bltz a1, .LBB27_2
+; RV32I-SFB-NEXT:    li a3, -1
+; RV32I-SFB-NEXT:    bgez a1, .LBB27_2
 ; RV32I-SFB-NEXT:  # %bb.1:
-; RV32I-SFB-NEXT:    mv a0, a2
+; RV32I-SFB-NEXT:    mv a3, a0
 ; RV32I-SFB-NEXT:  .LBB27_2:
-; RV32I-SFB-NEXT:    bltz a1, .LBB27_4
+; RV32I-SFB-NEXT:    bgez a1, .LBB27_4
 ; RV32I-SFB-NEXT:  # %bb.3:
-; RV32I-SFB-NEXT:    mv a1, a2
+; RV32I-SFB-NEXT:    mv a2, a1
 ; RV32I-SFB-NEXT:  .LBB27_4:
+; RV32I-SFB-NEXT:    mv a0, a3
+; RV32I-SFB-NEXT:    mv a1, a2
 ; RV32I-SFB-NEXT:    ret
 ;
 ; RV64I-SFB-LABEL: smin_i64_negone:
 ; RV64I-SFB:       # %bb.0:
 ; RV64I-SFB-NEXT:    li a1, -1
-; RV64I-SFB-NEXT:    bltz a0, .LBB27_2
+; RV64I-SFB-NEXT:    bgez a0, .LBB27_2
 ; RV64I-SFB-NEXT:  # %bb.1:
-; RV64I-SFB-NEXT:    mv a0, a1
+; RV64I-SFB-NEXT:    mv a1, a0
 ; RV64I-SFB-NEXT:  .LBB27_2:
+; RV64I-SFB-NEXT:    mv a0, a1
 ; RV64I-SFB-NEXT:    ret
   %c = call i64 @llvm.smin.i64(i64 %a, i64 -1)
   ret i64 %c
@@ -1304,23 +1368,25 @@ define i64 @umax_i64_one(i64 %a, i64 %b) {
 ; RV32I-SFB-NEXT:  # %bb.1:
 ; RV32I-SFB-NEXT:    mv a3, a0
 ; RV32I-SFB-NEXT:  .LBB28_2:
-; RV32I-SFB-NEXT:    bnez a0, .LBB28_4
+; RV32I-SFB-NEXT:    beqz a0, .LBB28_4
 ; RV32I-SFB-NEXT:  # %bb.3:
-; RV32I-SFB-NEXT:    mv a0, a2
+; RV32I-SFB-NEXT:    mv a2, a0
 ; RV32I-SFB-NEXT:  .LBB28_4:
 ; RV32I-SFB-NEXT:    beqz a1, .LBB28_6
 ; RV32I-SFB-NEXT:  # %bb.5:
-; RV32I-SFB-NEXT:    mv a0, a3
+; RV32I-SFB-NEXT:    mv a2, a3
 ; RV32I-SFB-NEXT:  .LBB28_6:
+; RV32I-SFB-NEXT:    mv a0, a2
 ; RV32I-SFB-NEXT:    ret
 ;
 ; RV64I-SFB-LABEL: umax_i64_one:
 ; RV64I-SFB:       # %bb.0:
 ; RV64I-SFB-NEXT:    li a1, 1
-; RV64I-SFB-NEXT:    bnez a0, .LBB28_2
+; RV64I-SFB-NEXT:    beqz a0, .LBB28_2
 ; RV64I-SFB-NEXT:  # %bb.1:
-; RV64I-SFB-NEXT:    mv a0, a1
+; RV64I-SFB-NEXT:    mv a1, a0
 ; RV64I-SFB-NEXT:  .LBB28_2:
+; RV64I-SFB-NEXT:    mv a0, a1
 ; RV64I-SFB-NEXT:    ret
   %c = call i64 @llvm.umax.i64(i64 %a, i64 1)
   ret i64 %c

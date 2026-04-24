@@ -566,14 +566,16 @@ define <vscale x 2 x i32> @test_vsetvli_x0_x0_2(ptr %x, ptr %y, ptr %z, i64 %vl,
 ; CHECK-NEXT:  # %bb.1: # %if
 ; CHECK-NEXT:    vle16.v v10, (a1)
 ; CHECK-NEXT:    vsetvli zero, zero, e16, mf2, ta, ma
-; CHECK-NEXT:    vwadd.wv v9, v9, v10
+; CHECK-NEXT:    vwadd.wv v11, v9, v10
+; CHECK-NEXT:    vmv1r.v v9, v11
 ; CHECK-NEXT:  .LBB11_2: # %if.end
 ; CHECK-NEXT:    andi a5, a5, 1
 ; CHECK-NEXT:    beqz a5, .LBB11_4
 ; CHECK-NEXT:  # %bb.3: # %if2
 ; CHECK-NEXT:    vsetvli zero, zero, e16, mf2, ta, ma
 ; CHECK-NEXT:    vle16.v v10, (a2)
-; CHECK-NEXT:    vwadd.wv v9, v9, v10
+; CHECK-NEXT:    vwadd.wv v11, v9, v10
+; CHECK-NEXT:    vmv1r.v v9, v11
 ; CHECK-NEXT:  .LBB11_4: # %if2.end
 ; CHECK-NEXT:    vsetvli zero, zero, e32, m1, ta, ma
 ; CHECK-NEXT:    vadd.vv v8, v9, v8

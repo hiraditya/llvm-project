@@ -577,9 +577,9 @@ define <vscale x 4 x i32> @mismatched_extend_sub_add(<vscale x 4 x i16> %x, <vsc
 ; FOLDING-NEXT:    vzext.vf2 v10, v8
 ; FOLDING-NEXT:    vsetvli zero, zero, e16, m1, ta, ma
 ; FOLDING-NEXT:    vwsub.wv v12, v10, v9
-; FOLDING-NEXT:    vwadd.wv v10, v10, v9
+; FOLDING-NEXT:    vwadd.wv v14, v10, v9
 ; FOLDING-NEXT:    vsetvli zero, zero, e32, m2, ta, ma
-; FOLDING-NEXT:    vmul.vv v8, v12, v10
+; FOLDING-NEXT:    vmul.vv v8, v12, v14
 ; FOLDING-NEXT:    ret
   %a = zext <vscale x 4 x i16> %x to <vscale x 4 x i32>
   %b = sext <vscale x 4 x i16> %y to <vscale x 4 x i32>
@@ -597,9 +597,9 @@ define <vscale x 4 x i32> @mismatched_extend_sub_add_commuted(<vscale x 4 x i16>
 ; FOLDING-NEXT:    vzext.vf2 v10, v8
 ; FOLDING-NEXT:    vsetvli zero, zero, e16, m1, ta, ma
 ; FOLDING-NEXT:    vwsub.wv v12, v10, v9
-; FOLDING-NEXT:    vwadd.wv v10, v10, v9
+; FOLDING-NEXT:    vwadd.wv v14, v10, v9
 ; FOLDING-NEXT:    vsetvli zero, zero, e32, m2, ta, ma
-; FOLDING-NEXT:    vmul.vv v8, v12, v10
+; FOLDING-NEXT:    vmul.vv v8, v12, v14
 ; FOLDING-NEXT:    ret
   %a = zext <vscale x 4 x i16> %x to <vscale x 4 x i32>
   %b = sext <vscale x 4 x i16> %y to <vscale x 4 x i32>
@@ -616,9 +616,9 @@ define <vscale x 4 x i32> @mismatched_extend_add_sub(<vscale x 4 x i16> %x, <vsc
 ; FOLDING-NEXT:    vzext.vf2 v10, v8
 ; FOLDING-NEXT:    vsetvli zero, zero, e16, m1, ta, ma
 ; FOLDING-NEXT:    vwadd.wv v12, v10, v9
-; FOLDING-NEXT:    vwsub.wv v10, v10, v9
+; FOLDING-NEXT:    vwsub.wv v14, v10, v9
 ; FOLDING-NEXT:    vsetvli zero, zero, e32, m2, ta, ma
-; FOLDING-NEXT:    vmul.vv v8, v12, v10
+; FOLDING-NEXT:    vmul.vv v8, v12, v14
 ; FOLDING-NEXT:    ret
   %a = zext <vscale x 4 x i16> %x to <vscale x 4 x i32>
   %b = sext <vscale x 4 x i16> %y to <vscale x 4 x i32>
@@ -635,9 +635,9 @@ define <vscale x 4 x i32> @mismatched_extend_add_sub_commuted(<vscale x 4 x i16>
 ; FOLDING-NEXT:    vzext.vf2 v10, v8
 ; FOLDING-NEXT:    vsetvli zero, zero, e16, m1, ta, ma
 ; FOLDING-NEXT:    vwadd.wv v12, v10, v9
-; FOLDING-NEXT:    vwsub.wv v10, v10, v9
+; FOLDING-NEXT:    vwsub.wv v14, v10, v9
 ; FOLDING-NEXT:    vsetvli zero, zero, e32, m2, ta, ma
-; FOLDING-NEXT:    vmul.vv v8, v12, v10
+; FOLDING-NEXT:    vmul.vv v8, v12, v14
 ; FOLDING-NEXT:    ret
   %a = zext <vscale x 4 x i16> %x to <vscale x 4 x i32>
   %b = sext <vscale x 4 x i16> %y to <vscale x 4 x i32>
