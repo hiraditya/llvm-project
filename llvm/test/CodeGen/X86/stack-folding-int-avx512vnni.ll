@@ -39,8 +39,8 @@ define <16 x i32> @stack_fold_vpdpwssd_mask(ptr %a0, <16 x i32> %a1, <16 x i32> 
 ; CHECK-NEXT:    #APP
 ; CHECK-NEXT:    nop
 ; CHECK-NEXT:    #NO_APP
-; CHECK-NEXT:    kmovd %esi, %k1
 ; CHECK-NEXT:    vmovdqa64 (%rdi), %zmm2
+; CHECK-NEXT:    kmovd %esi, %k1
 ; CHECK-NEXT:    vpdpwssd {{[-0-9]+}}(%r{{[sb]}}p), %zmm0, %zmm2 {%k1} # 64-byte Folded Reload
 ; CHECK-NEXT:    vmovdqa64 %zmm2, %zmm0
 ; CHECK-NEXT:    retq
@@ -59,8 +59,8 @@ define <16 x i32> @stack_fold_vpdpwssd_mask_commuted(ptr %a0, <16 x i32> %a1, <1
 ; CHECK-NEXT:    #APP
 ; CHECK-NEXT:    nop
 ; CHECK-NEXT:    #NO_APP
-; CHECK-NEXT:    kmovd %esi, %k1
 ; CHECK-NEXT:    vmovdqa64 (%rdi), %zmm2
+; CHECK-NEXT:    kmovd %esi, %k1
 ; CHECK-NEXT:    vpdpwssd {{[-0-9]+}}(%r{{[sb]}}p), %zmm0, %zmm2 {%k1} # 64-byte Folded Reload
 ; CHECK-NEXT:    vmovdqa64 %zmm2, %zmm0
 ; CHECK-NEXT:    retq
@@ -143,8 +143,8 @@ define <16 x i32> @stack_fold_vpdpwssds_mask(ptr %a0, <16 x i32> %a1, <16 x i32>
 ; CHECK-NEXT:    #APP
 ; CHECK-NEXT:    nop
 ; CHECK-NEXT:    #NO_APP
-; CHECK-NEXT:    kmovd %esi, %k1
 ; CHECK-NEXT:    vmovdqa64 (%rdi), %zmm2
+; CHECK-NEXT:    kmovd %esi, %k1
 ; CHECK-NEXT:    vpdpwssds {{[-0-9]+}}(%r{{[sb]}}p), %zmm0, %zmm2 {%k1} # 64-byte Folded Reload
 ; CHECK-NEXT:    vmovdqa64 %zmm2, %zmm0
 ; CHECK-NEXT:    retq
@@ -163,8 +163,8 @@ define <16 x i32> @stack_fold_vpdpwssds_mask_commuted(ptr %a0, <16 x i32> %a1, <
 ; CHECK-NEXT:    #APP
 ; CHECK-NEXT:    nop
 ; CHECK-NEXT:    #NO_APP
-; CHECK-NEXT:    kmovd %esi, %k1
 ; CHECK-NEXT:    vmovdqa64 (%rdi), %zmm2
+; CHECK-NEXT:    kmovd %esi, %k1
 ; CHECK-NEXT:    vpdpwssds {{[-0-9]+}}(%r{{[sb]}}p), %zmm0, %zmm2 {%k1} # 64-byte Folded Reload
 ; CHECK-NEXT:    vmovdqa64 %zmm2, %zmm0
 ; CHECK-NEXT:    retq

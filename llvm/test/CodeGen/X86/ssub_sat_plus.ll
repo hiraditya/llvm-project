@@ -11,15 +11,16 @@ declare i64 @llvm.ssub.sat.i64(i64, i64)
 define i32 @func32(i32 %x, i32 %y, i32 %z) nounwind {
 ; X86-LABEL: func32:
 ; X86:       # %bb.0:
+; X86-NEXT:    movl {{[0-9]+}}(%esp), %ecx
 ; X86-NEXT:    movl {{[0-9]+}}(%esp), %eax
 ; X86-NEXT:    movl {{[0-9]+}}(%esp), %edx
-; X86-NEXT:    imull {{[0-9]+}}(%esp), %edx
-; X86-NEXT:    xorl %ecx, %ecx
-; X86-NEXT:    cmpl %edx, %eax
-; X86-NEXT:    setns %cl
-; X86-NEXT:    addl $2147483647, %ecx # imm = 0x7FFFFFFF
-; X86-NEXT:    subl %edx, %eax
-; X86-NEXT:    cmovol %ecx, %eax
+; X86-NEXT:    imull %eax, %edx
+; X86-NEXT:    xorl %eax, %eax
+; X86-NEXT:    cmpl %edx, %ecx
+; X86-NEXT:    setns %al
+; X86-NEXT:    addl $2147483647, %eax # imm = 0x7FFFFFFF
+; X86-NEXT:    subl %edx, %ecx
+; X86-NEXT:    cmovnol %ecx, %eax
 ; X86-NEXT:    retl
 ;
 ; X64-LABEL: func32:
@@ -74,15 +75,16 @@ define i64 @func64(i64 %x, i64 %y, i64 %z) nounwind {
 define signext i16 @func16(i16 signext %x, i16 signext %y, i16 signext %z) nounwind {
 ; X86-LABEL: func16:
 ; X86:       # %bb.0:
+; X86-NEXT:    movzwl {{[0-9]+}}(%esp), %ecx
 ; X86-NEXT:    movzwl {{[0-9]+}}(%esp), %eax
 ; X86-NEXT:    movzwl {{[0-9]+}}(%esp), %edx
-; X86-NEXT:    imulw {{[0-9]+}}(%esp), %dx
-; X86-NEXT:    xorl %ecx, %ecx
-; X86-NEXT:    cmpw %dx, %ax
-; X86-NEXT:    setns %cl
-; X86-NEXT:    addl $32767, %ecx # imm = 0x7FFF
-; X86-NEXT:    subw %dx, %ax
-; X86-NEXT:    cmovol %ecx, %eax
+; X86-NEXT:    imulw %ax, %dx
+; X86-NEXT:    xorl %eax, %eax
+; X86-NEXT:    cmpw %dx, %cx
+; X86-NEXT:    setns %al
+; X86-NEXT:    addl $32767, %eax # imm = 0x7FFF
+; X86-NEXT:    subw %dx, %cx
+; X86-NEXT:    cmovnol %ecx, %eax
 ; X86-NEXT:    # kill: def $ax killed $ax killed $eax
 ; X86-NEXT:    retl
 ;
@@ -114,8 +116,8 @@ define signext i8 @func8(i8 signext %x, i8 signext %y, i8 signext %z) nounwind {
 ; X86-NEXT:    addl $127, %ecx
 ; X86-NEXT:    subb %al, %dl
 ; X86-NEXT:    movzbl %dl, %eax
-; X86-NEXT:    cmovol %ecx, %eax
-; X86-NEXT:    # kill: def $al killed $al killed $eax
+; X86-NEXT:    cmovnol %eax, %ecx
+; X86-NEXT:    movl %ecx, %eax
 ; X86-NEXT:    retl
 ;
 ; X64-LABEL: func8:
@@ -129,8 +131,8 @@ define signext i8 @func8(i8 signext %x, i8 signext %y, i8 signext %z) nounwind {
 ; X64-NEXT:    addl $127, %ecx
 ; X64-NEXT:    subb %al, %dil
 ; X64-NEXT:    movzbl %dil, %eax
-; X64-NEXT:    cmovol %ecx, %eax
-; X64-NEXT:    # kill: def $al killed $al killed $eax
+; X64-NEXT:    cmovnol %eax, %ecx
+; X64-NEXT:    movl %ecx, %eax
 ; X64-NEXT:    retq
   %a = mul i8 %y, %z
   %tmp = call i8 @llvm.ssub.sat.i8(i8 %x, i8 %a)
@@ -149,11 +151,11 @@ define signext i4 @func4(i4 signext %x, i4 signext %y, i4 signext %z) nounwind {
 ; X86-NEXT:    movzbl %cl, %eax
 ; X86-NEXT:    cmpb $7, %cl
 ; X86-NEXT:    movl $7, %ecx
-; X86-NEXT:    cmovll %eax, %ecx
-; X86-NEXT:    cmpb $-7, %cl
-; X86-NEXT:    movl $248, %eax
 ; X86-NEXT:    cmovgel %ecx, %eax
-; X86-NEXT:    movsbl %al, %eax
+; X86-NEXT:    cmpb $-7, %al
+; X86-NEXT:    movl $248, %ecx
+; X86-NEXT:    cmovgel %eax, %ecx
+; X86-NEXT:    movsbl %cl, %eax
 ; X86-NEXT:    retl
 ;
 ; X64-LABEL: func4:

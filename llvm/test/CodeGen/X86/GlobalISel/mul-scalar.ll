@@ -23,15 +23,15 @@ define i8 @test_mul_i8(i8 %arg1, i8 %arg2) nounwind {
 define i16 @test_mul_i16(i16 %arg1, i16 %arg2) nounwind {
 ; X64-LABEL: test_mul_i16:
 ; X64:       # %bb.0:
-; X64-NEXT:    movl %esi, %eax
-; X64-NEXT:    imulw %di, %ax
+; X64-NEXT:    movl %edi, %eax
+; X64-NEXT:    imulw %si, %ax
 ; X64-NEXT:    # kill: def $ax killed $ax killed $eax
 ; X64-NEXT:    retq
 ;
 ; X86-LABEL: test_mul_i16:
 ; X86:       # %bb.0:
-; X86-NEXT:    movzwl {{[0-9]+}}(%esp), %ecx
 ; X86-NEXT:    movzwl {{[0-9]+}}(%esp), %eax
+; X86-NEXT:    movzwl {{[0-9]+}}(%esp), %ecx
 ; X86-NEXT:    imulw %cx, %ax
 ; X86-NEXT:    # kill: def $ax killed $ax killed $eax
 ; X86-NEXT:    retl
@@ -42,14 +42,15 @@ define i16 @test_mul_i16(i16 %arg1, i16 %arg2) nounwind {
 define i32 @test_mul_i32(i32 %arg1, i32 %arg2) nounwind {
 ; X64-LABEL: test_mul_i32:
 ; X64:       # %bb.0:
-; X64-NEXT:    movl %esi, %eax
-; X64-NEXT:    imull %edi, %eax
+; X64-NEXT:    movl %edi, %eax
+; X64-NEXT:    imull %esi, %eax
 ; X64-NEXT:    retq
 ;
 ; X86-LABEL: test_mul_i32:
 ; X86:       # %bb.0:
+; X86-NEXT:    movl {{[0-9]+}}(%esp), %ecx
 ; X86-NEXT:    movl {{[0-9]+}}(%esp), %eax
-; X86-NEXT:    imull {{[0-9]+}}(%esp), %eax
+; X86-NEXT:    imull %ecx, %eax
 ; X86-NEXT:    retl
   %ret = mul i32 %arg1, %arg2
   ret i32 %ret
@@ -58,12 +59,13 @@ define i32 @test_mul_i32(i32 %arg1, i32 %arg2) nounwind {
 define i64 @test_mul_i64(i64 %arg1, i64 %arg2) nounwind {
 ; X64-LABEL: test_mul_i64:
 ; X64:       # %bb.0:
-; X64-NEXT:    movq %rsi, %rax
-; X64-NEXT:    imulq %rdi, %rax
+; X64-NEXT:    movq %rdi, %rax
+; X64-NEXT:    imulq %rsi, %rax
 ; X64-NEXT:    retq
 ;
 ; X86-LABEL: test_mul_i64:
 ; X86:       # %bb.0:
+; X86-NEXT:    pushl %ebx
 ; X86-NEXT:    pushl %edi
 ; X86-NEXT:    pushl %esi
 ; X86-NEXT:    movl {{[0-9]+}}(%esp), %eax
@@ -73,13 +75,15 @@ define i64 @test_mul_i64(i64 %arg1, i64 %arg2) nounwind {
 ; X86-NEXT:    imull %edx, %ecx
 ; X86-NEXT:    movl {{[0-9]+}}(%esp), %edi
 ; X86-NEXT:    imull %edx, %edi
-; X86-NEXT:    imull {{[0-9]+}}(%esp), %esi
-; X86-NEXT:    addl %edi, %esi
+; X86-NEXT:    movl {{[0-9]+}}(%esp), %ebx
+; X86-NEXT:    imull %esi, %ebx
+; X86-NEXT:    leal (%edi,%ebx), %esi
 ; X86-NEXT:    mull %edx
 ; X86-NEXT:    addl %esi, %edx
 ; X86-NEXT:    movl %ecx, %eax
 ; X86-NEXT:    popl %esi
 ; X86-NEXT:    popl %edi
+; X86-NEXT:    popl %ebx
 ; X86-NEXT:    retl
   %ret = mul i64 %arg1, %arg2
   ret i64 %ret

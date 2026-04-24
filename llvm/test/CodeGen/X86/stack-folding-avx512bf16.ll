@@ -137,8 +137,8 @@ define <16 x float> @stack_fold_vdpbf16ps_mask(ptr %a0, <32 x bfloat> %a1, <32 x
 ; CHECK-NEXT:    #APP
 ; CHECK-NEXT:    nop
 ; CHECK-NEXT:    #NO_APP
-; CHECK-NEXT:    kmovd %edx, %k1
 ; CHECK-NEXT:    vmovaps (%rdi), %zmm2
+; CHECK-NEXT:    kmovd %edx, %k1
 ; CHECK-NEXT:    vdpbf16ps {{[-0-9]+}}(%r{{[sb]}}p), %zmm0, %zmm2 {%k1} # 64-byte Folded Reload
 ; CHECK-NEXT:    vmovaps %zmm2, %zmm0
 ; CHECK-NEXT:    retq
@@ -302,8 +302,8 @@ define <8 x float> @stack_fold_vdpbf16ps_mask_ymm(ptr %a0, <16 x bfloat> %a1, <1
 ; CHECK-NEXT:    #APP
 ; CHECK-NEXT:    nop
 ; CHECK-NEXT:    #NO_APP
-; CHECK-NEXT:    kmovd %edx, %k1
 ; CHECK-NEXT:    vmovaps (%rdi), %ymm2
+; CHECK-NEXT:    kmovd %edx, %k1
 ; CHECK-NEXT:    vdpbf16ps {{[-0-9]+}}(%r{{[sb]}}p), %ymm0, %ymm2 {%k1} # 32-byte Folded Reload
 ; CHECK-NEXT:    vmovaps %ymm2, %ymm0
 ; CHECK-NEXT:    retq
@@ -413,8 +413,8 @@ define <8 x bfloat> @stack_fold_cvtneps2bf16_mask_xmm(<4 x float> %a0, ptr %pass
 ; CHECK-NEXT:    #APP
 ; CHECK-NEXT:    nop
 ; CHECK-NEXT:    #NO_APP
-; CHECK-NEXT:    kmovd %esi, %k1
 ; CHECK-NEXT:    vmovaps (%rdi), %xmm1
+; CHECK-NEXT:    kmovd %esi, %k1
 ; CHECK-NEXT:    vcvtneps2bf16x {{[-0-9]+}}(%r{{[sb]}}p), %xmm1 {%k1} # 16-byte Folded Reload
 ; CHECK-NEXT:    vmovaps %xmm1, %xmm0
 ; CHECK-NEXT:    retq
@@ -465,8 +465,8 @@ define <4 x float> @stack_fold_vdpbf16ps_mask_xmm(ptr %a0, <8 x bfloat> %a1, <8 
 ; CHECK-NEXT:    #APP
 ; CHECK-NEXT:    nop
 ; CHECK-NEXT:    #NO_APP
-; CHECK-NEXT:    kmovd %edx, %k1
 ; CHECK-NEXT:    vmovaps (%rdi), %xmm2
+; CHECK-NEXT:    kmovd %edx, %k1
 ; CHECK-NEXT:    vdpbf16ps {{[-0-9]+}}(%r{{[sb]}}p), %xmm0, %xmm2 {%k1} # 16-byte Folded Reload
 ; CHECK-NEXT:    vmovaps %xmm2, %xmm0
 ; CHECK-NEXT:    retq

@@ -39,8 +39,8 @@ define <8 x i64> @stack_fold_vpmadd52huq_mask(ptr %a0, <8 x i64> %a1, <8 x i64> 
 ; CHECK-NEXT:    #APP
 ; CHECK-NEXT:    nop
 ; CHECK-NEXT:    #NO_APP
-; CHECK-NEXT:    kmovw %esi, %k1
 ; CHECK-NEXT:    vmovdqa64 (%rdi), %zmm2
+; CHECK-NEXT:    kmovw %esi, %k1
 ; CHECK-NEXT:    vpmadd52huq {{[-0-9]+}}(%r{{[sb]}}p), %zmm0, %zmm2 {%k1} # 64-byte Folded Reload
 ; CHECK-NEXT:    vmovdqa64 %zmm2, %zmm0
 ; CHECK-NEXT:    retq
@@ -59,8 +59,8 @@ define <8 x i64> @stack_fold_vpmadd52huq_mask_commuted(ptr %a0, <8 x i64> %a1, <
 ; CHECK-NEXT:    #APP
 ; CHECK-NEXT:    nop
 ; CHECK-NEXT:    #NO_APP
-; CHECK-NEXT:    kmovw %esi, %k1
 ; CHECK-NEXT:    vmovdqa64 (%rdi), %zmm2
+; CHECK-NEXT:    kmovw %esi, %k1
 ; CHECK-NEXT:    vpmadd52huq {{[-0-9]+}}(%r{{[sb]}}p), %zmm0, %zmm2 {%k1} # 64-byte Folded Reload
 ; CHECK-NEXT:    vmovdqa64 %zmm2, %zmm0
 ; CHECK-NEXT:    retq
@@ -145,8 +145,8 @@ define <8 x i64> @stack_fold_vpmadd52luq_mask(ptr %a0, <8 x i64> %a1, <8 x i64> 
 ; CHECK-NEXT:    #APP
 ; CHECK-NEXT:    nop
 ; CHECK-NEXT:    #NO_APP
-; CHECK-NEXT:    kmovw %esi, %k1
 ; CHECK-NEXT:    vmovdqa64 (%rdi), %zmm2
+; CHECK-NEXT:    kmovw %esi, %k1
 ; CHECK-NEXT:    vpmadd52luq {{[-0-9]+}}(%r{{[sb]}}p), %zmm0, %zmm2 {%k1} # 64-byte Folded Reload
 ; CHECK-NEXT:    vmovdqa64 %zmm2, %zmm0
 ; CHECK-NEXT:    retq
@@ -165,8 +165,8 @@ define <8 x i64> @stack_fold_vpmadd52luq_mask_commuted(ptr %a0, <8 x i64> %a1, <
 ; CHECK-NEXT:    #APP
 ; CHECK-NEXT:    nop
 ; CHECK-NEXT:    #NO_APP
-; CHECK-NEXT:    kmovw %esi, %k1
 ; CHECK-NEXT:    vmovdqa64 (%rdi), %zmm2
+; CHECK-NEXT:    kmovw %esi, %k1
 ; CHECK-NEXT:    vpmadd52luq {{[-0-9]+}}(%r{{[sb]}}p), %zmm0, %zmm2 {%k1} # 64-byte Folded Reload
 ; CHECK-NEXT:    vmovdqa64 %zmm2, %zmm0
 ; CHECK-NEXT:    retq

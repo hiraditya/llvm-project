@@ -1658,8 +1658,8 @@ define <32 x half> @stack_fold_sqrtph_mask(<32 x half> %a0, ptr %passthru, i32 %
 ; CHECK-NEXT:    #APP
 ; CHECK-NEXT:    nop
 ; CHECK-NEXT:    #NO_APP
-; CHECK-NEXT:    kmovd %esi, %k1
 ; CHECK-NEXT:    vmovaps (%rdi), %zmm1
+; CHECK-NEXT:    kmovd %esi, %k1
 ; CHECK-NEXT:    vsqrtph {{[-0-9]+}}(%r{{[sb]}}p), %zmm1 {%k1} # 64-byte Folded Reload
 ; CHECK-NEXT:    vmovaps %zmm1, %zmm0
 ; CHECK-NEXT:    retq

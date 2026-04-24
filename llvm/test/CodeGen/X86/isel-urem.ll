@@ -59,27 +59,57 @@ define i8 @test_urem_i8(i8 %arg1, i8 %arg2) nounwind {
 }
 
 define i16 @test_urem_i16(i16 %arg1, i16 %arg2) nounwind {
-; X64-LABEL: test_urem_i16:
-; X64:       # %bb.0:
-; X64-NEXT:    movl %edi, %eax
-; X64-NEXT:    # kill: def $ax killed $ax killed $eax
-; X64-NEXT:    xorl %edx, %edx
-; X64-NEXT:    divw %si
-; X64-NEXT:    movl %edx, %eax
-; X64-NEXT:    retq
+; SDAG-X64-LABEL: test_urem_i16:
+; SDAG-X64:       # %bb.0:
+; SDAG-X64-NEXT:    movl %edi, %eax
+; SDAG-X64-NEXT:    # kill: def $ax killed $ax killed $eax
+; SDAG-X64-NEXT:    xorl %edx, %edx
+; SDAG-X64-NEXT:    divw %si
+; SDAG-X64-NEXT:    movl %edx, %eax
+; SDAG-X64-NEXT:    retq
 ;
-; DAG-X86-LABEL: test_urem_i16:
-; DAG-X86:       # %bb.0:
-; DAG-X86-NEXT:    movzwl {{[0-9]+}}(%esp), %eax
-; DAG-X86-NEXT:    xorl %edx, %edx
-; DAG-X86-NEXT:    divw {{[0-9]+}}(%esp)
-; DAG-X86-NEXT:    movl %edx, %eax
-; DAG-X86-NEXT:    retl
+; FAST-X64-LABEL: test_urem_i16:
+; FAST-X64:       # %bb.0:
+; FAST-X64-NEXT:    movl %edi, %eax
+; FAST-X64-NEXT:    xorl %ecx, %ecx
+; FAST-X64-NEXT:    # kill: def $ax killed $ax killed $eax
+; FAST-X64-NEXT:    xorl %edx, %edx
+; FAST-X64-NEXT:    divw %si
+; FAST-X64-NEXT:    movl %edx, %eax
+; FAST-X64-NEXT:    retq
+;
+; GISEL-X64-LABEL: test_urem_i16:
+; GISEL-X64:       # %bb.0:
+; GISEL-X64-NEXT:    movl %edi, %eax
+; GISEL-X64-NEXT:    xorl %ecx, %ecx
+; GISEL-X64-NEXT:    # kill: def $ax killed $ax killed $eax
+; GISEL-X64-NEXT:    xorl %edx, %edx
+; GISEL-X64-NEXT:    divw %si
+; GISEL-X64-NEXT:    movl %edx, %eax
+; GISEL-X64-NEXT:    retq
+;
+; SDAG-X86-LABEL: test_urem_i16:
+; SDAG-X86:       # %bb.0:
+; SDAG-X86-NEXT:    movzwl {{[0-9]+}}(%esp), %eax
+; SDAG-X86-NEXT:    xorl %edx, %edx
+; SDAG-X86-NEXT:    divw {{[0-9]+}}(%esp)
+; SDAG-X86-NEXT:    movl %edx, %eax
+; SDAG-X86-NEXT:    retl
+;
+; FAST-X86-LABEL: test_urem_i16:
+; FAST-X86:       # %bb.0:
+; FAST-X86-NEXT:    movzwl {{[0-9]+}}(%esp), %eax
+; FAST-X86-NEXT:    xorl %ecx, %ecx
+; FAST-X86-NEXT:    xorl %edx, %edx
+; FAST-X86-NEXT:    divw {{[0-9]+}}(%esp)
+; FAST-X86-NEXT:    movl %edx, %eax
+; FAST-X86-NEXT:    retl
 ;
 ; GISEL-X86-LABEL: test_urem_i16:
 ; GISEL-X86:       # %bb.0:
 ; GISEL-X86-NEXT:    movzwl {{[0-9]+}}(%esp), %eax
 ; GISEL-X86-NEXT:    movzwl {{[0-9]+}}(%esp), %ecx
+; GISEL-X86-NEXT:    xorl %edx, %edx
 ; GISEL-X86-NEXT:    # kill: def $ax killed $ax killed $eax
 ; GISEL-X86-NEXT:    xorl %edx, %edx
 ; GISEL-X86-NEXT:    divw %cx
@@ -110,13 +140,31 @@ define i32 @test_urem_i32(i32 %arg1, i32 %arg2) nounwind {
 }
 
 define i64 @test_urem_i64(i64 %arg1, i64 %arg2) nounwind {
-; X64-LABEL: test_urem_i64:
-; X64:       # %bb.0:
-; X64-NEXT:    movq %rdi, %rax
-; X64-NEXT:    xorl %edx, %edx
-; X64-NEXT:    divq %rsi
-; X64-NEXT:    movq %rdx, %rax
-; X64-NEXT:    retq
+; SDAG-X64-LABEL: test_urem_i64:
+; SDAG-X64:       # %bb.0:
+; SDAG-X64-NEXT:    movq %rdi, %rax
+; SDAG-X64-NEXT:    xorl %edx, %edx
+; SDAG-X64-NEXT:    divq %rsi
+; SDAG-X64-NEXT:    movq %rdx, %rax
+; SDAG-X64-NEXT:    retq
+;
+; FAST-X64-LABEL: test_urem_i64:
+; FAST-X64:       # %bb.0:
+; FAST-X64-NEXT:    movq %rdi, %rax
+; FAST-X64-NEXT:    xorl %ecx, %ecx
+; FAST-X64-NEXT:    xorl %edx, %edx
+; FAST-X64-NEXT:    divq %rsi
+; FAST-X64-NEXT:    movq %rdx, %rax
+; FAST-X64-NEXT:    retq
+;
+; GISEL-X64-LABEL: test_urem_i64:
+; GISEL-X64:       # %bb.0:
+; GISEL-X64-NEXT:    movq %rdi, %rax
+; GISEL-X64-NEXT:    xorl %ecx, %ecx
+; GISEL-X64-NEXT:    xorl %edx, %edx
+; GISEL-X64-NEXT:    divq %rsi
+; GISEL-X64-NEXT:    movq %rdx, %rax
+; GISEL-X64-NEXT:    retq
 ;
 ; DAG-X86-LABEL: test_urem_i64:
 ; DAG-X86:       # %bb.0:

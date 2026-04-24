@@ -31,25 +31,11 @@ define i8 @test_udiv_i8(i8 %arg1, i8 %arg2) nounwind {
 }
 
 define i16 @test_udiv_i16(i16 %arg1, i16 %arg2) nounwind {
-; X64-LABEL: test_udiv_i16:
-; X64:       # %bb.0:
-; X64-NEXT:    movl %edi, %eax
-; X64-NEXT:    # kill: def $ax killed $ax killed $eax
-; X64-NEXT:    xorl %edx, %edx
-; X64-NEXT:    divw %si
-; X64-NEXT:    retq
-;
-; DAG-X86-LABEL: test_udiv_i16:
-; DAG-X86:       # %bb.0:
-; DAG-X86-NEXT:    movzwl {{[0-9]+}}(%esp), %eax
-; DAG-X86-NEXT:    xorl %edx, %edx
-; DAG-X86-NEXT:    divw {{[0-9]+}}(%esp)
-; DAG-X86-NEXT:    retl
-;
 ; GISEL-X86-LABEL: test_udiv_i16:
 ; GISEL-X86:       # %bb.0:
 ; GISEL-X86-NEXT:    movzwl {{[0-9]+}}(%esp), %eax
 ; GISEL-X86-NEXT:    movzwl {{[0-9]+}}(%esp), %ecx
+; GISEL-X86-NEXT:    xorl %edx, %edx
 ; GISEL-X86-NEXT:    # kill: def $ax killed $ax killed $eax
 ; GISEL-X86-NEXT:    xorl %edx, %edx
 ; GISEL-X86-NEXT:    divw %cx
@@ -77,13 +63,6 @@ define i32 @test_udiv_i32(i32 %arg1, i32 %arg2) nounwind {
 }
 
 define i64 @test_udiv_i64(i64 %arg1, i64 %arg2) nounwind {
-; X64-LABEL: test_udiv_i64:
-; X64:       # %bb.0:
-; X64-NEXT:    movq %rdi, %rax
-; X64-NEXT:    xorl %edx, %edx
-; X64-NEXT:    divq %rsi
-; X64-NEXT:    retq
-;
 ; DAG-X86-LABEL: test_udiv_i64:
 ; DAG-X86:       # %bb.0:
 ; DAG-X86-NEXT:    subl $12, %esp

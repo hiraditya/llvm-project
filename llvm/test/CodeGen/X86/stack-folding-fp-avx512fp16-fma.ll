@@ -109,8 +109,8 @@ define <32 x half> @stack_fold_fmadd123ph_mask(ptr %p, <32 x half> %a1, <32 x ha
 ; CHECK-NEXT:    #APP
 ; CHECK-NEXT:    nop
 ; CHECK-NEXT:    #NO_APP
-; CHECK-NEXT:    kmovd %esi, %k1
 ; CHECK-NEXT:    vmovaps (%rdi), %zmm2
+; CHECK-NEXT:    kmovd %esi, %k1
 ; CHECK-NEXT:    vfmadd213ph {{[-0-9]+}}(%r{{[sb]}}p), %zmm0, %zmm2 {%k1} # 64-byte Folded Reload
 ; CHECK-NEXT:    vmovaps %zmm2, %zmm0
 ; CHECK-NEXT:    retq
@@ -129,8 +129,8 @@ define <32 x half> @stack_fold_fmadd213ph_mask(ptr %p, <32 x half> %a1, <32 x ha
 ; CHECK-NEXT:    #APP
 ; CHECK-NEXT:    nop
 ; CHECK-NEXT:    #NO_APP
-; CHECK-NEXT:    kmovd %esi, %k1
 ; CHECK-NEXT:    vmovaps (%rdi), %zmm2
+; CHECK-NEXT:    kmovd %esi, %k1
 ; CHECK-NEXT:    vfmadd213ph {{[-0-9]+}}(%r{{[sb]}}p), %zmm0, %zmm2 {%k1} # 64-byte Folded Reload
 ; CHECK-NEXT:    vmovaps %zmm2, %zmm0
 ; CHECK-NEXT:    retq
@@ -149,8 +149,8 @@ define <32 x half> @stack_fold_fmadd231ph_mask(ptr %p, <32 x half> %a1, <32 x ha
 ; CHECK-NEXT:    #APP
 ; CHECK-NEXT:    nop
 ; CHECK-NEXT:    #NO_APP
-; CHECK-NEXT:    kmovd %esi, %k1
 ; CHECK-NEXT:    vmovaps (%rdi), %zmm2
+; CHECK-NEXT:    kmovd %esi, %k1
 ; CHECK-NEXT:    vfmadd231ph {{[-0-9]+}}(%r{{[sb]}}p), %zmm0, %zmm2 {%k1} # 64-byte Folded Reload
 ; CHECK-NEXT:    vmovaps %zmm2, %zmm0
 ; CHECK-NEXT:    retq
@@ -169,8 +169,8 @@ define <32 x half> @stack_fold_fmadd321ph_mask(ptr %p, <32 x half> %a1, <32 x ha
 ; CHECK-NEXT:    #APP
 ; CHECK-NEXT:    nop
 ; CHECK-NEXT:    #NO_APP
-; CHECK-NEXT:    kmovd %esi, %k1
 ; CHECK-NEXT:    vmovaps (%rdi), %zmm2
+; CHECK-NEXT:    kmovd %esi, %k1
 ; CHECK-NEXT:    vfmadd231ph {{[-0-9]+}}(%r{{[sb]}}p), %zmm0, %zmm2 {%k1} # 64-byte Folded Reload
 ; CHECK-NEXT:    vmovaps %zmm2, %zmm0
 ; CHECK-NEXT:    retq
@@ -189,8 +189,8 @@ define <32 x half> @stack_fold_fmadd132ph_mask(ptr %p, <32 x half> %a1, <32 x ha
 ; CHECK-NEXT:    #APP
 ; CHECK-NEXT:    nop
 ; CHECK-NEXT:    #NO_APP
-; CHECK-NEXT:    kmovd %esi, %k1
 ; CHECK-NEXT:    vmovaps (%rdi), %zmm2
+; CHECK-NEXT:    kmovd %esi, %k1
 ; CHECK-NEXT:    vfmadd132ph {{[-0-9]+}}(%r{{[sb]}}p), %zmm0, %zmm2 {%k1} # 64-byte Folded Reload
 ; CHECK-NEXT:    vmovaps %zmm2, %zmm0
 ; CHECK-NEXT:    retq
@@ -209,8 +209,8 @@ define <32 x half> @stack_fold_fmadd312ph_mask(ptr %p, <32 x half> %a1, <32 x ha
 ; CHECK-NEXT:    #APP
 ; CHECK-NEXT:    nop
 ; CHECK-NEXT:    #NO_APP
-; CHECK-NEXT:    kmovd %esi, %k1
 ; CHECK-NEXT:    vmovaps (%rdi), %zmm2
+; CHECK-NEXT:    kmovd %esi, %k1
 ; CHECK-NEXT:    vfmadd132ph {{[-0-9]+}}(%r{{[sb]}}p), %zmm0, %zmm2 {%k1} # 64-byte Folded Reload
 ; CHECK-NEXT:    vmovaps %zmm2, %zmm0
 ; CHECK-NEXT:    retq
@@ -443,8 +443,8 @@ define <32 x half> @stack_fold_fmsub123ph_mask(ptr %p, <32 x half> %a1, <32 x ha
 ; CHECK-NEXT:    #APP
 ; CHECK-NEXT:    nop
 ; CHECK-NEXT:    #NO_APP
-; CHECK-NEXT:    kmovd %esi, %k1
 ; CHECK-NEXT:    vmovaps (%rdi), %zmm2
+; CHECK-NEXT:    kmovd %esi, %k1
 ; CHECK-NEXT:    vfmsub213ph {{[-0-9]+}}(%r{{[sb]}}p), %zmm0, %zmm2 {%k1} # 64-byte Folded Reload
 ; CHECK-NEXT:    vmovaps %zmm2, %zmm0
 ; CHECK-NEXT:    retq
@@ -464,8 +464,8 @@ define <32 x half> @stack_fold_fmsub213ph_mask(ptr %p, <32 x half> %a1, <32 x ha
 ; CHECK-NEXT:    #APP
 ; CHECK-NEXT:    nop
 ; CHECK-NEXT:    #NO_APP
-; CHECK-NEXT:    kmovd %esi, %k1
 ; CHECK-NEXT:    vmovaps (%rdi), %zmm2
+; CHECK-NEXT:    kmovd %esi, %k1
 ; CHECK-NEXT:    vfmsub213ph {{[-0-9]+}}(%r{{[sb]}}p), %zmm0, %zmm2 {%k1} # 64-byte Folded Reload
 ; CHECK-NEXT:    vmovaps %zmm2, %zmm0
 ; CHECK-NEXT:    retq
@@ -485,8 +485,8 @@ define <32 x half> @stack_fold_fmsub231ph_mask(ptr %p, <32 x half> %a1, <32 x ha
 ; CHECK-NEXT:    #APP
 ; CHECK-NEXT:    nop
 ; CHECK-NEXT:    #NO_APP
-; CHECK-NEXT:    kmovd %esi, %k1
 ; CHECK-NEXT:    vmovaps (%rdi), %zmm2
+; CHECK-NEXT:    kmovd %esi, %k1
 ; CHECK-NEXT:    vfmsub231ph {{[-0-9]+}}(%r{{[sb]}}p), %zmm0, %zmm2 {%k1} # 64-byte Folded Reload
 ; CHECK-NEXT:    vmovaps %zmm2, %zmm0
 ; CHECK-NEXT:    retq
@@ -506,8 +506,8 @@ define <32 x half> @stack_fold_fmsub321ph_mask(ptr %p, <32 x half> %a1, <32 x ha
 ; CHECK-NEXT:    #APP
 ; CHECK-NEXT:    nop
 ; CHECK-NEXT:    #NO_APP
-; CHECK-NEXT:    kmovd %esi, %k1
 ; CHECK-NEXT:    vmovaps (%rdi), %zmm2
+; CHECK-NEXT:    kmovd %esi, %k1
 ; CHECK-NEXT:    vfmsub231ph {{[-0-9]+}}(%r{{[sb]}}p), %zmm0, %zmm2 {%k1} # 64-byte Folded Reload
 ; CHECK-NEXT:    vmovaps %zmm2, %zmm0
 ; CHECK-NEXT:    retq
@@ -527,8 +527,8 @@ define <32 x half> @stack_fold_fmsub132ph_mask(ptr %p, <32 x half> %a1, <32 x ha
 ; CHECK-NEXT:    #APP
 ; CHECK-NEXT:    nop
 ; CHECK-NEXT:    #NO_APP
-; CHECK-NEXT:    kmovd %esi, %k1
 ; CHECK-NEXT:    vmovaps (%rdi), %zmm2
+; CHECK-NEXT:    kmovd %esi, %k1
 ; CHECK-NEXT:    vfmsub132ph {{[-0-9]+}}(%r{{[sb]}}p), %zmm0, %zmm2 {%k1} # 64-byte Folded Reload
 ; CHECK-NEXT:    vmovaps %zmm2, %zmm0
 ; CHECK-NEXT:    retq
@@ -548,8 +548,8 @@ define <32 x half> @stack_fold_fmsub312ph_mask(ptr %p, <32 x half> %a1, <32 x ha
 ; CHECK-NEXT:    #APP
 ; CHECK-NEXT:    nop
 ; CHECK-NEXT:    #NO_APP
-; CHECK-NEXT:    kmovd %esi, %k1
 ; CHECK-NEXT:    vmovaps (%rdi), %zmm2
+; CHECK-NEXT:    kmovd %esi, %k1
 ; CHECK-NEXT:    vfmsub132ph {{[-0-9]+}}(%r{{[sb]}}p), %zmm0, %zmm2 {%k1} # 64-byte Folded Reload
 ; CHECK-NEXT:    vmovaps %zmm2, %zmm0
 ; CHECK-NEXT:    retq
@@ -789,8 +789,8 @@ define <32 x half> @stack_fold_fnmadd123ph_mask(ptr %p, <32 x half> %a1, <32 x h
 ; CHECK-NEXT:    #APP
 ; CHECK-NEXT:    nop
 ; CHECK-NEXT:    #NO_APP
-; CHECK-NEXT:    kmovd %esi, %k1
 ; CHECK-NEXT:    vmovaps (%rdi), %zmm2
+; CHECK-NEXT:    kmovd %esi, %k1
 ; CHECK-NEXT:    vfnmadd213ph {{[-0-9]+}}(%r{{[sb]}}p), %zmm0, %zmm2 {%k1} # 64-byte Folded Reload
 ; CHECK-NEXT:    vmovaps %zmm2, %zmm0
 ; CHECK-NEXT:    retq
@@ -810,8 +810,8 @@ define <32 x half> @stack_fold_fnmadd213ph_mask(ptr %p, <32 x half> %a1, <32 x h
 ; CHECK-NEXT:    #APP
 ; CHECK-NEXT:    nop
 ; CHECK-NEXT:    #NO_APP
-; CHECK-NEXT:    kmovd %esi, %k1
 ; CHECK-NEXT:    vmovaps (%rdi), %zmm2
+; CHECK-NEXT:    kmovd %esi, %k1
 ; CHECK-NEXT:    vfnmadd213ph {{[-0-9]+}}(%r{{[sb]}}p), %zmm0, %zmm2 {%k1} # 64-byte Folded Reload
 ; CHECK-NEXT:    vmovaps %zmm2, %zmm0
 ; CHECK-NEXT:    retq
@@ -831,8 +831,8 @@ define <32 x half> @stack_fold_fnmadd231ph_mask(ptr %p, <32 x half> %a1, <32 x h
 ; CHECK-NEXT:    #APP
 ; CHECK-NEXT:    nop
 ; CHECK-NEXT:    #NO_APP
-; CHECK-NEXT:    kmovd %esi, %k1
 ; CHECK-NEXT:    vmovaps (%rdi), %zmm2
+; CHECK-NEXT:    kmovd %esi, %k1
 ; CHECK-NEXT:    vfnmadd231ph {{[-0-9]+}}(%r{{[sb]}}p), %zmm0, %zmm2 {%k1} # 64-byte Folded Reload
 ; CHECK-NEXT:    vmovaps %zmm2, %zmm0
 ; CHECK-NEXT:    retq
@@ -852,8 +852,8 @@ define <32 x half> @stack_fold_fnmadd321ph_mask(ptr %p, <32 x half> %a1, <32 x h
 ; CHECK-NEXT:    #APP
 ; CHECK-NEXT:    nop
 ; CHECK-NEXT:    #NO_APP
-; CHECK-NEXT:    kmovd %esi, %k1
 ; CHECK-NEXT:    vmovaps (%rdi), %zmm2
+; CHECK-NEXT:    kmovd %esi, %k1
 ; CHECK-NEXT:    vfnmadd231ph {{[-0-9]+}}(%r{{[sb]}}p), %zmm0, %zmm2 {%k1} # 64-byte Folded Reload
 ; CHECK-NEXT:    vmovaps %zmm2, %zmm0
 ; CHECK-NEXT:    retq
@@ -873,8 +873,8 @@ define <32 x half> @stack_fold_fnmadd132ph_mask(ptr %p, <32 x half> %a1, <32 x h
 ; CHECK-NEXT:    #APP
 ; CHECK-NEXT:    nop
 ; CHECK-NEXT:    #NO_APP
-; CHECK-NEXT:    kmovd %esi, %k1
 ; CHECK-NEXT:    vmovaps (%rdi), %zmm2
+; CHECK-NEXT:    kmovd %esi, %k1
 ; CHECK-NEXT:    vfnmadd132ph {{[-0-9]+}}(%r{{[sb]}}p), %zmm0, %zmm2 {%k1} # 64-byte Folded Reload
 ; CHECK-NEXT:    vmovaps %zmm2, %zmm0
 ; CHECK-NEXT:    retq
@@ -894,8 +894,8 @@ define <32 x half> @stack_fold_fnmadd312ph_mask(ptr %p, <32 x half> %a1, <32 x h
 ; CHECK-NEXT:    #APP
 ; CHECK-NEXT:    nop
 ; CHECK-NEXT:    #NO_APP
-; CHECK-NEXT:    kmovd %esi, %k1
 ; CHECK-NEXT:    vmovaps (%rdi), %zmm2
+; CHECK-NEXT:    kmovd %esi, %k1
 ; CHECK-NEXT:    vfnmadd132ph {{[-0-9]+}}(%r{{[sb]}}p), %zmm0, %zmm2 {%k1} # 64-byte Folded Reload
 ; CHECK-NEXT:    vmovaps %zmm2, %zmm0
 ; CHECK-NEXT:    retq
@@ -1141,8 +1141,8 @@ define <32 x half> @stack_fold_fnmsub123ph_mask(ptr %p, <32 x half> %a1, <32 x h
 ; CHECK-NEXT:    #APP
 ; CHECK-NEXT:    nop
 ; CHECK-NEXT:    #NO_APP
-; CHECK-NEXT:    kmovd %esi, %k1
 ; CHECK-NEXT:    vmovaps (%rdi), %zmm2
+; CHECK-NEXT:    kmovd %esi, %k1
 ; CHECK-NEXT:    vfnmsub213ph {{[-0-9]+}}(%r{{[sb]}}p), %zmm0, %zmm2 {%k1} # 64-byte Folded Reload
 ; CHECK-NEXT:    vmovaps %zmm2, %zmm0
 ; CHECK-NEXT:    retq
@@ -1163,8 +1163,8 @@ define <32 x half> @stack_fold_fnmsub213ph_mask(ptr %p, <32 x half> %a1, <32 x h
 ; CHECK-NEXT:    #APP
 ; CHECK-NEXT:    nop
 ; CHECK-NEXT:    #NO_APP
-; CHECK-NEXT:    kmovd %esi, %k1
 ; CHECK-NEXT:    vmovaps (%rdi), %zmm2
+; CHECK-NEXT:    kmovd %esi, %k1
 ; CHECK-NEXT:    vfnmsub213ph {{[-0-9]+}}(%r{{[sb]}}p), %zmm0, %zmm2 {%k1} # 64-byte Folded Reload
 ; CHECK-NEXT:    vmovaps %zmm2, %zmm0
 ; CHECK-NEXT:    retq
@@ -1185,8 +1185,8 @@ define <32 x half> @stack_fold_fnmsub231ph_mask(ptr %p, <32 x half> %a1, <32 x h
 ; CHECK-NEXT:    #APP
 ; CHECK-NEXT:    nop
 ; CHECK-NEXT:    #NO_APP
-; CHECK-NEXT:    kmovd %esi, %k1
 ; CHECK-NEXT:    vmovaps (%rdi), %zmm2
+; CHECK-NEXT:    kmovd %esi, %k1
 ; CHECK-NEXT:    vfnmsub231ph {{[-0-9]+}}(%r{{[sb]}}p), %zmm0, %zmm2 {%k1} # 64-byte Folded Reload
 ; CHECK-NEXT:    vmovaps %zmm2, %zmm0
 ; CHECK-NEXT:    retq
@@ -1207,8 +1207,8 @@ define <32 x half> @stack_fold_fnmsub321ph_mask(ptr %p, <32 x half> %a1, <32 x h
 ; CHECK-NEXT:    #APP
 ; CHECK-NEXT:    nop
 ; CHECK-NEXT:    #NO_APP
-; CHECK-NEXT:    kmovd %esi, %k1
 ; CHECK-NEXT:    vmovaps (%rdi), %zmm2
+; CHECK-NEXT:    kmovd %esi, %k1
 ; CHECK-NEXT:    vfnmsub231ph {{[-0-9]+}}(%r{{[sb]}}p), %zmm0, %zmm2 {%k1} # 64-byte Folded Reload
 ; CHECK-NEXT:    vmovaps %zmm2, %zmm0
 ; CHECK-NEXT:    retq
@@ -1229,8 +1229,8 @@ define <32 x half> @stack_fold_fnmsub132ph_mask(ptr %p, <32 x half> %a1, <32 x h
 ; CHECK-NEXT:    #APP
 ; CHECK-NEXT:    nop
 ; CHECK-NEXT:    #NO_APP
-; CHECK-NEXT:    kmovd %esi, %k1
 ; CHECK-NEXT:    vmovaps (%rdi), %zmm2
+; CHECK-NEXT:    kmovd %esi, %k1
 ; CHECK-NEXT:    vfnmsub132ph {{[-0-9]+}}(%r{{[sb]}}p), %zmm0, %zmm2 {%k1} # 64-byte Folded Reload
 ; CHECK-NEXT:    vmovaps %zmm2, %zmm0
 ; CHECK-NEXT:    retq
@@ -1251,8 +1251,8 @@ define <32 x half> @stack_fold_fnmsub312ph_mask(ptr %p, <32 x half> %a1, <32 x h
 ; CHECK-NEXT:    #APP
 ; CHECK-NEXT:    nop
 ; CHECK-NEXT:    #NO_APP
-; CHECK-NEXT:    kmovd %esi, %k1
 ; CHECK-NEXT:    vmovaps (%rdi), %zmm2
+; CHECK-NEXT:    kmovd %esi, %k1
 ; CHECK-NEXT:    vfnmsub132ph {{[-0-9]+}}(%r{{[sb]}}p), %zmm0, %zmm2 {%k1} # 64-byte Folded Reload
 ; CHECK-NEXT:    vmovaps %zmm2, %zmm0
 ; CHECK-NEXT:    retq
@@ -3551,8 +3551,8 @@ define <32 x half> @stack_fold_fmaddsub123ph_mask(ptr %p, <32 x half> %a1, <32 x
 ; CHECK-NEXT:    #APP
 ; CHECK-NEXT:    nop
 ; CHECK-NEXT:    #NO_APP
-; CHECK-NEXT:    kmovd %esi, %k1
 ; CHECK-NEXT:    vmovaps (%rdi), %zmm2
+; CHECK-NEXT:    kmovd %esi, %k1
 ; CHECK-NEXT:    vfmaddsub213ph {{[-0-9]+}}(%r{{[sb]}}p), %zmm0, %zmm2 {%k1} # 64-byte Folded Reload
 ; CHECK-NEXT:    vmovaps %zmm2, %zmm0
 ; CHECK-NEXT:    retq
@@ -3571,8 +3571,8 @@ define <32 x half> @stack_fold_fmaddsub213ph_mask(ptr %p, <32 x half> %a1, <32 x
 ; CHECK-NEXT:    #APP
 ; CHECK-NEXT:    nop
 ; CHECK-NEXT:    #NO_APP
-; CHECK-NEXT:    kmovd %esi, %k1
 ; CHECK-NEXT:    vmovaps (%rdi), %zmm2
+; CHECK-NEXT:    kmovd %esi, %k1
 ; CHECK-NEXT:    vfmaddsub213ph {{[-0-9]+}}(%r{{[sb]}}p), %zmm0, %zmm2 {%k1} # 64-byte Folded Reload
 ; CHECK-NEXT:    vmovaps %zmm2, %zmm0
 ; CHECK-NEXT:    retq
@@ -3591,8 +3591,8 @@ define <32 x half> @stack_fold_fmaddsub231ph_mask(ptr %p, <32 x half> %a1, <32 x
 ; CHECK-NEXT:    #APP
 ; CHECK-NEXT:    nop
 ; CHECK-NEXT:    #NO_APP
-; CHECK-NEXT:    kmovd %esi, %k1
 ; CHECK-NEXT:    vmovaps (%rdi), %zmm2
+; CHECK-NEXT:    kmovd %esi, %k1
 ; CHECK-NEXT:    vfmaddsub231ph {{[-0-9]+}}(%r{{[sb]}}p), %zmm0, %zmm2 {%k1} # 64-byte Folded Reload
 ; CHECK-NEXT:    vmovaps %zmm2, %zmm0
 ; CHECK-NEXT:    retq
@@ -3611,8 +3611,8 @@ define <32 x half> @stack_fold_fmaddsub321ph_mask(ptr %p, <32 x half> %a1, <32 x
 ; CHECK-NEXT:    #APP
 ; CHECK-NEXT:    nop
 ; CHECK-NEXT:    #NO_APP
-; CHECK-NEXT:    kmovd %esi, %k1
 ; CHECK-NEXT:    vmovaps (%rdi), %zmm2
+; CHECK-NEXT:    kmovd %esi, %k1
 ; CHECK-NEXT:    vfmaddsub231ph {{[-0-9]+}}(%r{{[sb]}}p), %zmm0, %zmm2 {%k1} # 64-byte Folded Reload
 ; CHECK-NEXT:    vmovaps %zmm2, %zmm0
 ; CHECK-NEXT:    retq
@@ -3631,8 +3631,8 @@ define <32 x half> @stack_fold_fmaddsub132ph_mask(ptr %p, <32 x half> %a1, <32 x
 ; CHECK-NEXT:    #APP
 ; CHECK-NEXT:    nop
 ; CHECK-NEXT:    #NO_APP
-; CHECK-NEXT:    kmovd %esi, %k1
 ; CHECK-NEXT:    vmovaps (%rdi), %zmm2
+; CHECK-NEXT:    kmovd %esi, %k1
 ; CHECK-NEXT:    vfmaddsub132ph {{[-0-9]+}}(%r{{[sb]}}p), %zmm0, %zmm2 {%k1} # 64-byte Folded Reload
 ; CHECK-NEXT:    vmovaps %zmm2, %zmm0
 ; CHECK-NEXT:    retq
@@ -3651,8 +3651,8 @@ define <32 x half> @stack_fold_fmaddsub312ph_mask(ptr %p, <32 x half> %a1, <32 x
 ; CHECK-NEXT:    #APP
 ; CHECK-NEXT:    nop
 ; CHECK-NEXT:    #NO_APP
-; CHECK-NEXT:    kmovd %esi, %k1
 ; CHECK-NEXT:    vmovaps (%rdi), %zmm2
+; CHECK-NEXT:    kmovd %esi, %k1
 ; CHECK-NEXT:    vfmaddsub132ph {{[-0-9]+}}(%r{{[sb]}}p), %zmm0, %zmm2 {%k1} # 64-byte Folded Reload
 ; CHECK-NEXT:    vmovaps %zmm2, %zmm0
 ; CHECK-NEXT:    retq
@@ -3885,8 +3885,8 @@ define <32 x half> @stack_fold_fmsubadd123ph_mask(ptr %p, <32 x half> %a1, <32 x
 ; CHECK-NEXT:    #APP
 ; CHECK-NEXT:    nop
 ; CHECK-NEXT:    #NO_APP
-; CHECK-NEXT:    kmovd %esi, %k1
 ; CHECK-NEXT:    vmovaps (%rdi), %zmm2
+; CHECK-NEXT:    kmovd %esi, %k1
 ; CHECK-NEXT:    vfmsubadd213ph {{[-0-9]+}}(%r{{[sb]}}p), %zmm0, %zmm2 {%k1} # 64-byte Folded Reload
 ; CHECK-NEXT:    vmovaps %zmm2, %zmm0
 ; CHECK-NEXT:    retq
@@ -3906,8 +3906,8 @@ define <32 x half> @stack_fold_fmsubadd213ph_mask(ptr %p, <32 x half> %a1, <32 x
 ; CHECK-NEXT:    #APP
 ; CHECK-NEXT:    nop
 ; CHECK-NEXT:    #NO_APP
-; CHECK-NEXT:    kmovd %esi, %k1
 ; CHECK-NEXT:    vmovaps (%rdi), %zmm2
+; CHECK-NEXT:    kmovd %esi, %k1
 ; CHECK-NEXT:    vfmsubadd213ph {{[-0-9]+}}(%r{{[sb]}}p), %zmm0, %zmm2 {%k1} # 64-byte Folded Reload
 ; CHECK-NEXT:    vmovaps %zmm2, %zmm0
 ; CHECK-NEXT:    retq
@@ -3927,8 +3927,8 @@ define <32 x half> @stack_fold_fmsubadd231ph_mask(ptr %p, <32 x half> %a1, <32 x
 ; CHECK-NEXT:    #APP
 ; CHECK-NEXT:    nop
 ; CHECK-NEXT:    #NO_APP
-; CHECK-NEXT:    kmovd %esi, %k1
 ; CHECK-NEXT:    vmovaps (%rdi), %zmm2
+; CHECK-NEXT:    kmovd %esi, %k1
 ; CHECK-NEXT:    vfmsubadd231ph {{[-0-9]+}}(%r{{[sb]}}p), %zmm0, %zmm2 {%k1} # 64-byte Folded Reload
 ; CHECK-NEXT:    vmovaps %zmm2, %zmm0
 ; CHECK-NEXT:    retq
@@ -3948,8 +3948,8 @@ define <32 x half> @stack_fold_fmsubadd321ph_mask(ptr %p, <32 x half> %a1, <32 x
 ; CHECK-NEXT:    #APP
 ; CHECK-NEXT:    nop
 ; CHECK-NEXT:    #NO_APP
-; CHECK-NEXT:    kmovd %esi, %k1
 ; CHECK-NEXT:    vmovaps (%rdi), %zmm2
+; CHECK-NEXT:    kmovd %esi, %k1
 ; CHECK-NEXT:    vfmsubadd231ph {{[-0-9]+}}(%r{{[sb]}}p), %zmm0, %zmm2 {%k1} # 64-byte Folded Reload
 ; CHECK-NEXT:    vmovaps %zmm2, %zmm0
 ; CHECK-NEXT:    retq
@@ -3969,8 +3969,8 @@ define <32 x half> @stack_fold_fmsubadd132ph_mask(ptr %p, <32 x half> %a1, <32 x
 ; CHECK-NEXT:    #APP
 ; CHECK-NEXT:    nop
 ; CHECK-NEXT:    #NO_APP
-; CHECK-NEXT:    kmovd %esi, %k1
 ; CHECK-NEXT:    vmovaps (%rdi), %zmm2
+; CHECK-NEXT:    kmovd %esi, %k1
 ; CHECK-NEXT:    vfmsubadd132ph {{[-0-9]+}}(%r{{[sb]}}p), %zmm0, %zmm2 {%k1} # 64-byte Folded Reload
 ; CHECK-NEXT:    vmovaps %zmm2, %zmm0
 ; CHECK-NEXT:    retq
@@ -3990,8 +3990,8 @@ define <32 x half> @stack_fold_fmsubadd312ph_mask(ptr %p, <32 x half> %a1, <32 x
 ; CHECK-NEXT:    #APP
 ; CHECK-NEXT:    nop
 ; CHECK-NEXT:    #NO_APP
-; CHECK-NEXT:    kmovd %esi, %k1
 ; CHECK-NEXT:    vmovaps (%rdi), %zmm2
+; CHECK-NEXT:    kmovd %esi, %k1
 ; CHECK-NEXT:    vfmsubadd132ph {{[-0-9]+}}(%r{{[sb]}}p), %zmm0, %zmm2 {%k1} # 64-byte Folded Reload
 ; CHECK-NEXT:    vmovaps %zmm2, %zmm0
 ; CHECK-NEXT:    retq

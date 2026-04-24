@@ -447,9 +447,9 @@ define i4 @func6(i4 %x, i4 %y) nounwind {
 ; X64-NEXT:    movl %eax, %edx
 ; X64-NEXT:    xorb %sil, %dl
 ; X64-NEXT:    sets %cl
+; X64-NEXT:    addl $127, %ecx
 ; X64-NEXT:    # kill: def $al killed $al killed $eax
 ; X64-NEXT:    imulb %sil
-; X64-NEXT:    leal 127(%rcx), %ecx
 ; X64-NEXT:    movzbl %al, %eax
 ; X64-NEXT:    cmovnol %eax, %ecx
 ; X64-NEXT:    sarb $4, %cl

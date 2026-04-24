@@ -1033,7 +1033,7 @@ define i16 @stack_fold_pextrw(<8 x i16> %a0) {
 ; CHECK-NEXT:    .cfi_offset %r15, -24
 ; CHECK-NEXT:    .cfi_offset %rbp, -16
 ; CHECK-NEXT:    pextrw $1, %xmm0, %eax
-; CHECK-NEXT:    addl $2, %eax
+; CHECK-NEXT:    leal 2(%rax), %eax
 ; CHECK-NEXT:    movl %eax, {{[-0-9]+}}(%r{{[sb]}}p) # 4-byte Spill
 ; CHECK-NEXT:    #APP
 ; CHECK-NEXT:    nop

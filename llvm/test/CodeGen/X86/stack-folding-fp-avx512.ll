@@ -1223,10 +1223,10 @@ define <8 x double> @stack_fold_shuff64x2_mask(<8 x double> %a, <8 x double> %b,
 ; CHECK-NEXT:    .cfi_def_cfa_offset 16
 ; CHECK-NEXT:    vmovups %zmm1, {{[-0-9]+}}(%r{{[sb]}}p) # 64-byte Spill
 ; CHECK-NEXT:    vmovups %zmm0, {{[-0-9]+}}(%r{{[sb]}}p) # 64-byte Spill
-; CHECK-NEXT:    kmovw %edi, %k1
 ; CHECK-NEXT:    #APP
 ; CHECK-NEXT:    nop
 ; CHECK-NEXT:    #NO_APP
+; CHECK-NEXT:    kmovw %edi, %k1
 ; CHECK-NEXT:    vmovapd (%rsi), %zmm1
 ; CHECK-NEXT:    vmovupd {{[-0-9]+}}(%r{{[sb]}}p), %zmm0 # 64-byte Reload
 ; CHECK-NEXT:    vshuff64x2 $24, {{[-0-9]+}}(%r{{[sb]}}p), %zmm0, %zmm1 {%k1} # 64-byte Folded Reload
@@ -1275,10 +1275,10 @@ define <16 x float> @stack_fold_shuff32x4_mask(<16 x float> %a, <16 x float> %b,
 ; CHECK-NEXT:    .cfi_def_cfa_offset 16
 ; CHECK-NEXT:    vmovups %zmm1, {{[-0-9]+}}(%r{{[sb]}}p) # 64-byte Spill
 ; CHECK-NEXT:    vmovups %zmm0, {{[-0-9]+}}(%r{{[sb]}}p) # 64-byte Spill
-; CHECK-NEXT:    kmovw %edi, %k1
 ; CHECK-NEXT:    #APP
 ; CHECK-NEXT:    nop
 ; CHECK-NEXT:    #NO_APP
+; CHECK-NEXT:    kmovw %edi, %k1
 ; CHECK-NEXT:    vmovaps (%rsi), %zmm1
 ; CHECK-NEXT:    vmovups {{[-0-9]+}}(%r{{[sb]}}p), %zmm0 # 64-byte Reload
 ; CHECK-NEXT:    vshuff32x4 $20, {{[-0-9]+}}(%r{{[sb]}}p), %zmm0, %zmm1 {%k1} # 64-byte Folded Reload
@@ -1662,8 +1662,8 @@ define <16 x float> @stack_fold_vpermi2ps_mask(<16 x float> %x0, ptr %x1, <16 x 
 ; CHECK-NEXT:    #APP
 ; CHECK-NEXT:    nop
 ; CHECK-NEXT:    #NO_APP
-; CHECK-NEXT:    kmovw %esi, %k1
 ; CHECK-NEXT:    vmovaps (%rdi), %zmm2
+; CHECK-NEXT:    kmovw %esi, %k1
 ; CHECK-NEXT:    vpermi2ps {{[-0-9]+}}(%r{{[sb]}}p), %zmm0, %zmm2 {%k1} # 64-byte Folded Reload
 ; CHECK-NEXT:    vmovaps %zmm2, %zmm0
 ; CHECK-NEXT:    retq
@@ -1683,8 +1683,8 @@ define <16 x float> @stack_fold_vpermt2ps_mask(ptr %x0, <16 x float> %x1, <16 x 
 ; CHECK-NEXT:    #APP
 ; CHECK-NEXT:    nop
 ; CHECK-NEXT:    #NO_APP
-; CHECK-NEXT:    kmovw %esi, %k1
 ; CHECK-NEXT:    vmovaps (%rdi), %zmm1
+; CHECK-NEXT:    kmovw %esi, %k1
 ; CHECK-NEXT:    vpermt2ps {{[-0-9]+}}(%r{{[sb]}}p), %zmm1, %zmm0 {%k1} # 64-byte Folded Reload
 ; CHECK-NEXT:    retq
   %1 = tail call <2 x i64> asm sideeffect "nop", "=x,~{xmm2},~{xmm3},~{xmm4},~{xmm5},~{xmm6},~{xmm7},~{xmm8},~{xmm9},~{xmm10},~{xmm11},~{xmm12},~{xmm13},~{xmm14},~{xmm15},~{xmm16},~{xmm17},~{xmm18},~{xmm19},~{xmm20},~{xmm21},~{xmm22},~{xmm23},~{xmm24},~{xmm25},~{xmm26},~{xmm27},~{xmm28},~{xmm29},~{xmm30},~{xmm31},~{flags}"()
@@ -1702,8 +1702,8 @@ define <16 x float> @stack_fold_vpermt2ps_maskz(ptr %x0, <16 x float> %x1, <16 x
 ; CHECK-NEXT:    #APP
 ; CHECK-NEXT:    nop
 ; CHECK-NEXT:    #NO_APP
-; CHECK-NEXT:    kmovw %esi, %k1
 ; CHECK-NEXT:    vmovaps (%rdi), %zmm2
+; CHECK-NEXT:    kmovw %esi, %k1
 ; CHECK-NEXT:    vpermi2ps {{[-0-9]+}}(%r{{[sb]}}p), %zmm0, %zmm2 {%k1} {z} # 64-byte Folded Reload
 ; CHECK-NEXT:    vmovaps %zmm2, %zmm0
 ; CHECK-NEXT:    retq

@@ -69,6 +69,7 @@ declare i32 @doSomething(i32, ptr)
 define i32 @freqSaveAndRestoreOutsideLoop(i32 %cond, i32 %N) {
 ; ENABLE-LABEL: freqSaveAndRestoreOutsideLoop:
 ; ENABLE:       ## %bb.0: ## %entry
+; ENABLE-NEXT:    ## kill: def $esi killed $esi def $rsi
 ; ENABLE-NEXT:    testl %edi, %edi
 ; ENABLE-NEXT:    je LBB1_4
 ; ENABLE-NEXT:  ## %bb.1: ## %for.preheader
@@ -90,12 +91,11 @@ define i32 @freqSaveAndRestoreOutsideLoop(i32 %cond, i32 %N) {
 ; ENABLE-NEXT:    decl %ecx
 ; ENABLE-NEXT:    jne LBB1_2
 ; ENABLE-NEXT:  ## %bb.3: ## %for.end
-; ENABLE-NEXT:    shll $3, %eax
+; ENABLE-NEXT:    leal (,%rax,8), %eax
 ; ENABLE-NEXT:    popq %rbx
 ; ENABLE-NEXT:    retq
 ; ENABLE-NEXT:  LBB1_4: ## %if.else
-; ENABLE-NEXT:    movl %esi, %eax
-; ENABLE-NEXT:    addl %esi, %eax
+; ENABLE-NEXT:    leal (%rsi,%rsi), %eax
 ; ENABLE-NEXT:    retq
 ;
 ; DISABLE-LABEL: freqSaveAndRestoreOutsideLoop:
@@ -103,6 +103,7 @@ define i32 @freqSaveAndRestoreOutsideLoop(i32 %cond, i32 %N) {
 ; DISABLE-NEXT:    pushq %rbx
 ; DISABLE-NEXT:    .cfi_def_cfa_offset 16
 ; DISABLE-NEXT:    .cfi_offset %rbx, -16
+; DISABLE-NEXT:    ## kill: def $esi killed $esi def $rsi
 ; DISABLE-NEXT:    testl %edi, %edi
 ; DISABLE-NEXT:    je LBB1_4
 ; DISABLE-NEXT:  ## %bb.1: ## %for.preheader
@@ -121,12 +122,11 @@ define i32 @freqSaveAndRestoreOutsideLoop(i32 %cond, i32 %N) {
 ; DISABLE-NEXT:    decl %ecx
 ; DISABLE-NEXT:    jne LBB1_2
 ; DISABLE-NEXT:  ## %bb.3: ## %for.end
-; DISABLE-NEXT:    shll $3, %eax
+; DISABLE-NEXT:    leal (,%rax,8), %eax
 ; DISABLE-NEXT:    popq %rbx
 ; DISABLE-NEXT:    retq
 ; DISABLE-NEXT:  LBB1_4: ## %if.else
-; DISABLE-NEXT:    movl %esi, %eax
-; DISABLE-NEXT:    addl %esi, %eax
+; DISABLE-NEXT:    leal (%rsi,%rsi), %eax
 ; DISABLE-NEXT:    popq %rbx
 ; DISABLE-NEXT:    retq
 entry:
@@ -188,6 +188,7 @@ define i32 @freqSaveAndRestoreOutsideLoop2(i32 %cond) {
 ; ENABLE-NEXT:    nop
 ; ENABLE-NEXT:    ## InlineAsm End
 ; ENABLE-NEXT:    popq %rbx
+; ENABLE-NEXT:    ## kill: def $eax killed $eax killed $rax
 ; ENABLE-NEXT:    retq
 ;
 ; DISABLE-LABEL: freqSaveAndRestoreOutsideLoop2:
@@ -213,6 +214,7 @@ define i32 @freqSaveAndRestoreOutsideLoop2(i32 %cond) {
 ; DISABLE-NEXT:    ## InlineAsm Start
 ; DISABLE-NEXT:    nop
 ; DISABLE-NEXT:    ## InlineAsm End
+; DISABLE-NEXT:    ## kill: def $eax killed $eax killed $rax
 ; DISABLE-NEXT:    popq %rbx
 ; DISABLE-NEXT:    retq
 entry:
@@ -244,6 +246,7 @@ for.end:                                          ; preds = %for.body
 define i32 @loopInfoSaveOutsideLoop(i32 %cond, i32 %N) {
 ; ENABLE-LABEL: loopInfoSaveOutsideLoop:
 ; ENABLE:       ## %bb.0: ## %entry
+; ENABLE-NEXT:    ## kill: def $esi killed $esi def $rsi
 ; ENABLE-NEXT:    testl %edi, %edi
 ; ENABLE-NEXT:    je LBB3_4
 ; ENABLE-NEXT:  ## %bb.1: ## %for.preheader
@@ -268,12 +271,11 @@ define i32 @loopInfoSaveOutsideLoop(i32 %cond, i32 %N) {
 ; ENABLE-NEXT:    ## InlineAsm Start
 ; ENABLE-NEXT:    nop
 ; ENABLE-NEXT:    ## InlineAsm End
-; ENABLE-NEXT:    shll $3, %eax
+; ENABLE-NEXT:    leal (,%rax,8), %eax
 ; ENABLE-NEXT:    popq %rbx
 ; ENABLE-NEXT:    retq
 ; ENABLE-NEXT:  LBB3_4: ## %if.else
-; ENABLE-NEXT:    movl %esi, %eax
-; ENABLE-NEXT:    addl %esi, %eax
+; ENABLE-NEXT:    leal (%rsi,%rsi), %eax
 ; ENABLE-NEXT:    retq
 ;
 ; DISABLE-LABEL: loopInfoSaveOutsideLoop:
@@ -281,6 +283,7 @@ define i32 @loopInfoSaveOutsideLoop(i32 %cond, i32 %N) {
 ; DISABLE-NEXT:    pushq %rbx
 ; DISABLE-NEXT:    .cfi_def_cfa_offset 16
 ; DISABLE-NEXT:    .cfi_offset %rbx, -16
+; DISABLE-NEXT:    ## kill: def $esi killed $esi def $rsi
 ; DISABLE-NEXT:    testl %edi, %edi
 ; DISABLE-NEXT:    je LBB3_4
 ; DISABLE-NEXT:  ## %bb.1: ## %for.preheader
@@ -302,12 +305,11 @@ define i32 @loopInfoSaveOutsideLoop(i32 %cond, i32 %N) {
 ; DISABLE-NEXT:    ## InlineAsm Start
 ; DISABLE-NEXT:    nop
 ; DISABLE-NEXT:    ## InlineAsm End
-; DISABLE-NEXT:    shll $3, %eax
+; DISABLE-NEXT:    leal (,%rax,8), %eax
 ; DISABLE-NEXT:    popq %rbx
 ; DISABLE-NEXT:    retq
 ; DISABLE-NEXT:  LBB3_4: ## %if.else
-; DISABLE-NEXT:    movl %esi, %eax
-; DISABLE-NEXT:    addl %esi, %eax
+; DISABLE-NEXT:    leal (%rsi,%rsi), %eax
 ; DISABLE-NEXT:    popq %rbx
 ; DISABLE-NEXT:    retq
 entry:
@@ -346,6 +348,7 @@ if.end:                                           ; preds = %if.else, %for.end
 define i32 @loopInfoRestoreOutsideLoop(i32 %cond, i32 %N) nounwind {
 ; ENABLE-LABEL: loopInfoRestoreOutsideLoop:
 ; ENABLE:       ## %bb.0: ## %entry
+; ENABLE-NEXT:    ## kill: def $esi killed $esi def $rsi
 ; ENABLE-NEXT:    testl %edi, %edi
 ; ENABLE-NEXT:    je LBB4_4
 ; ENABLE-NEXT:  ## %bb.1: ## %if.then
@@ -365,17 +368,17 @@ define i32 @loopInfoRestoreOutsideLoop(i32 %cond, i32 %N) nounwind {
 ; ENABLE-NEXT:    decl %ecx
 ; ENABLE-NEXT:    jne LBB4_2
 ; ENABLE-NEXT:  ## %bb.3: ## %for.end
-; ENABLE-NEXT:    shll $3, %eax
+; ENABLE-NEXT:    leal (,%rax,8), %eax
 ; ENABLE-NEXT:    popq %rbx
 ; ENABLE-NEXT:    retq
 ; ENABLE-NEXT:  LBB4_4: ## %if.else
-; ENABLE-NEXT:    movl %esi, %eax
-; ENABLE-NEXT:    addl %esi, %eax
+; ENABLE-NEXT:    leal (%rsi,%rsi), %eax
 ; ENABLE-NEXT:    retq
 ;
 ; DISABLE-LABEL: loopInfoRestoreOutsideLoop:
 ; DISABLE:       ## %bb.0: ## %entry
 ; DISABLE-NEXT:    pushq %rbx
+; DISABLE-NEXT:    ## kill: def $esi killed $esi def $rsi
 ; DISABLE-NEXT:    testl %edi, %edi
 ; DISABLE-NEXT:    je LBB4_4
 ; DISABLE-NEXT:  ## %bb.1: ## %if.then
@@ -394,12 +397,11 @@ define i32 @loopInfoRestoreOutsideLoop(i32 %cond, i32 %N) nounwind {
 ; DISABLE-NEXT:    decl %ecx
 ; DISABLE-NEXT:    jne LBB4_2
 ; DISABLE-NEXT:  ## %bb.3: ## %for.end
-; DISABLE-NEXT:    shll $3, %eax
+; DISABLE-NEXT:    leal (,%rax,8), %eax
 ; DISABLE-NEXT:    popq %rbx
 ; DISABLE-NEXT:    retq
 ; DISABLE-NEXT:  LBB4_4: ## %if.else
-; DISABLE-NEXT:    movl %esi, %eax
-; DISABLE-NEXT:    addl %esi, %eax
+; DISABLE-NEXT:    leal (%rsi,%rsi), %eax
 ; DISABLE-NEXT:    popq %rbx
 ; DISABLE-NEXT:    retq
 entry:
@@ -451,6 +453,7 @@ entry:
 define i32 @inlineAsm(i32 %cond, i32 %N) {
 ; ENABLE-LABEL: inlineAsm:
 ; ENABLE:       ## %bb.0: ## %entry
+; ENABLE-NEXT:    ## kill: def $esi killed $esi def $rsi
 ; ENABLE-NEXT:    testl %edi, %edi
 ; ENABLE-NEXT:    je LBB6_4
 ; ENABLE-NEXT:  ## %bb.1: ## %for.preheader
@@ -477,8 +480,7 @@ define i32 @inlineAsm(i32 %cond, i32 %N) {
 ; ENABLE-NEXT:    popq %rbx
 ; ENABLE-NEXT:    retq
 ; ENABLE-NEXT:  LBB6_4: ## %if.else
-; ENABLE-NEXT:    movl %esi, %eax
-; ENABLE-NEXT:    addl %esi, %eax
+; ENABLE-NEXT:    leal (%rsi,%rsi), %eax
 ; ENABLE-NEXT:    retq
 ;
 ; DISABLE-LABEL: inlineAsm:
@@ -486,6 +488,7 @@ define i32 @inlineAsm(i32 %cond, i32 %N) {
 ; DISABLE-NEXT:    pushq %rbx
 ; DISABLE-NEXT:    .cfi_def_cfa_offset 16
 ; DISABLE-NEXT:    .cfi_offset %rbx, -16
+; DISABLE-NEXT:    ## kill: def $esi killed $esi def $rsi
 ; DISABLE-NEXT:    testl %edi, %edi
 ; DISABLE-NEXT:    je LBB6_4
 ; DISABLE-NEXT:  ## %bb.1: ## %for.preheader
@@ -509,8 +512,7 @@ define i32 @inlineAsm(i32 %cond, i32 %N) {
 ; DISABLE-NEXT:    popq %rbx
 ; DISABLE-NEXT:    retq
 ; DISABLE-NEXT:  LBB6_4: ## %if.else
-; DISABLE-NEXT:    movl %esi, %eax
-; DISABLE-NEXT:    addl %esi, %eax
+; DISABLE-NEXT:    leal (%rsi,%rsi), %eax
 ; DISABLE-NEXT:    popq %rbx
 ; DISABLE-NEXT:    retq
 entry:
@@ -545,50 +547,50 @@ if.end:                                           ; preds = %for.body, %if.else
 define i32 @callVariadicFunc(i32 %cond, i32 %N) {
 ; ENABLE-LABEL: callVariadicFunc:
 ; ENABLE:       ## %bb.0: ## %entry
-; ENABLE-NEXT:    movl %esi, %eax
+; ENABLE-NEXT:    ## kill: def $esi killed $esi def $rsi
 ; ENABLE-NEXT:    testl %edi, %edi
 ; ENABLE-NEXT:    je LBB7_2
 ; ENABLE-NEXT:  ## %bb.1: ## %if.then
 ; ENABLE-NEXT:    pushq %rax
 ; ENABLE-NEXT:    .cfi_def_cfa_offset 16
-; ENABLE-NEXT:    movl %eax, (%rsp)
-; ENABLE-NEXT:    movl %eax, %edi
-; ENABLE-NEXT:    movl %eax, %esi
-; ENABLE-NEXT:    movl %eax, %edx
-; ENABLE-NEXT:    movl %eax, %ecx
-; ENABLE-NEXT:    movl %eax, %r8d
-; ENABLE-NEXT:    movl %eax, %r9d
+; ENABLE-NEXT:    movl %esi, (%rsp)
+; ENABLE-NEXT:    movl %esi, %edi
+; ENABLE-NEXT:    movl %esi, %edx
+; ENABLE-NEXT:    movl %esi, %ecx
+; ENABLE-NEXT:    movl %esi, %r8d
+; ENABLE-NEXT:    movl %esi, %r9d
 ; ENABLE-NEXT:    xorl %eax, %eax
 ; ENABLE-NEXT:    callq _someVariadicFunc
-; ENABLE-NEXT:    shll $3, %eax
+; ENABLE-NEXT:    ## kill: def $eax killed $eax def $rax
+; ENABLE-NEXT:    leal (,%rax,8), %eax
 ; ENABLE-NEXT:    addq $8, %rsp
 ; ENABLE-NEXT:    retq
 ; ENABLE-NEXT:  LBB7_2: ## %if.else
-; ENABLE-NEXT:    addl %eax, %eax
+; ENABLE-NEXT:    leal (%rsi,%rsi), %eax
 ; ENABLE-NEXT:    retq
 ;
 ; DISABLE-LABEL: callVariadicFunc:
 ; DISABLE:       ## %bb.0: ## %entry
 ; DISABLE-NEXT:    pushq %rax
 ; DISABLE-NEXT:    .cfi_def_cfa_offset 16
-; DISABLE-NEXT:    movl %esi, %eax
+; DISABLE-NEXT:    ## kill: def $esi killed $esi def $rsi
 ; DISABLE-NEXT:    testl %edi, %edi
 ; DISABLE-NEXT:    je LBB7_2
 ; DISABLE-NEXT:  ## %bb.1: ## %if.then
-; DISABLE-NEXT:    movl %eax, (%rsp)
-; DISABLE-NEXT:    movl %eax, %edi
-; DISABLE-NEXT:    movl %eax, %esi
-; DISABLE-NEXT:    movl %eax, %edx
-; DISABLE-NEXT:    movl %eax, %ecx
-; DISABLE-NEXT:    movl %eax, %r8d
-; DISABLE-NEXT:    movl %eax, %r9d
+; DISABLE-NEXT:    movl %esi, (%rsp)
+; DISABLE-NEXT:    movl %esi, %edi
+; DISABLE-NEXT:    movl %esi, %edx
+; DISABLE-NEXT:    movl %esi, %ecx
+; DISABLE-NEXT:    movl %esi, %r8d
+; DISABLE-NEXT:    movl %esi, %r9d
 ; DISABLE-NEXT:    xorl %eax, %eax
 ; DISABLE-NEXT:    callq _someVariadicFunc
-; DISABLE-NEXT:    shll $3, %eax
+; DISABLE-NEXT:    ## kill: def $eax killed $eax def $rax
+; DISABLE-NEXT:    leal (,%rax,8), %eax
 ; DISABLE-NEXT:    popq %rcx
 ; DISABLE-NEXT:    retq
 ; DISABLE-NEXT:  LBB7_2: ## %if.else
-; DISABLE-NEXT:    addl %eax, %eax
+; DISABLE-NEXT:    leal (%rsi,%rsi), %eax
 ; DISABLE-NEXT:    popq %rcx
 ; DISABLE-NEXT:    retq
 entry:
@@ -817,8 +819,7 @@ define void @infiniteloop() {
 ; ENABLE-NEXT:    testb %al, %al
 ; ENABLE-NEXT:    jne LBB10_3
 ; ENABLE-NEXT:  ## %bb.1: ## %if.then
-; ENABLE-NEXT:    movq %rsp, %rax
-; ENABLE-NEXT:    addq $-16, %rax
+; ENABLE-NEXT:    leaq -{{[0-9]+}}(%rsp), %rax
 ; ENABLE-NEXT:    movq %rax, %rsp
 ; ENABLE-NEXT:    xorl %ecx, %ecx
 ; ENABLE-NEXT:    .p2align 4
@@ -849,8 +850,7 @@ define void @infiniteloop() {
 ; DISABLE-NEXT:    testb %al, %al
 ; DISABLE-NEXT:    jne LBB10_3
 ; DISABLE-NEXT:  ## %bb.1: ## %if.then
-; DISABLE-NEXT:    movq %rsp, %rax
-; DISABLE-NEXT:    addq $-16, %rax
+; DISABLE-NEXT:    leaq -{{[0-9]+}}(%rsp), %rax
 ; DISABLE-NEXT:    movq %rax, %rsp
 ; DISABLE-NEXT:    xorl %ecx, %ecx
 ; DISABLE-NEXT:    .p2align 4
@@ -900,8 +900,7 @@ define void @infiniteloop2() {
 ; ENABLE-NEXT:    testb %al, %al
 ; ENABLE-NEXT:    jne LBB11_5
 ; ENABLE-NEXT:  ## %bb.1: ## %if.then
-; ENABLE-NEXT:    movq %rsp, %rax
-; ENABLE-NEXT:    addq $-16, %rax
+; ENABLE-NEXT:    leaq -{{[0-9]+}}(%rsp), %rax
 ; ENABLE-NEXT:    movq %rax, %rsp
 ; ENABLE-NEXT:    xorl %ecx, %ecx
 ; ENABLE-NEXT:    jmp LBB11_2
@@ -914,9 +913,8 @@ define void @infiniteloop2() {
 ; ENABLE-NEXT:    movl $1, %ecx
 ; ENABLE-NEXT:  LBB11_2: ## %for.body
 ; ENABLE-NEXT:    ## =>This Inner Loop Header: Depth=1
-; ENABLE-NEXT:    movl %ecx, %edx
 ; ENABLE-NEXT:    ## InlineAsm Start
-; ENABLE-NEXT:    movl $1, %ecx
+; ENABLE-NEXT:    movl $1, %edx
 ; ENABLE-NEXT:    ## InlineAsm End
 ; ENABLE-NEXT:    addl %edx, %ecx
 ; ENABLE-NEXT:    movl %ecx, (%rax)
@@ -947,8 +945,7 @@ define void @infiniteloop2() {
 ; DISABLE-NEXT:    testb %al, %al
 ; DISABLE-NEXT:    jne LBB11_5
 ; DISABLE-NEXT:  ## %bb.1: ## %if.then
-; DISABLE-NEXT:    movq %rsp, %rax
-; DISABLE-NEXT:    addq $-16, %rax
+; DISABLE-NEXT:    leaq -{{[0-9]+}}(%rsp), %rax
 ; DISABLE-NEXT:    movq %rax, %rsp
 ; DISABLE-NEXT:    xorl %ecx, %ecx
 ; DISABLE-NEXT:    jmp LBB11_2
@@ -961,9 +958,8 @@ define void @infiniteloop2() {
 ; DISABLE-NEXT:    movl $1, %ecx
 ; DISABLE-NEXT:  LBB11_2: ## %for.body
 ; DISABLE-NEXT:    ## =>This Inner Loop Header: Depth=1
-; DISABLE-NEXT:    movl %ecx, %edx
 ; DISABLE-NEXT:    ## InlineAsm Start
-; DISABLE-NEXT:    movl $1, %ecx
+; DISABLE-NEXT:    movl $1, %edx
 ; DISABLE-NEXT:    ## InlineAsm End
 ; DISABLE-NEXT:    addl %edx, %ecx
 ; DISABLE-NEXT:    movl %ecx, (%rax)
@@ -1017,24 +1013,27 @@ define void @infiniteloop3() {
 ; ENABLE-NEXT:    jne LBB12_7
 ; ENABLE-NEXT:  LBB12_2: ## %loop2a.preheader
 ; ENABLE-NEXT:    xorl %eax, %eax
-; ENABLE-NEXT:    xorl %ecx, %ecx
-; ENABLE-NEXT:    movq %rax, %rsi
-; ENABLE-NEXT:    jmp LBB12_4
+; ENABLE-NEXT:    xorl %esi, %esi
 ; ENABLE-NEXT:    .p2align 4
-; ENABLE-NEXT:  LBB12_3: ## %loop2b
-; ENABLE-NEXT:    ## in Loop: Header=BB12_4 Depth=1
-; ENABLE-NEXT:    movq %rdx, (%rsi)
-; ENABLE-NEXT:    movq %rdx, %rsi
-; ENABLE-NEXT:  LBB12_4: ## %loop1
-; ENABLE-NEXT:    ## =>This Inner Loop Header: Depth=1
-; ENABLE-NEXT:    movq %rcx, %rdx
-; ENABLE-NEXT:    testq %rax, %rax
-; ENABLE-NEXT:    movq (%rax), %rcx
-; ENABLE-NEXT:    jne LBB12_3
-; ENABLE-NEXT:  ## %bb.5: ## in Loop: Header=BB12_4 Depth=1
-; ENABLE-NEXT:    movq %rdx, %rax
-; ENABLE-NEXT:    movq %rdx, %rsi
-; ENABLE-NEXT:    jmp LBB12_4
+; ENABLE-NEXT:  LBB12_4: ## %loop2a
+; ENABLE-NEXT:    ## =>This Loop Header: Depth=1
+; ENABLE-NEXT:    ## Child Loop BB12_5 Depth 2
+; ENABLE-NEXT:    movq %rax, %rcx
+; ENABLE-NEXT:    .p2align 4
+; ENABLE-NEXT:  LBB12_5: ## %loop1
+; ENABLE-NEXT:    ## Parent Loop BB12_4 Depth=1
+; ENABLE-NEXT:    ## => This Inner Loop Header: Depth=2
+; ENABLE-NEXT:    movq %rax, %rdx
+; ENABLE-NEXT:    movq %rsi, %rax
+; ENABLE-NEXT:  ## %bb.3: ## %loop1
+; ENABLE-NEXT:    ## in Loop: Header=BB12_5 Depth=2
+; ENABLE-NEXT:    testq %rcx, %rcx
+; ENABLE-NEXT:    movq (%rax), %rsi
+; ENABLE-NEXT:    je LBB12_4
+; ENABLE-NEXT:  ## %bb.6: ## %loop2b
+; ENABLE-NEXT:    ## in Loop: Header=BB12_5 Depth=2
+; ENABLE-NEXT:    movq %rax, (%rdx)
+; ENABLE-NEXT:    jmp LBB12_5
 ; ENABLE-NEXT:  LBB12_7: ## %end
 ; ENABLE-NEXT:    retq
 ;
@@ -1047,24 +1046,27 @@ define void @infiniteloop3() {
 ; DISABLE-NEXT:    jne LBB12_7
 ; DISABLE-NEXT:  LBB12_2: ## %loop2a.preheader
 ; DISABLE-NEXT:    xorl %eax, %eax
-; DISABLE-NEXT:    xorl %ecx, %ecx
-; DISABLE-NEXT:    movq %rax, %rsi
-; DISABLE-NEXT:    jmp LBB12_4
+; DISABLE-NEXT:    xorl %esi, %esi
 ; DISABLE-NEXT:    .p2align 4
-; DISABLE-NEXT:  LBB12_3: ## %loop2b
-; DISABLE-NEXT:    ## in Loop: Header=BB12_4 Depth=1
-; DISABLE-NEXT:    movq %rdx, (%rsi)
-; DISABLE-NEXT:    movq %rdx, %rsi
-; DISABLE-NEXT:  LBB12_4: ## %loop1
-; DISABLE-NEXT:    ## =>This Inner Loop Header: Depth=1
-; DISABLE-NEXT:    movq %rcx, %rdx
-; DISABLE-NEXT:    testq %rax, %rax
-; DISABLE-NEXT:    movq (%rax), %rcx
-; DISABLE-NEXT:    jne LBB12_3
-; DISABLE-NEXT:  ## %bb.5: ## in Loop: Header=BB12_4 Depth=1
-; DISABLE-NEXT:    movq %rdx, %rax
-; DISABLE-NEXT:    movq %rdx, %rsi
-; DISABLE-NEXT:    jmp LBB12_4
+; DISABLE-NEXT:  LBB12_4: ## %loop2a
+; DISABLE-NEXT:    ## =>This Loop Header: Depth=1
+; DISABLE-NEXT:    ## Child Loop BB12_5 Depth 2
+; DISABLE-NEXT:    movq %rax, %rcx
+; DISABLE-NEXT:    .p2align 4
+; DISABLE-NEXT:  LBB12_5: ## %loop1
+; DISABLE-NEXT:    ## Parent Loop BB12_4 Depth=1
+; DISABLE-NEXT:    ## => This Inner Loop Header: Depth=2
+; DISABLE-NEXT:    movq %rax, %rdx
+; DISABLE-NEXT:    movq %rsi, %rax
+; DISABLE-NEXT:  ## %bb.3: ## %loop1
+; DISABLE-NEXT:    ## in Loop: Header=BB12_5 Depth=2
+; DISABLE-NEXT:    testq %rcx, %rcx
+; DISABLE-NEXT:    movq (%rax), %rsi
+; DISABLE-NEXT:    je LBB12_4
+; DISABLE-NEXT:  ## %bb.6: ## %loop2b
+; DISABLE-NEXT:    ## in Loop: Header=BB12_5 Depth=2
+; DISABLE-NEXT:    movq %rax, (%rdx)
+; DISABLE-NEXT:    jmp LBB12_5
 ; DISABLE-NEXT:  LBB12_7: ## %end
 ; DISABLE-NEXT:    retq
 entry:
@@ -1172,11 +1174,12 @@ define i32 @useLEAForPrologue(i32 %d, i32 %a, i8 %c) #3 {
 ; ENABLE:       ## %bb.0: ## %entry
 ; ENABLE-NEXT:    pushq %rbx
 ; ENABLE-NEXT:    subq $16, %rsp
+; ENABLE-NEXT:    ## kill: def $edx killed $edx def $rdx
 ; ENABLE-NEXT:    xorl %eax, %eax
 ; ENABLE-NEXT:    cmpb $0, _b(%rip)
 ; ENABLE-NEXT:    movl $48, %ecx
-; ENABLE-NEXT:    cmovnel %eax, %ecx
-; ENABLE-NEXT:    movb %cl, _c(%rip)
+; ENABLE-NEXT:    cmovel %ecx, %eax
+; ENABLE-NEXT:    movb %al, _c(%rip)
 ; ENABLE-NEXT:    je LBB14_4
 ; ENABLE-NEXT:  ## %bb.1: ## %for.body.lr.ph
 ; ENABLE-NEXT:    ## InlineAsm Start
@@ -1185,11 +1188,12 @@ define i32 @useLEAForPrologue(i32 %d, i32 %a, i8 %c) #3 {
 ; ENABLE-NEXT:    .p2align 4
 ; ENABLE-NEXT:  LBB14_2: ## %for.body
 ; ENABLE-NEXT:    ## =>This Inner Loop Header: Depth=1
+; ENABLE-NEXT:    xorl %eax, %eax
 ; ENABLE-NEXT:    cmpl %esi, %edi
 ; ENABLE-NEXT:    setl %al
 ; ENABLE-NEXT:    xorl %esi, %esi
 ; ENABLE-NEXT:    movb %al, %sil
-; ENABLE-NEXT:    incb %dl
+; ENABLE-NEXT:    incl %edx
 ; ENABLE-NEXT:    cmpb $45, %dl
 ; ENABLE-NEXT:    jl LBB14_2
 ; ENABLE-NEXT:  ## %bb.3: ## %for.cond.for.end_crit_edge
@@ -1207,11 +1211,12 @@ define i32 @useLEAForPrologue(i32 %d, i32 %a, i8 %c) #3 {
 ; DISABLE:       ## %bb.0: ## %entry
 ; DISABLE-NEXT:    pushq %rbx
 ; DISABLE-NEXT:    subq $16, %rsp
+; DISABLE-NEXT:    ## kill: def $edx killed $edx def $rdx
 ; DISABLE-NEXT:    xorl %eax, %eax
 ; DISABLE-NEXT:    cmpb $0, _b(%rip)
 ; DISABLE-NEXT:    movl $48, %ecx
-; DISABLE-NEXT:    cmovnel %eax, %ecx
-; DISABLE-NEXT:    movb %cl, _c(%rip)
+; DISABLE-NEXT:    cmovel %ecx, %eax
+; DISABLE-NEXT:    movb %al, _c(%rip)
 ; DISABLE-NEXT:    je LBB14_4
 ; DISABLE-NEXT:  ## %bb.1: ## %for.body.lr.ph
 ; DISABLE-NEXT:    ## InlineAsm Start
@@ -1220,11 +1225,12 @@ define i32 @useLEAForPrologue(i32 %d, i32 %a, i8 %c) #3 {
 ; DISABLE-NEXT:    .p2align 4
 ; DISABLE-NEXT:  LBB14_2: ## %for.body
 ; DISABLE-NEXT:    ## =>This Inner Loop Header: Depth=1
+; DISABLE-NEXT:    xorl %eax, %eax
 ; DISABLE-NEXT:    cmpl %esi, %edi
 ; DISABLE-NEXT:    setl %al
 ; DISABLE-NEXT:    xorl %esi, %esi
 ; DISABLE-NEXT:    movb %al, %sil
-; DISABLE-NEXT:    incb %dl
+; DISABLE-NEXT:    incl %edx
 ; DISABLE-NEXT:    cmpb $45, %dl
 ; DISABLE-NEXT:    jl LBB14_2
 ; DISABLE-NEXT:  ## %bb.3: ## %for.cond.for.end_crit_edge
