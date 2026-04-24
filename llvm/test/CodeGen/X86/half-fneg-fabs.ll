@@ -9,12 +9,16 @@
 define half @test_fneg(half %a) nounwind {
 ; SSE2-LABEL: test_fneg:
 ; SSE2:       # %bb.0:
-; SSE2-NEXT:    xorps {{\.?LCPI[0-9]+_[0-9]+}}(%rip), %xmm0
+; SSE2-NEXT:    movaps {{.*#+}} xmm1 = [-0.0E+0,-0.0E+0,-0.0E+0,-0.0E+0,-0.0E+0,-0.0E+0,-0.0E+0,-0.0E+0]
+; SSE2-NEXT:    xorps %xmm0, %xmm1
+; SSE2-NEXT:    movaps %xmm1, %xmm0
 ; SSE2-NEXT:    retq
 ;
 ; SSE2-FAST-LABEL: test_fneg:
 ; SSE2-FAST:       # %bb.0:
-; SSE2-FAST-NEXT:    xorps {{\.?LCPI[0-9]+_[0-9]+}}(%rip), %xmm0
+; SSE2-FAST-NEXT:    movaps {{.*#+}} xmm1 = [-0.0E+0,-0.0E+0,-0.0E+0,-0.0E+0,-0.0E+0,-0.0E+0,-0.0E+0,-0.0E+0]
+; SSE2-FAST-NEXT:    xorps %xmm0, %xmm1
+; SSE2-FAST-NEXT:    movaps %xmm1, %xmm0
 ; SSE2-FAST-NEXT:    retq
 ;
 ; AVX-LABEL: test_fneg:
@@ -45,12 +49,16 @@ define half @test_fneg(half %a) nounwind {
 define half @test_fabs(half %a) nounwind {
 ; SSE2-LABEL: test_fabs:
 ; SSE2:       # %bb.0:
-; SSE2-NEXT:    andps {{\.?LCPI[0-9]+_[0-9]+}}(%rip), %xmm0
+; SSE2-NEXT:    movaps {{.*#+}} xmm1 = [NaN,NaN,NaN,NaN,NaN,NaN,NaN,NaN]
+; SSE2-NEXT:    andps %xmm0, %xmm1
+; SSE2-NEXT:    movaps %xmm1, %xmm0
 ; SSE2-NEXT:    retq
 ;
 ; SSE2-FAST-LABEL: test_fabs:
 ; SSE2-FAST:       # %bb.0:
-; SSE2-FAST-NEXT:    andps {{\.?LCPI[0-9]+_[0-9]+}}(%rip), %xmm0
+; SSE2-FAST-NEXT:    movaps {{.*#+}} xmm1 = [NaN,NaN,NaN,NaN,NaN,NaN,NaN,NaN]
+; SSE2-FAST-NEXT:    andps %xmm0, %xmm1
+; SSE2-FAST-NEXT:    movaps %xmm1, %xmm0
 ; SSE2-FAST-NEXT:    retq
 ;
 ; AVX-LABEL: test_fabs:

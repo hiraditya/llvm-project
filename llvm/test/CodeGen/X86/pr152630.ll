@@ -4,12 +4,13 @@
 define i32 @pr152630(i1 %cond) nounwind {
 ; CHECK-LABEL: pr152630:
 ; CHECK:       # %bb.0: # %entry
+; CHECK-NEXT:    # kill: def $edi killed $edi def $rdi
 ; CHECK-NEXT:    andl $1, %edi
-; CHECK-NEXT:    decl %edi
-; CHECK-NEXT:    cmpl $-1, %edi
+; CHECK-NEXT:    leal -1(%rdi), %eax
+; CHECK-NEXT:    cmpl $-1, %eax
 ; CHECK-NEXT:    je .LBB0_2
 ; CHECK-NEXT:  # %bb.1: # %entry
-; CHECK-NEXT:    movzbl %dil, %eax
+; CHECK-NEXT:    movzbl %al, %eax
 ; CHECK-NEXT:    testl %eax, %eax
 ; CHECK-NEXT:    jne .LBB0_3
 ; CHECK-NEXT:  .LBB0_2: # %if.then

@@ -14,13 +14,13 @@ define i4 @reverse_cmp_v4i1(<4 x i32> %a0, <4 x i32> %a1) {
 ; SSE2-NEXT:    andb $4, %cl
 ; SSE2-NEXT:    leal (,%rax,8), %edx
 ; SSE2-NEXT:    andb $8, %dl
-; SSE2-NEXT:    orb %cl, %dl
-; SSE2-NEXT:    movl %eax, %ecx
-; SSE2-NEXT:    shrb %cl
-; SSE2-NEXT:    andb $2, %cl
 ; SSE2-NEXT:    orb %dl, %cl
+; SSE2-NEXT:    movl %eax, %edx
+; SSE2-NEXT:    shrb %dl
+; SSE2-NEXT:    andb $2, %dl
+; SSE2-NEXT:    orb %cl, %dl
 ; SSE2-NEXT:    shrb $3, %al
-; SSE2-NEXT:    orb %cl, %al
+; SSE2-NEXT:    orb %dl, %al
 ; SSE2-NEXT:    # kill: def $al killed $al killed $rax
 ; SSE2-NEXT:    retq
 ;
@@ -64,15 +64,15 @@ define i8 @reverse_cmp_v8i1(<8 x i16> %a0, <8 x i16> %a1) {
 ; SSE2-NEXT:    rolb $4, %al
 ; SSE2-NEXT:    movl %eax, %ecx
 ; SSE2-NEXT:    andb $51, %cl
-; SSE2-NEXT:    shlb $2, %cl
+; SSE2-NEXT:    leal (,%rcx,4), %ecx
 ; SSE2-NEXT:    shrb $2, %al
 ; SSE2-NEXT:    andb $51, %al
-; SSE2-NEXT:    orb %cl, %al
-; SSE2-NEXT:    movl %eax, %ecx
-; SSE2-NEXT:    andb $85, %cl
-; SSE2-NEXT:    addb %cl, %cl
-; SSE2-NEXT:    shrb %al
+; SSE2-NEXT:    orb %al, %cl
+; SSE2-NEXT:    movl %ecx, %eax
 ; SSE2-NEXT:    andb $85, %al
+; SSE2-NEXT:    addl %eax, %eax
+; SSE2-NEXT:    shrb %cl
+; SSE2-NEXT:    andb $85, %cl
 ; SSE2-NEXT:    orb %cl, %al
 ; SSE2-NEXT:    # kill: def $al killed $al killed $eax
 ; SSE2-NEXT:    retq
@@ -122,12 +122,12 @@ define i16 @reverse_cmp_v16i1(<16 x i8> %a0, <16 x i8> %a1) {
 ; SSE2-NEXT:    shll $4, %ecx
 ; SSE2-NEXT:    shrl $4, %eax
 ; SSE2-NEXT:    andl $3855, %eax # imm = 0xF0F
-; SSE2-NEXT:    orl %ecx, %eax
-; SSE2-NEXT:    movl %eax, %ecx
-; SSE2-NEXT:    andl $13107, %ecx # imm = 0x3333
-; SSE2-NEXT:    shrl $2, %eax
+; SSE2-NEXT:    orl %eax, %ecx
+; SSE2-NEXT:    movl %ecx, %eax
 ; SSE2-NEXT:    andl $13107, %eax # imm = 0x3333
-; SSE2-NEXT:    leal (%rax,%rcx,4), %eax
+; SSE2-NEXT:    shrl $2, %ecx
+; SSE2-NEXT:    andl $13107, %ecx # imm = 0x3333
+; SSE2-NEXT:    leal (%rcx,%rax,4), %eax
 ; SSE2-NEXT:    movl %eax, %ecx
 ; SSE2-NEXT:    andl $21845, %ecx # imm = 0x5555
 ; SSE2-NEXT:    shrl %eax
@@ -185,12 +185,12 @@ define i32 @reverse_cmp_v32i1(<32 x i8> %a0, <32 x i8> %a1) {
 ; SSE2-NEXT:    shll $4, %eax
 ; SSE2-NEXT:    shrl $4, %ecx
 ; SSE2-NEXT:    andl $252645135, %ecx # imm = 0xF0F0F0F
-; SSE2-NEXT:    orl %eax, %ecx
-; SSE2-NEXT:    movl %ecx, %eax
-; SSE2-NEXT:    andl $858993459, %eax # imm = 0x33333333
-; SSE2-NEXT:    shrl $2, %ecx
+; SSE2-NEXT:    orl %ecx, %eax
+; SSE2-NEXT:    movl %eax, %ecx
 ; SSE2-NEXT:    andl $858993459, %ecx # imm = 0x33333333
-; SSE2-NEXT:    leal (%rcx,%rax,4), %eax
+; SSE2-NEXT:    shrl $2, %eax
+; SSE2-NEXT:    andl $858993459, %eax # imm = 0x33333333
+; SSE2-NEXT:    leal (%rax,%rcx,4), %eax
 ; SSE2-NEXT:    movl %eax, %ecx
 ; SSE2-NEXT:    andl $1431655765, %ecx # imm = 0x55555555
 ; SSE2-NEXT:    shrl %eax

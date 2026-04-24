@@ -592,7 +592,7 @@ define i64 @fp80_to_uint64(x86_fp80 %x) #0 {
 ; X86-NEXT:    fcom %st(1)
 ; X86-NEXT:    wait
 ; X86-NEXT:    fnstsw %ax
-; X86-NEXT:    xorl %edx, %edx
+; X86-NEXT:    xorl %ecx, %ecx
 ; X86-NEXT:    # kill: def $ah killed $ah killed $ax
 ; X86-NEXT:    sahf
 ; X86-NEXT:    setbe %al
@@ -606,15 +606,16 @@ define i64 @fp80_to_uint64(x86_fp80 %x) #0 {
 ; X86-NEXT:    fsubrp %st, %st(1)
 ; X86-NEXT:    wait
 ; X86-NEXT:    fnstcw {{[0-9]+}}(%esp)
-; X86-NEXT:    movzwl {{[0-9]+}}(%esp), %ecx
-; X86-NEXT:    orl $3072, %ecx # imm = 0xC00
-; X86-NEXT:    movw %cx, {{[0-9]+}}(%esp)
+; X86-NEXT:    movzwl {{[0-9]+}}(%esp), %edx
+; X86-NEXT:    orl $3072, %edx # imm = 0xC00
+; X86-NEXT:    movw %dx, {{[0-9]+}}(%esp)
 ; X86-NEXT:    fldcw {{[0-9]+}}(%esp)
 ; X86-NEXT:    fistpll {{[0-9]+}}(%esp)
 ; X86-NEXT:    fldcw {{[0-9]+}}(%esp)
-; X86-NEXT:    movb %al, %dl
-; X86-NEXT:    shll $31, %edx
-; X86-NEXT:    xorl {{[0-9]+}}(%esp), %edx
+; X86-NEXT:    movb %al, %cl
+; X86-NEXT:    shll $31, %ecx
+; X86-NEXT:    movl {{[0-9]+}}(%esp), %edx
+; X86-NEXT:    xorl %ecx, %edx
 ; X86-NEXT:    movl {{[0-9]+}}(%esp), %eax
 ; X86-NEXT:    movl %ebp, %esp
 ; X86-NEXT:    popl %ebp
@@ -626,24 +627,25 @@ define i64 @fp80_to_uint64(x86_fp80 %x) #0 {
 ; X64-NEXT:    fldt {{[0-9]+}}(%rsp)
 ; X64-NEXT:    flds {{\.?LCPI[0-9]+_[0-9]+}}(%rip)
 ; X64-NEXT:    wait
-; X64-NEXT:    xorl %eax, %eax
+; X64-NEXT:    xorl %ecx, %ecx
 ; X64-NEXT:    fcomi %st(1), %st
 ; X64-NEXT:    wait
-; X64-NEXT:    setbe %al
+; X64-NEXT:    setbe %cl
 ; X64-NEXT:    fldz
 ; X64-NEXT:    fcmovbe %st(1), %st
 ; X64-NEXT:    fstp %st(1)
 ; X64-NEXT:    fsubrp %st, %st(1)
 ; X64-NEXT:    wait
 ; X64-NEXT:    fnstcw -{{[0-9]+}}(%rsp)
-; X64-NEXT:    movzwl -{{[0-9]+}}(%rsp), %ecx
-; X64-NEXT:    orl $3072, %ecx # imm = 0xC00
-; X64-NEXT:    movw %cx, -{{[0-9]+}}(%rsp)
+; X64-NEXT:    movzwl -{{[0-9]+}}(%rsp), %eax
+; X64-NEXT:    orl $3072, %eax # imm = 0xC00
+; X64-NEXT:    movw %ax, -{{[0-9]+}}(%rsp)
 ; X64-NEXT:    fldcw -{{[0-9]+}}(%rsp)
 ; X64-NEXT:    fistpll -{{[0-9]+}}(%rsp)
 ; X64-NEXT:    fldcw -{{[0-9]+}}(%rsp)
-; X64-NEXT:    shlq $63, %rax
-; X64-NEXT:    xorq -{{[0-9]+}}(%rsp), %rax
+; X64-NEXT:    shlq $63, %rcx
+; X64-NEXT:    movq -{{[0-9]+}}(%rsp), %rax
+; X64-NEXT:    xorq %rcx, %rax
 ; X64-NEXT:    retq
   %result = call i64 @llvm.experimental.constrained.fptoui.i64.f80(x86_fp80 %x,
                                                metadata !"fpexcept.strict") #0

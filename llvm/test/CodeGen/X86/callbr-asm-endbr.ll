@@ -5,9 +5,10 @@ define i32 @test1(i32 %a) {
 ; CHECK-LABEL: test1:
 ; CHECK:       # %bb.0: # %entry
 ; CHECK-NEXT:    endbr64
-; CHECK-NEXT:    addl $4, %edi
+; CHECK-NEXT:    # kill: def $edi killed $edi def $rdi
+; CHECK-NEXT:    leal 4(%rdi), %eax
 ; CHECK-NEXT:    #APP
-; CHECK-NEXT:    xorl %edi, %edi
+; CHECK-NEXT:    xorl %eax, %eax
 ; CHECK-NEXT:    jmp .LBB0_2
 ; CHECK-NEXT:    #NO_APP
 ; CHECK-NEXT:  # %bb.1: # %normal

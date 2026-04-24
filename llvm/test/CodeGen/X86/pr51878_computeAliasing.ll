@@ -19,8 +19,9 @@ define i16 @main() {
 ; CHECK-NEXT:    movw $1, foo
 ; CHECK-NEXT:    movw $2, bar
 ; CHECK-NEXT:    movw $4, aliasFoo
-; CHECK-NEXT:    movzwl foo, %eax
-; CHECK-NEXT:    addw bar, %ax
+; CHECK-NEXT:    movzwl foo, %ecx
+; CHECK-NEXT:    movzwl bar, %eax
+; CHECK-NEXT:    addw %cx, %ax
 ; CHECK-NEXT:    retl
 entry:
   store i16 1, ptr @foo

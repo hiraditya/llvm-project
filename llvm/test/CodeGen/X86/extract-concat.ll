@@ -9,10 +9,12 @@ define void @foo(<4 x float> %in, ptr %out) {
 ; SSE2-LABEL: foo:
 ; SSE2:       # %bb.0:
 ; SSE2-NEXT:    cvttps2dq %xmm0, %xmm0
-; SSE2-NEXT:    pand {{\.?LCPI[0-9]+_[0-9]+}}(%rip), %xmm0
-; SSE2-NEXT:    packuswb %xmm0, %xmm0
-; SSE2-NEXT:    packuswb %xmm0, %xmm0
-; SSE2-NEXT:    por {{\.?LCPI[0-9]+_[0-9]+}}(%rip), %xmm0
+; SSE2-NEXT:    movdqa {{.*#+}} xmm1 = [255,0,255,0,255,0,255,0]
+; SSE2-NEXT:    pand %xmm0, %xmm1
+; SSE2-NEXT:    packuswb %xmm1, %xmm1
+; SSE2-NEXT:    packuswb %xmm1, %xmm1
+; SSE2-NEXT:    movd {{.*#+}} xmm0 = [0,0,0,255,0,0,0,0,0,0,0,0,0,0,0,0]
+; SSE2-NEXT:    por %xmm1, %xmm0
 ; SSE2-NEXT:    movd %xmm0, (%rdi)
 ; SSE2-NEXT:    retq
 ;

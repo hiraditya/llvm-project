@@ -15,8 +15,8 @@ define void @test1(i1 %cmp) align 2 {
 ; CHECK-NEXT:    testb $1, %dil
 ; CHECK-NEXT:    movq %rsp, %rax
 ; CHECK-NEXT:    leaq {{[0-9]+}}(%rsp), %rcx
-; CHECK-NEXT:    cmovneq %rax, %rcx
-; CHECK-NEXT:    movups (%rcx), %xmm0
+; CHECK-NEXT:    cmoveq %rcx, %rax
+; CHECK-NEXT:    movups (%rax), %xmm0
 ; CHECK-NEXT:    callq _sink
 ; CHECK-NEXT:    addq $40, %rsp
 ; CHECK-NEXT:    retq
@@ -38,8 +38,8 @@ define void @test2(i1 %cmp) align 2 {
 ; CHECK-NEXT:    testb $1, %dil
 ; CHECK-NEXT:    movq %rsp, %rax
 ; CHECK-NEXT:    leaq {{[0-9]+}}(%rsp), %rcx
-; CHECK-NEXT:    cmovneq %rax, %rcx
-; CHECK-NEXT:    movaps (%rcx), %xmm0
+; CHECK-NEXT:    cmoveq %rcx, %rax
+; CHECK-NEXT:    movaps (%rax), %xmm0
 ; CHECK-NEXT:    callq _sink
 ; CHECK-NEXT:    addq $40, %rsp
 ; CHECK-NEXT:    retq

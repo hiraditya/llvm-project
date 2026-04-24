@@ -11,7 +11,7 @@ define void @fn1() {
 ; CHECK-LABEL: fn1:
 ; CHECK:       # %bb.0:
 ; CHECK-NEXT:    movl Y, %eax
-; CHECK-NEXT:    shll $3, %eax
+; CHECK-NEXT:    leal (,%eax,8), %eax
 ; CHECK-NEXT:    orl %eax, X
 ; CHECK-NEXT:    retl
   %tmp = load i32, ptr @Y
@@ -26,8 +26,9 @@ define i32 @fn2(i32 %X, i32 %Y) {
 ; CHECK-LABEL: fn2:
 ; CHECK:       # %bb.0:
 ; CHECK-NEXT:    movl {{[0-9]+}}(%esp), %eax
-; CHECK-NEXT:    shll $3, %eax
-; CHECK-NEXT:    orl {{[0-9]+}}(%esp), %eax
+; CHECK-NEXT:    leal (,%eax,8), %ecx
+; CHECK-NEXT:    movl {{[0-9]+}}(%esp), %eax
+; CHECK-NEXT:    orl %ecx, %eax
 ; CHECK-NEXT:    retl
   %tmp2 = shl i32 %Y, 3
   %tmp4 = or i32 %tmp2, %X

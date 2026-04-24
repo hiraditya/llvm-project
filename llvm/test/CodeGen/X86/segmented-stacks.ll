@@ -284,8 +284,9 @@ define i32 @test_nested(ptr nest %closure, i32 %other) #0 {
 ; X86-Linux-NEXT:    subl $40, %esp
 ; X86-Linux-NEXT:    .cfi_def_cfa_offset 48
 ; X86-Linux-NEXT:    .cfi_offset %esi, -8
-; X86-Linux-NEXT:    movl {{[0-9]+}}(%esp), %esi
-; X86-Linux-NEXT:    addl (%ecx), %esi
+; X86-Linux-NEXT:    movl {{[0-9]+}}(%esp), %eax
+; X86-Linux-NEXT:    movl (%ecx), %esi
+; X86-Linux-NEXT:    addl %eax, %esi
 ; X86-Linux-NEXT:    subl $8, %esp
 ; X86-Linux-NEXT:    .cfi_adjust_cfa_offset 8
 ; X86-Linux-NEXT:    leal {{[0-9]+}}(%esp), %eax
@@ -320,8 +321,8 @@ define i32 @test_nested(ptr nest %closure, i32 %other) #0 {
 ; X64-Linux-NEXT:    subq $48, %rsp
 ; X64-Linux-NEXT:    .cfi_def_cfa_offset 64
 ; X64-Linux-NEXT:    .cfi_offset %rbx, -16
-; X64-Linux-NEXT:    movl %edi, %ebx
-; X64-Linux-NEXT:    addl (%r10), %ebx
+; X64-Linux-NEXT:    movl (%r10), %ebx
+; X64-Linux-NEXT:    addl %edi, %ebx
 ; X64-Linux-NEXT:    leaq {{[0-9]+}}(%rsp), %rdi
 ; X64-Linux-NEXT:    movl $10, %esi
 ; X64-Linux-NEXT:    callq dummy_use@PLT
@@ -351,8 +352,8 @@ define i32 @test_nested(ptr nest %closure, i32 %other) #0 {
 ; X64-Linux-Large-NEXT:    subq $48, %rsp
 ; X64-Linux-Large-NEXT:    .cfi_def_cfa_offset 64
 ; X64-Linux-Large-NEXT:    .cfi_offset %rbx, -16
-; X64-Linux-Large-NEXT:    movl %edi, %ebx
-; X64-Linux-Large-NEXT:    addl (%r10), %ebx
+; X64-Linux-Large-NEXT:    movl (%r10), %ebx
+; X64-Linux-Large-NEXT:    addl %edi, %ebx
 ; X64-Linux-Large-NEXT:    movabsq $dummy_use, %rax
 ; X64-Linux-Large-NEXT:    leaq {{[0-9]+}}(%rsp), %rdi
 ; X64-Linux-Large-NEXT:    movl $10, %esi
@@ -383,8 +384,8 @@ define i32 @test_nested(ptr nest %closure, i32 %other) #0 {
 ; X32ABI-NEXT:    subl $48, %esp
 ; X32ABI-NEXT:    .cfi_def_cfa_offset 64
 ; X32ABI-NEXT:    .cfi_offset %rbx, -16
-; X32ABI-NEXT:    movl %edi, %ebx
-; X32ABI-NEXT:    addl (%r10d), %ebx
+; X32ABI-NEXT:    movl (%r10d), %ebx
+; X32ABI-NEXT:    addl %edi, %ebx
 ; X32ABI-NEXT:    leal {{[0-9]+}}(%rsp), %edi
 ; X32ABI-NEXT:    movl $10, %esi
 ; X32ABI-NEXT:    callq dummy_use@PLT
@@ -415,8 +416,9 @@ define i32 @test_nested(ptr nest %closure, i32 %other) #0 {
 ; X86-Darwin-NEXT:    subl $56, %esp
 ; X86-Darwin-NEXT:    .cfi_def_cfa_offset 64
 ; X86-Darwin-NEXT:    .cfi_offset %esi, -8
-; X86-Darwin-NEXT:    movl {{[0-9]+}}(%esp), %esi
-; X86-Darwin-NEXT:    addl (%ecx), %esi
+; X86-Darwin-NEXT:    movl {{[0-9]+}}(%esp), %eax
+; X86-Darwin-NEXT:    movl (%ecx), %esi
+; X86-Darwin-NEXT:    addl %eax, %esi
 ; X86-Darwin-NEXT:    leal {{[0-9]+}}(%esp), %eax
 ; X86-Darwin-NEXT:    movl %eax, (%esp)
 ; X86-Darwin-NEXT:    movl $10, {{[0-9]+}}(%esp)
@@ -442,8 +444,8 @@ define i32 @test_nested(ptr nest %closure, i32 %other) #0 {
 ; X64-Darwin-NEXT:    subq $48, %rsp
 ; X64-Darwin-NEXT:    .cfi_def_cfa_offset 64
 ; X64-Darwin-NEXT:    .cfi_offset %rbx, -16
-; X64-Darwin-NEXT:    movl %edi, %ebx
-; X64-Darwin-NEXT:    addl (%r10), %ebx
+; X64-Darwin-NEXT:    movl (%r10), %ebx
+; X64-Darwin-NEXT:    addl %edi, %ebx
 ; X64-Darwin-NEXT:    leaq {{[0-9]+}}(%rsp), %rdi
 ; X64-Darwin-NEXT:    movl $10, %esi
 ; X64-Darwin-NEXT:    callq _dummy_use
@@ -470,8 +472,9 @@ define i32 @test_nested(ptr nest %closure, i32 %other) #0 {
 ; X86-MinGW-NEXT:    subl $40, %esp
 ; X86-MinGW-NEXT:    .cfi_def_cfa_offset 48
 ; X86-MinGW-NEXT:    .cfi_offset %esi, -8
-; X86-MinGW-NEXT:    movl {{[0-9]+}}(%esp), %esi
-; X86-MinGW-NEXT:    addl (%ecx), %esi
+; X86-MinGW-NEXT:    movl {{[0-9]+}}(%esp), %eax
+; X86-MinGW-NEXT:    movl (%ecx), %esi
+; X86-MinGW-NEXT:    addl %eax, %esi
 ; X86-MinGW-NEXT:    movl %esp, %eax
 ; X86-MinGW-NEXT:    pushl $10
 ; X86-MinGW-NEXT:    .cfi_adjust_cfa_offset 4
@@ -503,8 +506,8 @@ define i32 @test_nested(ptr nest %closure, i32 %other) #0 {
 ; X64-FreeBSD-NEXT:    subq $48, %rsp
 ; X64-FreeBSD-NEXT:    .cfi_def_cfa_offset 64
 ; X64-FreeBSD-NEXT:    .cfi_offset %rbx, -16
-; X64-FreeBSD-NEXT:    movl %edi, %ebx
-; X64-FreeBSD-NEXT:    addl (%r10), %ebx
+; X64-FreeBSD-NEXT:    movl (%r10), %ebx
+; X64-FreeBSD-NEXT:    addl %edi, %ebx
 ; X64-FreeBSD-NEXT:    leaq {{[0-9]+}}(%rsp), %rdi
 ; X64-FreeBSD-NEXT:    movl $10, %esi
 ; X64-FreeBSD-NEXT:    callq dummy_use@PLT
@@ -534,8 +537,9 @@ define i32 @test_nested(ptr nest %closure, i32 %other) #0 {
 ; X86-DFlyBSD-NEXT:    subl $40, %esp
 ; X86-DFlyBSD-NEXT:    .cfi_def_cfa_offset 48
 ; X86-DFlyBSD-NEXT:    .cfi_offset %esi, -8
-; X86-DFlyBSD-NEXT:    movl {{[0-9]+}}(%esp), %esi
-; X86-DFlyBSD-NEXT:    addl (%ecx), %esi
+; X86-DFlyBSD-NEXT:    movl {{[0-9]+}}(%esp), %eax
+; X86-DFlyBSD-NEXT:    movl (%ecx), %esi
+; X86-DFlyBSD-NEXT:    addl %eax, %esi
 ; X86-DFlyBSD-NEXT:    movl %esp, %eax
 ; X86-DFlyBSD-NEXT:    pushl $10
 ; X86-DFlyBSD-NEXT:    .cfi_adjust_cfa_offset 4
@@ -568,8 +572,8 @@ define i32 @test_nested(ptr nest %closure, i32 %other) #0 {
 ; X64-DFlyBSD-NEXT:    subq $48, %rsp
 ; X64-DFlyBSD-NEXT:    .cfi_def_cfa_offset 64
 ; X64-DFlyBSD-NEXT:    .cfi_offset %rbx, -16
-; X64-DFlyBSD-NEXT:    movl %edi, %ebx
-; X64-DFlyBSD-NEXT:    addl (%r10), %ebx
+; X64-DFlyBSD-NEXT:    movl (%r10), %ebx
+; X64-DFlyBSD-NEXT:    addl %edi, %ebx
 ; X64-DFlyBSD-NEXT:    leaq {{[0-9]+}}(%rsp), %rdi
 ; X64-DFlyBSD-NEXT:    movl $10, %esi
 ; X64-DFlyBSD-NEXT:    callq dummy_use@PLT
@@ -599,8 +603,8 @@ define i32 @test_nested(ptr nest %closure, i32 %other) #0 {
 ; X64-MinGW-NEXT:    subq $80, %rsp
 ; X64-MinGW-NEXT:    .seh_stackalloc 80
 ; X64-MinGW-NEXT:    .seh_endprologue
-; X64-MinGW-NEXT:    movl %ecx, %esi
-; X64-MinGW-NEXT:    addl (%r10), %esi
+; X64-MinGW-NEXT:    movl (%r10), %esi
+; X64-MinGW-NEXT:    addl %ecx, %esi
 ; X64-MinGW-NEXT:    leaq {{[0-9]+}}(%rsp), %rcx
 ; X64-MinGW-NEXT:    movl $10, %edx
 ; X64-MinGW-NEXT:    callq dummy_use

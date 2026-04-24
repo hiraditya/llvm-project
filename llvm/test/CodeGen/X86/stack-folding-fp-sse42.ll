@@ -138,7 +138,8 @@ define <2 x double> @stack_fold_andnpd(<2 x double> %a0, <2 x double> %a1) {
 ; CHECK-NEXT:    #NO_APP
 ; CHECK-NEXT:    andnpd {{[-0-9]+}}(%r{{[sb]}}p), %xmm0 # 16-byte Folded Reload
 ; CHECK-NEXT:    xorpd %xmm1, %xmm1
-; CHECK-NEXT:    addpd %xmm1, %xmm0
+; CHECK-NEXT:    addpd %xmm0, %xmm1
+; CHECK-NEXT:    movapd %xmm1, %xmm0
 ; CHECK-NEXT:    retq
   %1 = tail call <2 x i64> asm sideeffect "nop", "=x,~{xmm2},~{xmm3},~{xmm4},~{xmm5},~{xmm6},~{xmm7},~{xmm8},~{xmm9},~{xmm10},~{xmm11},~{xmm12},~{xmm13},~{xmm14},~{xmm15},~{flags}"()
   %2 = bitcast <2 x double> %a0 to <2 x i64>
@@ -160,7 +161,8 @@ define <4 x float> @stack_fold_andnps(<4 x float> %a0, <4 x float> %a1) {
 ; CHECK-NEXT:    #NO_APP
 ; CHECK-NEXT:    andnps {{[-0-9]+}}(%r{{[sb]}}p), %xmm0 # 16-byte Folded Reload
 ; CHECK-NEXT:    xorps %xmm1, %xmm1
-; CHECK-NEXT:    addps %xmm1, %xmm0
+; CHECK-NEXT:    addps %xmm0, %xmm1
+; CHECK-NEXT:    movaps %xmm1, %xmm0
 ; CHECK-NEXT:    retq
   %1 = tail call <2 x i64> asm sideeffect "nop", "=x,~{xmm2},~{xmm3},~{xmm4},~{xmm5},~{xmm6},~{xmm7},~{xmm8},~{xmm9},~{xmm10},~{xmm11},~{xmm12},~{xmm13},~{xmm14},~{xmm15},~{flags}"()
   %2 = bitcast <4 x float> %a0 to <2 x i64>
@@ -182,7 +184,8 @@ define <2 x double> @stack_fold_andpd(<2 x double> %a0, <2 x double> %a1) {
 ; CHECK-NEXT:    #NO_APP
 ; CHECK-NEXT:    andpd {{[-0-9]+}}(%r{{[sb]}}p), %xmm0 # 16-byte Folded Reload
 ; CHECK-NEXT:    xorpd %xmm1, %xmm1
-; CHECK-NEXT:    addpd %xmm1, %xmm0
+; CHECK-NEXT:    addpd %xmm0, %xmm1
+; CHECK-NEXT:    movapd %xmm1, %xmm0
 ; CHECK-NEXT:    retq
   %1 = tail call <2 x i64> asm sideeffect "nop", "=x,~{xmm2},~{xmm3},~{xmm4},~{xmm5},~{xmm6},~{xmm7},~{xmm8},~{xmm9},~{xmm10},~{xmm11},~{xmm12},~{xmm13},~{xmm14},~{xmm15},~{flags}"()
   %2 = bitcast <2 x double> %a0 to <2 x i64>
@@ -203,7 +206,8 @@ define <4 x float> @stack_fold_andps(<4 x float> %a0, <4 x float> %a1) {
 ; CHECK-NEXT:    #NO_APP
 ; CHECK-NEXT:    andps {{[-0-9]+}}(%r{{[sb]}}p), %xmm0 # 16-byte Folded Reload
 ; CHECK-NEXT:    xorps %xmm1, %xmm1
-; CHECK-NEXT:    addps %xmm1, %xmm0
+; CHECK-NEXT:    addps %xmm0, %xmm1
+; CHECK-NEXT:    movaps %xmm1, %xmm0
 ; CHECK-NEXT:    retq
   %1 = tail call <2 x i64> asm sideeffect "nop", "=x,~{xmm2},~{xmm3},~{xmm4},~{xmm5},~{xmm6},~{xmm7},~{xmm8},~{xmm9},~{xmm10},~{xmm11},~{xmm12},~{xmm13},~{xmm14},~{xmm15},~{flags}"()
   %2 = bitcast <4 x float> %a0 to <2 x i64>
@@ -218,13 +222,13 @@ define <4 x float> @stack_fold_andps(<4 x float> %a0, <4 x float> %a1) {
 define <2 x double> @stack_fold_blendpd(<2 x double> %a0, <2 x double> %a1) {
 ; CHECK-LABEL: stack_fold_blendpd:
 ; CHECK:       # %bb.0:
-; CHECK-NEXT:    movaps %xmm1, {{[-0-9]+}}(%r{{[sb]}}p) # 16-byte Spill
+; CHECK-NEXT:    movaps %xmm0, {{[-0-9]+}}(%r{{[sb]}}p) # 16-byte Spill
 ; CHECK-NEXT:    #APP
 ; CHECK-NEXT:    nop
 ; CHECK-NEXT:    #NO_APP
-; CHECK-NEXT:    blendpd $2, {{[-0-9]+}}(%r{{[sb]}}p), %xmm0 # 16-byte Folded Reload
-; CHECK-NEXT:    # xmm0 = xmm0[0],mem[1]
-; CHECK-NEXT:    xorpd %xmm1, %xmm1
+; CHECK-NEXT:    blendpd $1, {{[-0-9]+}}(%r{{[sb]}}p), %xmm1 # 16-byte Folded Reload
+; CHECK-NEXT:    # xmm1 = mem[0],xmm1[1]
+; CHECK-NEXT:    xorpd %xmm0, %xmm0
 ; CHECK-NEXT:    addpd %xmm1, %xmm0
 ; CHECK-NEXT:    retq
   %1 = tail call <2 x i64> asm sideeffect "nop", "=x,~{xmm2},~{xmm3},~{xmm4},~{xmm5},~{xmm6},~{xmm7},~{xmm8},~{xmm9},~{xmm10},~{xmm11},~{xmm12},~{xmm13},~{xmm14},~{xmm15},~{flags}"()
@@ -244,7 +248,8 @@ define <4 x float> @stack_fold_blendps(<4 x float> %a0, <4 x float> %a1) {
 ; CHECK-NEXT:    blendps $6, {{[-0-9]+}}(%r{{[sb]}}p), %xmm0 # 16-byte Folded Reload
 ; CHECK-NEXT:    # xmm0 = xmm0[0],mem[1,2],xmm0[3]
 ; CHECK-NEXT:    xorps %xmm1, %xmm1
-; CHECK-NEXT:    addps %xmm1, %xmm0
+; CHECK-NEXT:    addps %xmm0, %xmm1
+; CHECK-NEXT:    movaps %xmm1, %xmm0
 ; CHECK-NEXT:    retq
   %1 = tail call <2 x i64> asm sideeffect "nop", "=x,~{xmm2},~{xmm3},~{xmm4},~{xmm5},~{xmm6},~{xmm7},~{xmm8},~{xmm9},~{xmm10},~{xmm11},~{xmm12},~{xmm13},~{xmm14},~{xmm15},~{flags}"()
   %2 = select <4 x i1> <i1 1, i1 0, i1 0, i1 1>, <4 x float> %a0, <4 x float> %a1
@@ -394,8 +399,8 @@ define i32 @stack_fold_comisd_int(<2 x double> %a0, <2 x double> %a1) {
 ; CHECK-NEXT:    comisd {{[-0-9]+}}(%r{{[sb]}}p), %xmm0 # 16-byte Folded Reload
 ; CHECK-NEXT:    setnp %al
 ; CHECK-NEXT:    sete %cl
-; CHECK-NEXT:    andb %al, %cl
-; CHECK-NEXT:    movzbl %cl, %eax
+; CHECK-NEXT:    andb %cl, %al
+; CHECK-NEXT:    movzbl %al, %eax
 ; CHECK-NEXT:    retq
   %1 = tail call <2 x i64> asm sideeffect "nop", "=x,~{xmm2},~{xmm3},~{xmm4},~{xmm5},~{xmm6},~{xmm7},~{xmm8},~{xmm9},~{xmm10},~{xmm11},~{xmm12},~{xmm13},~{xmm14},~{xmm15},~{flags}"()
   %2 = call i32 @llvm.x86.sse2.comieq.sd(<2 x double> %a0, <2 x double> %a1)
@@ -415,8 +420,8 @@ define i32 @stack_fold_comiss_int(<4 x float> %a0, <4 x float> %a1) {
 ; CHECK-NEXT:    comiss {{[-0-9]+}}(%r{{[sb]}}p), %xmm0 # 16-byte Folded Reload
 ; CHECK-NEXT:    setnp %al
 ; CHECK-NEXT:    sete %cl
-; CHECK-NEXT:    andb %al, %cl
-; CHECK-NEXT:    movzbl %cl, %eax
+; CHECK-NEXT:    andb %cl, %al
+; CHECK-NEXT:    movzbl %al, %eax
 ; CHECK-NEXT:    retq
   %1 = tail call <2 x i64> asm sideeffect "nop", "=x,~{xmm2},~{xmm3},~{xmm4},~{xmm5},~{xmm6},~{xmm7},~{xmm8},~{xmm9},~{xmm10},~{xmm11},~{xmm12},~{xmm13},~{xmm14},~{xmm15},~{flags}"()
   %2 = call i32 @llvm.x86.sse.comieq.ss(<4 x float> %a0, <4 x float> %a1)
@@ -1869,7 +1874,8 @@ define <2 x double> @stack_fold_orpd(<2 x double> %a0, <2 x double> %a1) {
 ; CHECK-NEXT:    #NO_APP
 ; CHECK-NEXT:    orpd {{[-0-9]+}}(%r{{[sb]}}p), %xmm0 # 16-byte Folded Reload
 ; CHECK-NEXT:    xorpd %xmm1, %xmm1
-; CHECK-NEXT:    addpd %xmm1, %xmm0
+; CHECK-NEXT:    addpd %xmm0, %xmm1
+; CHECK-NEXT:    movapd %xmm1, %xmm0
 ; CHECK-NEXT:    retq
   %1 = tail call <2 x i64> asm sideeffect "nop", "=x,~{xmm2},~{xmm3},~{xmm4},~{xmm5},~{xmm6},~{xmm7},~{xmm8},~{xmm9},~{xmm10},~{xmm11},~{xmm12},~{xmm13},~{xmm14},~{xmm15},~{flags}"()
   %2 = bitcast <2 x double> %a0 to <2 x i64>
@@ -1890,7 +1896,8 @@ define <4 x float> @stack_fold_orps(<4 x float> %a0, <4 x float> %a1) {
 ; CHECK-NEXT:    #NO_APP
 ; CHECK-NEXT:    orps {{[-0-9]+}}(%r{{[sb]}}p), %xmm0 # 16-byte Folded Reload
 ; CHECK-NEXT:    xorps %xmm1, %xmm1
-; CHECK-NEXT:    addps %xmm1, %xmm0
+; CHECK-NEXT:    addps %xmm0, %xmm1
+; CHECK-NEXT:    movaps %xmm1, %xmm0
 ; CHECK-NEXT:    retq
   %1 = tail call <2 x i64> asm sideeffect "nop", "=x,~{xmm2},~{xmm3},~{xmm4},~{xmm5},~{xmm6},~{xmm7},~{xmm8},~{xmm9},~{xmm10},~{xmm11},~{xmm12},~{xmm13},~{xmm14},~{xmm15},~{flags}"()
   %2 = bitcast <4 x float> %a0 to <2 x i64>
@@ -2083,7 +2090,8 @@ define <2 x double> @stack_fold_shufpd(<2 x double> %a0, <2 x double> %a1) {
 ; CHECK-NEXT:    shufpd $1, {{[-0-9]+}}(%r{{[sb]}}p), %xmm0 # 16-byte Folded Reload
 ; CHECK-NEXT:    # xmm0 = xmm0[1],mem[0]
 ; CHECK-NEXT:    xorpd %xmm1, %xmm1
-; CHECK-NEXT:    addpd %xmm1, %xmm0
+; CHECK-NEXT:    addpd %xmm0, %xmm1
+; CHECK-NEXT:    movapd %xmm1, %xmm0
 ; CHECK-NEXT:    retq
   %1 = tail call <2 x i64> asm sideeffect "nop", "=x,~{xmm2},~{xmm3},~{xmm4},~{xmm5},~{xmm6},~{xmm7},~{xmm8},~{xmm9},~{xmm10},~{xmm11},~{xmm12},~{xmm13},~{xmm14},~{xmm15},~{flags}"()
   %2 = shufflevector <2 x double> %a0, <2 x double> %a1, <2 x i32> <i32 1, i32 2>
@@ -2324,8 +2332,8 @@ define i32 @stack_fold_ucomisd_int(<2 x double> %a0, <2 x double> %a1) {
 ; CHECK-NEXT:    ucomisd {{[-0-9]+}}(%r{{[sb]}}p), %xmm0 # 16-byte Folded Reload
 ; CHECK-NEXT:    setnp %al
 ; CHECK-NEXT:    sete %cl
-; CHECK-NEXT:    andb %al, %cl
-; CHECK-NEXT:    movzbl %cl, %eax
+; CHECK-NEXT:    andb %cl, %al
+; CHECK-NEXT:    movzbl %al, %eax
 ; CHECK-NEXT:    retq
   %1 = tail call <2 x i64> asm sideeffect "nop", "=x,~{xmm2},~{xmm3},~{xmm4},~{xmm5},~{xmm6},~{xmm7},~{xmm8},~{xmm9},~{xmm10},~{xmm11},~{xmm12},~{xmm13},~{xmm14},~{xmm15},~{flags}"()
   %2 = call i32 @llvm.x86.sse2.ucomieq.sd(<2 x double> %a0, <2 x double> %a1)
@@ -2361,8 +2369,8 @@ define i32 @stack_fold_ucomiss_int(<4 x float> %a0, <4 x float> %a1) {
 ; CHECK-NEXT:    ucomiss {{[-0-9]+}}(%r{{[sb]}}p), %xmm0 # 16-byte Folded Reload
 ; CHECK-NEXT:    setnp %al
 ; CHECK-NEXT:    sete %cl
-; CHECK-NEXT:    andb %al, %cl
-; CHECK-NEXT:    movzbl %cl, %eax
+; CHECK-NEXT:    andb %cl, %al
+; CHECK-NEXT:    movzbl %al, %eax
 ; CHECK-NEXT:    retq
   %1 = tail call <2 x i64> asm sideeffect "nop", "=x,~{xmm2},~{xmm3},~{xmm4},~{xmm5},~{xmm6},~{xmm7},~{xmm8},~{xmm9},~{xmm10},~{xmm11},~{xmm12},~{xmm13},~{xmm14},~{xmm15},~{flags}"()
   %2 = call i32 @llvm.x86.sse.ucomieq.ss(<4 x float> %a0, <4 x float> %a1)
@@ -2380,7 +2388,8 @@ define <2 x double> @stack_fold_unpckhpd(<2 x double> %a0, <2 x double> %a1) {
 ; CHECK-NEXT:    unpckhpd {{[-0-9]+}}(%r{{[sb]}}p), %xmm0 # 16-byte Folded Reload
 ; CHECK-NEXT:    # xmm0 = xmm0[1],mem[1]
 ; CHECK-NEXT:    xorpd %xmm1, %xmm1
-; CHECK-NEXT:    addpd %xmm1, %xmm0
+; CHECK-NEXT:    addpd %xmm0, %xmm1
+; CHECK-NEXT:    movapd %xmm1, %xmm0
 ; CHECK-NEXT:    retq
   %1 = tail call <2 x i64> asm sideeffect "nop", "=x,~{xmm2},~{xmm3},~{xmm4},~{xmm5},~{xmm6},~{xmm7},~{xmm8},~{xmm9},~{xmm10},~{xmm11},~{xmm12},~{xmm13},~{xmm14},~{xmm15},~{flags}"()
   %2 = shufflevector <2 x double> %a0, <2 x double> %a1, <2 x i32> <i32 1, i32 3>
@@ -2399,7 +2408,8 @@ define <4 x float> @stack_fold_unpckhps(<4 x float> %a0, <4 x float> %a1) {
 ; CHECK-NEXT:    unpckhps {{[-0-9]+}}(%r{{[sb]}}p), %xmm0 # 16-byte Folded Reload
 ; CHECK-NEXT:    # xmm0 = xmm0[2],mem[2],xmm0[3],mem[3]
 ; CHECK-NEXT:    xorps %xmm1, %xmm1
-; CHECK-NEXT:    addps %xmm1, %xmm0
+; CHECK-NEXT:    addps %xmm0, %xmm1
+; CHECK-NEXT:    movaps %xmm1, %xmm0
 ; CHECK-NEXT:    retq
   %1 = tail call <2 x i64> asm sideeffect "nop", "=x,~{xmm2},~{xmm3},~{xmm4},~{xmm5},~{xmm6},~{xmm7},~{xmm8},~{xmm9},~{xmm10},~{xmm11},~{xmm12},~{xmm13},~{xmm14},~{xmm15},~{flags}"()
   %2 = shufflevector <4 x float> %a0, <4 x float> %a1, <4 x i32> <i32 2, i32 6, i32 3, i32 7>
@@ -2418,7 +2428,8 @@ define <2 x double> @stack_fold_unpcklpd(<2 x double> %a0, <2 x double> %a1) {
 ; CHECK-NEXT:    unpcklpd {{[-0-9]+}}(%r{{[sb]}}p), %xmm0 # 16-byte Folded Reload
 ; CHECK-NEXT:    # xmm0 = xmm0[0],mem[0]
 ; CHECK-NEXT:    xorpd %xmm1, %xmm1
-; CHECK-NEXT:    addpd %xmm1, %xmm0
+; CHECK-NEXT:    addpd %xmm0, %xmm1
+; CHECK-NEXT:    movapd %xmm1, %xmm0
 ; CHECK-NEXT:    retq
   %1 = tail call <2 x i64> asm sideeffect "nop", "=x,~{xmm2},~{xmm3},~{xmm4},~{xmm5},~{xmm6},~{xmm7},~{xmm8},~{xmm9},~{xmm10},~{xmm11},~{xmm12},~{xmm13},~{xmm14},~{xmm15},~{flags}"()
   %2 = shufflevector <2 x double> %a0, <2 x double> %a1, <2 x i32> <i32 0, i32 2>
@@ -2437,7 +2448,8 @@ define <4 x float> @stack_fold_unpcklps(<4 x float> %a0, <4 x float> %a1) {
 ; CHECK-NEXT:    unpcklps {{[-0-9]+}}(%r{{[sb]}}p), %xmm0 # 16-byte Folded Reload
 ; CHECK-NEXT:    # xmm0 = xmm0[0],mem[0],xmm0[1],mem[1]
 ; CHECK-NEXT:    xorps %xmm1, %xmm1
-; CHECK-NEXT:    addps %xmm1, %xmm0
+; CHECK-NEXT:    addps %xmm0, %xmm1
+; CHECK-NEXT:    movaps %xmm1, %xmm0
 ; CHECK-NEXT:    retq
   %1 = tail call <2 x i64> asm sideeffect "nop", "=x,~{xmm2},~{xmm3},~{xmm4},~{xmm5},~{xmm6},~{xmm7},~{xmm8},~{xmm9},~{xmm10},~{xmm11},~{xmm12},~{xmm13},~{xmm14},~{xmm15},~{flags}"()
   %2 = shufflevector <4 x float> %a0, <4 x float> %a1, <4 x i32> <i32 0, i32 4, i32 1, i32 5>
@@ -2455,7 +2467,8 @@ define <2 x double> @stack_fold_xorpd(<2 x double> %a0, <2 x double> %a1) {
 ; CHECK-NEXT:    #NO_APP
 ; CHECK-NEXT:    xorpd {{[-0-9]+}}(%r{{[sb]}}p), %xmm0 # 16-byte Folded Reload
 ; CHECK-NEXT:    xorpd %xmm1, %xmm1
-; CHECK-NEXT:    addpd %xmm1, %xmm0
+; CHECK-NEXT:    addpd %xmm0, %xmm1
+; CHECK-NEXT:    movapd %xmm1, %xmm0
 ; CHECK-NEXT:    retq
   %1 = tail call <2 x i64> asm sideeffect "nop", "=x,~{xmm2},~{xmm3},~{xmm4},~{xmm5},~{xmm6},~{xmm7},~{xmm8},~{xmm9},~{xmm10},~{xmm11},~{xmm12},~{xmm13},~{xmm14},~{xmm15},~{flags}"()
   %2 = bitcast <2 x double> %a0 to <2 x i64>
@@ -2476,7 +2489,8 @@ define <4 x float> @stack_fold_xorps(<4 x float> %a0, <4 x float> %a1) {
 ; CHECK-NEXT:    #NO_APP
 ; CHECK-NEXT:    xorps {{[-0-9]+}}(%r{{[sb]}}p), %xmm0 # 16-byte Folded Reload
 ; CHECK-NEXT:    xorps %xmm1, %xmm1
-; CHECK-NEXT:    addps %xmm1, %xmm0
+; CHECK-NEXT:    addps %xmm0, %xmm1
+; CHECK-NEXT:    movaps %xmm1, %xmm0
 ; CHECK-NEXT:    retq
   %1 = tail call <2 x i64> asm sideeffect "nop", "=x,~{xmm2},~{xmm3},~{xmm4},~{xmm5},~{xmm6},~{xmm7},~{xmm8},~{xmm9},~{xmm10},~{xmm11},~{xmm12},~{xmm13},~{xmm14},~{xmm15},~{flags}"()
   %2 = bitcast <4 x float> %a0 to <2 x i64>

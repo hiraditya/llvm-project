@@ -145,7 +145,8 @@ define <32 x i16> @mask_v32i1_lower16(<32 x i16> %a, <32 x i16> %b, <32 x i16> %
 ; AVX512F-NEXT:    vpcmpgtw %ymm3, %ymm2, %ymm2
 ; AVX512F-NEXT:    vpternlogd {{.*#+}} zmm3 = -1
 ; AVX512F-NEXT:    vinserti64x4 $1, %ymm2, %zmm3, %zmm2
-; AVX512F-NEXT:    vpternlogq {{.*#+}} zmm0 = zmm1 ^ (zmm2 & (zmm0 ^ zmm1))
+; AVX512F-NEXT:    vpternlogq {{.*#+}} zmm2 = zmm1 ^ (zmm2 & (zmm0 ^ zmm1))
+; AVX512F-NEXT:    vmovdqa64 %zmm2, %zmm0
 ; AVX512F-NEXT:    retq
 ;
 ; AVX512DQ-LABEL: mask_v32i1_lower16:
@@ -155,7 +156,8 @@ define <32 x i16> @mask_v32i1_lower16(<32 x i16> %a, <32 x i16> %b, <32 x i16> %
 ; AVX512DQ-NEXT:    vpcmpgtw %ymm3, %ymm2, %ymm2
 ; AVX512DQ-NEXT:    vpternlogd {{.*#+}} zmm3 = -1
 ; AVX512DQ-NEXT:    vinserti64x4 $1, %ymm2, %zmm3, %zmm2
-; AVX512DQ-NEXT:    vpternlogq {{.*#+}} zmm0 = zmm1 ^ (zmm2 & (zmm0 ^ zmm1))
+; AVX512DQ-NEXT:    vpternlogq {{.*#+}} zmm2 = zmm1 ^ (zmm2 & (zmm0 ^ zmm1))
+; AVX512DQ-NEXT:    vmovdqa64 %zmm2, %zmm0
 ; AVX512DQ-NEXT:    retq
 ;
 ; AVX512BW-LABEL: mask_v32i1_lower16:
@@ -191,7 +193,8 @@ define <64 x i8> @mask_v64i1_lower32(<64 x i8> %a, <64 x i8> %b, <64 x i8> %c, <
 ; AVX512F-NEXT:    vpcmpgtb %ymm3, %ymm2, %ymm2
 ; AVX512F-NEXT:    vpternlogd {{.*#+}} zmm3 = -1
 ; AVX512F-NEXT:    vinserti64x4 $1, %ymm2, %zmm3, %zmm2
-; AVX512F-NEXT:    vpternlogq {{.*#+}} zmm0 = zmm1 ^ (zmm2 & (zmm0 ^ zmm1))
+; AVX512F-NEXT:    vpternlogq {{.*#+}} zmm2 = zmm1 ^ (zmm2 & (zmm0 ^ zmm1))
+; AVX512F-NEXT:    vmovdqa64 %zmm2, %zmm0
 ; AVX512F-NEXT:    retq
 ;
 ; AVX512DQ-LABEL: mask_v64i1_lower32:
@@ -201,7 +204,8 @@ define <64 x i8> @mask_v64i1_lower32(<64 x i8> %a, <64 x i8> %b, <64 x i8> %c, <
 ; AVX512DQ-NEXT:    vpcmpgtb %ymm3, %ymm2, %ymm2
 ; AVX512DQ-NEXT:    vpternlogd {{.*#+}} zmm3 = -1
 ; AVX512DQ-NEXT:    vinserti64x4 $1, %ymm2, %zmm3, %zmm2
-; AVX512DQ-NEXT:    vpternlogq {{.*#+}} zmm0 = zmm1 ^ (zmm2 & (zmm0 ^ zmm1))
+; AVX512DQ-NEXT:    vpternlogq {{.*#+}} zmm2 = zmm1 ^ (zmm2 & (zmm0 ^ zmm1))
+; AVX512DQ-NEXT:    vmovdqa64 %zmm2, %zmm0
 ; AVX512DQ-NEXT:    retq
 ;
 ; AVX512BW-LABEL: mask_v64i1_lower32:

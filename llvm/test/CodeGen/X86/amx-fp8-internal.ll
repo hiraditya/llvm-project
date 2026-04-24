@@ -85,9 +85,9 @@ define dso_local void @__tile_dpbf8ps(ptr %dst, ptr %src1, ptr %src2) #0 {
 ; CHECK-NEXT:    ldtilecfg {{[0-9]+}}(%rsp)
 ; CHECK-NEXT:    addq $64, %rdi
 ; CHECK-NEXT:    tileloadd (%rdi,%rcx), %tmm0
-; CHECK-NEXT:    addq $64, %rsi
+; CHECK-NEXT:    leaq 64(%rsi), %rsi
 ; CHECK-NEXT:    tileloadd (%rsi,%r8), %tmm1
-; CHECK-NEXT:    addq $64, %rdx
+; CHECK-NEXT:    leaq 64(%rdx), %rdx
 ; CHECK-NEXT:    tileloadd (%rdx,%rcx), %tmm2
 ; CHECK-NEXT:    movabsq $64, %rbp
 ; CHECK-NEXT:    tilestored %tmm0, 896(%rsp,%rbp) # 1024-byte Folded Spill

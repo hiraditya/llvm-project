@@ -9,12 +9,11 @@ define i32 @main() {
 ; CHECK-LABEL: main:
 ; CHECK:       # %bb.0: # %entry
 ; CHECK-NEXT:    movl d, %eax
-; CHECK-NEXT:    movl %eax, %ecx
-; CHECK-NEXT:    shrl $31, %ecx
-; CHECK-NEXT:    addl %eax, %eax
-; CHECK-NEXT:    andl $16, %eax
-; CHECK-NEXT:    cmpl $-1, %eax
-; CHECK-NEXT:    sbbl $0, %ecx
+; CHECK-NEXT:    leal (%eax,%eax), %ecx
+; CHECK-NEXT:    shrl $31, %eax
+; CHECK-NEXT:    andl $16, %ecx
+; CHECK-NEXT:    cmpl $-1, %ecx
+; CHECK-NEXT:    sbbl $0, %eax
 ; CHECK-NEXT:    setb %al
 ; CHECK-NEXT:    movzbl %al, %eax
 ; CHECK-NEXT:    retl

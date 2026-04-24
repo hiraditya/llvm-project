@@ -7,9 +7,9 @@
 define double @julia_dotf(<4 x double> %x, <4 x double> %y, <4 x double> %z, i1 %t3) {
 ; CHECK-LABEL: julia_dotf:
 ; CHECK:       # %bb.0:
-; CHECK-NEXT:    vfmadd213pd {{.*#+}} ymm0 = (ymm1 * ymm0) + ymm2
-; CHECK-NEXT:    vextractf128 $1, %ymm0, %xmm1
-; CHECK-NEXT:    vaddpd %xmm1, %xmm0, %xmm0
+; CHECK-NEXT:    vfmadd213pd {{.*#+}} ymm1 = (ymm0 * ymm1) + ymm2
+; CHECK-NEXT:    vextractf128 $1, %ymm1, %xmm0
+; CHECK-NEXT:    vaddpd %xmm0, %xmm1, %xmm0
 ; CHECK-NEXT:    vshufpd {{.*#+}} xmm1 = xmm0[1,0]
 ; CHECK-NEXT:    vaddsd %xmm1, %xmm0, %xmm0
 ; CHECK-NEXT:    vzeroupper

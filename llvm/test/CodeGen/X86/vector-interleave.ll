@@ -141,13 +141,14 @@ define <64 x i16> @interleave8x8(<8 x i16> %a, <8 x i16> %b, <8 x i16> %c, <8 x 
 define <8 x double> @interleave2x4f64(<4 x double> %a, <4 x double> %b) {
 ; SSE-LABEL: interleave2x4f64:
 ; SSE:       # %bb.0:
-; SSE-NEXT:    movaps %xmm0, %xmm4
+; SSE-NEXT:    movaps %xmm1, %xmm4
+; SSE-NEXT:    movaps %xmm0, %xmm1
 ; SSE-NEXT:    movlhps {{.*#+}} xmm0 = xmm0[0],xmm2[0]
-; SSE-NEXT:    unpckhpd {{.*#+}} xmm4 = xmm4[1],xmm2[1]
-; SSE-NEXT:    movaps %xmm1, %xmm2
+; SSE-NEXT:    unpckhpd {{.*#+}} xmm1 = xmm1[1],xmm2[1]
+; SSE-NEXT:    movaps %xmm4, %xmm2
 ; SSE-NEXT:    movlhps {{.*#+}} xmm2 = xmm2[0],xmm3[0]
-; SSE-NEXT:    movhlps {{.*#+}} xmm3 = xmm1[1],xmm3[1]
-; SSE-NEXT:    movaps %xmm4, %xmm1
+; SSE-NEXT:    unpckhpd {{.*#+}} xmm4 = xmm4[1],xmm3[1]
+; SSE-NEXT:    movaps %xmm4, %xmm3
 ; SSE-NEXT:    retq
 ;
 ; AVX1-LABEL: interleave2x4f64:

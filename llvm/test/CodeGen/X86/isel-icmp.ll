@@ -144,12 +144,14 @@ define i32 @test_icmp_eq_i64(i64 %a, i64 %b) {
 ;
 ; SDAG-X86-LABEL: test_icmp_eq_i64:
 ; SDAG-X86:       ## %bb.0:
+; SDAG-X86-NEXT:    movl {{[0-9]+}}(%esp), %eax
 ; SDAG-X86-NEXT:    movl {{[0-9]+}}(%esp), %ecx
 ; SDAG-X86-NEXT:    movl {{[0-9]+}}(%esp), %edx
-; SDAG-X86-NEXT:    xorl {{[0-9]+}}(%esp), %edx
-; SDAG-X86-NEXT:    xorl {{[0-9]+}}(%esp), %ecx
+; SDAG-X86-NEXT:    xorl %ecx, %edx
+; SDAG-X86-NEXT:    movl {{[0-9]+}}(%esp), %ecx
+; SDAG-X86-NEXT:    xorl %eax, %ecx
 ; SDAG-X86-NEXT:    xorl %eax, %eax
-; SDAG-X86-NEXT:    orl %edx, %ecx
+; SDAG-X86-NEXT:    orl %ecx, %edx
 ; SDAG-X86-NEXT:    sete %al
 ; SDAG-X86-NEXT:    retl
 ;
@@ -157,9 +159,11 @@ define i32 @test_icmp_eq_i64(i64 %a, i64 %b) {
 ; FAST-X86:       ## %bb.0:
 ; FAST-X86-NEXT:    movl {{[0-9]+}}(%esp), %eax
 ; FAST-X86-NEXT:    movl {{[0-9]+}}(%esp), %ecx
-; FAST-X86-NEXT:    xorl {{[0-9]+}}(%esp), %ecx
-; FAST-X86-NEXT:    xorl {{[0-9]+}}(%esp), %eax
-; FAST-X86-NEXT:    orl %ecx, %eax
+; FAST-X86-NEXT:    movl {{[0-9]+}}(%esp), %edx
+; FAST-X86-NEXT:    xorl %ecx, %edx
+; FAST-X86-NEXT:    movl {{[0-9]+}}(%esp), %ecx
+; FAST-X86-NEXT:    xorl %eax, %ecx
+; FAST-X86-NEXT:    orl %edx, %ecx
 ; FAST-X86-NEXT:    sete %al
 ; FAST-X86-NEXT:    andb $1, %al
 ; FAST-X86-NEXT:    movzbl %al, %eax
@@ -169,11 +173,13 @@ define i32 @test_icmp_eq_i64(i64 %a, i64 %b) {
 ; GISEL-X86:       ## %bb.0:
 ; GISEL-X86-NEXT:    movl {{[0-9]+}}(%esp), %eax
 ; GISEL-X86-NEXT:    movl {{[0-9]+}}(%esp), %ecx
-; GISEL-X86-NEXT:    xorl {{[0-9]+}}(%esp), %eax
-; GISEL-X86-NEXT:    xorl {{[0-9]+}}(%esp), %ecx
-; GISEL-X86-NEXT:    orl %eax, %ecx
+; GISEL-X86-NEXT:    movl {{[0-9]+}}(%esp), %edx
+; GISEL-X86-NEXT:    xorl %eax, %edx
+; GISEL-X86-NEXT:    movl {{[0-9]+}}(%esp), %eax
+; GISEL-X86-NEXT:    xorl %ecx, %eax
+; GISEL-X86-NEXT:    orl %eax, %edx
 ; GISEL-X86-NEXT:    xorl %eax, %eax
-; GISEL-X86-NEXT:    cmpl $0, %ecx
+; GISEL-X86-NEXT:    cmpl $0, %edx
 ; GISEL-X86-NEXT:    sete %al
 ; GISEL-X86-NEXT:    andl $1, %eax
 ; GISEL-X86-NEXT:    retl
@@ -747,36 +753,36 @@ define i32 @test_icmp_sge_i96(i96 %a, i96 %b) nounwind {
 ;
 ; GISEL-X64-LABEL: test_icmp_sge_i96:
 ; GISEL-X64:       ## %bb.0:
-; GISEL-X64-NEXT:    movq %rdi, %rax
-; GISEL-X64-NEXT:    shlq $32, %rax
+; GISEL-X64-NEXT:    movq %rdi, %r8
+; GISEL-X64-NEXT:    shlq $32, %r8
 ; GISEL-X64-NEXT:    shlq $32, %rsi
 ; GISEL-X64-NEXT:    shrq $32, %rdi
-; GISEL-X64-NEXT:    orq %rsi, %rdi
-; GISEL-X64-NEXT:    shrq $32, %rax
-; GISEL-X64-NEXT:    movq %rdi, %rsi
-; GISEL-X64-NEXT:    shlq $32, %rsi
-; GISEL-X64-NEXT:    orq %rax, %rsi
-; GISEL-X64-NEXT:    sarq $32, %rdi
-; GISEL-X64-NEXT:    movq %rdx, %rax
+; GISEL-X64-NEXT:    orq %rdi, %rsi
+; GISEL-X64-NEXT:    shrq $32, %r8
+; GISEL-X64-NEXT:    movq %rsi, %rax
 ; GISEL-X64-NEXT:    shlq $32, %rax
+; GISEL-X64-NEXT:    orq %rax, %r8
+; GISEL-X64-NEXT:    sarq $32, %rsi
+; GISEL-X64-NEXT:    movq %rdx, %rdi
+; GISEL-X64-NEXT:    shlq $32, %rdi
 ; GISEL-X64-NEXT:    shlq $32, %rcx
 ; GISEL-X64-NEXT:    shrq $32, %rdx
-; GISEL-X64-NEXT:    orq %rcx, %rdx
-; GISEL-X64-NEXT:    shrq $32, %rax
-; GISEL-X64-NEXT:    movq %rdx, %rcx
-; GISEL-X64-NEXT:    shlq $32, %rcx
-; GISEL-X64-NEXT:    orq %rax, %rcx
-; GISEL-X64-NEXT:    sarq $32, %rdx
-; GISEL-X64-NEXT:    xorl %r8d, %r8d
-; GISEL-X64-NEXT:    cmpq %rcx, %rsi
-; GISEL-X64-NEXT:    setae %r8b
+; GISEL-X64-NEXT:    orq %rdx, %rcx
+; GISEL-X64-NEXT:    shrq $32, %rdi
+; GISEL-X64-NEXT:    movq %rcx, %rax
+; GISEL-X64-NEXT:    shlq $32, %rax
+; GISEL-X64-NEXT:    orq %rax, %rdi
+; GISEL-X64-NEXT:    sarq $32, %rcx
 ; GISEL-X64-NEXT:    xorl %eax, %eax
-; GISEL-X64-NEXT:    xorl %ecx, %ecx
-; GISEL-X64-NEXT:    cmpq %rdx, %rdi
-; GISEL-X64-NEXT:    setge %al
-; GISEL-X64-NEXT:    sete %cl
-; GISEL-X64-NEXT:    testl %ecx, %ecx
-; GISEL-X64-NEXT:    cmovnew %r8w, %ax
+; GISEL-X64-NEXT:    cmpq %rdi, %r8
+; GISEL-X64-NEXT:    setae %al
+; GISEL-X64-NEXT:    xorl %edx, %edx
+; GISEL-X64-NEXT:    xorl %edi, %edi
+; GISEL-X64-NEXT:    cmpq %rcx, %rsi
+; GISEL-X64-NEXT:    setge %dl
+; GISEL-X64-NEXT:    sete %dil
+; GISEL-X64-NEXT:    testl %edi, %edi
+; GISEL-X64-NEXT:    cmovew %dx, %ax
 ; GISEL-X64-NEXT:    andl $1, %eax
 ; GISEL-X64-NEXT:    retq
 ;

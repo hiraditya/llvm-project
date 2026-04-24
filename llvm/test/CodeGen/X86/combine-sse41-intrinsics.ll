@@ -190,12 +190,13 @@ define <4 x float> @demandedbits_uitofp_blendvps(<4 x float> %a0, <4 x float> %a
 ; SSE-LABEL: demandedbits_uitofp_blendvps:
 ; SSE:       # %bb.0:
 ; SSE-NEXT:    movaps %xmm0, %xmm3
-; SSE-NEXT:    movdqa {{.*#+}} xmm0 = [1258291200,1258291200,1258291200,1258291200]
-; SSE-NEXT:    pblendw {{.*#+}} xmm0 = xmm2[0],xmm0[1],xmm2[2],xmm0[3],xmm2[4],xmm0[5],xmm2[6],xmm0[7]
+; SSE-NEXT:    movdqa {{.*#+}} xmm4 = [1258291200,1258291200,1258291200,1258291200]
+; SSE-NEXT:    pblendw {{.*#+}} xmm4 = xmm2[0],xmm4[1],xmm2[2],xmm4[3],xmm2[4],xmm4[5],xmm2[6],xmm4[7]
 ; SSE-NEXT:    psrld $16, %xmm2
-; SSE-NEXT:    pblendw {{.*#+}} xmm2 = xmm2[0],mem[1],xmm2[2],mem[3],xmm2[4],mem[5],xmm2[6],mem[7]
-; SSE-NEXT:    subps {{\.?LCPI[0-9]+_[0-9]+}}(%rip), %xmm2
-; SSE-NEXT:    addps %xmm2, %xmm0
+; SSE-NEXT:    movdqa {{.*#+}} xmm0 = [1392508928,1392508928,1392508928,1392508928]
+; SSE-NEXT:    pblendw {{.*#+}} xmm0 = xmm2[0],xmm0[1],xmm2[2],xmm0[3],xmm2[4],xmm0[5],xmm2[6],xmm0[7]
+; SSE-NEXT:    subps {{\.?LCPI[0-9]+_[0-9]+}}(%rip), %xmm0
+; SSE-NEXT:    addps %xmm4, %xmm0
 ; SSE-NEXT:    blendvps %xmm0, %xmm1, %xmm3
 ; SSE-NEXT:    movaps %xmm3, %xmm0
 ; SSE-NEXT:    retq

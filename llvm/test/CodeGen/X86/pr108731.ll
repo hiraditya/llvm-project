@@ -6,20 +6,20 @@ define i64 @test_i64(i64 %w, i64 %x, i64 %y, i64 %z) {
 ; NOBMI-LABEL: test_i64:
 ; NOBMI:       # %bb.0: # %Entry
 ; NOBMI-NEXT:    movq %rcx, %rax
-; NOBMI-NEXT:    andq %rdx, %rsi
-; NOBMI-NEXT:    notq %rsi
-; NOBMI-NEXT:    andq %rdi, %rsi
 ; NOBMI-NEXT:    notq %rax
 ; NOBMI-NEXT:    orq %rdx, %rax
-; NOBMI-NEXT:    andq %rsi, %rax
+; NOBMI-NEXT:    andq %rsi, %rdx
+; NOBMI-NEXT:    notq %rdx
+; NOBMI-NEXT:    andq %rdi, %rdx
+; NOBMI-NEXT:    andq %rdx, %rax
 ; NOBMI-NEXT:    retq
 ;
 ; BMI-LABEL: test_i64:
 ; BMI:       # %bb.0: # %Entry
-; BMI-NEXT:    andq %rdx, %rsi
-; BMI-NEXT:    andnq %rdi, %rsi, %rax
-; BMI-NEXT:    andnq %rcx, %rdx, %rcx
-; BMI-NEXT:    andnq %rax, %rcx, %rax
+; BMI-NEXT:    andnq %rcx, %rdx, %rax
+; BMI-NEXT:    andq %rsi, %rdx
+; BMI-NEXT:    andnq %rdi, %rdx, %rcx
+; BMI-NEXT:    andnq %rcx, %rax, %rax
 ; BMI-NEXT:    retq
 Entry:
   %and1 = and i64 %y, %x
@@ -35,20 +35,20 @@ define i32 @test_i32(i32 %w, i32 %x, i32 %y, i32 %z) {
 ; NOBMI-LABEL: test_i32:
 ; NOBMI:       # %bb.0: # %Entry
 ; NOBMI-NEXT:    movl %ecx, %eax
-; NOBMI-NEXT:    andl %edx, %esi
-; NOBMI-NEXT:    notl %esi
-; NOBMI-NEXT:    andl %edi, %esi
 ; NOBMI-NEXT:    notl %eax
 ; NOBMI-NEXT:    orl %edx, %eax
-; NOBMI-NEXT:    andl %esi, %eax
+; NOBMI-NEXT:    andl %esi, %edx
+; NOBMI-NEXT:    notl %edx
+; NOBMI-NEXT:    andl %edi, %edx
+; NOBMI-NEXT:    andl %edx, %eax
 ; NOBMI-NEXT:    retq
 ;
 ; BMI-LABEL: test_i32:
 ; BMI:       # %bb.0: # %Entry
-; BMI-NEXT:    andl %edx, %esi
-; BMI-NEXT:    andnl %edi, %esi, %eax
-; BMI-NEXT:    andnl %ecx, %edx, %ecx
-; BMI-NEXT:    andnl %eax, %ecx, %eax
+; BMI-NEXT:    andnl %ecx, %edx, %eax
+; BMI-NEXT:    andl %esi, %edx
+; BMI-NEXT:    andnl %edi, %edx, %ecx
+; BMI-NEXT:    andnl %ecx, %eax, %eax
 ; BMI-NEXT:    retq
 Entry:
   %and1 = and i32 %y, %x
@@ -64,21 +64,22 @@ define i16 @test_i16(i16 %w, i16 %x, i16 %y, i16 %z) {
 ; NOBMI-LABEL: test_i16:
 ; NOBMI:       # %bb.0: # %Entry
 ; NOBMI-NEXT:    movl %ecx, %eax
-; NOBMI-NEXT:    andl %edx, %esi
-; NOBMI-NEXT:    notl %esi
-; NOBMI-NEXT:    andl %edi, %esi
 ; NOBMI-NEXT:    notl %eax
 ; NOBMI-NEXT:    orl %edx, %eax
-; NOBMI-NEXT:    andl %esi, %eax
+; NOBMI-NEXT:    andl %esi, %edx
+; NOBMI-NEXT:    notl %edx
+; NOBMI-NEXT:    andl %edi, %edx
+; NOBMI-NEXT:    andl %edx, %eax
 ; NOBMI-NEXT:    # kill: def $ax killed $ax killed $eax
 ; NOBMI-NEXT:    retq
 ;
 ; BMI-LABEL: test_i16:
 ; BMI:       # %bb.0: # %Entry
-; BMI-NEXT:    andl %edx, %esi
-; BMI-NEXT:    andnl %edi, %esi, %eax
-; BMI-NEXT:    notl %ecx
-; BMI-NEXT:    orl %edx, %ecx
+; BMI-NEXT:    movl %ecx, %eax
+; BMI-NEXT:    notl %eax
+; BMI-NEXT:    orl %edx, %eax
+; BMI-NEXT:    andl %esi, %edx
+; BMI-NEXT:    andnl %edi, %edx, %ecx
 ; BMI-NEXT:    andl %ecx, %eax
 ; BMI-NEXT:    # kill: def $ax killed $ax killed $eax
 ; BMI-NEXT:    retq
@@ -95,13 +96,14 @@ Entry:
 define i8 @test_i8(i8 %w, i8 %x, i8 %y, i8 %z) {
 ; CHECK-LABEL: test_i8:
 ; CHECK:       # %bb.0: # %Entry
-; CHECK-NEXT:    movl %edx, %eax
-; CHECK-NEXT:    andl %edx, %esi
-; CHECK-NEXT:    notb %sil
-; CHECK-NEXT:    andb %dil, %sil
-; CHECK-NEXT:    notb %cl
+; CHECK-NEXT:    movl %ecx, %eax
+; CHECK-NEXT:    movl %edx, %ecx
+; CHECK-NEXT:    andl %esi, %edx
+; CHECK-NEXT:    notb %dl
+; CHECK-NEXT:    andb %dil, %dl
+; CHECK-NEXT:    notb %al
 ; CHECK-NEXT:    orb %cl, %al
-; CHECK-NEXT:    andb %sil, %al
+; CHECK-NEXT:    andb %dl, %al
 ; CHECK-NEXT:    # kill: def $al killed $al killed $eax
 ; CHECK-NEXT:    retq
 Entry:
@@ -117,10 +119,11 @@ Entry:
 define <16 x i8> @test_v16i8(<16 x i8> %w, <16 x i8> %x, <16 x i8> %y, <16 x i8> %z) {
 ; NOBMI-LABEL: test_v16i8:
 ; NOBMI:       # %bb.0: # %Entry
-; NOBMI-NEXT:    andps %xmm2, %xmm1
-; NOBMI-NEXT:    andnps %xmm0, %xmm1
+; NOBMI-NEXT:    movaps %xmm2, %xmm4
+; NOBMI-NEXT:    andps %xmm1, %xmm4
+; NOBMI-NEXT:    andnps %xmm0, %xmm4
 ; NOBMI-NEXT:    andnps %xmm3, %xmm2
-; NOBMI-NEXT:    andnps %xmm1, %xmm2
+; NOBMI-NEXT:    andnps %xmm4, %xmm2
 ; NOBMI-NEXT:    movaps %xmm2, %xmm0
 ; NOBMI-NEXT:    retq
 ;
@@ -144,14 +147,16 @@ Entry:
 define <32 x i8> @test_v32i8(<32 x i8> %w, <32 x i8> %x, <32 x i8> %y, <32 x i8> %z) {
 ; NOBMI-LABEL: test_v32i8:
 ; NOBMI:       # %bb.0: # %Entry
-; NOBMI-NEXT:    andps %xmm4, %xmm2
-; NOBMI-NEXT:    andps %xmm5, %xmm3
-; NOBMI-NEXT:    andnps %xmm1, %xmm3
-; NOBMI-NEXT:    andnps %xmm0, %xmm2
+; NOBMI-NEXT:    movaps %xmm4, %xmm8
+; NOBMI-NEXT:    andps %xmm2, %xmm8
+; NOBMI-NEXT:    movaps %xmm5, %xmm2
+; NOBMI-NEXT:    andps %xmm3, %xmm2
+; NOBMI-NEXT:    andnps %xmm1, %xmm2
+; NOBMI-NEXT:    andnps %xmm0, %xmm8
 ; NOBMI-NEXT:    andnps %xmm6, %xmm4
-; NOBMI-NEXT:    andnps %xmm2, %xmm4
+; NOBMI-NEXT:    andnps %xmm8, %xmm4
 ; NOBMI-NEXT:    andnps %xmm7, %xmm5
-; NOBMI-NEXT:    andnps %xmm3, %xmm5
+; NOBMI-NEXT:    andnps %xmm2, %xmm5
 ; NOBMI-NEXT:    movaps %xmm4, %xmm0
 ; NOBMI-NEXT:    movaps %xmm5, %xmm1
 ; NOBMI-NEXT:    retq
@@ -180,8 +185,9 @@ define void @PR112347(ptr %p0, ptr %p1, ptr %p2) {
 ; CHECK-NEXT:    movl (%rdi), %eax
 ; CHECK-NEXT:    notl %eax
 ; CHECK-NEXT:    orl $-16777204, %eax # imm = 0xFF00000C
-; CHECK-NEXT:    andl (%rsi), %eax
-; CHECK-NEXT:    movl %eax, (%rdx)
+; CHECK-NEXT:    movl (%rsi), %ecx
+; CHECK-NEXT:    andl %eax, %ecx
+; CHECK-NEXT:    movl %ecx, (%rdx)
 ; CHECK-NEXT:    retq
   %load0 = load i32, ptr %p0, align 1
   %load1 = load i32, ptr %p1, align 4

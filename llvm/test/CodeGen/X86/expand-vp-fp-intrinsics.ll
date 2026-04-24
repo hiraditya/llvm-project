@@ -237,8 +237,9 @@ define void @vp_fabs_v4f32(<4 x float> %a0, <4 x float> %a1, ptr %out, i32 %vp) 
 ;
 ; SSE-LABEL: vp_fabs_v4f32:
 ; SSE:       # %bb.0:
-; SSE-NEXT:    andps {{\.?LCPI[0-9]+_[0-9]+}}(%rip), %xmm0
-; SSE-NEXT:    movaps %xmm0, (%rdi)
+; SSE-NEXT:    movaps {{.*#+}} xmm1 = [NaN,NaN,NaN,NaN]
+; SSE-NEXT:    andps %xmm0, %xmm1
+; SSE-NEXT:    movaps %xmm1, (%rdi)
 ; SSE-NEXT:    retq
 ;
 ; AVX1-LABEL: vp_fabs_v4f32:
@@ -300,8 +301,9 @@ define void @vp_fneg_v4f32(<4 x float> %a0, <4 x float> %a1, ptr %out, i32 %vp) 
 ;
 ; SSE-LABEL: vp_fneg_v4f32:
 ; SSE:       # %bb.0:
-; SSE-NEXT:    xorps {{\.?LCPI[0-9]+_[0-9]+}}(%rip), %xmm0
-; SSE-NEXT:    movaps %xmm0, (%rdi)
+; SSE-NEXT:    movaps {{.*#+}} xmm1 = [-0.0E+0,-0.0E+0,-0.0E+0,-0.0E+0]
+; SSE-NEXT:    xorps %xmm0, %xmm1
+; SSE-NEXT:    movaps %xmm1, (%rdi)
 ; SSE-NEXT:    retq
 ;
 ; AVX1-LABEL: vp_fneg_v4f32:
@@ -503,8 +505,8 @@ define void @vp_fma_v4f32(<4 x float> %a0, <4 x float> %a1, ptr %out, i4 %a5) no
 ;
 ; AVX512-LABEL: vp_fma_v4f32:
 ; AVX512:       # %bb.0:
-; AVX512-NEXT:    vfmadd213ps {{.*#+}} xmm0 = (xmm1 * xmm0) + xmm1
-; AVX512-NEXT:    vmovaps %xmm0, (%rdi)
+; AVX512-NEXT:    vfmadd213ps {{.*#+}} xmm1 = (xmm0 * xmm1) + xmm1
+; AVX512-NEXT:    vmovaps %xmm1, (%rdi)
 ; AVX512-NEXT:    retq
   %res = call <4 x float> @llvm.vp.fma.v4f32(<4 x float> %a0, <4 x float> %a1, <4 x float> %a1, <4 x i1> <i1 -1, i1 -1, i1 -1, i1 -1>, i32 4)
   store <4 x float> %res, ptr %out
@@ -544,8 +546,8 @@ define void @vp_fmuladd_v4f32(<4 x float> %a0, <4 x float> %a1, ptr %out, i4 %a5
 ;
 ; AVX512-LABEL: vp_fmuladd_v4f32:
 ; AVX512:       # %bb.0:
-; AVX512-NEXT:    vfmadd213ps {{.*#+}} xmm0 = (xmm1 * xmm0) + xmm1
-; AVX512-NEXT:    vmovaps %xmm0, (%rdi)
+; AVX512-NEXT:    vfmadd213ps {{.*#+}} xmm1 = (xmm0 * xmm1) + xmm1
+; AVX512-NEXT:    vmovaps %xmm1, (%rdi)
 ; AVX512-NEXT:    retq
   %res = call <4 x float> @llvm.vp.fmuladd.v4f32(<4 x float> %a0, <4 x float> %a1, <4 x float> %a1, <4 x i1> <i1 -1, i1 -1, i1 -1, i1 -1>, i32 4)
   store <4 x float> %res, ptr %out
@@ -590,8 +592,7 @@ define <4 x float> @vfmax_vv_v4f32(<4 x float> %va, <4 x float> %vb, <4 x i1> %m
 ; AVX512:       # %bb.0:
 ; AVX512-NEXT:    vmaxps %xmm0, %xmm1, %xmm2
 ; AVX512-NEXT:    vcmpunordps %xmm0, %xmm0, %k1
-; AVX512-NEXT:    vmovaps %xmm1, %xmm2 {%k1}
-; AVX512-NEXT:    vmovaps %xmm2, %xmm0
+; AVX512-NEXT:    vblendmps %xmm1, %xmm2, %xmm0 {%k1}
 ; AVX512-NEXT:    retq
   %v = call <4 x float> @llvm.vp.maxnum.v4f32(<4 x float> %va, <4 x float> %vb, <4 x i1> %m, i32 %evl)
   ret <4 x float> %v
@@ -640,8 +641,7 @@ define <8 x float> @vfmax_vv_v8f32(<8 x float> %va, <8 x float> %vb, <8 x i1> %m
 ; AVX512:       # %bb.0:
 ; AVX512-NEXT:    vmaxps %ymm0, %ymm1, %ymm2
 ; AVX512-NEXT:    vcmpunordps %ymm0, %ymm0, %k1
-; AVX512-NEXT:    vmovaps %ymm1, %ymm2 {%k1}
-; AVX512-NEXT:    vmovaps %ymm2, %ymm0
+; AVX512-NEXT:    vblendmps %ymm1, %ymm2, %ymm0 {%k1}
 ; AVX512-NEXT:    retq
   %v = call <8 x float> @llvm.vp.maxnum.v8f32(<8 x float> %va, <8 x float> %vb, <8 x i1> %m, i32 %evl)
   ret <8 x float> %v
@@ -684,8 +684,7 @@ define <4 x float> @vfmin_vv_v4f32(<4 x float> %va, <4 x float> %vb, <4 x i1> %m
 ; AVX512:       # %bb.0:
 ; AVX512-NEXT:    vminps %xmm0, %xmm1, %xmm2
 ; AVX512-NEXT:    vcmpunordps %xmm0, %xmm0, %k1
-; AVX512-NEXT:    vmovaps %xmm1, %xmm2 {%k1}
-; AVX512-NEXT:    vmovaps %xmm2, %xmm0
+; AVX512-NEXT:    vblendmps %xmm1, %xmm2, %xmm0 {%k1}
 ; AVX512-NEXT:    retq
   %v = call <4 x float> @llvm.vp.minnum.v4f32(<4 x float> %va, <4 x float> %vb, <4 x i1> %m, i32 %evl)
   ret <4 x float> %v
@@ -734,8 +733,7 @@ define <8 x float> @vfmin_vv_v8f32(<8 x float> %va, <8 x float> %vb, <8 x i1> %m
 ; AVX512:       # %bb.0:
 ; AVX512-NEXT:    vminps %ymm0, %ymm1, %ymm2
 ; AVX512-NEXT:    vcmpunordps %ymm0, %ymm0, %k1
-; AVX512-NEXT:    vmovaps %ymm1, %ymm2 {%k1}
-; AVX512-NEXT:    vmovaps %ymm2, %ymm0
+; AVX512-NEXT:    vblendmps %ymm1, %ymm2, %ymm0 {%k1}
 ; AVX512-NEXT:    retq
   %v = call <8 x float> @llvm.vp.minnum.v8f32(<8 x float> %va, <8 x float> %vb, <8 x i1> %m, i32 %evl)
   ret <8 x float> %v

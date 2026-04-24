@@ -276,10 +276,10 @@ define i2 @v2i64(<2 x i64> %a, <2 x i64> %b) {
 ; SSE2-SSSE3-NEXT:    pshufd {{.*#+}} xmm3 = xmm2[0,0,2,2]
 ; SSE2-SSSE3-NEXT:    pcmpeqd %xmm1, %xmm0
 ; SSE2-SSSE3-NEXT:    pshufd {{.*#+}} xmm0 = xmm0[1,1,3,3]
-; SSE2-SSSE3-NEXT:    pand %xmm3, %xmm0
-; SSE2-SSSE3-NEXT:    pshufd {{.*#+}} xmm1 = xmm2[1,1,3,3]
-; SSE2-SSSE3-NEXT:    por %xmm0, %xmm1
-; SSE2-SSSE3-NEXT:    movmskpd %xmm1, %eax
+; SSE2-SSSE3-NEXT:    pand %xmm0, %xmm3
+; SSE2-SSSE3-NEXT:    pshufd {{.*#+}} xmm0 = xmm2[1,1,3,3]
+; SSE2-SSSE3-NEXT:    por %xmm3, %xmm0
+; SSE2-SSSE3-NEXT:    movmskpd %xmm0, %eax
 ; SSE2-SSSE3-NEXT:    # kill: def $al killed $al killed $eax
 ; SSE2-SSSE3-NEXT:    retq
 ;
@@ -499,8 +499,8 @@ define i64 @v16i8_widened_with_ones(<16 x i8> %a, <16 x i8> %b) {
 ; SSE2-SSSE3-LABEL: v16i8_widened_with_ones:
 ; SSE2-SSSE3:       # %bb.0: # %entry
 ; SSE2-SSSE3-NEXT:    pcmpeqb %xmm1, %xmm0
-; SSE2-SSSE3-NEXT:    pmovmskb %xmm0, %ecx
-; SSE2-SSSE3-NEXT:    orl $-65536, %ecx # imm = 0xFFFF0000
+; SSE2-SSSE3-NEXT:    pmovmskb %xmm0, %eax
+; SSE2-SSSE3-NEXT:    leal -65536(%rax), %ecx
 ; SSE2-SSSE3-NEXT:    movabsq $-4294967296, %rax # imm = 0xFFFFFFFF00000000
 ; SSE2-SSSE3-NEXT:    orq %rcx, %rax
 ; SSE2-SSSE3-NEXT:    retq
@@ -508,8 +508,8 @@ define i64 @v16i8_widened_with_ones(<16 x i8> %a, <16 x i8> %b) {
 ; AVX1-LABEL: v16i8_widened_with_ones:
 ; AVX1:       # %bb.0: # %entry
 ; AVX1-NEXT:    vpcmpeqb %xmm1, %xmm0, %xmm0
-; AVX1-NEXT:    vpmovmskb %xmm0, %ecx
-; AVX1-NEXT:    orl $-65536, %ecx # imm = 0xFFFF0000
+; AVX1-NEXT:    vpmovmskb %xmm0, %eax
+; AVX1-NEXT:    leal -65536(%rax), %ecx
 ; AVX1-NEXT:    movabsq $-4294967296, %rax # imm = 0xFFFFFFFF00000000
 ; AVX1-NEXT:    orq %rcx, %rax
 ; AVX1-NEXT:    retq

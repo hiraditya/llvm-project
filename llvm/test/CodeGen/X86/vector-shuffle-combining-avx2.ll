@@ -869,8 +869,8 @@ define <8 x float> @demandedelts_vpermps(<8 x float> %a0, <8 x float> %a1) {
 ; AVX512-NEXT:    # kill: def $ymm1 killed $ymm1 def $zmm1
 ; AVX512-NEXT:    # kill: def $ymm0 killed $ymm0 def $zmm0
 ; AVX512-NEXT:    vpmovsxbd {{.*#+}} ymm2 = [3,1,1,0,20,21,22,23]
-; AVX512-NEXT:    vpermt2ps %zmm1, %zmm2, %zmm0
-; AVX512-NEXT:    # kill: def $ymm0 killed $ymm0 killed $zmm0
+; AVX512-NEXT:    vpermi2ps %zmm1, %zmm0, %zmm2
+; AVX512-NEXT:    vmovaps %ymm2, %ymm0
 ; AVX512-NEXT:    ret{{[l|q]}}
   %lo = call <8 x float> @llvm.x86.avx2.permps(<8 x float> %a0, <8 x i32> <i32 3, i32 1, i32 1, i32 0, i32 0, i32 0, i32 7, i32 7>)
   %hi = shufflevector <8 x float> %lo, <8 x float> %a1, <8 x i32> <i32 0, i32 1, i32 2, i32 3, i32 12, i32 13, i32 14, i32 15>
@@ -1260,13 +1260,13 @@ define <8 x float> @PR173030(i8 %a0, i16 %a1, i32 %a2) {
 ; X86-NEXT:    vpinsrb $1, %ecx, %xmm0, %xmm0
 ; X86-NEXT:    vpmovsxbd %xmm0, %xmm0
 ; X86-NEXT:    movl {{[0-9]+}}(%esp), %ecx
+; X86-NEXT:    leal 1(%ecx), %edx
 ; X86-NEXT:    vmovd %ecx, %xmm1
-; X86-NEXT:    incl %ecx
-; X86-NEXT:    vpinsrw $1, %ecx, %xmm1, %xmm1
+; X86-NEXT:    vpinsrw $1, %edx, %xmm1, %xmm1
 ; X86-NEXT:    vpmovsxwd %xmm1, %xmm1
+; X86-NEXT:    leal 1(%eax), %ecx
 ; X86-NEXT:    vmovd %eax, %xmm2
-; X86-NEXT:    incl %eax
-; X86-NEXT:    vpinsrd $1, %eax, %xmm2, %xmm2
+; X86-NEXT:    vpinsrd $1, %ecx, %xmm2, %xmm2
 ; X86-NEXT:    vcvtdq2ps %xmm2, %xmm2
 ; X86-NEXT:    vinserti128 $1, %xmm1, %ymm0, %ymm0
 ; X86-NEXT:    vcvtdq2ps %ymm0, %ymm0
@@ -1279,18 +1279,20 @@ define <8 x float> @PR173030(i8 %a0, i16 %a1, i32 %a2) {
 ;
 ; X64-LABEL: PR173030:
 ; X64:       # %bb.0:
+; X64-NEXT:    # kill: def $edx killed $edx def $rdx
+; X64-NEXT:    # kill: def $esi killed $esi def $rsi
 ; X64-NEXT:    # kill: def $edi killed $edi def $rdi
 ; X64-NEXT:    leal 1(%rdi), %eax
 ; X64-NEXT:    vmovd %edi, %xmm0
 ; X64-NEXT:    vpinsrb $1, %eax, %xmm0, %xmm0
 ; X64-NEXT:    vpmovsxbd %xmm0, %xmm0
+; X64-NEXT:    leal 1(%rsi), %eax
 ; X64-NEXT:    vmovd %esi, %xmm1
-; X64-NEXT:    incl %esi
-; X64-NEXT:    vpinsrw $1, %esi, %xmm1, %xmm1
+; X64-NEXT:    vpinsrw $1, %eax, %xmm1, %xmm1
 ; X64-NEXT:    vpmovsxwd %xmm1, %xmm1
+; X64-NEXT:    leal 1(%rdx), %eax
 ; X64-NEXT:    vmovd %edx, %xmm2
-; X64-NEXT:    incl %edx
-; X64-NEXT:    vpinsrd $1, %edx, %xmm2, %xmm2
+; X64-NEXT:    vpinsrd $1, %eax, %xmm2, %xmm2
 ; X64-NEXT:    vcvtdq2ps %xmm2, %xmm2
 ; X64-NEXT:    vinserti128 $1, %xmm1, %ymm0, %ymm0
 ; X64-NEXT:    vcvtdq2ps %ymm0, %ymm0

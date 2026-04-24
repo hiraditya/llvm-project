@@ -264,7 +264,9 @@ define <4 x i32> @srl_srl_v4i32(<4 x i32> %x) nounwind {
 define <4 x i32> @srl_shl_v4i32(<4 x i32> %x) nounwind {
 ; CHECK-LABEL: srl_shl_v4i32:
 ; CHECK:       # %bb.0:
-; CHECK-NEXT:    andps {{\.?LCPI[0-9]+_[0-9]+}}(%rip), %xmm0
+; CHECK-NEXT:    movaps {{.*#+}} xmm1 = [268435455,268435455,268435455,268435455]
+; CHECK-NEXT:    andps %xmm0, %xmm1
+; CHECK-NEXT:    movaps %xmm1, %xmm0
 ; CHECK-NEXT:    retq
   %srl0 = shl <4 x i32> %x, <i32 4, i32 4, i32 4, i32 4>
   %srl1 = lshr <4 x i32> %srl0, <i32 4, i32 4, i32 4, i32 4>
@@ -294,7 +296,9 @@ define <4 x i32> @shl_shl_v4i32(<4 x i32> %x) nounwind {
 define <4 x i32> @shl_sra_v4i32(<4 x i32> %x) nounwind {
 ; CHECK-LABEL: shl_sra_v4i32:
 ; CHECK:       # %bb.0:
-; CHECK-NEXT:    andps {{\.?LCPI[0-9]+_[0-9]+}}(%rip), %xmm0
+; CHECK-NEXT:    movaps {{.*#+}} xmm1 = [4294967280,4294967280,4294967280,4294967280]
+; CHECK-NEXT:    andps %xmm0, %xmm1
+; CHECK-NEXT:    movaps %xmm1, %xmm0
 ; CHECK-NEXT:    retq
   %shl0 = ashr <4 x i32> %x, <i32 4, i32 4, i32 4, i32 4>
   %shl1 = shl <4 x i32> %shl0, <i32 4, i32 4, i32 4, i32 4>
@@ -305,7 +309,9 @@ define <4 x i32> @shl_srl_v4i32(<4 x i32> %x) nounwind {
 ; MASK-LABEL: shl_srl_v4i32:
 ; MASK:       # %bb.0:
 ; MASK-NEXT:    pslld $3, %xmm0
-; MASK-NEXT:    pand {{\.?LCPI[0-9]+_[0-9]+}}(%rip), %xmm0
+; MASK-NEXT:    movdqa {{.*#+}} xmm1 = [4294967264,4294967264,4294967264,4294967264]
+; MASK-NEXT:    pand %xmm0, %xmm1
+; MASK-NEXT:    movdqa %xmm1, %xmm0
 ; MASK-NEXT:    retq
 ;
 ; SHIFT-LABEL: shl_srl_v4i32:
@@ -321,9 +327,11 @@ define <4 x i32> @shl_srl_v4i32(<4 x i32> %x) nounwind {
 define <4 x i32> @shl_zext_srl_v4i32(<4 x i16> %x) nounwind {
 ; CHECK-LABEL: shl_zext_srl_v4i32:
 ; CHECK:       # %bb.0:
-; CHECK-NEXT:    pxor %xmm1, %xmm1
-; CHECK-NEXT:    pand {{\.?LCPI[0-9]+_[0-9]+}}(%rip), %xmm0
-; CHECK-NEXT:    punpcklwd {{.*#+}} xmm0 = xmm0[0],xmm1[0],xmm0[1],xmm1[1],xmm0[2],xmm1[2],xmm0[3],xmm1[3]
+; CHECK-NEXT:    pxor %xmm2, %xmm2
+; CHECK-NEXT:    movdqa {{.*#+}} xmm1 = [65532,65532,65532,65532,u,u,u,u]
+; CHECK-NEXT:    pand %xmm0, %xmm1
+; CHECK-NEXT:    punpcklwd {{.*#+}} xmm1 = xmm1[0],xmm2[0],xmm1[1],xmm2[1],xmm1[2],xmm2[2],xmm1[3],xmm2[3]
+; CHECK-NEXT:    movdqa %xmm1, %xmm0
 ; CHECK-NEXT:    retq
   %srl = lshr <4 x i16> %x, <i16 2, i16 2, i16 2, i16 2>
   %zext = zext <4 x i16> %srl to <4 x i32>

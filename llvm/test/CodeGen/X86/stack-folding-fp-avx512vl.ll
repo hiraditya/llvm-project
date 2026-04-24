@@ -1101,10 +1101,12 @@ define <4 x float> @stack_fold_vpermi2ps(<4 x i32> %x0, <4 x float> %x1, <4 x fl
 ; CHECK-LABEL: stack_fold_vpermi2ps:
 ; CHECK:       # %bb.0:
 ; CHECK-NEXT:    vmovaps %xmm2, {{[-0-9]+}}(%r{{[sb]}}p) # 16-byte Spill
+; CHECK-NEXT:    vmovaps %xmm1, %xmm2
 ; CHECK-NEXT:    #APP
 ; CHECK-NEXT:    nop
 ; CHECK-NEXT:    #NO_APP
-; CHECK-NEXT:    vpermi2ps {{[-0-9]+}}(%r{{[sb]}}p), %xmm1, %xmm0 # 16-byte Folded Reload
+; CHECK-NEXT:    vpermt2ps {{[-0-9]+}}(%r{{[sb]}}p), %xmm0, %xmm2 # 16-byte Folded Reload
+; CHECK-NEXT:    vmovaps %xmm2, %xmm0
 ; CHECK-NEXT:    retq
   %1 = tail call <2 x i64> asm sideeffect "nop", "=x,~{xmm3},~{xmm4},~{xmm5},~{xmm6},~{xmm7},~{xmm8},~{xmm9},~{xmm10},~{xmm11},~{xmm12},~{xmm13},~{xmm14},~{xmm15},~{xmm16},~{xmm17},~{xmm18},~{xmm19},~{xmm20},~{xmm21},~{xmm22},~{xmm23},~{xmm24},~{xmm25},~{xmm26},~{xmm27},~{xmm28},~{xmm29},~{xmm30},~{xmm31},~{flags}"()
   %2 = call <4 x float> @llvm.x86.avx512.vpermi2var.ps.128(<4 x float> %x1, <4 x i32> %x0, <4 x float> %x2)
@@ -1129,10 +1131,12 @@ define <2 x double> @stack_fold_vpermi2pd(<2 x i64> %x0, <2 x double> %x1, <2 x 
 ; CHECK-LABEL: stack_fold_vpermi2pd:
 ; CHECK:       # %bb.0:
 ; CHECK-NEXT:    vmovaps %xmm2, {{[-0-9]+}}(%r{{[sb]}}p) # 16-byte Spill
+; CHECK-NEXT:    vmovapd %xmm1, %xmm2
 ; CHECK-NEXT:    #APP
 ; CHECK-NEXT:    nop
 ; CHECK-NEXT:    #NO_APP
-; CHECK-NEXT:    vpermi2pd {{[-0-9]+}}(%r{{[sb]}}p), %xmm1, %xmm0 # 16-byte Folded Reload
+; CHECK-NEXT:    vpermt2pd {{[-0-9]+}}(%r{{[sb]}}p), %xmm0, %xmm2 # 16-byte Folded Reload
+; CHECK-NEXT:    vmovapd %xmm2, %xmm0
 ; CHECK-NEXT:    retq
   %1 = tail call <2 x i64> asm sideeffect "nop", "=x,~{xmm3},~{xmm4},~{xmm5},~{xmm6},~{xmm7},~{xmm8},~{xmm9},~{xmm10},~{xmm11},~{xmm12},~{xmm13},~{xmm14},~{xmm15},~{xmm16},~{xmm17},~{xmm18},~{xmm19},~{xmm20},~{xmm21},~{xmm22},~{xmm23},~{xmm24},~{xmm25},~{xmm26},~{xmm27},~{xmm28},~{xmm29},~{xmm30},~{xmm31},~{flags}"()
   %2 = call <2 x double> @llvm.x86.avx512.vpermi2var.pd.128(<2 x double> %x1, <2 x i64> %x0, <2 x double> %x2)
@@ -1157,10 +1161,12 @@ define <8 x float> @stack_fold_vpermi2ps_ymm(<8 x i32> %x0, <8 x float> %x1, <8 
 ; CHECK-LABEL: stack_fold_vpermi2ps_ymm:
 ; CHECK:       # %bb.0:
 ; CHECK-NEXT:    vmovups %ymm2, {{[-0-9]+}}(%r{{[sb]}}p) # 32-byte Spill
+; CHECK-NEXT:    vmovaps %ymm1, %ymm2
 ; CHECK-NEXT:    #APP
 ; CHECK-NEXT:    nop
 ; CHECK-NEXT:    #NO_APP
-; CHECK-NEXT:    vpermi2ps {{[-0-9]+}}(%r{{[sb]}}p), %ymm1, %ymm0 # 32-byte Folded Reload
+; CHECK-NEXT:    vpermt2ps {{[-0-9]+}}(%r{{[sb]}}p), %ymm0, %ymm2 # 32-byte Folded Reload
+; CHECK-NEXT:    vmovaps %ymm2, %ymm0
 ; CHECK-NEXT:    retq
   %1 = tail call <4 x i64> asm sideeffect "nop", "=x,~{xmm3},~{xmm4},~{xmm5},~{xmm6},~{xmm7},~{xmm8},~{xmm9},~{xmm10},~{xmm11},~{xmm12},~{xmm13},~{xmm14},~{xmm15},~{xmm16},~{xmm17},~{xmm18},~{xmm19},~{xmm20},~{xmm21},~{xmm22},~{xmm23},~{xmm24},~{xmm25},~{xmm26},~{xmm27},~{xmm28},~{xmm29},~{xmm30},~{xmm31},~{flags}"()
   %2 = call <8 x float> @llvm.x86.avx512.vpermi2var.ps.256(<8 x float> %x1, <8 x i32> %x0, <8 x float> %x2)
@@ -1185,10 +1191,12 @@ define <4 x double> @stack_fold_vpermi2pd_ymm(<4 x i64> %x0, <4 x double> %x1, <
 ; CHECK-LABEL: stack_fold_vpermi2pd_ymm:
 ; CHECK:       # %bb.0:
 ; CHECK-NEXT:    vmovups %ymm2, {{[-0-9]+}}(%r{{[sb]}}p) # 32-byte Spill
+; CHECK-NEXT:    vmovapd %ymm1, %ymm2
 ; CHECK-NEXT:    #APP
 ; CHECK-NEXT:    nop
 ; CHECK-NEXT:    #NO_APP
-; CHECK-NEXT:    vpermi2pd {{[-0-9]+}}(%r{{[sb]}}p), %ymm1, %ymm0 # 32-byte Folded Reload
+; CHECK-NEXT:    vpermt2pd {{[-0-9]+}}(%r{{[sb]}}p), %ymm0, %ymm2 # 32-byte Folded Reload
+; CHECK-NEXT:    vmovapd %ymm2, %ymm0
 ; CHECK-NEXT:    retq
   %1 = tail call <4 x i64> asm sideeffect "nop", "=x,~{xmm3},~{xmm4},~{xmm5},~{xmm6},~{xmm7},~{xmm8},~{xmm9},~{xmm10},~{xmm11},~{xmm12},~{xmm13},~{xmm14},~{xmm15},~{xmm16},~{xmm17},~{xmm18},~{xmm19},~{xmm20},~{xmm21},~{xmm22},~{xmm23},~{xmm24},~{xmm25},~{xmm26},~{xmm27},~{xmm28},~{xmm29},~{xmm30},~{xmm31},~{flags}"()
   %2 = call <4 x double> @llvm.x86.avx512.vpermi2var.pd.256(<4 x double> %x1, <4 x i64> %x0, <4 x double> %x2)

@@ -4,7 +4,8 @@
 define <4 x float> @test_mm_fmadd_ps(<4 x float> %a, <4 x float> %b, <4 x float> %c) {
 ; CHECK-LABEL: test_mm_fmadd_ps:
 ; CHECK:       # %bb.0: # %entry
-; CHECK-NEXT:    vfmadd213ps {{.*#+}} xmm0 = (xmm1 * xmm0) + xmm2
+; CHECK-NEXT:    vfmadd213ps {{.*#+}} xmm1 = (xmm0 * xmm1) + xmm2
+; CHECK-NEXT:    vmovaps %xmm1, %xmm0
 ; CHECK-NEXT:    retq
 entry:
   %0 = tail call <4 x float> @llvm.fma.v4f32(<4 x float> %a, <4 x float> %b, <4 x float> %c) #2
@@ -14,7 +15,8 @@ entry:
 define <2 x double> @test_mm_fmadd_pd(<2 x double> %a, <2 x double> %b, <2 x double> %c) {
 ; CHECK-LABEL: test_mm_fmadd_pd:
 ; CHECK:       # %bb.0: # %entry
-; CHECK-NEXT:    vfmadd213pd {{.*#+}} xmm0 = (xmm1 * xmm0) + xmm2
+; CHECK-NEXT:    vfmadd213pd {{.*#+}} xmm1 = (xmm0 * xmm1) + xmm2
+; CHECK-NEXT:    vmovapd %xmm1, %xmm0
 ; CHECK-NEXT:    retq
 entry:
   %0 = tail call <2 x double> @llvm.fma.v2f64(<2 x double> %a, <2 x double> %b, <2 x double> %c) #2
@@ -53,7 +55,8 @@ define <4 x float> @test_mm_fmsub_ps(<4 x float> %a, <4 x float> %b, <4 x float>
 ; CHECK-LABEL: test_mm_fmsub_ps:
 ; CHECK:       # %bb.0: # %entry
 ; CHECK-NEXT:    vxorps {{\.?LCPI[0-9]+_[0-9]+}}(%rip), %xmm2, %xmm2
-; CHECK-NEXT:    vfmadd213ps {{.*#+}} xmm0 = (xmm1 * xmm0) + xmm2
+; CHECK-NEXT:    vfmadd213ps {{.*#+}} xmm1 = (xmm0 * xmm1) + xmm2
+; CHECK-NEXT:    vmovaps %xmm1, %xmm0
 ; CHECK-NEXT:    retq
 entry:
   %sub.i = fsub <4 x float> <float -0.000000e+00, float -0.000000e+00, float -0.000000e+00, float -0.000000e+00>, %c
@@ -65,7 +68,8 @@ define <2 x double> @test_mm_fmsub_pd(<2 x double> %a, <2 x double> %b, <2 x dou
 ; CHECK-LABEL: test_mm_fmsub_pd:
 ; CHECK:       # %bb.0: # %entry
 ; CHECK-NEXT:    vxorpd {{\.?LCPI[0-9]+_[0-9]+}}(%rip), %xmm2, %xmm2
-; CHECK-NEXT:    vfmadd213pd {{.*#+}} xmm0 = (xmm1 * xmm0) + xmm2
+; CHECK-NEXT:    vfmadd213pd {{.*#+}} xmm1 = (xmm0 * xmm1) + xmm2
+; CHECK-NEXT:    vmovapd %xmm1, %xmm0
 ; CHECK-NEXT:    retq
 entry:
   %sub.i = fsub <2 x double> <double -0.000000e+00, double -0.000000e+00>, %c
@@ -107,7 +111,8 @@ define <4 x float> @test_mm_fnmadd_ps(<4 x float> %a, <4 x float> %b, <4 x float
 ; CHECK-LABEL: test_mm_fnmadd_ps:
 ; CHECK:       # %bb.0: # %entry
 ; CHECK-NEXT:    vxorps {{\.?LCPI[0-9]+_[0-9]+}}(%rip), %xmm0, %xmm0
-; CHECK-NEXT:    vfmadd213ps {{.*#+}} xmm0 = (xmm1 * xmm0) + xmm2
+; CHECK-NEXT:    vfmadd213ps {{.*#+}} xmm1 = (xmm0 * xmm1) + xmm2
+; CHECK-NEXT:    vmovaps %xmm1, %xmm0
 ; CHECK-NEXT:    retq
 entry:
   %sub.i = fsub <4 x float> <float -0.000000e+00, float -0.000000e+00, float -0.000000e+00, float -0.000000e+00>, %a
@@ -119,7 +124,8 @@ define <2 x double> @test_mm_fnmadd_pd(<2 x double> %a, <2 x double> %b, <2 x do
 ; CHECK-LABEL: test_mm_fnmadd_pd:
 ; CHECK:       # %bb.0: # %entry
 ; CHECK-NEXT:    vxorpd {{\.?LCPI[0-9]+_[0-9]+}}(%rip), %xmm0, %xmm0
-; CHECK-NEXT:    vfmadd213pd {{.*#+}} xmm0 = (xmm1 * xmm0) + xmm2
+; CHECK-NEXT:    vfmadd213pd {{.*#+}} xmm1 = (xmm0 * xmm1) + xmm2
+; CHECK-NEXT:    vmovapd %xmm1, %xmm0
 ; CHECK-NEXT:    retq
 entry:
   %sub.i = fsub <2 x double> <double -0.000000e+00, double -0.000000e+00>, %a
@@ -161,9 +167,10 @@ define <4 x float> @test_mm_fnmsub_ps(<4 x float> %a, <4 x float> %b, <4 x float
 ; CHECK-LABEL: test_mm_fnmsub_ps:
 ; CHECK:       # %bb.0: # %entry
 ; CHECK-NEXT:    vbroadcastss {{.*#+}} xmm3 = [-0.0E+0,-0.0E+0,-0.0E+0,-0.0E+0]
-; CHECK-NEXT:    vxorps %xmm3, %xmm0, %xmm4
-; CHECK-NEXT:    vxorps %xmm3, %xmm2, %xmm0
-; CHECK-NEXT:    vfmadd231ps {{.*#+}} xmm0 = (xmm1 * xmm4) + xmm0
+; CHECK-NEXT:    vxorps %xmm3, %xmm0, %xmm0
+; CHECK-NEXT:    vxorps %xmm3, %xmm2, %xmm2
+; CHECK-NEXT:    vfmadd213ps {{.*#+}} xmm1 = (xmm0 * xmm1) + xmm2
+; CHECK-NEXT:    vmovaps %xmm1, %xmm0
 ; CHECK-NEXT:    retq
 entry:
   %sub.i = fsub <4 x float> <float -0.000000e+00, float -0.000000e+00, float -0.000000e+00, float -0.000000e+00>, %a
@@ -177,9 +184,10 @@ define <2 x double> @test_mm_fnmsub_pd(<2 x double> %a, <2 x double> %b, <2 x do
 ; CHECK:       # %bb.0: # %entry
 ; CHECK-NEXT:    vmovddup {{.*#+}} xmm3 = [-0.0E+0,-0.0E+0]
 ; CHECK-NEXT:    # xmm3 = mem[0,0]
-; CHECK-NEXT:    vxorpd %xmm3, %xmm0, %xmm4
-; CHECK-NEXT:    vxorpd %xmm3, %xmm2, %xmm0
-; CHECK-NEXT:    vfmadd231pd {{.*#+}} xmm0 = (xmm1 * xmm4) + xmm0
+; CHECK-NEXT:    vxorpd %xmm3, %xmm0, %xmm0
+; CHECK-NEXT:    vxorpd %xmm3, %xmm2, %xmm2
+; CHECK-NEXT:    vfmadd213pd {{.*#+}} xmm1 = (xmm0 * xmm1) + xmm2
+; CHECK-NEXT:    vmovapd %xmm1, %xmm0
 ; CHECK-NEXT:    retq
 entry:
   %sub.i = fsub <2 x double> <double -0.000000e+00, double -0.000000e+00>, %a
@@ -223,7 +231,8 @@ entry:
 define <4 x float> @test_mm_fmaddsub_ps(<4 x float> %a, <4 x float> %b, <4 x float> %c) {
 ; CHECK-LABEL: test_mm_fmaddsub_ps:
 ; CHECK:       # %bb.0: # %entry
-; CHECK-NEXT:    vfmaddsub213ps {{.*#+}} xmm0 = (xmm1 * xmm0) +/- xmm2
+; CHECK-NEXT:    vfmaddsub213ps {{.*#+}} xmm1 = (xmm0 * xmm1) +/- xmm2
+; CHECK-NEXT:    vmovaps %xmm1, %xmm0
 ; CHECK-NEXT:    retq
 entry:
   %0 = tail call <4 x float> @llvm.fma.v4f32(<4 x float> %a, <4 x float> %b, <4 x float> %c) #2
@@ -236,7 +245,8 @@ entry:
 define <2 x double> @test_mm_fmaddsub_pd(<2 x double> %a, <2 x double> %b, <2 x double> %c) {
 ; CHECK-LABEL: test_mm_fmaddsub_pd:
 ; CHECK:       # %bb.0: # %entry
-; CHECK-NEXT:    vfmaddsub213pd {{.*#+}} xmm0 = (xmm1 * xmm0) +/- xmm2
+; CHECK-NEXT:    vfmaddsub213pd {{.*#+}} xmm1 = (xmm0 * xmm1) +/- xmm2
+; CHECK-NEXT:    vmovapd %xmm1, %xmm0
 ; CHECK-NEXT:    retq
 entry:
   %0 = tail call <2 x double> @llvm.fma.v2f64(<2 x double> %a, <2 x double> %b, <2 x double> %c) #2
@@ -249,7 +259,8 @@ entry:
 define <4 x float> @test_mm_fmsubadd_ps(<4 x float> %a, <4 x float> %b, <4 x float> %c) {
 ; CHECK-LABEL: test_mm_fmsubadd_ps:
 ; CHECK:       # %bb.0: # %entry
-; CHECK-NEXT:    vfmsubadd213ps {{.*#+}} xmm0 = (xmm1 * xmm0) -/+ xmm2
+; CHECK-NEXT:    vfmsubadd213ps {{.*#+}} xmm1 = (xmm0 * xmm1) -/+ xmm2
+; CHECK-NEXT:    vmovaps %xmm1, %xmm0
 ; CHECK-NEXT:    retq
 entry:
   %sub.i = fsub <4 x float> <float -0.000000e+00, float -0.000000e+00, float -0.000000e+00, float -0.000000e+00>, %c
@@ -262,7 +273,8 @@ entry:
 define <2 x double> @test_mm_fmsubadd_pd(<2 x double> %a, <2 x double> %b, <2 x double> %c) {
 ; CHECK-LABEL: test_mm_fmsubadd_pd:
 ; CHECK:       # %bb.0: # %entry
-; CHECK-NEXT:    vfmsubadd213pd {{.*#+}} xmm0 = (xmm1 * xmm0) -/+ xmm2
+; CHECK-NEXT:    vfmsubadd213pd {{.*#+}} xmm1 = (xmm0 * xmm1) -/+ xmm2
+; CHECK-NEXT:    vmovapd %xmm1, %xmm0
 ; CHECK-NEXT:    retq
 entry:
   %sub.i = fsub <2 x double> <double -0.000000e+00, double -0.000000e+00>, %c
@@ -275,7 +287,8 @@ entry:
 define <8 x float> @test_mm256_fmadd_ps(<8 x float> %a, <8 x float> %b, <8 x float> %c) {
 ; CHECK-LABEL: test_mm256_fmadd_ps:
 ; CHECK:       # %bb.0: # %entry
-; CHECK-NEXT:    vfmadd213ps {{.*#+}} ymm0 = (ymm1 * ymm0) + ymm2
+; CHECK-NEXT:    vfmadd213ps {{.*#+}} ymm1 = (ymm0 * ymm1) + ymm2
+; CHECK-NEXT:    vmovaps %ymm1, %ymm0
 ; CHECK-NEXT:    retq
 entry:
   %0 = tail call <8 x float> @llvm.fma.v8f32(<8 x float> %a, <8 x float> %b, <8 x float> %c) #2
@@ -285,7 +298,8 @@ entry:
 define <4 x double> @test_mm256_fmadd_pd(<4 x double> %a, <4 x double> %b, <4 x double> %c) {
 ; CHECK-LABEL: test_mm256_fmadd_pd:
 ; CHECK:       # %bb.0: # %entry
-; CHECK-NEXT:    vfmadd213pd {{.*#+}} ymm0 = (ymm1 * ymm0) + ymm2
+; CHECK-NEXT:    vfmadd213pd {{.*#+}} ymm1 = (ymm0 * ymm1) + ymm2
+; CHECK-NEXT:    vmovapd %ymm1, %ymm0
 ; CHECK-NEXT:    retq
 entry:
   %0 = tail call <4 x double> @llvm.fma.v4f64(<4 x double> %a, <4 x double> %b, <4 x double> %c) #2
@@ -296,7 +310,8 @@ define <8 x float> @test_mm256_fmsub_ps(<8 x float> %a, <8 x float> %b, <8 x flo
 ; CHECK-LABEL: test_mm256_fmsub_ps:
 ; CHECK:       # %bb.0: # %entry
 ; CHECK-NEXT:    vxorps {{\.?LCPI[0-9]+_[0-9]+}}(%rip), %ymm2, %ymm2
-; CHECK-NEXT:    vfmadd213ps {{.*#+}} ymm0 = (ymm1 * ymm0) + ymm2
+; CHECK-NEXT:    vfmadd213ps {{.*#+}} ymm1 = (ymm0 * ymm1) + ymm2
+; CHECK-NEXT:    vmovaps %ymm1, %ymm0
 ; CHECK-NEXT:    retq
 entry:
   %sub.i = fsub <8 x float> <float -0.000000e+00, float -0.000000e+00, float -0.000000e+00, float -0.000000e+00, float -0.000000e+00, float -0.000000e+00, float -0.000000e+00, float -0.000000e+00>, %c
@@ -308,7 +323,8 @@ define <4 x double> @test_mm256_fmsub_pd(<4 x double> %a, <4 x double> %b, <4 x 
 ; CHECK-LABEL: test_mm256_fmsub_pd:
 ; CHECK:       # %bb.0: # %entry
 ; CHECK-NEXT:    vxorpd {{\.?LCPI[0-9]+_[0-9]+}}(%rip), %ymm2, %ymm2
-; CHECK-NEXT:    vfmadd213pd {{.*#+}} ymm0 = (ymm1 * ymm0) + ymm2
+; CHECK-NEXT:    vfmadd213pd {{.*#+}} ymm1 = (ymm0 * ymm1) + ymm2
+; CHECK-NEXT:    vmovapd %ymm1, %ymm0
 ; CHECK-NEXT:    retq
 entry:
   %sub.i = fsub <4 x double> <double -0.000000e+00, double -0.000000e+00, double -0.000000e+00, double -0.000000e+00>, %c
@@ -320,7 +336,8 @@ define <8 x float> @test_mm256_fnmadd_ps(<8 x float> %a, <8 x float> %b, <8 x fl
 ; CHECK-LABEL: test_mm256_fnmadd_ps:
 ; CHECK:       # %bb.0: # %entry
 ; CHECK-NEXT:    vxorps {{\.?LCPI[0-9]+_[0-9]+}}(%rip), %ymm0, %ymm0
-; CHECK-NEXT:    vfmadd213ps {{.*#+}} ymm0 = (ymm1 * ymm0) + ymm2
+; CHECK-NEXT:    vfmadd213ps {{.*#+}} ymm1 = (ymm0 * ymm1) + ymm2
+; CHECK-NEXT:    vmovaps %ymm1, %ymm0
 ; CHECK-NEXT:    retq
 entry:
   %sub.i = fsub <8 x float> <float -0.000000e+00, float -0.000000e+00, float -0.000000e+00, float -0.000000e+00, float -0.000000e+00, float -0.000000e+00, float -0.000000e+00, float -0.000000e+00>, %a
@@ -332,7 +349,8 @@ define <4 x double> @test_mm256_fnmadd_pd(<4 x double> %a, <4 x double> %b, <4 x
 ; CHECK-LABEL: test_mm256_fnmadd_pd:
 ; CHECK:       # %bb.0: # %entry
 ; CHECK-NEXT:    vxorpd {{\.?LCPI[0-9]+_[0-9]+}}(%rip), %ymm0, %ymm0
-; CHECK-NEXT:    vfmadd213pd {{.*#+}} ymm0 = (ymm1 * ymm0) + ymm2
+; CHECK-NEXT:    vfmadd213pd {{.*#+}} ymm1 = (ymm0 * ymm1) + ymm2
+; CHECK-NEXT:    vmovapd %ymm1, %ymm0
 ; CHECK-NEXT:    retq
 entry:
   %sub.i = fsub <4 x double> <double -0.000000e+00, double -0.000000e+00, double -0.000000e+00, double -0.000000e+00>, %a
@@ -344,9 +362,10 @@ define <8 x float> @test_mm256_fnmsub_ps(<8 x float> %a, <8 x float> %b, <8 x fl
 ; CHECK-LABEL: test_mm256_fnmsub_ps:
 ; CHECK:       # %bb.0: # %entry
 ; CHECK-NEXT:    vbroadcastss {{.*#+}} ymm3 = [-0.0E+0,-0.0E+0,-0.0E+0,-0.0E+0,-0.0E+0,-0.0E+0,-0.0E+0,-0.0E+0]
-; CHECK-NEXT:    vxorps %ymm3, %ymm0, %ymm4
-; CHECK-NEXT:    vxorps %ymm3, %ymm2, %ymm0
-; CHECK-NEXT:    vfmadd231ps {{.*#+}} ymm0 = (ymm1 * ymm4) + ymm0
+; CHECK-NEXT:    vxorps %ymm3, %ymm0, %ymm0
+; CHECK-NEXT:    vxorps %ymm3, %ymm2, %ymm2
+; CHECK-NEXT:    vfmadd213ps {{.*#+}} ymm1 = (ymm0 * ymm1) + ymm2
+; CHECK-NEXT:    vmovaps %ymm1, %ymm0
 ; CHECK-NEXT:    retq
 entry:
   %sub.i = fsub <8 x float> <float -0.000000e+00, float -0.000000e+00, float -0.000000e+00, float -0.000000e+00, float -0.000000e+00, float -0.000000e+00, float -0.000000e+00, float -0.000000e+00>, %a
@@ -359,9 +378,10 @@ define <4 x double> @test_mm256_fnmsub_pd(<4 x double> %a, <4 x double> %b, <4 x
 ; CHECK-LABEL: test_mm256_fnmsub_pd:
 ; CHECK:       # %bb.0: # %entry
 ; CHECK-NEXT:    vbroadcastsd {{.*#+}} ymm3 = [-0.0E+0,-0.0E+0,-0.0E+0,-0.0E+0]
-; CHECK-NEXT:    vxorpd %ymm3, %ymm0, %ymm4
-; CHECK-NEXT:    vxorpd %ymm3, %ymm2, %ymm0
-; CHECK-NEXT:    vfmadd231pd {{.*#+}} ymm0 = (ymm1 * ymm4) + ymm0
+; CHECK-NEXT:    vxorpd %ymm3, %ymm0, %ymm0
+; CHECK-NEXT:    vxorpd %ymm3, %ymm2, %ymm2
+; CHECK-NEXT:    vfmadd213pd {{.*#+}} ymm1 = (ymm0 * ymm1) + ymm2
+; CHECK-NEXT:    vmovapd %ymm1, %ymm0
 ; CHECK-NEXT:    retq
 entry:
   %sub.i = fsub <4 x double> <double -0.000000e+00, double -0.000000e+00, double -0.000000e+00, double -0.000000e+00>, %a
@@ -373,7 +393,8 @@ entry:
 define <8 x float> @test_mm256_fmaddsub_ps(<8 x float> %a, <8 x float> %b, <8 x float> %c) {
 ; CHECK-LABEL: test_mm256_fmaddsub_ps:
 ; CHECK:       # %bb.0: # %entry
-; CHECK-NEXT:    vfmaddsub213ps {{.*#+}} ymm0 = (ymm1 * ymm0) +/- ymm2
+; CHECK-NEXT:    vfmaddsub213ps {{.*#+}} ymm1 = (ymm0 * ymm1) +/- ymm2
+; CHECK-NEXT:    vmovaps %ymm1, %ymm0
 ; CHECK-NEXT:    retq
 entry:
   %0 = tail call <8 x float> @llvm.fma.v8f32(<8 x float> %a, <8 x float> %b, <8 x float> %c) #2
@@ -386,7 +407,8 @@ entry:
 define <4 x double> @test_mm256_fmaddsub_pd(<4 x double> %a, <4 x double> %b, <4 x double> %c) {
 ; CHECK-LABEL: test_mm256_fmaddsub_pd:
 ; CHECK:       # %bb.0: # %entry
-; CHECK-NEXT:    vfmaddsub213pd {{.*#+}} ymm0 = (ymm1 * ymm0) +/- ymm2
+; CHECK-NEXT:    vfmaddsub213pd {{.*#+}} ymm1 = (ymm0 * ymm1) +/- ymm2
+; CHECK-NEXT:    vmovapd %ymm1, %ymm0
 ; CHECK-NEXT:    retq
 entry:
   %0 = tail call <4 x double> @llvm.fma.v4f64(<4 x double> %a, <4 x double> %b, <4 x double> %c) #2
@@ -399,7 +421,8 @@ entry:
 define <8 x float> @test_mm256_fmsubadd_ps(<8 x float> %a, <8 x float> %b, <8 x float> %c) {
 ; CHECK-LABEL: test_mm256_fmsubadd_ps:
 ; CHECK:       # %bb.0: # %entry
-; CHECK-NEXT:    vfmsubadd213ps {{.*#+}} ymm0 = (ymm1 * ymm0) -/+ ymm2
+; CHECK-NEXT:    vfmsubadd213ps {{.*#+}} ymm1 = (ymm0 * ymm1) -/+ ymm2
+; CHECK-NEXT:    vmovaps %ymm1, %ymm0
 ; CHECK-NEXT:    retq
 entry:
   %sub.i = fsub <8 x float> <float -0.000000e+00, float -0.000000e+00, float -0.000000e+00, float -0.000000e+00, float -0.000000e+00, float -0.000000e+00, float -0.000000e+00, float -0.000000e+00>, %c
@@ -412,7 +435,8 @@ entry:
 define <4 x double> @test_mm256_fmsubadd_pd(<4 x double> %a, <4 x double> %b, <4 x double> %c) {
 ; CHECK-LABEL: test_mm256_fmsubadd_pd:
 ; CHECK:       # %bb.0: # %entry
-; CHECK-NEXT:    vfmsubadd213pd {{.*#+}} ymm0 = (ymm1 * ymm0) -/+ ymm2
+; CHECK-NEXT:    vfmsubadd213pd {{.*#+}} ymm1 = (ymm0 * ymm1) -/+ ymm2
+; CHECK-NEXT:    vmovapd %ymm1, %ymm0
 ; CHECK-NEXT:    retq
 entry:
   %sub.i = fsub <4 x double> <double -0.000000e+00, double -0.000000e+00, double -0.000000e+00, double -0.000000e+00>, %c

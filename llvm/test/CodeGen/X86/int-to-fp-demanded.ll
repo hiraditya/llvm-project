@@ -12,8 +12,9 @@ define i32 @sitofp_signbit_only(i32 %i_in) nounwind {
 ; X86-NEXT:    movl %eax, (%esp)
 ; X86-NEXT:    fildl (%esp)
 ; X86-NEXT:    fstps {{[0-9]+}}(%esp)
-; X86-NEXT:    movl $-2147483648, %eax # imm = 0x80000000
-; X86-NEXT:    andl {{[0-9]+}}(%esp), %eax
+; X86-NEXT:    movl $-2147483648, %ecx # imm = 0x80000000
+; X86-NEXT:    movl {{[0-9]+}}(%esp), %eax
+; X86-NEXT:    andl %ecx, %eax
 ; X86-NEXT:    addl $8, %esp
 ; X86-NEXT:    retl
 ;
@@ -37,8 +38,9 @@ define i32 @sitofp_signbit_only_okay_width(i16 %i_in) nounwind {
 ; X86-NEXT:    movw %ax, {{[0-9]+}}(%esp)
 ; X86-NEXT:    filds {{[0-9]+}}(%esp)
 ; X86-NEXT:    fstps {{[0-9]+}}(%esp)
-; X86-NEXT:    movl $-2147483648, %eax # imm = 0x80000000
-; X86-NEXT:    andl {{[0-9]+}}(%esp), %eax
+; X86-NEXT:    movl $-2147483648, %ecx # imm = 0x80000000
+; X86-NEXT:    movl {{[0-9]+}}(%esp), %eax
+; X86-NEXT:    andl %ecx, %eax
 ; X86-NEXT:    addl $8, %esp
 ; X86-NEXT:    retl
 ;
@@ -61,8 +63,9 @@ define i32 @sitofp_signbit_only_fail_bad_width1(i64 %i_in) nounwind {
 ; X86-NEXT:    pushl %eax
 ; X86-NEXT:    fildll {{[0-9]+}}(%esp)
 ; X86-NEXT:    fstps (%esp)
-; X86-NEXT:    movl $-2147483648, %eax # imm = 0x80000000
-; X86-NEXT:    andl (%esp), %eax
+; X86-NEXT:    movl $-2147483648, %ecx # imm = 0x80000000
+; X86-NEXT:    movl (%esp), %eax
+; X86-NEXT:    andl %ecx, %eax
 ; X86-NEXT:    popl %ecx
 ; X86-NEXT:    retl
 ;
@@ -98,8 +101,9 @@ define <2 x i16> @sitofp_signbit_only_fail_bad_width2(i32 %i_in) nounwind {
 ;
 ; X64-LABEL: sitofp_signbit_only_fail_bad_width2:
 ; X64:       # %bb.0:
-; X64-NEXT:    cvtsi2ss %edi, %xmm0
-; X64-NEXT:    andps {{\.?LCPI[0-9]+_[0-9]+}}(%rip), %xmm0
+; X64-NEXT:    cvtsi2ss %edi, %xmm1
+; X64-NEXT:    movaps {{.*#+}} xmm0 = [32768,32768,u,u,u,u,u,u]
+; X64-NEXT:    andps %xmm1, %xmm0
 ; X64-NEXT:    retq
   %f = sitofp i32 %i_in to float
   %i2xi16 = bitcast float %f to <2 x i16>
@@ -115,8 +119,9 @@ define i32 @sitofp_many_bits_fail(i32 %i_in) nounwind {
 ; X86-NEXT:    movl %eax, (%esp)
 ; X86-NEXT:    fildl (%esp)
 ; X86-NEXT:    fstps {{[0-9]+}}(%esp)
-; X86-NEXT:    movl $-2147483647, %eax # imm = 0x80000001
-; X86-NEXT:    andl {{[0-9]+}}(%esp), %eax
+; X86-NEXT:    movl $-2147483647, %ecx # imm = 0x80000001
+; X86-NEXT:    movl {{[0-9]+}}(%esp), %eax
+; X86-NEXT:    andl %ecx, %eax
 ; X86-NEXT:    addl $8, %esp
 ; X86-NEXT:    retl
 ;
@@ -142,8 +147,9 @@ define i32 @sitofp_multiuse_fail(i32 %i_in) nounwind {
 ; X86-NEXT:    fsts {{[0-9]+}}(%esp)
 ; X86-NEXT:    fstps (%esp)
 ; X86-NEXT:    calll use.i32@PLT
-; X86-NEXT:    movl $-2147483648, %eax # imm = 0x80000000
-; X86-NEXT:    andl {{[0-9]+}}(%esp), %eax
+; X86-NEXT:    movl $-2147483648, %ecx # imm = 0x80000000
+; X86-NEXT:    movl {{[0-9]+}}(%esp), %eax
+; X86-NEXT:    andl %ecx, %eax
 ; X86-NEXT:    addl $12, %esp
 ; X86-NEXT:    retl
 ;
@@ -175,8 +181,9 @@ define i32 @sitofp_multiuse_okay(i32 %i_in) nounwind {
 ; X86-NEXT:    fsts {{[0-9]+}}(%esp)
 ; X86-NEXT:    fstps (%esp)
 ; X86-NEXT:    calll use.i1@PLT
-; X86-NEXT:    movl $-2147483648, %eax # imm = 0x80000000
-; X86-NEXT:    andl {{[0-9]+}}(%esp), %eax
+; X86-NEXT:    movl $-2147483648, %ecx # imm = 0x80000000
+; X86-NEXT:    movl {{[0-9]+}}(%esp), %eax
+; X86-NEXT:    andl %ecx, %eax
 ; X86-NEXT:    addl $12, %esp
 ; X86-NEXT:    retl
 ;
@@ -259,8 +266,9 @@ define <2 x i16> @uitofp_signbit_only_fail_bad_width2(i32 %i_in) nounwind {
 ; X86-NEXT:    movl $0, {{[0-9]+}}(%esp)
 ; X86-NEXT:    fildll {{[0-9]+}}(%esp)
 ; X86-NEXT:    fstps {{[0-9]+}}(%esp)
-; X86-NEXT:    movl $32768, %eax # imm = 0x8000
-; X86-NEXT:    andl {{[0-9]+}}(%esp), %eax
+; X86-NEXT:    movl $32768, %ecx # imm = 0x8000
+; X86-NEXT:    movl {{[0-9]+}}(%esp), %eax
+; X86-NEXT:    andl %ecx, %eax
 ; X86-NEXT:    # kill: def $ax killed $ax killed $eax
 ; X86-NEXT:    xorl %edx, %edx
 ; X86-NEXT:    movl %ebp, %esp
@@ -270,8 +278,9 @@ define <2 x i16> @uitofp_signbit_only_fail_bad_width2(i32 %i_in) nounwind {
 ; X64-LABEL: uitofp_signbit_only_fail_bad_width2:
 ; X64:       # %bb.0:
 ; X64-NEXT:    movl %edi, %eax
-; X64-NEXT:    cvtsi2ss %rax, %xmm0
-; X64-NEXT:    andps {{\.?LCPI[0-9]+_[0-9]+}}(%rip), %xmm0
+; X64-NEXT:    cvtsi2ss %rax, %xmm1
+; X64-NEXT:    movaps {{.*#+}} xmm0 = [32768,32768,u,u,u,u,u,u]
+; X64-NEXT:    andps %xmm1, %xmm0
 ; X64-NEXT:    retq
   %f = uitofp i32 %i_in to float
   %i2xi16 = bitcast float %f to <2 x i16>

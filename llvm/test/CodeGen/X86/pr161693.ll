@@ -6,7 +6,7 @@ define void @PR161693() #0 {
 ; CHECK:       # %bb.0: # %start
 ; CHECK-NEXT:    movzbl (%rax), %eax
 ; CHECK-NEXT:    andb $-33, %al
-; CHECK-NEXT:    addb $-71, %al
+; CHECK-NEXT:    addl $-71, %eax
 ; CHECK-NEXT:    .p2align 4
 ; CHECK-NEXT:  .LBB0_1: # %loop
 ; CHECK-NEXT:    # =>This Inner Loop Header: Depth=1

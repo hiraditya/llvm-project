@@ -30,22 +30,27 @@ define <4 x float> @uitofp_v4i32_v4f32(<2 x i32> %x, <2 x i32> %y) {
 ; SSE2-NEXT:    punpcklqdq {{.*#+}} xmm0 = xmm0[0],xmm1[0]
 ; SSE2-NEXT:    movdqa {{.*#+}} xmm1 = [65535,65535,65535,65535]
 ; SSE2-NEXT:    pand %xmm0, %xmm1
-; SSE2-NEXT:    por {{\.?LCPI[0-9]+_[0-9]+}}(%rip), %xmm1
+; SSE2-NEXT:    movdqa {{.*#+}} xmm2 = [1258291200,1258291200,1258291200,1258291200]
+; SSE2-NEXT:    por %xmm1, %xmm2
 ; SSE2-NEXT:    psrld $16, %xmm0
-; SSE2-NEXT:    por {{\.?LCPI[0-9]+_[0-9]+}}(%rip), %xmm0
-; SSE2-NEXT:    subps {{\.?LCPI[0-9]+_[0-9]+}}(%rip), %xmm0
-; SSE2-NEXT:    addps %xmm1, %xmm0
+; SSE2-NEXT:    movdqa {{.*#+}} xmm1 = [1392508928,1392508928,1392508928,1392508928]
+; SSE2-NEXT:    por %xmm0, %xmm1
+; SSE2-NEXT:    subps {{\.?LCPI[0-9]+_[0-9]+}}(%rip), %xmm1
+; SSE2-NEXT:    addps %xmm2, %xmm1
+; SSE2-NEXT:    movaps %xmm1, %xmm0
 ; SSE2-NEXT:    retq
 ;
 ; SSE4-LABEL: uitofp_v4i32_v4f32:
 ; SSE4:       # %bb.0:
 ; SSE4-NEXT:    punpcklqdq {{.*#+}} xmm0 = xmm0[0],xmm1[0]
-; SSE4-NEXT:    movdqa {{.*#+}} xmm1 = [1258291200,1258291200,1258291200,1258291200]
-; SSE4-NEXT:    pblendw {{.*#+}} xmm1 = xmm0[0],xmm1[1],xmm0[2],xmm1[3],xmm0[4],xmm1[5],xmm0[6],xmm1[7]
+; SSE4-NEXT:    movdqa {{.*#+}} xmm2 = [1258291200,1258291200,1258291200,1258291200]
+; SSE4-NEXT:    pblendw {{.*#+}} xmm2 = xmm0[0],xmm2[1],xmm0[2],xmm2[3],xmm0[4],xmm2[5],xmm0[6],xmm2[7]
 ; SSE4-NEXT:    psrld $16, %xmm0
-; SSE4-NEXT:    pblendw {{.*#+}} xmm0 = xmm0[0],mem[1],xmm0[2],mem[3],xmm0[4],mem[5],xmm0[6],mem[7]
-; SSE4-NEXT:    subps {{\.?LCPI[0-9]+_[0-9]+}}(%rip), %xmm0
-; SSE4-NEXT:    addps %xmm1, %xmm0
+; SSE4-NEXT:    movdqa {{.*#+}} xmm1 = [1392508928,1392508928,1392508928,1392508928]
+; SSE4-NEXT:    pblendw {{.*#+}} xmm1 = xmm0[0],xmm1[1],xmm0[2],xmm1[3],xmm0[4],xmm1[5],xmm0[6],xmm1[7]
+; SSE4-NEXT:    subps {{\.?LCPI[0-9]+_[0-9]+}}(%rip), %xmm1
+; SSE4-NEXT:    addps %xmm2, %xmm1
+; SSE4-NEXT:    movaps %xmm1, %xmm0
 ; SSE4-NEXT:    retq
 ;
 ; AVX1-LABEL: uitofp_v4i32_v4f32:
@@ -112,13 +117,14 @@ define <4 x i32> @fptoui_v4f32_v4i32(<2 x float> %x, <2 x float> %y) {
 ; SSE-LABEL: fptoui_v4f32_v4i32:
 ; SSE:       # %bb.0:
 ; SSE-NEXT:    movlhps {{.*#+}} xmm0 = xmm0[0],xmm1[0]
-; SSE-NEXT:    cvttps2dq %xmm0, %xmm1
-; SSE-NEXT:    movdqa %xmm1, %xmm2
-; SSE-NEXT:    psrad $31, %xmm2
+; SSE-NEXT:    cvttps2dq %xmm0, %xmm2
+; SSE-NEXT:    movdqa %xmm2, %xmm1
+; SSE-NEXT:    psrad $31, %xmm1
 ; SSE-NEXT:    subps {{\.?LCPI[0-9]+_[0-9]+}}(%rip), %xmm0
 ; SSE-NEXT:    cvttps2dq %xmm0, %xmm0
-; SSE-NEXT:    pand %xmm2, %xmm0
-; SSE-NEXT:    por %xmm1, %xmm0
+; SSE-NEXT:    pand %xmm0, %xmm1
+; SSE-NEXT:    por %xmm2, %xmm1
+; SSE-NEXT:    movdqa %xmm1, %xmm0
 ; SSE-NEXT:    retq
 ;
 ; AVX1-LABEL: fptoui_v4f32_v4i32:

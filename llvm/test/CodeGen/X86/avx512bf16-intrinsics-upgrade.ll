@@ -42,14 +42,14 @@ define <8 x i64> @test_mm512_mask_cvtne2ps2bf16_512(<8 x i64> %C, i32 %U, <16 x 
 ; X86:       # %bb.0: # %entry
 ; X86-NEXT:    vcvtne2ps2bf16 %zmm2, %zmm1, %zmm1 # encoding: [0x62,0xf2,0x77,0x48,0x72,0xca]
 ; X86-NEXT:    kmovd {{[0-9]+}}(%esp), %k1 # encoding: [0xc4,0xe1,0xf9,0x90,0x4c,0x24,0x04]
-; X86-NEXT:    vmovdqu16 %zmm1, %zmm0 {%k1} # encoding: [0x62,0xf1,0xff,0x49,0x6f,0xc1]
+; X86-NEXT:    vpblendmw %zmm1, %zmm0, %zmm0 {%k1} # encoding: [0x62,0xf2,0xfd,0x49,0x66,0xc1]
 ; X86-NEXT:    retl # encoding: [0xc3]
 ;
 ; X64-LABEL: test_mm512_mask_cvtne2ps2bf16_512:
 ; X64:       # %bb.0: # %entry
 ; X64-NEXT:    vcvtne2ps2bf16 %zmm2, %zmm1, %zmm1 # encoding: [0x62,0xf2,0x77,0x48,0x72,0xca]
 ; X64-NEXT:    kmovd %edi, %k1 # encoding: [0xc5,0xfb,0x92,0xcf]
-; X64-NEXT:    vmovdqu16 %zmm1, %zmm0 {%k1} # encoding: [0x62,0xf1,0xff,0x49,0x6f,0xc1]
+; X64-NEXT:    vpblendmw %zmm1, %zmm0, %zmm0 {%k1} # encoding: [0x62,0xf2,0xfd,0x49,0x66,0xc1]
 ; X64-NEXT:    retq # encoding: [0xc3]
 entry:
   %0 = tail call <32 x i16> @llvm.x86.avx512bf16.cvtne2ps2bf16.512(<16 x float> %A, <16 x float> %B) #4
@@ -103,7 +103,7 @@ define <4 x i64> @test_mm512_mask_cvtneps2bf16_512(<4 x i64> %C, i16 %U, <16 x f
 ; X86-NEXT:    # kill: def $ymm0 killed $ymm0 def $zmm0
 ; X86-NEXT:    vcvtneps2bf16 %zmm1, %ymm1 # encoding: [0x62,0xf2,0x7e,0x48,0x72,0xc9]
 ; X86-NEXT:    kmovw {{[0-9]+}}(%esp), %k1 # encoding: [0xc5,0xf8,0x90,0x4c,0x24,0x04]
-; X86-NEXT:    vmovdqu16 %zmm1, %zmm0 {%k1} # encoding: [0x62,0xf1,0xff,0x49,0x6f,0xc1]
+; X86-NEXT:    vpblendmw %zmm1, %zmm0, %zmm0 {%k1} # encoding: [0x62,0xf2,0xfd,0x49,0x66,0xc1]
 ; X86-NEXT:    # kill: def $ymm0 killed $ymm0 killed $zmm0
 ; X86-NEXT:    retl # encoding: [0xc3]
 ;
@@ -112,7 +112,7 @@ define <4 x i64> @test_mm512_mask_cvtneps2bf16_512(<4 x i64> %C, i16 %U, <16 x f
 ; X64-NEXT:    # kill: def $ymm0 killed $ymm0 def $zmm0
 ; X64-NEXT:    vcvtneps2bf16 %zmm1, %ymm1 # encoding: [0x62,0xf2,0x7e,0x48,0x72,0xc9]
 ; X64-NEXT:    kmovd %edi, %k1 # encoding: [0xc5,0xfb,0x92,0xcf]
-; X64-NEXT:    vmovdqu16 %zmm1, %zmm0 {%k1} # encoding: [0x62,0xf1,0xff,0x49,0x6f,0xc1]
+; X64-NEXT:    vpblendmw %zmm1, %zmm0, %zmm0 {%k1} # encoding: [0x62,0xf2,0xfd,0x49,0x66,0xc1]
 ; X64-NEXT:    # kill: def $ymm0 killed $ymm0 killed $zmm0
 ; X64-NEXT:    retq # encoding: [0xc3]
 entry:

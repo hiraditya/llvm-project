@@ -6,23 +6,30 @@
 define i64 @foo(i64 %x, ptr %X) {
 ; CHECK-LABEL: foo:
 ; CHECK:       # %bb.0:
-; CHECK-NEXT:    push esi
+; CHECK-NEXT:    push edi
 ; CHECK-NEXT:    .cfi_def_cfa_offset 8
-; CHECK-NEXT:    .cfi_offset esi, -8
-; CHECK-NEXT:    mov esi, dword ptr [esp + 8]
-; CHECK-NEXT:    mov edx, dword ptr [esp + 12]
-; CHECK-NEXT:    mov eax, dword ptr [esp + 16]
-; CHECK-NEXT:    movzx ecx, byte ptr [eax]
-; CHECK-NEXT:    mov eax, esi
-; CHECK-NEXT:    shl eax, cl
-; CHECK-NEXT:    shld edx, esi, cl
-; CHECK-NEXT:    test cl, 32
-; CHECK-NEXT:    je .LBB0_2
-; CHECK-NEXT:  # %bb.1:
-; CHECK-NEXT:    mov edx, eax
+; CHECK-NEXT:    push esi
+; CHECK-NEXT:    .cfi_def_cfa_offset 12
+; CHECK-NEXT:    .cfi_offset esi, -12
+; CHECK-NEXT:    .cfi_offset edi, -8
+; CHECK-NEXT:    mov eax, dword ptr [esp + 12]
+; CHECK-NEXT:    mov esi, dword ptr [esp + 16]
+; CHECK-NEXT:    mov ecx, dword ptr [esp + 20]
+; CHECK-NEXT:    movzx ecx, byte ptr [ecx]
+; CHECK-NEXT:    mov edi, eax
+; CHECK-NEXT:    shl edi, cl
+; CHECK-NEXT:    shld esi, eax, cl
 ; CHECK-NEXT:    xor eax, eax
+; CHECK-NEXT:    test cl, 32
+; CHECK-NEXT:    mov edx, edi
+; CHECK-NEXT:    jne .LBB0_2
+; CHECK-NEXT:  # %bb.1:
+; CHECK-NEXT:    mov edx, esi
+; CHECK-NEXT:    mov eax, edi
 ; CHECK-NEXT:  .LBB0_2:
 ; CHECK-NEXT:    pop esi
+; CHECK-NEXT:    .cfi_def_cfa_offset 8
+; CHECK-NEXT:    pop edi
 ; CHECK-NEXT:    .cfi_def_cfa_offset 4
 ; CHECK-NEXT:    ret
         %tmp.1 = load i64, ptr %X           ; <i64> [#uses=1]

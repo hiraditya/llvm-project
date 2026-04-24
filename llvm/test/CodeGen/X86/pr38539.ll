@@ -53,7 +53,7 @@ define void @f() nounwind {
 ; X86-NEXT:  # %bb.2: # %BB_udiv-special-cases
 ; X86-NEXT:    bsrl %edx, %eax
 ; X86-NEXT:    xorl $31, %eax
-; X86-NEXT:    orl $32, %eax
+; X86-NEXT:    addl $32, %eax
 ; X86-NEXT:    jmp .LBB0_3
 ; X86-NEXT:  .LBB0_1:
 ; X86-NEXT:    bsrl %ecx, %eax
@@ -73,8 +73,7 @@ define void @f() nounwind {
 ; X86-NEXT:    orl %ecx, %edx
 ; X86-NEXT:    jne .LBB0_8
 ; X86-NEXT:  .LBB0_7: # %BB_udiv-special-cases
-; X86-NEXT:    addl $64, %esi
-; X86-NEXT:    movl %esi, %eax
+; X86-NEXT:    leal 64(%esi), %eax
 ; X86-NEXT:  .LBB0_8: # %BB_udiv-special-cases
 ; X86-NEXT:    addl $-66, %eax
 ; X86-NEXT:    movl $0, %ebx

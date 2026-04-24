@@ -31,10 +31,10 @@ define <8 x i32> @stack_fold_valignd_ymm_mask(<8 x i32> %a, <8 x i32> %b, ptr %p
 ; CHECK:       # %bb.0:
 ; CHECK-NEXT:    vmovups %ymm1, {{[-0-9]+}}(%r{{[sb]}}p) # 32-byte Spill
 ; CHECK-NEXT:    vmovups %ymm0, {{[-0-9]+}}(%r{{[sb]}}p) # 32-byte Spill
+; CHECK-NEXT:    kmovd %esi, %k1
 ; CHECK-NEXT:    #APP
 ; CHECK-NEXT:    nop
 ; CHECK-NEXT:    #NO_APP
-; CHECK-NEXT:    kmovd %esi, %k1
 ; CHECK-NEXT:    vmovdqa (%rdi), %ymm1
 ; CHECK-NEXT:    vmovdqu {{[-0-9]+}}(%r{{[sb]}}p), %ymm0 # 32-byte Reload
 ; CHECK-NEXT:    valignd $1, {{[-0-9]+}}(%r{{[sb]}}p), %ymm0, %ymm1 {%k1} # 32-byte Folded Reload
@@ -870,10 +870,10 @@ define <32 x i8> @stack_fold_palignr_mask(<32 x i8> %a0, <32 x i8> %a1, ptr %pas
 ; CHECK:       # %bb.0:
 ; CHECK-NEXT:    vmovups %ymm1, {{[-0-9]+}}(%r{{[sb]}}p) # 32-byte Spill
 ; CHECK-NEXT:    vmovups %ymm0, {{[-0-9]+}}(%r{{[sb]}}p) # 32-byte Spill
+; CHECK-NEXT:    kmovd %esi, %k1
 ; CHECK-NEXT:    #APP
 ; CHECK-NEXT:    nop
 ; CHECK-NEXT:    #NO_APP
-; CHECK-NEXT:    kmovd %esi, %k1
 ; CHECK-NEXT:    vmovdqa (%rdi), %ymm1
 ; CHECK-NEXT:    vmovdqu {{[-0-9]+}}(%r{{[sb]}}p), %ymm0 # 32-byte Reload
 ; CHECK-NEXT:    vpalignr $1, {{[-0-9]+}}(%r{{[sb]}}p), %ymm0, %ymm1 {%k1} # 32-byte Folded Reload
@@ -1022,10 +1022,12 @@ define <16 x i8> @stack_fold_vpermi2b(<16 x i8> %x0, <16 x i8> %x1, <16 x i8> %x
 ; CHECK-LABEL: stack_fold_vpermi2b:
 ; CHECK:       # %bb.0:
 ; CHECK-NEXT:    vmovaps %xmm2, {{[-0-9]+}}(%r{{[sb]}}p) # 16-byte Spill
+; CHECK-NEXT:    vmovdqa %xmm1, %xmm2
 ; CHECK-NEXT:    #APP
 ; CHECK-NEXT:    nop
 ; CHECK-NEXT:    #NO_APP
-; CHECK-NEXT:    vpermi2b {{[-0-9]+}}(%r{{[sb]}}p), %xmm1, %xmm0 # 16-byte Folded Reload
+; CHECK-NEXT:    vpermt2b {{[-0-9]+}}(%r{{[sb]}}p), %xmm0, %xmm2 # 16-byte Folded Reload
+; CHECK-NEXT:    vmovdqa %xmm2, %xmm0
 ; CHECK-NEXT:    retq
   %1 = tail call <2 x i64> asm sideeffect "nop", "=x,~{xmm3},~{xmm4},~{xmm5},~{xmm6},~{xmm7},~{xmm8},~{xmm9},~{xmm10},~{xmm11},~{xmm12},~{xmm13},~{xmm14},~{xmm15},~{xmm16},~{xmm17},~{xmm18},~{xmm19},~{xmm20},~{xmm21},~{xmm22},~{xmm23},~{xmm24},~{xmm25},~{xmm26},~{xmm27},~{xmm28},~{xmm29},~{xmm30},~{xmm31},~{flags}"()
   %2 = call <16 x i8> @llvm.x86.avx512.vpermi2var.qi.128(<16 x i8> %x1, <16 x i8> %x0, <16 x i8> %x2)
@@ -1036,10 +1038,12 @@ define <32 x i8> @stack_fold_vpermi2b_ymm(<32 x i8> %x0, <32 x i8> %x1, <32 x i8
 ; CHECK-LABEL: stack_fold_vpermi2b_ymm:
 ; CHECK:       # %bb.0:
 ; CHECK-NEXT:    vmovups %ymm2, {{[-0-9]+}}(%r{{[sb]}}p) # 32-byte Spill
+; CHECK-NEXT:    vmovdqa %ymm1, %ymm2
 ; CHECK-NEXT:    #APP
 ; CHECK-NEXT:    nop
 ; CHECK-NEXT:    #NO_APP
-; CHECK-NEXT:    vpermi2b {{[-0-9]+}}(%r{{[sb]}}p), %ymm1, %ymm0 # 32-byte Folded Reload
+; CHECK-NEXT:    vpermt2b {{[-0-9]+}}(%r{{[sb]}}p), %ymm0, %ymm2 # 32-byte Folded Reload
+; CHECK-NEXT:    vmovdqa %ymm2, %ymm0
 ; CHECK-NEXT:    retq
   %1 = tail call <4 x i64> asm sideeffect "nop", "=x,~{xmm3},~{xmm4},~{xmm5},~{xmm6},~{xmm7},~{xmm8},~{xmm9},~{xmm10},~{xmm11},~{xmm12},~{xmm13},~{xmm14},~{xmm15},~{xmm16},~{xmm17},~{xmm18},~{xmm19},~{xmm20},~{xmm21},~{xmm22},~{xmm23},~{xmm24},~{xmm25},~{xmm26},~{xmm27},~{xmm28},~{xmm29},~{xmm30},~{xmm31},~{flags}"()
   %2 = call <32 x i8> @llvm.x86.avx512.vpermi2var.qi.256(<32 x i8> %x1, <32 x i8> %x0, <32 x i8> %x2)
@@ -1050,10 +1054,12 @@ define <4 x i32> @stack_fold_vpermi2d(<4 x i32> %x0, <4 x i32> %x1, <4 x i32> %x
 ; CHECK-LABEL: stack_fold_vpermi2d:
 ; CHECK:       # %bb.0:
 ; CHECK-NEXT:    vmovaps %xmm2, {{[-0-9]+}}(%r{{[sb]}}p) # 16-byte Spill
+; CHECK-NEXT:    vmovdqa %xmm1, %xmm2
 ; CHECK-NEXT:    #APP
 ; CHECK-NEXT:    nop
 ; CHECK-NEXT:    #NO_APP
-; CHECK-NEXT:    vpermi2d {{[-0-9]+}}(%r{{[sb]}}p), %xmm1, %xmm0 # 16-byte Folded Reload
+; CHECK-NEXT:    vpermt2d {{[-0-9]+}}(%r{{[sb]}}p), %xmm0, %xmm2 # 16-byte Folded Reload
+; CHECK-NEXT:    vmovdqa %xmm2, %xmm0
 ; CHECK-NEXT:    retq
   %1 = tail call <2 x i64> asm sideeffect "nop", "=x,~{xmm3},~{xmm4},~{xmm5},~{xmm6},~{xmm7},~{xmm8},~{xmm9},~{xmm10},~{xmm11},~{xmm12},~{xmm13},~{xmm14},~{xmm15},~{xmm16},~{xmm17},~{xmm18},~{xmm19},~{xmm20},~{xmm21},~{xmm22},~{xmm23},~{xmm24},~{xmm25},~{xmm26},~{xmm27},~{xmm28},~{xmm29},~{xmm30},~{xmm31},~{flags}"()
   %2 = call <4 x i32> @llvm.x86.avx512.vpermi2var.d.128(<4 x i32> %x1, <4 x i32> %x0, <4 x i32> %x2)
@@ -1064,10 +1070,12 @@ define <8 x i32> @stack_fold_vpermi2d_ymm(<8 x i32> %x0, <8 x i32> %x1, <8 x i32
 ; CHECK-LABEL: stack_fold_vpermi2d_ymm:
 ; CHECK:       # %bb.0:
 ; CHECK-NEXT:    vmovups %ymm2, {{[-0-9]+}}(%r{{[sb]}}p) # 32-byte Spill
+; CHECK-NEXT:    vmovdqa %ymm1, %ymm2
 ; CHECK-NEXT:    #APP
 ; CHECK-NEXT:    nop
 ; CHECK-NEXT:    #NO_APP
-; CHECK-NEXT:    vpermi2d {{[-0-9]+}}(%r{{[sb]}}p), %ymm1, %ymm0 # 32-byte Folded Reload
+; CHECK-NEXT:    vpermt2d {{[-0-9]+}}(%r{{[sb]}}p), %ymm0, %ymm2 # 32-byte Folded Reload
+; CHECK-NEXT:    vmovdqa %ymm2, %ymm0
 ; CHECK-NEXT:    retq
   %1 = tail call <4 x i64> asm sideeffect "nop", "=x,~{xmm3},~{xmm4},~{xmm5},~{xmm6},~{xmm7},~{xmm8},~{xmm9},~{xmm10},~{xmm11},~{xmm12},~{xmm13},~{xmm14},~{xmm15},~{xmm16},~{xmm17},~{xmm18},~{xmm19},~{xmm20},~{xmm21},~{xmm22},~{xmm23},~{xmm24},~{xmm25},~{xmm26},~{xmm27},~{xmm28},~{xmm29},~{xmm30},~{xmm31},~{flags}"()
   %2 = call <8 x i32> @llvm.x86.avx512.vpermi2var.d.256(<8 x i32> %x1, <8 x i32> %x0, <8 x i32> %x2)
@@ -1078,10 +1086,12 @@ define <2 x i64> @stack_fold_vpermi2q(<2 x i64> %x0, <2 x i64> %x1, <2 x i64> %x
 ; CHECK-LABEL: stack_fold_vpermi2q:
 ; CHECK:       # %bb.0:
 ; CHECK-NEXT:    vmovaps %xmm2, {{[-0-9]+}}(%r{{[sb]}}p) # 16-byte Spill
+; CHECK-NEXT:    vmovdqa %xmm1, %xmm2
 ; CHECK-NEXT:    #APP
 ; CHECK-NEXT:    nop
 ; CHECK-NEXT:    #NO_APP
-; CHECK-NEXT:    vpermi2q {{[-0-9]+}}(%r{{[sb]}}p), %xmm1, %xmm0 # 16-byte Folded Reload
+; CHECK-NEXT:    vpermt2q {{[-0-9]+}}(%r{{[sb]}}p), %xmm0, %xmm2 # 16-byte Folded Reload
+; CHECK-NEXT:    vmovdqa %xmm2, %xmm0
 ; CHECK-NEXT:    retq
   %1 = tail call <2 x i64> asm sideeffect "nop", "=x,~{xmm3},~{xmm4},~{xmm5},~{xmm6},~{xmm7},~{xmm8},~{xmm9},~{xmm10},~{xmm11},~{xmm12},~{xmm13},~{xmm14},~{xmm15},~{xmm16},~{xmm17},~{xmm18},~{xmm19},~{xmm20},~{xmm21},~{xmm22},~{xmm23},~{xmm24},~{xmm25},~{xmm26},~{xmm27},~{xmm28},~{xmm29},~{xmm30},~{xmm31},~{flags}"()
   %2 = call <2 x i64> @llvm.x86.avx512.vpermi2var.q.128(<2 x i64> %x1, <2 x i64> %x0, <2 x i64> %x2)
@@ -1092,10 +1102,12 @@ define <4 x i64> @stack_fold_vpermi2q_ymm(<4 x i64> %x0, <4 x i64> %x1, <4 x i64
 ; CHECK-LABEL: stack_fold_vpermi2q_ymm:
 ; CHECK:       # %bb.0:
 ; CHECK-NEXT:    vmovups %ymm2, {{[-0-9]+}}(%r{{[sb]}}p) # 32-byte Spill
+; CHECK-NEXT:    vmovdqa %ymm1, %ymm2
 ; CHECK-NEXT:    #APP
 ; CHECK-NEXT:    nop
 ; CHECK-NEXT:    #NO_APP
-; CHECK-NEXT:    vpermi2q {{[-0-9]+}}(%r{{[sb]}}p), %ymm1, %ymm0 # 32-byte Folded Reload
+; CHECK-NEXT:    vpermt2q {{[-0-9]+}}(%r{{[sb]}}p), %ymm0, %ymm2 # 32-byte Folded Reload
+; CHECK-NEXT:    vmovdqa %ymm2, %ymm0
 ; CHECK-NEXT:    retq
   %1 = tail call <4 x i64> asm sideeffect "nop", "=x,~{xmm3},~{xmm4},~{xmm5},~{xmm6},~{xmm7},~{xmm8},~{xmm9},~{xmm10},~{xmm11},~{xmm12},~{xmm13},~{xmm14},~{xmm15},~{xmm16},~{xmm17},~{xmm18},~{xmm19},~{xmm20},~{xmm21},~{xmm22},~{xmm23},~{xmm24},~{xmm25},~{xmm26},~{xmm27},~{xmm28},~{xmm29},~{xmm30},~{xmm31},~{flags}"()
   %2 = call <4 x i64> @llvm.x86.avx512.vpermi2var.q.256(<4 x i64> %x1, <4 x i64> %x0, <4 x i64> %x2)
@@ -1106,10 +1118,12 @@ define <8 x i16> @stack_fold_vpermi2w(<8 x i16> %x0, <8 x i16> %x1, <8 x i16> %x
 ; CHECK-LABEL: stack_fold_vpermi2w:
 ; CHECK:       # %bb.0:
 ; CHECK-NEXT:    vmovaps %xmm2, {{[-0-9]+}}(%r{{[sb]}}p) # 16-byte Spill
+; CHECK-NEXT:    vmovdqa %xmm1, %xmm2
 ; CHECK-NEXT:    #APP
 ; CHECK-NEXT:    nop
 ; CHECK-NEXT:    #NO_APP
-; CHECK-NEXT:    vpermi2w {{[-0-9]+}}(%r{{[sb]}}p), %xmm1, %xmm0 # 16-byte Folded Reload
+; CHECK-NEXT:    vpermt2w {{[-0-9]+}}(%r{{[sb]}}p), %xmm0, %xmm2 # 16-byte Folded Reload
+; CHECK-NEXT:    vmovdqa %xmm2, %xmm0
 ; CHECK-NEXT:    retq
   %1 = tail call <2 x i64> asm sideeffect "nop", "=x,~{xmm3},~{xmm4},~{xmm5},~{xmm6},~{xmm7},~{xmm8},~{xmm9},~{xmm10},~{xmm11},~{xmm12},~{xmm13},~{xmm14},~{xmm15},~{xmm16},~{xmm17},~{xmm18},~{xmm19},~{xmm20},~{xmm21},~{xmm22},~{xmm23},~{xmm24},~{xmm25},~{xmm26},~{xmm27},~{xmm28},~{xmm29},~{xmm30},~{xmm31},~{flags}"()
   %2 = call <8 x i16> @llvm.x86.avx512.vpermi2var.hi.128(<8 x i16> %x1, <8 x i16> %x0, <8 x i16> %x2)
@@ -1120,10 +1134,12 @@ define <16 x i16> @stack_fold_vpermi2w_ymm(<16 x i16> %x0, <16 x i16> %x1, <16 x
 ; CHECK-LABEL: stack_fold_vpermi2w_ymm:
 ; CHECK:       # %bb.0:
 ; CHECK-NEXT:    vmovups %ymm2, {{[-0-9]+}}(%r{{[sb]}}p) # 32-byte Spill
+; CHECK-NEXT:    vmovdqa %ymm1, %ymm2
 ; CHECK-NEXT:    #APP
 ; CHECK-NEXT:    nop
 ; CHECK-NEXT:    #NO_APP
-; CHECK-NEXT:    vpermi2w {{[-0-9]+}}(%r{{[sb]}}p), %ymm1, %ymm0 # 32-byte Folded Reload
+; CHECK-NEXT:    vpermt2w {{[-0-9]+}}(%r{{[sb]}}p), %ymm0, %ymm2 # 32-byte Folded Reload
+; CHECK-NEXT:    vmovdqa %ymm2, %ymm0
 ; CHECK-NEXT:    retq
   %1 = tail call <4 x i64> asm sideeffect "nop", "=x,~{xmm3},~{xmm4},~{xmm5},~{xmm6},~{xmm7},~{xmm8},~{xmm9},~{xmm10},~{xmm11},~{xmm12},~{xmm13},~{xmm14},~{xmm15},~{xmm16},~{xmm17},~{xmm18},~{xmm19},~{xmm20},~{xmm21},~{xmm22},~{xmm23},~{xmm24},~{xmm25},~{xmm26},~{xmm27},~{xmm28},~{xmm29},~{xmm30},~{xmm31},~{flags}"()
   %2 = call <16 x i16> @llvm.x86.avx512.vpermi2var.hi.256(<16 x i16> %x1, <16 x i16> %x0, <16 x i16> %x2)
@@ -1783,8 +1799,8 @@ define <2 x i64> @stack_fold_pmaxuq_mask(ptr %passthru, <2 x i64> %a0, <2 x i64>
 ; CHECK-NEXT:    #APP
 ; CHECK-NEXT:    nop
 ; CHECK-NEXT:    #NO_APP
-; CHECK-NEXT:    vmovdqa (%rdi), %xmm2
 ; CHECK-NEXT:    kmovd %esi, %k1
+; CHECK-NEXT:    vmovdqa (%rdi), %xmm2
 ; CHECK-NEXT:    vpmaxuq {{[-0-9]+}}(%r{{[sb]}}p), %xmm0, %xmm2 {%k1} # 16-byte Folded Reload
 ; CHECK-NEXT:    vmovdqa %xmm2, %xmm0
 ; CHECK-NEXT:    retq
@@ -1839,8 +1855,8 @@ define <4 x i64> @stack_fold_pmaxuq_ymm_mask(ptr %passthru, <4 x i64> %a0, <4 x 
 ; CHECK-NEXT:    #APP
 ; CHECK-NEXT:    nop
 ; CHECK-NEXT:    #NO_APP
-; CHECK-NEXT:    vmovdqa (%rdi), %ymm2
 ; CHECK-NEXT:    kmovd %esi, %k1
+; CHECK-NEXT:    vmovdqa (%rdi), %ymm2
 ; CHECK-NEXT:    vpmaxuq {{[-0-9]+}}(%r{{[sb]}}p), %ymm0, %ymm2 {%k1} # 32-byte Folded Reload
 ; CHECK-NEXT:    vmovdqa %ymm2, %ymm0
 ; CHECK-NEXT:    retq
@@ -2774,10 +2790,10 @@ define <4 x i64> @stack_fold_pmuludq_ymm_mask(ptr %passthru, <8 x i32> %a0, <8 x
 ; CHECK:       # %bb.0:
 ; CHECK-NEXT:    vmovups %ymm1, {{[-0-9]+}}(%r{{[sb]}}p) # 32-byte Spill
 ; CHECK-NEXT:    vmovups %ymm0, {{[-0-9]+}}(%r{{[sb]}}p) # 32-byte Spill
+; CHECK-NEXT:    kmovd %esi, %k1
 ; CHECK-NEXT:    #APP
 ; CHECK-NEXT:    nop
 ; CHECK-NEXT:    #NO_APP
-; CHECK-NEXT:    kmovd %esi, %k1
 ; CHECK-NEXT:    vmovdqa (%rdi), %ymm1
 ; CHECK-NEXT:    vmovdqu {{[-0-9]+}}(%r{{[sb]}}p), %ymm0 # 32-byte Reload
 ; CHECK-NEXT:    vpmuludq {{[-0-9]+}}(%r{{[sb]}}p), %ymm0, %ymm1 {%k1} # 32-byte Folded Reload
@@ -2960,8 +2976,8 @@ define <16 x i8> @stack_fold_pshufb_mask(ptr %passthru, <16 x i8> %a0, <16 x i8>
 ; CHECK-NEXT:    #APP
 ; CHECK-NEXT:    nop
 ; CHECK-NEXT:    #NO_APP
-; CHECK-NEXT:    vmovdqa (%rdi), %xmm2
 ; CHECK-NEXT:    kmovd %esi, %k1
+; CHECK-NEXT:    vmovdqa (%rdi), %xmm2
 ; CHECK-NEXT:    vpshufb {{[-0-9]+}}(%r{{[sb]}}p), %xmm0, %xmm2 {%k1} # 16-byte Folded Reload
 ; CHECK-NEXT:    vmovdqa %xmm2, %xmm0
 ; CHECK-NEXT:    retq
@@ -3012,8 +3028,8 @@ define <32 x i8> @stack_fold_pshufb_ymm_mask(ptr %passthru, <32 x i8> %a0, <32 x
 ; CHECK-NEXT:    #APP
 ; CHECK-NEXT:    nop
 ; CHECK-NEXT:    #NO_APP
-; CHECK-NEXT:    vmovdqa (%rdi), %ymm2
 ; CHECK-NEXT:    kmovd %esi, %k1
+; CHECK-NEXT:    vmovdqa (%rdi), %ymm2
 ; CHECK-NEXT:    vpshufb {{[-0-9]+}}(%r{{[sb]}}p), %ymm0, %ymm2 {%k1} # 32-byte Folded Reload
 ; CHECK-NEXT:    vmovdqa %ymm2, %ymm0
 ; CHECK-NEXT:    retq

@@ -6,9 +6,11 @@ define i1 @foo(ptr %x, ptr %y) {
 ; CHECK:       # %bb.0:
 ; CHECK-NEXT:    movq (%rdi), %rax
 ; CHECK-NEXT:    movq 8(%rdi), %rcx
-; CHECK-NEXT:    xorq 8(%rsi), %rcx
-; CHECK-NEXT:    xorq (%rsi), %rax
-; CHECK-NEXT:    orq %rcx, %rax
+; CHECK-NEXT:    movq 8(%rsi), %rdx
+; CHECK-NEXT:    xorq %rcx, %rdx
+; CHECK-NEXT:    movq (%rsi), %rcx
+; CHECK-NEXT:    xorq %rax, %rcx
+; CHECK-NEXT:    orq %rcx, %rdx
 ; CHECK-NEXT:    sete %al
 ; CHECK-NEXT:    retq
   %a = load i128, ptr %x, align 16

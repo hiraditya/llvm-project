@@ -147,7 +147,7 @@ define <32 x half> @stack_fold_cmpph_mask(<32 x half> %a0, <32 x half> %a1, ptr 
 ; CHECK-NEXT:    kmovd %esi, %k1
 ; CHECK-NEXT:    kandd %k0, %k1, %k1
 ; CHECK-NEXT:    vmovdqu64 {{[-0-9]+}}(%r{{[sb]}}p), %zmm0 # 64-byte Reload
-; CHECK-NEXT:    vmovdqu16 (%rsp), %zmm0 {%k1} # 64-byte Folded Reload
+; CHECK-NEXT:    vpblendmw (%rsp), %zmm0, %zmm0 {%k1} # 64-byte Folded Reload
 ; CHECK-NEXT:    addq $136, %rsp
 ; CHECK-NEXT:    .cfi_def_cfa_offset 8
 ; CHECK-NEXT:    retq
@@ -180,7 +180,7 @@ define <32 x half> @stack_fold_cmpph_mask_commuted(<32 x half> %a0, <32 x half> 
 ; CHECK-NEXT:    kmovd %esi, %k1
 ; CHECK-NEXT:    kandd %k0, %k1, %k1
 ; CHECK-NEXT:    vmovdqu64 {{[-0-9]+}}(%r{{[sb]}}p), %zmm0 # 64-byte Reload
-; CHECK-NEXT:    vmovdqu16 (%rsp), %zmm0 {%k1} # 64-byte Folded Reload
+; CHECK-NEXT:    vpblendmw (%rsp), %zmm0, %zmm0 {%k1} # 64-byte Folded Reload
 ; CHECK-NEXT:    addq $136, %rsp
 ; CHECK-NEXT:    .cfi_def_cfa_offset 8
 ; CHECK-NEXT:    retq
@@ -1658,8 +1658,8 @@ define <32 x half> @stack_fold_sqrtph_mask(<32 x half> %a0, ptr %passthru, i32 %
 ; CHECK-NEXT:    #APP
 ; CHECK-NEXT:    nop
 ; CHECK-NEXT:    #NO_APP
-; CHECK-NEXT:    vmovaps (%rdi), %zmm1
 ; CHECK-NEXT:    kmovd %esi, %k1
+; CHECK-NEXT:    vmovaps (%rdi), %zmm1
 ; CHECK-NEXT:    vsqrtph {{[-0-9]+}}(%r{{[sb]}}p), %zmm1 {%k1} # 64-byte Folded Reload
 ; CHECK-NEXT:    vmovaps %zmm1, %zmm0
 ; CHECK-NEXT:    retq

@@ -84,8 +84,9 @@ define x86_fp80 @cmove_arg(x86_fp80 %a, x86_fp80 %b, i1 %test) {
 ; X86-GISEL-NEXT:    fldt {{[0-9]+}}(%esp)
 ; X86-GISEL-NEXT:    fadd %st, %st(1)
 ; X86-GISEL-NEXT:    movl $1, %eax
-; X86-GISEL-NEXT:    andl {{[0-9]+}}(%esp), %eax
-; X86-GISEL-NEXT:    testl %eax, %eax
+; X86-GISEL-NEXT:    movl {{[0-9]+}}(%esp), %ecx
+; X86-GISEL-NEXT:    andl %eax, %ecx
+; X86-GISEL-NEXT:    testl %ecx, %ecx
 ; X86-GISEL-NEXT:    fxch %st(1)
 ; X86-GISEL-NEXT:    fcmove %st(1), %st
 ; X86-GISEL-NEXT:    fstp %st(1)

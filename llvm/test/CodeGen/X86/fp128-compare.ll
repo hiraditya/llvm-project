@@ -139,8 +139,8 @@ define i32 @TestComp128UEQ(fp128 %d1, fp128 %d2) {
 ; CHECK-NEXT:    callq __unordtf2@PLT
 ; CHECK-NEXT:    testl %eax, %eax
 ; CHECK-NEXT:    setne %al
-; CHECK-NEXT:    orb %bl, %al
-; CHECK-NEXT:    movzbl %al, %eax
+; CHECK-NEXT:    orb %al, %bl
+; CHECK-NEXT:    movzbl %bl, %eax
 ; CHECK-NEXT:    addq $32, %rsp
 ; CHECK-NEXT:    .cfi_def_cfa_offset 16
 ; CHECK-NEXT:    popq %rbx
@@ -170,8 +170,8 @@ define i32 @TestComp128ONE(fp128 %d1, fp128 %d2) {
 ; CHECK-NEXT:    callq __unordtf2@PLT
 ; CHECK-NEXT:    testl %eax, %eax
 ; CHECK-NEXT:    sete %al
-; CHECK-NEXT:    andb %bl, %al
-; CHECK-NEXT:    movzbl %al, %eax
+; CHECK-NEXT:    andb %al, %bl
+; CHECK-NEXT:    movzbl %bl, %eax
 ; CHECK-NEXT:    addq $32, %rsp
 ; CHECK-NEXT:    .cfi_def_cfa_offset 16
 ; CHECK-NEXT:    popq %rbx

@@ -32,10 +32,10 @@ declare i32 @baz(...)
 define i32 @func_g(i32 %a, i32 %b) nounwind {
 ; CHECK-LABEL: func_g:
 ; CHECK:       # %bb.0:
-; CHECK-NEXT:    movl {{[0-9]+}}(%esp), %eax
-; CHECK-NEXT:    xorl %ecx, %ecx
-; CHECK-NEXT:    subl {{[0-9]+}}(%esp), %eax
-; CHECK-NEXT:    cmovsl %ecx, %eax
+; CHECK-NEXT:    movl {{[0-9]+}}(%esp), %ecx
+; CHECK-NEXT:    xorl %eax, %eax
+; CHECK-NEXT:    subl {{[0-9]+}}(%esp), %ecx
+; CHECK-NEXT:    cmovnsl %ecx, %eax
 ; CHECK-NEXT:    retl
   %sub = sub nsw i32 %a, %b
   %cmp = icmp sgt i32 %sub, 0
@@ -185,10 +185,10 @@ if.else:
 define i32 @func_l4(i32 %a, i32 %b) nounwind {
 ; CHECK-LABEL: func_l4:
 ; CHECK:       # %bb.0:
-; CHECK-NEXT:    movl {{[0-9]+}}(%esp), %eax
-; CHECK-NEXT:    xorl %ecx, %ecx
-; CHECK-NEXT:    subl {{[0-9]+}}(%esp), %eax
-; CHECK-NEXT:    cmovll %ecx, %eax
+; CHECK-NEXT:    movl {{[0-9]+}}(%esp), %ecx
+; CHECK-NEXT:    xorl %eax, %eax
+; CHECK-NEXT:    subl {{[0-9]+}}(%esp), %ecx
+; CHECK-NEXT:    cmovgel %ecx, %eax
 ; CHECK-NEXT:    retl
   %cmp = icmp sgt i32 %b, %a
   %sub = sub i32 %a, %b
@@ -285,10 +285,11 @@ if.else.i104:                                     ; preds = %if.then44
 define i32 @func_p(i32 %a, i32 %b) nounwind {
 ; CHECK-LABEL: func_p:
 ; CHECK:       # %bb.0:
-; CHECK-NEXT:    movl {{[0-9]+}}(%esp), %eax
-; CHECK-NEXT:    xorl %ecx, %ecx
-; CHECK-NEXT:    addl {{[0-9]+}}(%esp), %eax
-; CHECK-NEXT:    cmovsl %ecx, %eax
+; CHECK-NEXT:    movl {{[0-9]+}}(%esp), %ecx
+; CHECK-NEXT:    xorl %eax, %eax
+; CHECK-NEXT:    movl {{[0-9]+}}(%esp), %edx
+; CHECK-NEXT:    addl %ecx, %edx
+; CHECK-NEXT:    cmovnsl %edx, %eax
 ; CHECK-NEXT:    retl
   %add = add nsw i32 %b, %a
   %cmp = icmp sgt i32 %add, 0
@@ -302,11 +303,11 @@ define i32 @func_p(i32 %a, i32 %b) nounwind {
 define i32 @func_q(i32 %a0, i32 %a1, i32 %a2) {
 ; CHECK-LABEL: func_q:
 ; CHECK:       # %bb.0:
-; CHECK-NEXT:    movl {{[0-9]+}}(%esp), %eax
-; CHECK-NEXT:    xorl %ecx, %ecx
-; CHECK-NEXT:    subl {{[0-9]+}}(%esp), %eax
-; CHECK-NEXT:    sbbl %ecx, %ecx
-; CHECK-NEXT:    negl %eax
+; CHECK-NEXT:    movl {{[0-9]+}}(%esp), %ecx
+; CHECK-NEXT:    xorl %eax, %eax
+; CHECK-NEXT:    subl {{[0-9]+}}(%esp), %ecx
+; CHECK-NEXT:    sbbl %eax, %eax
+; CHECK-NEXT:    negl %ecx
 ; CHECK-NEXT:    xorl %ecx, %eax
 ; CHECK-NEXT:    retl
   %t1 = icmp ult i32 %a0, %a1
@@ -320,15 +321,15 @@ define i32 @func_q(i32 %a0, i32 %a1, i32 %a2) {
 define ptr @func_r(ptr %base, ptr nocapture %offset, i32 %size) nounwind {
 ; CHECK-LABEL: func_r:
 ; CHECK:       # %bb.0: # %entry
-; CHECK-NEXT:    movl {{[0-9]+}}(%esp), %edx
-; CHECK-NEXT:    movl (%edx), %ecx
+; CHECK-NEXT:    movl {{[0-9]+}}(%esp), %ecx
+; CHECK-NEXT:    movl (%ecx), %edx
 ; CHECK-NEXT:    xorl %eax, %eax
-; CHECK-NEXT:    subl {{[0-9]+}}(%esp), %ecx
+; CHECK-NEXT:    subl {{[0-9]+}}(%esp), %edx
 ; CHECK-NEXT:    jl .LBB15_2
 ; CHECK-NEXT:  # %bb.1: # %if.end
 ; CHECK-NEXT:    movl {{[0-9]+}}(%esp), %eax
-; CHECK-NEXT:    movl %ecx, (%edx)
-; CHECK-NEXT:    addl %ecx, %eax
+; CHECK-NEXT:    movl %edx, (%ecx)
+; CHECK-NEXT:    addl %edx, %eax
 ; CHECK-NEXT:  .LBB15_2: # %return
 ; CHECK-NEXT:    retl
 entry:
@@ -351,10 +352,10 @@ return:
 define i32 @func_dec(i32 %a) nounwind {
 ; CHECK-LABEL: func_dec:
 ; CHECK:       # %bb.0:
-; CHECK-NEXT:    movl {{[0-9]+}}(%esp), %eax
-; CHECK-NEXT:    xorl %ecx, %ecx
-; CHECK-NEXT:    decl %eax
-; CHECK-NEXT:    cmovsl %ecx, %eax
+; CHECK-NEXT:    movl {{[0-9]+}}(%esp), %ecx
+; CHECK-NEXT:    xorl %eax, %eax
+; CHECK-NEXT:    decl %ecx
+; CHECK-NEXT:    cmovnsl %ecx, %eax
 ; CHECK-NEXT:    retl
   %sub = sub nsw i32 %a, 1
   %cmp = icmp sgt i32 %sub, 0
@@ -365,10 +366,10 @@ define i32 @func_dec(i32 %a) nounwind {
 define i32 @func_inc(i32 %a) nounwind {
 ; CHECK-LABEL: func_inc:
 ; CHECK:       # %bb.0:
-; CHECK-NEXT:    movl {{[0-9]+}}(%esp), %eax
-; CHECK-NEXT:    xorl %ecx, %ecx
-; CHECK-NEXT:    incl %eax
-; CHECK-NEXT:    cmovsl %ecx, %eax
+; CHECK-NEXT:    movl {{[0-9]+}}(%esp), %ecx
+; CHECK-NEXT:    xorl %eax, %eax
+; CHECK-NEXT:    incl %ecx
+; CHECK-NEXT:    cmovnsl %ecx, %eax
 ; CHECK-NEXT:    retl
   %add = add nsw i32 %a, 1
   %cmp = icmp sgt i32 %add, 0

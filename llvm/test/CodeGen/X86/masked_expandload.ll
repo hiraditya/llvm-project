@@ -108,8 +108,8 @@ define <4 x double> @expandload_v4f64_v4i64(ptr %base, <4 x double> %src0, <4 x 
 ; SSE2-NEXT:    movdqa %xmm2, %xmm4
 ; SSE2-NEXT:    shufps {{.*#+}} xmm4 = xmm4[1,3],xmm3[1,3]
 ; SSE2-NEXT:    shufps {{.*#+}} xmm2 = xmm2[0,2],xmm3[0,2]
-; SSE2-NEXT:    andps %xmm4, %xmm2
-; SSE2-NEXT:    movmskps %xmm2, %eax
+; SSE2-NEXT:    andps %xmm2, %xmm4
+; SSE2-NEXT:    movmskps %xmm4, %eax
 ; SSE2-NEXT:    testb $1, %al
 ; SSE2-NEXT:    jne LBB1_1
 ; SSE2-NEXT:  ## %bb.2: ## %else
@@ -549,10 +549,11 @@ define <16 x double> @expandload_v16f64_v16i32(ptr %base, <16 x double> %src0, <
 ; SSE-NEXT:    packssdw %xmm9, %xmm10
 ; SSE-NEXT:    movdqa {{[0-9]+}}(%rsp), %xmm9
 ; SSE-NEXT:    pcmpeqd %xmm8, %xmm9
-; SSE-NEXT:    pcmpeqd {{[0-9]+}}(%rsp), %xmm8
-; SSE-NEXT:    packssdw %xmm9, %xmm8
-; SSE-NEXT:    packsswb %xmm10, %xmm8
-; SSE-NEXT:    pmovmskb %xmm8, %ecx
+; SSE-NEXT:    movdqa {{[0-9]+}}(%rsp), %xmm11
+; SSE-NEXT:    pcmpeqd %xmm8, %xmm11
+; SSE-NEXT:    packssdw %xmm9, %xmm11
+; SSE-NEXT:    packsswb %xmm10, %xmm11
+; SSE-NEXT:    pmovmskb %xmm11, %ecx
 ; SSE-NEXT:    testb $1, %cl
 ; SSE-NEXT:    jne LBB3_1
 ; SSE-NEXT:  ## %bb.2: ## %else
@@ -1174,7 +1175,8 @@ define <4 x float> @expandload_v4f32_const(ptr %base, <4 x float> %src0) {
 ; SSE42:       ## %bb.0:
 ; SSE42-NEXT:    movsd (%rdi), %xmm1 ## xmm1 = mem[0],zero
 ; SSE42-NEXT:    insertps $32, 8(%rdi), %xmm1 ## xmm1 = xmm1[0,1],mem[0],xmm1[3]
-; SSE42-NEXT:    blendps {{.*#+}} xmm0 = xmm1[0,1,2],xmm0[3]
+; SSE42-NEXT:    blendps {{.*#+}} xmm1 = xmm1[0,1,2],xmm0[3]
+; SSE42-NEXT:    movaps %xmm1, %xmm0
 ; SSE42-NEXT:    retq
 ;
 ; AVX1OR2-LABEL: expandload_v4f32_const:
@@ -1236,8 +1238,10 @@ define <16 x float> @expandload_v16f32_const(ptr %base, <16 x float> %src0) {
 ; SSE42-NEXT:    insertps $32, 40(%rdi), %xmm5 ## xmm5 = xmm5[0,1],mem[0],xmm5[3]
 ; SSE42-NEXT:    movups (%rdi), %xmm0
 ; SSE42-NEXT:    movups 16(%rdi), %xmm1
-; SSE42-NEXT:    blendps {{.*#+}} xmm2 = xmm5[0,1,2],xmm2[3]
-; SSE42-NEXT:    blendps {{.*#+}} xmm3 = xmm4[0,1,2],xmm3[3]
+; SSE42-NEXT:    blendps {{.*#+}} xmm5 = xmm5[0,1,2],xmm2[3]
+; SSE42-NEXT:    blendps {{.*#+}} xmm4 = xmm4[0,1,2],xmm3[3]
+; SSE42-NEXT:    movaps %xmm5, %xmm2
+; SSE42-NEXT:    movaps %xmm4, %xmm3
 ; SSE42-NEXT:    retq
 ;
 ; AVX1OR2-LABEL: expandload_v16f32_const:
@@ -1352,10 +1356,11 @@ define <32 x float> @expandload_v32f32_v32i32(ptr %base, <32 x float> %src0, <32
 ; SSE2-NEXT:    packssdw %xmm9, %xmm10
 ; SSE2-NEXT:    movdqa {{[0-9]+}}(%rsp), %xmm9
 ; SSE2-NEXT:    pcmpeqd %xmm8, %xmm9
-; SSE2-NEXT:    pcmpeqd {{[0-9]+}}(%rsp), %xmm8
-; SSE2-NEXT:    packssdw %xmm9, %xmm8
-; SSE2-NEXT:    packsswb %xmm10, %xmm8
-; SSE2-NEXT:    pmovmskb %xmm8, %ecx
+; SSE2-NEXT:    movdqa {{[0-9]+}}(%rsp), %xmm11
+; SSE2-NEXT:    pcmpeqd %xmm8, %xmm11
+; SSE2-NEXT:    packssdw %xmm9, %xmm11
+; SSE2-NEXT:    packsswb %xmm10, %xmm11
+; SSE2-NEXT:    pmovmskb %xmm11, %ecx
 ; SSE2-NEXT:    shll $16, %ecx
 ; SSE2-NEXT:    orl %edx, %ecx
 ; SSE2-NEXT:    testb $1, %cl
@@ -1709,10 +1714,11 @@ define <32 x float> @expandload_v32f32_v32i32(ptr %base, <32 x float> %src0, <32
 ; SSE42-NEXT:    packssdw %xmm9, %xmm10
 ; SSE42-NEXT:    movdqa {{[0-9]+}}(%rsp), %xmm9
 ; SSE42-NEXT:    pcmpeqd %xmm8, %xmm9
-; SSE42-NEXT:    pcmpeqd {{[0-9]+}}(%rsp), %xmm8
-; SSE42-NEXT:    packssdw %xmm9, %xmm8
-; SSE42-NEXT:    packsswb %xmm10, %xmm8
-; SSE42-NEXT:    pmovmskb %xmm8, %ecx
+; SSE42-NEXT:    movdqa {{[0-9]+}}(%rsp), %xmm11
+; SSE42-NEXT:    pcmpeqd %xmm8, %xmm11
+; SSE42-NEXT:    packssdw %xmm9, %xmm11
+; SSE42-NEXT:    packsswb %xmm10, %xmm11
+; SSE42-NEXT:    pmovmskb %xmm11, %ecx
 ; SSE42-NEXT:    shll $16, %ecx
 ; SSE42-NEXT:    orl %edx, %ecx
 ; SSE42-NEXT:    testb $1, %cl
@@ -3410,10 +3416,11 @@ define <16 x i8> @expandload_v16i8_v16i8(ptr %base, <16 x i8> %src0, <16 x i8> %
 ; SSE2-NEXT:    testl $32768, %eax ## imm = 0x8000
 ; SSE2-NEXT:    je LBB12_32
 ; SSE2-NEXT:  LBB12_31: ## %cond.load57
-; SSE2-NEXT:    pand {{\.?LCPI[0-9]+_[0-9]+}}(%rip), %xmm0
+; SSE2-NEXT:    movdqa {{.*#+}} xmm1 = [255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,0]
+; SSE2-NEXT:    pand %xmm0, %xmm1
 ; SSE2-NEXT:    movzbl (%rdi), %eax
-; SSE2-NEXT:    movd %eax, %xmm1
-; SSE2-NEXT:    pslldq {{.*#+}} xmm1 = zero,zero,zero,zero,zero,zero,zero,zero,zero,zero,zero,zero,zero,zero,zero,xmm1[0]
+; SSE2-NEXT:    movd %eax, %xmm0
+; SSE2-NEXT:    pslldq {{.*#+}} xmm0 = zero,zero,zero,zero,zero,zero,zero,zero,zero,zero,zero,zero,zero,zero,zero,xmm0[0]
 ; SSE2-NEXT:    por %xmm1, %xmm0
 ; SSE2-NEXT:    retq
 ;

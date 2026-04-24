@@ -128,7 +128,7 @@ define dso_local <8 x i32> @select_mul(<8 x i32> %src, <8 x i32> %a, <8 x i32> %
 ; AVX512F-NEXT:    vmovdqa 32(%rdi), %ymm3
 ; AVX512F-NEXT:    vptestnmd {{\.?LCPI[0-9]+_[0-9]+}}(%rip){1to16}, %zmm3, %k1
 ; AVX512F-NEXT:    vpmulld %ymm2, %ymm1, %ymm1
-; AVX512F-NEXT:    vmovdqa32 %zmm1, %zmm0 {%k1}
+; AVX512F-NEXT:    vpblendmd %zmm1, %zmm0, %zmm0 {%k1}
 ; AVX512F-NEXT:    # kill: def $ymm0 killed $ymm0 killed $zmm0
 ; AVX512F-NEXT:    retq
 ;
@@ -155,7 +155,7 @@ define dso_local <8 x i32> @select_smax(<8 x i32> %src, <8 x i32> %a, <8 x i32> 
 ; AVX512F-NEXT:    vmovdqa 32(%rdi), %ymm3
 ; AVX512F-NEXT:    vptestnmd {{\.?LCPI[0-9]+_[0-9]+}}(%rip){1to16}, %zmm3, %k1
 ; AVX512F-NEXT:    vpmaxsd %ymm2, %ymm1, %ymm1
-; AVX512F-NEXT:    vmovdqa32 %zmm1, %zmm0 {%k1}
+; AVX512F-NEXT:    vpblendmd %zmm1, %zmm0, %zmm0 {%k1}
 ; AVX512F-NEXT:    # kill: def $ymm0 killed $ymm0 killed $zmm0
 ; AVX512F-NEXT:    retq
 ;
@@ -183,7 +183,7 @@ define dso_local <8 x i32> @select_smin(<8 x i32> %src, <8 x i32> %a, <8 x i32> 
 ; AVX512F-NEXT:    vmovdqa 32(%rdi), %ymm3
 ; AVX512F-NEXT:    vptestnmd {{\.?LCPI[0-9]+_[0-9]+}}(%rip){1to16}, %zmm3, %k1
 ; AVX512F-NEXT:    vpminsd %ymm2, %ymm1, %ymm1
-; AVX512F-NEXT:    vmovdqa32 %zmm1, %zmm0 {%k1}
+; AVX512F-NEXT:    vpblendmd %zmm1, %zmm0, %zmm0 {%k1}
 ; AVX512F-NEXT:    # kill: def $ymm0 killed $ymm0 killed $zmm0
 ; AVX512F-NEXT:    retq
 ;
@@ -211,7 +211,7 @@ define dso_local <8 x i32> @select_umax(<8 x i32> %src, <8 x i32> %a, <8 x i32> 
 ; AVX512F-NEXT:    vmovdqa 32(%rdi), %ymm3
 ; AVX512F-NEXT:    vptestnmd {{\.?LCPI[0-9]+_[0-9]+}}(%rip){1to16}, %zmm3, %k1
 ; AVX512F-NEXT:    vpmaxud %ymm2, %ymm1, %ymm1
-; AVX512F-NEXT:    vmovdqa32 %zmm1, %zmm0 {%k1}
+; AVX512F-NEXT:    vpblendmd %zmm1, %zmm0, %zmm0 {%k1}
 ; AVX512F-NEXT:    # kill: def $ymm0 killed $ymm0 killed $zmm0
 ; AVX512F-NEXT:    retq
 ;
@@ -239,7 +239,7 @@ define dso_local <8 x i32> @select_umin(<8 x i32> %src, <8 x i32> %a, <8 x i32> 
 ; AVX512F-NEXT:    vmovdqa 32(%rdi), %ymm3
 ; AVX512F-NEXT:    vptestnmd {{\.?LCPI[0-9]+_[0-9]+}}(%rip){1to16}, %zmm3, %k1
 ; AVX512F-NEXT:    vpminud %ymm2, %ymm1, %ymm1
-; AVX512F-NEXT:    vmovdqa32 %zmm1, %zmm0 {%k1}
+; AVX512F-NEXT:    vpblendmd %zmm1, %zmm0, %zmm0 {%k1}
 ; AVX512F-NEXT:    # kill: def $ymm0 killed $ymm0 killed $zmm0
 ; AVX512F-NEXT:    retq
 ;

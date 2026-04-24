@@ -1360,33 +1360,45 @@ define dso_local i32 @load_thread_data() #0 {
 define dso_local float @load_constant_pool(float %x) #0 {
 ; SMALL-STATIC-LABEL: load_constant_pool:
 ; SMALL-STATIC:       # %bb.0:
-; SMALL-STATIC-NEXT:    addss {{\.?LCPI[0-9]+_[0-9]+}}(%rip), %xmm0
+; SMALL-STATIC-NEXT:    movss {{.*#+}} xmm1 = [1.0E+0,0.0E+0,0.0E+0,0.0E+0]
+; SMALL-STATIC-NEXT:    addss %xmm0, %xmm1
+; SMALL-STATIC-NEXT:    movaps %xmm1, %xmm0
 ; SMALL-STATIC-NEXT:    retq
 ;
 ; MEDIUM-STATIC-LABEL: load_constant_pool:
 ; MEDIUM-STATIC:       # %bb.0:
-; MEDIUM-STATIC-NEXT:    addss {{\.?LCPI[0-9]+_[0-9]+}}(%rip), %xmm0
+; MEDIUM-STATIC-NEXT:    movss {{.*#+}} xmm1 = [1.0E+0,0.0E+0,0.0E+0,0.0E+0]
+; MEDIUM-STATIC-NEXT:    addss %xmm0, %xmm1
+; MEDIUM-STATIC-NEXT:    movaps %xmm1, %xmm0
 ; MEDIUM-STATIC-NEXT:    retq
 ;
 ; LARGE-STATIC-LABEL: load_constant_pool:
 ; LARGE-STATIC:       # %bb.0:
 ; LARGE-STATIC-NEXT:    movabsq ${{\.?LCPI[0-9]+_[0-9]+}}, %rax
-; LARGE-STATIC-NEXT:    addss (%rax), %xmm0
+; LARGE-STATIC-NEXT:    movss {{.*#+}} xmm1 = mem[0],zero,zero,zero
+; LARGE-STATIC-NEXT:    addss %xmm0, %xmm1
+; LARGE-STATIC-NEXT:    movaps %xmm1, %xmm0
 ; LARGE-STATIC-NEXT:    retq
 ;
 ; SMALL-PIC-LABEL: load_constant_pool:
 ; SMALL-PIC:       # %bb.0:
-; SMALL-PIC-NEXT:    addss {{\.?LCPI[0-9]+_[0-9]+}}(%rip), %xmm0
+; SMALL-PIC-NEXT:    movss {{.*#+}} xmm1 = [1.0E+0,0.0E+0,0.0E+0,0.0E+0]
+; SMALL-PIC-NEXT:    addss %xmm0, %xmm1
+; SMALL-PIC-NEXT:    movaps %xmm1, %xmm0
 ; SMALL-PIC-NEXT:    retq
 ;
 ; MEDIUM-SMALL-DATA-PIC-LABEL: load_constant_pool:
 ; MEDIUM-SMALL-DATA-PIC:       # %bb.0:
-; MEDIUM-SMALL-DATA-PIC-NEXT:    addss {{\.?LCPI[0-9]+_[0-9]+}}(%rip), %xmm0
+; MEDIUM-SMALL-DATA-PIC-NEXT:    movss {{.*#+}} xmm1 = [1.0E+0,0.0E+0,0.0E+0,0.0E+0]
+; MEDIUM-SMALL-DATA-PIC-NEXT:    addss %xmm0, %xmm1
+; MEDIUM-SMALL-DATA-PIC-NEXT:    movaps %xmm1, %xmm0
 ; MEDIUM-SMALL-DATA-PIC-NEXT:    retq
 ;
 ; MEDIUM-PIC-LABEL: load_constant_pool:
 ; MEDIUM-PIC:       # %bb.0:
-; MEDIUM-PIC-NEXT:    addss {{\.?LCPI[0-9]+_[0-9]+}}(%rip), %xmm0
+; MEDIUM-PIC-NEXT:    movss {{.*#+}} xmm1 = [1.0E+0,0.0E+0,0.0E+0,0.0E+0]
+; MEDIUM-PIC-NEXT:    addss %xmm0, %xmm1
+; MEDIUM-PIC-NEXT:    movaps %xmm1, %xmm0
 ; MEDIUM-PIC-NEXT:    retq
 ;
 ; LARGE-PIC-LABEL: load_constant_pool:
@@ -1396,7 +1408,9 @@ define dso_local float @load_constant_pool(float %x) #0 {
 ; LARGE-PIC-NEXT:    movabsq $_GLOBAL_OFFSET_TABLE_-.L26$pb, %rcx
 ; LARGE-PIC-NEXT:    addq %rax, %rcx
 ; LARGE-PIC-NEXT:    movabsq ${{\.?LCPI[0-9]+_[0-9]+}}@GOTOFF, %rax
-; LARGE-PIC-NEXT:    addss (%rcx,%rax), %xmm0
+; LARGE-PIC-NEXT:    movss {{.*#+}} xmm1 = mem[0],zero,zero,zero
+; LARGE-PIC-NEXT:    addss %xmm0, %xmm1
+; LARGE-PIC-NEXT:    movaps %xmm1, %xmm0
 ; LARGE-PIC-NEXT:    retq
 ;
 ; LARGE-SMALL-DATA-PIC-LABEL: load_constant_pool:
@@ -1406,7 +1420,9 @@ define dso_local float @load_constant_pool(float %x) #0 {
 ; LARGE-SMALL-DATA-PIC-NEXT:    movabsq $_GLOBAL_OFFSET_TABLE_-.L26$pb, %rcx
 ; LARGE-SMALL-DATA-PIC-NEXT:    addq %rax, %rcx
 ; LARGE-SMALL-DATA-PIC-NEXT:    movabsq ${{\.?LCPI[0-9]+_[0-9]+}}@GOTOFF, %rax
-; LARGE-SMALL-DATA-PIC-NEXT:    addss (%rcx,%rax), %xmm0
+; LARGE-SMALL-DATA-PIC-NEXT:    movss {{.*#+}} xmm1 = mem[0],zero,zero,zero
+; LARGE-SMALL-DATA-PIC-NEXT:    addss %xmm0, %xmm1
+; LARGE-SMALL-DATA-PIC-NEXT:    movaps %xmm1, %xmm0
 ; LARGE-SMALL-DATA-PIC-NEXT:    retq
   %a = fadd float %x, 1.0
   ret float %a

@@ -59,10 +59,11 @@ define i8 @test_urem_noext_ah(i8 %x, i8 %y) {
 ;
 ; X64-LABEL: test_urem_noext_ah:
 ; X64:       # %bb.0:
+; X64-NEXT:    # kill: def $esi killed $esi def $rsi
 ; X64-NEXT:    movzbl %dil, %eax
 ; X64-NEXT:    divb %sil
 ; X64-NEXT:    movzbl %ah, %eax
-; X64-NEXT:    addb %sil, %al
+; X64-NEXT:    addl %esi, %eax
 ; X64-NEXT:    # kill: def $al killed $al killed $eax
 ; X64-NEXT:    retq
   %1 = urem i8 %x, %y
@@ -147,10 +148,11 @@ define i8 @test_srem_noext_ah(i8 %x, i8 %y) {
 ;
 ; X64-LABEL: test_srem_noext_ah:
 ; X64:       # %bb.0:
+; X64-NEXT:    # kill: def $esi killed $esi def $rsi
 ; X64-NEXT:    movsbl %dil, %eax
 ; X64-NEXT:    idivb %sil
 ; X64-NEXT:    movsbl %ah, %eax
-; X64-NEXT:    addb %sil, %al
+; X64-NEXT:    addl %esi, %eax
 ; X64-NEXT:    # kill: def $al killed $al killed $eax
 ; X64-NEXT:    retq
   %1 = srem i8 %x, %y

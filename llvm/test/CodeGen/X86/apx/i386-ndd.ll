@@ -6,8 +6,8 @@ define i32 @test(i1 %cmp, i32 %x, i32 %y) nounwind {
 ; CHECK-NEXT:    testb $1, {{[0-9]+}}(%esp)
 ; CHECK-NEXT:    leal {{[0-9]+}}(%esp), %eax
 ; CHECK-NEXT:    leal {{[0-9]+}}(%esp), %ecx
-; CHECK-NEXT:    cmovnel %eax, %ecx
-; CHECK-NEXT:    movl (%ecx), %eax
+; CHECK-NEXT:    cmovel %ecx, %eax
+; CHECK-NEXT:    movl (%eax), %eax
 ; CHECK-NEXT:    retl
 entry:
   %cmov = select i1 %cmp, i32 %x, i32 %y

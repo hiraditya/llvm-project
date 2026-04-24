@@ -12,8 +12,9 @@
 define <2 x double> @test_x86_sse41_blendpd(<2 x double> %a0, <2 x double> %a1) {
 ; SSE-LABEL: test_x86_sse41_blendpd:
 ; SSE:       ## %bb.0:
-; SSE-NEXT:    blendps $12, %xmm1, %xmm0 ## encoding: [0x66,0x0f,0x3a,0x0c,0xc1,0x0c]
-; SSE-NEXT:    ## xmm0 = xmm0[0,1],xmm1[2,3]
+; SSE-NEXT:    movsd %xmm0, %xmm1 ## encoding: [0xf2,0x0f,0x10,0xc8]
+; SSE-NEXT:    ## xmm1 = xmm0[0],xmm1[1]
+; SSE-NEXT:    movaps %xmm1, %xmm0 ## encoding: [0x0f,0x28,0xc1]
 ; SSE-NEXT:    ret{{[l|q]}} ## encoding: [0xc3]
 ;
 ; AVX-LABEL: test_x86_sse41_blendpd:
@@ -30,8 +31,9 @@ declare <2 x double> @llvm.x86.sse41.blendpd(<2 x double>, <2 x double>, i32) no
 define <4 x float> @test_x86_sse41_blendps(<4 x float> %a0, <4 x float> %a1) {
 ; SSE-LABEL: test_x86_sse41_blendps:
 ; SSE:       ## %bb.0:
-; SSE-NEXT:    blendps $7, %xmm1, %xmm0 ## encoding: [0x66,0x0f,0x3a,0x0c,0xc1,0x07]
-; SSE-NEXT:    ## xmm0 = xmm1[0,1,2],xmm0[3]
+; SSE-NEXT:    blendps $8, %xmm0, %xmm1 ## encoding: [0x66,0x0f,0x3a,0x0c,0xc8,0x08]
+; SSE-NEXT:    ## xmm1 = xmm1[0,1,2],xmm0[3]
+; SSE-NEXT:    movaps %xmm1, %xmm0 ## encoding: [0x0f,0x28,0xc1]
 ; SSE-NEXT:    ret{{[l|q]}} ## encoding: [0xc3]
 ;
 ; AVX-LABEL: test_x86_sse41_blendps:

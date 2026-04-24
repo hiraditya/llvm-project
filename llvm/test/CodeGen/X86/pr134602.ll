@@ -16,13 +16,14 @@ define i32 @PR134602(i16 %a0) {
 ; X64:       # %bb.0:
 ; X64-NEXT:    movzwl %di, %eax
 ; X64-NEXT:    movd %eax, %xmm0
-; X64-NEXT:    por {{\.?LCPI[0-9]+_[0-9]+}}(%rip), %xmm0
-; X64-NEXT:    pshuflw {{.*#+}} xmm1 = xmm0[2,2,2,2,4,5,6,7]
-; X64-NEXT:    paddw %xmm0, %xmm1
-; X64-NEXT:    movdqa %xmm1, %xmm0
-; X64-NEXT:    psrld $16, %xmm0
+; X64-NEXT:    movdqa {{.*#+}} xmm1 = [1,1,1,1,u,u,u,u]
+; X64-NEXT:    por %xmm0, %xmm1
+; X64-NEXT:    pshuflw {{.*#+}} xmm0 = xmm1[2,2,2,2,4,5,6,7]
 ; X64-NEXT:    paddw %xmm1, %xmm0
-; X64-NEXT:    movd %xmm0, %eax
+; X64-NEXT:    movdqa %xmm0, %xmm1
+; X64-NEXT:    psrld $16, %xmm1
+; X64-NEXT:    paddw %xmm0, %xmm1
+; X64-NEXT:    movd %xmm1, %eax
 ; X64-NEXT:    cwtl
 ; X64-NEXT:    retq
   %splat= insertelement <4 x i16> zeroinitializer, i16 %a0, i64 0

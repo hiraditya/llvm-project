@@ -70,14 +70,16 @@ define i8 @sub8rm(i8 noundef %a, ptr %ptr) {
 ; NDD-LABEL: sub8rm:
 ; NDD:       # %bb.0: # %entry
 ; NDD-NEXT:    movl %edi, %eax # encoding: [0x89,0xf8]
-; NDD-NEXT:    subb (%rsi), %al # encoding: [0x2a,0x06]
+; NDD-NEXT:    movzbl (%rsi), %ecx # encoding: [0x0f,0xb6,0x0e]
+; NDD-NEXT:    subb %cl, %al # encoding: [0x28,0xc8]
 ; NDD-NEXT:    # kill: def $al killed $al killed $eax
 ; NDD-NEXT:    retq # encoding: [0xc3]
 ;
 ; IMMONLY-LABEL: sub8rm:
 ; IMMONLY:       # %bb.0: # %entry
 ; IMMONLY-NEXT:    movl %edi, %eax # encoding: [0x89,0xf8]
-; IMMONLY-NEXT:    subb (%rsi), %al # encoding: [0x2a,0x06]
+; IMMONLY-NEXT:    movzbl (%rsi), %ecx # encoding: [0x0f,0xb6,0x0e]
+; IMMONLY-NEXT:    subb %cl, %al # encoding: [0x28,0xc8]
 ; IMMONLY-NEXT:    # kill: def $al killed $al killed $eax
 ; IMMONLY-NEXT:    retq # encoding: [0xc3]
 ;
@@ -89,7 +91,8 @@ define i8 @sub8rm(i8 noundef %a, ptr %ptr) {
 ; NF-LABEL: sub8rm:
 ; NF:       # %bb.0: # %entry
 ; NF-NEXT:    movl %edi, %eax # encoding: [0x89,0xf8]
-; NF-NEXT:    subb (%rsi), %al # encoding: [0x2a,0x06]
+; NF-NEXT:    movzbl (%rsi), %ecx # encoding: [0x0f,0xb6,0x0e]
+; NF-NEXT:    subb %cl, %al # encoding: [0x28,0xc8]
 ; NF-NEXT:    # kill: def $al killed $al killed $eax
 ; NF-NEXT:    retq # encoding: [0xc3]
 entry:
@@ -102,14 +105,16 @@ define i16 @sub16rm(i16 noundef %a, ptr %ptr) {
 ; NDD-LABEL: sub16rm:
 ; NDD:       # %bb.0: # %entry
 ; NDD-NEXT:    movl %edi, %eax # encoding: [0x89,0xf8]
-; NDD-NEXT:    subw (%rsi), %ax # encoding: [0x66,0x2b,0x06]
+; NDD-NEXT:    movzwl (%rsi), %ecx # encoding: [0x0f,0xb7,0x0e]
+; NDD-NEXT:    subw %cx, %ax # encoding: [0x66,0x29,0xc8]
 ; NDD-NEXT:    # kill: def $ax killed $ax killed $eax
 ; NDD-NEXT:    retq # encoding: [0xc3]
 ;
 ; IMMONLY-LABEL: sub16rm:
 ; IMMONLY:       # %bb.0: # %entry
 ; IMMONLY-NEXT:    movl %edi, %eax # encoding: [0x89,0xf8]
-; IMMONLY-NEXT:    subw (%rsi), %ax # encoding: [0x66,0x2b,0x06]
+; IMMONLY-NEXT:    movzwl (%rsi), %ecx # encoding: [0x0f,0xb7,0x0e]
+; IMMONLY-NEXT:    subw %cx, %ax # encoding: [0x66,0x29,0xc8]
 ; IMMONLY-NEXT:    # kill: def $ax killed $ax killed $eax
 ; IMMONLY-NEXT:    retq # encoding: [0xc3]
 ;
@@ -121,7 +126,8 @@ define i16 @sub16rm(i16 noundef %a, ptr %ptr) {
 ; NF-LABEL: sub16rm:
 ; NF:       # %bb.0: # %entry
 ; NF-NEXT:    movl %edi, %eax # encoding: [0x89,0xf8]
-; NF-NEXT:    subw (%rsi), %ax # encoding: [0x66,0x2b,0x06]
+; NF-NEXT:    movzwl (%rsi), %ecx # encoding: [0x0f,0xb7,0x0e]
+; NF-NEXT:    subw %cx, %ax # encoding: [0x66,0x29,0xc8]
 ; NF-NEXT:    # kill: def $ax killed $ax killed $eax
 ; NF-NEXT:    retq # encoding: [0xc3]
 entry:
@@ -500,7 +506,7 @@ define i64 @sub64mi8(ptr %a) {
 ; NDD-LABEL: sub64mi8:
 ; NDD:       # %bb.0: # %entry
 ; NDD-NEXT:    movq (%rdi), %rax # encoding: [0x48,0x8b,0x07]
-; NDD-NEXT:    subq $-128, %rax # encoding: [0x48,0x83,0xe8,0x80]
+; NDD-NEXT:    addq $128, %rax # encoding: [0x48,0x05,0x80,0x00,0x00,0x00]
 ; NDD-NEXT:    retq # encoding: [0xc3]
 ;
 ; IMMONLY-LABEL: sub64mi8:
@@ -512,7 +518,7 @@ define i64 @sub64mi8(ptr %a) {
 ; MEMONLY-LABEL: sub64mi8:
 ; MEMONLY:       # %bb.0: # %entry
 ; MEMONLY-NEXT:    movq (%rdi), %rax # encoding: [0x48,0x8b,0x07]
-; MEMONLY-NEXT:    subq $-128, %rax # encoding: [0x48,0x83,0xe8,0x80]
+; MEMONLY-NEXT:    addq $128, %rax # encoding: [0x48,0x05,0x80,0x00,0x00,0x00]
 ; MEMONLY-NEXT:    retq # encoding: [0xc3]
 ;
 ; BOTH-LABEL: sub64mi8:
@@ -523,7 +529,7 @@ define i64 @sub64mi8(ptr %a) {
 ; NF-LABEL: sub64mi8:
 ; NF:       # %bb.0: # %entry
 ; NF-NEXT:    movq (%rdi), %rax # encoding: [0x48,0x8b,0x07]
-; NF-NEXT:    subq $-128, %rax # encoding: [0x48,0x83,0xe8,0x80]
+; NF-NEXT:    addq $128, %rax # encoding: [0x48,0x05,0x80,0x00,0x00,0x00]
 ; NF-NEXT:    retq # encoding: [0xc3]
 entry:
   %t= load i64, ptr %a
@@ -750,7 +756,8 @@ define i8 @subflag8rm(i8 noundef %a, ptr %b) {
 ; NDD-LABEL: subflag8rm:
 ; NDD:       # %bb.0: # %entry
 ; NDD-NEXT:    xorl %eax, %eax # encoding: [0x31,0xc0]
-; NDD-NEXT:    subb (%rsi), %dil # encoding: [0x40,0x2a,0x3e]
+; NDD-NEXT:    movzbl (%rsi), %ecx # encoding: [0x0f,0xb6,0x0e]
+; NDD-NEXT:    subb %cl, %dil # encoding: [0x40,0x28,0xcf]
 ; NDD-NEXT:    movzbl %dil, %ecx # encoding: [0x40,0x0f,0xb6,0xcf]
 ; NDD-NEXT:    cmovael %ecx, %eax # EVEX TO LEGACY Compression encoding: [0x0f,0x43,0xc1]
 ; NDD-NEXT:    # kill: def $al killed $al killed $eax
@@ -759,7 +766,8 @@ define i8 @subflag8rm(i8 noundef %a, ptr %b) {
 ; IMMONLY-LABEL: subflag8rm:
 ; IMMONLY:       # %bb.0: # %entry
 ; IMMONLY-NEXT:    xorl %eax, %eax # encoding: [0x31,0xc0]
-; IMMONLY-NEXT:    subb (%rsi), %dil # encoding: [0x40,0x2a,0x3e]
+; IMMONLY-NEXT:    movzbl (%rsi), %ecx # encoding: [0x0f,0xb6,0x0e]
+; IMMONLY-NEXT:    subb %cl, %dil # encoding: [0x40,0x28,0xcf]
 ; IMMONLY-NEXT:    movzbl %dil, %ecx # encoding: [0x40,0x0f,0xb6,0xcf]
 ; IMMONLY-NEXT:    cmovael %ecx, %eax # EVEX TO LEGACY Compression encoding: [0x0f,0x43,0xc1]
 ; IMMONLY-NEXT:    # kill: def $al killed $al killed $eax
@@ -777,7 +785,8 @@ define i8 @subflag8rm(i8 noundef %a, ptr %b) {
 ; NF-LABEL: subflag8rm:
 ; NF:       # %bb.0: # %entry
 ; NF-NEXT:    xorl %eax, %eax # encoding: [0x31,0xc0]
-; NF-NEXT:    subb (%rsi), %dil # encoding: [0x40,0x2a,0x3e]
+; NF-NEXT:    movzbl (%rsi), %ecx # encoding: [0x0f,0xb6,0x0e]
+; NF-NEXT:    subb %cl, %dil # encoding: [0x40,0x28,0xcf]
 ; NF-NEXT:    movzbl %dil, %ecx # encoding: [0x40,0x0f,0xb6,0xcf]
 ; NF-NEXT:    cmovael %ecx, %eax # EVEX TO LEGACY Compression encoding: [0x0f,0x43,0xc1]
 ; NF-NEXT:    # kill: def $al killed $al killed $eax
@@ -792,7 +801,8 @@ define i16 @subflag16rm(i16 noundef %a, ptr %b) {
 ; NDD-LABEL: subflag16rm:
 ; NDD:       # %bb.0: # %entry
 ; NDD-NEXT:    xorl %eax, %eax # encoding: [0x31,0xc0]
-; NDD-NEXT:    subw (%rsi), %di # encoding: [0x66,0x2b,0x3e]
+; NDD-NEXT:    movzwl (%rsi), %ecx # encoding: [0x0f,0xb7,0x0e]
+; NDD-NEXT:    subw %cx, %di # encoding: [0x66,0x29,0xcf]
 ; NDD-NEXT:    cmovael %edi, %eax # EVEX TO LEGACY Compression encoding: [0x0f,0x43,0xc7]
 ; NDD-NEXT:    # kill: def $ax killed $ax killed $eax
 ; NDD-NEXT:    retq # encoding: [0xc3]
@@ -800,7 +810,8 @@ define i16 @subflag16rm(i16 noundef %a, ptr %b) {
 ; IMMONLY-LABEL: subflag16rm:
 ; IMMONLY:       # %bb.0: # %entry
 ; IMMONLY-NEXT:    xorl %eax, %eax # encoding: [0x31,0xc0]
-; IMMONLY-NEXT:    subw (%rsi), %di # encoding: [0x66,0x2b,0x3e]
+; IMMONLY-NEXT:    movzwl (%rsi), %ecx # encoding: [0x0f,0xb7,0x0e]
+; IMMONLY-NEXT:    subw %cx, %di # encoding: [0x66,0x29,0xcf]
 ; IMMONLY-NEXT:    cmovael %edi, %eax # EVEX TO LEGACY Compression encoding: [0x0f,0x43,0xc7]
 ; IMMONLY-NEXT:    # kill: def $ax killed $ax killed $eax
 ; IMMONLY-NEXT:    retq # encoding: [0xc3]
@@ -816,7 +827,8 @@ define i16 @subflag16rm(i16 noundef %a, ptr %b) {
 ; NF-LABEL: subflag16rm:
 ; NF:       # %bb.0: # %entry
 ; NF-NEXT:    xorl %eax, %eax # encoding: [0x31,0xc0]
-; NF-NEXT:    subw (%rsi), %di # encoding: [0x66,0x2b,0x3e]
+; NF-NEXT:    movzwl (%rsi), %ecx # encoding: [0x0f,0xb7,0x0e]
+; NF-NEXT:    subw %cx, %di # encoding: [0x66,0x29,0xcf]
 ; NF-NEXT:    cmovael %edi, %eax # EVEX TO LEGACY Compression encoding: [0x0f,0x43,0xc7]
 ; NF-NEXT:    # kill: def $ax killed $ax killed $eax
 ; NF-NEXT:    retq # encoding: [0xc3]

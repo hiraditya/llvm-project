@@ -40,11 +40,11 @@ define void @t2(ptr %dst, <3 x i64> %src1, <3 x i64> %src2) nounwind readonly {
 ; CHECK-NEXT:    pcmpeqq %xmm4, %xmm3
 ; CHECK-NEXT:    por %xmm0, %xmm3
 ; CHECK-NEXT:    packssdw %xmm3, %xmm1
-; CHECK-NEXT:    pxor %xmm5, %xmm1
-; CHECK-NEXT:    pshufd {{.*#+}} xmm0 = xmm1[2,2,2,2]
+; CHECK-NEXT:    pxor %xmm1, %xmm5
+; CHECK-NEXT:    pshufd {{.*#+}} xmm0 = xmm5[2,2,2,2]
 ; CHECK-NEXT:    pslld $31, %xmm0
 ; CHECK-NEXT:    psrad $31, %xmm0
-; CHECK-NEXT:    pmovsxdq %xmm1, %xmm1
+; CHECK-NEXT:    pmovsxdq %xmm5, %xmm1
 ; CHECK-NEXT:    movdqa %xmm1, (%rdi)
 ; CHECK-NEXT:    movq %xmm0, 16(%rdi)
 ; CHECK-NEXT:    retq

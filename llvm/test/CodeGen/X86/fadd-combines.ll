@@ -29,7 +29,9 @@ define <4 x float> @fadd_zero_4f32_undef(<4 x float> %x) {
 define float @fadd_2const_f32(float %x) #0 {
 ; CHECK-LABEL: fadd_2const_f32:
 ; CHECK:       # %bb.0:
-; CHECK-NEXT:    addss {{\.?LCPI[0-9]+_[0-9]+}}(%rip), %xmm0
+; CHECK-NEXT:    movss {{.*#+}} xmm1 = [3.0E+0,0.0E+0,0.0E+0,0.0E+0]
+; CHECK-NEXT:    addss %xmm0, %xmm1
+; CHECK-NEXT:    movaps %xmm1, %xmm0
 ; CHECK-NEXT:    retq
   %y = fadd reassoc nsz float %x, 1.0
   %z = fadd reassoc nsz float %y, 2.0
@@ -43,7 +45,9 @@ define float @fadd_2const_f32(float %x) #0 {
 define <4 x float> @fadd_2const_4f32(<4 x float> %x) #0 {
 ; CHECK-LABEL: fadd_2const_4f32:
 ; CHECK:       # %bb.0:
-; CHECK-NEXT:    addps {{\.?LCPI[0-9]+_[0-9]+}}(%rip), %xmm0
+; CHECK-NEXT:    movaps {{.*#+}} xmm1 = [5.0E+0,5.0E+0,5.0E+0,5.0E+0]
+; CHECK-NEXT:    addps %xmm0, %xmm1
+; CHECK-NEXT:    movaps %xmm1, %xmm0
 ; CHECK-NEXT:    retq
   %y = fadd reassoc nsz <4 x float> %x, <float 1.0, float 2.0, float 3.0, float 4.0>
   %z = fadd reassoc nsz <4 x float> %y, <float 4.0, float 3.0, float 2.0, float 1.0>
@@ -54,7 +58,9 @@ define <4 x float> @fadd_2const_4f32(<4 x float> %x) #0 {
 define float @fadd_x_fmul_x_c_f32(float %x) #0 {
 ; CHECK-LABEL: fadd_x_fmul_x_c_f32:
 ; CHECK:       # %bb.0:
-; CHECK-NEXT:    mulss {{\.?LCPI[0-9]+_[0-9]+}}(%rip), %xmm0
+; CHECK-NEXT:    movss {{.*#+}} xmm1 = [3.0E+0,0.0E+0,0.0E+0,0.0E+0]
+; CHECK-NEXT:    mulss %xmm0, %xmm1
+; CHECK-NEXT:    movaps %xmm1, %xmm0
 ; CHECK-NEXT:    retq
   %y = fmul reassoc nsz float %x, 2.0
   %z = fadd reassoc nsz float %x, %y
@@ -68,7 +74,9 @@ define float @fadd_x_fmul_x_c_f32(float %x) #0 {
 define <4 x float> @fadd_x_fmul_x_c_4f32(<4 x float> %x) #0 {
 ; CHECK-LABEL: fadd_x_fmul_x_c_4f32:
 ; CHECK:       # %bb.0:
-; CHECK-NEXT:    mulps {{\.?LCPI[0-9]+_[0-9]+}}(%rip), %xmm0
+; CHECK-NEXT:    movaps {{.*#+}} xmm1 = [2.0E+0,3.0E+0,4.0E+0,5.0E+0]
+; CHECK-NEXT:    mulps %xmm0, %xmm1
+; CHECK-NEXT:    movaps %xmm1, %xmm0
 ; CHECK-NEXT:    retq
   %y = fmul reassoc nsz <4 x float> %x, <float 1.0, float 2.0, float 3.0, float 4.0>
   %z = fadd reassoc nsz <4 x float> %x, %y
@@ -79,7 +87,9 @@ define <4 x float> @fadd_x_fmul_x_c_4f32(<4 x float> %x) #0 {
 define float @fadd_fmul_x_c_x_f32(float %x) #0 {
 ; CHECK-LABEL: fadd_fmul_x_c_x_f32:
 ; CHECK:       # %bb.0:
-; CHECK-NEXT:    mulss {{\.?LCPI[0-9]+_[0-9]+}}(%rip), %xmm0
+; CHECK-NEXT:    movss {{.*#+}} xmm1 = [3.0E+0,0.0E+0,0.0E+0,0.0E+0]
+; CHECK-NEXT:    mulss %xmm0, %xmm1
+; CHECK-NEXT:    movaps %xmm1, %xmm0
 ; CHECK-NEXT:    retq
   %y = fmul reassoc nsz float %x, 2.0
   %z = fadd reassoc nsz float %y, %x
@@ -93,7 +103,9 @@ define float @fadd_fmul_x_c_x_f32(float %x) #0 {
 define <4 x float> @fadd_fmul_x_c_x_4f32(<4 x float> %x) #0 {
 ; CHECK-LABEL: fadd_fmul_x_c_x_4f32:
 ; CHECK:       # %bb.0:
-; CHECK-NEXT:    mulps {{\.?LCPI[0-9]+_[0-9]+}}(%rip), %xmm0
+; CHECK-NEXT:    movaps {{.*#+}} xmm1 = [2.0E+0,3.0E+0,4.0E+0,5.0E+0]
+; CHECK-NEXT:    mulps %xmm0, %xmm1
+; CHECK-NEXT:    movaps %xmm1, %xmm0
 ; CHECK-NEXT:    retq
   %y = fmul reassoc nsz <4 x float> %x, <float 1.0, float 2.0, float 3.0, float 4.0>
   %z = fadd reassoc nsz <4 x float> %y, %x
@@ -104,7 +116,9 @@ define <4 x float> @fadd_fmul_x_c_x_4f32(<4 x float> %x) #0 {
 define float @fadd_fadd_x_x_fmul_x_c_f32(float %x) #0 {
 ; CHECK-LABEL: fadd_fadd_x_x_fmul_x_c_f32:
 ; CHECK:       # %bb.0:
-; CHECK-NEXT:    mulss {{\.?LCPI[0-9]+_[0-9]+}}(%rip), %xmm0
+; CHECK-NEXT:    movss {{.*#+}} xmm1 = [4.0E+0,0.0E+0,0.0E+0,0.0E+0]
+; CHECK-NEXT:    mulss %xmm0, %xmm1
+; CHECK-NEXT:    movaps %xmm1, %xmm0
 ; CHECK-NEXT:    retq
   %y = fadd reassoc nsz float %x, %x
   %z = fmul reassoc nsz float %x, 2.0
@@ -119,7 +133,9 @@ define float @fadd_fadd_x_x_fmul_x_c_f32(float %x) #0 {
 define <4 x float> @fadd_fadd_x_x_fmul_x_c_4f32(<4 x float> %x) #0 {
 ; CHECK-LABEL: fadd_fadd_x_x_fmul_x_c_4f32:
 ; CHECK:       # %bb.0:
-; CHECK-NEXT:    mulps {{\.?LCPI[0-9]+_[0-9]+}}(%rip), %xmm0
+; CHECK-NEXT:    movaps {{.*#+}} xmm1 = [3.0E+0,4.0E+0,5.0E+0,6.0E+0]
+; CHECK-NEXT:    mulps %xmm0, %xmm1
+; CHECK-NEXT:    movaps %xmm1, %xmm0
 ; CHECK-NEXT:    retq
   %y = fadd reassoc nsz <4 x float> %x, %x
   %z = fmul reassoc nsz <4 x float> %x, <float 1.0, float 2.0, float 3.0, float 4.0>
@@ -131,7 +147,9 @@ define <4 x float> @fadd_fadd_x_x_fmul_x_c_4f32(<4 x float> %x) #0 {
 define float @fadd_fmul_x_c_fadd_x_x_f32(float %x) #0 {
 ; CHECK-LABEL: fadd_fmul_x_c_fadd_x_x_f32:
 ; CHECK:       # %bb.0:
-; CHECK-NEXT:    mulss {{\.?LCPI[0-9]+_[0-9]+}}(%rip), %xmm0
+; CHECK-NEXT:    movss {{.*#+}} xmm1 = [4.0E+0,0.0E+0,0.0E+0,0.0E+0]
+; CHECK-NEXT:    mulss %xmm0, %xmm1
+; CHECK-NEXT:    movaps %xmm1, %xmm0
 ; CHECK-NEXT:    retq
   %y = fadd reassoc nsz float %x, %x
   %z = fmul reassoc nsz float %x, 2.0
@@ -146,7 +164,9 @@ define float @fadd_fmul_x_c_fadd_x_x_f32(float %x) #0 {
 define <4 x float> @fadd_fmul_x_c_fadd_x_x_4f32(<4 x float> %x) #0 {
 ; CHECK-LABEL: fadd_fmul_x_c_fadd_x_x_4f32:
 ; CHECK:       # %bb.0:
-; CHECK-NEXT:    mulps {{\.?LCPI[0-9]+_[0-9]+}}(%rip), %xmm0
+; CHECK-NEXT:    movaps {{.*#+}} xmm1 = [3.0E+0,4.0E+0,5.0E+0,6.0E+0]
+; CHECK-NEXT:    mulps %xmm0, %xmm1
+; CHECK-NEXT:    movaps %xmm1, %xmm0
 ; CHECK-NEXT:    retq
   %y = fadd reassoc nsz <4 x float> %x, %x
   %z = fmul reassoc nsz <4 x float> %x, <float 1.0, float 2.0, float 3.0, float 4.0>
@@ -158,7 +178,9 @@ define <4 x float> @fadd_fmul_x_c_fadd_x_x_4f32(<4 x float> %x) #0 {
 define float @fadd_x_fadd_x_x_f32(float %x) #0 {
 ; CHECK-LABEL: fadd_x_fadd_x_x_f32:
 ; CHECK:       # %bb.0:
-; CHECK-NEXT:    mulss {{\.?LCPI[0-9]+_[0-9]+}}(%rip), %xmm0
+; CHECK-NEXT:    movss {{.*#+}} xmm1 = [3.0E+0,0.0E+0,0.0E+0,0.0E+0]
+; CHECK-NEXT:    mulss %xmm0, %xmm1
+; CHECK-NEXT:    movaps %xmm1, %xmm0
 ; CHECK-NEXT:    retq
   %y = fadd reassoc nsz float %x, %x
   %z = fadd reassoc nsz float %x, %y
@@ -172,7 +194,9 @@ define float @fadd_x_fadd_x_x_f32(float %x) #0 {
 define <4 x float> @fadd_x_fadd_x_x_4f32(<4 x float> %x) #0 {
 ; CHECK-LABEL: fadd_x_fadd_x_x_4f32:
 ; CHECK:       # %bb.0:
-; CHECK-NEXT:    mulps {{\.?LCPI[0-9]+_[0-9]+}}(%rip), %xmm0
+; CHECK-NEXT:    movaps {{.*#+}} xmm1 = [3.0E+0,3.0E+0,3.0E+0,3.0E+0]
+; CHECK-NEXT:    mulps %xmm0, %xmm1
+; CHECK-NEXT:    movaps %xmm1, %xmm0
 ; CHECK-NEXT:    retq
   %y = fadd reassoc nsz <4 x float> %x, %x
   %z = fadd reassoc nsz <4 x float> %x, %y
@@ -183,7 +207,9 @@ define <4 x float> @fadd_x_fadd_x_x_4f32(<4 x float> %x) #0 {
 define float @fadd_fadd_x_x_x_f32(float %x) #0 {
 ; CHECK-LABEL: fadd_fadd_x_x_x_f32:
 ; CHECK:       # %bb.0:
-; CHECK-NEXT:    mulss {{\.?LCPI[0-9]+_[0-9]+}}(%rip), %xmm0
+; CHECK-NEXT:    movss {{.*#+}} xmm1 = [3.0E+0,0.0E+0,0.0E+0,0.0E+0]
+; CHECK-NEXT:    mulss %xmm0, %xmm1
+; CHECK-NEXT:    movaps %xmm1, %xmm0
 ; CHECK-NEXT:    retq
   %y = fadd reassoc nsz float %x, %x
   %z = fadd reassoc nsz float %y, %x
@@ -197,7 +223,9 @@ define float @fadd_fadd_x_x_x_f32(float %x) #0 {
 define <4 x float> @fadd_fadd_x_x_x_4f32(<4 x float> %x) #0 {
 ; CHECK-LABEL: fadd_fadd_x_x_x_4f32:
 ; CHECK:       # %bb.0:
-; CHECK-NEXT:    mulps {{\.?LCPI[0-9]+_[0-9]+}}(%rip), %xmm0
+; CHECK-NEXT:    movaps {{.*#+}} xmm1 = [3.0E+0,3.0E+0,3.0E+0,3.0E+0]
+; CHECK-NEXT:    mulps %xmm0, %xmm1
+; CHECK-NEXT:    movaps %xmm1, %xmm0
 ; CHECK-NEXT:    retq
   %y = fadd reassoc nsz <4 x float> %x, %x
   %z = fadd reassoc nsz <4 x float> %y, %x
@@ -208,7 +236,9 @@ define <4 x float> @fadd_fadd_x_x_x_4f32(<4 x float> %x) #0 {
 define float @fadd_fadd_x_x_fadd_x_x_f32(float %x) #0 {
 ; CHECK-LABEL: fadd_fadd_x_x_fadd_x_x_f32:
 ; CHECK:       # %bb.0:
-; CHECK-NEXT:    mulss {{\.?LCPI[0-9]+_[0-9]+}}(%rip), %xmm0
+; CHECK-NEXT:    movss {{.*#+}} xmm1 = [4.0E+0,0.0E+0,0.0E+0,0.0E+0]
+; CHECK-NEXT:    mulss %xmm0, %xmm1
+; CHECK-NEXT:    movaps %xmm1, %xmm0
 ; CHECK-NEXT:    retq
   %y = fadd reassoc nsz float %x, %x
   %z = fadd reassoc nsz float %y, %y
@@ -222,7 +252,9 @@ define float @fadd_fadd_x_x_fadd_x_x_f32(float %x) #0 {
 define <4 x float> @fadd_fadd_x_x_fadd_x_x_4f32(<4 x float> %x) #0 {
 ; CHECK-LABEL: fadd_fadd_x_x_fadd_x_x_4f32:
 ; CHECK:       # %bb.0:
-; CHECK-NEXT:    mulps {{\.?LCPI[0-9]+_[0-9]+}}(%rip), %xmm0
+; CHECK-NEXT:    movaps {{.*#+}} xmm1 = [4.0E+0,4.0E+0,4.0E+0,4.0E+0]
+; CHECK-NEXT:    mulps %xmm0, %xmm1
+; CHECK-NEXT:    movaps %xmm1, %xmm0
 ; CHECK-NEXT:    retq
   %y = fadd reassoc nsz <4 x float> %x, %x
   %z = fadd reassoc nsz <4 x float> %y, %y
@@ -236,10 +268,12 @@ define <4 x float> @fadd_fadd_x_x_fadd_x_x_4f32(<4 x float> %x) #0 {
 define float @fadd_const_multiuse_attr(float %x) #0 {
 ; CHECK-LABEL: fadd_const_multiuse_attr:
 ; CHECK:       # %bb.0:
-; CHECK-NEXT:    movss {{.*#+}} xmm1 = [4.2E+1,0.0E+0,0.0E+0,0.0E+0]
+; CHECK-NEXT:    movss {{.*#+}} xmm2 = [4.2E+1,0.0E+0,0.0E+0,0.0E+0]
+; CHECK-NEXT:    addss %xmm0, %xmm2
+; CHECK-NEXT:    movss {{.*#+}} xmm1 = [5.9E+1,0.0E+0,0.0E+0,0.0E+0]
 ; CHECK-NEXT:    addss %xmm0, %xmm1
-; CHECK-NEXT:    addss {{\.?LCPI[0-9]+_[0-9]+}}(%rip), %xmm0
-; CHECK-NEXT:    addss %xmm1, %xmm0
+; CHECK-NEXT:    addss %xmm2, %xmm1
+; CHECK-NEXT:    movaps %xmm1, %xmm0
 ; CHECK-NEXT:    retq
   %a1 = fadd reassoc nsz float %x, 42.0
   %a2 = fadd reassoc nsz float %a1, 17.0

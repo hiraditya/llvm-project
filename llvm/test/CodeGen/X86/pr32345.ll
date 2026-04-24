@@ -72,12 +72,13 @@ define void @foo() {
 ;
 ; X64-LABEL: foo:
 ; X64:       # %bb.0: # %bb
-; X64-NEXT:    movzbl var_27(%rip), %ecx
-; X64-NEXT:    movzwl var_22(%rip), %eax
-; X64-NEXT:    movq %rax, -{{[0-9]+}}(%rsp)
-; X64-NEXT:    addb $30, %cl
-; X64-NEXT:    shrq %cl, %rax
-; X64-NEXT:    movb %al, (%rax)
+; X64-NEXT:    movzbl var_27(%rip), %eax
+; X64-NEXT:    movzwl var_22(%rip), %edx
+; X64-NEXT:    movq %rdx, -{{[0-9]+}}(%rsp)
+; X64-NEXT:    leal 30(%rax), %ecx
+; X64-NEXT:    # kill: def $cl killed $cl killed $ecx
+; X64-NEXT:    shrq %cl, %rdx
+; X64-NEXT:    movb %dl, (%rax)
 ; X64-NEXT:    retq
 ;
 ; X86-LABEL: foo:

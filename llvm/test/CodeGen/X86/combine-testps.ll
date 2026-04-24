@@ -9,9 +9,9 @@
 define i32 @testpsz_128_invert0(<4 x float> %c, <4 x float> %d, i32 %a, i32 %b) {
 ; CHECK-LABEL: testpsz_128_invert0:
 ; CHECK:       # %bb.0:
-; CHECK-NEXT:    movl %edi, %eax
+; CHECK-NEXT:    movl %esi, %eax
 ; CHECK-NEXT:    vtestps %xmm1, %xmm0
-; CHECK-NEXT:    cmovael %esi, %eax
+; CHECK-NEXT:    cmovbl %edi, %eax
 ; CHECK-NEXT:    retq
   %t0 = bitcast <4 x float> %c to <2 x i64>
   %t1 = xor <2 x i64> %t0, <i64 -1, i64 -1>
@@ -25,9 +25,9 @@ define i32 @testpsz_128_invert0(<4 x float> %c, <4 x float> %d, i32 %a, i32 %b) 
 define i32 @testpsz_256_invert0(<8 x float> %c, <8 x float> %d, i32 %a, i32 %b) {
 ; CHECK-LABEL: testpsz_256_invert0:
 ; CHECK:       # %bb.0:
-; CHECK-NEXT:    movl %edi, %eax
+; CHECK-NEXT:    movl %esi, %eax
 ; CHECK-NEXT:    vtestps %ymm1, %ymm0
-; CHECK-NEXT:    cmovael %esi, %eax
+; CHECK-NEXT:    cmovbl %edi, %eax
 ; CHECK-NEXT:    vzeroupper
 ; CHECK-NEXT:    retq
   %t0 = bitcast <8 x float> %c to <4 x i64>
@@ -46,9 +46,9 @@ define i32 @testpsz_256_invert0(<8 x float> %c, <8 x float> %d, i32 %a, i32 %b) 
 define i32 @testpsz_128_invert1(<4 x float> %c, <4 x float> %d, i32 %a, i32 %b) {
 ; CHECK-LABEL: testpsz_128_invert1:
 ; CHECK:       # %bb.0:
-; CHECK-NEXT:    movl %edi, %eax
+; CHECK-NEXT:    movl %esi, %eax
 ; CHECK-NEXT:    vtestps %xmm0, %xmm1
-; CHECK-NEXT:    cmovael %esi, %eax
+; CHECK-NEXT:    cmovbl %edi, %eax
 ; CHECK-NEXT:    retq
   %t0 = bitcast <4 x float> %d to <2 x i64>
   %t1 = xor <2 x i64> %t0, <i64 -1, i64 -1>
@@ -62,9 +62,9 @@ define i32 @testpsz_128_invert1(<4 x float> %c, <4 x float> %d, i32 %a, i32 %b) 
 define i32 @testpsz_256_invert1(<8 x float> %c, <8 x float> %d, i32 %a, i32 %b) {
 ; CHECK-LABEL: testpsz_256_invert1:
 ; CHECK:       # %bb.0:
-; CHECK-NEXT:    movl %edi, %eax
+; CHECK-NEXT:    movl %esi, %eax
 ; CHECK-NEXT:    vtestps %ymm0, %ymm1
-; CHECK-NEXT:    cmovael %esi, %eax
+; CHECK-NEXT:    cmovbl %edi, %eax
 ; CHECK-NEXT:    vzeroupper
 ; CHECK-NEXT:    retq
   %t0 = bitcast <8 x float> %d to <4 x i64>
@@ -83,9 +83,9 @@ define i32 @testpsz_256_invert1(<8 x float> %c, <8 x float> %d, i32 %a, i32 %b) 
 define i32 @testpsc_128_invert0(<4 x float> %c, <4 x float> %d, i32 %a, i32 %b) {
 ; CHECK-LABEL: testpsc_128_invert0:
 ; CHECK:       # %bb.0:
-; CHECK-NEXT:    movl %edi, %eax
+; CHECK-NEXT:    movl %esi, %eax
 ; CHECK-NEXT:    vtestps %xmm1, %xmm0
-; CHECK-NEXT:    cmovnel %esi, %eax
+; CHECK-NEXT:    cmovel %edi, %eax
 ; CHECK-NEXT:    retq
   %t0 = bitcast <4 x float> %c to <2 x i64>
   %t1 = xor <2 x i64> %t0, <i64 -1, i64 -1>
@@ -99,9 +99,9 @@ define i32 @testpsc_128_invert0(<4 x float> %c, <4 x float> %d, i32 %a, i32 %b) 
 define i32 @testpsc_256_invert0(<8 x float> %c, <8 x float> %d, i32 %a, i32 %b) {
 ; CHECK-LABEL: testpsc_256_invert0:
 ; CHECK:       # %bb.0:
-; CHECK-NEXT:    movl %edi, %eax
+; CHECK-NEXT:    movl %esi, %eax
 ; CHECK-NEXT:    vtestps %ymm1, %ymm0
-; CHECK-NEXT:    cmovnel %esi, %eax
+; CHECK-NEXT:    cmovel %edi, %eax
 ; CHECK-NEXT:    vzeroupper
 ; CHECK-NEXT:    retq
   %t0 = bitcast <8 x float> %c to <4 x i64>
@@ -120,9 +120,9 @@ define i32 @testpsc_256_invert0(<8 x float> %c, <8 x float> %d, i32 %a, i32 %b) 
 define i32 @testpsnzc_128_invert0(<4 x float> %c, <4 x float> %d, i32 %a, i32 %b) {
 ; CHECK-LABEL: testpsnzc_128_invert0:
 ; CHECK:       # %bb.0:
-; CHECK-NEXT:    movl %edi, %eax
+; CHECK-NEXT:    movl %esi, %eax
 ; CHECK-NEXT:    vtestps %xmm1, %xmm0
-; CHECK-NEXT:    cmovbel %esi, %eax
+; CHECK-NEXT:    cmoval %edi, %eax
 ; CHECK-NEXT:    retq
   %t0 = bitcast <4 x float> %c to <2 x i64>
   %t1 = xor <2 x i64> %t0, <i64 -1, i64 -1>
@@ -136,9 +136,9 @@ define i32 @testpsnzc_128_invert0(<4 x float> %c, <4 x float> %d, i32 %a, i32 %b
 define i32 @testpsnzc_256_invert0(<8 x float> %c, <8 x float> %d, i32 %a, i32 %b) {
 ; CHECK-LABEL: testpsnzc_256_invert0:
 ; CHECK:       # %bb.0:
-; CHECK-NEXT:    movl %edi, %eax
+; CHECK-NEXT:    movl %esi, %eax
 ; CHECK-NEXT:    vtestps %ymm1, %ymm0
-; CHECK-NEXT:    cmovbel %esi, %eax
+; CHECK-NEXT:    cmoval %edi, %eax
 ; CHECK-NEXT:    vzeroupper
 ; CHECK-NEXT:    retq
   %t0 = bitcast <8 x float> %c to <4 x i64>
@@ -157,9 +157,9 @@ define i32 @testpsnzc_256_invert0(<8 x float> %c, <8 x float> %d, i32 %a, i32 %b
 define i32 @testpsz_128_signbit(<4 x float> %c, <4 x float> %d, i32 %a, i32 %b) {
 ; CHECK-LABEL: testpsz_128_signbit:
 ; CHECK:       # %bb.0:
-; CHECK-NEXT:    movl %edi, %eax
+; CHECK-NEXT:    movl %esi, %eax
 ; CHECK-NEXT:    vtestps %xmm1, %xmm0
-; CHECK-NEXT:    cmovnel %esi, %eax
+; CHECK-NEXT:    cmovel %edi, %eax
 ; CHECK-NEXT:    retq
   %t0 = bitcast <4 x float> %c to <4 x i32>
   %t1 = ashr <4 x i32> %t0, <i32 31, i32 31, i32 31, i32 31>
@@ -173,9 +173,9 @@ define i32 @testpsz_128_signbit(<4 x float> %c, <4 x float> %d, i32 %a, i32 %b) 
 define i32 @testpsnzc_256_signbit(<8 x float> %c, <8 x float> %d, i32 %a, i32 %b) {
 ; CHECK-LABEL: testpsnzc_256_signbit:
 ; CHECK:       # %bb.0:
-; CHECK-NEXT:    movl %edi, %eax
+; CHECK-NEXT:    movl %esi, %eax
 ; CHECK-NEXT:    vtestps %ymm1, %ymm0
-; CHECK-NEXT:    cmovnel %esi, %eax
+; CHECK-NEXT:    cmovel %edi, %eax
 ; CHECK-NEXT:    vzeroupper
 ; CHECK-NEXT:    retq
   %t0 = bitcast <8 x float> %c to <8 x i32>
@@ -191,9 +191,9 @@ define i32 @testpsnzc_256_signbit(<8 x float> %c, <8 x float> %d, i32 %a, i32 %b
 define i32 @testpsc_256_signbit_multiuse(<8 x float> %c, i32 %a, i32 %b) {
 ; CHECK-LABEL: testpsc_256_signbit_multiuse:
 ; CHECK:       # %bb.0:
-; CHECK-NEXT:    movl %edi, %eax
+; CHECK-NEXT:    movl %esi, %eax
 ; CHECK-NEXT:    vtestps %ymm0, %ymm0
-; CHECK-NEXT:    cmovnel %esi, %eax
+; CHECK-NEXT:    cmovel %edi, %eax
 ; CHECK-NEXT:    vzeroupper
 ; CHECK-NEXT:    retq
   %t0 = bitcast <8 x float> %c to <8 x i32>

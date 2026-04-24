@@ -12,8 +12,9 @@ define <4 x float> @t1(float %s, <4 x float> %tmp) nounwind {
 ;
 ; X64-LABEL: t1:
 ; X64:       # %bb.0:
-; X64-NEXT:    shufps {{.*#+}} xmm0 = xmm0[0,1],xmm1[2,3]
-; X64-NEXT:    shufps {{.*#+}} xmm1 = xmm1[0,1],xmm0[2,0]
+; X64-NEXT:    movapd %xmm1, %xmm2
+; X64-NEXT:    movsd {{.*#+}} xmm2 = xmm0[0],xmm2[1]
+; X64-NEXT:    shufps {{.*#+}} xmm1 = xmm1[0,1],xmm2[2,0]
 ; X64-NEXT:    movaps %xmm1, %xmm0
 ; X64-NEXT:    retq
   %tmp1 = insertelement <4 x float> %tmp, float %s, i32 3

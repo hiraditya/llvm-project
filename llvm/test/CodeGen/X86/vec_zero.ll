@@ -7,15 +7,17 @@ define void @foo(ptr %P) {
 ; X86:       # %bb.0:
 ; X86-NEXT:    movl {{[0-9]+}}(%esp), %eax
 ; X86-NEXT:    xorps %xmm0, %xmm0
-; X86-NEXT:    addps (%eax), %xmm0
-; X86-NEXT:    movaps %xmm0, (%eax)
+; X86-NEXT:    movaps (%eax), %xmm1
+; X86-NEXT:    addps %xmm0, %xmm1
+; X86-NEXT:    movaps %xmm1, (%eax)
 ; X86-NEXT:    retl
 ;
 ; X64-LABEL: foo:
 ; X64:       # %bb.0:
 ; X64-NEXT:    xorps %xmm0, %xmm0
-; X64-NEXT:    addps (%rdi), %xmm0
-; X64-NEXT:    movaps %xmm0, (%rdi)
+; X64-NEXT:    movaps (%rdi), %xmm1
+; X64-NEXT:    addps %xmm0, %xmm1
+; X64-NEXT:    movaps %xmm1, (%rdi)
 ; X64-NEXT:    retq
   %T = load <4 x float>, ptr %P
   %S = fadd <4 x float> zeroinitializer, %T

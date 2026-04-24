@@ -19,12 +19,13 @@ define void @TestvMeth(i32 %0, i64 %1) gc "statepoint-example" !prof !1 {
 ; CHECK-NEXT:    callq newarray@PLT
 ; CHECK-NEXT:  .Ltmp0:
 ; CHECK-NEXT:    movss {{.*#+}} xmm0 = [1.5E+1,0.0E+0,0.0E+0,0.0E+0]
-; CHECK-NEXT:    addss (%rax), %xmm0
-; CHECK-NEXT:    movdqu (%rax), %xmm1
+; CHECK-NEXT:    movss {{.*#+}} xmm1 = mem[0],zero,zero,zero
+; CHECK-NEXT:    addss %xmm0, %xmm1
+; CHECK-NEXT:    movdqu (%rax), %xmm0
 ; CHECK-NEXT:    pcmpeqd %xmm2, %xmm2
-; CHECK-NEXT:    psubd %xmm2, %xmm1
-; CHECK-NEXT:    movdqu %xmm1, (%rax)
-; CHECK-NEXT:    movss %xmm0, (%rax)
+; CHECK-NEXT:    psubd %xmm2, %xmm0
+; CHECK-NEXT:    movdqu %xmm0, (%rax)
+; CHECK-NEXT:    movss %xmm1, (%rax)
 bci_0:
    %token418 = call token (i64, i32, ptr, i32,
 i32, ...) @llvm.experimental.gc.statepoint.p0(i64

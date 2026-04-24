@@ -45,11 +45,11 @@ define <4 x i32> @PR20355(<4 x i32> %a) nounwind {
 ; SSE41-NEXT:    movdqa {{.*#+}} xmm2 = [1431655766,1431655766,1431655766,1431655766]
 ; SSE41-NEXT:    pmuldq %xmm2, %xmm1
 ; SSE41-NEXT:    pmuldq %xmm2, %xmm0
-; SSE41-NEXT:    pshufd {{.*#+}} xmm2 = xmm0[1,1,3,3]
-; SSE41-NEXT:    pblendw {{.*#+}} xmm2 = xmm2[0,1],xmm1[2,3],xmm2[4,5],xmm1[6,7]
-; SSE41-NEXT:    movdqa %xmm2, %xmm0
+; SSE41-NEXT:    pshufd {{.*#+}} xmm0 = xmm0[1,1,3,3]
+; SSE41-NEXT:    pblendw {{.*#+}} xmm1 = xmm0[0,1],xmm1[2,3],xmm0[4,5],xmm1[6,7]
+; SSE41-NEXT:    movdqa %xmm1, %xmm0
 ; SSE41-NEXT:    psrld $31, %xmm0
-; SSE41-NEXT:    paddd %xmm2, %xmm0
+; SSE41-NEXT:    paddd %xmm1, %xmm0
 ; SSE41-NEXT:    retq
 ;
 ; AVX1-LABEL: PR20355:

@@ -16,12 +16,12 @@ define void @_Z25RawPointerPerformanceTestPvRN5clang6ActionE(ptr %Val, ptr %Acti
 ; CHECK-NEXT:    cmpl $0, _NumTrials(%rip)
 ; CHECK-NEXT:    je LBB0_4
 ; CHECK-NEXT:  ## %bb.1: ## %bb.nph
-; CHECK-NEXT:    pushq %rbp
+; CHECK-NEXT:    pushq %r14
 ; CHECK-NEXT:    pushq %rbx
 ; CHECK-NEXT:    subq $24, %rsp
 ; CHECK-NEXT:    movq %rsi, %rbx
 ; CHECK-NEXT:    movq %rdi, %rax
-; CHECK-NEXT:    xorl %ebp, %ebp
+; CHECK-NEXT:    xorl %r14d, %r14d
 ; CHECK-NEXT:    .p2align 4
 ; CHECK-NEXT:  LBB0_2: ## %bb
 ; CHECK-NEXT:    ## =>This Inner Loop Header: Depth=1
@@ -31,13 +31,13 @@ define void @_Z25RawPointerPerformanceTestPvRN5clang6ActionE(ptr %Val, ptr %Acti
 ; CHECK-NEXT:    callq *560(%rcx)
 ; CHECK-NEXT:    movq %rax, {{[0-9]+}}(%rsp)
 ; CHECK-NEXT:    movq %rdx, {{[0-9]+}}(%rsp)
-; CHECK-NEXT:    incl %ebp
-; CHECK-NEXT:    cmpl _NumTrials(%rip), %ebp
+; CHECK-NEXT:    incl %r14d
+; CHECK-NEXT:    cmpl _NumTrials(%rip), %r14d
 ; CHECK-NEXT:    jb LBB0_2
 ; CHECK-NEXT:  ## %bb.3:
 ; CHECK-NEXT:    addq $24, %rsp
 ; CHECK-NEXT:    popq %rbx
-; CHECK-NEXT:    popq %rbp
+; CHECK-NEXT:    popq %r14
 ; CHECK-NEXT:  LBB0_4: ## %return
 ; CHECK-NEXT:    retq
 ;
@@ -46,12 +46,12 @@ define void @_Z25RawPointerPerformanceTestPvRN5clang6ActionE(ptr %Val, ptr %Acti
 ; pre-RA-NEXT:    cmpl $0, _NumTrials(%rip)
 ; pre-RA-NEXT:    je LBB0_4
 ; pre-RA-NEXT:  ## %bb.1: ## %bb.nph
-; pre-RA-NEXT:    pushq %rbp
+; pre-RA-NEXT:    pushq %r14
 ; pre-RA-NEXT:    pushq %rbx
 ; pre-RA-NEXT:    subq $24, %rsp
 ; pre-RA-NEXT:    movq %rsi, %rbx
 ; pre-RA-NEXT:    movq %rdi, %rax
-; pre-RA-NEXT:    xorl %ebp, %ebp
+; pre-RA-NEXT:    xorl %r14d, %r14d
 ; pre-RA-NEXT:    .p2align 4
 ; pre-RA-NEXT:  LBB0_2: ## %bb
 ; pre-RA-NEXT:    ## =>This Inner Loop Header: Depth=1
@@ -59,15 +59,15 @@ define void @_Z25RawPointerPerformanceTestPvRN5clang6ActionE(ptr %Val, ptr %Acti
 ; pre-RA-NEXT:    movq %rbx, %rdi
 ; pre-RA-NEXT:    movq %rax, %rsi
 ; pre-RA-NEXT:    callq *560(%rcx)
-; pre-RA-NEXT:    incl %ebp
+; pre-RA-NEXT:    incl %r14d
 ; pre-RA-NEXT:    movq %rax, {{[0-9]+}}(%rsp)
 ; pre-RA-NEXT:    movq %rdx, {{[0-9]+}}(%rsp)
-; pre-RA-NEXT:    cmpl _NumTrials(%rip), %ebp
+; pre-RA-NEXT:    cmpl _NumTrials(%rip), %r14d
 ; pre-RA-NEXT:    jb LBB0_2
 ; pre-RA-NEXT:  ## %bb.3:
 ; pre-RA-NEXT:    addq $24, %rsp
 ; pre-RA-NEXT:    popq %rbx
-; pre-RA-NEXT:    popq %rbp
+; pre-RA-NEXT:    popq %r14
 ; pre-RA-NEXT:  LBB0_4: ## %return
 ; pre-RA-NEXT:    retq
 entry:

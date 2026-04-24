@@ -15,8 +15,10 @@ define i32 @foo() nounwind {
 ; CHECK-LABEL: foo:
 ; CHECK:       # %bb.0: # %entry
 ; CHECK-NEXT:    movl foos+5, %eax
-; CHECK-NEXT:    addl foos+1, %eax
-; CHECK-NEXT:    addl foos+9, %eax
+; CHECK-NEXT:    movl foos+1, %ecx
+; CHECK-NEXT:    addl %eax, %ecx
+; CHECK-NEXT:    movl foos+9, %eax
+; CHECK-NEXT:    addl %ecx, %eax
 ; CHECK-NEXT:    retl
 entry:
 	%tmp = load i32, ptr getelementptr (%struct.anon, ptr @foos, i32 0, i32 1)		; <i32> [#uses=1]
@@ -30,8 +32,9 @@ entry:
 define i8 @bar() nounwind {
 ; CHECK-LABEL: bar:
 ; CHECK:       # %bb.0: # %entry
-; CHECK-NEXT:    movzbl bara+19, %eax
-; CHECK-NEXT:    addb bara+4, %al
+; CHECK-NEXT:    movzbl bara+19, %ecx
+; CHECK-NEXT:    movzbl bara+4, %eax
+; CHECK-NEXT:    addb %cl, %al
 ; CHECK-NEXT:    retl
 entry:
 	%tmp = load i8, ptr getelementptr ([4 x <{ i32, i8 }>], ptr @bara, i32 0, i32 0, i32 1)		; <i8> [#uses=1]

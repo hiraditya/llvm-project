@@ -268,8 +268,8 @@ define i1 @une_uno_xor_f64_use1(double %w, double %x, double %y, double %z, ptr 
 ; SSE2-LABEL: une_uno_xor_f64_use1:
 ; SSE2:       # %bb.0:
 ; SSE2-NEXT:    ucomisd %xmm1, %xmm0
-; SSE2-NEXT:    setp %al
-; SSE2-NEXT:    setne %cl
+; SSE2-NEXT:    setp %cl
+; SSE2-NEXT:    setne %al
 ; SSE2-NEXT:    orb %al, %cl
 ; SSE2-NEXT:    movb %cl, (%rdi)
 ; SSE2-NEXT:    ucomisd %xmm3, %xmm2
@@ -280,8 +280,8 @@ define i1 @une_uno_xor_f64_use1(double %w, double %x, double %y, double %z, ptr 
 ; AVX-LABEL: une_uno_xor_f64_use1:
 ; AVX:       # %bb.0:
 ; AVX-NEXT:    vucomisd %xmm1, %xmm0
-; AVX-NEXT:    setp %al
-; AVX-NEXT:    setne %cl
+; AVX-NEXT:    setp %cl
+; AVX-NEXT:    setne %al
 ; AVX-NEXT:    orb %al, %cl
 ; AVX-NEXT:    movb %cl, (%rdi)
 ; AVX-NEXT:    vucomisd %xmm3, %xmm2
@@ -301,8 +301,8 @@ define i1 @une_uno_xor_f64_use2(double %w, double %x, double %y, double %z, ptr 
 ; SSE2-LABEL: une_uno_xor_f64_use2:
 ; SSE2:       # %bb.0:
 ; SSE2-NEXT:    ucomisd %xmm1, %xmm0
-; SSE2-NEXT:    setp %al
-; SSE2-NEXT:    setne %cl
+; SSE2-NEXT:    setp %cl
+; SSE2-NEXT:    setne %al
 ; SSE2-NEXT:    orb %al, %cl
 ; SSE2-NEXT:    ucomisd %xmm3, %xmm2
 ; SSE2-NEXT:    setp %al
@@ -313,8 +313,8 @@ define i1 @une_uno_xor_f64_use2(double %w, double %x, double %y, double %z, ptr 
 ; AVX-LABEL: une_uno_xor_f64_use2:
 ; AVX:       # %bb.0:
 ; AVX-NEXT:    vucomisd %xmm1, %xmm0
-; AVX-NEXT:    setp %al
-; AVX-NEXT:    setne %cl
+; AVX-NEXT:    setp %cl
+; AVX-NEXT:    setne %al
 ; AVX-NEXT:    orb %al, %cl
 ; AVX-NEXT:    vucomisd %xmm3, %xmm2
 ; AVX-NEXT:    setp %al
@@ -387,12 +387,13 @@ define i1 @PR140534(i32 %a0, i32 %a1, i32 %a2) {
 ; SSE2-NEXT:    cvtsi2sd %rax, %xmm1
 ; SSE2-NEXT:    movl %edx, %eax
 ; SSE2-NEXT:    cvtsi2sd %rax, %xmm2
-; SSE2-NEXT:    mulsd {{\.?LCPI[0-9]+_[0-9]+}}(%rip), %xmm1
-; SSE2-NEXT:    movapd %xmm1, %xmm3
-; SSE2-NEXT:    cmpltsd %xmm2, %xmm3
-; SSE2-NEXT:    cmpltsd %xmm0, %xmm1
-; SSE2-NEXT:    orpd %xmm3, %xmm1
-; SSE2-NEXT:    movd %xmm1, %eax
+; SSE2-NEXT:    movsd {{.*#+}} xmm3 = [1.4142135623730951E+0,0.0E+0]
+; SSE2-NEXT:    mulsd %xmm1, %xmm3
+; SSE2-NEXT:    movapd %xmm3, %xmm1
+; SSE2-NEXT:    cmpltsd %xmm2, %xmm1
+; SSE2-NEXT:    cmpltsd %xmm0, %xmm3
+; SSE2-NEXT:    orpd %xmm1, %xmm3
+; SSE2-NEXT:    movd %xmm3, %eax
 ; SSE2-NEXT:    # kill: def $al killed $al killed $eax
 ; SSE2-NEXT:    retq
 ;

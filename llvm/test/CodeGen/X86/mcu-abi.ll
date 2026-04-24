@@ -6,9 +6,10 @@
 define i32 @test_ints(i32 %a, i32 %b, i32 %c, i32 %d) #0 {
 ; CHECK-LABEL: test_ints:
 ; CHECK:       # %bb.0: # %entry
+; CHECK-NEXT:    addl %eax, %edx
+; CHECK-NEXT:    imull %ecx, %edx
+; CHECK-NEXT:    movl {{[0-9]+}}(%esp), %eax
 ; CHECK-NEXT:    addl %edx, %eax
-; CHECK-NEXT:    imull %ecx, %eax
-; CHECK-NEXT:    addl {{[0-9]+}}(%esp), %eax
 ; CHECK-NEXT:    retl
 entry:
   %r1 = add i32 %b, %a
@@ -20,9 +21,10 @@ entry:
 define i32 @test_floats(i32 %a, i32 %b, float %c, float %d) #0 {
 ; CHECK-LABEL: test_floats:
 ; CHECK:       # %bb.0: # %entry
+; CHECK-NEXT:    addl %eax, %edx
+; CHECK-NEXT:    imull %ecx, %edx
+; CHECK-NEXT:    movl {{[0-9]+}}(%esp), %eax
 ; CHECK-NEXT:    addl %edx, %eax
-; CHECK-NEXT:    imull %ecx, %eax
-; CHECK-NEXT:    addl {{[0-9]+}}(%esp), %eax
 ; CHECK-NEXT:    retl
 entry:
   %ci = bitcast float %c to i32
@@ -36,8 +38,14 @@ entry:
 define double @test_doubles(double %d1, double %d2) #0 {
 ; CHECK-LABEL: test_doubles:
 ; CHECK:       # %bb.0: # %entry
-; CHECK-NEXT:    addl {{[0-9]+}}(%esp), %eax
-; CHECK-NEXT:    adcl {{[0-9]+}}(%esp), %edx
+; CHECK-NEXT:    pushl %esi
+; CHECK-NEXT:    movl {{[0-9]+}}(%esp), %ecx
+; CHECK-NEXT:    addl %eax, %ecx
+; CHECK-NEXT:    movl {{[0-9]+}}(%esp), %esi
+; CHECK-NEXT:    adcl %edx, %esi
+; CHECK-NEXT:    movl %ecx, %eax
+; CHECK-NEXT:    movl %esi, %edx
+; CHECK-NEXT:    popl %esi
 ; CHECK-NEXT:    retl
 entry:
     %d1i = bitcast double %d1 to i64
@@ -50,8 +58,9 @@ entry:
 define double @test_mixed_doubles(double %d2, i32 %i) #0 {
 ; CHECK-LABEL: test_mixed_doubles:
 ; CHECK:       # %bb.0: # %entry
-; CHECK-NEXT:    addl %ecx, %eax
+; CHECK-NEXT:    addl %eax, %ecx
 ; CHECK-NEXT:    adcl $0, %edx
+; CHECK-NEXT:    movl %ecx, %eax
 ; CHECK-NEXT:    retl
 entry:
     %iext = zext i32 %i to i64

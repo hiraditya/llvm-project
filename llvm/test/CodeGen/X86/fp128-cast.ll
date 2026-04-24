@@ -1170,7 +1170,8 @@ define dso_local i32 @TestBits128(fp128 %ld) nounwind {
 ; X86-NEXT:    subl $4, %esp
 ; X86-NEXT:    movl {{[0-9]+}}(%esp), %ecx
 ; X86-NEXT:    xorl %eax, %eax
-; X86-NEXT:    orl {{[0-9]+}}(%esp), %ecx
+; X86-NEXT:    movl {{[0-9]+}}(%esp), %edx
+; X86-NEXT:    orl %ecx, %edx
 ; X86-NEXT:    sete %al
 ; X86-NEXT:    addl $72, %esp
 ; X86-NEXT:    popl %esi
@@ -1272,8 +1273,10 @@ define fp128 @TestTruncCopysign(fp128 %x, i32 %n) nounwind {
 ; X64-SSE-NEXT:  # %bb.1: # %if.then
 ; X64-SSE-NEXT:    pushq %rax
 ; X64-SSE-NEXT:    callq __trunctfdf2@PLT
-; X64-SSE-NEXT:    andps {{\.?LCPI[0-9]+_[0-9]+}}(%rip), %xmm0
-; X64-SSE-NEXT:    orps {{\.?LCPI[0-9]+_[0-9]+}}(%rip), %xmm0
+; X64-SSE-NEXT:    movaps {{.*#+}} xmm1 = [-0.0E+0,-0.0E+0]
+; X64-SSE-NEXT:    andps %xmm0, %xmm1
+; X64-SSE-NEXT:    movaps {{.*#+}} xmm0 = [+Inf,+Inf]
+; X64-SSE-NEXT:    orps %xmm1, %xmm0
 ; X64-SSE-NEXT:    callq __extenddftf2@PLT
 ; X64-SSE-NEXT:    addq $8, %rsp
 ; X64-SSE-NEXT:  .LBB26_2: # %cleanup
@@ -1364,9 +1367,11 @@ define i1 @PR34866(i128 %x) nounwind {
 ; X64-SSE:       # %bb.0:
 ; X64-SSE-NEXT:    xorps %xmm0, %xmm0
 ; X64-SSE-NEXT:    movaps %xmm0, -{{[0-9]+}}(%rsp)
-; X64-SSE-NEXT:    xorq -{{[0-9]+}}(%rsp), %rsi
-; X64-SSE-NEXT:    xorq -{{[0-9]+}}(%rsp), %rdi
-; X64-SSE-NEXT:    orq %rsi, %rdi
+; X64-SSE-NEXT:    movq -{{[0-9]+}}(%rsp), %rax
+; X64-SSE-NEXT:    xorq %rsi, %rax
+; X64-SSE-NEXT:    movq -{{[0-9]+}}(%rsp), %rcx
+; X64-SSE-NEXT:    xorq %rdi, %rcx
+; X64-SSE-NEXT:    orq %rcx, %rax
 ; X64-SSE-NEXT:    sete %al
 ; X64-SSE-NEXT:    retq
 ;
@@ -1375,9 +1380,11 @@ define i1 @PR34866(i128 %x) nounwind {
 ; X86-NEXT:    subl $12, %esp
 ; X86-NEXT:    movl {{[0-9]+}}(%esp), %eax
 ; X86-NEXT:    movl {{[0-9]+}}(%esp), %ecx
-; X86-NEXT:    orl {{[0-9]+}}(%esp), %ecx
-; X86-NEXT:    orl {{[0-9]+}}(%esp), %eax
-; X86-NEXT:    orl %ecx, %eax
+; X86-NEXT:    movl {{[0-9]+}}(%esp), %edx
+; X86-NEXT:    orl %ecx, %edx
+; X86-NEXT:    movl {{[0-9]+}}(%esp), %ecx
+; X86-NEXT:    orl %eax, %ecx
+; X86-NEXT:    orl %ecx, %edx
 ; X86-NEXT:    sete %al
 ; X86-NEXT:    addl $12, %esp
 ; X86-NEXT:    retl
@@ -1386,9 +1393,11 @@ define i1 @PR34866(i128 %x) nounwind {
 ; X64-AVX:       # %bb.0:
 ; X64-AVX-NEXT:    vxorps %xmm0, %xmm0, %xmm0
 ; X64-AVX-NEXT:    vmovaps %xmm0, -{{[0-9]+}}(%rsp)
-; X64-AVX-NEXT:    xorq -{{[0-9]+}}(%rsp), %rsi
-; X64-AVX-NEXT:    xorq -{{[0-9]+}}(%rsp), %rdi
-; X64-AVX-NEXT:    orq %rsi, %rdi
+; X64-AVX-NEXT:    movq -{{[0-9]+}}(%rsp), %rax
+; X64-AVX-NEXT:    xorq %rsi, %rax
+; X64-AVX-NEXT:    movq -{{[0-9]+}}(%rsp), %rcx
+; X64-AVX-NEXT:    xorq %rdi, %rcx
+; X64-AVX-NEXT:    orq %rcx, %rax
 ; X64-AVX-NEXT:    sete %al
 ; X64-AVX-NEXT:    retq
   %bc_mmx = bitcast fp128 0xL00000000000000000000000000000000 to i128
@@ -1401,9 +1410,11 @@ define i1 @PR34866_commute(i128 %x) nounwind {
 ; X64-SSE:       # %bb.0:
 ; X64-SSE-NEXT:    xorps %xmm0, %xmm0
 ; X64-SSE-NEXT:    movaps %xmm0, -{{[0-9]+}}(%rsp)
-; X64-SSE-NEXT:    xorq -{{[0-9]+}}(%rsp), %rsi
-; X64-SSE-NEXT:    xorq -{{[0-9]+}}(%rsp), %rdi
-; X64-SSE-NEXT:    orq %rsi, %rdi
+; X64-SSE-NEXT:    movq -{{[0-9]+}}(%rsp), %rax
+; X64-SSE-NEXT:    xorq %rsi, %rax
+; X64-SSE-NEXT:    movq -{{[0-9]+}}(%rsp), %rcx
+; X64-SSE-NEXT:    xorq %rdi, %rcx
+; X64-SSE-NEXT:    orq %rcx, %rax
 ; X64-SSE-NEXT:    sete %al
 ; X64-SSE-NEXT:    retq
 ;
@@ -1412,9 +1423,11 @@ define i1 @PR34866_commute(i128 %x) nounwind {
 ; X86-NEXT:    subl $12, %esp
 ; X86-NEXT:    movl {{[0-9]+}}(%esp), %eax
 ; X86-NEXT:    movl {{[0-9]+}}(%esp), %ecx
-; X86-NEXT:    orl {{[0-9]+}}(%esp), %ecx
-; X86-NEXT:    orl {{[0-9]+}}(%esp), %eax
-; X86-NEXT:    orl %ecx, %eax
+; X86-NEXT:    movl {{[0-9]+}}(%esp), %edx
+; X86-NEXT:    orl %ecx, %edx
+; X86-NEXT:    movl {{[0-9]+}}(%esp), %ecx
+; X86-NEXT:    orl %eax, %ecx
+; X86-NEXT:    orl %ecx, %edx
 ; X86-NEXT:    sete %al
 ; X86-NEXT:    addl $12, %esp
 ; X86-NEXT:    retl
@@ -1423,9 +1436,11 @@ define i1 @PR34866_commute(i128 %x) nounwind {
 ; X64-AVX:       # %bb.0:
 ; X64-AVX-NEXT:    vxorps %xmm0, %xmm0, %xmm0
 ; X64-AVX-NEXT:    vmovaps %xmm0, -{{[0-9]+}}(%rsp)
-; X64-AVX-NEXT:    xorq -{{[0-9]+}}(%rsp), %rsi
-; X64-AVX-NEXT:    xorq -{{[0-9]+}}(%rsp), %rdi
-; X64-AVX-NEXT:    orq %rsi, %rdi
+; X64-AVX-NEXT:    movq -{{[0-9]+}}(%rsp), %rax
+; X64-AVX-NEXT:    xorq %rsi, %rax
+; X64-AVX-NEXT:    movq -{{[0-9]+}}(%rsp), %rcx
+; X64-AVX-NEXT:    xorq %rdi, %rcx
+; X64-AVX-NEXT:    orq %rcx, %rax
 ; X64-AVX-NEXT:    sete %al
 ; X64-AVX-NEXT:    retq
   %bc_mmx = bitcast fp128 0xL00000000000000000000000000000000 to i128

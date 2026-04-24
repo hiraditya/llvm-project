@@ -11,22 +11,22 @@ define void @bar64(i64 inreg %x, ptr inreg %p) nounwind {
 ; X64-LABEL: bar64:
 ; X64:       # %bb.0:
 ; X64-NEXT:    shrl $8, %edi
-; X64-NEXT:    incb %dil
-; X64-NEXT:    movb %dil, (%rsi)
+; X64-NEXT:    leal 1(%rdi), %eax
+; X64-NEXT:    movb %al, (%rsi)
 ; X64-NEXT:    retq
 ;
 ; X32-LABEL: bar64:
 ; X32:       # %bb.0:
 ; X32-NEXT:    shrl $8, %edi
-; X32-NEXT:    incb %dil
-; X32-NEXT:    movb %dil, (%esi)
+; X32-NEXT:    leal 1(%rdi), %eax
+; X32-NEXT:    movb %al, (%esi)
 ; X32-NEXT:    retq
 ;
 ; WIN64-LABEL: bar64:
 ; WIN64:       # %bb.0:
 ; WIN64-NEXT:    shrl $8, %ecx
-; WIN64-NEXT:    incb %cl
-; WIN64-NEXT:    movb %cl, (%rdx)
+; WIN64-NEXT:    leal 1(%rcx), %eax
+; WIN64-NEXT:    movb %al, (%rdx)
 ; WIN64-NEXT:    retq
 ;
 ; X86-32-LABEL: bar64:
@@ -48,23 +48,26 @@ define void @bar64(i64 inreg %x, ptr inreg %p) nounwind {
 define void @bar32(i32 inreg %x, ptr inreg %p) nounwind {
 ; X64-LABEL: bar32:
 ; X64:       # %bb.0:
+; X64-NEXT:    # kill: def $edi killed $edi def $rdi
 ; X64-NEXT:    shrl $8, %edi
-; X64-NEXT:    incb %dil
-; X64-NEXT:    movb %dil, (%rsi)
+; X64-NEXT:    leal 1(%rdi), %eax
+; X64-NEXT:    movb %al, (%rsi)
 ; X64-NEXT:    retq
 ;
 ; X32-LABEL: bar32:
 ; X32:       # %bb.0:
+; X32-NEXT:    # kill: def $edi killed $edi def $rdi
 ; X32-NEXT:    shrl $8, %edi
-; X32-NEXT:    incb %dil
-; X32-NEXT:    movb %dil, (%esi)
+; X32-NEXT:    leal 1(%rdi), %eax
+; X32-NEXT:    movb %al, (%esi)
 ; X32-NEXT:    retq
 ;
 ; WIN64-LABEL: bar32:
 ; WIN64:       # %bb.0:
+; WIN64-NEXT:    # kill: def $ecx killed $ecx def $rcx
 ; WIN64-NEXT:    shrl $8, %ecx
-; WIN64-NEXT:    incb %cl
-; WIN64-NEXT:    movb %cl, (%rdx)
+; WIN64-NEXT:    leal 1(%rcx), %eax
+; WIN64-NEXT:    movb %al, (%rdx)
 ; WIN64-NEXT:    retq
 ;
 ; X86-32-LABEL: bar32:
@@ -84,24 +87,26 @@ define void @bar32(i32 inreg %x, ptr inreg %p) nounwind {
 define void @bar16(i16 inreg %x, ptr inreg %p) nounwind {
 ; X64-LABEL: bar16:
 ; X64:       # %bb.0:
+; X64-NEXT:    # kill: def $edi killed $edi def $rdi
 ; X64-NEXT:    shrl $8, %edi
-; X64-NEXT:    incb %dil
-; X64-NEXT:    movb %dil, (%rsi)
+; X64-NEXT:    leal 1(%rdi), %eax
+; X64-NEXT:    movb %al, (%rsi)
 ; X64-NEXT:    retq
 ;
 ; X32-LABEL: bar16:
 ; X32:       # %bb.0:
+; X32-NEXT:    # kill: def $edi killed $edi def $rdi
 ; X32-NEXT:    shrl $8, %edi
-; X32-NEXT:    incb %dil
-; X32-NEXT:    movb %dil, (%esi)
+; X32-NEXT:    leal 1(%rdi), %eax
+; X32-NEXT:    movb %al, (%esi)
 ; X32-NEXT:    retq
 ;
 ; WIN64-LABEL: bar16:
 ; WIN64:       # %bb.0:
-; WIN64-NEXT:    # kill: def $cx killed $cx def $ecx
+; WIN64-NEXT:    # kill: def $cx killed $cx def $rcx
 ; WIN64-NEXT:    shrl $8, %ecx
-; WIN64-NEXT:    incb %cl
-; WIN64-NEXT:    movb %cl, (%rdx)
+; WIN64-NEXT:    leal 1(%rcx), %eax
+; WIN64-NEXT:    movb %al, (%rdx)
 ; WIN64-NEXT:    retq
 ;
 ; X86-32-LABEL: bar16:

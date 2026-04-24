@@ -133,22 +133,22 @@ define <64 x i8> @avg_v64i8_mask(<64 x i8> %a, <64 x i8> %b, <64 x i8> %src, i64
 ; AVX512F-NEXT:    vextracti64x4 $1, %zmm0, %ymm4
 ; AVX512F-NEXT:    vpavgb %ymm3, %ymm4, %ymm3
 ; AVX512F-NEXT:    vpavgb %ymm1, %ymm0, %ymm0
-; AVX512F-NEXT:    vinserti64x4 $1, %ymm3, %zmm0, %zmm1
+; AVX512F-NEXT:    vinserti64x4 $1, %ymm3, %zmm0, %zmm0
 ; AVX512F-NEXT:    kmovw %ecx, %k2
 ; AVX512F-NEXT:    kmovw %eax, %k3
 ; AVX512F-NEXT:    kmovw %edi, %k4
-; AVX512F-NEXT:    vpternlogd {{.*#+}} zmm0 {%k4} {z} = -1
-; AVX512F-NEXT:    vpmovdb %zmm0, %xmm0
+; AVX512F-NEXT:    vpternlogd {{.*#+}} zmm1 {%k4} {z} = -1
+; AVX512F-NEXT:    vpmovdb %zmm1, %xmm1
 ; AVX512F-NEXT:    vpternlogd {{.*#+}} zmm3 {%k3} {z} = -1
 ; AVX512F-NEXT:    vpmovdb %zmm3, %xmm3
-; AVX512F-NEXT:    vinserti128 $1, %xmm3, %ymm0, %ymm0
+; AVX512F-NEXT:    vinserti128 $1, %xmm3, %ymm1, %ymm1
 ; AVX512F-NEXT:    vpternlogd {{.*#+}} zmm3 {%k1} {z} = -1
 ; AVX512F-NEXT:    vpmovdb %zmm3, %xmm3
 ; AVX512F-NEXT:    vpternlogd {{.*#+}} zmm4 {%k2} {z} = -1
 ; AVX512F-NEXT:    vpmovdb %zmm4, %xmm4
 ; AVX512F-NEXT:    vinserti128 $1, %xmm4, %ymm3, %ymm3
-; AVX512F-NEXT:    vinserti64x4 $1, %ymm0, %zmm3, %zmm0
-; AVX512F-NEXT:    vpternlogq {{.*#+}} zmm0 = zmm2 ^ (zmm0 & (zmm1 ^ zmm2))
+; AVX512F-NEXT:    vinserti64x4 $1, %ymm1, %zmm3, %zmm1
+; AVX512F-NEXT:    vpternlogq {{.*#+}} zmm0 = zmm2 ^ (zmm1 & (zmm0 ^ zmm2))
 ; AVX512F-NEXT:    retq
 ;
 ; AVX512BWVL-LABEL: avg_v64i8_mask:
@@ -332,14 +332,14 @@ define <32 x i16> @avg_v32i16_mask(<32 x i16> %a, <32 x i16> %b, <32 x i16> %src
 ; AVX512F-NEXT:    vextracti64x4 $1, %zmm0, %ymm4
 ; AVX512F-NEXT:    vpavgw %ymm3, %ymm4, %ymm3
 ; AVX512F-NEXT:    vpavgw %ymm1, %ymm0, %ymm0
-; AVX512F-NEXT:    vinserti64x4 $1, %ymm3, %zmm0, %zmm1
+; AVX512F-NEXT:    vinserti64x4 $1, %ymm3, %zmm0, %zmm0
 ; AVX512F-NEXT:    kmovw %edi, %k2
-; AVX512F-NEXT:    vpternlogd {{.*#+}} zmm0 {%k1} {z} = -1
-; AVX512F-NEXT:    vpmovdw %zmm0, %ymm0
+; AVX512F-NEXT:    vpternlogd {{.*#+}} zmm1 {%k1} {z} = -1
+; AVX512F-NEXT:    vpmovdw %zmm1, %ymm1
 ; AVX512F-NEXT:    vpternlogd {{.*#+}} zmm3 {%k2} {z} = -1
 ; AVX512F-NEXT:    vpmovdw %zmm3, %ymm3
-; AVX512F-NEXT:    vinserti64x4 $1, %ymm3, %zmm0, %zmm0
-; AVX512F-NEXT:    vpternlogq {{.*#+}} zmm0 = zmm2 ^ (zmm0 & (zmm1 ^ zmm2))
+; AVX512F-NEXT:    vinserti64x4 $1, %ymm3, %zmm1, %zmm1
+; AVX512F-NEXT:    vpternlogq {{.*#+}} zmm0 = zmm2 ^ (zmm1 & (zmm0 ^ zmm2))
 ; AVX512F-NEXT:    retq
 ;
 ; AVX512BWVL-LABEL: avg_v32i16_mask:

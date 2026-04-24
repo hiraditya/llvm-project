@@ -79,12 +79,12 @@ define <8 x i16> @trunc_ashr_v4i64_bitcast(<4 x i64> %a0) {
 ; SSE4-NEXT:    pshufd {{.*#+}} xmm2 = xmm1[1,1,3,3]
 ; SSE4-NEXT:    psrad $31, %xmm1
 ; SSE4-NEXT:    psrad $17, %xmm2
-; SSE4-NEXT:    pblendw {{.*#+}} xmm2 = xmm2[0,1],xmm1[2,3],xmm2[4,5],xmm1[6,7]
-; SSE4-NEXT:    pshufd {{.*#+}} xmm1 = xmm0[1,1,3,3]
+; SSE4-NEXT:    pblendw {{.*#+}} xmm1 = xmm2[0,1],xmm1[2,3],xmm2[4,5],xmm1[6,7]
+; SSE4-NEXT:    pshufd {{.*#+}} xmm2 = xmm0[1,1,3,3]
 ; SSE4-NEXT:    psrad $31, %xmm0
-; SSE4-NEXT:    psrad $17, %xmm1
-; SSE4-NEXT:    pblendw {{.*#+}} xmm0 = xmm1[0,1],xmm0[2,3],xmm1[4,5],xmm0[6,7]
-; SSE4-NEXT:    packssdw %xmm2, %xmm0
+; SSE4-NEXT:    psrad $17, %xmm2
+; SSE4-NEXT:    pblendw {{.*#+}} xmm0 = xmm2[0,1],xmm0[2,3],xmm2[4,5],xmm0[6,7]
+; SSE4-NEXT:    packssdw %xmm1, %xmm0
 ; SSE4-NEXT:    ret{{[l|q]}}
 ;
 ; AVX1-LABEL: trunc_ashr_v4i64_bitcast:

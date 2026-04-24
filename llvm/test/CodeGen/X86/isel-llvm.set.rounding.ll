@@ -29,9 +29,10 @@ define void @func_01() nounwind {
 ; GISEL-X86-NOSSE-NEXT:    pushl %eax
 ; GISEL-X86-NOSSE-NEXT:    fnstcw (%esp)
 ; GISEL-X86-NOSSE-NEXT:    movw $-3073, %ax # imm = 0xF3FF
-; GISEL-X86-NOSSE-NEXT:    andw (%esp), %ax
-; GISEL-X86-NOSSE-NEXT:    orw $24576, %ax # imm = 0x6000
-; GISEL-X86-NOSSE-NEXT:    movw %ax, (%esp)
+; GISEL-X86-NOSSE-NEXT:    movzwl (%esp), %ecx
+; GISEL-X86-NOSSE-NEXT:    andw %ax, %cx
+; GISEL-X86-NOSSE-NEXT:    orw $24576, %cx # imm = 0x6000
+; GISEL-X86-NOSSE-NEXT:    movw %cx, (%esp)
 ; GISEL-X86-NOSSE-NEXT:    fldcw (%esp)
 ; GISEL-X86-NOSSE-NEXT:    popl %eax
 ; GISEL-X86-NOSSE-NEXT:    retl
@@ -47,8 +48,9 @@ define void @func_01() nounwind {
 ; GISEL-X64-NOSSE:       # %bb.0:
 ; GISEL-X64-NOSSE-NEXT:    fnstcw -{{[0-9]+}}(%rsp)
 ; GISEL-X64-NOSSE-NEXT:    movw $-3073, %ax # imm = 0xF3FF
-; GISEL-X64-NOSSE-NEXT:    andw -{{[0-9]+}}(%rsp), %ax
-; GISEL-X64-NOSSE-NEXT:    orw $24576, %ax # imm = 0x6000
+; GISEL-X64-NOSSE-NEXT:    movzwl -{{[0-9]+}}(%rsp), %ecx
+; GISEL-X64-NOSSE-NEXT:    andw %ax, %cx
+; GISEL-X64-NOSSE-NEXT:    leal 24576(%rcx), %eax
 ; GISEL-X64-NOSSE-NEXT:    movw %ax, -{{[0-9]+}}(%rsp)
 ; GISEL-X64-NOSSE-NEXT:    fldcw -{{[0-9]+}}(%rsp)
 ; GISEL-X64-NOSSE-NEXT:    retq
@@ -67,9 +69,10 @@ define void @func_01() nounwind {
 ; GISEL-X86-NEXT:    pushl %eax
 ; GISEL-X86-NEXT:    fnstcw (%esp)
 ; GISEL-X86-NEXT:    movw $-3073, %ax # imm = 0xF3FF
-; GISEL-X86-NEXT:    andw (%esp), %ax
-; GISEL-X86-NEXT:    orw $24576, %ax # imm = 0x6000
-; GISEL-X86-NEXT:    movw %ax, (%esp)
+; GISEL-X86-NEXT:    movzwl (%esp), %ecx
+; GISEL-X86-NEXT:    andw %ax, %cx
+; GISEL-X86-NEXT:    orw $24576, %cx # imm = 0x6000
+; GISEL-X86-NEXT:    movw %cx, (%esp)
 ; GISEL-X86-NEXT:    fldcw (%esp)
 ; GISEL-X86-NEXT:    popl %eax
 ; GISEL-X86-NEXT:    retl
@@ -88,15 +91,17 @@ define void @func_01() nounwind {
 ; GISEL-X64:       # %bb.0:
 ; GISEL-X64-NEXT:    fnstcw -{{[0-9]+}}(%rsp)
 ; GISEL-X64-NEXT:    movw $-3073, %ax # imm = 0xF3FF
-; GISEL-X64-NEXT:    andw -{{[0-9]+}}(%rsp), %ax
-; GISEL-X64-NEXT:    orw $24576, %ax # imm = 0x6000
+; GISEL-X64-NEXT:    movzwl -{{[0-9]+}}(%rsp), %ecx
+; GISEL-X64-NEXT:    andw %ax, %cx
+; GISEL-X64-NEXT:    leal 24576(%rcx), %eax
 ; GISEL-X64-NEXT:    movw %ax, -{{[0-9]+}}(%rsp)
 ; GISEL-X64-NEXT:    fldcw -{{[0-9]+}}(%rsp)
 ; GISEL-X64-NEXT:    stmxcsr -{{[0-9]+}}(%rsp)
 ; GISEL-X64-NEXT:    movl $-24577, %eax # imm = 0x9FFF
-; GISEL-X64-NEXT:    andl -{{[0-9]+}}(%rsp), %eax
-; GISEL-X64-NEXT:    orl $24576, %eax # imm = 0x6000
-; GISEL-X64-NEXT:    movl %eax, -{{[0-9]+}}(%rsp)
+; GISEL-X64-NEXT:    movl -{{[0-9]+}}(%rsp), %ecx
+; GISEL-X64-NEXT:    andl %eax, %ecx
+; GISEL-X64-NEXT:    orl $24576, %ecx # imm = 0x6000
+; GISEL-X64-NEXT:    movl %ecx, -{{[0-9]+}}(%rsp)
 ; GISEL-X64-NEXT:    ldmxcsr -{{[0-9]+}}(%rsp)
 ; GISEL-X64-NEXT:    retq
   call void @llvm.set.rounding(i32 0)  ; TowardZero (CW[11-10] = 11)
@@ -183,8 +188,9 @@ define void @func_03() nounwind {
 ; X86-NOSSE-NEXT:    pushl %eax
 ; X86-NOSSE-NEXT:    fnstcw (%esp)
 ; X86-NOSSE-NEXT:    movl $-3073, %eax # imm = 0xF3FF
-; X86-NOSSE-NEXT:    andl (%esp), %eax
-; X86-NOSSE-NEXT:    orl $2048, %eax # imm = 0x800
+; X86-NOSSE-NEXT:    movl (%esp), %ecx
+; X86-NOSSE-NEXT:    andl %eax, %ecx
+; X86-NOSSE-NEXT:    leal 2048(%ecx), %eax
 ; X86-NOSSE-NEXT:    movw %ax, (%esp)
 ; X86-NOSSE-NEXT:    fldcw (%esp)
 ; X86-NOSSE-NEXT:    popl %eax
@@ -195,9 +201,10 @@ define void @func_03() nounwind {
 ; GISEL-X86-NOSSE-NEXT:    pushl %eax
 ; GISEL-X86-NOSSE-NEXT:    fnstcw (%esp)
 ; GISEL-X86-NOSSE-NEXT:    movw $-3073, %ax # imm = 0xF3FF
-; GISEL-X86-NOSSE-NEXT:    andw (%esp), %ax
-; GISEL-X86-NOSSE-NEXT:    orw $16384, %ax # imm = 0x4000
-; GISEL-X86-NOSSE-NEXT:    movw %ax, (%esp)
+; GISEL-X86-NOSSE-NEXT:    movzwl (%esp), %ecx
+; GISEL-X86-NOSSE-NEXT:    andw %ax, %cx
+; GISEL-X86-NOSSE-NEXT:    orw $16384, %cx # imm = 0x4000
+; GISEL-X86-NOSSE-NEXT:    movw %cx, (%esp)
 ; GISEL-X86-NOSSE-NEXT:    fldcw (%esp)
 ; GISEL-X86-NOSSE-NEXT:    popl %eax
 ; GISEL-X86-NOSSE-NEXT:    retl
@@ -206,8 +213,9 @@ define void @func_03() nounwind {
 ; X64-NOSSE:       # %bb.0:
 ; X64-NOSSE-NEXT:    fnstcw -{{[0-9]+}}(%rsp)
 ; X64-NOSSE-NEXT:    movl $-3073, %eax # imm = 0xF3FF
-; X64-NOSSE-NEXT:    andl -{{[0-9]+}}(%rsp), %eax
-; X64-NOSSE-NEXT:    orl $2048, %eax # imm = 0x800
+; X64-NOSSE-NEXT:    movl -{{[0-9]+}}(%rsp), %ecx
+; X64-NOSSE-NEXT:    andl %eax, %ecx
+; X64-NOSSE-NEXT:    leal 2048(%rcx), %eax
 ; X64-NOSSE-NEXT:    movw %ax, -{{[0-9]+}}(%rsp)
 ; X64-NOSSE-NEXT:    fldcw -{{[0-9]+}}(%rsp)
 ; X64-NOSSE-NEXT:    retq
@@ -216,8 +224,9 @@ define void @func_03() nounwind {
 ; GISEL-X64-NOSSE:       # %bb.0:
 ; GISEL-X64-NOSSE-NEXT:    fnstcw -{{[0-9]+}}(%rsp)
 ; GISEL-X64-NOSSE-NEXT:    movw $-3073, %ax # imm = 0xF3FF
-; GISEL-X64-NOSSE-NEXT:    andw -{{[0-9]+}}(%rsp), %ax
-; GISEL-X64-NOSSE-NEXT:    orw $16384, %ax # imm = 0x4000
+; GISEL-X64-NOSSE-NEXT:    movzwl -{{[0-9]+}}(%rsp), %ecx
+; GISEL-X64-NOSSE-NEXT:    andw %ax, %cx
+; GISEL-X64-NOSSE-NEXT:    leal 16384(%rcx), %eax
 ; GISEL-X64-NOSSE-NEXT:    movw %ax, -{{[0-9]+}}(%rsp)
 ; GISEL-X64-NOSSE-NEXT:    fldcw -{{[0-9]+}}(%rsp)
 ; GISEL-X64-NOSSE-NEXT:    retq
@@ -227,8 +236,9 @@ define void @func_03() nounwind {
 ; X86-NEXT:    pushl %eax
 ; X86-NEXT:    fnstcw (%esp)
 ; X86-NEXT:    movl $-3073, %eax # imm = 0xF3FF
-; X86-NEXT:    andl (%esp), %eax
-; X86-NEXT:    orl $2048, %eax # imm = 0x800
+; X86-NEXT:    movl (%esp), %ecx
+; X86-NEXT:    andl %eax, %ecx
+; X86-NEXT:    leal 2048(%ecx), %eax
 ; X86-NEXT:    movw %ax, (%esp)
 ; X86-NEXT:    fldcw (%esp)
 ; X86-NEXT:    popl %eax
@@ -239,9 +249,10 @@ define void @func_03() nounwind {
 ; GISEL-X86-NEXT:    pushl %eax
 ; GISEL-X86-NEXT:    fnstcw (%esp)
 ; GISEL-X86-NEXT:    movw $-3073, %ax # imm = 0xF3FF
-; GISEL-X86-NEXT:    andw (%esp), %ax
-; GISEL-X86-NEXT:    orw $16384, %ax # imm = 0x4000
-; GISEL-X86-NEXT:    movw %ax, (%esp)
+; GISEL-X86-NEXT:    movzwl (%esp), %ecx
+; GISEL-X86-NEXT:    andw %ax, %cx
+; GISEL-X86-NEXT:    orw $16384, %cx # imm = 0x4000
+; GISEL-X86-NEXT:    movw %cx, (%esp)
 ; GISEL-X86-NEXT:    fldcw (%esp)
 ; GISEL-X86-NEXT:    popl %eax
 ; GISEL-X86-NEXT:    retl
@@ -250,14 +261,16 @@ define void @func_03() nounwind {
 ; X64:       # %bb.0:
 ; X64-NEXT:    fnstcw -{{[0-9]+}}(%rsp)
 ; X64-NEXT:    movl $-3073, %eax # imm = 0xF3FF
-; X64-NEXT:    andl -{{[0-9]+}}(%rsp), %eax
-; X64-NEXT:    orl $2048, %eax # imm = 0x800
+; X64-NEXT:    movl -{{[0-9]+}}(%rsp), %ecx
+; X64-NEXT:    andl %eax, %ecx
+; X64-NEXT:    leal 2048(%rcx), %eax
 ; X64-NEXT:    movw %ax, -{{[0-9]+}}(%rsp)
 ; X64-NEXT:    fldcw -{{[0-9]+}}(%rsp)
 ; X64-NEXT:    stmxcsr -{{[0-9]+}}(%rsp)
 ; X64-NEXT:    movl $-24577, %eax # imm = 0x9FFF
-; X64-NEXT:    andl -{{[0-9]+}}(%rsp), %eax
-; X64-NEXT:    orl $16384, %eax # imm = 0x4000
+; X64-NEXT:    movl -{{[0-9]+}}(%rsp), %ecx
+; X64-NEXT:    andl %eax, %ecx
+; X64-NEXT:    leal 16384(%rcx), %eax
 ; X64-NEXT:    movl %eax, -{{[0-9]+}}(%rsp)
 ; X64-NEXT:    ldmxcsr -{{[0-9]+}}(%rsp)
 ; X64-NEXT:    retq
@@ -266,15 +279,17 @@ define void @func_03() nounwind {
 ; GISEL-X64:       # %bb.0:
 ; GISEL-X64-NEXT:    fnstcw -{{[0-9]+}}(%rsp)
 ; GISEL-X64-NEXT:    movw $-3073, %ax # imm = 0xF3FF
-; GISEL-X64-NEXT:    andw -{{[0-9]+}}(%rsp), %ax
-; GISEL-X64-NEXT:    orw $16384, %ax # imm = 0x4000
+; GISEL-X64-NEXT:    movzwl -{{[0-9]+}}(%rsp), %ecx
+; GISEL-X64-NEXT:    andw %ax, %cx
+; GISEL-X64-NEXT:    leal 16384(%rcx), %eax
 ; GISEL-X64-NEXT:    movw %ax, -{{[0-9]+}}(%rsp)
 ; GISEL-X64-NEXT:    fldcw -{{[0-9]+}}(%rsp)
 ; GISEL-X64-NEXT:    stmxcsr -{{[0-9]+}}(%rsp)
 ; GISEL-X64-NEXT:    movl $-24577, %eax # imm = 0x9FFF
-; GISEL-X64-NEXT:    andl -{{[0-9]+}}(%rsp), %eax
-; GISEL-X64-NEXT:    orl $16384, %eax # imm = 0x4000
-; GISEL-X64-NEXT:    movl %eax, -{{[0-9]+}}(%rsp)
+; GISEL-X64-NEXT:    movl -{{[0-9]+}}(%rsp), %ecx
+; GISEL-X64-NEXT:    andl %eax, %ecx
+; GISEL-X64-NEXT:    orl $16384, %ecx # imm = 0x4000
+; GISEL-X64-NEXT:    movl %ecx, -{{[0-9]+}}(%rsp)
 ; GISEL-X64-NEXT:    ldmxcsr -{{[0-9]+}}(%rsp)
 ; GISEL-X64-NEXT:    retq
   call void @llvm.set.rounding(i32 2)  ; Upward (CW[11-10] = 10)
@@ -287,8 +302,9 @@ define void @func_04() nounwind {
 ; X86-NOSSE-NEXT:    pushl %eax
 ; X86-NOSSE-NEXT:    fnstcw (%esp)
 ; X86-NOSSE-NEXT:    movl $-3073, %eax # imm = 0xF3FF
-; X86-NOSSE-NEXT:    andl (%esp), %eax
-; X86-NOSSE-NEXT:    orl $1024, %eax # imm = 0x400
+; X86-NOSSE-NEXT:    movl (%esp), %ecx
+; X86-NOSSE-NEXT:    andl %eax, %ecx
+; X86-NOSSE-NEXT:    leal 1024(%ecx), %eax
 ; X86-NOSSE-NEXT:    movw %ax, (%esp)
 ; X86-NOSSE-NEXT:    fldcw (%esp)
 ; X86-NOSSE-NEXT:    popl %eax
@@ -299,9 +315,10 @@ define void @func_04() nounwind {
 ; GISEL-X86-NOSSE-NEXT:    pushl %eax
 ; GISEL-X86-NOSSE-NEXT:    fnstcw (%esp)
 ; GISEL-X86-NOSSE-NEXT:    movw $-3073, %ax # imm = 0xF3FF
-; GISEL-X86-NOSSE-NEXT:    andw (%esp), %ax
-; GISEL-X86-NOSSE-NEXT:    orw $8192, %ax # imm = 0x2000
-; GISEL-X86-NOSSE-NEXT:    movw %ax, (%esp)
+; GISEL-X86-NOSSE-NEXT:    movzwl (%esp), %ecx
+; GISEL-X86-NOSSE-NEXT:    andw %ax, %cx
+; GISEL-X86-NOSSE-NEXT:    orw $8192, %cx # imm = 0x2000
+; GISEL-X86-NOSSE-NEXT:    movw %cx, (%esp)
 ; GISEL-X86-NOSSE-NEXT:    fldcw (%esp)
 ; GISEL-X86-NOSSE-NEXT:    popl %eax
 ; GISEL-X86-NOSSE-NEXT:    retl
@@ -310,8 +327,9 @@ define void @func_04() nounwind {
 ; X64-NOSSE:       # %bb.0:
 ; X64-NOSSE-NEXT:    fnstcw -{{[0-9]+}}(%rsp)
 ; X64-NOSSE-NEXT:    movl $-3073, %eax # imm = 0xF3FF
-; X64-NOSSE-NEXT:    andl -{{[0-9]+}}(%rsp), %eax
-; X64-NOSSE-NEXT:    orl $1024, %eax # imm = 0x400
+; X64-NOSSE-NEXT:    movl -{{[0-9]+}}(%rsp), %ecx
+; X64-NOSSE-NEXT:    andl %eax, %ecx
+; X64-NOSSE-NEXT:    leal 1024(%rcx), %eax
 ; X64-NOSSE-NEXT:    movw %ax, -{{[0-9]+}}(%rsp)
 ; X64-NOSSE-NEXT:    fldcw -{{[0-9]+}}(%rsp)
 ; X64-NOSSE-NEXT:    retq
@@ -320,8 +338,9 @@ define void @func_04() nounwind {
 ; GISEL-X64-NOSSE:       # %bb.0:
 ; GISEL-X64-NOSSE-NEXT:    fnstcw -{{[0-9]+}}(%rsp)
 ; GISEL-X64-NOSSE-NEXT:    movw $-3073, %ax # imm = 0xF3FF
-; GISEL-X64-NOSSE-NEXT:    andw -{{[0-9]+}}(%rsp), %ax
-; GISEL-X64-NOSSE-NEXT:    orw $8192, %ax # imm = 0x2000
+; GISEL-X64-NOSSE-NEXT:    movzwl -{{[0-9]+}}(%rsp), %ecx
+; GISEL-X64-NOSSE-NEXT:    andw %ax, %cx
+; GISEL-X64-NOSSE-NEXT:    leal 8192(%rcx), %eax
 ; GISEL-X64-NOSSE-NEXT:    movw %ax, -{{[0-9]+}}(%rsp)
 ; GISEL-X64-NOSSE-NEXT:    fldcw -{{[0-9]+}}(%rsp)
 ; GISEL-X64-NOSSE-NEXT:    retq
@@ -331,8 +350,9 @@ define void @func_04() nounwind {
 ; X86-NEXT:    pushl %eax
 ; X86-NEXT:    fnstcw (%esp)
 ; X86-NEXT:    movl $-3073, %eax # imm = 0xF3FF
-; X86-NEXT:    andl (%esp), %eax
-; X86-NEXT:    orl $1024, %eax # imm = 0x400
+; X86-NEXT:    movl (%esp), %ecx
+; X86-NEXT:    andl %eax, %ecx
+; X86-NEXT:    leal 1024(%ecx), %eax
 ; X86-NEXT:    movw %ax, (%esp)
 ; X86-NEXT:    fldcw (%esp)
 ; X86-NEXT:    popl %eax
@@ -343,9 +363,10 @@ define void @func_04() nounwind {
 ; GISEL-X86-NEXT:    pushl %eax
 ; GISEL-X86-NEXT:    fnstcw (%esp)
 ; GISEL-X86-NEXT:    movw $-3073, %ax # imm = 0xF3FF
-; GISEL-X86-NEXT:    andw (%esp), %ax
-; GISEL-X86-NEXT:    orw $8192, %ax # imm = 0x2000
-; GISEL-X86-NEXT:    movw %ax, (%esp)
+; GISEL-X86-NEXT:    movzwl (%esp), %ecx
+; GISEL-X86-NEXT:    andw %ax, %cx
+; GISEL-X86-NEXT:    orw $8192, %cx # imm = 0x2000
+; GISEL-X86-NEXT:    movw %cx, (%esp)
 ; GISEL-X86-NEXT:    fldcw (%esp)
 ; GISEL-X86-NEXT:    popl %eax
 ; GISEL-X86-NEXT:    retl
@@ -354,14 +375,16 @@ define void @func_04() nounwind {
 ; X64:       # %bb.0:
 ; X64-NEXT:    fnstcw -{{[0-9]+}}(%rsp)
 ; X64-NEXT:    movl $-3073, %eax # imm = 0xF3FF
-; X64-NEXT:    andl -{{[0-9]+}}(%rsp), %eax
-; X64-NEXT:    orl $1024, %eax # imm = 0x400
+; X64-NEXT:    movl -{{[0-9]+}}(%rsp), %ecx
+; X64-NEXT:    andl %eax, %ecx
+; X64-NEXT:    leal 1024(%rcx), %eax
 ; X64-NEXT:    movw %ax, -{{[0-9]+}}(%rsp)
 ; X64-NEXT:    fldcw -{{[0-9]+}}(%rsp)
 ; X64-NEXT:    stmxcsr -{{[0-9]+}}(%rsp)
 ; X64-NEXT:    movl $-24577, %eax # imm = 0x9FFF
-; X64-NEXT:    andl -{{[0-9]+}}(%rsp), %eax
-; X64-NEXT:    orl $8192, %eax # imm = 0x2000
+; X64-NEXT:    movl -{{[0-9]+}}(%rsp), %ecx
+; X64-NEXT:    andl %eax, %ecx
+; X64-NEXT:    leal 8192(%rcx), %eax
 ; X64-NEXT:    movl %eax, -{{[0-9]+}}(%rsp)
 ; X64-NEXT:    ldmxcsr -{{[0-9]+}}(%rsp)
 ; X64-NEXT:    retq
@@ -370,15 +393,17 @@ define void @func_04() nounwind {
 ; GISEL-X64:       # %bb.0:
 ; GISEL-X64-NEXT:    fnstcw -{{[0-9]+}}(%rsp)
 ; GISEL-X64-NEXT:    movw $-3073, %ax # imm = 0xF3FF
-; GISEL-X64-NEXT:    andw -{{[0-9]+}}(%rsp), %ax
-; GISEL-X64-NEXT:    orw $8192, %ax # imm = 0x2000
+; GISEL-X64-NEXT:    movzwl -{{[0-9]+}}(%rsp), %ecx
+; GISEL-X64-NEXT:    andw %ax, %cx
+; GISEL-X64-NEXT:    leal 8192(%rcx), %eax
 ; GISEL-X64-NEXT:    movw %ax, -{{[0-9]+}}(%rsp)
 ; GISEL-X64-NEXT:    fldcw -{{[0-9]+}}(%rsp)
 ; GISEL-X64-NEXT:    stmxcsr -{{[0-9]+}}(%rsp)
 ; GISEL-X64-NEXT:    movl $-24577, %eax # imm = 0x9FFF
-; GISEL-X64-NEXT:    andl -{{[0-9]+}}(%rsp), %eax
-; GISEL-X64-NEXT:    orl $8192, %eax # imm = 0x2000
-; GISEL-X64-NEXT:    movl %eax, -{{[0-9]+}}(%rsp)
+; GISEL-X64-NEXT:    movl -{{[0-9]+}}(%rsp), %ecx
+; GISEL-X64-NEXT:    andl %eax, %ecx
+; GISEL-X64-NEXT:    orl $8192, %ecx # imm = 0x2000
+; GISEL-X64-NEXT:    movl %ecx, -{{[0-9]+}}(%rsp)
 ; GISEL-X64-NEXT:    ldmxcsr -{{[0-9]+}}(%rsp)
 ; GISEL-X64-NEXT:    retq
   call void @llvm.set.rounding(i32 3)  ; Downward (CW[11-10] = 01)
@@ -397,9 +422,10 @@ define void @func_05(i32 %x) nounwind {
 ; X86-NOSSE-NEXT:    andl $3072, %eax # imm = 0xC00
 ; X86-NOSSE-NEXT:    fnstcw (%esp)
 ; X86-NOSSE-NEXT:    movl $-3073, %ecx # imm = 0xF3FF
-; X86-NOSSE-NEXT:    andl (%esp), %ecx
-; X86-NOSSE-NEXT:    orl %eax, %ecx
-; X86-NOSSE-NEXT:    movw %cx, (%esp)
+; X86-NOSSE-NEXT:    movl (%esp), %edx
+; X86-NOSSE-NEXT:    andl %ecx, %edx
+; X86-NOSSE-NEXT:    orl %edx, %eax
+; X86-NOSSE-NEXT:    movw %ax, (%esp)
 ; X86-NOSSE-NEXT:    fldcw (%esp)
 ; X86-NOSSE-NEXT:    popl %eax
 ; X86-NOSSE-NEXT:    retl
@@ -409,16 +435,17 @@ define void @func_05(i32 %x) nounwind {
 ; GISEL-X86-NOSSE-NEXT:    pushl %eax
 ; GISEL-X86-NOSSE-NEXT:    movl {{[0-9]+}}(%esp), %ecx
 ; GISEL-X86-NOSSE-NEXT:    fnstcw (%esp)
-; GISEL-X86-NOSSE-NEXT:    movw $-3073, %ax # imm = 0xF3FF
-; GISEL-X86-NOSSE-NEXT:    andw (%esp), %ax
+; GISEL-X86-NOSSE-NEXT:    movw $-3073, %dx # imm = 0xF3FF
+; GISEL-X86-NOSSE-NEXT:    movzwl (%esp), %eax
+; GISEL-X86-NOSSE-NEXT:    andw %dx, %ax
 ; GISEL-X86-NOSSE-NEXT:    addl %ecx, %ecx
 ; GISEL-X86-NOSSE-NEXT:    addl $4, %ecx
 ; GISEL-X86-NOSSE-NEXT:    movw $201, %dx
 ; GISEL-X86-NOSSE-NEXT:    # kill: def $cl killed $cl killed $ecx
 ; GISEL-X86-NOSSE-NEXT:    shlw %cl, %dx
 ; GISEL-X86-NOSSE-NEXT:    andw $3072, %dx # imm = 0xC00
-; GISEL-X86-NOSSE-NEXT:    orw %ax, %dx
-; GISEL-X86-NOSSE-NEXT:    movw %dx, (%esp)
+; GISEL-X86-NOSSE-NEXT:    orw %dx, %ax
+; GISEL-X86-NOSSE-NEXT:    movw %ax, (%esp)
 ; GISEL-X86-NOSSE-NEXT:    fldcw (%esp)
 ; GISEL-X86-NOSSE-NEXT:    popl %eax
 ; GISEL-X86-NOSSE-NEXT:    retl
@@ -433,9 +460,10 @@ define void @func_05(i32 %x) nounwind {
 ; X64-NOSSE-NEXT:    andl $3072, %eax # imm = 0xC00
 ; X64-NOSSE-NEXT:    fnstcw -{{[0-9]+}}(%rsp)
 ; X64-NOSSE-NEXT:    movl $-3073, %ecx # imm = 0xF3FF
-; X64-NOSSE-NEXT:    andl -{{[0-9]+}}(%rsp), %ecx
-; X64-NOSSE-NEXT:    orl %eax, %ecx
-; X64-NOSSE-NEXT:    movw %cx, -{{[0-9]+}}(%rsp)
+; X64-NOSSE-NEXT:    movl -{{[0-9]+}}(%rsp), %edx
+; X64-NOSSE-NEXT:    andl %ecx, %edx
+; X64-NOSSE-NEXT:    orl %edx, %eax
+; X64-NOSSE-NEXT:    movw %ax, -{{[0-9]+}}(%rsp)
 ; X64-NOSSE-NEXT:    fldcw -{{[0-9]+}}(%rsp)
 ; X64-NOSSE-NEXT:    retq
 ;
@@ -444,15 +472,16 @@ define void @func_05(i32 %x) nounwind {
 ; GISEL-X64-NOSSE-NEXT:    # kill: def $edi killed $edi def $rdi
 ; GISEL-X64-NOSSE-NEXT:    fnstcw -{{[0-9]+}}(%rsp)
 ; GISEL-X64-NOSSE-NEXT:    movw $-3073, %ax # imm = 0xF3FF
-; GISEL-X64-NOSSE-NEXT:    andw -{{[0-9]+}}(%rsp), %ax
-; GISEL-X64-NOSSE-NEXT:    leal (%rdi,%rdi), %ecx
-; GISEL-X64-NOSSE-NEXT:    addl $4, %ecx
-; GISEL-X64-NOSSE-NEXT:    movw $201, %dx
+; GISEL-X64-NOSSE-NEXT:    movzwl -{{[0-9]+}}(%rsp), %edx
+; GISEL-X64-NOSSE-NEXT:    andw %ax, %dx
+; GISEL-X64-NOSSE-NEXT:    leal (%rdi,%rdi), %eax
+; GISEL-X64-NOSSE-NEXT:    leal 4(%rax), %ecx
+; GISEL-X64-NOSSE-NEXT:    movw $201, %ax
 ; GISEL-X64-NOSSE-NEXT:    # kill: def $cl killed $cl killed $ecx
-; GISEL-X64-NOSSE-NEXT:    shlw %cl, %dx
-; GISEL-X64-NOSSE-NEXT:    andw $3072, %dx # imm = 0xC00
-; GISEL-X64-NOSSE-NEXT:    orw %ax, %dx
-; GISEL-X64-NOSSE-NEXT:    movw %dx, -{{[0-9]+}}(%rsp)
+; GISEL-X64-NOSSE-NEXT:    shlw %cl, %ax
+; GISEL-X64-NOSSE-NEXT:    andw $3072, %ax # imm = 0xC00
+; GISEL-X64-NOSSE-NEXT:    addl %edx, %eax
+; GISEL-X64-NOSSE-NEXT:    movw %ax, -{{[0-9]+}}(%rsp)
 ; GISEL-X64-NOSSE-NEXT:    fldcw -{{[0-9]+}}(%rsp)
 ; GISEL-X64-NOSSE-NEXT:    retq
 ;
@@ -467,9 +496,10 @@ define void @func_05(i32 %x) nounwind {
 ; X86-NEXT:    andl $3072, %eax # imm = 0xC00
 ; X86-NEXT:    fnstcw (%esp)
 ; X86-NEXT:    movl $-3073, %ecx # imm = 0xF3FF
-; X86-NEXT:    andl (%esp), %ecx
-; X86-NEXT:    orl %eax, %ecx
-; X86-NEXT:    movw %cx, (%esp)
+; X86-NEXT:    movl (%esp), %edx
+; X86-NEXT:    andl %ecx, %edx
+; X86-NEXT:    orl %edx, %eax
+; X86-NEXT:    movw %ax, (%esp)
 ; X86-NEXT:    fldcw (%esp)
 ; X86-NEXT:    popl %eax
 ; X86-NEXT:    retl
@@ -479,16 +509,17 @@ define void @func_05(i32 %x) nounwind {
 ; GISEL-X86-NEXT:    pushl %eax
 ; GISEL-X86-NEXT:    movl {{[0-9]+}}(%esp), %ecx
 ; GISEL-X86-NEXT:    fnstcw (%esp)
-; GISEL-X86-NEXT:    movw $-3073, %ax # imm = 0xF3FF
-; GISEL-X86-NEXT:    andw (%esp), %ax
+; GISEL-X86-NEXT:    movw $-3073, %dx # imm = 0xF3FF
+; GISEL-X86-NEXT:    movzwl (%esp), %eax
+; GISEL-X86-NEXT:    andw %dx, %ax
 ; GISEL-X86-NEXT:    addl %ecx, %ecx
 ; GISEL-X86-NEXT:    addl $4, %ecx
 ; GISEL-X86-NEXT:    movw $201, %dx
 ; GISEL-X86-NEXT:    # kill: def $cl killed $cl killed $ecx
 ; GISEL-X86-NEXT:    shlw %cl, %dx
 ; GISEL-X86-NEXT:    andw $3072, %dx # imm = 0xC00
-; GISEL-X86-NEXT:    orw %ax, %dx
-; GISEL-X86-NEXT:    movw %dx, (%esp)
+; GISEL-X86-NEXT:    orw %dx, %ax
+; GISEL-X86-NEXT:    movw %ax, (%esp)
 ; GISEL-X86-NEXT:    fldcw (%esp)
 ; GISEL-X86-NEXT:    popl %eax
 ; GISEL-X86-NEXT:    retl
@@ -503,14 +534,16 @@ define void @func_05(i32 %x) nounwind {
 ; X64-NEXT:    andl $3072, %eax # imm = 0xC00
 ; X64-NEXT:    fnstcw -{{[0-9]+}}(%rsp)
 ; X64-NEXT:    movl $-3073, %ecx # imm = 0xF3FF
-; X64-NEXT:    andl -{{[0-9]+}}(%rsp), %ecx
-; X64-NEXT:    orl %eax, %ecx
+; X64-NEXT:    movl -{{[0-9]+}}(%rsp), %edx
+; X64-NEXT:    andl %ecx, %edx
+; X64-NEXT:    leal (%rdx,%rax), %ecx
 ; X64-NEXT:    movw %cx, -{{[0-9]+}}(%rsp)
 ; X64-NEXT:    fldcw -{{[0-9]+}}(%rsp)
 ; X64-NEXT:    stmxcsr -{{[0-9]+}}(%rsp)
 ; X64-NEXT:    movl $-24577, %ecx # imm = 0x9FFF
-; X64-NEXT:    andl -{{[0-9]+}}(%rsp), %ecx
-; X64-NEXT:    leal (%rcx,%rax,8), %eax
+; X64-NEXT:    movl -{{[0-9]+}}(%rsp), %edx
+; X64-NEXT:    andl %ecx, %edx
+; X64-NEXT:    leal (%rdx,%rax,8), %eax
 ; X64-NEXT:    movl %eax, -{{[0-9]+}}(%rsp)
 ; X64-NEXT:    ldmxcsr -{{[0-9]+}}(%rsp)
 ; X64-NEXT:    retq
@@ -520,23 +553,25 @@ define void @func_05(i32 %x) nounwind {
 ; GISEL-X64-NEXT:    # kill: def $edi killed $edi def $rdi
 ; GISEL-X64-NEXT:    fnstcw -{{[0-9]+}}(%rsp)
 ; GISEL-X64-NEXT:    movw $-3073, %ax # imm = 0xF3FF
-; GISEL-X64-NEXT:    andw -{{[0-9]+}}(%rsp), %ax
-; GISEL-X64-NEXT:    leal (%rdi,%rdi), %ecx
-; GISEL-X64-NEXT:    addl $4, %ecx
-; GISEL-X64-NEXT:    movw $201, %dx
+; GISEL-X64-NEXT:    movzwl -{{[0-9]+}}(%rsp), %edx
+; GISEL-X64-NEXT:    andw %ax, %dx
+; GISEL-X64-NEXT:    leal (%rdi,%rdi), %eax
+; GISEL-X64-NEXT:    leal 4(%rax), %ecx
+; GISEL-X64-NEXT:    movw $201, %ax
 ; GISEL-X64-NEXT:    # kill: def $cl killed $cl killed $ecx
-; GISEL-X64-NEXT:    shlw %cl, %dx
-; GISEL-X64-NEXT:    andw $3072, %dx # imm = 0xC00
-; GISEL-X64-NEXT:    movzwl %dx, %ecx
-; GISEL-X64-NEXT:    leal (,%rcx,8), %edx
-; GISEL-X64-NEXT:    orw %ax, %cx
-; GISEL-X64-NEXT:    movw %cx, -{{[0-9]+}}(%rsp)
+; GISEL-X64-NEXT:    shlw %cl, %ax
+; GISEL-X64-NEXT:    andw $3072, %ax # imm = 0xC00
+; GISEL-X64-NEXT:    movzwl %ax, %eax
+; GISEL-X64-NEXT:    leal (,%rax,8), %ecx
+; GISEL-X64-NEXT:    addl %edx, %eax
+; GISEL-X64-NEXT:    movw %ax, -{{[0-9]+}}(%rsp)
 ; GISEL-X64-NEXT:    fldcw -{{[0-9]+}}(%rsp)
 ; GISEL-X64-NEXT:    stmxcsr -{{[0-9]+}}(%rsp)
 ; GISEL-X64-NEXT:    movl $-24577, %eax # imm = 0x9FFF
-; GISEL-X64-NEXT:    andl -{{[0-9]+}}(%rsp), %eax
-; GISEL-X64-NEXT:    orl %edx, %eax
-; GISEL-X64-NEXT:    movl %eax, -{{[0-9]+}}(%rsp)
+; GISEL-X64-NEXT:    movl -{{[0-9]+}}(%rsp), %edx
+; GISEL-X64-NEXT:    andl %eax, %edx
+; GISEL-X64-NEXT:    orl %ecx, %edx
+; GISEL-X64-NEXT:    movl %edx, -{{[0-9]+}}(%rsp)
 ; GISEL-X64-NEXT:    ldmxcsr -{{[0-9]+}}(%rsp)
 ; GISEL-X64-NEXT:    retq
   call void @llvm.set.rounding(i32 %x)  ; Downward

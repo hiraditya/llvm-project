@@ -29,8 +29,9 @@ define i25 @shift_left_pow_2(i25 %x, i25 %y) {
 ; X86-NEXT:    movzbl {{[0-9]+}}(%esp), %ecx
 ; X86-NEXT:    movl $1, %eax
 ; X86-NEXT:    shll %cl, %eax
-; X86-NEXT:    addl $33554431, %eax # imm = 0x1FFFFFF
-; X86-NEXT:    andl {{[0-9]+}}(%esp), %eax
+; X86-NEXT:    leal 33554431(%eax), %ecx
+; X86-NEXT:    movl {{[0-9]+}}(%esp), %eax
+; X86-NEXT:    andl %ecx, %eax
 ; X86-NEXT:    retl
 ;
 ; X64-LABEL: shift_left_pow_2:
@@ -55,9 +56,9 @@ define i16 @shift_right_pow_2(i16 %x, i16 %y) {
 ; X86-NEXT:    movzbl {{[0-9]+}}(%esp), %ecx
 ; X86-NEXT:    movl $32768, %eax # imm = 0x8000
 ; X86-NEXT:    shrl %cl, %eax
-; X86-NEXT:    decl %eax
-; X86-NEXT:    andw {{[0-9]+}}(%esp), %ax
-; X86-NEXT:    # kill: def $ax killed $ax killed $eax
+; X86-NEXT:    leal -1(%eax), %ecx
+; X86-NEXT:    movzwl {{[0-9]+}}(%esp), %eax
+; X86-NEXT:    andw %cx, %ax
 ; X86-NEXT:    retl
 ;
 ; X64-LABEL: shift_right_pow_2:
@@ -106,12 +107,16 @@ define i8 @and_pow_2(i8 %x, i8 %y) {
 define <4 x i32> @vec_const_uniform_pow_2(<4 x i32> %x) {
 ; X86-LABEL: vec_const_uniform_pow_2:
 ; X86:       # %bb.0:
-; X86-NEXT:    andps {{\.?LCPI[0-9]+_[0-9]+}}, %xmm0
+; X86-NEXT:    movaps {{.*#+}} xmm1 = [15,15,15,15]
+; X86-NEXT:    andps %xmm0, %xmm1
+; X86-NEXT:    movaps %xmm1, %xmm0
 ; X86-NEXT:    retl
 ;
 ; X64-LABEL: vec_const_uniform_pow_2:
 ; X64:       # %bb.0:
-; X64-NEXT:    andps {{\.?LCPI[0-9]+_[0-9]+}}(%rip), %xmm0
+; X64-NEXT:    movaps {{.*#+}} xmm1 = [15,15,15,15]
+; X64-NEXT:    andps %xmm0, %xmm1
+; X64-NEXT:    movaps %xmm1, %xmm0
 ; X64-NEXT:    retq
   %urem = urem <4 x i32> %x, <i32 16, i32 16, i32 16, i32 16>
   ret <4 x i32> %urem
@@ -120,12 +125,16 @@ define <4 x i32> @vec_const_uniform_pow_2(<4 x i32> %x) {
 define <4 x i32> @vec_const_nonuniform_pow_2(<4 x i32> %x) {
 ; X86-LABEL: vec_const_nonuniform_pow_2:
 ; X86:       # %bb.0:
-; X86-NEXT:    andps {{\.?LCPI[0-9]+_[0-9]+}}, %xmm0
+; X86-NEXT:    movaps {{.*#+}} xmm1 = [1,3,7,15]
+; X86-NEXT:    andps %xmm0, %xmm1
+; X86-NEXT:    movaps %xmm1, %xmm0
 ; X86-NEXT:    retl
 ;
 ; X64-LABEL: vec_const_nonuniform_pow_2:
 ; X64:       # %bb.0:
-; X64-NEXT:    andps {{\.?LCPI[0-9]+_[0-9]+}}(%rip), %xmm0
+; X64-NEXT:    movaps {{.*#+}} xmm1 = [1,3,7,15]
+; X64-NEXT:    andps %xmm0, %xmm1
+; X64-NEXT:    movaps %xmm1, %xmm0
 ; X64-NEXT:    retq
   %urem = urem <4 x i32> %x, <i32 2, i32 4, i32 8, i32 16>
   ret <4 x i32> %urem

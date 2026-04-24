@@ -278,9 +278,10 @@ define i32 @test_bswap32_shift17(i32 %a0) {
 define i32 @bs_and_lhs_bs32(i32 %a, i32 %b) #0 {
 ; X86-LABEL: bs_and_lhs_bs32:
 ; X86:       # %bb.0:
+; X86-NEXT:    movl {{[0-9]+}}(%esp), %ecx
+; X86-NEXT:    bswapl %ecx
 ; X86-NEXT:    movl {{[0-9]+}}(%esp), %eax
-; X86-NEXT:    bswapl %eax
-; X86-NEXT:    andl {{[0-9]+}}(%esp), %eax
+; X86-NEXT:    andl %ecx, %eax
 ; X86-NEXT:    retl
 ;
 ; X64-LABEL: bs_and_lhs_bs32:
@@ -298,12 +299,14 @@ define i32 @bs_and_lhs_bs32(i32 %a, i32 %b) #0 {
 define i64 @bs_or_lhs_bs64(i64 %a, i64 %b) #0 {
 ; X86-LABEL: bs_or_lhs_bs64:
 ; X86:       # %bb.0:
+; X86-NEXT:    movl {{[0-9]+}}(%esp), %ecx
 ; X86-NEXT:    movl {{[0-9]+}}(%esp), %edx
-; X86-NEXT:    movl {{[0-9]+}}(%esp), %eax
-; X86-NEXT:    bswapl %eax
-; X86-NEXT:    orl {{[0-9]+}}(%esp), %eax
 ; X86-NEXT:    bswapl %edx
-; X86-NEXT:    orl {{[0-9]+}}(%esp), %edx
+; X86-NEXT:    movl {{[0-9]+}}(%esp), %eax
+; X86-NEXT:    orl %edx, %eax
+; X86-NEXT:    bswapl %ecx
+; X86-NEXT:    movl {{[0-9]+}}(%esp), %edx
+; X86-NEXT:    orl %ecx, %edx
 ; X86-NEXT:    retl
 ;
 ; X64-LABEL: bs_or_lhs_bs64:
@@ -321,12 +324,14 @@ define i64 @bs_or_lhs_bs64(i64 %a, i64 %b) #0 {
 define i64 @bs_xor_rhs_bs64(i64 %a, i64 %b) #0 {
 ; X86-LABEL: bs_xor_rhs_bs64:
 ; X86:       # %bb.0:
+; X86-NEXT:    movl {{[0-9]+}}(%esp), %ecx
 ; X86-NEXT:    movl {{[0-9]+}}(%esp), %edx
-; X86-NEXT:    movl {{[0-9]+}}(%esp), %eax
-; X86-NEXT:    bswapl %eax
-; X86-NEXT:    xorl {{[0-9]+}}(%esp), %eax
 ; X86-NEXT:    bswapl %edx
-; X86-NEXT:    xorl {{[0-9]+}}(%esp), %edx
+; X86-NEXT:    movl {{[0-9]+}}(%esp), %eax
+; X86-NEXT:    xorl %edx, %eax
+; X86-NEXT:    bswapl %ecx
+; X86-NEXT:    movl {{[0-9]+}}(%esp), %edx
+; X86-NEXT:    xorl %ecx, %edx
 ; X86-NEXT:    retl
 ;
 ; X64-LABEL: bs_xor_rhs_bs64:
@@ -357,10 +362,11 @@ define i32 @bs_and_all_operand_multiuse(i32 %a, i32 %b) #0 {
 ; X64-LABEL: bs_and_all_operand_multiuse:
 ; X64:       # %bb.0:
 ; X64-NEXT:    movl %edi, %eax
-; X64-NEXT:    bswapl %eax
-; X64-NEXT:    andl %esi, %edi
+; X64-NEXT:    movl %edi, %ecx
+; X64-NEXT:    bswapl %ecx
+; X64-NEXT:    andl %esi, %eax
 ; X64-NEXT:    bswapl %esi
-; X64-NEXT:    imull %edi, %eax
+; X64-NEXT:    imull %ecx, %eax
 ; X64-NEXT:    imull %esi, %eax
 ; X64-NEXT:    retq
   %1 = tail call i32 @llvm.bswap.i32(i32 %a)
@@ -377,9 +383,10 @@ define i32 @bs_and_all_operand_multiuse(i32 %a, i32 %b) #0 {
 define i32 @bs_and_rhs_bs32_multiuse1(i32 %a, i32 %b) #0 {
 ; X86-LABEL: bs_and_rhs_bs32_multiuse1:
 ; X86:       # %bb.0:
+; X86-NEXT:    movl {{[0-9]+}}(%esp), %eax
+; X86-NEXT:    bswapl %eax
 ; X86-NEXT:    movl {{[0-9]+}}(%esp), %ecx
-; X86-NEXT:    bswapl %ecx
-; X86-NEXT:    andl {{[0-9]+}}(%esp), %ecx
+; X86-NEXT:    andl %eax, %ecx
 ; X86-NEXT:    movl %ecx, %eax
 ; X86-NEXT:    bswapl %eax
 ; X86-NEXT:    imull %ecx, %eax
@@ -414,9 +421,9 @@ define i32 @bs_and_rhs_bs32_multiuse2(i32 %a, i32 %b) #0 {
 ;
 ; X64-LABEL: bs_and_rhs_bs32_multiuse2:
 ; X64:       # %bb.0:
-; X64-NEXT:    movl %edi, %eax
 ; X64-NEXT:    bswapl %esi
-; X64-NEXT:    andl %esi, %eax
+; X64-NEXT:    movl %esi, %eax
+; X64-NEXT:    andl %edi, %eax
 ; X64-NEXT:    bswapl %eax
 ; X64-NEXT:    imull %esi, %eax
 ; X64-NEXT:    retq
@@ -468,8 +475,8 @@ define i64 @test_bswap64_shift48_multiuse(i64 %a0, ptr %a1) {
 ; X64-NEXT:    shlq $48, %rdi
 ; X64-NEXT:    movq %rdi, %rax
 ; X64-NEXT:    bswapq %rax
-; X64-NEXT:    orq %rax, %rdi
-; X64-NEXT:    movq %rdi, (%rsi)
+; X64-NEXT:    leaq (%rdi,%rax), %rcx
+; X64-NEXT:    movq %rcx, (%rsi)
 ; X64-NEXT:    retq
   %s = shl i64 %a0, 48
   %b = call i64 @llvm.bswap.i64(i64 %s)

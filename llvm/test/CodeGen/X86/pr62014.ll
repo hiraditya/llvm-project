@@ -17,8 +17,10 @@ define <2 x i64> @select_cast_cond_multiuse_v2i64(<2 x i64> %x, <2 x i64> %y, i2
 ; SSE2-NEXT:    pand %xmm2, %xmm3
 ; SSE2-NEXT:    pand %xmm3, %xmm0
 ; SSE2-NEXT:    movdqa %xmm3, (%rsi)
-; SSE2-NEXT:    pandn %xmm1, %xmm3
-; SSE2-NEXT:    por %xmm3, %xmm0
+; SSE2-NEXT:    movdqa %xmm3, %xmm2
+; SSE2-NEXT:    pandn %xmm1, %xmm2
+; SSE2-NEXT:    por %xmm0, %xmm2
+; SSE2-NEXT:    movdqa %xmm2, %xmm0
 ; SSE2-NEXT:    retq
 ;
 ; SSE42-LABEL: select_cast_cond_multiuse_v2i64:
@@ -83,7 +85,8 @@ define <4 x i32> @select_cast_cond_multiuse_v4i32(<4 x i32> %x, <4 x i32> %y, i4
 ; SSE2-NEXT:    pand %xmm2, %xmm0
 ; SSE2-NEXT:    movdqa %xmm2, (%rsi)
 ; SSE2-NEXT:    pandn %xmm1, %xmm2
-; SSE2-NEXT:    por %xmm2, %xmm0
+; SSE2-NEXT:    por %xmm0, %xmm2
+; SSE2-NEXT:    movdqa %xmm2, %xmm0
 ; SSE2-NEXT:    retq
 ;
 ; SSE42-LABEL: select_cast_cond_multiuse_v4i32:
@@ -149,7 +152,8 @@ define <8 x i16> @select_cast_cond_multiuse_v8i16(<8 x i16> %x, <8 x i16> %y, i8
 ; SSE2-NEXT:    pand %xmm2, %xmm0
 ; SSE2-NEXT:    movdqa %xmm2, (%rsi)
 ; SSE2-NEXT:    pandn %xmm1, %xmm2
-; SSE2-NEXT:    por %xmm2, %xmm0
+; SSE2-NEXT:    por %xmm0, %xmm2
+; SSE2-NEXT:    movdqa %xmm2, %xmm0
 ; SSE2-NEXT:    retq
 ;
 ; SSE42-LABEL: select_cast_cond_multiuse_v8i16:
@@ -193,8 +197,9 @@ define <8 x i16> @select_cast_cond_multiuse_v8i16(<8 x i16> %x, <8 x i16> %y, i8
 ; AVX512VL-NEXT:    vpcmpeqd %ymm2, %ymm2, %ymm2
 ; AVX512VL-NEXT:    vmovdqa32 %ymm2, %ymm2 {%k1} {z}
 ; AVX512VL-NEXT:    vpmovdw %ymm2, %xmm2
-; AVX512VL-NEXT:    vpternlogq {{.*#+}} xmm0 = xmm1 ^ (xmm2 & (xmm0 ^ xmm1))
 ; AVX512VL-NEXT:    vmovdqa %xmm2, (%rsi)
+; AVX512VL-NEXT:    vpternlogq {{.*#+}} xmm2 = xmm1 ^ (xmm2 & (xmm0 ^ xmm1))
+; AVX512VL-NEXT:    vmovdqa %xmm2, %xmm0
 ; AVX512VL-NEXT:    vzeroupper
 ; AVX512VL-NEXT:    retq
   %z = bitcast i8 %m to <8 x i1>
@@ -217,7 +222,8 @@ define <16 x i8> @select_cast_cond_multiuse_v16i8(<16 x i8> %x, <16 x i8> %y, i1
 ; SSE2-NEXT:    pand %xmm2, %xmm0
 ; SSE2-NEXT:    movdqa %xmm2, (%rsi)
 ; SSE2-NEXT:    pandn %xmm1, %xmm2
-; SSE2-NEXT:    por %xmm2, %xmm0
+; SSE2-NEXT:    por %xmm0, %xmm2
+; SSE2-NEXT:    movdqa %xmm2, %xmm0
 ; SSE2-NEXT:    retq
 ;
 ; SSE42-LABEL: select_cast_cond_multiuse_v16i8:
@@ -259,8 +265,9 @@ define <16 x i8> @select_cast_cond_multiuse_v16i8(<16 x i8> %x, <16 x i8> %y, i1
 ; AVX512VL-NEXT:    kmovw %edi, %k1
 ; AVX512VL-NEXT:    vpternlogd {{.*#+}} zmm2 {%k1} {z} = -1
 ; AVX512VL-NEXT:    vpmovdb %zmm2, %xmm2
-; AVX512VL-NEXT:    vpternlogq {{.*#+}} xmm0 = xmm1 ^ (xmm2 & (xmm0 ^ xmm1))
 ; AVX512VL-NEXT:    vmovdqa %xmm2, (%rsi)
+; AVX512VL-NEXT:    vpternlogq {{.*#+}} xmm2 = xmm1 ^ (xmm2 & (xmm0 ^ xmm1))
+; AVX512VL-NEXT:    vmovdqa %xmm2, %xmm0
 ; AVX512VL-NEXT:    vzeroupper
 ; AVX512VL-NEXT:    retq
   %z = bitcast i16 %m to <16 x i1>
@@ -279,21 +286,25 @@ define <8 x float> @select_cast_cond_multiuse_v8i16_v8f32(<8 x float> %x, <8 x f
 ; SSE2-NEXT:    movdqa {{.*#+}} xmm6 = [1,2,4,8,16,32,64,128]
 ; SSE2-NEXT:    pand %xmm6, %xmm5
 ; SSE2-NEXT:    pcmpeqw %xmm6, %xmm5
-; SSE2-NEXT:    pshufd {{.*#+}} xmm4 = xmm4[0,0,0,0]
-; SSE2-NEXT:    movdqa {{.*#+}} xmm6 = [1,2,4,8]
-; SSE2-NEXT:    movdqa %xmm4, %xmm7
-; SSE2-NEXT:    pand %xmm6, %xmm7
-; SSE2-NEXT:    pcmpeqd %xmm6, %xmm7
+; SSE2-NEXT:    pshufd {{.*#+}} xmm6 = xmm4[0,0,0,0]
+; SSE2-NEXT:    movdqa {{.*#+}} xmm4 = [1,2,4,8]
+; SSE2-NEXT:    movdqa %xmm6, %xmm7
+; SSE2-NEXT:    pand %xmm4, %xmm7
+; SSE2-NEXT:    pcmpeqd %xmm4, %xmm7
 ; SSE2-NEXT:    pand %xmm7, %xmm0
-; SSE2-NEXT:    pandn %xmm2, %xmm7
-; SSE2-NEXT:    por %xmm7, %xmm0
-; SSE2-NEXT:    movdqa {{.*#+}} xmm2 = [16,32,64,128]
-; SSE2-NEXT:    pand %xmm2, %xmm4
-; SSE2-NEXT:    pcmpeqd %xmm2, %xmm4
-; SSE2-NEXT:    pand %xmm4, %xmm1
-; SSE2-NEXT:    pandn %xmm3, %xmm4
-; SSE2-NEXT:    por %xmm4, %xmm1
+; SSE2-NEXT:    movdqa %xmm7, %xmm4
+; SSE2-NEXT:    pandn %xmm2, %xmm4
+; SSE2-NEXT:    por %xmm0, %xmm4
+; SSE2-NEXT:    movdqa {{.*#+}} xmm0 = [16,32,64,128]
+; SSE2-NEXT:    pand %xmm0, %xmm6
+; SSE2-NEXT:    pcmpeqd %xmm0, %xmm6
+; SSE2-NEXT:    pand %xmm6, %xmm1
+; SSE2-NEXT:    movdqa %xmm6, %xmm2
+; SSE2-NEXT:    pandn %xmm3, %xmm2
+; SSE2-NEXT:    por %xmm1, %xmm2
 ; SSE2-NEXT:    movdqa %xmm5, (%rsi)
+; SSE2-NEXT:    movdqa %xmm4, %xmm0
+; SSE2-NEXT:    movdqa %xmm2, %xmm1
 ; SSE2-NEXT:    retq
 ;
 ; SSE42-LABEL: select_cast_cond_multiuse_v8i16_v8f32:

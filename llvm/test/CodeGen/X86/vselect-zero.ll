@@ -116,10 +116,12 @@ define double @fsel_nonzero_false_val(double %x, double %y, double %z) {
 ; SSE2-LABEL: fsel_nonzero_false_val:
 ; SSE2:       # %bb.0:
 ; SSE2-NEXT:    cmpeqsd %xmm1, %xmm0
-; SSE2-NEXT:    andpd %xmm0, %xmm2
-; SSE2-NEXT:    movsd {{.*#+}} xmm1 = [4.2E+1,0.0E+0]
-; SSE2-NEXT:    andnpd %xmm1, %xmm0
-; SSE2-NEXT:    orpd %xmm2, %xmm0
+; SSE2-NEXT:    movapd %xmm0, %xmm1
+; SSE2-NEXT:    andpd %xmm2, %xmm1
+; SSE2-NEXT:    movsd {{.*#+}} xmm2 = [4.2E+1,0.0E+0]
+; SSE2-NEXT:    andnpd %xmm2, %xmm0
+; SSE2-NEXT:    orpd %xmm0, %xmm1
+; SSE2-NEXT:    movapd %xmm1, %xmm0
 ; SSE2-NEXT:    retq
 ;
 ; SSE42-LABEL: fsel_nonzero_false_val:
@@ -156,7 +158,8 @@ define double @fsel_nonzero_true_val(double %x, double %y, double %z) {
 ; SSE2-NEXT:    movsd {{.*#+}} xmm1 = [4.2E+1,0.0E+0]
 ; SSE2-NEXT:    andpd %xmm0, %xmm1
 ; SSE2-NEXT:    andnpd %xmm2, %xmm0
-; SSE2-NEXT:    orpd %xmm1, %xmm0
+; SSE2-NEXT:    orpd %xmm0, %xmm1
+; SSE2-NEXT:    movapd %xmm1, %xmm0
 ; SSE2-NEXT:    retq
 ;
 ; SSE42-LABEL: fsel_nonzero_true_val:
@@ -216,10 +219,11 @@ define <2 x double> @vsel_nonzero_constants(<2 x double> %x, <2 x double> %y) {
 ; SSE2:       # %bb.0:
 ; SSE2-NEXT:    cmplepd %xmm0, %xmm1
 ; SSE2-NEXT:    movsd {{.*#+}} xmm2 = [4.2E+1,0.0E+0]
+; SSE2-NEXT:    movapd {{.*#+}} xmm3 = [1.2E+1,-1.0E+0]
+; SSE2-NEXT:    andpd %xmm1, %xmm3
 ; SSE2-NEXT:    movapd %xmm1, %xmm0
 ; SSE2-NEXT:    andnpd %xmm2, %xmm0
-; SSE2-NEXT:    andpd {{\.?LCPI[0-9]+_[0-9]+}}(%rip), %xmm1
-; SSE2-NEXT:    orpd %xmm1, %xmm0
+; SSE2-NEXT:    orpd %xmm3, %xmm0
 ; SSE2-NEXT:    retq
 ;
 ; SSE42-LABEL: vsel_nonzero_constants:
@@ -242,7 +246,7 @@ define <2 x double> @vsel_nonzero_constants(<2 x double> %x, <2 x double> %y) {
 ; AVX512:       # %bb.0:
 ; AVX512-NEXT:    vcmplepd %xmm0, %xmm1, %k1
 ; AVX512-NEXT:    vmovsd {{.*#+}} xmm0 = [4.2E+1,0.0E+0]
-; AVX512-NEXT:    vmovapd {{.*#+}} xmm0 {%k1} = [1.2E+1,-1.0E+0]
+; AVX512-NEXT:    vblendmpd {{\.?LCPI[0-9]+_[0-9]+}}(%rip), %xmm0, %xmm0 {%k1}
 ; AVX512-NEXT:    retq
   %cond = fcmp oge <2 x double> %x, %y
   %r = select <2 x i1> %cond, <2 x double> <double 12.0, double -1.0>, <2 x double> <double 42.0, double 0.0>

@@ -53,8 +53,8 @@ define dso_local i32 @foo2() local_unnamed_addr #0 {
 ; CHECK-LABEL: foo2:
 ; CHECK:       # %bb.0: # %entry
 ; CHECK-NEXT:    endbr64
-; CHECK-NEXT:    movl bzx(%rip), %ecx
-; CHECK-NEXT:    addl %ecx, %ecx
+; CHECK-NEXT:    movl bzx(%rip), %eax
+; CHECK-NEXT:    leal (%rax,%rax), %ecx
 ; CHECK-NEXT:    movl $217112837, %eax # imm = 0xCF0E105
 ; CHECK-NEXT:    notl %eax
 ; CHECK-NEXT:    andl %ecx, %eax

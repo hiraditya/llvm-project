@@ -7,8 +7,9 @@ define void @fn1(i32 %k, ptr %p) {
 ; CHECK-LABEL: fn1:
 ; CHECK:       # %bb.0:
 ; CHECK-NEXT:    movl {{[0-9]+}}(%esp), %eax
-; CHECK-NEXT:    shll $2, %eax
-; CHECK-NEXT:    leal c(%eax), %ecx
+; CHECK-NEXT:    leal (,%eax,4), %eax
+; CHECK-NEXT:    movl %eax, %ecx
+; CHECK-NEXT:    addl $c, %ecx
 ; CHECK-NEXT:    xorl %edx, %edx
 ; CHECK-NEXT:    cmpl %ecx, {{[0-9]+}}(%esp)
 ; CHECK-NEXT:    setne %dl

@@ -480,14 +480,15 @@ define double @fsin_v4f64(<4 x double> %x) nounwind {
 define float @fma_v4f32(<4 x float> %x, <4 x float> %y, <4 x float> %z) nounwind {
 ; X64-LABEL: fma_v4f32:
 ; X64:       # %bb.0:
-; X64-NEXT:    vfmadd213ss {{.*#+}} xmm0 = (xmm1 * xmm0) + xmm2
+; X64-NEXT:    vfmadd213ss {{.*#+}} xmm1 = (xmm0 * xmm1) + xmm2
+; X64-NEXT:    vmovaps %xmm1, %xmm0
 ; X64-NEXT:    retq
 ;
 ; X86-LABEL: fma_v4f32:
 ; X86:       # %bb.0:
 ; X86-NEXT:    pushl %eax
-; X86-NEXT:    vfmadd213ss {{.*#+}} xmm0 = (xmm1 * xmm0) + xmm2
-; X86-NEXT:    vmovss %xmm0, (%esp)
+; X86-NEXT:    vfmadd213ss {{.*#+}} xmm1 = (xmm0 * xmm1) + xmm2
+; X86-NEXT:    vmovss %xmm1, (%esp)
 ; X86-NEXT:    flds (%esp)
 ; X86-NEXT:    popl %eax
 ; X86-NEXT:    retl
@@ -499,8 +500,8 @@ define float @fma_v4f32(<4 x float> %x, <4 x float> %y, <4 x float> %z) nounwind
 define double @fma_v4f64(<4 x double> %x, <4 x double> %y, <4 x double> %z) nounwind {
 ; X64-LABEL: fma_v4f64:
 ; X64:       # %bb.0:
-; X64-NEXT:    vfmadd213sd {{.*#+}} xmm0 = (xmm1 * xmm0) + xmm2
-; X64-NEXT:    # kill: def $xmm0 killed $xmm0 killed $ymm0
+; X64-NEXT:    vfmadd213sd {{.*#+}} xmm1 = (xmm0 * xmm1) + xmm2
+; X64-NEXT:    vmovapd %xmm1, %xmm0
 ; X64-NEXT:    vzeroupper
 ; X64-NEXT:    retq
 ;

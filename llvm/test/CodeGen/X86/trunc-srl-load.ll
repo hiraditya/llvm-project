@@ -212,8 +212,9 @@ define i64 @extractSub4096_64(ptr %word, i32 %idx) nounwind {
 ; X86-LABEL: extractSub4096_64:
 ; X86:       # %bb.0:
 ; X86-NEXT:    movl {{[0-9]+}}(%esp), %ecx
-; X86-NEXT:    movl $4032, %edx # imm = 0xFC0
-; X86-NEXT:    andl {{[0-9]+}}(%esp), %edx
+; X86-NEXT:    movl $4032, %eax # imm = 0xFC0
+; X86-NEXT:    movl {{[0-9]+}}(%esp), %edx
+; X86-NEXT:    andl %eax, %edx
 ; X86-NEXT:    shrl $3, %edx
 ; X86-NEXT:    movl (%ecx,%edx), %eax
 ; X86-NEXT:    movl 4(%ecx,%edx), %edx

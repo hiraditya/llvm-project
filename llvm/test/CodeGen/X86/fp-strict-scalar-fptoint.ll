@@ -455,10 +455,10 @@ define i32 @fptoui_f32toi32(float %x) #0 {
 ; SSE-X86-NEXT:    movaps %xmm2, %xmm1
 ; SSE-X86-NEXT:  .LBB8_2:
 ; SSE-X86-NEXT:    setbe %al
-; SSE-X86-NEXT:    movzbl %al, %ecx
-; SSE-X86-NEXT:    shll $31, %ecx
+; SSE-X86-NEXT:    movzbl %al, %eax
+; SSE-X86-NEXT:    shll $31, %eax
 ; SSE-X86-NEXT:    subss %xmm1, %xmm0
-; SSE-X86-NEXT:    cvttss2si %xmm0, %eax
+; SSE-X86-NEXT:    cvttss2si %xmm0, %ecx
 ; SSE-X86-NEXT:    xorl %ecx, %eax
 ; SSE-X86-NEXT:    retl
 ;
@@ -561,9 +561,10 @@ define i64 @fptoui_f32toi64(float %x) #0 {
 ; SSE-X86-NEXT:    fldcw {{[0-9]+}}(%esp)
 ; SSE-X86-NEXT:    fistpll {{[0-9]+}}(%esp)
 ; SSE-X86-NEXT:    fldcw {{[0-9]+}}(%esp)
-; SSE-X86-NEXT:    movzbl %al, %edx
-; SSE-X86-NEXT:    shll $31, %edx
-; SSE-X86-NEXT:    xorl {{[0-9]+}}(%esp), %edx
+; SSE-X86-NEXT:    movzbl %al, %eax
+; SSE-X86-NEXT:    shll $31, %eax
+; SSE-X86-NEXT:    movl {{[0-9]+}}(%esp), %edx
+; SSE-X86-NEXT:    xorl %eax, %edx
 ; SSE-X86-NEXT:    movl {{[0-9]+}}(%esp), %eax
 ; SSE-X86-NEXT:    movl %ebp, %esp
 ; SSE-X86-NEXT:    popl %ebp
@@ -609,9 +610,10 @@ define i64 @fptoui_f32toi64(float %x) #0 {
 ; AVX1-X86-NEXT:    fisttpll (%esp)
 ; AVX1-X86-NEXT:    wait
 ; AVX1-X86-NEXT:    setbe %al
-; AVX1-X86-NEXT:    movzbl %al, %edx
-; AVX1-X86-NEXT:    shll $31, %edx
-; AVX1-X86-NEXT:    xorl {{[0-9]+}}(%esp), %edx
+; AVX1-X86-NEXT:    movzbl %al, %eax
+; AVX1-X86-NEXT:    shll $31, %eax
+; AVX1-X86-NEXT:    movl {{[0-9]+}}(%esp), %edx
+; AVX1-X86-NEXT:    xorl %eax, %edx
 ; AVX1-X86-NEXT:    movl (%esp), %eax
 ; AVX1-X86-NEXT:    movl %ebp, %esp
 ; AVX1-X86-NEXT:    popl %ebp
@@ -646,18 +648,19 @@ define i64 @fptoui_f32toi64(float %x) #0 {
 ; AVX512-X86-NEXT:    subl $8, %esp
 ; AVX512-X86-NEXT:    vmovss {{.*#+}} xmm0 = mem[0],zero,zero,zero
 ; AVX512-X86-NEXT:    vmovss {{.*#+}} xmm1 = [9.22337203E+18,0.0E+0,0.0E+0,0.0E+0]
-; AVX512-X86-NEXT:    xorl %edx, %edx
+; AVX512-X86-NEXT:    xorl %eax, %eax
 ; AVX512-X86-NEXT:    vcomiss %xmm0, %xmm1
-; AVX512-X86-NEXT:    setbe %dl
-; AVX512-X86-NEXT:    kmovw %edx, %k1
+; AVX512-X86-NEXT:    setbe %al
+; AVX512-X86-NEXT:    kmovw %eax, %k1
 ; AVX512-X86-NEXT:    vmovss %xmm1, %xmm1, %xmm1 {%k1} {z}
 ; AVX512-X86-NEXT:    vsubss %xmm1, %xmm0, %xmm0
 ; AVX512-X86-NEXT:    vmovss %xmm0, (%esp)
 ; AVX512-X86-NEXT:    flds (%esp)
 ; AVX512-X86-NEXT:    fisttpll (%esp)
 ; AVX512-X86-NEXT:    wait
-; AVX512-X86-NEXT:    shll $31, %edx
-; AVX512-X86-NEXT:    xorl {{[0-9]+}}(%esp), %edx
+; AVX512-X86-NEXT:    shll $31, %eax
+; AVX512-X86-NEXT:    movl {{[0-9]+}}(%esp), %edx
+; AVX512-X86-NEXT:    xorl %eax, %edx
 ; AVX512-X86-NEXT:    movl (%esp), %eax
 ; AVX512-X86-NEXT:    movl %ebp, %esp
 ; AVX512-X86-NEXT:    popl %ebp
@@ -683,7 +686,7 @@ define i64 @fptoui_f32toi64(float %x) #0 {
 ; X87-NEXT:    fcom %st(1)
 ; X87-NEXT:    wait
 ; X87-NEXT:    fnstsw %ax
-; X87-NEXT:    xorl %edx, %edx
+; X87-NEXT:    xorl %ecx, %ecx
 ; X87-NEXT:    # kill: def $ah killed $ah killed $ax
 ; X87-NEXT:    sahf
 ; X87-NEXT:    setbe %al
@@ -697,15 +700,16 @@ define i64 @fptoui_f32toi64(float %x) #0 {
 ; X87-NEXT:    fsubrp %st, %st(1)
 ; X87-NEXT:    wait
 ; X87-NEXT:    fnstcw {{[0-9]+}}(%esp)
-; X87-NEXT:    movzwl {{[0-9]+}}(%esp), %ecx
-; X87-NEXT:    orl $3072, %ecx # imm = 0xC00
-; X87-NEXT:    movw %cx, {{[0-9]+}}(%esp)
+; X87-NEXT:    movzwl {{[0-9]+}}(%esp), %edx
+; X87-NEXT:    orl $3072, %edx # imm = 0xC00
+; X87-NEXT:    movw %dx, {{[0-9]+}}(%esp)
 ; X87-NEXT:    fldcw {{[0-9]+}}(%esp)
 ; X87-NEXT:    fistpll {{[0-9]+}}(%esp)
 ; X87-NEXT:    fldcw {{[0-9]+}}(%esp)
-; X87-NEXT:    movb %al, %dl
-; X87-NEXT:    shll $31, %edx
-; X87-NEXT:    xorl {{[0-9]+}}(%esp), %edx
+; X87-NEXT:    movb %al, %cl
+; X87-NEXT:    shll $31, %ecx
+; X87-NEXT:    movl {{[0-9]+}}(%esp), %edx
+; X87-NEXT:    xorl %ecx, %edx
 ; X87-NEXT:    movl {{[0-9]+}}(%esp), %eax
 ; X87-NEXT:    movl %ebp, %esp
 ; X87-NEXT:    popl %ebp
@@ -1095,10 +1099,10 @@ define i32 @fptoui_f64toi32(double %x) #0 {
 ; SSE-X86-NEXT:    movapd %xmm2, %xmm1
 ; SSE-X86-NEXT:  .LBB17_2:
 ; SSE-X86-NEXT:    setbe %al
-; SSE-X86-NEXT:    movzbl %al, %ecx
-; SSE-X86-NEXT:    shll $31, %ecx
+; SSE-X86-NEXT:    movzbl %al, %eax
+; SSE-X86-NEXT:    shll $31, %eax
 ; SSE-X86-NEXT:    subsd %xmm1, %xmm0
-; SSE-X86-NEXT:    cvttsd2si %xmm0, %eax
+; SSE-X86-NEXT:    cvttsd2si %xmm0, %ecx
 ; SSE-X86-NEXT:    xorl %ecx, %eax
 ; SSE-X86-NEXT:    retl
 ;
@@ -1201,9 +1205,10 @@ define i64 @fptoui_f64toi64(double %x) #0 {
 ; SSE-X86-NEXT:    fldcw {{[0-9]+}}(%esp)
 ; SSE-X86-NEXT:    fistpll {{[0-9]+}}(%esp)
 ; SSE-X86-NEXT:    fldcw {{[0-9]+}}(%esp)
-; SSE-X86-NEXT:    movzbl %al, %edx
-; SSE-X86-NEXT:    shll $31, %edx
-; SSE-X86-NEXT:    xorl {{[0-9]+}}(%esp), %edx
+; SSE-X86-NEXT:    movzbl %al, %eax
+; SSE-X86-NEXT:    shll $31, %eax
+; SSE-X86-NEXT:    movl {{[0-9]+}}(%esp), %edx
+; SSE-X86-NEXT:    xorl %eax, %edx
 ; SSE-X86-NEXT:    movl {{[0-9]+}}(%esp), %eax
 ; SSE-X86-NEXT:    movl %ebp, %esp
 ; SSE-X86-NEXT:    popl %ebp
@@ -1249,9 +1254,10 @@ define i64 @fptoui_f64toi64(double %x) #0 {
 ; AVX1-X86-NEXT:    fisttpll (%esp)
 ; AVX1-X86-NEXT:    wait
 ; AVX1-X86-NEXT:    setbe %al
-; AVX1-X86-NEXT:    movzbl %al, %edx
-; AVX1-X86-NEXT:    shll $31, %edx
-; AVX1-X86-NEXT:    xorl {{[0-9]+}}(%esp), %edx
+; AVX1-X86-NEXT:    movzbl %al, %eax
+; AVX1-X86-NEXT:    shll $31, %eax
+; AVX1-X86-NEXT:    movl {{[0-9]+}}(%esp), %edx
+; AVX1-X86-NEXT:    xorl %eax, %edx
 ; AVX1-X86-NEXT:    movl (%esp), %eax
 ; AVX1-X86-NEXT:    movl %ebp, %esp
 ; AVX1-X86-NEXT:    popl %ebp
@@ -1286,18 +1292,19 @@ define i64 @fptoui_f64toi64(double %x) #0 {
 ; AVX512-X86-NEXT:    subl $8, %esp
 ; AVX512-X86-NEXT:    vmovsd {{.*#+}} xmm0 = mem[0],zero
 ; AVX512-X86-NEXT:    vmovsd {{.*#+}} xmm1 = [9.2233720368547758E+18,0.0E+0]
-; AVX512-X86-NEXT:    xorl %edx, %edx
+; AVX512-X86-NEXT:    xorl %eax, %eax
 ; AVX512-X86-NEXT:    vcomisd %xmm0, %xmm1
-; AVX512-X86-NEXT:    setbe %dl
-; AVX512-X86-NEXT:    kmovw %edx, %k1
+; AVX512-X86-NEXT:    setbe %al
+; AVX512-X86-NEXT:    kmovw %eax, %k1
 ; AVX512-X86-NEXT:    vmovsd %xmm1, %xmm1, %xmm1 {%k1} {z}
 ; AVX512-X86-NEXT:    vsubsd %xmm1, %xmm0, %xmm0
 ; AVX512-X86-NEXT:    vmovsd %xmm0, (%esp)
 ; AVX512-X86-NEXT:    fldl (%esp)
 ; AVX512-X86-NEXT:    fisttpll (%esp)
 ; AVX512-X86-NEXT:    wait
-; AVX512-X86-NEXT:    shll $31, %edx
-; AVX512-X86-NEXT:    xorl {{[0-9]+}}(%esp), %edx
+; AVX512-X86-NEXT:    shll $31, %eax
+; AVX512-X86-NEXT:    movl {{[0-9]+}}(%esp), %edx
+; AVX512-X86-NEXT:    xorl %eax, %edx
 ; AVX512-X86-NEXT:    movl (%esp), %eax
 ; AVX512-X86-NEXT:    movl %ebp, %esp
 ; AVX512-X86-NEXT:    popl %ebp
@@ -1323,7 +1330,7 @@ define i64 @fptoui_f64toi64(double %x) #0 {
 ; X87-NEXT:    fcom %st(1)
 ; X87-NEXT:    wait
 ; X87-NEXT:    fnstsw %ax
-; X87-NEXT:    xorl %edx, %edx
+; X87-NEXT:    xorl %ecx, %ecx
 ; X87-NEXT:    # kill: def $ah killed $ah killed $ax
 ; X87-NEXT:    sahf
 ; X87-NEXT:    setbe %al
@@ -1337,15 +1344,16 @@ define i64 @fptoui_f64toi64(double %x) #0 {
 ; X87-NEXT:    fsubrp %st, %st(1)
 ; X87-NEXT:    wait
 ; X87-NEXT:    fnstcw {{[0-9]+}}(%esp)
-; X87-NEXT:    movzwl {{[0-9]+}}(%esp), %ecx
-; X87-NEXT:    orl $3072, %ecx # imm = 0xC00
-; X87-NEXT:    movw %cx, {{[0-9]+}}(%esp)
+; X87-NEXT:    movzwl {{[0-9]+}}(%esp), %edx
+; X87-NEXT:    orl $3072, %edx # imm = 0xC00
+; X87-NEXT:    movw %dx, {{[0-9]+}}(%esp)
 ; X87-NEXT:    fldcw {{[0-9]+}}(%esp)
 ; X87-NEXT:    fistpll {{[0-9]+}}(%esp)
 ; X87-NEXT:    fldcw {{[0-9]+}}(%esp)
-; X87-NEXT:    movb %al, %dl
-; X87-NEXT:    shll $31, %edx
-; X87-NEXT:    xorl {{[0-9]+}}(%esp), %edx
+; X87-NEXT:    movb %al, %cl
+; X87-NEXT:    shll $31, %ecx
+; X87-NEXT:    movl {{[0-9]+}}(%esp), %edx
+; X87-NEXT:    xorl %ecx, %edx
 ; X87-NEXT:    movl {{[0-9]+}}(%esp), %eax
 ; X87-NEXT:    movl %ebp, %esp
 ; X87-NEXT:    popl %ebp

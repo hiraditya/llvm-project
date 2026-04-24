@@ -283,7 +283,7 @@ define i1 @t8_3_2(i8 %X) nounwind {
 ; X64-LABEL: t8_3_2:
 ; X64:       # %bb.0:
 ; X64-NEXT:    imull $-85, %edi, %eax
-; X64-NEXT:    addb $-86, %al
+; X64-NEXT:    addl $-86, %eax
 ; X64-NEXT:    cmpb $85, %al
 ; X64-NEXT:    setb %al
 ; X64-NEXT:    retq

@@ -14,36 +14,39 @@
 define float @dot3_float4(ptr dereferenceable(16) %a0, ptr dereferenceable(16) %a1) {
 ; SSE2-LABEL: dot3_float4:
 ; SSE2:       # %bb.0:
-; SSE2-NEXT:    movups (%rdi), %xmm0
-; SSE2-NEXT:    movups (%rsi), %xmm1
-; SSE2-NEXT:    mulps %xmm0, %xmm1
-; SSE2-NEXT:    movaps %xmm1, %xmm0
-; SSE2-NEXT:    shufps {{.*#+}} xmm0 = xmm0[1,1],xmm1[1,1]
+; SSE2-NEXT:    movups (%rdi), %xmm1
+; SSE2-NEXT:    movups (%rsi), %xmm0
+; SSE2-NEXT:    mulps %xmm1, %xmm0
+; SSE2-NEXT:    movaps %xmm0, %xmm1
+; SSE2-NEXT:    shufps {{.*#+}} xmm1 = xmm1[1,1],xmm0[1,1]
+; SSE2-NEXT:    movaps %xmm0, %xmm2
+; SSE2-NEXT:    unpckhpd {{.*#+}} xmm2 = xmm2[1],xmm0[1]
 ; SSE2-NEXT:    addss %xmm1, %xmm0
-; SSE2-NEXT:    movhlps {{.*#+}} xmm1 = xmm1[1,1]
-; SSE2-NEXT:    addss %xmm1, %xmm0
+; SSE2-NEXT:    addss %xmm2, %xmm0
 ; SSE2-NEXT:    retq
 ;
 ; SSSE3-LABEL: dot3_float4:
 ; SSSE3:       # %bb.0:
-; SSSE3-NEXT:    movups (%rdi), %xmm0
-; SSSE3-NEXT:    movups (%rsi), %xmm1
-; SSSE3-NEXT:    mulps %xmm0, %xmm1
-; SSSE3-NEXT:    movshdup {{.*#+}} xmm0 = xmm1[1,1,3,3]
+; SSSE3-NEXT:    movups (%rdi), %xmm1
+; SSSE3-NEXT:    movups (%rsi), %xmm0
+; SSSE3-NEXT:    mulps %xmm1, %xmm0
+; SSSE3-NEXT:    movshdup {{.*#+}} xmm1 = xmm0[1,1,3,3]
+; SSSE3-NEXT:    movaps %xmm0, %xmm2
+; SSSE3-NEXT:    unpckhpd {{.*#+}} xmm2 = xmm2[1],xmm0[1]
 ; SSSE3-NEXT:    addss %xmm1, %xmm0
-; SSSE3-NEXT:    movhlps {{.*#+}} xmm1 = xmm1[1,1]
-; SSSE3-NEXT:    addss %xmm1, %xmm0
+; SSSE3-NEXT:    addss %xmm2, %xmm0
 ; SSSE3-NEXT:    retq
 ;
 ; SSE41-LABEL: dot3_float4:
 ; SSE41:       # %bb.0:
-; SSE41-NEXT:    movups (%rdi), %xmm0
-; SSE41-NEXT:    movups (%rsi), %xmm1
-; SSE41-NEXT:    mulps %xmm0, %xmm1
-; SSE41-NEXT:    movshdup {{.*#+}} xmm0 = xmm1[1,1,3,3]
+; SSE41-NEXT:    movups (%rdi), %xmm1
+; SSE41-NEXT:    movups (%rsi), %xmm0
+; SSE41-NEXT:    mulps %xmm1, %xmm0
+; SSE41-NEXT:    movshdup {{.*#+}} xmm1 = xmm0[1,1,3,3]
+; SSE41-NEXT:    movaps %xmm0, %xmm2
+; SSE41-NEXT:    unpckhpd {{.*#+}} xmm2 = xmm2[1],xmm0[1]
 ; SSE41-NEXT:    addss %xmm1, %xmm0
-; SSE41-NEXT:    movhlps {{.*#+}} xmm1 = xmm1[1,1]
-; SSE41-NEXT:    addss %xmm1, %xmm0
+; SSE41-NEXT:    addss %xmm2, %xmm0
 ; SSE41-NEXT:    retq
 ;
 ; AVX-LABEL: dot3_float4:
@@ -69,36 +72,39 @@ define float @dot3_float4(ptr dereferenceable(16) %a0, ptr dereferenceable(16) %
 define float @dot3_float4_as_float3(ptr dereferenceable(16) %a0, ptr dereferenceable(16) %a1) {
 ; SSE2-LABEL: dot3_float4_as_float3:
 ; SSE2:       # %bb.0:
-; SSE2-NEXT:    movups (%rdi), %xmm0
-; SSE2-NEXT:    movups (%rsi), %xmm1
-; SSE2-NEXT:    mulps %xmm0, %xmm1
-; SSE2-NEXT:    movaps %xmm1, %xmm0
-; SSE2-NEXT:    shufps {{.*#+}} xmm0 = xmm0[1,1],xmm1[1,1]
+; SSE2-NEXT:    movups (%rdi), %xmm1
+; SSE2-NEXT:    movups (%rsi), %xmm0
+; SSE2-NEXT:    mulps %xmm1, %xmm0
+; SSE2-NEXT:    movaps %xmm0, %xmm1
+; SSE2-NEXT:    shufps {{.*#+}} xmm1 = xmm1[1,1],xmm0[1,1]
+; SSE2-NEXT:    movaps %xmm0, %xmm2
+; SSE2-NEXT:    unpckhpd {{.*#+}} xmm2 = xmm2[1],xmm0[1]
 ; SSE2-NEXT:    addss %xmm1, %xmm0
-; SSE2-NEXT:    movhlps {{.*#+}} xmm1 = xmm1[1,1]
-; SSE2-NEXT:    addss %xmm1, %xmm0
+; SSE2-NEXT:    addss %xmm2, %xmm0
 ; SSE2-NEXT:    retq
 ;
 ; SSSE3-LABEL: dot3_float4_as_float3:
 ; SSSE3:       # %bb.0:
-; SSSE3-NEXT:    movups (%rdi), %xmm0
-; SSSE3-NEXT:    movups (%rsi), %xmm1
-; SSSE3-NEXT:    mulps %xmm0, %xmm1
-; SSSE3-NEXT:    movshdup {{.*#+}} xmm0 = xmm1[1,1,3,3]
+; SSSE3-NEXT:    movups (%rdi), %xmm1
+; SSSE3-NEXT:    movups (%rsi), %xmm0
+; SSSE3-NEXT:    mulps %xmm1, %xmm0
+; SSSE3-NEXT:    movshdup {{.*#+}} xmm1 = xmm0[1,1,3,3]
+; SSSE3-NEXT:    movaps %xmm0, %xmm2
+; SSSE3-NEXT:    unpckhpd {{.*#+}} xmm2 = xmm2[1],xmm0[1]
 ; SSSE3-NEXT:    addss %xmm1, %xmm0
-; SSSE3-NEXT:    movhlps {{.*#+}} xmm1 = xmm1[1,1]
-; SSSE3-NEXT:    addss %xmm1, %xmm0
+; SSSE3-NEXT:    addss %xmm2, %xmm0
 ; SSSE3-NEXT:    retq
 ;
 ; SSE41-LABEL: dot3_float4_as_float3:
 ; SSE41:       # %bb.0:
-; SSE41-NEXT:    movups (%rdi), %xmm0
-; SSE41-NEXT:    movups (%rsi), %xmm1
-; SSE41-NEXT:    mulps %xmm0, %xmm1
-; SSE41-NEXT:    movshdup {{.*#+}} xmm0 = xmm1[1,1,3,3]
+; SSE41-NEXT:    movups (%rdi), %xmm1
+; SSE41-NEXT:    movups (%rsi), %xmm0
+; SSE41-NEXT:    mulps %xmm1, %xmm0
+; SSE41-NEXT:    movshdup {{.*#+}} xmm1 = xmm0[1,1,3,3]
+; SSE41-NEXT:    movaps %xmm0, %xmm2
+; SSE41-NEXT:    unpckhpd {{.*#+}} xmm2 = xmm2[1],xmm0[1]
 ; SSE41-NEXT:    addss %xmm1, %xmm0
-; SSE41-NEXT:    movhlps {{.*#+}} xmm1 = xmm1[1,1]
-; SSE41-NEXT:    addss %xmm1, %xmm0
+; SSE41-NEXT:    addss %xmm2, %xmm0
 ; SSE41-NEXT:    retq
 ;
 ; AVX-LABEL: dot3_float4_as_float3:
@@ -126,50 +132,53 @@ define float @dot3_float4_as_float3(ptr dereferenceable(16) %a0, ptr dereference
 define float @dot3_float3(ptr dereferenceable(16) %a0, ptr dereferenceable(16) %a1) {
 ; SSE2-LABEL: dot3_float3:
 ; SSE2:       # %bb.0:
-; SSE2-NEXT:    movsd {{.*#+}} xmm0 = mem[0],zero
-; SSE2-NEXT:    movss {{.*#+}} xmm1 = mem[0],zero,zero,zero
-; SSE2-NEXT:    shufps {{.*#+}} xmm1 = xmm1[0,0],xmm0[3,0]
-; SSE2-NEXT:    shufps {{.*#+}} xmm0 = xmm0[0,1],xmm1[0,2]
 ; SSE2-NEXT:    movsd {{.*#+}} xmm1 = mem[0],zero
+; SSE2-NEXT:    movss {{.*#+}} xmm0 = mem[0],zero,zero,zero
+; SSE2-NEXT:    shufps {{.*#+}} xmm0 = xmm0[0,0],xmm1[3,0]
+; SSE2-NEXT:    shufps {{.*#+}} xmm1 = xmm1[0,1],xmm0[0,2]
+; SSE2-NEXT:    movsd {{.*#+}} xmm0 = mem[0],zero
 ; SSE2-NEXT:    movss {{.*#+}} xmm2 = mem[0],zero,zero,zero
-; SSE2-NEXT:    shufps {{.*#+}} xmm2 = xmm2[0,0],xmm1[3,0]
-; SSE2-NEXT:    shufps {{.*#+}} xmm1 = xmm1[0,1],xmm2[0,2]
-; SSE2-NEXT:    mulps %xmm0, %xmm1
-; SSE2-NEXT:    movaps %xmm1, %xmm0
-; SSE2-NEXT:    shufps {{.*#+}} xmm0 = xmm0[1,1],xmm1[1,1]
+; SSE2-NEXT:    shufps {{.*#+}} xmm2 = xmm2[0,0],xmm0[3,0]
+; SSE2-NEXT:    shufps {{.*#+}} xmm0 = xmm0[0,1],xmm2[0,2]
+; SSE2-NEXT:    mulps %xmm1, %xmm0
+; SSE2-NEXT:    movaps %xmm0, %xmm1
+; SSE2-NEXT:    shufps {{.*#+}} xmm1 = xmm1[1,1],xmm0[1,1]
+; SSE2-NEXT:    movaps %xmm0, %xmm2
+; SSE2-NEXT:    unpckhpd {{.*#+}} xmm2 = xmm2[1],xmm0[1]
 ; SSE2-NEXT:    addss %xmm1, %xmm0
-; SSE2-NEXT:    movhlps {{.*#+}} xmm1 = xmm1[1,1]
-; SSE2-NEXT:    addss %xmm1, %xmm0
+; SSE2-NEXT:    addss %xmm2, %xmm0
 ; SSE2-NEXT:    retq
 ;
 ; SSSE3-LABEL: dot3_float3:
 ; SSSE3:       # %bb.0:
-; SSSE3-NEXT:    movsd {{.*#+}} xmm0 = mem[0],zero
-; SSSE3-NEXT:    movss {{.*#+}} xmm1 = mem[0],zero,zero,zero
-; SSSE3-NEXT:    shufps {{.*#+}} xmm1 = xmm1[0,0],xmm0[3,0]
-; SSSE3-NEXT:    shufps {{.*#+}} xmm0 = xmm0[0,1],xmm1[0,2]
 ; SSSE3-NEXT:    movsd {{.*#+}} xmm1 = mem[0],zero
+; SSSE3-NEXT:    movss {{.*#+}} xmm0 = mem[0],zero,zero,zero
+; SSSE3-NEXT:    shufps {{.*#+}} xmm0 = xmm0[0,0],xmm1[3,0]
+; SSSE3-NEXT:    shufps {{.*#+}} xmm1 = xmm1[0,1],xmm0[0,2]
+; SSSE3-NEXT:    movsd {{.*#+}} xmm0 = mem[0],zero
 ; SSSE3-NEXT:    movss {{.*#+}} xmm2 = mem[0],zero,zero,zero
-; SSSE3-NEXT:    shufps {{.*#+}} xmm2 = xmm2[0,0],xmm1[3,0]
-; SSSE3-NEXT:    shufps {{.*#+}} xmm1 = xmm1[0,1],xmm2[0,2]
-; SSSE3-NEXT:    mulps %xmm0, %xmm1
-; SSSE3-NEXT:    movshdup {{.*#+}} xmm0 = xmm1[1,1,3,3]
+; SSSE3-NEXT:    shufps {{.*#+}} xmm2 = xmm2[0,0],xmm0[3,0]
+; SSSE3-NEXT:    shufps {{.*#+}} xmm0 = xmm0[0,1],xmm2[0,2]
+; SSSE3-NEXT:    mulps %xmm1, %xmm0
+; SSSE3-NEXT:    movshdup {{.*#+}} xmm1 = xmm0[1,1,3,3]
+; SSSE3-NEXT:    movaps %xmm0, %xmm2
+; SSSE3-NEXT:    unpckhpd {{.*#+}} xmm2 = xmm2[1],xmm0[1]
 ; SSSE3-NEXT:    addss %xmm1, %xmm0
-; SSSE3-NEXT:    movhlps {{.*#+}} xmm1 = xmm1[1,1]
-; SSSE3-NEXT:    addss %xmm1, %xmm0
+; SSSE3-NEXT:    addss %xmm2, %xmm0
 ; SSSE3-NEXT:    retq
 ;
 ; SSE41-LABEL: dot3_float3:
 ; SSE41:       # %bb.0:
-; SSE41-NEXT:    movsd {{.*#+}} xmm0 = mem[0],zero
-; SSE41-NEXT:    insertps {{.*#+}} xmm0 = xmm0[0,1],mem[0],xmm0[3]
 ; SSE41-NEXT:    movsd {{.*#+}} xmm1 = mem[0],zero
 ; SSE41-NEXT:    insertps {{.*#+}} xmm1 = xmm1[0,1],mem[0],xmm1[3]
-; SSE41-NEXT:    mulps %xmm0, %xmm1
-; SSE41-NEXT:    movshdup {{.*#+}} xmm0 = xmm1[1,1,3,3]
+; SSE41-NEXT:    movsd {{.*#+}} xmm0 = mem[0],zero
+; SSE41-NEXT:    insertps {{.*#+}} xmm0 = xmm0[0,1],mem[0],xmm0[3]
+; SSE41-NEXT:    mulps %xmm1, %xmm0
+; SSE41-NEXT:    movshdup {{.*#+}} xmm1 = xmm0[1,1,3,3]
+; SSE41-NEXT:    movaps %xmm0, %xmm2
+; SSE41-NEXT:    unpckhpd {{.*#+}} xmm2 = xmm2[1],xmm0[1]
 ; SSE41-NEXT:    addss %xmm1, %xmm0
-; SSE41-NEXT:    movhlps {{.*#+}} xmm1 = xmm1[1,1]
-; SSE41-NEXT:    addss %xmm1, %xmm0
+; SSE41-NEXT:    addss %xmm2, %xmm0
 ; SSE41-NEXT:    retq
 ;
 ; AVX-LABEL: dot3_float3:
@@ -202,11 +211,12 @@ define float @dot3_float2_float(ptr dereferenceable(16) %a0, ptr dereferenceable
 ; SSE2-NEXT:    movsd {{.*#+}} xmm1 = mem[0],zero
 ; SSE2-NEXT:    mulps %xmm0, %xmm1
 ; SSE2-NEXT:    movss {{.*#+}} xmm2 = mem[0],zero,zero,zero
-; SSE2-NEXT:    mulss 8(%rsi), %xmm2
-; SSE2-NEXT:    movaps %xmm1, %xmm0
-; SSE2-NEXT:    shufps {{.*#+}} xmm0 = xmm0[1,1],xmm1[1,1]
+; SSE2-NEXT:    movss {{.*#+}} xmm0 = mem[0],zero,zero,zero
+; SSE2-NEXT:    mulss %xmm2, %xmm0
+; SSE2-NEXT:    movaps %xmm1, %xmm2
+; SSE2-NEXT:    shufps {{.*#+}} xmm2 = xmm2[1,1],xmm1[1,1]
+; SSE2-NEXT:    addss %xmm2, %xmm1
 ; SSE2-NEXT:    addss %xmm1, %xmm0
-; SSE2-NEXT:    addss %xmm2, %xmm0
 ; SSE2-NEXT:    retq
 ;
 ; SSSE3-LABEL: dot3_float2_float:
@@ -215,10 +225,11 @@ define float @dot3_float2_float(ptr dereferenceable(16) %a0, ptr dereferenceable
 ; SSSE3-NEXT:    movsd {{.*#+}} xmm1 = mem[0],zero
 ; SSSE3-NEXT:    mulps %xmm0, %xmm1
 ; SSSE3-NEXT:    movss {{.*#+}} xmm2 = mem[0],zero,zero,zero
-; SSSE3-NEXT:    mulss 8(%rsi), %xmm2
-; SSSE3-NEXT:    movshdup {{.*#+}} xmm0 = xmm1[1,1,3,3]
+; SSSE3-NEXT:    movss {{.*#+}} xmm0 = mem[0],zero,zero,zero
+; SSSE3-NEXT:    mulss %xmm2, %xmm0
+; SSSE3-NEXT:    movshdup {{.*#+}} xmm2 = xmm1[1,1,3,3]
+; SSSE3-NEXT:    addss %xmm2, %xmm1
 ; SSSE3-NEXT:    addss %xmm1, %xmm0
-; SSSE3-NEXT:    addss %xmm2, %xmm0
 ; SSSE3-NEXT:    retq
 ;
 ; SSE41-LABEL: dot3_float2_float:
@@ -227,10 +238,11 @@ define float @dot3_float2_float(ptr dereferenceable(16) %a0, ptr dereferenceable
 ; SSE41-NEXT:    movsd {{.*#+}} xmm1 = mem[0],zero
 ; SSE41-NEXT:    mulps %xmm0, %xmm1
 ; SSE41-NEXT:    movss {{.*#+}} xmm2 = mem[0],zero,zero,zero
-; SSE41-NEXT:    mulss 8(%rsi), %xmm2
-; SSE41-NEXT:    movshdup {{.*#+}} xmm0 = xmm1[1,1,3,3]
+; SSE41-NEXT:    movss {{.*#+}} xmm0 = mem[0],zero,zero,zero
+; SSE41-NEXT:    mulss %xmm2, %xmm0
+; SSE41-NEXT:    movshdup {{.*#+}} xmm2 = xmm1[1,1,3,3]
+; SSE41-NEXT:    addss %xmm2, %xmm1
 ; SSE41-NEXT:    addss %xmm1, %xmm0
-; SSE41-NEXT:    addss %xmm2, %xmm0
 ; SSE41-NEXT:    retq
 ;
 ; AVX-LABEL: dot3_float2_float:
@@ -263,22 +275,24 @@ define float @dot3_float_float2(ptr dereferenceable(16) %a0, ptr dereferenceable
 ; SSE2-LABEL: dot3_float_float2:
 ; SSE2:       # %bb.0:
 ; SSE2-NEXT:    movss {{.*#+}} xmm1 = mem[0],zero,zero,zero
-; SSE2-NEXT:    movsd {{.*#+}} xmm2 = mem[0],zero
 ; SSE2-NEXT:    movsd {{.*#+}} xmm0 = mem[0],zero
-; SSE2-NEXT:    mulps %xmm2, %xmm0
-; SSE2-NEXT:    mulss (%rsi), %xmm1
-; SSE2-NEXT:    addss %xmm0, %xmm1
-; SSE2-NEXT:    shufps {{.*#+}} xmm0 = xmm0[1,1,1,1]
-; SSE2-NEXT:    addss %xmm1, %xmm0
+; SSE2-NEXT:    movsd {{.*#+}} xmm2 = mem[0],zero
+; SSE2-NEXT:    mulps %xmm0, %xmm2
+; SSE2-NEXT:    movss {{.*#+}} xmm0 = mem[0],zero,zero,zero
+; SSE2-NEXT:    mulss %xmm1, %xmm0
+; SSE2-NEXT:    addss %xmm2, %xmm0
+; SSE2-NEXT:    shufps {{.*#+}} xmm2 = xmm2[1,1,1,1]
+; SSE2-NEXT:    addss %xmm2, %xmm0
 ; SSE2-NEXT:    retq
 ;
 ; SSSE3-LABEL: dot3_float_float2:
 ; SSSE3:       # %bb.0:
-; SSSE3-NEXT:    movss {{.*#+}} xmm0 = mem[0],zero,zero,zero
-; SSSE3-NEXT:    movsd {{.*#+}} xmm1 = mem[0],zero
+; SSSE3-NEXT:    movss {{.*#+}} xmm1 = mem[0],zero,zero,zero
+; SSSE3-NEXT:    movsd {{.*#+}} xmm0 = mem[0],zero
 ; SSSE3-NEXT:    movsd {{.*#+}} xmm2 = mem[0],zero
-; SSSE3-NEXT:    mulps %xmm1, %xmm2
-; SSSE3-NEXT:    mulss (%rsi), %xmm0
+; SSSE3-NEXT:    mulps %xmm0, %xmm2
+; SSSE3-NEXT:    movss {{.*#+}} xmm0 = mem[0],zero,zero,zero
+; SSSE3-NEXT:    mulss %xmm1, %xmm0
 ; SSSE3-NEXT:    movshdup {{.*#+}} xmm1 = xmm2[1,1,3,3]
 ; SSSE3-NEXT:    addss %xmm2, %xmm0
 ; SSSE3-NEXT:    addss %xmm1, %xmm0
@@ -286,11 +300,12 @@ define float @dot3_float_float2(ptr dereferenceable(16) %a0, ptr dereferenceable
 ;
 ; SSE41-LABEL: dot3_float_float2:
 ; SSE41:       # %bb.0:
-; SSE41-NEXT:    movss {{.*#+}} xmm0 = mem[0],zero,zero,zero
-; SSE41-NEXT:    movsd {{.*#+}} xmm1 = mem[0],zero
+; SSE41-NEXT:    movss {{.*#+}} xmm1 = mem[0],zero,zero,zero
+; SSE41-NEXT:    movsd {{.*#+}} xmm0 = mem[0],zero
 ; SSE41-NEXT:    movsd {{.*#+}} xmm2 = mem[0],zero
-; SSE41-NEXT:    mulps %xmm1, %xmm2
-; SSE41-NEXT:    mulss (%rsi), %xmm0
+; SSE41-NEXT:    mulps %xmm0, %xmm2
+; SSE41-NEXT:    movss {{.*#+}} xmm0 = mem[0],zero,zero,zero
+; SSE41-NEXT:    mulss %xmm1, %xmm0
 ; SSE41-NEXT:    movshdup {{.*#+}} xmm1 = xmm2[1,1,3,3]
 ; SSE41-NEXT:    addss %xmm2, %xmm0
 ; SSE41-NEXT:    addss %xmm1, %xmm0
@@ -329,29 +344,29 @@ define float @dot3_float_float2(ptr dereferenceable(16) %a0, ptr dereferenceable
 define float @dot2_float4(ptr dereferenceable(16) %a0, ptr dereferenceable(16) %a1) {
 ; SSE2-LABEL: dot2_float4:
 ; SSE2:       # %bb.0:
-; SSE2-NEXT:    movups (%rdi), %xmm0
-; SSE2-NEXT:    movups (%rsi), %xmm1
-; SSE2-NEXT:    mulps %xmm0, %xmm1
-; SSE2-NEXT:    movaps %xmm1, %xmm0
-; SSE2-NEXT:    shufps {{.*#+}} xmm0 = xmm0[1,1],xmm1[1,1]
+; SSE2-NEXT:    movups (%rdi), %xmm1
+; SSE2-NEXT:    movups (%rsi), %xmm0
+; SSE2-NEXT:    mulps %xmm1, %xmm0
+; SSE2-NEXT:    movaps %xmm0, %xmm1
+; SSE2-NEXT:    shufps {{.*#+}} xmm1 = xmm1[1,1],xmm0[1,1]
 ; SSE2-NEXT:    addss %xmm1, %xmm0
 ; SSE2-NEXT:    retq
 ;
 ; SSSE3-LABEL: dot2_float4:
 ; SSSE3:       # %bb.0:
-; SSSE3-NEXT:    movups (%rdi), %xmm0
-; SSSE3-NEXT:    movups (%rsi), %xmm1
-; SSSE3-NEXT:    mulps %xmm0, %xmm1
-; SSSE3-NEXT:    movshdup {{.*#+}} xmm0 = xmm1[1,1,3,3]
+; SSSE3-NEXT:    movups (%rdi), %xmm1
+; SSSE3-NEXT:    movups (%rsi), %xmm0
+; SSSE3-NEXT:    mulps %xmm1, %xmm0
+; SSSE3-NEXT:    movshdup {{.*#+}} xmm1 = xmm0[1,1,3,3]
 ; SSSE3-NEXT:    addss %xmm1, %xmm0
 ; SSSE3-NEXT:    retq
 ;
 ; SSE41-LABEL: dot2_float4:
 ; SSE41:       # %bb.0:
-; SSE41-NEXT:    movups (%rdi), %xmm0
-; SSE41-NEXT:    movups (%rsi), %xmm1
-; SSE41-NEXT:    mulps %xmm0, %xmm1
-; SSE41-NEXT:    movshdup {{.*#+}} xmm0 = xmm1[1,1,3,3]
+; SSE41-NEXT:    movups (%rdi), %xmm1
+; SSE41-NEXT:    movups (%rsi), %xmm0
+; SSE41-NEXT:    mulps %xmm1, %xmm0
+; SSE41-NEXT:    movshdup {{.*#+}} xmm1 = xmm0[1,1,3,3]
 ; SSE41-NEXT:    addss %xmm1, %xmm0
 ; SSE41-NEXT:    retq
 ;
@@ -374,29 +389,29 @@ define float @dot2_float4(ptr dereferenceable(16) %a0, ptr dereferenceable(16) %
 define float @dot2_float2(ptr dereferenceable(16) %a0, ptr dereferenceable(16) %a1) {
 ; SSE2-LABEL: dot2_float2:
 ; SSE2:       # %bb.0:
-; SSE2-NEXT:    movsd {{.*#+}} xmm0 = mem[0],zero
 ; SSE2-NEXT:    movsd {{.*#+}} xmm1 = mem[0],zero
-; SSE2-NEXT:    mulps %xmm0, %xmm1
-; SSE2-NEXT:    movaps %xmm1, %xmm0
-; SSE2-NEXT:    shufps {{.*#+}} xmm0 = xmm0[1,1],xmm1[1,1]
+; SSE2-NEXT:    movsd {{.*#+}} xmm0 = mem[0],zero
+; SSE2-NEXT:    mulps %xmm1, %xmm0
+; SSE2-NEXT:    movaps %xmm0, %xmm1
+; SSE2-NEXT:    shufps {{.*#+}} xmm1 = xmm1[1,1],xmm0[1,1]
 ; SSE2-NEXT:    addss %xmm1, %xmm0
 ; SSE2-NEXT:    retq
 ;
 ; SSSE3-LABEL: dot2_float2:
 ; SSSE3:       # %bb.0:
-; SSSE3-NEXT:    movsd {{.*#+}} xmm0 = mem[0],zero
 ; SSSE3-NEXT:    movsd {{.*#+}} xmm1 = mem[0],zero
-; SSSE3-NEXT:    mulps %xmm0, %xmm1
-; SSSE3-NEXT:    movshdup {{.*#+}} xmm0 = xmm1[1,1,3,3]
+; SSSE3-NEXT:    movsd {{.*#+}} xmm0 = mem[0],zero
+; SSSE3-NEXT:    mulps %xmm1, %xmm0
+; SSSE3-NEXT:    movshdup {{.*#+}} xmm1 = xmm0[1,1,3,3]
 ; SSSE3-NEXT:    addss %xmm1, %xmm0
 ; SSSE3-NEXT:    retq
 ;
 ; SSE41-LABEL: dot2_float2:
 ; SSE41:       # %bb.0:
-; SSE41-NEXT:    movsd {{.*#+}} xmm0 = mem[0],zero
 ; SSE41-NEXT:    movsd {{.*#+}} xmm1 = mem[0],zero
-; SSE41-NEXT:    mulps %xmm0, %xmm1
-; SSE41-NEXT:    movshdup {{.*#+}} xmm0 = xmm1[1,1,3,3]
+; SSE41-NEXT:    movsd {{.*#+}} xmm0 = mem[0],zero
+; SSE41-NEXT:    mulps %xmm1, %xmm0
+; SSE41-NEXT:    movshdup {{.*#+}} xmm1 = xmm0[1,1,3,3]
 ; SSE41-NEXT:    addss %xmm1, %xmm0
 ; SSE41-NEXT:    retq
 ;

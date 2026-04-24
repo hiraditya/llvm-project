@@ -19,15 +19,16 @@ define double @test_ui64_to_double(i64 %x) {
 ; GISEL-X64:       # %bb.0: # %entry
 ; GISEL-X64-NEXT:    movabsq $4841369599423283200, %rax # imm = 0x4330000000000000
 ; GISEL-X64-NEXT:    movabsq $4985484787499139072, %rcx # imm = 0x4530000000000000
-; GISEL-X64-NEXT:    movsd {{.*#+}} xmm0 = [1.9342813118337666E+25,0.0E+0]
+; GISEL-X64-NEXT:    movsd {{.*#+}} xmm1 = [1.9342813118337666E+25,0.0E+0]
 ; GISEL-X64-NEXT:    movl $4294967295, %edx # imm = 0xFFFFFFFF
-; GISEL-X64-NEXT:    andq %rdi, %rdx
-; GISEL-X64-NEXT:    orq %rax, %rdx
+; GISEL-X64-NEXT:    movq %rdi, %rsi
+; GISEL-X64-NEXT:    andq %rdx, %rsi
+; GISEL-X64-NEXT:    orq %rsi, %rax
 ; GISEL-X64-NEXT:    shrq $32, %rdi
 ; GISEL-X64-NEXT:    orq %rdi, %rcx
-; GISEL-X64-NEXT:    movq %rcx, %xmm1
-; GISEL-X64-NEXT:    subsd %xmm0, %xmm1
-; GISEL-X64-NEXT:    movq %rdx, %xmm0
+; GISEL-X64-NEXT:    movq %rcx, %xmm0
+; GISEL-X64-NEXT:    subsd %xmm1, %xmm0
+; GISEL-X64-NEXT:    movq %rax, %xmm1
 ; GISEL-X64-NEXT:    addsd %xmm1, %xmm0
 ; GISEL-X64-NEXT:    retq
 ;
@@ -120,8 +121,8 @@ define float @test_ui64_to_float(i64 %x) {
 ; GISEL-X64-NEXT:    shrq %rax
 ; GISEL-X64-NEXT:    movq %rdi, %rcx
 ; GISEL-X64-NEXT:    andq $1, %rcx
-; GISEL-X64-NEXT:    orq %rax, %rcx
-; GISEL-X64-NEXT:    cvtsi2ss %rcx, %xmm1
+; GISEL-X64-NEXT:    orq %rcx, %rax
+; GISEL-X64-NEXT:    cvtsi2ss %rax, %xmm1
 ; GISEL-X64-NEXT:    addss %xmm1, %xmm1
 ; GISEL-X64-NEXT:    xorl %eax, %eax
 ; GISEL-X64-NEXT:    cmpq $0, %rdi
@@ -129,8 +130,8 @@ define float @test_ui64_to_float(i64 %x) {
 ; GISEL-X64-NEXT:    andl $1, %eax
 ; GISEL-X64-NEXT:    movd %xmm1, %eax
 ; GISEL-X64-NEXT:    movd %xmm0, %ecx
-; GISEL-X64-NEXT:    cmovnel %eax, %ecx
-; GISEL-X64-NEXT:    movd %ecx, %xmm0
+; GISEL-X64-NEXT:    cmovel %ecx, %eax
+; GISEL-X64-NEXT:    movd %eax, %xmm0
 ; GISEL-X64-NEXT:    retq
 ;
 ; AVX512-LABEL: test_ui64_to_float:
@@ -261,16 +262,18 @@ entry:
 define double @test_si31_to_double(i31 %x) {
 ; X64-LABEL: test_si31_to_double:
 ; X64:       # %bb.0: # %entry
-; X64-NEXT:    addl %edi, %edi
-; X64-NEXT:    sarl %edi
-; X64-NEXT:    cvtsi2sd %edi, %xmm0
+; X64-NEXT:    # kill: def $edi killed $edi def $rdi
+; X64-NEXT:    leal (%rdi,%rdi), %eax
+; X64-NEXT:    sarl %eax
+; X64-NEXT:    cvtsi2sd %eax, %xmm0
 ; X64-NEXT:    retq
 ;
 ; AVX512-LABEL: test_si31_to_double:
 ; AVX512:       # %bb.0: # %entry
-; AVX512-NEXT:    addl %edi, %edi
-; AVX512-NEXT:    sarl %edi
-; AVX512-NEXT:    vcvtsi2sd %edi, %xmm15, %xmm0
+; AVX512-NEXT:    # kill: def $edi killed $edi def $rdi
+; AVX512-NEXT:    leal (%rdi,%rdi), %eax
+; AVX512-NEXT:    sarl %eax
+; AVX512-NEXT:    vcvtsi2sd %eax, %xmm15, %xmm0
 ; AVX512-NEXT:    retq
 entry:
   %conv = sitofp i31 %x to double
@@ -359,16 +362,18 @@ entry:
 define float @test_si31_to_float(i31 %x) {
 ; X64-LABEL: test_si31_to_float:
 ; X64:       # %bb.0: # %entry
-; X64-NEXT:    addl %edi, %edi
-; X64-NEXT:    sarl %edi
-; X64-NEXT:    cvtsi2ss %edi, %xmm0
+; X64-NEXT:    # kill: def $edi killed $edi def $rdi
+; X64-NEXT:    leal (%rdi,%rdi), %eax
+; X64-NEXT:    sarl %eax
+; X64-NEXT:    cvtsi2ss %eax, %xmm0
 ; X64-NEXT:    retq
 ;
 ; AVX512-LABEL: test_si31_to_float:
 ; AVX512:       # %bb.0: # %entry
-; AVX512-NEXT:    addl %edi, %edi
-; AVX512-NEXT:    sarl %edi
-; AVX512-NEXT:    vcvtsi2ss %edi, %xmm15, %xmm0
+; AVX512-NEXT:    # kill: def $edi killed $edi def $rdi
+; AVX512-NEXT:    leal (%rdi,%rdi), %eax
+; AVX512-NEXT:    sarl %eax
+; AVX512-NEXT:    vcvtsi2ss %eax, %xmm15, %xmm0
 ; AVX512-NEXT:    retq
 entry:
   %conv = sitofp i31 %x to float

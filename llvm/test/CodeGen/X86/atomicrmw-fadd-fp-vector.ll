@@ -38,17 +38,16 @@ define <2 x half> @test_atomicrmw_fadd_v2f16_align4(ptr addrspace(1) %ptr, <2 x 
 ; CHECK-NEXT:    shll $16, %ecx
 ; CHECK-NEXT:    orl %ebp, %ecx
 ; CHECK-NEXT:    movdqa {{[-0-9]+}}(%r{{[sb]}}p), %xmm0 # 16-byte Reload
-; CHECK-NEXT:    pextrw $0, %xmm0, %edx
-; CHECK-NEXT:    shll $16, %edx
-; CHECK-NEXT:    movdqa {{[-0-9]+}}(%r{{[sb]}}p), %xmm0 # 16-byte Reload
 ; CHECK-NEXT:    pextrw $0, %xmm0, %eax
-; CHECK-NEXT:    movzwl %ax, %eax
+; CHECK-NEXT:    shll $16, %eax
+; CHECK-NEXT:    movdqa {{[-0-9]+}}(%r{{[sb]}}p), %xmm0 # 16-byte Reload
+; CHECK-NEXT:    pextrw $0, %xmm0, %edx
+; CHECK-NEXT:    movzwl %dx, %edx
 ; CHECK-NEXT:    orl %edx, %eax
 ; CHECK-NEXT:    lock cmpxchgl %ecx, (%rbx)
 ; CHECK-NEXT:    setne %cl
-; CHECK-NEXT:    movl %eax, %edx
+; CHECK-NEXT:    pinsrw $0, %eax, %xmm0
 ; CHECK-NEXT:    shrl $16, %eax
-; CHECK-NEXT:    pinsrw $0, %edx, %xmm0
 ; CHECK-NEXT:    pinsrw $0, %eax, %xmm1
 ; CHECK-NEXT:    testb %cl, %cl
 ; CHECK-NEXT:    jne .LBB0_1

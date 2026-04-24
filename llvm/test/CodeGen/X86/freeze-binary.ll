@@ -63,7 +63,9 @@ define i32 @freeze_and_extra_use2(i32 %a0, ptr %escape) nounwind {
 define <2 x i64> @freeze_and_vec(<2 x i64> %a0) nounwind {
 ; X86-LABEL: freeze_and_vec:
 ; X86:       # %bb.0:
-; X86-NEXT:    andps {{\.?LCPI[0-9]+_[0-9]+}}, %xmm0
+; X86-NEXT:    movaps {{.*#+}} xmm1 = [7,0,7,0]
+; X86-NEXT:    andps %xmm0, %xmm1
+; X86-NEXT:    movaps %xmm1, %xmm0
 ; X86-NEXT:    retl
 ;
 ; X64-LABEL: freeze_and_vec:
@@ -97,7 +99,9 @@ define i32 @freeze_or(i32 %a0) nounwind {
 define <2 x i64> @freeze_or_vec(<2 x i64> %a0) nounwind {
 ; X86-LABEL: freeze_or_vec:
 ; X86:       # %bb.0:
-; X86-NEXT:    orps {{\.?LCPI[0-9]+_[0-9]+}}, %xmm0
+; X86-NEXT:    movaps {{.*#+}} xmm1 = [15,0,15,0]
+; X86-NEXT:    orps %xmm0, %xmm1
+; X86-NEXT:    movaps %xmm1, %xmm0
 ; X86-NEXT:    retl
 ;
 ; X64-LABEL: freeze_or_vec:
@@ -132,7 +136,8 @@ define <8 x i16> @freeze_xor_vec(<8 x i16> %a0) nounwind {
 ; X86-LABEL: freeze_xor_vec:
 ; X86:       # %bb.0:
 ; X86-NEXT:    pcmpeqd %xmm1, %xmm1
-; X86-NEXT:    pxor %xmm1, %xmm0
+; X86-NEXT:    pxor %xmm0, %xmm1
+; X86-NEXT:    movdqa %xmm1, %xmm0
 ; X86-NEXT:    retl
 ;
 ; X64-LABEL: freeze_xor_vec:
@@ -185,7 +190,9 @@ define i32 @freeze_add_nsw(i32 %a0) nounwind {
 define <4 x i32> @freeze_add_vec(<4 x i32> %a0) nounwind {
 ; X86-LABEL: freeze_add_vec:
 ; X86:       # %bb.0:
-; X86-NEXT:    paddd {{\.?LCPI[0-9]+_[0-9]+}}, %xmm0 # [5,5,5,5]
+; X86-NEXT:    movdqa {{.*#+}} xmm1 = [5,5,5,5]
+; X86-NEXT:    paddd %xmm0, %xmm1
+; X86-NEXT:    movdqa %xmm1, %xmm0
 ; X86-NEXT:    retl
 ;
 ; X64-LABEL: freeze_add_vec:
@@ -202,8 +209,10 @@ define <4 x i32> @freeze_add_vec(<4 x i32> %a0) nounwind {
 define <4 x i32> @freeze_add_vec_undef(<4 x i32> %a0) nounwind {
 ; X86-LABEL: freeze_add_vec_undef:
 ; X86:       # %bb.0:
-; X86-NEXT:    paddd {{\.?LCPI[0-9]+_[0-9]+}}, %xmm0 # [1,2,3,0]
-; X86-NEXT:    paddd {{\.?LCPI[0-9]+_[0-9]+}}, %xmm0 # [4,3,2,u]
+; X86-NEXT:    movdqa {{.*#+}} xmm1 = [1,2,3,0]
+; X86-NEXT:    paddd %xmm0, %xmm1
+; X86-NEXT:    movdqa {{.*#+}} xmm0 = [4,3,2,u]
+; X86-NEXT:    paddd %xmm1, %xmm0
 ; X86-NEXT:    retl
 ;
 ; X64-LABEL: freeze_add_vec_undef:
@@ -292,7 +301,7 @@ define i32 @freeze_mul(i32 %a0) nounwind {
 ; X86-LABEL: freeze_mul:
 ; X86:       # %bb.0:
 ; X86-NEXT:    movl {{[0-9]+}}(%esp), %eax
-; X86-NEXT:    shll $2, %eax
+; X86-NEXT:    leal (,%eax,4), %eax
 ; X86-NEXT:    retl
 ;
 ; X64-LABEL: freeze_mul:
@@ -329,7 +338,9 @@ define i32 @freeze_mul_nsw(i32 %a0) nounwind {
 define <8 x i16> @freeze_mul_vec(<8 x i16> %a0) nounwind {
 ; X86-LABEL: freeze_mul_vec:
 ; X86:       # %bb.0:
-; X86-NEXT:    pmullw {{\.?LCPI[0-9]+_[0-9]+}}, %xmm0 # [4,6,6,4,4,6,6,4]
+; X86-NEXT:    movdqa {{.*#+}} xmm1 = [4,6,6,4,4,6,6,4]
+; X86-NEXT:    pmullw %xmm0, %xmm1
+; X86-NEXT:    movdqa %xmm1, %xmm0
 ; X86-NEXT:    retl
 ;
 ; X64-LABEL: freeze_mul_vec:
@@ -345,8 +356,10 @@ define <8 x i16> @freeze_mul_vec(<8 x i16> %a0) nounwind {
 define <8 x i16> @freeze_mul_vec_undef(<8 x i16> %a0) nounwind {
 ; X86-LABEL: freeze_mul_vec_undef:
 ; X86:       # %bb.0:
-; X86-NEXT:    pmullw {{\.?LCPI[0-9]+_[0-9]+}}, %xmm0 # [1,2,3,4,4,3,0,1]
-; X86-NEXT:    pmullw {{\.?LCPI[0-9]+_[0-9]+}}, %xmm0 # [4,3,2,1,1,2,u,4]
+; X86-NEXT:    movdqa {{.*#+}} xmm1 = [1,2,3,4,4,3,0,1]
+; X86-NEXT:    pmullw %xmm0, %xmm1
+; X86-NEXT:    movdqa {{.*#+}} xmm0 = [4,3,2,1,1,2,u,4]
+; X86-NEXT:    pmullw %xmm1, %xmm0
 ; X86-NEXT:    retl
 ;
 ; X64-LABEL: freeze_mul_vec_undef:
@@ -364,7 +377,7 @@ define i32 @freeze_shl(i32 %a0) nounwind {
 ; X86-LABEL: freeze_shl:
 ; X86:       # %bb.0:
 ; X86-NEXT:    movl {{[0-9]+}}(%esp), %eax
-; X86-NEXT:    shll $3, %eax
+; X86-NEXT:    leal (,%eax,8), %eax
 ; X86-NEXT:    retl
 ;
 ; X64-LABEL: freeze_shl:
@@ -418,7 +431,8 @@ define <2 x i64> @freeze_shl_vec(<2 x i64> %a0) nounwind {
 ; X86-NEXT:    movdqa %xmm0, %xmm1
 ; X86-NEXT:    psllq $4, %xmm1
 ; X86-NEXT:    psllq $2, %xmm0
-; X86-NEXT:    movsd {{.*#+}} xmm0 = xmm1[0],xmm0[1]
+; X86-NEXT:    shufps {{.*#+}} xmm1 = xmm1[0,1],xmm0[2,3]
+; X86-NEXT:    movaps %xmm1, %xmm0
 ; X86-NEXT:    retl
 ;
 ; X64-LABEL: freeze_shl_vec:
@@ -703,7 +717,8 @@ define <4 x i32> @freeze_rotl_vec(<4 x i32> %a0) nounwind {
 ; X86-NEXT:    movdqa %xmm0, %xmm1
 ; X86-NEXT:    psrld $2, %xmm1
 ; X86-NEXT:    pslld $30, %xmm0
-; X86-NEXT:    por %xmm1, %xmm0
+; X86-NEXT:    por %xmm0, %xmm1
+; X86-NEXT:    movdqa %xmm1, %xmm0
 ; X86-NEXT:    retl
 ;
 ; X64-LABEL: freeze_rotl_vec:
@@ -744,7 +759,8 @@ define <4 x i32> @freeze_rotr_vec(<4 x i32> %a0) nounwind {
 ; X86-NEXT:    movdqa %xmm0, %xmm1
 ; X86-NEXT:    psrld $31, %xmm1
 ; X86-NEXT:    paddd %xmm0, %xmm0
-; X86-NEXT:    por %xmm1, %xmm0
+; X86-NEXT:    por %xmm0, %xmm1
+; X86-NEXT:    movdqa %xmm1, %xmm0
 ; X86-NEXT:    retl
 ;
 ; X64-LABEL: freeze_rotr_vec:
@@ -809,18 +825,20 @@ define i32 @freeze_fshr(i32 %a0, i32 %a1, i32 %a2) nounwind {
 define i32 @freeze_saddo(i32 %a0, i32 %a1, i8 %a2, i8 %a3) nounwind {
 ; X86-LABEL: freeze_saddo:
 ; X86:       # %bb.0:
+; X86-NEXT:    movl {{[0-9]+}}(%esp), %ecx
+; X86-NEXT:    movzbl {{[0-9]+}}(%esp), %eax
+; X86-NEXT:    movzbl {{[0-9]+}}(%esp), %edx
+; X86-NEXT:    addb %al, %dl
+; X86-NEXT:    adcl $0, %ecx
 ; X86-NEXT:    movl {{[0-9]+}}(%esp), %eax
-; X86-NEXT:    movzbl {{[0-9]+}}(%esp), %ecx
-; X86-NEXT:    addb {{[0-9]+}}(%esp), %cl
-; X86-NEXT:    adcl $0, %eax
-; X86-NEXT:    addl {{[0-9]+}}(%esp), %eax
+; X86-NEXT:    addl %ecx, %eax
 ; X86-NEXT:    retl
 ;
 ; X64-LABEL: freeze_saddo:
 ; X64:       # %bb.0:
-; X64-NEXT:    movl %edi, %eax
+; X64-NEXT:    movl %esi, %eax
 ; X64-NEXT:    addb %cl, %dl
-; X64-NEXT:    adcl %esi, %eax
+; X64-NEXT:    adcl %edi, %eax
 ; X64-NEXT:    retq
   %b = call {i8, i1} @llvm.uadd.with.overflow.i8(i8 %a2, i8 %a3)
   %b.o = extractvalue {i8, i1} %b, 1
@@ -837,18 +855,20 @@ define i32 @freeze_saddo(i32 %a0, i32 %a1, i8 %a2, i8 %a3) nounwind {
 define i32 @freeze_uaddo(i32 %a0, i32 %a1, i8 %a2, i8 %a3) nounwind {
 ; X86-LABEL: freeze_uaddo:
 ; X86:       # %bb.0:
+; X86-NEXT:    movl {{[0-9]+}}(%esp), %ecx
+; X86-NEXT:    movzbl {{[0-9]+}}(%esp), %eax
+; X86-NEXT:    movzbl {{[0-9]+}}(%esp), %edx
+; X86-NEXT:    addb %al, %dl
+; X86-NEXT:    adcl $0, %ecx
 ; X86-NEXT:    movl {{[0-9]+}}(%esp), %eax
-; X86-NEXT:    movzbl {{[0-9]+}}(%esp), %ecx
-; X86-NEXT:    addb {{[0-9]+}}(%esp), %cl
-; X86-NEXT:    adcl $0, %eax
-; X86-NEXT:    addl {{[0-9]+}}(%esp), %eax
+; X86-NEXT:    addl %ecx, %eax
 ; X86-NEXT:    retl
 ;
 ; X64-LABEL: freeze_uaddo:
 ; X64:       # %bb.0:
-; X64-NEXT:    movl %edi, %eax
+; X64-NEXT:    movl %esi, %eax
 ; X64-NEXT:    addb %cl, %dl
-; X64-NEXT:    adcl %esi, %eax
+; X64-NEXT:    adcl %edi, %eax
 ; X64-NEXT:    retq
   %b = call {i8, i1} @llvm.uadd.with.overflow.i8(i8 %a2, i8 %a3)
   %b.o = extractvalue {i8, i1} %b, 1
@@ -868,7 +888,8 @@ define i32 @freeze_ssubo(i32 %a0, i32 %a1, i8 %a2, i8 %a3) nounwind {
 ; X86-NEXT:    movl {{[0-9]+}}(%esp), %eax
 ; X86-NEXT:    movzbl {{[0-9]+}}(%esp), %ecx
 ; X86-NEXT:    xorl %edx, %edx
-; X86-NEXT:    addb {{[0-9]+}}(%esp), %cl
+; X86-NEXT:    movb {{[0-9]+}}(%esp), %ch
+; X86-NEXT:    addb %cl, %ch
 ; X86-NEXT:    setb %dl
 ; X86-NEXT:    movzbl %dl, %ecx
 ; X86-NEXT:    subl %ecx, %eax
@@ -900,7 +921,8 @@ define i32 @freeze_usubo(i32 %a0, i32 %a1, i8 %a2, i8 %a3) nounwind {
 ; X86-NEXT:    movl {{[0-9]+}}(%esp), %eax
 ; X86-NEXT:    movzbl {{[0-9]+}}(%esp), %ecx
 ; X86-NEXT:    xorl %edx, %edx
-; X86-NEXT:    addb {{[0-9]+}}(%esp), %cl
+; X86-NEXT:    movb {{[0-9]+}}(%esp), %ch
+; X86-NEXT:    addb %cl, %ch
 ; X86-NEXT:    setb %dl
 ; X86-NEXT:    movzbl %dl, %ecx
 ; X86-NEXT:    subl %ecx, %eax
@@ -1008,8 +1030,8 @@ define void @pr59676_frozen(ptr %dst, i32 %x.orig) {
 ; X86-NEXT:    movl %edx, %eax
 ; X86-NEXT:    shrl $31, %eax
 ; X86-NEXT:    sarl $3, %edx
-; X86-NEXT:    addl %eax, %edx
-; X86-NEXT:    movl %edx, (%ecx)
+; X86-NEXT:    addl %edx, %eax
+; X86-NEXT:    movl %eax, (%ecx)
 ; X86-NEXT:    retl
 ;
 ; X64-LABEL: pr59676_frozen:
@@ -1046,8 +1068,8 @@ define void @pr59676_nsw_frozen(ptr %dst, i32 %x.orig) {
 ; X86-NEXT:    movl %edx, %eax
 ; X86-NEXT:    shrl $31, %eax
 ; X86-NEXT:    sarl $3, %edx
-; X86-NEXT:    addl %eax, %edx
-; X86-NEXT:    movl %edx, (%ecx)
+; X86-NEXT:    addl %edx, %eax
+; X86-NEXT:    movl %eax, (%ecx)
 ; X86-NEXT:    retl
 ;
 ; X64-LABEL: pr59676_nsw_frozen:
@@ -1084,8 +1106,8 @@ define void @pr59676_nsw(ptr %dst, i32 %x) {
 ; X86-NEXT:    movl %edx, %eax
 ; X86-NEXT:    shrl $31, %eax
 ; X86-NEXT:    sarl $3, %edx
-; X86-NEXT:    addl %eax, %edx
-; X86-NEXT:    movl %edx, (%ecx)
+; X86-NEXT:    addl %edx, %eax
+; X86-NEXT:    movl %eax, (%ecx)
 ; X86-NEXT:    retl
 ;
 ; X64-LABEL: pr59676_nsw:

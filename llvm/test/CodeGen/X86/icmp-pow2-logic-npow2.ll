@@ -19,8 +19,9 @@ define i1 @eq_pow_or(i32 %0) nounwind {
 ;
 ; X64-LABEL: eq_pow_or:
 ; X64:       # %bb.0:
-; X64-NEXT:    addl $32, %edi
-; X64-NEXT:    testl $-65, %edi
+; X64-NEXT:    # kill: def $edi killed $edi def $rdi
+; X64-NEXT:    leal 32(%rdi), %eax
+; X64-NEXT:    testl $-65, %eax
 ; X64-NEXT:    sete %al
 ; X64-NEXT:    retq
   %2 = icmp eq i32 %0, 32
@@ -40,8 +41,9 @@ define i1 @ne_pow_and(i8 %0) nounwind {
 ;
 ; X64-LABEL: ne_pow_and:
 ; X64:       # %bb.0:
-; X64-NEXT:    addb $16, %dil
-; X64-NEXT:    testb $-33, %dil
+; X64-NEXT:    # kill: def $edi killed $edi def $rdi
+; X64-NEXT:    leal 16(%rdi), %eax
+; X64-NEXT:    testb $-33, %al
 ; X64-NEXT:    setne %al
 ; X64-NEXT:    retq
   %2 = icmp ne i8 %0, 16
@@ -161,8 +163,9 @@ define i1 @abs_eq_pow2(i32 %0) nounwind {
 ;
 ; X64-LABEL: abs_eq_pow2:
 ; X64:       # %bb.0:
-; X64-NEXT:    addl $4, %edi
-; X64-NEXT:    testl $-9, %edi
+; X64-NEXT:    # kill: def $edi killed $edi def $rdi
+; X64-NEXT:    leal 4(%rdi), %eax
+; X64-NEXT:    testl $-9, %eax
 ; X64-NEXT:    sete %al
 ; X64-NEXT:    retq
   %2 = tail call i32 @llvm.abs.i32(i32 %0, i1 true)
@@ -178,14 +181,14 @@ define i1 @abs_ne_pow2(i64 %0) nounwind {
 ; X86-NEXT:    addl $2, %eax
 ; X86-NEXT:    adcl $0, %ecx
 ; X86-NEXT:    andl $-5, %eax
-; X86-NEXT:    orl %ecx, %eax
+; X86-NEXT:    orl %eax, %ecx
 ; X86-NEXT:    setne %al
 ; X86-NEXT:    retl
 ;
 ; X64-LABEL: abs_ne_pow2:
 ; X64:       # %bb.0:
-; X64-NEXT:    addq $2, %rdi
-; X64-NEXT:    testq $-5, %rdi
+; X64-NEXT:    leaq 2(%rdi), %rax
+; X64-NEXT:    testq $-5, %rax
 ; X64-NEXT:    setne %al
 ; X64-NEXT:    retq
   %2 = tail call i64 @llvm.abs.i64(i64 %0, i1 true)
@@ -242,10 +245,10 @@ define <2 x i1> @abs_ne_vec(<2 x i64> %0) nounwind {
 ; X86-NEXT:    subl %esi, %edi
 ; X86-NEXT:    sbbl %esi, %eax
 ; X86-NEXT:    xorl $8, %edi
-; X86-NEXT:    orl %eax, %edi
+; X86-NEXT:    orl %edi, %eax
 ; X86-NEXT:    setne %al
 ; X86-NEXT:    xorl $8, %edx
-; X86-NEXT:    orl %ecx, %edx
+; X86-NEXT:    orl %edx, %ecx
 ; X86-NEXT:    setne %dl
 ; X86-NEXT:    popl %esi
 ; X86-NEXT:    popl %edi
@@ -257,11 +260,12 @@ define <2 x i1> @abs_ne_vec(<2 x i64> %0) nounwind {
 ; X64-NEXT:    psrad $31, %xmm1
 ; X64-NEXT:    pxor %xmm1, %xmm0
 ; X64-NEXT:    psubq %xmm1, %xmm0
-; X64-NEXT:    pcmpeqd {{\.?LCPI[0-9]+_[0-9]+}}(%rip), %xmm0
-; X64-NEXT:    pshufd {{.*#+}} xmm1 = xmm0[1,0,3,2]
-; X64-NEXT:    pand %xmm1, %xmm0
-; X64-NEXT:    pcmpeqd %xmm1, %xmm1
-; X64-NEXT:    pxor %xmm1, %xmm0
+; X64-NEXT:    movdqa {{.*#+}} xmm1 = [8,8]
+; X64-NEXT:    pcmpeqd %xmm0, %xmm1
+; X64-NEXT:    pshufd {{.*#+}} xmm2 = xmm1[1,0,3,2]
+; X64-NEXT:    pand %xmm1, %xmm2
+; X64-NEXT:    pcmpeqd %xmm0, %xmm0
+; X64-NEXT:    pxor %xmm2, %xmm0
 ; X64-NEXT:    retq
   %2 = tail call <2 x i64> @llvm.abs.2xi64(<2 x i64> %0, i1 true)
   %3 = icmp ne <2 x i64> %2, <i64 8, i64 8>

@@ -144,14 +144,16 @@ entry:
 define dso_local ptr @f4() {
 ; X86_LINUX-LABEL: f4:
 ; X86_LINUX:       # %bb.0: # %entry
-; X86_LINUX-NEXT:    movl %gs:0, %eax
-; X86_LINUX-NEXT:    addl i2@INDNTPOFF, %eax
+; X86_LINUX-NEXT:    movl %gs:0, %ecx
+; X86_LINUX-NEXT:    movl i2@INDNTPOFF, %eax
+; X86_LINUX-NEXT:    addl %ecx, %eax
 ; X86_LINUX-NEXT:    retl
 ;
 ; X64_LINUX-LABEL: f4:
 ; X64_LINUX:       # %bb.0: # %entry
-; X64_LINUX-NEXT:    movq %fs:0, %rax
-; X64_LINUX-NEXT:    addq i2@GOTTPOFF(%rip), %rax
+; X64_LINUX-NEXT:    movq %fs:0, %rcx
+; X64_LINUX-NEXT:    movq i2@GOTTPOFF(%rip), %rax
+; X64_LINUX-NEXT:    addq %rcx, %rax
 ; X64_LINUX-NEXT:    retq
 ;
 ; X86_WIN-LABEL: f4:

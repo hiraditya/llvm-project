@@ -119,26 +119,26 @@ exit:
 define dso_local void @test3(i16 signext %0, i16 signext %1) nounwind {
 ; CHECK-LABEL: test3:
 ; CHECK:       # %bb.0:
+; CHECK-NEXT:    # kill: def $edi killed $edi def $rdi
 ; CHECK-NEXT:    vxorps %xmm0, %xmm0, %xmm0
 ; CHECK-NEXT:    vmovups %zmm0, -{{[0-9]+}}(%rsp)
 ; CHECK-NEXT:    movb $1, -{{[0-9]+}}(%rsp)
 ; CHECK-NEXT:    movw %si, -{{[0-9]+}}(%rsp)
-; CHECK-NEXT:    movb %dil, -{{[0-9]+}}(%rsp)
 ; CHECK-NEXT:    xorl %eax, %eax
 ; CHECK-NEXT:    testb %al, %al
 ; CHECK-NEXT:    jne .LBB2_2
 ; CHECK-NEXT:  # %bb.1: # %if.true
-; CHECK-NEXT:    incl %edi
+; CHECK-NEXT:    leal 1(%rdi), %eax
 ; CHECK-NEXT:    jmp .LBB2_3
 ; CHECK-NEXT:  .LBB2_2: # %if.false
-; CHECK-NEXT:    decl %edi
+; CHECK-NEXT:    leal -1(%rdi), %eax
 ; CHECK-NEXT:  .LBB2_3: # %exit
-; CHECK-NEXT:    movb %dil, -{{[0-9]+}}(%rsp)
+; CHECK-NEXT:    movb %al, -{{[0-9]+}}(%rsp)
 ; CHECK-NEXT:    ldtilecfg -{{[0-9]+}}(%rsp)
 ; CHECK-NEXT:    tilezero %tmm0
-; CHECK-NEXT:    movl $buf, %eax
-; CHECK-NEXT:    movl $32, %ecx
-; CHECK-NEXT:    tilestored %tmm0, (%rax,%rcx)
+; CHECK-NEXT:    movl $buf, %ecx
+; CHECK-NEXT:    movl $32, %edx
+; CHECK-NEXT:    tilestored %tmm0, (%rcx,%rdx)
 ; CHECK-NEXT:    tilerelease
 ; CHECK-NEXT:    vzeroupper
 ; CHECK-NEXT:    retq
@@ -162,42 +162,42 @@ exit:
 define dso_local void @test4(i16 signext %0, i16 signext %1) nounwind {
 ; CHECK-LABEL: test4:
 ; CHECK:       # %bb.0:
+; CHECK-NEXT:    # kill: def $edi killed $edi def $rdi
 ; CHECK-NEXT:    vxorps %xmm0, %xmm0, %xmm0
 ; CHECK-NEXT:    vmovups %zmm0, -{{[0-9]+}}(%rsp)
 ; CHECK-NEXT:    movb $1, -{{[0-9]+}}(%rsp)
 ; CHECK-NEXT:    movw %si, -{{[0-9]+}}(%rsp)
-; CHECK-NEXT:    movb %dil, -{{[0-9]+}}(%rsp)
 ; CHECK-NEXT:    xorl %eax, %eax
 ; CHECK-NEXT:    testb %al, %al
 ; CHECK-NEXT:    jne .LBB3_3
 ; CHECK-NEXT:  # %bb.1: # %if.true
-; CHECK-NEXT:    incl %edi
-; CHECK-NEXT:    movb %dil, -{{[0-9]+}}(%rsp)
+; CHECK-NEXT:    leal 1(%rdi), %eax
+; CHECK-NEXT:    movb %al, -{{[0-9]+}}(%rsp)
 ; CHECK-NEXT:    ldtilecfg -{{[0-9]+}}(%rsp)
-; CHECK-NEXT:    xorl %eax, %eax
-; CHECK-NEXT:    testb %al, %al
+; CHECK-NEXT:    xorl %ecx, %ecx
+; CHECK-NEXT:    testb %cl, %cl
 ; CHECK-NEXT:    jne .LBB3_4
 ; CHECK-NEXT:  .LBB3_2: # %amx2
-; CHECK-NEXT:    movl $32, %eax
-; CHECK-NEXT:    movl $buf+1024, %ecx
-; CHECK-NEXT:    tileloadd (%rcx,%rax), %tmm0
-; CHECK-NEXT:    movl $buf, %ecx
-; CHECK-NEXT:    tilestored %tmm0, (%rcx,%rax)
+; CHECK-NEXT:    movl $32, %ecx
+; CHECK-NEXT:    movl $buf+1024, %edx
+; CHECK-NEXT:    tileloadd (%rdx,%rcx), %tmm0
+; CHECK-NEXT:    movl $buf, %edx
+; CHECK-NEXT:    tilestored %tmm0, (%rdx,%rcx)
 ; CHECK-NEXT:    tilerelease
 ; CHECK-NEXT:    vzeroupper
 ; CHECK-NEXT:    retq
 ; CHECK-NEXT:  .LBB3_3: # %if.false
-; CHECK-NEXT:    decl %edi
-; CHECK-NEXT:    movb %dil, -{{[0-9]+}}(%rsp)
+; CHECK-NEXT:    leal -1(%rdi), %eax
+; CHECK-NEXT:    movb %al, -{{[0-9]+}}(%rsp)
 ; CHECK-NEXT:    ldtilecfg -{{[0-9]+}}(%rsp)
-; CHECK-NEXT:    xorl %eax, %eax
-; CHECK-NEXT:    testb %al, %al
+; CHECK-NEXT:    xorl %ecx, %ecx
+; CHECK-NEXT:    testb %cl, %cl
 ; CHECK-NEXT:    jne .LBB3_2
 ; CHECK-NEXT:  .LBB3_4: # %amx1
 ; CHECK-NEXT:    tilezero %tmm0
-; CHECK-NEXT:    movl $buf, %eax
-; CHECK-NEXT:    movl $32, %ecx
-; CHECK-NEXT:    tilestored %tmm0, (%rax,%rcx)
+; CHECK-NEXT:    movl $buf, %ecx
+; CHECK-NEXT:    movl $32, %edx
+; CHECK-NEXT:    tilestored %tmm0, (%rcx,%rdx)
 ; CHECK-NEXT:    tilerelease
 ; CHECK-NEXT:    vzeroupper
 ; CHECK-NEXT:    retq
@@ -230,6 +230,7 @@ exit:
 define dso_local void @test5(i16 signext %0, i16 signext %1) nounwind {
 ; CHECK-LABEL: test5:
 ; CHECK:       # %bb.0: # %entry
+; CHECK-NEXT:    # kill: def $esi killed $esi def $rsi
 ; CHECK-NEXT:    vxorps %xmm0, %xmm0, %xmm0
 ; CHECK-NEXT:    vmovups %zmm0, -{{[0-9]+}}(%rsp)
 ; CHECK-NEXT:    movb $1, -{{[0-9]+}}(%rsp)
@@ -238,8 +239,7 @@ define dso_local void @test5(i16 signext %0, i16 signext %1) nounwind {
 ; CHECK-NEXT:    xorl %eax, %eax
 ; CHECK-NEXT:    movl $buf, %ecx
 ; CHECK-NEXT:    movl $32, %edx
-; CHECK-NEXT:    movl %esi, %r8d
-; CHECK-NEXT:    decl %r8d
+; CHECK-NEXT:    leal -1(%rsi), %r8d
 ; CHECK-NEXT:    jmp .LBB4_1
 ; CHECK-NEXT:    .p2align 4
 ; CHECK-NEXT:  .LBB4_3: # %if.false

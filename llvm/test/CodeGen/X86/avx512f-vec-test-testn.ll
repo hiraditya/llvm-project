@@ -65,9 +65,9 @@ define zeroext i8 @TEST_mm512_mask_test_epi64_mask(i8 %__U, <8 x i64> %__A, <8 x
 ; X86-LABEL: TEST_mm512_mask_test_epi64_mask:
 ; X86:       # %bb.0: # %entry
 ; X86-NEXT:    vptestmq %zmm0, %zmm1, %k0
-; X86-NEXT:    kmovw %k0, %eax
-; X86-NEXT:    andb {{[0-9]+}}(%esp), %al
-; X86-NEXT:    # kill: def $al killed $al killed $eax
+; X86-NEXT:    kmovw %k0, %ecx
+; X86-NEXT:    movzbl {{[0-9]+}}(%esp), %eax
+; X86-NEXT:    andb %cl, %al
 ; X86-NEXT:    vzeroupper
 ; X86-NEXT:    retl
 entry:
@@ -93,9 +93,9 @@ define zeroext i16 @TEST_mm512_mask_test_epi32_mask(i16 %__U, <8 x i64> %__A, <8
 ; X86-LABEL: TEST_mm512_mask_test_epi32_mask:
 ; X86:       # %bb.0: # %entry
 ; X86-NEXT:    vptestmd %zmm0, %zmm1, %k0
-; X86-NEXT:    kmovw %k0, %eax
-; X86-NEXT:    andw {{[0-9]+}}(%esp), %ax
-; X86-NEXT:    # kill: def $ax killed $ax killed $eax
+; X86-NEXT:    kmovw %k0, %ecx
+; X86-NEXT:    movzwl {{[0-9]+}}(%esp), %eax
+; X86-NEXT:    andw %cx, %ax
 ; X86-NEXT:    vzeroupper
 ; X86-NEXT:    retl
 entry:
@@ -171,9 +171,9 @@ define zeroext i8 @TEST_mm512_mask_testn_epi64_mask(i8 %__U, <8 x i64> %__A, <8 
 ; X86-LABEL: TEST_mm512_mask_testn_epi64_mask:
 ; X86:       # %bb.0: # %entry
 ; X86-NEXT:    vptestnmq %zmm0, %zmm1, %k0
-; X86-NEXT:    kmovw %k0, %eax
-; X86-NEXT:    andb {{[0-9]+}}(%esp), %al
-; X86-NEXT:    # kill: def $al killed $al killed $eax
+; X86-NEXT:    kmovw %k0, %ecx
+; X86-NEXT:    movzbl {{[0-9]+}}(%esp), %eax
+; X86-NEXT:    andb %cl, %al
 ; X86-NEXT:    vzeroupper
 ; X86-NEXT:    retl
 entry:
@@ -199,9 +199,9 @@ define zeroext i16 @TEST_mm512_mask_testn_epi32_mask(i16 %__U, <8 x i64> %__A, <
 ; X86-LABEL: TEST_mm512_mask_testn_epi32_mask:
 ; X86:       # %bb.0: # %entry
 ; X86-NEXT:    vptestnmd %zmm0, %zmm1, %k0
-; X86-NEXT:    kmovw %k0, %eax
-; X86-NEXT:    andw {{[0-9]+}}(%esp), %ax
-; X86-NEXT:    # kill: def $ax killed $ax killed $eax
+; X86-NEXT:    kmovw %k0, %ecx
+; X86-NEXT:    movzwl {{[0-9]+}}(%esp), %eax
+; X86-NEXT:    andw %cx, %ax
 ; X86-NEXT:    vzeroupper
 ; X86-NEXT:    retl
 entry:
@@ -221,7 +221,7 @@ define <2 x i64> @setcc_commute(<2 x i64> %a) {
 ; CHECK-NEXT:    vpxor %xmm1, %xmm1, %xmm1
 ; CHECK-NEXT:    vpsubq %xmm0, %xmm1, %xmm1
 ; CHECK-NEXT:    vptestmq %zmm0, %zmm0, %k1
-; CHECK-NEXT:    vmovdqa64 %zmm1, %zmm0 {%k1}
+; CHECK-NEXT:    vpblendmq %zmm1, %zmm0, %zmm0 {%k1}
 ; CHECK-NEXT:    # kill: def $xmm0 killed $xmm0 killed $zmm0
 ; CHECK-NEXT:    vzeroupper
 ; CHECK-NEXT:    ret{{[l|q]}}

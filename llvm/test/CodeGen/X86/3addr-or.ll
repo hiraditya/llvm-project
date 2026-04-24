@@ -20,11 +20,12 @@ define i32 @test1(i32 %x) nounwind ssp {
 define i64 @test2(i8 %A, i8 %B) nounwind {
 ; CHECK-LABEL: test2:
 ; CHECK:       # %bb.0:
-; CHECK-NEXT:    shll $4, %edi
-; CHECK-NEXT:    andl $48, %edi
-; CHECK-NEXT:    movzbl %sil, %eax
-; CHECK-NEXT:    shrl $4, %eax
-; CHECK-NEXT:    orl %edi, %eax
+; CHECK-NEXT:    movl %edi, %eax
+; CHECK-NEXT:    shll $4, %eax
+; CHECK-NEXT:    andl $48, %eax
+; CHECK-NEXT:    movzbl %sil, %ecx
+; CHECK-NEXT:    shrl $4, %ecx
+; CHECK-NEXT:    orl %ecx, %eax
 ; CHECK-NEXT:    retq
   %C = zext i8 %A to i64
   %D = shl i64 %C, 4
@@ -41,9 +42,10 @@ define i64 @test2(i8 %A, i8 %B) nounwind {
 define void @test3(i32 %x, ptr %P) nounwind readnone ssp {
 ; CHECK-LABEL: test3:
 ; CHECK:       # %bb.0:
+; CHECK-NEXT:    # kill: def $edi killed $edi def $rdi
 ; CHECK-NEXT:    shll $5, %edi
-; CHECK-NEXT:    orl $3, %edi
-; CHECK-NEXT:    movl %edi, (%rsi)
+; CHECK-NEXT:    leal 3(%rdi), %eax
+; CHECK-NEXT:    movl %eax, (%rsi)
 ; CHECK-NEXT:    retq
   %t0 = shl i32 %x, 5
   %t1 = or i32 %t0, 3
@@ -54,11 +56,10 @@ define void @test3(i32 %x, ptr %P) nounwind readnone ssp {
 define i32 @test4(i32 %a, i32 %b) nounwind readnone ssp {
 ; CHECK-LABEL: test4:
 ; CHECK:       # %bb.0:
-; CHECK-NEXT:    # kill: def $esi killed $esi def $rsi
-; CHECK-NEXT:    # kill: def $edi killed $edi def $rdi
-; CHECK-NEXT:    andl $6, %edi
+; CHECK-NEXT:    movl %edi, %eax
+; CHECK-NEXT:    andl $6, %eax
 ; CHECK-NEXT:    andl $16, %esi
-; CHECK-NEXT:    leal (%rsi,%rdi), %eax
+; CHECK-NEXT:    orl %esi, %eax
 ; CHECK-NEXT:    retq
   %and = and i32 %a, 6
   %and2 = and i32 %b, 16
@@ -71,8 +72,8 @@ define void @test5(i32 %a, i32 %b, ptr nocapture %P) nounwind ssp {
 ; CHECK:       # %bb.0:
 ; CHECK-NEXT:    andl $6, %edi
 ; CHECK-NEXT:    andl $16, %esi
-; CHECK-NEXT:    orl %edi, %esi
-; CHECK-NEXT:    movl %esi, (%rdx)
+; CHECK-NEXT:    orl %esi, %edi
+; CHECK-NEXT:    movl %edi, (%rdx)
 ; CHECK-NEXT:    retq
   %and = and i32 %a, 6
   %and2 = and i32 %b, 16

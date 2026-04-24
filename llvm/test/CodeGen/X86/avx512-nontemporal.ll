@@ -17,21 +17,27 @@ define i32 @f(<16 x float> %A, <16 x float> %AA, ptr %B, <8 x double> %C, <8 x d
 ; CHECK-NEXT:    vaddps %zmm1, %zmm0, %zmm0
 ; CHECK-NEXT:    vmovntps %zmm0, (%rdi)
 ; CHECK-NEXT:    vpaddq %zmm5, %zmm4, %zmm0
-; CHECK-NEXT:    addl (%rsi), %eax
+; CHECK-NEXT:    movl (%rsi), %ecx
+; CHECK-NEXT:    addl %eax, %ecx
 ; CHECK-NEXT:    vmovntdq %zmm0, (%rdi)
 ; CHECK-NEXT:    vaddpd %zmm3, %zmm2, %zmm0
-; CHECK-NEXT:    addl (%rsi), %eax
+; CHECK-NEXT:    movl (%rsi), %eax
+; CHECK-NEXT:    addl %ecx, %eax
 ; CHECK-NEXT:    vmovntpd %zmm0, (%rdi)
 ; CHECK-NEXT:    vpaddd %zmm7, %zmm6, %zmm0
-; CHECK-NEXT:    addl (%rsi), %eax
+; CHECK-NEXT:    movl (%rsi), %ecx
+; CHECK-NEXT:    addl %eax, %ecx
 ; CHECK-NEXT:    vmovntdq %zmm0, (%rdi)
 ; CHECK-NEXT:    vpaddw 80(%rbp), %zmm9, %zmm0
-; CHECK-NEXT:    addl (%rsi), %eax
+; CHECK-NEXT:    movl (%rsi), %eax
+; CHECK-NEXT:    addl %ecx, %eax
 ; CHECK-NEXT:    vmovntdq %zmm0, (%rdi)
 ; CHECK-NEXT:    vpaddb 208(%rbp), %zmm8, %zmm0
-; CHECK-NEXT:    addl (%rsi), %eax
+; CHECK-NEXT:    movl (%rsi), %ecx
+; CHECK-NEXT:    addl %eax, %ecx
 ; CHECK-NEXT:    vmovntdq %zmm0, (%rdi)
-; CHECK-NEXT:    addl (%rsi), %eax
+; CHECK-NEXT:    movl (%rsi), %eax
+; CHECK-NEXT:    addl %ecx, %eax
 ; CHECK-NEXT:    movq %rbp, %rsp
 ; CHECK-NEXT:    popq %rbp
 ; CHECK-NEXT:    .cfi_def_cfa %rsp, 8

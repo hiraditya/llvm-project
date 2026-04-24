@@ -16,9 +16,9 @@ define i32 @masked_merge0_demorgan(i32 %a0, i32 %a1, i32 %a2) {
 ;
 ; BMI-LABEL: masked_merge0_demorgan:
 ; BMI:       # %bb.0:
-; BMI-NEXT:    orl %edi, %edx
 ; BMI-NEXT:    andnl %edi, %esi, %eax
-; BMI-NEXT:    andnl %edx, %eax, %eax
+; BMI-NEXT:    orl %edx, %edi
+; BMI-NEXT:    andnl %edi, %eax, %eax
 ; BMI-NEXT:    retq
   %not = xor i32 %a0, -1
   %or0 = or i32 %not, %a1
@@ -78,9 +78,9 @@ define i64 @masked_merge3_demorgan(i64 %a0, i64 %a1, i64 %a2) {
 ; BMI-LABEL: masked_merge3_demorgan:
 ; BMI:       # %bb.0:
 ; BMI-NEXT:    andnq %rdx, %rdi, %rax
-; BMI-NEXT:    andq %rdi, %rsi
-; BMI-NEXT:    notq %rsi
-; BMI-NEXT:    andnq %rsi, %rax, %rax
+; BMI-NEXT:    andq %rsi, %rdi
+; BMI-NEXT:    notq %rdi
+; BMI-NEXT:    andnq %rdi, %rax, %rax
 ; BMI-NEXT:    retq
   %not_a0  = xor i64 %a0, -1
   %not_a1  = xor i64 %a1, -1
@@ -94,11 +94,12 @@ define i64 @masked_merge3_demorgan(i64 %a0, i64 %a1, i64 %a2) {
 define i32 @not_a_masked_merge0_demorgan(i32 %a0, i32 %a1, i32 %a2) {
 ; CHECK-LABEL: not_a_masked_merge0_demorgan:
 ; CHECK:       # %bb.0:
-; CHECK-NEXT:    orl %edi, %edx
 ; CHECK-NEXT:    movl %edi, %eax
-; CHECK-NEXT:    negl %eax
-; CHECK-NEXT:    orl %esi, %eax
-; CHECK-NEXT:    andl %edx, %eax
+; CHECK-NEXT:    movl %edi, %ecx
+; CHECK-NEXT:    negl %ecx
+; CHECK-NEXT:    orl %esi, %ecx
+; CHECK-NEXT:    orl %edx, %eax
+; CHECK-NEXT:    andl %ecx, %eax
 ; CHECK-NEXT:    retq
   %not_a_not = sub i32 0, %a0
   %or0 = or i32 %not_a_not, %a1
@@ -111,11 +112,11 @@ define i32 @not_a_masked_merge0_demorgan(i32 %a0, i32 %a1, i32 %a2) {
 define i32 @not_a_masked_merge1_demorgan(i32 %a0, i32 %a1, i32 %a2, i32 %a3) {
 ; NOBMI-LABEL: not_a_masked_merge1_demorgan:
 ; NOBMI:       # %bb.0:
-; NOBMI-NEXT:    movl %ecx, %eax
-; NOBMI-NEXT:    orl %edx, %edi
-; NOBMI-NEXT:    notl %eax
-; NOBMI-NEXT:    orl %esi, %eax
-; NOBMI-NEXT:    andl %edi, %eax
+; NOBMI-NEXT:    movl %edi, %eax
+; NOBMI-NEXT:    orl %edx, %eax
+; NOBMI-NEXT:    notl %ecx
+; NOBMI-NEXT:    orl %esi, %ecx
+; NOBMI-NEXT:    andl %ecx, %eax
 ; NOBMI-NEXT:    retq
 ;
 ; BMI-LABEL: not_a_masked_merge1_demorgan:
@@ -136,17 +137,17 @@ define i32 @not_a_masked_merge2_demorgan(i32 %a0, i32 %a1, i32 %a2) {
 ; NOBMI-LABEL: not_a_masked_merge2_demorgan:
 ; NOBMI:       # %bb.0:
 ; NOBMI-NEXT:    movl %edi, %eax
-; NOBMI-NEXT:    andl %edi, %edx
-; NOBMI-NEXT:    notl %eax
-; NOBMI-NEXT:    orl %esi, %eax
 ; NOBMI-NEXT:    andl %edx, %eax
+; NOBMI-NEXT:    notl %edi
+; NOBMI-NEXT:    orl %esi, %edi
+; NOBMI-NEXT:    andl %edi, %eax
 ; NOBMI-NEXT:    retq
 ;
 ; BMI-LABEL: not_a_masked_merge2_demorgan:
 ; BMI:       # %bb.0:
-; BMI-NEXT:    andl %edi, %edx
 ; BMI-NEXT:    andnl %edi, %esi, %eax
-; BMI-NEXT:    andnl %edx, %eax, %eax
+; BMI-NEXT:    andl %edx, %edi
+; BMI-NEXT:    andnl %edi, %eax, %eax
 ; BMI-NEXT:    retq
   %not_an_or1 = and i32 %a0, %a2
   %not = xor i32 %a0, -1
@@ -158,18 +159,19 @@ define i32 @not_a_masked_merge2_demorgan(i32 %a0, i32 %a1, i32 %a2) {
 define i32 @not_a_masked_merge3_demorgan(i32 %a0, i32 %a1, i32 %a2) {
 ; NOBMI-LABEL: not_a_masked_merge3_demorgan:
 ; NOBMI:       # %bb.0:
-; NOBMI-NEXT:    movl %esi, %eax
-; NOBMI-NEXT:    orl %edi, %edx
-; NOBMI-NEXT:    xorl %edi, %eax
-; NOBMI-NEXT:    notl %eax
-; NOBMI-NEXT:    andl %edx, %eax
+; NOBMI-NEXT:    movl %edi, %eax
+; NOBMI-NEXT:    orl %edx, %eax
+; NOBMI-NEXT:    xorl %esi, %edi
+; NOBMI-NEXT:    notl %edi
+; NOBMI-NEXT:    andl %edi, %eax
 ; NOBMI-NEXT:    retq
 ;
 ; BMI-LABEL: not_a_masked_merge3_demorgan:
 ; BMI:       # %bb.0:
-; BMI-NEXT:    orl %edi, %edx
-; BMI-NEXT:    xorl %edi, %esi
-; BMI-NEXT:    andnl %edx, %esi, %eax
+; BMI-NEXT:    movl %edi, %eax
+; BMI-NEXT:    orl %edx, %eax
+; BMI-NEXT:    xorl %esi, %edi
+; BMI-NEXT:    andnl %eax, %edi, %eax
 ; BMI-NEXT:    retq
   %or1 = or i32 %a0, %a2
   %not = xor i32 %a0, -1
@@ -196,20 +198,20 @@ define i32 @not_a_masked_merge4_demorgan(i32 %a0, i32 %a1, i32 %a2) {
 define i32 @masked_merge_no_transform0_demorgan(i32 %a0, i32 %a1, i32 %a2, ptr %p1) {
 ; NOBMI-LABEL: masked_merge_no_transform0_demorgan:
 ; NOBMI:       # %bb.0:
-; NOBMI-NEXT:    orl %edi, %edx
 ; NOBMI-NEXT:    movl %edi, %eax
 ; NOBMI-NEXT:    notl %eax
 ; NOBMI-NEXT:    orl %esi, %eax
-; NOBMI-NEXT:    andl %edx, %eax
-; NOBMI-NEXT:    movl %edx, (%rcx)
+; NOBMI-NEXT:    orl %edx, %edi
+; NOBMI-NEXT:    andl %edi, %eax
+; NOBMI-NEXT:    movl %edi, (%rcx)
 ; NOBMI-NEXT:    retq
 ;
 ; BMI-LABEL: masked_merge_no_transform0_demorgan:
 ; BMI:       # %bb.0:
-; BMI-NEXT:    orl %edi, %edx
 ; BMI-NEXT:    andnl %edi, %esi, %eax
-; BMI-NEXT:    andnl %edx, %eax, %eax
-; BMI-NEXT:    movl %edx, (%rcx)
+; BMI-NEXT:    orl %edx, %edi
+; BMI-NEXT:    andnl %edi, %eax, %eax
+; BMI-NEXT:    movl %edi, (%rcx)
 ; BMI-NEXT:    retq
   %not = xor i32 %a0, -1
   %or0 = or i32 %not, %a1
@@ -223,20 +225,21 @@ define i32 @masked_merge_no_transform0_demorgan(i32 %a0, i32 %a1, i32 %a2, ptr %
 define i32 @masked_merge_no_transform1_demorgan(i32 %a0, i32 %a1, i32 %a2, ptr %p1) {
 ; NOBMI-LABEL: masked_merge_no_transform1_demorgan:
 ; NOBMI:       # %bb.0:
-; NOBMI-NEXT:    movl %edx, %eax
-; NOBMI-NEXT:    orl %edi, %eax
+; NOBMI-NEXT:    movl %edi, %eax
 ; NOBMI-NEXT:    notl %edi
-; NOBMI-NEXT:    orl %edi, %esi
-; NOBMI-NEXT:    andl %esi, %eax
 ; NOBMI-NEXT:    movl %edi, (%rcx)
+; NOBMI-NEXT:    orl %esi, %edi
+; NOBMI-NEXT:    orl %edx, %eax
+; NOBMI-NEXT:    andl %edi, %eax
 ; NOBMI-NEXT:    retq
 ;
 ; BMI-LABEL: masked_merge_no_transform1_demorgan:
 ; BMI:       # %bb.0:
-; BMI-NEXT:    orl %edi, %edx
-; BMI-NEXT:    andnl %edi, %esi, %eax
+; BMI-NEXT:    movl %edi, %eax
+; BMI-NEXT:    andnl %edi, %esi, %esi
 ; BMI-NEXT:    notl %edi
-; BMI-NEXT:    andnl %edx, %eax, %eax
+; BMI-NEXT:    orl %edx, %eax
+; BMI-NEXT:    andnl %eax, %esi, %eax
 ; BMI-NEXT:    movl %edi, (%rcx)
 ; BMI-NEXT:    retq
   %not = xor i32 %a0, -1
@@ -251,10 +254,10 @@ define i32 @masked_merge_no_transform1_demorgan(i32 %a0, i32 %a1, i32 %a2, ptr %
 define i32 @masked_merge_no_transform2_demorgan(i32 %a0, i32 %a1, i32 %a2, ptr %p1) {
 ; CHECK-LABEL: masked_merge_no_transform2_demorgan:
 ; CHECK:       # %bb.0:
-; CHECK-NEXT:    movl %edx, %eax
-; CHECK-NEXT:    orl %edi, %eax
+; CHECK-NEXT:    movl %edi, %eax
 ; CHECK-NEXT:    notl %edi
 ; CHECK-NEXT:    orl %esi, %edi
+; CHECK-NEXT:    orl %edx, %eax
 ; CHECK-NEXT:    andl %edi, %eax
 ; CHECK-NEXT:    movl %edi, (%rcx)
 ; CHECK-NEXT:    retq

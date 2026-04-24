@@ -32,18 +32,18 @@ define i64 @test_mul_by_1(i64 %x) nounwind {
 define i64 @test_mul_by_2(i64 %x) {
 ; X86-LABEL: test_mul_by_2:
 ; X86:       # %bb.0:
-; X86-NEXT:    movl {{[0-9]+}}(%esp), %eax
+; X86-NEXT:    movl {{[0-9]+}}(%esp), %ecx
 ; X86-NEXT:    movl {{[0-9]+}}(%esp), %edx
-; X86-NEXT:    shldl $1, %eax, %edx
-; X86-NEXT:    addl %eax, %eax
+; X86-NEXT:    leal (%ecx,%ecx), %eax
+; X86-NEXT:    shldl $1, %ecx, %edx
 ; X86-NEXT:    retl
 ;
 ; X86-NOOPT-LABEL: test_mul_by_2:
 ; X86-NOOPT:       # %bb.0:
-; X86-NOOPT-NEXT:    movl {{[0-9]+}}(%esp), %eax
+; X86-NOOPT-NEXT:    movl {{[0-9]+}}(%esp), %ecx
 ; X86-NOOPT-NEXT:    movl {{[0-9]+}}(%esp), %edx
-; X86-NOOPT-NEXT:    shldl $1, %eax, %edx
-; X86-NOOPT-NEXT:    addl %eax, %eax
+; X86-NOOPT-NEXT:    leal (%ecx,%ecx), %eax
+; X86-NOOPT-NEXT:    shldl $1, %ecx, %edx
 ; X86-NOOPT-NEXT:    retl
 ;
 ; X64-LABEL: test_mul_by_2:
@@ -61,7 +61,8 @@ define i64 @test_mul_by_3(i64 %x) {
 ; X86-NEXT:    leal (%eax,%eax,2), %ecx
 ; X86-NEXT:    movl $3, %eax
 ; X86-NEXT:    mull {{[0-9]+}}(%esp)
-; X86-NEXT:    addl %ecx, %edx
+; X86-NEXT:    addl %edx, %ecx
+; X86-NEXT:    movl %ecx, %edx
 ; X86-NEXT:    retl
 ;
 ; X86-NOOPT-LABEL: test_mul_by_3:
@@ -69,7 +70,8 @@ define i64 @test_mul_by_3(i64 %x) {
 ; X86-NOOPT-NEXT:    movl $3, %eax
 ; X86-NOOPT-NEXT:    mull {{[0-9]+}}(%esp)
 ; X86-NOOPT-NEXT:    imull $3, {{[0-9]+}}(%esp), %ecx
-; X86-NOOPT-NEXT:    addl %ecx, %edx
+; X86-NOOPT-NEXT:    addl %edx, %ecx
+; X86-NOOPT-NEXT:    movl %ecx, %edx
 ; X86-NOOPT-NEXT:    retl
 ;
 ; X64-LABEL: test_mul_by_3:
@@ -83,18 +85,18 @@ define i64 @test_mul_by_3(i64 %x) {
 define i64 @test_mul_by_4(i64 %x) {
 ; X86-LABEL: test_mul_by_4:
 ; X86:       # %bb.0:
-; X86-NEXT:    movl {{[0-9]+}}(%esp), %eax
+; X86-NEXT:    movl {{[0-9]+}}(%esp), %ecx
 ; X86-NEXT:    movl {{[0-9]+}}(%esp), %edx
-; X86-NEXT:    shldl $2, %eax, %edx
-; X86-NEXT:    shll $2, %eax
+; X86-NEXT:    leal (,%ecx,4), %eax
+; X86-NEXT:    shldl $2, %ecx, %edx
 ; X86-NEXT:    retl
 ;
 ; X86-NOOPT-LABEL: test_mul_by_4:
 ; X86-NOOPT:       # %bb.0:
-; X86-NOOPT-NEXT:    movl {{[0-9]+}}(%esp), %eax
+; X86-NOOPT-NEXT:    movl {{[0-9]+}}(%esp), %ecx
 ; X86-NOOPT-NEXT:    movl {{[0-9]+}}(%esp), %edx
-; X86-NOOPT-NEXT:    shldl $2, %eax, %edx
-; X86-NOOPT-NEXT:    shll $2, %eax
+; X86-NOOPT-NEXT:    leal (,%ecx,4), %eax
+; X86-NOOPT-NEXT:    shldl $2, %ecx, %edx
 ; X86-NOOPT-NEXT:    retl
 ;
 ; X64-LABEL: test_mul_by_4:
@@ -112,7 +114,8 @@ define i64 @test_mul_by_5(i64 %x) {
 ; X86-NEXT:    leal (%eax,%eax,4), %ecx
 ; X86-NEXT:    movl $5, %eax
 ; X86-NEXT:    mull {{[0-9]+}}(%esp)
-; X86-NEXT:    addl %ecx, %edx
+; X86-NEXT:    addl %edx, %ecx
+; X86-NEXT:    movl %ecx, %edx
 ; X86-NEXT:    retl
 ;
 ; X86-NOOPT-LABEL: test_mul_by_5:
@@ -120,7 +123,8 @@ define i64 @test_mul_by_5(i64 %x) {
 ; X86-NOOPT-NEXT:    movl $5, %eax
 ; X86-NOOPT-NEXT:    mull {{[0-9]+}}(%esp)
 ; X86-NOOPT-NEXT:    imull $5, {{[0-9]+}}(%esp), %ecx
-; X86-NOOPT-NEXT:    addl %ecx, %edx
+; X86-NOOPT-NEXT:    addl %edx, %ecx
+; X86-NOOPT-NEXT:    movl %ecx, %edx
 ; X86-NOOPT-NEXT:    retl
 ;
 ; X64-LABEL: test_mul_by_5:
@@ -146,13 +150,14 @@ define i64 @test_mul_by_6(i64 %x) {
 ; X86-NOOPT-NEXT:    movl $6, %eax
 ; X86-NOOPT-NEXT:    mull {{[0-9]+}}(%esp)
 ; X86-NOOPT-NEXT:    imull $6, {{[0-9]+}}(%esp), %ecx
-; X86-NOOPT-NEXT:    addl %ecx, %edx
+; X86-NOOPT-NEXT:    addl %edx, %ecx
+; X86-NOOPT-NEXT:    movl %ecx, %edx
 ; X86-NOOPT-NEXT:    retl
 ;
 ; X64-OPT-LABEL: test_mul_by_6:
 ; X64-OPT:       # %bb.0:
-; X64-OPT-NEXT:    addq %rdi, %rdi
-; X64-OPT-NEXT:    leaq (%rdi,%rdi,2), %rax
+; X64-OPT-NEXT:    leaq (%rdi,%rdi), %rax
+; X64-OPT-NEXT:    leaq (%rax,%rax,2), %rax
 ; X64-OPT-NEXT:    retq
 ;
 ; X64-NOOPT-LABEL: test_mul_by_6:
@@ -178,7 +183,8 @@ define i64 @test_mul_by_7(i64 %x) {
 ; X86-NOOPT-NEXT:    movl $7, %eax
 ; X86-NOOPT-NEXT:    mull {{[0-9]+}}(%esp)
 ; X86-NOOPT-NEXT:    imull $7, {{[0-9]+}}(%esp), %ecx
-; X86-NOOPT-NEXT:    addl %ecx, %edx
+; X86-NOOPT-NEXT:    addl %edx, %ecx
+; X86-NOOPT-NEXT:    movl %ecx, %edx
 ; X86-NOOPT-NEXT:    retl
 ;
 ; X64-OPT-LABEL: test_mul_by_7:
@@ -198,18 +204,18 @@ define i64 @test_mul_by_7(i64 %x) {
 define i64 @test_mul_by_8(i64 %x) {
 ; X86-LABEL: test_mul_by_8:
 ; X86:       # %bb.0:
-; X86-NEXT:    movl {{[0-9]+}}(%esp), %eax
+; X86-NEXT:    movl {{[0-9]+}}(%esp), %ecx
 ; X86-NEXT:    movl {{[0-9]+}}(%esp), %edx
-; X86-NEXT:    shldl $3, %eax, %edx
-; X86-NEXT:    shll $3, %eax
+; X86-NEXT:    leal (,%ecx,8), %eax
+; X86-NEXT:    shldl $3, %ecx, %edx
 ; X86-NEXT:    retl
 ;
 ; X86-NOOPT-LABEL: test_mul_by_8:
 ; X86-NOOPT:       # %bb.0:
-; X86-NOOPT-NEXT:    movl {{[0-9]+}}(%esp), %eax
+; X86-NOOPT-NEXT:    movl {{[0-9]+}}(%esp), %ecx
 ; X86-NOOPT-NEXT:    movl {{[0-9]+}}(%esp), %edx
-; X86-NOOPT-NEXT:    shldl $3, %eax, %edx
-; X86-NOOPT-NEXT:    shll $3, %eax
+; X86-NOOPT-NEXT:    leal (,%ecx,8), %eax
+; X86-NOOPT-NEXT:    shldl $3, %ecx, %edx
 ; X86-NOOPT-NEXT:    retl
 ;
 ; X64-LABEL: test_mul_by_8:
@@ -227,7 +233,8 @@ define i64 @test_mul_by_9(i64 %x) {
 ; X86-NEXT:    leal (%eax,%eax,8), %ecx
 ; X86-NEXT:    movl $9, %eax
 ; X86-NEXT:    mull {{[0-9]+}}(%esp)
-; X86-NEXT:    addl %ecx, %edx
+; X86-NEXT:    addl %edx, %ecx
+; X86-NEXT:    movl %ecx, %edx
 ; X86-NEXT:    retl
 ;
 ; X86-NOOPT-LABEL: test_mul_by_9:
@@ -235,7 +242,8 @@ define i64 @test_mul_by_9(i64 %x) {
 ; X86-NOOPT-NEXT:    movl $9, %eax
 ; X86-NOOPT-NEXT:    mull {{[0-9]+}}(%esp)
 ; X86-NOOPT-NEXT:    imull $9, {{[0-9]+}}(%esp), %ecx
-; X86-NOOPT-NEXT:    addl %ecx, %edx
+; X86-NOOPT-NEXT:    addl %edx, %ecx
+; X86-NOOPT-NEXT:    movl %ecx, %edx
 ; X86-NOOPT-NEXT:    retl
 ;
 ; X64-LABEL: test_mul_by_9:
@@ -261,13 +269,14 @@ define i64 @test_mul_by_10(i64 %x) {
 ; X86-NOOPT-NEXT:    movl $10, %eax
 ; X86-NOOPT-NEXT:    mull {{[0-9]+}}(%esp)
 ; X86-NOOPT-NEXT:    imull $10, {{[0-9]+}}(%esp), %ecx
-; X86-NOOPT-NEXT:    addl %ecx, %edx
+; X86-NOOPT-NEXT:    addl %edx, %ecx
+; X86-NOOPT-NEXT:    movl %ecx, %edx
 ; X86-NOOPT-NEXT:    retl
 ;
 ; X64-OPT-LABEL: test_mul_by_10:
 ; X64-OPT:       # %bb.0:
-; X64-OPT-NEXT:    addq %rdi, %rdi
-; X64-OPT-NEXT:    leaq (%rdi,%rdi,4), %rax
+; X64-OPT-NEXT:    leaq (%rdi,%rdi), %rax
+; X64-OPT-NEXT:    leaq (%rax,%rax,4), %rax
 ; X64-OPT-NEXT:    retq
 ;
 ; X64-NOOPT-LABEL: test_mul_by_10:
@@ -286,7 +295,8 @@ define i64 @test_mul_by_11(i64 %x) {
 ; X86-NEXT:    leal (%eax,%ecx,2), %ecx
 ; X86-NEXT:    movl $11, %eax
 ; X86-NEXT:    mull {{[0-9]+}}(%esp)
-; X86-NEXT:    addl %ecx, %edx
+; X86-NEXT:    addl %edx, %ecx
+; X86-NEXT:    movl %ecx, %edx
 ; X86-NEXT:    retl
 ;
 ; X86-NOOPT-LABEL: test_mul_by_11:
@@ -294,7 +304,8 @@ define i64 @test_mul_by_11(i64 %x) {
 ; X86-NOOPT-NEXT:    movl $11, %eax
 ; X86-NOOPT-NEXT:    mull {{[0-9]+}}(%esp)
 ; X86-NOOPT-NEXT:    imull $11, {{[0-9]+}}(%esp), %ecx
-; X86-NOOPT-NEXT:    addl %ecx, %edx
+; X86-NOOPT-NEXT:    addl %edx, %ecx
+; X86-NOOPT-NEXT:    movl %ecx, %edx
 ; X86-NOOPT-NEXT:    retl
 ;
 ; X64-HSW-LABEL: test_mul_by_11:
@@ -337,13 +348,14 @@ define i64 @test_mul_by_12(i64 %x) {
 ; X86-NOOPT-NEXT:    movl $12, %eax
 ; X86-NOOPT-NEXT:    mull {{[0-9]+}}(%esp)
 ; X86-NOOPT-NEXT:    imull $12, {{[0-9]+}}(%esp), %ecx
-; X86-NOOPT-NEXT:    addl %ecx, %edx
+; X86-NOOPT-NEXT:    addl %edx, %ecx
+; X86-NOOPT-NEXT:    movl %ecx, %edx
 ; X86-NOOPT-NEXT:    retl
 ;
 ; X64-OPT-LABEL: test_mul_by_12:
 ; X64-OPT:       # %bb.0:
-; X64-OPT-NEXT:    shlq $2, %rdi
-; X64-OPT-NEXT:    leaq (%rdi,%rdi,2), %rax
+; X64-OPT-NEXT:    leaq (,%rdi,4), %rax
+; X64-OPT-NEXT:    leaq (%rax,%rax,2), %rax
 ; X64-OPT-NEXT:    retq
 ;
 ; X64-NOOPT-LABEL: test_mul_by_12:
@@ -362,7 +374,8 @@ define i64 @test_mul_by_13(i64 %x) {
 ; X86-NEXT:    leal (%eax,%ecx,4), %ecx
 ; X86-NEXT:    movl $13, %eax
 ; X86-NEXT:    mull {{[0-9]+}}(%esp)
-; X86-NEXT:    addl %ecx, %edx
+; X86-NEXT:    addl %edx, %ecx
+; X86-NEXT:    movl %ecx, %edx
 ; X86-NEXT:    retl
 ;
 ; X86-NOOPT-LABEL: test_mul_by_13:
@@ -370,7 +383,8 @@ define i64 @test_mul_by_13(i64 %x) {
 ; X86-NOOPT-NEXT:    movl $13, %eax
 ; X86-NOOPT-NEXT:    mull {{[0-9]+}}(%esp)
 ; X86-NOOPT-NEXT:    imull $13, {{[0-9]+}}(%esp), %ecx
-; X86-NOOPT-NEXT:    addl %ecx, %edx
+; X86-NOOPT-NEXT:    addl %edx, %ecx
+; X86-NOOPT-NEXT:    movl %ecx, %edx
 ; X86-NOOPT-NEXT:    retl
 ;
 ; X64-HSW-LABEL: test_mul_by_13:
@@ -407,7 +421,8 @@ define i64 @test_mul_by_14(i64 %x) {
 ; X86-NEXT:    subl %eax, %ecx
 ; X86-NEXT:    movl $14, %eax
 ; X86-NEXT:    mull {{[0-9]+}}(%esp)
-; X86-NEXT:    addl %ecx, %edx
+; X86-NEXT:    addl %edx, %ecx
+; X86-NEXT:    movl %ecx, %edx
 ; X86-NEXT:    retl
 ;
 ; X86-NOOPT-LABEL: test_mul_by_14:
@@ -415,7 +430,8 @@ define i64 @test_mul_by_14(i64 %x) {
 ; X86-NOOPT-NEXT:    movl $14, %eax
 ; X86-NOOPT-NEXT:    mull {{[0-9]+}}(%esp)
 ; X86-NOOPT-NEXT:    imull $14, {{[0-9]+}}(%esp), %ecx
-; X86-NOOPT-NEXT:    addl %ecx, %edx
+; X86-NOOPT-NEXT:    addl %edx, %ecx
+; X86-NOOPT-NEXT:    movl %ecx, %edx
 ; X86-NOOPT-NEXT:    retl
 ;
 ; X64-OPT-LABEL: test_mul_by_14:
@@ -442,7 +458,8 @@ define i64 @test_mul_by_15(i64 %x) {
 ; X86-NEXT:    mull {{[0-9]+}}(%esp)
 ; X86-NEXT:    leal (%ecx,%ecx,4), %ecx
 ; X86-NEXT:    leal (%ecx,%ecx,2), %ecx
-; X86-NEXT:    addl %ecx, %edx
+; X86-NEXT:    addl %edx, %ecx
+; X86-NEXT:    movl %ecx, %edx
 ; X86-NEXT:    retl
 ;
 ; X86-NOOPT-LABEL: test_mul_by_15:
@@ -450,7 +467,8 @@ define i64 @test_mul_by_15(i64 %x) {
 ; X86-NOOPT-NEXT:    movl $15, %eax
 ; X86-NOOPT-NEXT:    mull {{[0-9]+}}(%esp)
 ; X86-NOOPT-NEXT:    imull $15, {{[0-9]+}}(%esp), %ecx
-; X86-NOOPT-NEXT:    addl %ecx, %edx
+; X86-NOOPT-NEXT:    addl %edx, %ecx
+; X86-NOOPT-NEXT:    movl %ecx, %edx
 ; X86-NOOPT-NEXT:    retl
 ;
 ; X64-OPT-LABEL: test_mul_by_15:
@@ -502,7 +520,8 @@ define i64 @test_mul_by_17(i64 %x) {
 ; X86-NEXT:    addl %eax, %ecx
 ; X86-NEXT:    movl $17, %eax
 ; X86-NEXT:    mull {{[0-9]+}}(%esp)
-; X86-NEXT:    addl %ecx, %edx
+; X86-NEXT:    addl %edx, %ecx
+; X86-NEXT:    movl %ecx, %edx
 ; X86-NEXT:    retl
 ;
 ; X86-NOOPT-LABEL: test_mul_by_17:
@@ -510,7 +529,8 @@ define i64 @test_mul_by_17(i64 %x) {
 ; X86-NOOPT-NEXT:    movl $17, %eax
 ; X86-NOOPT-NEXT:    mull {{[0-9]+}}(%esp)
 ; X86-NOOPT-NEXT:    imull $17, {{[0-9]+}}(%esp), %ecx
-; X86-NOOPT-NEXT:    addl %ecx, %edx
+; X86-NOOPT-NEXT:    addl %edx, %ecx
+; X86-NOOPT-NEXT:    movl %ecx, %edx
 ; X86-NOOPT-NEXT:    retl
 ;
 ; X64-OPT-LABEL: test_mul_by_17:
@@ -543,13 +563,14 @@ define i64 @test_mul_by_18(i64 %x) {
 ; X86-NOOPT-NEXT:    movl $18, %eax
 ; X86-NOOPT-NEXT:    mull {{[0-9]+}}(%esp)
 ; X86-NOOPT-NEXT:    imull $18, {{[0-9]+}}(%esp), %ecx
-; X86-NOOPT-NEXT:    addl %ecx, %edx
+; X86-NOOPT-NEXT:    addl %edx, %ecx
+; X86-NOOPT-NEXT:    movl %ecx, %edx
 ; X86-NOOPT-NEXT:    retl
 ;
 ; X64-OPT-LABEL: test_mul_by_18:
 ; X64-OPT:       # %bb.0:
-; X64-OPT-NEXT:    addq %rdi, %rdi
-; X64-OPT-NEXT:    leaq (%rdi,%rdi,8), %rax
+; X64-OPT-NEXT:    leaq (%rdi,%rdi), %rax
+; X64-OPT-NEXT:    leaq (%rax,%rax,8), %rax
 ; X64-OPT-NEXT:    retq
 ;
 ; X64-NOOPT-LABEL: test_mul_by_18:
@@ -568,7 +589,8 @@ define i64 @test_mul_by_19(i64 %x) {
 ; X86-NEXT:    leal (%eax,%ecx,2), %ecx
 ; X86-NEXT:    movl $19, %eax
 ; X86-NEXT:    mull {{[0-9]+}}(%esp)
-; X86-NEXT:    addl %ecx, %edx
+; X86-NEXT:    addl %edx, %ecx
+; X86-NEXT:    movl %ecx, %edx
 ; X86-NEXT:    retl
 ;
 ; X86-NOOPT-LABEL: test_mul_by_19:
@@ -576,7 +598,8 @@ define i64 @test_mul_by_19(i64 %x) {
 ; X86-NOOPT-NEXT:    movl $19, %eax
 ; X86-NOOPT-NEXT:    mull {{[0-9]+}}(%esp)
 ; X86-NOOPT-NEXT:    imull $19, {{[0-9]+}}(%esp), %ecx
-; X86-NOOPT-NEXT:    addl %ecx, %edx
+; X86-NOOPT-NEXT:    addl %edx, %ecx
+; X86-NOOPT-NEXT:    movl %ecx, %edx
 ; X86-NOOPT-NEXT:    retl
 ;
 ; X64-HSW-LABEL: test_mul_by_19:
@@ -619,13 +642,14 @@ define i64 @test_mul_by_20(i64 %x) {
 ; X86-NOOPT-NEXT:    movl $20, %eax
 ; X86-NOOPT-NEXT:    mull {{[0-9]+}}(%esp)
 ; X86-NOOPT-NEXT:    imull $20, {{[0-9]+}}(%esp), %ecx
-; X86-NOOPT-NEXT:    addl %ecx, %edx
+; X86-NOOPT-NEXT:    addl %edx, %ecx
+; X86-NOOPT-NEXT:    movl %ecx, %edx
 ; X86-NOOPT-NEXT:    retl
 ;
 ; X64-OPT-LABEL: test_mul_by_20:
 ; X64-OPT:       # %bb.0:
-; X64-OPT-NEXT:    shlq $2, %rdi
-; X64-OPT-NEXT:    leaq (%rdi,%rdi,4), %rax
+; X64-OPT-NEXT:    leaq (,%rdi,4), %rax
+; X64-OPT-NEXT:    leaq (%rax,%rax,4), %rax
 ; X64-OPT-NEXT:    retq
 ;
 ; X64-NOOPT-LABEL: test_mul_by_20:
@@ -644,7 +668,8 @@ define i64 @test_mul_by_21(i64 %x) {
 ; X86-NEXT:    leal (%eax,%ecx,4), %ecx
 ; X86-NEXT:    movl $21, %eax
 ; X86-NEXT:    mull {{[0-9]+}}(%esp)
-; X86-NEXT:    addl %ecx, %edx
+; X86-NEXT:    addl %edx, %ecx
+; X86-NEXT:    movl %ecx, %edx
 ; X86-NEXT:    retl
 ;
 ; X86-NOOPT-LABEL: test_mul_by_21:
@@ -652,7 +677,8 @@ define i64 @test_mul_by_21(i64 %x) {
 ; X86-NOOPT-NEXT:    movl $21, %eax
 ; X86-NOOPT-NEXT:    mull {{[0-9]+}}(%esp)
 ; X86-NOOPT-NEXT:    imull $21, {{[0-9]+}}(%esp), %ecx
-; X86-NOOPT-NEXT:    addl %ecx, %edx
+; X86-NOOPT-NEXT:    addl %edx, %ecx
+; X86-NOOPT-NEXT:    movl %ecx, %edx
 ; X86-NOOPT-NEXT:    retl
 ;
 ; X64-HSW-LABEL: test_mul_by_21:
@@ -686,13 +712,14 @@ define i64 @test_mul_by_22(i64 %x) {
 ; X86-NEXT:    pushl %esi
 ; X86-NEXT:    .cfi_def_cfa_offset 8
 ; X86-NEXT:    .cfi_offset %esi, -8
-; X86-NEXT:    movl {{[0-9]+}}(%esp), %ecx
-; X86-NEXT:    leal (%ecx,%ecx,4), %eax
-; X86-NEXT:    leal (%ecx,%eax,4), %esi
+; X86-NEXT:    movl {{[0-9]+}}(%esp), %esi
+; X86-NEXT:    leal (%esi,%esi,4), %eax
+; X86-NEXT:    leal (%esi,%eax,4), %ecx
 ; X86-NEXT:    movl $22, %eax
 ; X86-NEXT:    mull {{[0-9]+}}(%esp)
-; X86-NEXT:    addl %ecx, %edx
 ; X86-NEXT:    addl %esi, %edx
+; X86-NEXT:    addl %edx, %ecx
+; X86-NEXT:    movl %ecx, %edx
 ; X86-NEXT:    popl %esi
 ; X86-NEXT:    .cfi_def_cfa_offset 4
 ; X86-NEXT:    retl
@@ -702,7 +729,8 @@ define i64 @test_mul_by_22(i64 %x) {
 ; X86-NOOPT-NEXT:    movl $22, %eax
 ; X86-NOOPT-NEXT:    mull {{[0-9]+}}(%esp)
 ; X86-NOOPT-NEXT:    imull $22, {{[0-9]+}}(%esp), %ecx
-; X86-NOOPT-NEXT:    addl %ecx, %edx
+; X86-NOOPT-NEXT:    addl %edx, %ecx
+; X86-NOOPT-NEXT:    movl %ecx, %edx
 ; X86-NOOPT-NEXT:    retl
 ;
 ; X64-HSW-LABEL: test_mul_by_22:
@@ -750,20 +778,21 @@ define i64 @test_mul_by_23(i64 %x) nounwind {
 ; X86-NOOPT-NEXT:    movl $23, %eax
 ; X86-NOOPT-NEXT:    mull {{[0-9]+}}(%esp)
 ; X86-NOOPT-NEXT:    imull $23, {{[0-9]+}}(%esp), %ecx
-; X86-NOOPT-NEXT:    addl %ecx, %edx
+; X86-NOOPT-NEXT:    addl %edx, %ecx
+; X86-NOOPT-NEXT:    movl %ecx, %edx
 ; X86-NOOPT-NEXT:    retl
 ;
 ; X64-HSW-LABEL: test_mul_by_23:
 ; X64-HSW:       # %bb.0:
 ; X64-HSW-NEXT:    leaq (%rdi,%rdi,2), %rax
-; X64-HSW-NEXT:    shlq $3, %rax
+; X64-HSW-NEXT:    leaq (,%rax,8), %rax
 ; X64-HSW-NEXT:    subq %rdi, %rax
 ; X64-HSW-NEXT:    retq
 ;
 ; X64-JAG-LABEL: test_mul_by_23:
 ; X64-JAG:       # %bb.0:
 ; X64-JAG-NEXT:    leaq (%rdi,%rdi,2), %rax
-; X64-JAG-NEXT:    shlq $3, %rax
+; X64-JAG-NEXT:    leaq (,%rax,8), %rax
 ; X64-JAG-NEXT:    subq %rdi, %rax
 ; X64-JAG-NEXT:    retq
 ;
@@ -795,13 +824,14 @@ define i64 @test_mul_by_24(i64 %x) {
 ; X86-NOOPT-NEXT:    movl $24, %eax
 ; X86-NOOPT-NEXT:    mull {{[0-9]+}}(%esp)
 ; X86-NOOPT-NEXT:    imull $24, {{[0-9]+}}(%esp), %ecx
-; X86-NOOPT-NEXT:    addl %ecx, %edx
+; X86-NOOPT-NEXT:    addl %edx, %ecx
+; X86-NOOPT-NEXT:    movl %ecx, %edx
 ; X86-NOOPT-NEXT:    retl
 ;
 ; X64-OPT-LABEL: test_mul_by_24:
 ; X64-OPT:       # %bb.0:
-; X64-OPT-NEXT:    shlq $3, %rdi
-; X64-OPT-NEXT:    leaq (%rdi,%rdi,2), %rax
+; X64-OPT-NEXT:    leaq (,%rdi,8), %rax
+; X64-OPT-NEXT:    leaq (%rax,%rax,2), %rax
 ; X64-OPT-NEXT:    retq
 ;
 ; X64-NOOPT-LABEL: test_mul_by_24:
@@ -820,7 +850,8 @@ define i64 @test_mul_by_25(i64 %x) {
 ; X86-NEXT:    mull {{[0-9]+}}(%esp)
 ; X86-NEXT:    leal (%ecx,%ecx,4), %ecx
 ; X86-NEXT:    leal (%ecx,%ecx,4), %ecx
-; X86-NEXT:    addl %ecx, %edx
+; X86-NEXT:    addl %edx, %ecx
+; X86-NEXT:    movl %ecx, %edx
 ; X86-NEXT:    retl
 ;
 ; X86-NOOPT-LABEL: test_mul_by_25:
@@ -828,7 +859,8 @@ define i64 @test_mul_by_25(i64 %x) {
 ; X86-NOOPT-NEXT:    movl $25, %eax
 ; X86-NOOPT-NEXT:    mull {{[0-9]+}}(%esp)
 ; X86-NOOPT-NEXT:    imull $25, {{[0-9]+}}(%esp), %ecx
-; X86-NOOPT-NEXT:    addl %ecx, %edx
+; X86-NOOPT-NEXT:    addl %edx, %ecx
+; X86-NOOPT-NEXT:    movl %ecx, %edx
 ; X86-NOOPT-NEXT:    retl
 ;
 ; X64-OPT-LABEL: test_mul_by_25:
@@ -867,7 +899,8 @@ define i64 @test_mul_by_26(i64 %x) {
 ; X86-NOOPT-NEXT:    movl $26, %eax
 ; X86-NOOPT-NEXT:    mull {{[0-9]+}}(%esp)
 ; X86-NOOPT-NEXT:    imull $26, {{[0-9]+}}(%esp), %ecx
-; X86-NOOPT-NEXT:    addl %ecx, %edx
+; X86-NOOPT-NEXT:    addl %edx, %ecx
+; X86-NOOPT-NEXT:    movl %ecx, %edx
 ; X86-NOOPT-NEXT:    retl
 ;
 ; X64-HSW-LABEL: test_mul_by_26:
@@ -905,7 +938,8 @@ define i64 @test_mul_by_27(i64 %x) {
 ; X86-NEXT:    mull {{[0-9]+}}(%esp)
 ; X86-NEXT:    leal (%ecx,%ecx,8), %ecx
 ; X86-NEXT:    leal (%ecx,%ecx,2), %ecx
-; X86-NEXT:    addl %ecx, %edx
+; X86-NEXT:    addl %edx, %ecx
+; X86-NEXT:    movl %ecx, %edx
 ; X86-NEXT:    retl
 ;
 ; X86-NOOPT-LABEL: test_mul_by_27:
@@ -913,7 +947,8 @@ define i64 @test_mul_by_27(i64 %x) {
 ; X86-NOOPT-NEXT:    movl $27, %eax
 ; X86-NOOPT-NEXT:    mull {{[0-9]+}}(%esp)
 ; X86-NOOPT-NEXT:    imull $27, {{[0-9]+}}(%esp), %ecx
-; X86-NOOPT-NEXT:    addl %ecx, %edx
+; X86-NOOPT-NEXT:    addl %edx, %ecx
+; X86-NOOPT-NEXT:    movl %ecx, %edx
 ; X86-NOOPT-NEXT:    retl
 ;
 ; X64-OPT-LABEL: test_mul_by_27:
@@ -952,7 +987,8 @@ define i64 @test_mul_by_28(i64 %x) {
 ; X86-NOOPT-NEXT:    movl $28, %eax
 ; X86-NOOPT-NEXT:    mull {{[0-9]+}}(%esp)
 ; X86-NOOPT-NEXT:    imull $28, {{[0-9]+}}(%esp), %ecx
-; X86-NOOPT-NEXT:    addl %ecx, %edx
+; X86-NOOPT-NEXT:    addl %edx, %ecx
+; X86-NOOPT-NEXT:    movl %ecx, %edx
 ; X86-NOOPT-NEXT:    retl
 ;
 ; X64-HSW-LABEL: test_mul_by_28:
@@ -988,14 +1024,15 @@ define i64 @test_mul_by_29(i64 %x) {
 ; X86-NEXT:    pushl %esi
 ; X86-NEXT:    .cfi_def_cfa_offset 8
 ; X86-NEXT:    .cfi_offset %esi, -8
-; X86-NEXT:    movl {{[0-9]+}}(%esp), %ecx
-; X86-NEXT:    leal (%ecx,%ecx,8), %eax
-; X86-NEXT:    leal (%eax,%eax,2), %esi
-; X86-NEXT:    addl %ecx, %ecx
+; X86-NEXT:    movl {{[0-9]+}}(%esp), %eax
+; X86-NEXT:    leal (%eax,%eax,8), %ecx
+; X86-NEXT:    leal (%ecx,%ecx,2), %esi
+; X86-NEXT:    leal (%eax,%eax), %ecx
 ; X86-NEXT:    movl $29, %eax
 ; X86-NEXT:    mull {{[0-9]+}}(%esp)
-; X86-NEXT:    addl %ecx, %edx
-; X86-NEXT:    addl %esi, %edx
+; X86-NEXT:    addl %edx, %ecx
+; X86-NEXT:    addl %esi, %ecx
+; X86-NEXT:    movl %ecx, %edx
 ; X86-NEXT:    popl %esi
 ; X86-NEXT:    .cfi_def_cfa_offset 4
 ; X86-NEXT:    retl
@@ -1005,23 +1042,24 @@ define i64 @test_mul_by_29(i64 %x) {
 ; X86-NOOPT-NEXT:    movl $29, %eax
 ; X86-NOOPT-NEXT:    mull {{[0-9]+}}(%esp)
 ; X86-NOOPT-NEXT:    imull $29, {{[0-9]+}}(%esp), %ecx
-; X86-NOOPT-NEXT:    addl %ecx, %edx
+; X86-NOOPT-NEXT:    addl %edx, %ecx
+; X86-NOOPT-NEXT:    movl %ecx, %edx
 ; X86-NOOPT-NEXT:    retl
 ;
 ; X64-HSW-LABEL: test_mul_by_29:
 ; X64-HSW:       # %bb.0:
 ; X64-HSW-NEXT:    leaq (%rdi,%rdi,8), %rax
-; X64-HSW-NEXT:    leaq (%rax,%rax,2), %rax
-; X64-HSW-NEXT:    addq %rdi, %rax
-; X64-HSW-NEXT:    addq %rdi, %rax
+; X64-HSW-NEXT:    leaq (%rax,%rax,2), %rcx
+; X64-HSW-NEXT:    leaq (%rdi,%rdi), %rax
+; X64-HSW-NEXT:    addq %rcx, %rax
 ; X64-HSW-NEXT:    retq
 ;
 ; X64-JAG-LABEL: test_mul_by_29:
 ; X64-JAG:       # %bb.0:
 ; X64-JAG-NEXT:    leaq (%rdi,%rdi,8), %rax
-; X64-JAG-NEXT:    leaq (%rax,%rax,2), %rax
-; X64-JAG-NEXT:    addq %rdi, %rax
-; X64-JAG-NEXT:    addq %rdi, %rax
+; X64-JAG-NEXT:    leaq (%rax,%rax,2), %rcx
+; X64-JAG-NEXT:    leaq (%rdi,%rdi), %rax
+; X64-JAG-NEXT:    addq %rcx, %rax
 ; X64-JAG-NEXT:    retq
 ;
 ; X64-SLM-LABEL: test_mul_by_29:
@@ -1046,7 +1084,8 @@ define i64 @test_mul_by_30(i64 %x) {
 ; X86-NEXT:    subl %eax, %ecx
 ; X86-NEXT:    movl $30, %eax
 ; X86-NEXT:    mull {{[0-9]+}}(%esp)
-; X86-NEXT:    addl %ecx, %edx
+; X86-NEXT:    addl %edx, %ecx
+; X86-NEXT:    movl %ecx, %edx
 ; X86-NEXT:    retl
 ;
 ; X86-NOOPT-LABEL: test_mul_by_30:
@@ -1054,7 +1093,8 @@ define i64 @test_mul_by_30(i64 %x) {
 ; X86-NOOPT-NEXT:    movl $30, %eax
 ; X86-NOOPT-NEXT:    mull {{[0-9]+}}(%esp)
 ; X86-NOOPT-NEXT:    imull $30, {{[0-9]+}}(%esp), %ecx
-; X86-NOOPT-NEXT:    addl %ecx, %edx
+; X86-NOOPT-NEXT:    addl %edx, %ecx
+; X86-NOOPT-NEXT:    movl %ecx, %edx
 ; X86-NOOPT-NEXT:    retl
 ;
 ; X64-OPT-LABEL: test_mul_by_30:
@@ -1082,7 +1122,8 @@ define i64 @test_mul_by_31(i64 %x) {
 ; X86-NEXT:    subl %eax, %ecx
 ; X86-NEXT:    movl $31, %eax
 ; X86-NEXT:    mull {{[0-9]+}}(%esp)
-; X86-NEXT:    addl %ecx, %edx
+; X86-NEXT:    addl %edx, %ecx
+; X86-NEXT:    movl %ecx, %edx
 ; X86-NEXT:    retl
 ;
 ; X86-NOOPT-LABEL: test_mul_by_31:
@@ -1090,7 +1131,8 @@ define i64 @test_mul_by_31(i64 %x) {
 ; X86-NOOPT-NEXT:    movl $31, %eax
 ; X86-NOOPT-NEXT:    mull {{[0-9]+}}(%esp)
 ; X86-NOOPT-NEXT:    imull $31, {{[0-9]+}}(%esp), %ecx
-; X86-NOOPT-NEXT:    addl %ecx, %edx
+; X86-NOOPT-NEXT:    addl %edx, %ecx
+; X86-NOOPT-NEXT:    movl %ecx, %edx
 ; X86-NOOPT-NEXT:    retl
 ;
 ; X64-OPT-LABEL: test_mul_by_31:
@@ -1142,7 +1184,8 @@ define i64 @test_mul_by_37(i64 %x) {
 ; X86-NEXT:    leal (%eax,%ecx,4), %ecx
 ; X86-NEXT:    movl $37, %eax
 ; X86-NEXT:    mull {{[0-9]+}}(%esp)
-; X86-NEXT:    addl %ecx, %edx
+; X86-NEXT:    addl %edx, %ecx
+; X86-NEXT:    movl %ecx, %edx
 ; X86-NEXT:    retl
 ;
 ; X86-NOOPT-LABEL: test_mul_by_37:
@@ -1150,7 +1193,8 @@ define i64 @test_mul_by_37(i64 %x) {
 ; X86-NOOPT-NEXT:    movl $37, %eax
 ; X86-NOOPT-NEXT:    mull {{[0-9]+}}(%esp)
 ; X86-NOOPT-NEXT:    imull $37, {{[0-9]+}}(%esp), %ecx
-; X86-NOOPT-NEXT:    addl %ecx, %edx
+; X86-NOOPT-NEXT:    addl %edx, %ecx
+; X86-NOOPT-NEXT:    movl %ecx, %edx
 ; X86-NOOPT-NEXT:    retl
 ;
 ; X64-HSW-LABEL: test_mul_by_37:
@@ -1186,7 +1230,8 @@ define i64 @test_mul_by_41(i64 %x) {
 ; X86-NEXT:    leal (%eax,%ecx,8), %ecx
 ; X86-NEXT:    movl $41, %eax
 ; X86-NEXT:    mull {{[0-9]+}}(%esp)
-; X86-NEXT:    addl %ecx, %edx
+; X86-NEXT:    addl %edx, %ecx
+; X86-NEXT:    movl %ecx, %edx
 ; X86-NEXT:    retl
 ;
 ; X86-NOOPT-LABEL: test_mul_by_41:
@@ -1194,7 +1239,8 @@ define i64 @test_mul_by_41(i64 %x) {
 ; X86-NOOPT-NEXT:    movl $41, %eax
 ; X86-NOOPT-NEXT:    mull {{[0-9]+}}(%esp)
 ; X86-NOOPT-NEXT:    imull $41, {{[0-9]+}}(%esp), %ecx
-; X86-NOOPT-NEXT:    addl %ecx, %edx
+; X86-NOOPT-NEXT:    addl %edx, %ecx
+; X86-NOOPT-NEXT:    movl %ecx, %edx
 ; X86-NOOPT-NEXT:    retl
 ;
 ; X64-HSW-LABEL: test_mul_by_41:
@@ -1231,7 +1277,8 @@ define i64 @test_mul_by_62(i64 %x) {
 ; X86-NEXT:    subl %eax, %ecx
 ; X86-NEXT:    movl $62, %eax
 ; X86-NEXT:    mull {{[0-9]+}}(%esp)
-; X86-NEXT:    addl %ecx, %edx
+; X86-NEXT:    addl %edx, %ecx
+; X86-NEXT:    movl %ecx, %edx
 ; X86-NEXT:    retl
 ;
 ; X86-NOOPT-LABEL: test_mul_by_62:
@@ -1239,7 +1286,8 @@ define i64 @test_mul_by_62(i64 %x) {
 ; X86-NOOPT-NEXT:    movl $62, %eax
 ; X86-NOOPT-NEXT:    mull {{[0-9]+}}(%esp)
 ; X86-NOOPT-NEXT:    imull $62, {{[0-9]+}}(%esp), %ecx
-; X86-NOOPT-NEXT:    addl %ecx, %edx
+; X86-NOOPT-NEXT:    addl %edx, %ecx
+; X86-NOOPT-NEXT:    movl %ecx, %edx
 ; X86-NOOPT-NEXT:    retl
 ;
 ; X64-OPT-LABEL: test_mul_by_62:
@@ -1267,7 +1315,8 @@ define i64 @test_mul_by_66(i64 %x) {
 ; X86-NEXT:    leal (%ecx,%eax,2), %ecx
 ; X86-NEXT:    movl $66, %eax
 ; X86-NEXT:    mull {{[0-9]+}}(%esp)
-; X86-NEXT:    addl %ecx, %edx
+; X86-NEXT:    addl %edx, %ecx
+; X86-NEXT:    movl %ecx, %edx
 ; X86-NEXT:    retl
 ;
 ; X86-NOOPT-LABEL: test_mul_by_66:
@@ -1275,7 +1324,8 @@ define i64 @test_mul_by_66(i64 %x) {
 ; X86-NOOPT-NEXT:    movl $66, %eax
 ; X86-NOOPT-NEXT:    mull {{[0-9]+}}(%esp)
 ; X86-NOOPT-NEXT:    imull $66, {{[0-9]+}}(%esp), %ecx
-; X86-NOOPT-NEXT:    addl %ecx, %edx
+; X86-NOOPT-NEXT:    addl %edx, %ecx
+; X86-NOOPT-NEXT:    movl %ecx, %edx
 ; X86-NOOPT-NEXT:    retl
 ;
 ; X64-HSW-LABEL: test_mul_by_66:
@@ -1315,7 +1365,8 @@ define i64 @test_mul_by_73(i64 %x) {
 ; X86-NEXT:    leal (%eax,%ecx,8), %ecx
 ; X86-NEXT:    movl $73, %eax
 ; X86-NEXT:    mull {{[0-9]+}}(%esp)
-; X86-NEXT:    addl %ecx, %edx
+; X86-NEXT:    addl %edx, %ecx
+; X86-NEXT:    movl %ecx, %edx
 ; X86-NEXT:    retl
 ;
 ; X86-NOOPT-LABEL: test_mul_by_73:
@@ -1323,7 +1374,8 @@ define i64 @test_mul_by_73(i64 %x) {
 ; X86-NOOPT-NEXT:    movl $73, %eax
 ; X86-NOOPT-NEXT:    mull {{[0-9]+}}(%esp)
 ; X86-NOOPT-NEXT:    imull $73, {{[0-9]+}}(%esp), %ecx
-; X86-NOOPT-NEXT:    addl %ecx, %edx
+; X86-NOOPT-NEXT:    addl %edx, %ecx
+; X86-NOOPT-NEXT:    movl %ecx, %edx
 ; X86-NOOPT-NEXT:    retl
 ;
 ; X64-HSW-LABEL: test_mul_by_73:
@@ -1360,7 +1412,8 @@ define i64 @test_mul_by_520(i64 %x) {
 ; X86-NEXT:    leal (%ecx,%eax,8), %ecx
 ; X86-NEXT:    movl $520, %eax # imm = 0x208
 ; X86-NEXT:    mull {{[0-9]+}}(%esp)
-; X86-NEXT:    addl %ecx, %edx
+; X86-NEXT:    addl %edx, %ecx
+; X86-NEXT:    movl %ecx, %edx
 ; X86-NEXT:    retl
 ;
 ; X86-NOOPT-LABEL: test_mul_by_520:
@@ -1368,7 +1421,8 @@ define i64 @test_mul_by_520(i64 %x) {
 ; X86-NOOPT-NEXT:    movl $520, %eax # imm = 0x208
 ; X86-NOOPT-NEXT:    mull {{[0-9]+}}(%esp)
 ; X86-NOOPT-NEXT:    imull $520, {{[0-9]+}}(%esp), %ecx # imm = 0x208
-; X86-NOOPT-NEXT:    addl %ecx, %edx
+; X86-NOOPT-NEXT:    addl %edx, %ecx
+; X86-NOOPT-NEXT:    movl %ecx, %edx
 ; X86-NOOPT-NEXT:    retl
 ;
 ; X64-HSW-LABEL: test_mul_by_520:
@@ -1410,8 +1464,8 @@ define i64 @test_mul_by_neg10(i64 %x) {
 ; X86-NEXT:    movl %ecx, %eax
 ; X86-NEXT:    mull %edx
 ; X86-NEXT:    subl %ecx, %edx
-; X86-NEXT:    addl %esi, %esi
-; X86-NEXT:    leal (%esi,%esi,4), %ecx
+; X86-NEXT:    leal (%esi,%esi), %ecx
+; X86-NEXT:    leal (%ecx,%ecx,4), %ecx
 ; X86-NEXT:    subl %ecx, %edx
 ; X86-NEXT:    popl %esi
 ; X86-NEXT:    .cfi_def_cfa_offset 4
@@ -1425,13 +1479,14 @@ define i64 @test_mul_by_neg10(i64 %x) {
 ; X86-NOOPT-NEXT:    mull %edx
 ; X86-NOOPT-NEXT:    subl %ecx, %edx
 ; X86-NOOPT-NEXT:    imull $-10, {{[0-9]+}}(%esp), %ecx
-; X86-NOOPT-NEXT:    addl %ecx, %edx
+; X86-NOOPT-NEXT:    addl %edx, %ecx
+; X86-NOOPT-NEXT:    movl %ecx, %edx
 ; X86-NOOPT-NEXT:    retl
 ;
 ; X64-OPT-LABEL: test_mul_by_neg10:
 ; X64-OPT:       # %bb.0:
-; X64-OPT-NEXT:    addq %rdi, %rdi
-; X64-OPT-NEXT:    leaq (%rdi,%rdi,4), %rax
+; X64-OPT-NEXT:    leaq (%rdi,%rdi), %rax
+; X64-OPT-NEXT:    leaq (%rax,%rax,4), %rax
 ; X64-OPT-NEXT:    negq %rax
 ; X64-OPT-NEXT:    retq
 ;
@@ -1455,8 +1510,8 @@ define i64 @test_mul_by_neg36(i64 %x) {
 ; X86-NEXT:    movl %ecx, %eax
 ; X86-NEXT:    mull %edx
 ; X86-NEXT:    subl %ecx, %edx
-; X86-NEXT:    shll $2, %esi
-; X86-NEXT:    leal (%esi,%esi,8), %ecx
+; X86-NEXT:    leal (,%esi,4), %ecx
+; X86-NEXT:    leal (%ecx,%ecx,8), %ecx
 ; X86-NEXT:    subl %ecx, %edx
 ; X86-NEXT:    popl %esi
 ; X86-NEXT:    .cfi_def_cfa_offset 4
@@ -1470,13 +1525,14 @@ define i64 @test_mul_by_neg36(i64 %x) {
 ; X86-NOOPT-NEXT:    mull %edx
 ; X86-NOOPT-NEXT:    subl %ecx, %edx
 ; X86-NOOPT-NEXT:    imull $-36, {{[0-9]+}}(%esp), %ecx
-; X86-NOOPT-NEXT:    addl %ecx, %edx
+; X86-NOOPT-NEXT:    addl %edx, %ecx
+; X86-NOOPT-NEXT:    movl %ecx, %edx
 ; X86-NOOPT-NEXT:    retl
 ;
 ; X64-OPT-LABEL: test_mul_by_neg36:
 ; X64-OPT:       # %bb.0:
-; X64-OPT-NEXT:    shlq $2, %rdi
-; X64-OPT-NEXT:    leaq (%rdi,%rdi,8), %rax
+; X64-OPT-NEXT:    leaq (,%rdi,4), %rax
+; X64-OPT-NEXT:    leaq (%rax,%rax,8), %rax
 ; X64-OPT-NEXT:    negq %rax
 ; X64-OPT-NEXT:    retq
 ;
@@ -1492,74 +1548,68 @@ define i64 @test_mul_by_neg36(i64 %x) {
 define i64 @test_mul_spec(i64 %x) nounwind {
 ; X86-LABEL: test_mul_spec:
 ; X86:       # %bb.0:
-; X86-NEXT:    pushl %ebp
 ; X86-NEXT:    pushl %ebx
 ; X86-NEXT:    pushl %edi
 ; X86-NEXT:    pushl %esi
 ; X86-NEXT:    movl {{[0-9]+}}(%esp), %edi
-; X86-NEXT:    movl {{[0-9]+}}(%esp), %ebp
+; X86-NEXT:    movl {{[0-9]+}}(%esp), %ebx
 ; X86-NEXT:    movl $9, %ecx
 ; X86-NEXT:    movl %edi, %eax
 ; X86-NEXT:    mull %ecx
 ; X86-NEXT:    movl %eax, %esi
-; X86-NEXT:    movl %edx, %ecx
-; X86-NEXT:    leal (%ebp,%ebp,8), %eax
+; X86-NEXT:    leal (%ebx,%ebx,8), %ecx
 ; X86-NEXT:    addl $42, %esi
-; X86-NEXT:    adcl %eax, %ecx
+; X86-NEXT:    adcl %edx, %ecx
 ; X86-NEXT:    movl $5, %edx
 ; X86-NEXT:    movl %edi, %eax
 ; X86-NEXT:    mull %edx
 ; X86-NEXT:    movl %eax, %edi
-; X86-NEXT:    movl %edx, %ebx
-; X86-NEXT:    leal (%ebp,%ebp,4), %eax
+; X86-NEXT:    leal (%ebx,%ebx,4), %ebx
 ; X86-NEXT:    addl $2, %edi
-; X86-NEXT:    adcl %eax, %ebx
+; X86-NEXT:    adcl %edx, %ebx
 ; X86-NEXT:    movl %esi, %eax
 ; X86-NEXT:    mull %edi
 ; X86-NEXT:    imull %esi, %ebx
-; X86-NEXT:    addl %ebx, %edx
-; X86-NEXT:    imull %ecx, %edi
-; X86-NEXT:    addl %edi, %edx
+; X86-NEXT:    addl %edx, %ebx
+; X86-NEXT:    imull %edi, %ecx
+; X86-NEXT:    addl %ebx, %ecx
+; X86-NEXT:    movl %ecx, %edx
 ; X86-NEXT:    popl %esi
 ; X86-NEXT:    popl %edi
 ; X86-NEXT:    popl %ebx
-; X86-NEXT:    popl %ebp
 ; X86-NEXT:    retl
 ;
 ; X86-NOOPT-LABEL: test_mul_spec:
 ; X86-NOOPT:       # %bb.0:
-; X86-NOOPT-NEXT:    pushl %ebp
 ; X86-NOOPT-NEXT:    pushl %ebx
 ; X86-NOOPT-NEXT:    pushl %edi
 ; X86-NOOPT-NEXT:    pushl %esi
 ; X86-NOOPT-NEXT:    movl {{[0-9]+}}(%esp), %edi
-; X86-NOOPT-NEXT:    movl {{[0-9]+}}(%esp), %ebp
+; X86-NOOPT-NEXT:    movl {{[0-9]+}}(%esp), %ebx
 ; X86-NOOPT-NEXT:    movl $9, %ecx
 ; X86-NOOPT-NEXT:    movl %edi, %eax
 ; X86-NOOPT-NEXT:    mull %ecx
 ; X86-NOOPT-NEXT:    movl %eax, %esi
-; X86-NOOPT-NEXT:    movl %edx, %ecx
-; X86-NOOPT-NEXT:    leal (%ebp,%ebp,8), %eax
+; X86-NOOPT-NEXT:    leal (%ebx,%ebx,8), %ecx
 ; X86-NOOPT-NEXT:    addl $42, %esi
-; X86-NOOPT-NEXT:    adcl %eax, %ecx
+; X86-NOOPT-NEXT:    adcl %edx, %ecx
 ; X86-NOOPT-NEXT:    movl $5, %edx
 ; X86-NOOPT-NEXT:    movl %edi, %eax
 ; X86-NOOPT-NEXT:    mull %edx
 ; X86-NOOPT-NEXT:    movl %eax, %edi
-; X86-NOOPT-NEXT:    movl %edx, %ebx
-; X86-NOOPT-NEXT:    leal (%ebp,%ebp,4), %eax
+; X86-NOOPT-NEXT:    leal (%ebx,%ebx,4), %ebx
 ; X86-NOOPT-NEXT:    addl $2, %edi
-; X86-NOOPT-NEXT:    adcl %eax, %ebx
+; X86-NOOPT-NEXT:    adcl %edx, %ebx
 ; X86-NOOPT-NEXT:    movl %esi, %eax
 ; X86-NOOPT-NEXT:    mull %edi
 ; X86-NOOPT-NEXT:    imull %esi, %ebx
-; X86-NOOPT-NEXT:    addl %ebx, %edx
-; X86-NOOPT-NEXT:    imull %ecx, %edi
-; X86-NOOPT-NEXT:    addl %edi, %edx
+; X86-NOOPT-NEXT:    addl %edx, %ebx
+; X86-NOOPT-NEXT:    imull %edi, %ecx
+; X86-NOOPT-NEXT:    addl %ebx, %ecx
+; X86-NOOPT-NEXT:    movl %ecx, %edx
 ; X86-NOOPT-NEXT:    popl %esi
 ; X86-NOOPT-NEXT:    popl %edi
 ; X86-NOOPT-NEXT:    popl %ebx
-; X86-NOOPT-NEXT:    popl %ebp
 ; X86-NOOPT-NEXT:    retl
 ;
 ; X64-HSW-LABEL: test_mul_spec:
@@ -1620,11 +1670,11 @@ define i64 @PR111325(i64 %a0, i1 %a1) {
 ; X86:       # %bb.0: # %entry
 ; X86-NEXT:    movzbl {{[0-9]+}}(%esp), %ecx
 ; X86-NEXT:    andb $1, %cl
-; X86-NEXT:    xorl %eax, %eax
 ; X86-NEXT:    xorl %edx, %edx
-; X86-NEXT:    subl {{[0-9]+}}(%esp), %edx
+; X86-NEXT:    xorl %eax, %eax
+; X86-NEXT:    subl {{[0-9]+}}(%esp), %eax
 ; X86-NEXT:    cmpb $1, %cl
-; X86-NEXT:    sbbl %eax, %eax
+; X86-NEXT:    sbbl %edx, %edx
 ; X86-NEXT:    orl %edx, %eax
 ; X86-NEXT:    xorl %edx, %edx
 ; X86-NEXT:    retl
@@ -1633,22 +1683,68 @@ define i64 @PR111325(i64 %a0, i1 %a1) {
 ; X86-NOOPT:       # %bb.0: # %entry
 ; X86-NOOPT-NEXT:    movzbl {{[0-9]+}}(%esp), %ecx
 ; X86-NOOPT-NEXT:    andb $1, %cl
-; X86-NOOPT-NEXT:    xorl %eax, %eax
 ; X86-NOOPT-NEXT:    xorl %edx, %edx
-; X86-NOOPT-NEXT:    subl {{[0-9]+}}(%esp), %edx
+; X86-NOOPT-NEXT:    xorl %eax, %eax
+; X86-NOOPT-NEXT:    subl {{[0-9]+}}(%esp), %eax
 ; X86-NOOPT-NEXT:    cmpb $1, %cl
-; X86-NOOPT-NEXT:    sbbl %eax, %eax
+; X86-NOOPT-NEXT:    sbbl %edx, %edx
 ; X86-NOOPT-NEXT:    orl %edx, %eax
 ; X86-NOOPT-NEXT:    xorl %edx, %edx
 ; X86-NOOPT-NEXT:    retl
 ;
-; X64-LABEL: PR111325:
-; X64:       # %bb.0: # %entry
-; X64-NEXT:    negl %edi
-; X64-NEXT:    testb $1, %sil
-; X64-NEXT:    movl $4294967295, %eax # imm = 0xFFFFFFFF
-; X64-NEXT:    cmovneq %rdi, %rax
-; X64-NEXT:    retq
+; X64-HSW-LABEL: PR111325:
+; X64-HSW:       # %bb.0: # %entry
+; X64-HSW-NEXT:    movq %rdi, %rax
+; X64-HSW-NEXT:    negl %eax
+; X64-HSW-NEXT:    testb $1, %sil
+; X64-HSW-NEXT:    movl $4294967295, %ecx # imm = 0xFFFFFFFF
+; X64-HSW-NEXT:    cmoveq %rcx, %rax
+; X64-HSW-NEXT:    retq
+;
+; X64-JAG-LABEL: PR111325:
+; X64-JAG:       # %bb.0: # %entry
+; X64-JAG-NEXT:    movq %rdi, %rax
+; X64-JAG-NEXT:    movl $4294967295, %ecx # imm = 0xFFFFFFFF
+; X64-JAG-NEXT:    negl %eax
+; X64-JAG-NEXT:    testb $1, %sil
+; X64-JAG-NEXT:    cmoveq %rcx, %rax
+; X64-JAG-NEXT:    retq
+;
+; X64-SLM-LABEL: PR111325:
+; X64-SLM:       # %bb.0: # %entry
+; X64-SLM-NEXT:    movq %rdi, %rax
+; X64-SLM-NEXT:    movl $4294967295, %ecx # imm = 0xFFFFFFFF
+; X64-SLM-NEXT:    negl %eax
+; X64-SLM-NEXT:    testb $1, %sil
+; X64-SLM-NEXT:    cmoveq %rcx, %rax
+; X64-SLM-NEXT:    retq
+;
+; X64-HSW-NOOPT-LABEL: PR111325:
+; X64-HSW-NOOPT:       # %bb.0: # %entry
+; X64-HSW-NOOPT-NEXT:    movq %rdi, %rax
+; X64-HSW-NOOPT-NEXT:    negl %eax
+; X64-HSW-NOOPT-NEXT:    testb $1, %sil
+; X64-HSW-NOOPT-NEXT:    movl $4294967295, %ecx # imm = 0xFFFFFFFF
+; X64-HSW-NOOPT-NEXT:    cmoveq %rcx, %rax
+; X64-HSW-NOOPT-NEXT:    retq
+;
+; X64-JAG-NOOPT-LABEL: PR111325:
+; X64-JAG-NOOPT:       # %bb.0: # %entry
+; X64-JAG-NOOPT-NEXT:    movq %rdi, %rax
+; X64-JAG-NOOPT-NEXT:    movl $4294967295, %ecx # imm = 0xFFFFFFFF
+; X64-JAG-NOOPT-NEXT:    negl %eax
+; X64-JAG-NOOPT-NEXT:    testb $1, %sil
+; X64-JAG-NOOPT-NEXT:    cmoveq %rcx, %rax
+; X64-JAG-NOOPT-NEXT:    retq
+;
+; X64-SLM-NOOPT-LABEL: PR111325:
+; X64-SLM-NOOPT:       # %bb.0: # %entry
+; X64-SLM-NOOPT-NEXT:    movq %rdi, %rax
+; X64-SLM-NOOPT-NEXT:    movl $4294967295, %ecx # imm = 0xFFFFFFFF
+; X64-SLM-NOOPT-NEXT:    negl %eax
+; X64-SLM-NOOPT-NEXT:    testb $1, %sil
+; X64-SLM-NOOPT-NEXT:    cmoveq %rcx, %rax
+; X64-SLM-NOOPT-NEXT:    retq
 entry:
   %mul = mul i64 %a0, 4294967295
   %mask = and i64 %mul, 4294967295

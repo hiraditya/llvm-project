@@ -605,13 +605,16 @@ define <64 x i8> @test_v64i8(ptr %src) {
 define <4 x float> @test_arg_v4f32(<4 x float> %arg, ptr %src) {
 ; SSE2-LABEL: test_arg_v4f32:
 ; SSE2:       # %bb.0:
-; SSE2-NEXT:    addps (%rdi), %xmm0
+; SSE2-NEXT:    movaps (%rdi), %xmm1
+; SSE2-NEXT:    addps %xmm0, %xmm1
+; SSE2-NEXT:    movaps %xmm1, %xmm0
 ; SSE2-NEXT:    retq
 ;
 ; SSE41-LABEL: test_arg_v4f32:
 ; SSE41:       # %bb.0:
 ; SSE41-NEXT:    movntdqa (%rdi), %xmm1
-; SSE41-NEXT:    addps %xmm1, %xmm0
+; SSE41-NEXT:    addps %xmm0, %xmm1
+; SSE41-NEXT:    movaps %xmm1, %xmm0
 ; SSE41-NEXT:    retq
 ;
 ; AVX-LABEL: test_arg_v4f32:
@@ -633,13 +636,16 @@ define <4 x float> @test_arg_v4f32(<4 x float> %arg, ptr %src) {
 define <4 x i32> @test_arg_v4i32(<4 x i32> %arg, ptr %src) {
 ; SSE2-LABEL: test_arg_v4i32:
 ; SSE2:       # %bb.0:
-; SSE2-NEXT:    paddd (%rdi), %xmm0
+; SSE2-NEXT:    movdqa (%rdi), %xmm1
+; SSE2-NEXT:    paddd %xmm0, %xmm1
+; SSE2-NEXT:    movdqa %xmm1, %xmm0
 ; SSE2-NEXT:    retq
 ;
 ; SSE41-LABEL: test_arg_v4i32:
 ; SSE41:       # %bb.0:
 ; SSE41-NEXT:    movntdqa (%rdi), %xmm1
-; SSE41-NEXT:    paddd %xmm1, %xmm0
+; SSE41-NEXT:    paddd %xmm0, %xmm1
+; SSE41-NEXT:    movdqa %xmm1, %xmm0
 ; SSE41-NEXT:    retq
 ;
 ; AVX-LABEL: test_arg_v4i32:
@@ -661,13 +667,16 @@ define <4 x i32> @test_arg_v4i32(<4 x i32> %arg, ptr %src) {
 define <2 x double> @test_arg_v2f64(<2 x double> %arg, ptr %src) {
 ; SSE2-LABEL: test_arg_v2f64:
 ; SSE2:       # %bb.0:
-; SSE2-NEXT:    addpd (%rdi), %xmm0
+; SSE2-NEXT:    movapd (%rdi), %xmm1
+; SSE2-NEXT:    addpd %xmm0, %xmm1
+; SSE2-NEXT:    movapd %xmm1, %xmm0
 ; SSE2-NEXT:    retq
 ;
 ; SSE41-LABEL: test_arg_v2f64:
 ; SSE41:       # %bb.0:
 ; SSE41-NEXT:    movntdqa (%rdi), %xmm1
-; SSE41-NEXT:    addpd %xmm1, %xmm0
+; SSE41-NEXT:    addpd %xmm0, %xmm1
+; SSE41-NEXT:    movapd %xmm1, %xmm0
 ; SSE41-NEXT:    retq
 ;
 ; AVX-LABEL: test_arg_v2f64:
@@ -689,13 +698,16 @@ define <2 x double> @test_arg_v2f64(<2 x double> %arg, ptr %src) {
 define <2 x i64> @test_arg_v2i64(<2 x i64> %arg, ptr %src) {
 ; SSE2-LABEL: test_arg_v2i64:
 ; SSE2:       # %bb.0:
-; SSE2-NEXT:    paddq (%rdi), %xmm0
+; SSE2-NEXT:    movdqa (%rdi), %xmm1
+; SSE2-NEXT:    paddq %xmm0, %xmm1
+; SSE2-NEXT:    movdqa %xmm1, %xmm0
 ; SSE2-NEXT:    retq
 ;
 ; SSE41-LABEL: test_arg_v2i64:
 ; SSE41:       # %bb.0:
 ; SSE41-NEXT:    movntdqa (%rdi), %xmm1
-; SSE41-NEXT:    paddq %xmm1, %xmm0
+; SSE41-NEXT:    paddq %xmm0, %xmm1
+; SSE41-NEXT:    movdqa %xmm1, %xmm0
 ; SSE41-NEXT:    retq
 ;
 ; AVX-LABEL: test_arg_v2i64:
@@ -717,13 +729,16 @@ define <2 x i64> @test_arg_v2i64(<2 x i64> %arg, ptr %src) {
 define <8 x i16> @test_arg_v8i16(<8 x i16> %arg, ptr %src) {
 ; SSE2-LABEL: test_arg_v8i16:
 ; SSE2:       # %bb.0:
-; SSE2-NEXT:    paddw (%rdi), %xmm0
+; SSE2-NEXT:    movdqa (%rdi), %xmm1
+; SSE2-NEXT:    paddw %xmm0, %xmm1
+; SSE2-NEXT:    movdqa %xmm1, %xmm0
 ; SSE2-NEXT:    retq
 ;
 ; SSE41-LABEL: test_arg_v8i16:
 ; SSE41:       # %bb.0:
 ; SSE41-NEXT:    movntdqa (%rdi), %xmm1
-; SSE41-NEXT:    paddw %xmm1, %xmm0
+; SSE41-NEXT:    paddw %xmm0, %xmm1
+; SSE41-NEXT:    movdqa %xmm1, %xmm0
 ; SSE41-NEXT:    retq
 ;
 ; AVX-LABEL: test_arg_v8i16:
@@ -745,13 +760,16 @@ define <8 x i16> @test_arg_v8i16(<8 x i16> %arg, ptr %src) {
 define <16 x i8> @test_arg_v16i8(<16 x i8> %arg, ptr %src) {
 ; SSE2-LABEL: test_arg_v16i8:
 ; SSE2:       # %bb.0:
-; SSE2-NEXT:    paddb (%rdi), %xmm0
+; SSE2-NEXT:    movdqa (%rdi), %xmm1
+; SSE2-NEXT:    paddb %xmm0, %xmm1
+; SSE2-NEXT:    movdqa %xmm1, %xmm0
 ; SSE2-NEXT:    retq
 ;
 ; SSE41-LABEL: test_arg_v16i8:
 ; SSE41:       # %bb.0:
 ; SSE41-NEXT:    movntdqa (%rdi), %xmm1
-; SSE41-NEXT:    paddb %xmm1, %xmm0
+; SSE41-NEXT:    paddb %xmm0, %xmm1
+; SSE41-NEXT:    movdqa %xmm1, %xmm0
 ; SSE41-NEXT:    retq
 ;
 ; AVX-LABEL: test_arg_v16i8:
@@ -775,16 +793,22 @@ define <16 x i8> @test_arg_v16i8(<16 x i8> %arg, ptr %src) {
 define <8 x float> @test_arg_v8f32(<8 x float> %arg, ptr %src) {
 ; SSE2-LABEL: test_arg_v8f32:
 ; SSE2:       # %bb.0:
-; SSE2-NEXT:    addps (%rdi), %xmm0
-; SSE2-NEXT:    addps 16(%rdi), %xmm1
+; SSE2-NEXT:    movaps (%rdi), %xmm2
+; SSE2-NEXT:    addps %xmm0, %xmm2
+; SSE2-NEXT:    movaps 16(%rdi), %xmm3
+; SSE2-NEXT:    addps %xmm1, %xmm3
+; SSE2-NEXT:    movaps %xmm2, %xmm0
+; SSE2-NEXT:    movaps %xmm3, %xmm1
 ; SSE2-NEXT:    retq
 ;
 ; SSE41-LABEL: test_arg_v8f32:
 ; SSE41:       # %bb.0:
 ; SSE41-NEXT:    movntdqa 16(%rdi), %xmm2
 ; SSE41-NEXT:    movntdqa (%rdi), %xmm3
-; SSE41-NEXT:    addps %xmm3, %xmm0
-; SSE41-NEXT:    addps %xmm2, %xmm1
+; SSE41-NEXT:    addps %xmm0, %xmm3
+; SSE41-NEXT:    addps %xmm1, %xmm2
+; SSE41-NEXT:    movaps %xmm3, %xmm0
+; SSE41-NEXT:    movaps %xmm2, %xmm1
 ; SSE41-NEXT:    retq
 ;
 ; AVX1-LABEL: test_arg_v8f32:
@@ -814,16 +838,22 @@ define <8 x float> @test_arg_v8f32(<8 x float> %arg, ptr %src) {
 define <8 x i32> @test_arg_v8i32(<8 x i32> %arg, ptr %src) {
 ; SSE2-LABEL: test_arg_v8i32:
 ; SSE2:       # %bb.0:
-; SSE2-NEXT:    paddd (%rdi), %xmm0
-; SSE2-NEXT:    paddd 16(%rdi), %xmm1
+; SSE2-NEXT:    movdqa (%rdi), %xmm2
+; SSE2-NEXT:    paddd %xmm0, %xmm2
+; SSE2-NEXT:    movdqa 16(%rdi), %xmm3
+; SSE2-NEXT:    paddd %xmm1, %xmm3
+; SSE2-NEXT:    movdqa %xmm2, %xmm0
+; SSE2-NEXT:    movdqa %xmm3, %xmm1
 ; SSE2-NEXT:    retq
 ;
 ; SSE41-LABEL: test_arg_v8i32:
 ; SSE41:       # %bb.0:
 ; SSE41-NEXT:    movntdqa 16(%rdi), %xmm2
 ; SSE41-NEXT:    movntdqa (%rdi), %xmm3
-; SSE41-NEXT:    paddd %xmm3, %xmm0
-; SSE41-NEXT:    paddd %xmm2, %xmm1
+; SSE41-NEXT:    paddd %xmm0, %xmm3
+; SSE41-NEXT:    paddd %xmm1, %xmm2
+; SSE41-NEXT:    movdqa %xmm3, %xmm0
+; SSE41-NEXT:    movdqa %xmm2, %xmm1
 ; SSE41-NEXT:    retq
 ;
 ; AVX1-LABEL: test_arg_v8i32:
@@ -855,16 +885,22 @@ define <8 x i32> @test_arg_v8i32(<8 x i32> %arg, ptr %src) {
 define <4 x double> @test_arg_v4f64(<4 x double> %arg, ptr %src) {
 ; SSE2-LABEL: test_arg_v4f64:
 ; SSE2:       # %bb.0:
-; SSE2-NEXT:    addpd (%rdi), %xmm0
-; SSE2-NEXT:    addpd 16(%rdi), %xmm1
+; SSE2-NEXT:    movapd (%rdi), %xmm2
+; SSE2-NEXT:    addpd %xmm0, %xmm2
+; SSE2-NEXT:    movapd 16(%rdi), %xmm3
+; SSE2-NEXT:    addpd %xmm1, %xmm3
+; SSE2-NEXT:    movapd %xmm2, %xmm0
+; SSE2-NEXT:    movapd %xmm3, %xmm1
 ; SSE2-NEXT:    retq
 ;
 ; SSE41-LABEL: test_arg_v4f64:
 ; SSE41:       # %bb.0:
 ; SSE41-NEXT:    movntdqa 16(%rdi), %xmm2
 ; SSE41-NEXT:    movntdqa (%rdi), %xmm3
-; SSE41-NEXT:    addpd %xmm3, %xmm0
-; SSE41-NEXT:    addpd %xmm2, %xmm1
+; SSE41-NEXT:    addpd %xmm0, %xmm3
+; SSE41-NEXT:    addpd %xmm1, %xmm2
+; SSE41-NEXT:    movapd %xmm3, %xmm0
+; SSE41-NEXT:    movapd %xmm2, %xmm1
 ; SSE41-NEXT:    retq
 ;
 ; AVX1-LABEL: test_arg_v4f64:
@@ -894,16 +930,22 @@ define <4 x double> @test_arg_v4f64(<4 x double> %arg, ptr %src) {
 define <4 x i64> @test_arg_v4i64(<4 x i64> %arg, ptr %src) {
 ; SSE2-LABEL: test_arg_v4i64:
 ; SSE2:       # %bb.0:
-; SSE2-NEXT:    paddq (%rdi), %xmm0
-; SSE2-NEXT:    paddq 16(%rdi), %xmm1
+; SSE2-NEXT:    movdqa (%rdi), %xmm2
+; SSE2-NEXT:    paddq %xmm0, %xmm2
+; SSE2-NEXT:    movdqa 16(%rdi), %xmm3
+; SSE2-NEXT:    paddq %xmm1, %xmm3
+; SSE2-NEXT:    movdqa %xmm2, %xmm0
+; SSE2-NEXT:    movdqa %xmm3, %xmm1
 ; SSE2-NEXT:    retq
 ;
 ; SSE41-LABEL: test_arg_v4i64:
 ; SSE41:       # %bb.0:
 ; SSE41-NEXT:    movntdqa 16(%rdi), %xmm2
 ; SSE41-NEXT:    movntdqa (%rdi), %xmm3
-; SSE41-NEXT:    paddq %xmm3, %xmm0
-; SSE41-NEXT:    paddq %xmm2, %xmm1
+; SSE41-NEXT:    paddq %xmm0, %xmm3
+; SSE41-NEXT:    paddq %xmm1, %xmm2
+; SSE41-NEXT:    movdqa %xmm3, %xmm0
+; SSE41-NEXT:    movdqa %xmm2, %xmm1
 ; SSE41-NEXT:    retq
 ;
 ; AVX1-LABEL: test_arg_v4i64:
@@ -935,16 +977,22 @@ define <4 x i64> @test_arg_v4i64(<4 x i64> %arg, ptr %src) {
 define <16 x i16> @test_arg_v16i16(<16 x i16> %arg, ptr %src) {
 ; SSE2-LABEL: test_arg_v16i16:
 ; SSE2:       # %bb.0:
-; SSE2-NEXT:    paddw (%rdi), %xmm0
-; SSE2-NEXT:    paddw 16(%rdi), %xmm1
+; SSE2-NEXT:    movdqa (%rdi), %xmm2
+; SSE2-NEXT:    paddw %xmm0, %xmm2
+; SSE2-NEXT:    movdqa 16(%rdi), %xmm3
+; SSE2-NEXT:    paddw %xmm1, %xmm3
+; SSE2-NEXT:    movdqa %xmm2, %xmm0
+; SSE2-NEXT:    movdqa %xmm3, %xmm1
 ; SSE2-NEXT:    retq
 ;
 ; SSE41-LABEL: test_arg_v16i16:
 ; SSE41:       # %bb.0:
 ; SSE41-NEXT:    movntdqa 16(%rdi), %xmm2
 ; SSE41-NEXT:    movntdqa (%rdi), %xmm3
-; SSE41-NEXT:    paddw %xmm3, %xmm0
-; SSE41-NEXT:    paddw %xmm2, %xmm1
+; SSE41-NEXT:    paddw %xmm0, %xmm3
+; SSE41-NEXT:    paddw %xmm1, %xmm2
+; SSE41-NEXT:    movdqa %xmm3, %xmm0
+; SSE41-NEXT:    movdqa %xmm2, %xmm1
 ; SSE41-NEXT:    retq
 ;
 ; AVX1-LABEL: test_arg_v16i16:
@@ -976,16 +1024,22 @@ define <16 x i16> @test_arg_v16i16(<16 x i16> %arg, ptr %src) {
 define <32 x i8> @test_arg_v32i8(<32 x i8> %arg, ptr %src) {
 ; SSE2-LABEL: test_arg_v32i8:
 ; SSE2:       # %bb.0:
-; SSE2-NEXT:    paddb (%rdi), %xmm0
-; SSE2-NEXT:    paddb 16(%rdi), %xmm1
+; SSE2-NEXT:    movdqa (%rdi), %xmm2
+; SSE2-NEXT:    paddb %xmm0, %xmm2
+; SSE2-NEXT:    movdqa 16(%rdi), %xmm3
+; SSE2-NEXT:    paddb %xmm1, %xmm3
+; SSE2-NEXT:    movdqa %xmm2, %xmm0
+; SSE2-NEXT:    movdqa %xmm3, %xmm1
 ; SSE2-NEXT:    retq
 ;
 ; SSE41-LABEL: test_arg_v32i8:
 ; SSE41:       # %bb.0:
 ; SSE41-NEXT:    movntdqa 16(%rdi), %xmm2
 ; SSE41-NEXT:    movntdqa (%rdi), %xmm3
-; SSE41-NEXT:    paddb %xmm3, %xmm0
-; SSE41-NEXT:    paddb %xmm2, %xmm1
+; SSE41-NEXT:    paddb %xmm0, %xmm3
+; SSE41-NEXT:    paddb %xmm1, %xmm2
+; SSE41-NEXT:    movdqa %xmm3, %xmm0
+; SSE41-NEXT:    movdqa %xmm2, %xmm1
 ; SSE41-NEXT:    retq
 ;
 ; AVX1-LABEL: test_arg_v32i8:
@@ -1019,10 +1073,18 @@ define <32 x i8> @test_arg_v32i8(<32 x i8> %arg, ptr %src) {
 define <16 x float> @test_arg_v16f32(<16 x float> %arg, ptr %src) {
 ; SSE2-LABEL: test_arg_v16f32:
 ; SSE2:       # %bb.0:
-; SSE2-NEXT:    addps (%rdi), %xmm0
-; SSE2-NEXT:    addps 16(%rdi), %xmm1
-; SSE2-NEXT:    addps 32(%rdi), %xmm2
-; SSE2-NEXT:    addps 48(%rdi), %xmm3
+; SSE2-NEXT:    movaps (%rdi), %xmm4
+; SSE2-NEXT:    addps %xmm0, %xmm4
+; SSE2-NEXT:    movaps 16(%rdi), %xmm5
+; SSE2-NEXT:    addps %xmm1, %xmm5
+; SSE2-NEXT:    movaps 32(%rdi), %xmm6
+; SSE2-NEXT:    addps %xmm2, %xmm6
+; SSE2-NEXT:    movaps 48(%rdi), %xmm7
+; SSE2-NEXT:    addps %xmm3, %xmm7
+; SSE2-NEXT:    movaps %xmm4, %xmm0
+; SSE2-NEXT:    movaps %xmm5, %xmm1
+; SSE2-NEXT:    movaps %xmm6, %xmm2
+; SSE2-NEXT:    movaps %xmm7, %xmm3
 ; SSE2-NEXT:    retq
 ;
 ; SSE41-LABEL: test_arg_v16f32:
@@ -1031,10 +1093,14 @@ define <16 x float> @test_arg_v16f32(<16 x float> %arg, ptr %src) {
 ; SSE41-NEXT:    movntdqa 32(%rdi), %xmm5
 ; SSE41-NEXT:    movntdqa 16(%rdi), %xmm6
 ; SSE41-NEXT:    movntdqa (%rdi), %xmm7
-; SSE41-NEXT:    addps %xmm7, %xmm0
-; SSE41-NEXT:    addps %xmm6, %xmm1
-; SSE41-NEXT:    addps %xmm5, %xmm2
-; SSE41-NEXT:    addps %xmm4, %xmm3
+; SSE41-NEXT:    addps %xmm0, %xmm7
+; SSE41-NEXT:    addps %xmm1, %xmm6
+; SSE41-NEXT:    addps %xmm2, %xmm5
+; SSE41-NEXT:    addps %xmm3, %xmm4
+; SSE41-NEXT:    movaps %xmm7, %xmm0
+; SSE41-NEXT:    movaps %xmm6, %xmm1
+; SSE41-NEXT:    movaps %xmm5, %xmm2
+; SSE41-NEXT:    movaps %xmm4, %xmm3
 ; SSE41-NEXT:    retq
 ;
 ; AVX1-LABEL: test_arg_v16f32:
@@ -1070,10 +1136,18 @@ define <16 x float> @test_arg_v16f32(<16 x float> %arg, ptr %src) {
 define <16 x i32> @test_arg_v16i32(<16 x i32> %arg, ptr %src) {
 ; SSE2-LABEL: test_arg_v16i32:
 ; SSE2:       # %bb.0:
-; SSE2-NEXT:    paddd (%rdi), %xmm0
-; SSE2-NEXT:    paddd 16(%rdi), %xmm1
-; SSE2-NEXT:    paddd 32(%rdi), %xmm2
-; SSE2-NEXT:    paddd 48(%rdi), %xmm3
+; SSE2-NEXT:    movdqa (%rdi), %xmm4
+; SSE2-NEXT:    paddd %xmm0, %xmm4
+; SSE2-NEXT:    movdqa 16(%rdi), %xmm5
+; SSE2-NEXT:    paddd %xmm1, %xmm5
+; SSE2-NEXT:    movdqa 32(%rdi), %xmm6
+; SSE2-NEXT:    paddd %xmm2, %xmm6
+; SSE2-NEXT:    movdqa 48(%rdi), %xmm7
+; SSE2-NEXT:    paddd %xmm3, %xmm7
+; SSE2-NEXT:    movdqa %xmm4, %xmm0
+; SSE2-NEXT:    movdqa %xmm5, %xmm1
+; SSE2-NEXT:    movdqa %xmm6, %xmm2
+; SSE2-NEXT:    movdqa %xmm7, %xmm3
 ; SSE2-NEXT:    retq
 ;
 ; SSE41-LABEL: test_arg_v16i32:
@@ -1082,10 +1156,14 @@ define <16 x i32> @test_arg_v16i32(<16 x i32> %arg, ptr %src) {
 ; SSE41-NEXT:    movntdqa 32(%rdi), %xmm5
 ; SSE41-NEXT:    movntdqa 16(%rdi), %xmm6
 ; SSE41-NEXT:    movntdqa (%rdi), %xmm7
-; SSE41-NEXT:    paddd %xmm7, %xmm0
-; SSE41-NEXT:    paddd %xmm6, %xmm1
-; SSE41-NEXT:    paddd %xmm5, %xmm2
-; SSE41-NEXT:    paddd %xmm4, %xmm3
+; SSE41-NEXT:    paddd %xmm0, %xmm7
+; SSE41-NEXT:    paddd %xmm1, %xmm6
+; SSE41-NEXT:    paddd %xmm2, %xmm5
+; SSE41-NEXT:    paddd %xmm3, %xmm4
+; SSE41-NEXT:    movdqa %xmm7, %xmm0
+; SSE41-NEXT:    movdqa %xmm6, %xmm1
+; SSE41-NEXT:    movdqa %xmm5, %xmm2
+; SSE41-NEXT:    movdqa %xmm4, %xmm3
 ; SSE41-NEXT:    retq
 ;
 ; AVX1-LABEL: test_arg_v16i32:
@@ -1125,10 +1203,18 @@ define <16 x i32> @test_arg_v16i32(<16 x i32> %arg, ptr %src) {
 define <8 x double> @test_arg_v8f64(<8 x double> %arg, ptr %src) {
 ; SSE2-LABEL: test_arg_v8f64:
 ; SSE2:       # %bb.0:
-; SSE2-NEXT:    addpd (%rdi), %xmm0
-; SSE2-NEXT:    addpd 16(%rdi), %xmm1
-; SSE2-NEXT:    addpd 32(%rdi), %xmm2
-; SSE2-NEXT:    addpd 48(%rdi), %xmm3
+; SSE2-NEXT:    movapd (%rdi), %xmm4
+; SSE2-NEXT:    addpd %xmm0, %xmm4
+; SSE2-NEXT:    movapd 16(%rdi), %xmm5
+; SSE2-NEXT:    addpd %xmm1, %xmm5
+; SSE2-NEXT:    movapd 32(%rdi), %xmm6
+; SSE2-NEXT:    addpd %xmm2, %xmm6
+; SSE2-NEXT:    movapd 48(%rdi), %xmm7
+; SSE2-NEXT:    addpd %xmm3, %xmm7
+; SSE2-NEXT:    movapd %xmm4, %xmm0
+; SSE2-NEXT:    movapd %xmm5, %xmm1
+; SSE2-NEXT:    movapd %xmm6, %xmm2
+; SSE2-NEXT:    movapd %xmm7, %xmm3
 ; SSE2-NEXT:    retq
 ;
 ; SSE41-LABEL: test_arg_v8f64:
@@ -1137,10 +1223,14 @@ define <8 x double> @test_arg_v8f64(<8 x double> %arg, ptr %src) {
 ; SSE41-NEXT:    movntdqa 32(%rdi), %xmm5
 ; SSE41-NEXT:    movntdqa 16(%rdi), %xmm6
 ; SSE41-NEXT:    movntdqa (%rdi), %xmm7
-; SSE41-NEXT:    addpd %xmm7, %xmm0
-; SSE41-NEXT:    addpd %xmm6, %xmm1
-; SSE41-NEXT:    addpd %xmm5, %xmm2
-; SSE41-NEXT:    addpd %xmm4, %xmm3
+; SSE41-NEXT:    addpd %xmm0, %xmm7
+; SSE41-NEXT:    addpd %xmm1, %xmm6
+; SSE41-NEXT:    addpd %xmm2, %xmm5
+; SSE41-NEXT:    addpd %xmm3, %xmm4
+; SSE41-NEXT:    movapd %xmm7, %xmm0
+; SSE41-NEXT:    movapd %xmm6, %xmm1
+; SSE41-NEXT:    movapd %xmm5, %xmm2
+; SSE41-NEXT:    movapd %xmm4, %xmm3
 ; SSE41-NEXT:    retq
 ;
 ; AVX1-LABEL: test_arg_v8f64:
@@ -1176,10 +1266,18 @@ define <8 x double> @test_arg_v8f64(<8 x double> %arg, ptr %src) {
 define <8 x i64> @test_arg_v8i64(<8 x i64> %arg, ptr %src) {
 ; SSE2-LABEL: test_arg_v8i64:
 ; SSE2:       # %bb.0:
-; SSE2-NEXT:    paddq (%rdi), %xmm0
-; SSE2-NEXT:    paddq 16(%rdi), %xmm1
-; SSE2-NEXT:    paddq 32(%rdi), %xmm2
-; SSE2-NEXT:    paddq 48(%rdi), %xmm3
+; SSE2-NEXT:    movdqa (%rdi), %xmm4
+; SSE2-NEXT:    paddq %xmm0, %xmm4
+; SSE2-NEXT:    movdqa 16(%rdi), %xmm5
+; SSE2-NEXT:    paddq %xmm1, %xmm5
+; SSE2-NEXT:    movdqa 32(%rdi), %xmm6
+; SSE2-NEXT:    paddq %xmm2, %xmm6
+; SSE2-NEXT:    movdqa 48(%rdi), %xmm7
+; SSE2-NEXT:    paddq %xmm3, %xmm7
+; SSE2-NEXT:    movdqa %xmm4, %xmm0
+; SSE2-NEXT:    movdqa %xmm5, %xmm1
+; SSE2-NEXT:    movdqa %xmm6, %xmm2
+; SSE2-NEXT:    movdqa %xmm7, %xmm3
 ; SSE2-NEXT:    retq
 ;
 ; SSE41-LABEL: test_arg_v8i64:
@@ -1188,10 +1286,14 @@ define <8 x i64> @test_arg_v8i64(<8 x i64> %arg, ptr %src) {
 ; SSE41-NEXT:    movntdqa 32(%rdi), %xmm5
 ; SSE41-NEXT:    movntdqa 16(%rdi), %xmm6
 ; SSE41-NEXT:    movntdqa (%rdi), %xmm7
-; SSE41-NEXT:    paddq %xmm7, %xmm0
-; SSE41-NEXT:    paddq %xmm6, %xmm1
-; SSE41-NEXT:    paddq %xmm5, %xmm2
-; SSE41-NEXT:    paddq %xmm4, %xmm3
+; SSE41-NEXT:    paddq %xmm0, %xmm7
+; SSE41-NEXT:    paddq %xmm1, %xmm6
+; SSE41-NEXT:    paddq %xmm2, %xmm5
+; SSE41-NEXT:    paddq %xmm3, %xmm4
+; SSE41-NEXT:    movdqa %xmm7, %xmm0
+; SSE41-NEXT:    movdqa %xmm6, %xmm1
+; SSE41-NEXT:    movdqa %xmm5, %xmm2
+; SSE41-NEXT:    movdqa %xmm4, %xmm3
 ; SSE41-NEXT:    retq
 ;
 ; AVX1-LABEL: test_arg_v8i64:
@@ -1231,10 +1333,18 @@ define <8 x i64> @test_arg_v8i64(<8 x i64> %arg, ptr %src) {
 define <32 x i16> @test_arg_v32i16(<32 x i16> %arg, ptr %src) {
 ; SSE2-LABEL: test_arg_v32i16:
 ; SSE2:       # %bb.0:
-; SSE2-NEXT:    paddw (%rdi), %xmm0
-; SSE2-NEXT:    paddw 16(%rdi), %xmm1
-; SSE2-NEXT:    paddw 32(%rdi), %xmm2
-; SSE2-NEXT:    paddw 48(%rdi), %xmm3
+; SSE2-NEXT:    movdqa (%rdi), %xmm4
+; SSE2-NEXT:    paddw %xmm0, %xmm4
+; SSE2-NEXT:    movdqa 16(%rdi), %xmm5
+; SSE2-NEXT:    paddw %xmm1, %xmm5
+; SSE2-NEXT:    movdqa 32(%rdi), %xmm6
+; SSE2-NEXT:    paddw %xmm2, %xmm6
+; SSE2-NEXT:    movdqa 48(%rdi), %xmm7
+; SSE2-NEXT:    paddw %xmm3, %xmm7
+; SSE2-NEXT:    movdqa %xmm4, %xmm0
+; SSE2-NEXT:    movdqa %xmm5, %xmm1
+; SSE2-NEXT:    movdqa %xmm6, %xmm2
+; SSE2-NEXT:    movdqa %xmm7, %xmm3
 ; SSE2-NEXT:    retq
 ;
 ; SSE41-LABEL: test_arg_v32i16:
@@ -1243,10 +1353,14 @@ define <32 x i16> @test_arg_v32i16(<32 x i16> %arg, ptr %src) {
 ; SSE41-NEXT:    movntdqa 32(%rdi), %xmm5
 ; SSE41-NEXT:    movntdqa 16(%rdi), %xmm6
 ; SSE41-NEXT:    movntdqa (%rdi), %xmm7
-; SSE41-NEXT:    paddw %xmm7, %xmm0
-; SSE41-NEXT:    paddw %xmm6, %xmm1
-; SSE41-NEXT:    paddw %xmm5, %xmm2
-; SSE41-NEXT:    paddw %xmm4, %xmm3
+; SSE41-NEXT:    paddw %xmm0, %xmm7
+; SSE41-NEXT:    paddw %xmm1, %xmm6
+; SSE41-NEXT:    paddw %xmm2, %xmm5
+; SSE41-NEXT:    paddw %xmm3, %xmm4
+; SSE41-NEXT:    movdqa %xmm7, %xmm0
+; SSE41-NEXT:    movdqa %xmm6, %xmm1
+; SSE41-NEXT:    movdqa %xmm5, %xmm2
+; SSE41-NEXT:    movdqa %xmm4, %xmm3
 ; SSE41-NEXT:    retq
 ;
 ; AVX1-LABEL: test_arg_v32i16:
@@ -1306,10 +1420,18 @@ define <32 x i16> @test_arg_v32i16(<32 x i16> %arg, ptr %src) {
 define <64 x i8> @test_arg_v64i8(<64 x i8> %arg, ptr %src) {
 ; SSE2-LABEL: test_arg_v64i8:
 ; SSE2:       # %bb.0:
-; SSE2-NEXT:    paddb (%rdi), %xmm0
-; SSE2-NEXT:    paddb 16(%rdi), %xmm1
-; SSE2-NEXT:    paddb 32(%rdi), %xmm2
-; SSE2-NEXT:    paddb 48(%rdi), %xmm3
+; SSE2-NEXT:    movdqa (%rdi), %xmm4
+; SSE2-NEXT:    paddb %xmm0, %xmm4
+; SSE2-NEXT:    movdqa 16(%rdi), %xmm5
+; SSE2-NEXT:    paddb %xmm1, %xmm5
+; SSE2-NEXT:    movdqa 32(%rdi), %xmm6
+; SSE2-NEXT:    paddb %xmm2, %xmm6
+; SSE2-NEXT:    movdqa 48(%rdi), %xmm7
+; SSE2-NEXT:    paddb %xmm3, %xmm7
+; SSE2-NEXT:    movdqa %xmm4, %xmm0
+; SSE2-NEXT:    movdqa %xmm5, %xmm1
+; SSE2-NEXT:    movdqa %xmm6, %xmm2
+; SSE2-NEXT:    movdqa %xmm7, %xmm3
 ; SSE2-NEXT:    retq
 ;
 ; SSE41-LABEL: test_arg_v64i8:
@@ -1318,10 +1440,14 @@ define <64 x i8> @test_arg_v64i8(<64 x i8> %arg, ptr %src) {
 ; SSE41-NEXT:    movntdqa 32(%rdi), %xmm5
 ; SSE41-NEXT:    movntdqa 16(%rdi), %xmm6
 ; SSE41-NEXT:    movntdqa (%rdi), %xmm7
-; SSE41-NEXT:    paddb %xmm7, %xmm0
-; SSE41-NEXT:    paddb %xmm6, %xmm1
-; SSE41-NEXT:    paddb %xmm5, %xmm2
-; SSE41-NEXT:    paddb %xmm4, %xmm3
+; SSE41-NEXT:    paddb %xmm0, %xmm7
+; SSE41-NEXT:    paddb %xmm1, %xmm6
+; SSE41-NEXT:    paddb %xmm2, %xmm5
+; SSE41-NEXT:    paddb %xmm3, %xmm4
+; SSE41-NEXT:    movdqa %xmm7, %xmm0
+; SSE41-NEXT:    movdqa %xmm6, %xmm1
+; SSE41-NEXT:    movdqa %xmm5, %xmm2
+; SSE41-NEXT:    movdqa %xmm4, %xmm3
 ; SSE41-NEXT:    retq
 ;
 ; AVX1-LABEL: test_arg_v64i8:
@@ -1764,19 +1890,27 @@ define <16 x i32> @test_masked_v16i32(ptr %addr, <16 x i32> %old, <16 x i32> %ma
 ; SSE2-NEXT:    pcmpeqd %xmm8, %xmm7
 ; SSE2-NEXT:    pcmpeqd %xmm8, %xmm6
 ; SSE2-NEXT:    pcmpeqd %xmm8, %xmm5
-; SSE2-NEXT:    pcmpeqd %xmm4, %xmm8
-; SSE2-NEXT:    pand %xmm8, %xmm0
-; SSE2-NEXT:    pandn (%rdi), %xmm8
-; SSE2-NEXT:    por %xmm8, %xmm0
-; SSE2-NEXT:    pand %xmm5, %xmm1
+; SSE2-NEXT:    pcmpeqd %xmm8, %xmm4
+; SSE2-NEXT:    movdqa %xmm4, %xmm8
+; SSE2-NEXT:    pand %xmm0, %xmm8
+; SSE2-NEXT:    pandn (%rdi), %xmm4
+; SSE2-NEXT:    por %xmm4, %xmm8
+; SSE2-NEXT:    movdqa %xmm5, %xmm4
+; SSE2-NEXT:    pand %xmm1, %xmm4
 ; SSE2-NEXT:    pandn 16(%rdi), %xmm5
-; SSE2-NEXT:    por %xmm5, %xmm1
-; SSE2-NEXT:    pand %xmm6, %xmm2
+; SSE2-NEXT:    por %xmm5, %xmm4
+; SSE2-NEXT:    movdqa %xmm6, %xmm5
+; SSE2-NEXT:    pand %xmm2, %xmm5
 ; SSE2-NEXT:    pandn 32(%rdi), %xmm6
-; SSE2-NEXT:    por %xmm6, %xmm2
-; SSE2-NEXT:    pand %xmm7, %xmm3
+; SSE2-NEXT:    por %xmm6, %xmm5
+; SSE2-NEXT:    movdqa %xmm7, %xmm6
+; SSE2-NEXT:    pand %xmm3, %xmm6
 ; SSE2-NEXT:    pandn 48(%rdi), %xmm7
-; SSE2-NEXT:    por %xmm7, %xmm3
+; SSE2-NEXT:    por %xmm7, %xmm6
+; SSE2-NEXT:    movdqa %xmm8, %xmm0
+; SSE2-NEXT:    movdqa %xmm4, %xmm1
+; SSE2-NEXT:    movdqa %xmm5, %xmm2
+; SSE2-NEXT:    movdqa %xmm6, %xmm3
 ; SSE2-NEXT:    retq
 ;
 ; SSE41-LABEL: test_masked_v16i32:
@@ -1786,22 +1920,23 @@ define <16 x i32> @test_masked_v16i32(ptr %addr, <16 x i32> %old, <16 x i32> %ma
 ; SSE41-NEXT:    pcmpeqd %xmm0, %xmm7
 ; SSE41-NEXT:    pcmpeqd %xmm0, %xmm6
 ; SSE41-NEXT:    pcmpeqd %xmm0, %xmm5
-; SSE41-NEXT:    pcmpeqd %xmm4, %xmm0
-; SSE41-NEXT:    movntdqa 48(%rdi), %xmm4
-; SSE41-NEXT:    movntdqa 32(%rdi), %xmm9
-; SSE41-NEXT:    movntdqa 16(%rdi), %xmm10
-; SSE41-NEXT:    movntdqa (%rdi), %xmm11
-; SSE41-NEXT:    blendvps %xmm0, %xmm8, %xmm11
+; SSE41-NEXT:    pcmpeqd %xmm0, %xmm4
+; SSE41-NEXT:    movntdqa 48(%rdi), %xmm9
+; SSE41-NEXT:    movntdqa 32(%rdi), %xmm10
+; SSE41-NEXT:    movntdqa 16(%rdi), %xmm11
+; SSE41-NEXT:    movntdqa (%rdi), %xmm12
+; SSE41-NEXT:    movdqa %xmm4, %xmm0
+; SSE41-NEXT:    blendvps %xmm0, %xmm8, %xmm12
 ; SSE41-NEXT:    movdqa %xmm5, %xmm0
-; SSE41-NEXT:    blendvps %xmm0, %xmm1, %xmm10
+; SSE41-NEXT:    blendvps %xmm0, %xmm1, %xmm11
 ; SSE41-NEXT:    movdqa %xmm6, %xmm0
-; SSE41-NEXT:    blendvps %xmm0, %xmm2, %xmm9
+; SSE41-NEXT:    blendvps %xmm0, %xmm2, %xmm10
 ; SSE41-NEXT:    movdqa %xmm7, %xmm0
-; SSE41-NEXT:    blendvps %xmm0, %xmm3, %xmm4
-; SSE41-NEXT:    movaps %xmm11, %xmm0
-; SSE41-NEXT:    movaps %xmm10, %xmm1
-; SSE41-NEXT:    movaps %xmm9, %xmm2
-; SSE41-NEXT:    movaps %xmm4, %xmm3
+; SSE41-NEXT:    blendvps %xmm0, %xmm3, %xmm9
+; SSE41-NEXT:    movaps %xmm12, %xmm0
+; SSE41-NEXT:    movaps %xmm11, %xmm1
+; SSE41-NEXT:    movaps %xmm10, %xmm2
+; SSE41-NEXT:    movaps %xmm9, %xmm3
 ; SSE41-NEXT:    retq
 ;
 ; AVX1-LABEL: test_masked_v16i32:
@@ -1840,7 +1975,7 @@ define <16 x i32> @test_masked_v16i32(ptr %addr, <16 x i32> %old, <16 x i32> %ma
 ; AVX512:       # %bb.0:
 ; AVX512-NEXT:    vptestmd %zmm1, %zmm1, %k1
 ; AVX512-NEXT:    vmovntdqa (%rdi), %zmm1
-; AVX512-NEXT:    vmovdqa32 %zmm1, %zmm0 {%k1}
+; AVX512-NEXT:    vpblendmd %zmm1, %zmm0, %zmm0 {%k1}
 ; AVX512-NEXT:    retq
   %mask = icmp ne <16 x i32> %mask1, zeroinitializer
   %r = load <16 x i32>, ptr %addr, align 64, !nontemporal !1

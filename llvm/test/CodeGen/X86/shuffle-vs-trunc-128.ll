@@ -23,9 +23,10 @@ define void @shuffle_v16i8_to_v8i8(ptr %L, ptr %S) nounwind {
 ; SSE2-LABEL: shuffle_v16i8_to_v8i8:
 ; SSE2:       # %bb.0:
 ; SSE2-NEXT:    movdqa (%rdi), %xmm0
-; SSE2-NEXT:    pand {{\.?LCPI[0-9]+_[0-9]+}}(%rip), %xmm0
-; SSE2-NEXT:    packuswb %xmm0, %xmm0
-; SSE2-NEXT:    movq %xmm0, (%rsi)
+; SSE2-NEXT:    movdqa {{.*#+}} xmm1 = [255,255,255,255,255,255,255,255]
+; SSE2-NEXT:    pand %xmm0, %xmm1
+; SSE2-NEXT:    packuswb %xmm1, %xmm1
+; SSE2-NEXT:    movq %xmm1, (%rsi)
 ; SSE2-NEXT:    retq
 ;
 ; SSE42-LABEL: shuffle_v16i8_to_v8i8:
@@ -78,9 +79,10 @@ define void @trunc_v8i16_to_v8i8(ptr %L, ptr %S) nounwind {
 ; SSE2-LABEL: trunc_v8i16_to_v8i8:
 ; SSE2:       # %bb.0:
 ; SSE2-NEXT:    movdqa (%rdi), %xmm0
-; SSE2-NEXT:    pand {{\.?LCPI[0-9]+_[0-9]+}}(%rip), %xmm0
-; SSE2-NEXT:    packuswb %xmm0, %xmm0
-; SSE2-NEXT:    movq %xmm0, (%rsi)
+; SSE2-NEXT:    movdqa {{.*#+}} xmm1 = [255,255,255,255,255,255,255,255]
+; SSE2-NEXT:    pand %xmm0, %xmm1
+; SSE2-NEXT:    packuswb %xmm1, %xmm1
+; SSE2-NEXT:    movq %xmm1, (%rsi)
 ; SSE2-NEXT:    retq
 ;
 ; SSE42-LABEL: trunc_v8i16_to_v8i8:
@@ -310,10 +312,11 @@ define void @shuffle_v16i8_to_v4i8(ptr %L, ptr %S) nounwind {
 ; SSE2-LABEL: shuffle_v16i8_to_v4i8:
 ; SSE2:       # %bb.0:
 ; SSE2-NEXT:    movdqa (%rdi), %xmm0
-; SSE2-NEXT:    pand {{\.?LCPI[0-9]+_[0-9]+}}(%rip), %xmm0
-; SSE2-NEXT:    packuswb %xmm0, %xmm0
-; SSE2-NEXT:    packuswb %xmm0, %xmm0
-; SSE2-NEXT:    movd %xmm0, (%rsi)
+; SSE2-NEXT:    movdqa {{.*#+}} xmm1 = [255,0,255,0,255,0,255,0]
+; SSE2-NEXT:    pand %xmm0, %xmm1
+; SSE2-NEXT:    packuswb %xmm1, %xmm1
+; SSE2-NEXT:    packuswb %xmm1, %xmm1
+; SSE2-NEXT:    movd %xmm1, (%rsi)
 ; SSE2-NEXT:    retq
 ;
 ; SSE42-LABEL: shuffle_v16i8_to_v4i8:
@@ -365,10 +368,11 @@ define void @trunc_v4i32_to_v4i8(ptr %L, ptr %S) nounwind {
 ; SSE2-LABEL: trunc_v4i32_to_v4i8:
 ; SSE2:       # %bb.0:
 ; SSE2-NEXT:    movdqa (%rdi), %xmm0
-; SSE2-NEXT:    pand {{\.?LCPI[0-9]+_[0-9]+}}(%rip), %xmm0
-; SSE2-NEXT:    packuswb %xmm0, %xmm0
-; SSE2-NEXT:    packuswb %xmm0, %xmm0
-; SSE2-NEXT:    movd %xmm0, (%rsi)
+; SSE2-NEXT:    movdqa {{.*#+}} xmm1 = [255,0,255,0,255,0,255,0]
+; SSE2-NEXT:    pand %xmm0, %xmm1
+; SSE2-NEXT:    packuswb %xmm1, %xmm1
+; SSE2-NEXT:    packuswb %xmm1, %xmm1
+; SSE2-NEXT:    movd %xmm1, (%rsi)
 ; SSE2-NEXT:    retq
 ;
 ; SSE42-LABEL: trunc_v4i32_to_v4i8:
@@ -542,11 +546,12 @@ define void @shuffle_v16i8_to_v2i8(ptr %L, ptr %S) nounwind {
 ; SSE2-LABEL: shuffle_v16i8_to_v2i8:
 ; SSE2:       # %bb.0:
 ; SSE2-NEXT:    movdqa (%rdi), %xmm0
-; SSE2-NEXT:    pand {{\.?LCPI[0-9]+_[0-9]+}}(%rip), %xmm0
-; SSE2-NEXT:    packuswb %xmm0, %xmm0
-; SSE2-NEXT:    packuswb %xmm0, %xmm0
-; SSE2-NEXT:    packuswb %xmm0, %xmm0
-; SSE2-NEXT:    movd %xmm0, %eax
+; SSE2-NEXT:    movdqa {{.*#+}} xmm1 = [255,0,0,0,255,0,0,0]
+; SSE2-NEXT:    pand %xmm0, %xmm1
+; SSE2-NEXT:    packuswb %xmm1, %xmm1
+; SSE2-NEXT:    packuswb %xmm1, %xmm1
+; SSE2-NEXT:    packuswb %xmm1, %xmm1
+; SSE2-NEXT:    movd %xmm1, %eax
 ; SSE2-NEXT:    movw %ax, (%rsi)
 ; SSE2-NEXT:    retq
 ;
@@ -599,11 +604,12 @@ define void @trunc_v2i64_to_v2i8(ptr %L, ptr %S) nounwind {
 ; SSE2-LABEL: trunc_v2i64_to_v2i8:
 ; SSE2:       # %bb.0:
 ; SSE2-NEXT:    movdqa (%rdi), %xmm0
-; SSE2-NEXT:    pand {{\.?LCPI[0-9]+_[0-9]+}}(%rip), %xmm0
-; SSE2-NEXT:    packuswb %xmm0, %xmm0
-; SSE2-NEXT:    packuswb %xmm0, %xmm0
-; SSE2-NEXT:    packuswb %xmm0, %xmm0
-; SSE2-NEXT:    movd %xmm0, %eax
+; SSE2-NEXT:    movdqa {{.*#+}} xmm1 = [255,0,0,0,255,0,0,0]
+; SSE2-NEXT:    pand %xmm0, %xmm1
+; SSE2-NEXT:    packuswb %xmm1, %xmm1
+; SSE2-NEXT:    packuswb %xmm1, %xmm1
+; SSE2-NEXT:    packuswb %xmm1, %xmm1
+; SSE2-NEXT:    movd %xmm1, %eax
 ; SSE2-NEXT:    movw %ax, (%rsi)
 ; SSE2-NEXT:    retq
 ;
@@ -678,7 +684,8 @@ define <16 x i8> @evenelts_v32i16_shuffle_v16i16_to_v16i8(<32 x i16> %n2) nounwi
 ; SSE42-NEXT:    pshufb %xmm3, %xmm1
 ; SSE42-NEXT:    pshufb %xmm3, %xmm0
 ; SSE42-NEXT:    punpckldq {{.*#+}} xmm0 = xmm0[0],xmm1[0],xmm0[1],xmm1[1]
-; SSE42-NEXT:    pblendw {{.*#+}} xmm0 = xmm0[0,1,2,3],xmm2[4,5,6,7]
+; SSE42-NEXT:    pblendw {{.*#+}} xmm2 = xmm0[0,1,2,3],xmm2[4,5,6,7]
+; SSE42-NEXT:    movdqa %xmm2, %xmm0
 ; SSE42-NEXT:    retq
 ;
 ; AVX1-LABEL: evenelts_v32i16_shuffle_v16i16_to_v16i8:
@@ -759,7 +766,8 @@ define <16 x i8> @oddelts_v32i16_shuffle_v16i16_to_v16i8(<32 x i16> %n2) nounwin
 ; SSE42-NEXT:    pshufb %xmm3, %xmm1
 ; SSE42-NEXT:    pshufb %xmm3, %xmm0
 ; SSE42-NEXT:    punpckldq {{.*#+}} xmm0 = xmm0[0],xmm1[0],xmm0[1],xmm1[1]
-; SSE42-NEXT:    pblendw {{.*#+}} xmm0 = xmm0[0,1,2,3],xmm2[4,5,6,7]
+; SSE42-NEXT:    pblendw {{.*#+}} xmm2 = xmm0[0,1,2,3],xmm2[4,5,6,7]
+; SSE42-NEXT:    movdqa %xmm2, %xmm0
 ; SSE42-NEXT:    retq
 ;
 ; AVX1-LABEL: oddelts_v32i16_shuffle_v16i16_to_v16i8:

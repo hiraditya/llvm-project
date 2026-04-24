@@ -91,16 +91,20 @@ define i64 @test_urem_i64(i64 %a, i64 %b) {
 define i64 @test_mul_i64(i64 %a, i64 %b) {
 ; CHECK32-LABEL: test_mul_i64:
 ; CHECK32:       # %bb.0:
+; CHECK32-NEXT:    pushl %edi
 ; CHECK32-NEXT:    pushl %esi
 ; CHECK32-NEXT:    movl {{[0-9]+}}(%esp), %ecx
 ; CHECK32-NEXT:    movl {{[0-9]+}}(%esp), %esi
 ; CHECK32-NEXT:    movl %ecx, %eax
 ; CHECK32-NEXT:    mull %esi
-; CHECK32-NEXT:    imull {{[0-9]+}}(%esp), %ecx
-; CHECK32-NEXT:    addl %ecx, %edx
-; CHECK32-NEXT:    imull {{[0-9]+}}(%esp), %esi
-; CHECK32-NEXT:    addl %esi, %edx
+; CHECK32-NEXT:    movl {{[0-9]+}}(%esp), %edi
+; CHECK32-NEXT:    imull %ecx, %edi
+; CHECK32-NEXT:    addl %edx, %edi
+; CHECK32-NEXT:    movl {{[0-9]+}}(%esp), %edx
+; CHECK32-NEXT:    imull %esi, %edx
+; CHECK32-NEXT:    addl %edi, %edx
 ; CHECK32-NEXT:    popl %esi
+; CHECK32-NEXT:    popl %edi
 ; CHECK32-NEXT:    retl
 ;
 ; CHECK64-LABEL: test_mul_i64:

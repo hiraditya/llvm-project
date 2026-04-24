@@ -88,7 +88,8 @@ define <2 x i64> @ptrtoaddr_vec(<2 x ptr> %p) {
 ; CHECK-LABEL: ptrtoaddr_vec:
 ; CHECK:       # %bb.0: # %entry
 ; CHECK-NEXT:    pcmpeqd %xmm1, %xmm1
-; CHECK-NEXT:    pxor %xmm1, %xmm0
+; CHECK-NEXT:    pxor %xmm0, %xmm1
+; CHECK-NEXT:    movdqa %xmm1, %xmm0
 ; CHECK-NEXT:    retq
 entry:
   %addr = ptrtoaddr <2 x ptr> %p to <2 x i64>

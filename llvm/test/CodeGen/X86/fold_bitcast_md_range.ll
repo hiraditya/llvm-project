@@ -8,8 +8,9 @@ define i1 @fold_bitcast_range_metadata(ptr %valptr) {
 ; CHECK-LABEL: fold_bitcast_range_metadata:
 ; CHECK:       ## %bb.0: ## %start
 ; CHECK-NEXT:    movdqa (%rdi), %xmm0
-; CHECK-NEXT:    pcmpeqb {{\.?LCPI[0-9]+_[0-9]+}}(%rip), %xmm0
-; CHECK-NEXT:    pmovmskb %xmm0, %eax
+; CHECK-NEXT:    movd {{.*#+}} xmm1 = [1,0,0,0]
+; CHECK-NEXT:    pcmpeqb %xmm0, %xmm1
+; CHECK-NEXT:    pmovmskb %xmm1, %eax
 ; CHECK-NEXT:    cmpl $65535, %eax ## imm = 0xFFFF
 ; CHECK-NEXT:    sete %al
 ; CHECK-NEXT:    retq

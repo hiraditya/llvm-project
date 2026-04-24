@@ -17,6 +17,7 @@ define dso_local i32 @foo(i32 %N) nounwind {
 ; CHECK-NEXT:    cmpl %eax, %edi
 ; CHECK-NEXT:    jne .LBB0_1
 ; CHECK-NEXT:  .LBB0_2: # %return
+; CHECK-NEXT:    # kill: def $eax killed $eax killed $rax
 ; CHECK-NEXT:    retq
 entry:
 	%0 = icmp sgt i32 %N, 0		; <i1> [#uses=1]

@@ -21,8 +21,8 @@ define void @test(ptr byval({ double, double })  %z, ptr %P) nounwind {
 ; CHECK-NEXT:    movlpd %xmm0, (%eax)
 ; CHECK-NEXT:    movsd 4(%esp), %xmm2 ## xmm2 = mem[0],zero
 ; CHECK-NEXT:    andpd %xmm1, %xmm2
-; CHECK-NEXT:    addsd %xmm0, %xmm2
-; CHECK-NEXT:    movsd %xmm2, (%eax)
+; CHECK-NEXT:    addsd %xmm2, %xmm0
+; CHECK-NEXT:    movsd %xmm0, (%eax)
 ; CHECK-NEXT:    retl
 entry:
   %tmp3 = load double, ptr @G, align 16		; <double> [#uses=1]

@@ -16,8 +16,9 @@ define dso_local void @PR37667() {
 ; CHECK-NEXT:    movl b(%rip), %eax
 ; CHECK-NEXT:    xorl %edx, %edx
 ; CHECK-NEXT:    divl d(%rip)
-; CHECK-NEXT:    orl c(%rip), %edx
-; CHECK-NEXT:    movzbl %dl, %eax
+; CHECK-NEXT:    movl c(%rip), %eax
+; CHECK-NEXT:    orl %edx, %eax
+; CHECK-NEXT:    movzbl %al, %eax
 ; CHECK-NEXT:    movl %eax, a(%rip)
 ; CHECK-NEXT:    retq
   %t0 = load i32, ptr @c, align 4
@@ -36,8 +37,9 @@ define dso_local void @PR37060() {
 ; CHECK-NEXT:    movl $-1, %eax
 ; CHECK-NEXT:    cltd
 ; CHECK-NEXT:    idivl c(%rip)
-; CHECK-NEXT:    xorl b(%rip), %edx
-; CHECK-NEXT:    movzbl %dl, %eax
+; CHECK-NEXT:    movl b(%rip), %eax
+; CHECK-NEXT:    xorl %edx, %eax
+; CHECK-NEXT:    movzbl %al, %eax
 ; CHECK-NEXT:    movl %eax, a(%rip)
 ; CHECK-NEXT:    retq
   %t0 = load i32, ptr @c, align 4

@@ -105,8 +105,9 @@ define void @test_load_add(i1 %cond, ptr %fptr, ptr %iptr1, ptr %iptr2, float %f
 ; X86-64-NEXT:    testb $1, %dil
 ; X86-64-NEXT:    je .LBB2_2
 ; X86-64-NEXT:  # %bb.1: # %if
-; X86-64-NEXT:    movzbl (%rdx), %eax
-; X86-64-NEXT:    xorb (%rcx), %al
+; X86-64-NEXT:    movzbl (%rdx), %edx
+; X86-64-NEXT:    movzbl (%rcx), %eax
+; X86-64-NEXT:    xorb %dl, %al
 ; X86-64-NEXT:    jmp .LBB2_3
 ; X86-64-NEXT:  .LBB2_2: # %else
 ; X86-64-NEXT:    movzbl (%rcx), %eax
@@ -127,12 +128,13 @@ define void @test_load_add(i1 %cond, ptr %fptr, ptr %iptr1, ptr %iptr2, float %f
 ; X86-32-NEXT:  # %bb.1: # %if
 ; X86-32-NEXT:    movl {{[0-9]+}}(%esp), %edx
 ; X86-32-NEXT:    movzbl (%edx), %edx
-; X86-32-NEXT:    xorb (%ecx), %dl
+; X86-32-NEXT:    movzbl (%ecx), %ecx
+; X86-32-NEXT:    xorb %dl, %cl
 ; X86-32-NEXT:    jmp .LBB2_3
 ; X86-32-NEXT:  .LBB2_2: # %else
-; X86-32-NEXT:    movzbl (%ecx), %edx
+; X86-32-NEXT:    movzbl (%ecx), %ecx
 ; X86-32-NEXT:  .LBB2_3: # %exit
-; X86-32-NEXT:    kmovd %edx, %k1
+; X86-32-NEXT:    kmovd %ecx, %k1
 ; X86-32-NEXT:    vmovss %xmm1, %xmm0, %xmm0 {%k1}
 ; X86-32-NEXT:    vmovss %xmm0, (%eax)
 ; X86-32-NEXT:    retl
@@ -267,8 +269,8 @@ define void @test_shl1(i1 %cond, ptr %ptr1, ptr %ptr2, <8 x float> %fvec1, <8 x 
 ; X86-64-NEXT:  .LBB5_2: # %else
 ; X86-64-NEXT:    kmovb (%rdx), %k1
 ; X86-64-NEXT:  .LBB5_3: # %exit
-; X86-64-NEXT:    vmovaps %zmm0, %zmm1 {%k1}
-; X86-64-NEXT:    vmovaps %ymm1, (%rcx)
+; X86-64-NEXT:    vblendmps %zmm0, %zmm1, %zmm0 {%k1}
+; X86-64-NEXT:    vmovaps %ymm0, (%rcx)
 ; X86-64-NEXT:    vzeroupper
 ; X86-64-NEXT:    retq
 ;
@@ -288,8 +290,8 @@ define void @test_shl1(i1 %cond, ptr %ptr1, ptr %ptr2, <8 x float> %fvec1, <8 x 
 ; X86-32-NEXT:    movl {{[0-9]+}}(%esp), %ecx
 ; X86-32-NEXT:    kmovb (%ecx), %k1
 ; X86-32-NEXT:  .LBB5_3: # %exit
-; X86-32-NEXT:    vmovaps %zmm0, %zmm1 {%k1}
-; X86-32-NEXT:    vmovaps %ymm1, (%eax)
+; X86-32-NEXT:    vblendmps %zmm0, %zmm1, %zmm0 {%k1}
+; X86-32-NEXT:    vmovaps %ymm0, (%eax)
 ; X86-32-NEXT:    vzeroupper
 ; X86-32-NEXT:    retl
 entry:
@@ -326,8 +328,8 @@ define void @test_shr1(i1 %cond, ptr %ptr1, ptr %ptr2, <8 x float> %fvec1, <8 x 
 ; X86-64-NEXT:  .LBB6_2: # %else
 ; X86-64-NEXT:    kmovb (%rdx), %k1
 ; X86-64-NEXT:  .LBB6_3: # %exit
-; X86-64-NEXT:    vmovaps %zmm0, %zmm1 {%k1}
-; X86-64-NEXT:    vmovaps %ymm1, (%rcx)
+; X86-64-NEXT:    vblendmps %zmm0, %zmm1, %zmm0 {%k1}
+; X86-64-NEXT:    vmovaps %ymm0, (%rcx)
 ; X86-64-NEXT:    vzeroupper
 ; X86-64-NEXT:    retq
 ;
@@ -347,8 +349,8 @@ define void @test_shr1(i1 %cond, ptr %ptr1, ptr %ptr2, <8 x float> %fvec1, <8 x 
 ; X86-32-NEXT:    movl {{[0-9]+}}(%esp), %ecx
 ; X86-32-NEXT:    kmovb (%ecx), %k1
 ; X86-32-NEXT:  .LBB6_3: # %exit
-; X86-32-NEXT:    vmovaps %zmm0, %zmm1 {%k1}
-; X86-32-NEXT:    vmovaps %ymm1, (%eax)
+; X86-32-NEXT:    vblendmps %zmm0, %zmm1, %zmm0 {%k1}
+; X86-32-NEXT:    vmovaps %ymm0, (%eax)
 ; X86-32-NEXT:    vzeroupper
 ; X86-32-NEXT:    retl
 entry:
@@ -385,8 +387,8 @@ define void @test_shr2(i1 %cond, ptr %ptr1, ptr %ptr2, <8 x float> %fvec1, <8 x 
 ; X86-64-NEXT:  .LBB7_2: # %else
 ; X86-64-NEXT:    kmovb (%rdx), %k1
 ; X86-64-NEXT:  .LBB7_3: # %exit
-; X86-64-NEXT:    vmovaps %zmm0, %zmm1 {%k1}
-; X86-64-NEXT:    vmovaps %ymm1, (%rcx)
+; X86-64-NEXT:    vblendmps %zmm0, %zmm1, %zmm0 {%k1}
+; X86-64-NEXT:    vmovaps %ymm0, (%rcx)
 ; X86-64-NEXT:    vzeroupper
 ; X86-64-NEXT:    retq
 ;
@@ -406,8 +408,8 @@ define void @test_shr2(i1 %cond, ptr %ptr1, ptr %ptr2, <8 x float> %fvec1, <8 x 
 ; X86-32-NEXT:    movl {{[0-9]+}}(%esp), %ecx
 ; X86-32-NEXT:    kmovb (%ecx), %k1
 ; X86-32-NEXT:  .LBB7_3: # %exit
-; X86-32-NEXT:    vmovaps %zmm0, %zmm1 {%k1}
-; X86-32-NEXT:    vmovaps %ymm1, (%eax)
+; X86-32-NEXT:    vblendmps %zmm0, %zmm1, %zmm0 {%k1}
+; X86-32-NEXT:    vmovaps %ymm0, (%eax)
 ; X86-32-NEXT:    vzeroupper
 ; X86-32-NEXT:    retl
 entry:
@@ -444,8 +446,8 @@ define void @test_shl(i1 %cond, ptr %ptr1, ptr %ptr2, <8 x float> %fvec1, <8 x f
 ; X86-64-NEXT:  .LBB8_2: # %else
 ; X86-64-NEXT:    kmovb (%rdx), %k1
 ; X86-64-NEXT:  .LBB8_3: # %exit
-; X86-64-NEXT:    vmovaps %zmm0, %zmm1 {%k1}
-; X86-64-NEXT:    vmovaps %ymm1, (%rcx)
+; X86-64-NEXT:    vblendmps %zmm0, %zmm1, %zmm0 {%k1}
+; X86-64-NEXT:    vmovaps %ymm0, (%rcx)
 ; X86-64-NEXT:    vzeroupper
 ; X86-64-NEXT:    retq
 ;
@@ -465,8 +467,8 @@ define void @test_shl(i1 %cond, ptr %ptr1, ptr %ptr2, <8 x float> %fvec1, <8 x f
 ; X86-32-NEXT:    movl {{[0-9]+}}(%esp), %ecx
 ; X86-32-NEXT:    kmovb (%ecx), %k1
 ; X86-32-NEXT:  .LBB8_3: # %exit
-; X86-32-NEXT:    vmovaps %zmm0, %zmm1 {%k1}
-; X86-32-NEXT:    vmovaps %ymm1, (%eax)
+; X86-32-NEXT:    vblendmps %zmm0, %zmm1, %zmm0 {%k1}
+; X86-32-NEXT:    vmovaps %ymm0, (%eax)
 ; X86-32-NEXT:    vzeroupper
 ; X86-32-NEXT:    retl
 entry:
@@ -504,8 +506,8 @@ define void @test_add(i1 %cond, ptr %ptr1, ptr %ptr2, <8 x float> %fvec1, <8 x f
 ; X86-64-NEXT:  .LBB9_2: # %else
 ; X86-64-NEXT:    kaddb %k1, %k0, %k1
 ; X86-64-NEXT:  .LBB9_3: # %exit
-; X86-64-NEXT:    vmovaps %zmm0, %zmm1 {%k1}
-; X86-64-NEXT:    vmovaps %ymm1, (%rcx)
+; X86-64-NEXT:    vblendmps %zmm0, %zmm1, %zmm0 {%k1}
+; X86-64-NEXT:    vmovaps %ymm0, (%rcx)
 ; X86-64-NEXT:    vzeroupper
 ; X86-64-NEXT:    retq
 ;
@@ -526,8 +528,8 @@ define void @test_add(i1 %cond, ptr %ptr1, ptr %ptr2, <8 x float> %fvec1, <8 x f
 ; X86-32-NEXT:  .LBB9_2: # %else
 ; X86-32-NEXT:    kaddb %k1, %k0, %k1
 ; X86-32-NEXT:  .LBB9_3: # %exit
-; X86-32-NEXT:    vmovaps %zmm0, %zmm1 {%k1}
-; X86-32-NEXT:    vmovaps %ymm1, (%eax)
+; X86-32-NEXT:    vblendmps %zmm0, %zmm1, %zmm0 {%k1}
+; X86-32-NEXT:    vmovaps %ymm0, (%eax)
 ; X86-32-NEXT:    vzeroupper
 ; X86-32-NEXT:    retl
 entry:

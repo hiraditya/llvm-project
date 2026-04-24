@@ -7,8 +7,9 @@ define i32 @test1(i32 %a, i32 %b) nounwind ssp {
 ; CHECK-LABEL: test1:
 ; CHECK:       ## %bb.0: ## %entry
 ; CHECK-NEXT:    movzbl {{[0-9]+}}(%esp), %eax
-; CHECK-NEXT:    xorb {{[0-9]+}}(%esp), %al
-; CHECK-NEXT:    testb $64, %al
+; CHECK-NEXT:    movzbl {{[0-9]+}}(%esp), %ecx
+; CHECK-NEXT:    xorb %al, %cl
+; CHECK-NEXT:    testb $64, %cl
 ; CHECK-NEXT:    jne _bar ## TAILCALL
 ; CHECK-NEXT:  ## %bb.1: ## %bb
 ; CHECK-NEXT:    jmp _foo ## TAILCALL
@@ -62,7 +63,8 @@ define float @test4(float %x, float %y) nounwind readnone optsize ssp {
 ; CHECK-NEXT:    jne LBB1_1
 ; CHECK-NEXT:    jnp LBB1_2
 ; CHECK-NEXT:  LBB1_1: ## %bb1
-; CHECK-NEXT:    addsd {{\.?LCPI[0-9]+_[0-9]+}}, %xmm0
+; CHECK-NEXT:    movsd {{.*#+}} xmm1 = [-1.0E+0,0.0E+0]
+; CHECK-NEXT:    addsd %xmm1, %xmm0
 ; CHECK-NEXT:  LBB1_2: ## %bb2
 ; CHECK-NEXT:    cvtsd2ss %xmm0, %xmm0
 ; CHECK-NEXT:    movss %xmm0, (%esp)
@@ -96,8 +98,8 @@ define <4 x float> @test5(<4 x float> %a, <4 x float> %b) nounwind {
 ; CHECK-NEXT:    ptest %xmm0, %xmm0
 ; CHECK-NEXT:    jne LBB2_2
 ; CHECK-NEXT:  ## %bb.1: ## %bb1
-; CHECK-NEXT:    addps {{\.?LCPI[0-9]+_[0-9]+}}, %xmm1
-; CHECK-NEXT:    movaps %xmm1, %xmm0
+; CHECK-NEXT:    movaps {{.*#+}} xmm0 = [1.0E+2,2.0E+2,3.0E+2,4.0E+2]
+; CHECK-NEXT:    addps %xmm1, %xmm0
 ; CHECK-NEXT:    retl
 ; CHECK-NEXT:  LBB2_2: ## %bb2
 ; CHECK-NEXT:    divps {{\.?LCPI[0-9]+_[0-9]+}}, %xmm1
@@ -128,8 +130,8 @@ define <4 x float> @test7(<4 x float> %a, <4 x float> %b) nounwind {
 ; CHECK-NEXT:    ptest %xmm0, %xmm0
 ; CHECK-NEXT:    jne LBB3_2
 ; CHECK-NEXT:  ## %bb.1: ## %bb1
-; CHECK-NEXT:    addps {{\.?LCPI[0-9]+_[0-9]+}}, %xmm1
-; CHECK-NEXT:    movaps %xmm1, %xmm0
+; CHECK-NEXT:    movaps {{.*#+}} xmm0 = [1.0E+2,2.0E+2,3.0E+2,4.0E+2]
+; CHECK-NEXT:    addps %xmm1, %xmm0
 ; CHECK-NEXT:    retl
 ; CHECK-NEXT:  LBB3_2: ## %bb2
 ; CHECK-NEXT:    divps {{\.?LCPI[0-9]+_[0-9]+}}, %xmm1
@@ -160,8 +162,8 @@ define <4 x float> @test8(<4 x float> %a, <4 x float> %b) nounwind {
 ; CHECK-NEXT:    ptest %xmm0, %xmm0
 ; CHECK-NEXT:    jae LBB4_2
 ; CHECK-NEXT:  ## %bb.1: ## %bb1
-; CHECK-NEXT:    addps {{\.?LCPI[0-9]+_[0-9]+}}, %xmm1
-; CHECK-NEXT:    movaps %xmm1, %xmm0
+; CHECK-NEXT:    movaps {{.*#+}} xmm0 = [1.0E+2,2.0E+2,3.0E+2,4.0E+2]
+; CHECK-NEXT:    addps %xmm1, %xmm0
 ; CHECK-NEXT:    retl
 ; CHECK-NEXT:  LBB4_2: ## %bb2
 ; CHECK-NEXT:    divps {{\.?LCPI[0-9]+_[0-9]+}}, %xmm1
@@ -192,8 +194,8 @@ define <4 x float> @test10(<4 x float> %a, <4 x float> %b) nounwind {
 ; CHECK-NEXT:    ptest %xmm0, %xmm0
 ; CHECK-NEXT:    jae LBB5_2
 ; CHECK-NEXT:  ## %bb.1: ## %bb1
-; CHECK-NEXT:    addps {{\.?LCPI[0-9]+_[0-9]+}}, %xmm1
-; CHECK-NEXT:    movaps %xmm1, %xmm0
+; CHECK-NEXT:    movaps {{.*#+}} xmm0 = [1.0E+2,2.0E+2,3.0E+2,4.0E+2]
+; CHECK-NEXT:    addps %xmm1, %xmm0
 ; CHECK-NEXT:    retl
 ; CHECK-NEXT:  LBB5_2: ## %bb2
 ; CHECK-NEXT:    divps {{\.?LCPI[0-9]+_[0-9]+}}, %xmm1
@@ -224,8 +226,8 @@ define <4 x float> @test11(<4 x float> %a, <4 x float> %b) nounwind {
 ; CHECK-NEXT:    ptest %xmm0, %xmm0
 ; CHECK-NEXT:    jne LBB6_2
 ; CHECK-NEXT:  ## %bb.1: ## %bb1
-; CHECK-NEXT:    addps {{\.?LCPI[0-9]+_[0-9]+}}, %xmm1
-; CHECK-NEXT:    movaps %xmm1, %xmm0
+; CHECK-NEXT:    movaps {{.*#+}} xmm0 = [1.0E+2,2.0E+2,3.0E+2,4.0E+2]
+; CHECK-NEXT:    addps %xmm1, %xmm0
 ; CHECK-NEXT:    retl
 ; CHECK-NEXT:  LBB6_2: ## %bb2
 ; CHECK-NEXT:    divps {{\.?LCPI[0-9]+_[0-9]+}}, %xmm1
@@ -256,8 +258,8 @@ define <4 x float> @test12(<4 x float> %a, <4 x float> %b) nounwind {
 ; CHECK-NEXT:    ptest %xmm0, %xmm0
 ; CHECK-NEXT:    je LBB7_2
 ; CHECK-NEXT:  ## %bb.1: ## %bb1
-; CHECK-NEXT:    addps {{\.?LCPI[0-9]+_[0-9]+}}, %xmm1
-; CHECK-NEXT:    movaps %xmm1, %xmm0
+; CHECK-NEXT:    movaps {{.*#+}} xmm0 = [1.0E+2,2.0E+2,3.0E+2,4.0E+2]
+; CHECK-NEXT:    addps %xmm1, %xmm0
 ; CHECK-NEXT:    retl
 ; CHECK-NEXT:  LBB7_2: ## %bb2
 ; CHECK-NEXT:    divps {{\.?LCPI[0-9]+_[0-9]+}}, %xmm1

@@ -263,37 +263,45 @@ define void @sitofp_4i32_4f32_mem(ptr %p0, ptr %p1) nounwind {
 define void @add_2i64_mem(ptr %p0, ptr %p1, ptr %p2) nounwind {
 ; X32-LABEL: add_2i64_mem:
 ; X32:       # %bb.0:
+; X32-NEXT:    pushl %ebp
 ; X32-NEXT:    pushl %ebx
 ; X32-NEXT:    pushl %edi
 ; X32-NEXT:    pushl %esi
 ; X32-NEXT:    movl {{[0-9]+}}(%esp), %eax
 ; X32-NEXT:    movl {{[0-9]+}}(%esp), %ecx
-; X32-NEXT:    movl {{[0-9]+}}(%esp), %edx
-; X32-NEXT:    movl 12(%edx), %esi
-; X32-NEXT:    movl 8(%edx), %edi
-; X32-NEXT:    movl (%edx), %ebx
-; X32-NEXT:    movl 4(%edx), %edx
-; X32-NEXT:    addl (%ecx), %ebx
-; X32-NEXT:    adcl 4(%ecx), %edx
-; X32-NEXT:    addl 8(%ecx), %edi
-; X32-NEXT:    adcl 12(%ecx), %esi
-; X32-NEXT:    movl %edi, 8(%eax)
-; X32-NEXT:    movl %ebx, (%eax)
-; X32-NEXT:    movl %esi, 12(%eax)
-; X32-NEXT:    movl %edx, 4(%eax)
+; X32-NEXT:    movl {{[0-9]+}}(%esp), %esi
+; X32-NEXT:    movl 12(%esi), %edx
+; X32-NEXT:    movl 8(%esi), %edi
+; X32-NEXT:    movl (%esi), %ebx
+; X32-NEXT:    movl 4(%esi), %esi
+; X32-NEXT:    movl (%ecx), %ebp
+; X32-NEXT:    addl %ebx, %ebp
+; X32-NEXT:    movl 4(%ecx), %ebx
+; X32-NEXT:    adcl %esi, %ebx
+; X32-NEXT:    movl 8(%ecx), %esi
+; X32-NEXT:    addl %edi, %esi
+; X32-NEXT:    movl 12(%ecx), %ecx
+; X32-NEXT:    adcl %edx, %ecx
+; X32-NEXT:    movl %esi, 8(%eax)
+; X32-NEXT:    movl %ebp, (%eax)
+; X32-NEXT:    movl %ecx, 12(%eax)
+; X32-NEXT:    movl %ebx, 4(%eax)
 ; X32-NEXT:    popl %esi
 ; X32-NEXT:    popl %edi
 ; X32-NEXT:    popl %ebx
+; X32-NEXT:    popl %ebp
 ; X32-NEXT:    retl
 ;
 ; X64-LABEL: add_2i64_mem:
 ; X64:       # %bb.0:
 ; X64-NEXT:    movq (%rdi), %rax
 ; X64-NEXT:    movq 8(%rdi), %rcx
-; X64-NEXT:    addq (%rsi), %rax
-; X64-NEXT:    addq 8(%rsi), %rcx
-; X64-NEXT:    movq %rcx, 8(%rdx)
-; X64-NEXT:    movq %rax, (%rdx)
+; X64-NEXT:    movq (%rsi), %rdi
+; X64-NEXT:    addq %rax, %rdi
+; X64-NEXT:    movq 8(%rsi), %rax
+; X64-NEXT:    addq %rcx, %rax
+; X64-NEXT:    movq %rax, 8(%rdx)
+; X64-NEXT:    movq %rdi, (%rdx)
 ; X64-NEXT:    retq
   %1 = load <2 x i64>, ptr %p0
   %2 = load <2 x i64>, ptr %p1
@@ -305,27 +313,33 @@ define void @add_2i64_mem(ptr %p0, ptr %p1, ptr %p2) nounwind {
 define void @add_4i32_mem(ptr %p0, ptr %p1, ptr %p2) nounwind {
 ; X32-LABEL: add_4i32_mem:
 ; X32:       # %bb.0:
+; X32-NEXT:    pushl %ebp
 ; X32-NEXT:    pushl %ebx
 ; X32-NEXT:    pushl %edi
 ; X32-NEXT:    pushl %esi
 ; X32-NEXT:    movl {{[0-9]+}}(%esp), %eax
 ; X32-NEXT:    movl {{[0-9]+}}(%esp), %ecx
-; X32-NEXT:    movl {{[0-9]+}}(%esp), %edx
-; X32-NEXT:    movl 12(%edx), %esi
-; X32-NEXT:    movl 8(%edx), %edi
-; X32-NEXT:    movl (%edx), %ebx
-; X32-NEXT:    movl 4(%edx), %edx
-; X32-NEXT:    addl (%ecx), %ebx
-; X32-NEXT:    addl 4(%ecx), %edx
-; X32-NEXT:    addl 8(%ecx), %edi
-; X32-NEXT:    addl 12(%ecx), %esi
-; X32-NEXT:    movl %esi, 12(%eax)
-; X32-NEXT:    movl %edi, 8(%eax)
-; X32-NEXT:    movl %edx, 4(%eax)
-; X32-NEXT:    movl %ebx, (%eax)
+; X32-NEXT:    movl {{[0-9]+}}(%esp), %esi
+; X32-NEXT:    movl 12(%esi), %edx
+; X32-NEXT:    movl 8(%esi), %edi
+; X32-NEXT:    movl (%esi), %ebx
+; X32-NEXT:    movl 4(%esi), %ebp
+; X32-NEXT:    movl (%ecx), %esi
+; X32-NEXT:    addl %ebx, %esi
+; X32-NEXT:    movl 4(%ecx), %ebx
+; X32-NEXT:    addl %ebp, %ebx
+; X32-NEXT:    movl 8(%ecx), %ebp
+; X32-NEXT:    addl %edi, %ebp
+; X32-NEXT:    movl 12(%ecx), %ecx
+; X32-NEXT:    addl %edx, %ecx
+; X32-NEXT:    movl %ecx, 12(%eax)
+; X32-NEXT:    movl %ebp, 8(%eax)
+; X32-NEXT:    movl %ebx, 4(%eax)
+; X32-NEXT:    movl %esi, (%eax)
 ; X32-NEXT:    popl %esi
 ; X32-NEXT:    popl %edi
 ; X32-NEXT:    popl %ebx
+; X32-NEXT:    popl %ebp
 ; X32-NEXT:    retl
 ;
 ; X64-LABEL: add_4i32_mem:
@@ -334,14 +348,18 @@ define void @add_4i32_mem(ptr %p0, ptr %p1, ptr %p2) nounwind {
 ; X64-NEXT:    movl 8(%rdi), %ecx
 ; X64-NEXT:    movl (%rdi), %r8d
 ; X64-NEXT:    movl 4(%rdi), %edi
-; X64-NEXT:    addl (%rsi), %r8d
-; X64-NEXT:    addl 4(%rsi), %edi
-; X64-NEXT:    addl 8(%rsi), %ecx
-; X64-NEXT:    addl 12(%rsi), %eax
-; X64-NEXT:    movl %eax, 12(%rdx)
-; X64-NEXT:    movl %ecx, 8(%rdx)
-; X64-NEXT:    movl %edi, 4(%rdx)
-; X64-NEXT:    movl %r8d, (%rdx)
+; X64-NEXT:    movl (%rsi), %r9d
+; X64-NEXT:    addl %r8d, %r9d
+; X64-NEXT:    movl 4(%rsi), %r8d
+; X64-NEXT:    addl %edi, %r8d
+; X64-NEXT:    movl 8(%rsi), %edi
+; X64-NEXT:    addl %ecx, %edi
+; X64-NEXT:    movl 12(%rsi), %ecx
+; X64-NEXT:    addl %eax, %ecx
+; X64-NEXT:    movl %ecx, 12(%rdx)
+; X64-NEXT:    movl %edi, 8(%rdx)
+; X64-NEXT:    movl %r8d, 4(%rdx)
+; X64-NEXT:    movl %r9d, (%rdx)
 ; X64-NEXT:    retq
   %1 = load <4 x i32>, ptr %p0
   %2 = load <4 x i32>, ptr %p1

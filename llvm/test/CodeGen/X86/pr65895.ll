@@ -21,7 +21,7 @@ define i32 @PR65895() {
 ; CHECK-NEXT:    # =>This Inner Loop Header: Depth=1
 ; CHECK-NEXT:    jmp .LBB0_2
 ; CHECK-NEXT:  .LBB0_3: # %for.end
-; CHECK-NEXT:    addb $-3, %al
+; CHECK-NEXT:    addl $-3, %eax
 ; CHECK-NEXT:    movsbl %al, %eax
 ; CHECK-NEXT:    movl %eax, d(%rip)
 ; CHECK-NEXT:    leal 247(%rax,%rax,2), %eax
@@ -64,8 +64,9 @@ define void @foo(i8 %arg) nounwind {
 ; CHECK-LABEL: foo:
 ; CHECK:       # %bb.0: # %entry
 ; CHECK-NEXT:    pushq %rax
-; CHECK-NEXT:    addb $-109, %dil
-; CHECK-NEXT:    movsbl %dil, %eax
+; CHECK-NEXT:    # kill: def $edi killed $edi def $rdi
+; CHECK-NEXT:    leal -109(%rdi), %eax
+; CHECK-NEXT:    movsbl %al, %eax
 ; CHECK-NEXT:    leal 1(%rax,%rax,2), %edi
 ; CHECK-NEXT:    callq bar@PLT
 ; CHECK-NEXT:    popq %rax

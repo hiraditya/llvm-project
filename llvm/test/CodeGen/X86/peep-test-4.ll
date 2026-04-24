@@ -272,9 +272,9 @@ declare i64 @llvm.ctlz.i64(i64, i1)
 define i64 @testCLZ(i64 %v) nounwind {
 ; CHECK-LABEL: testCLZ:
 ; CHECK:       # %bb.0:
-; CHECK-NEXT:    lzcntq %rdi, %rcx
-; CHECK-NEXT:    movl $255, %eax
-; CHECK-NEXT:    cmovaeq %rcx, %rax
+; CHECK-NEXT:    lzcntq %rdi, %rax
+; CHECK-NEXT:    movl $255, %ecx
+; CHECK-NEXT:    cmovbq %rcx, %rax
 ; CHECK-NEXT:    retq
   %cnt = tail call i64 @llvm.ctlz.i64(i64 %v, i1 true)
   %tobool = icmp ne i64 %v, 0
@@ -286,9 +286,9 @@ declare i64 @llvm.ctpop.i64(i64)
 define i64 @testPOPCNT(i64 %v) nounwind {
 ; CHECK-LABEL: testPOPCNT:
 ; CHECK:       # %bb.0:
-; CHECK-NEXT:    popcntq %rdi, %rcx
-; CHECK-NEXT:    movl $255, %eax
-; CHECK-NEXT:    cmovneq %rcx, %rax
+; CHECK-NEXT:    popcntq %rdi, %rax
+; CHECK-NEXT:    movl $255, %ecx
+; CHECK-NEXT:    cmoveq %rcx, %rax
 ; CHECK-NEXT:    retq
   %cnt = tail call i64 @llvm.ctpop.i64(i64 %v)
   %tobool = icmp ne i64 %v, 0

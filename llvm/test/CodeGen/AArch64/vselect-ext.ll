@@ -224,12 +224,13 @@ define <3 x i32> @same_zext_used_in_cmp_unsigned_pred_and_select_v3i16(<3 x i8> 
 ; CHECK-NEXT:    ldr d2, [x8, lCPI9_0@PAGEOFF]
 ; CHECK-NEXT:    mov.h v0[1], w1
 ; CHECK-NEXT:    mov.h v0[2], w2
-; CHECK-NEXT:    ushll.4s v1, v0, #0
-; CHECK-NEXT:    bic.4h v0, #255, lsl #8
-; CHECK-NEXT:    cmhi.4h v0, v0, v2
-; CHECK-NEXT:    and.16b v1, v1, v3
-; CHECK-NEXT:    sshll.4s v0, v0, #0
-; CHECK-NEXT:    and.16b v0, v1, v0
+; CHECK-NEXT:    fmov d1, d0
+; CHECK-NEXT:    ushll.4s v0, v0, #0
+; CHECK-NEXT:    and.16b v0, v0, v3
+; CHECK-NEXT:    bic.4h v1, #255, lsl #8
+; CHECK-NEXT:    cmhi.4h v1, v1, v2
+; CHECK-NEXT:    sshll.4s v1, v1, #0
+; CHECK-NEXT:    and.16b v0, v0, v1
 ; CHECK-NEXT:    ret
 ; CHECK-NEXT:    .loh AdrpLdr Lloh0, Lloh1
   %ext = zext <3 x i8> %a to <3 x i32>

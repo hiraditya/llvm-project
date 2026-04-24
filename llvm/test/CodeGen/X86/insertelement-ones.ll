@@ -27,7 +27,8 @@ define <2 x i64> @insert_v2i64_x1(<2 x i64> %a) {
 ; SSE41-LABEL: insert_v2i64_x1:
 ; SSE41:       # %bb.0:
 ; SSE41-NEXT:    pcmpeqd %xmm1, %xmm1
-; SSE41-NEXT:    pblendw {{.*#+}} xmm0 = xmm1[0,1,2,3],xmm0[4,5,6,7]
+; SSE41-NEXT:    pblendw {{.*#+}} xmm1 = xmm1[0,1,2,3],xmm0[4,5,6,7]
+; SSE41-NEXT:    movdqa %xmm1, %xmm0
 ; SSE41-NEXT:    retq
 ;
 ; AVX1-LABEL: insert_v2i64_x1:
@@ -70,7 +71,8 @@ define <4 x i64> @insert_v4i64_01x3(<4 x i64> %a) {
 ; SSE41-LABEL: insert_v4i64_01x3:
 ; SSE41:       # %bb.0:
 ; SSE41-NEXT:    pcmpeqd %xmm2, %xmm2
-; SSE41-NEXT:    pblendw {{.*#+}} xmm1 = xmm2[0,1,2,3],xmm1[4,5,6,7]
+; SSE41-NEXT:    pblendw {{.*#+}} xmm2 = xmm2[0,1,2,3],xmm1[4,5,6,7]
+; SSE41-NEXT:    movdqa %xmm2, %xmm1
 ; SSE41-NEXT:    retq
 ;
 ; AVX1-LABEL: insert_v4i64_01x3:
@@ -123,7 +125,8 @@ define <4 x i32> @insert_v4i32_01x3(<4 x i32> %a) {
 ; SSE41-LABEL: insert_v4i32_01x3:
 ; SSE41:       # %bb.0:
 ; SSE41-NEXT:    pcmpeqd %xmm1, %xmm1
-; SSE41-NEXT:    pblendw {{.*#+}} xmm0 = xmm0[0,1,2,3],xmm1[4,5],xmm0[6,7]
+; SSE41-NEXT:    pblendw {{.*#+}} xmm1 = xmm0[0,1,2,3],xmm1[4,5],xmm0[6,7]
+; SSE41-NEXT:    movdqa %xmm1, %xmm0
 ; SSE41-NEXT:    retq
 ;
 ; AVX1-LABEL: insert_v4i32_01x3:
@@ -150,8 +153,12 @@ define <4 x i32> @insert_v4i32_01x3(<4 x i32> %a) {
 define <8 x i32> @insert_v8i32_x12345x7(<8 x i32> %a) {
 ; SSE-LABEL: insert_v8i32_x12345x7:
 ; SSE:       # %bb.0:
-; SSE-NEXT:    orps {{\.?LCPI[0-9]+_[0-9]+}}(%rip), %xmm0
-; SSE-NEXT:    orps {{\.?LCPI[0-9]+_[0-9]+}}(%rip), %xmm1
+; SSE-NEXT:    movss {{.*#+}} xmm2 = [4294967295,0,0,0]
+; SSE-NEXT:    orps %xmm0, %xmm2
+; SSE-NEXT:    movaps {{.*#+}} xmm3 = [0,0,4294967295,0]
+; SSE-NEXT:    orps %xmm1, %xmm3
+; SSE-NEXT:    movaps %xmm2, %xmm0
+; SSE-NEXT:    movaps %xmm3, %xmm1
 ; SSE-NEXT:    retq
 ;
 ; AVX-LABEL: insert_v8i32_x12345x7:
@@ -166,7 +173,9 @@ define <8 x i32> @insert_v8i32_x12345x7(<8 x i32> %a) {
 define <8 x i16> @insert_v8i16_x12345x7(<8 x i16> %a) {
 ; SSE-LABEL: insert_v8i16_x12345x7:
 ; SSE:       # %bb.0:
-; SSE-NEXT:    orps {{\.?LCPI[0-9]+_[0-9]+}}(%rip), %xmm0
+; SSE-NEXT:    movaps {{.*#+}} xmm1 = [65535,0,0,0,0,0,65535,0]
+; SSE-NEXT:    orps %xmm0, %xmm1
+; SSE-NEXT:    movaps %xmm1, %xmm0
 ; SSE-NEXT:    retq
 ;
 ; AVX-LABEL: insert_v8i16_x12345x7:
@@ -181,8 +190,12 @@ define <8 x i16> @insert_v8i16_x12345x7(<8 x i16> %a) {
 define <16 x i16> @insert_v16i16_x12345x789ABCDEx(<16 x i16> %a) {
 ; SSE-LABEL: insert_v16i16_x12345x789ABCDEx:
 ; SSE:       # %bb.0:
-; SSE-NEXT:    orps {{\.?LCPI[0-9]+_[0-9]+}}(%rip), %xmm0
-; SSE-NEXT:    orps {{\.?LCPI[0-9]+_[0-9]+}}(%rip), %xmm1
+; SSE-NEXT:    movaps {{.*#+}} xmm2 = [65535,0,0,0,0,0,65535,0]
+; SSE-NEXT:    orps %xmm0, %xmm2
+; SSE-NEXT:    movaps {{.*#+}} xmm3 = [0,0,0,0,0,0,0,65535]
+; SSE-NEXT:    orps %xmm1, %xmm3
+; SSE-NEXT:    movaps %xmm2, %xmm0
+; SSE-NEXT:    movaps %xmm3, %xmm1
 ; SSE-NEXT:    retq
 ;
 ; AVX-LABEL: insert_v16i16_x12345x789ABCDEx:
@@ -198,7 +211,9 @@ define <16 x i16> @insert_v16i16_x12345x789ABCDEx(<16 x i16> %a) {
 define <16 x i8> @insert_v16i8_x123456789ABCDEx(<16 x i8> %a) {
 ; SSE-LABEL: insert_v16i8_x123456789ABCDEx:
 ; SSE:       # %bb.0:
-; SSE-NEXT:    orps {{\.?LCPI[0-9]+_[0-9]+}}(%rip), %xmm0
+; SSE-NEXT:    movaps {{.*#+}} xmm1 = [255,0,0,0,0,0,0,0,0,0,0,0,0,0,0,255]
+; SSE-NEXT:    orps %xmm0, %xmm1
+; SSE-NEXT:    movaps %xmm1, %xmm0
 ; SSE-NEXT:    retq
 ;
 ; AVX-LABEL: insert_v16i8_x123456789ABCDEx:
@@ -213,8 +228,12 @@ define <16 x i8> @insert_v16i8_x123456789ABCDEx(<16 x i8> %a) {
 define <32 x i8> @insert_v32i8_x123456789ABCDEzGHIJKLMNOPQRSTxx(<32 x i8> %a) {
 ; SSE-LABEL: insert_v32i8_x123456789ABCDEzGHIJKLMNOPQRSTxx:
 ; SSE:       # %bb.0:
-; SSE-NEXT:    orps {{\.?LCPI[0-9]+_[0-9]+}}(%rip), %xmm0
-; SSE-NEXT:    orps {{\.?LCPI[0-9]+_[0-9]+}}(%rip), %xmm1
+; SSE-NEXT:    movaps {{.*#+}} xmm2 = [255,0,0,0,0,0,0,0,0,0,0,0,0,0,0,255]
+; SSE-NEXT:    orps %xmm0, %xmm2
+; SSE-NEXT:    movaps {{.*#+}} xmm3 = [0,0,0,0,0,0,0,0,0,0,0,0,0,0,255,255]
+; SSE-NEXT:    orps %xmm1, %xmm3
+; SSE-NEXT:    movaps %xmm2, %xmm0
+; SSE-NEXT:    movaps %xmm3, %xmm1
 ; SSE-NEXT:    retq
 ;
 ; AVX-LABEL: insert_v32i8_x123456789ABCDEzGHIJKLMNOPQRSTxx:

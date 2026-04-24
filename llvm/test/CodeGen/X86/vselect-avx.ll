@@ -71,7 +71,7 @@ define void @test2(ptr %call1559, i64 %indvars.iv4198, <4 x i1> %tmp1895) {
 ; AVX512-NEXT:    vptestmd %xmm0, %xmm0, %k1
 ; AVX512-NEXT:    movq (%rdi,%rsi,8), %rax
 ; AVX512-NEXT:    vbroadcastsd {{.*#+}} ymm0 = [5.0E-1,5.0E-1,5.0E-1,5.0E-1]
-; AVX512-NEXT:    vbroadcastsd {{.*#+}} ymm0 {%k1} = [-5.0E-1,-5.0E-1,-5.0E-1,-5.0E-1]
+; AVX512-NEXT:    vblendmpd {{\.?LCPI[0-9]+_[0-9]+}}(%rip){1to4}, %ymm0, %ymm0 {%k1}
 ; AVX512-NEXT:    vmovupd %ymm0, (%rax)
 ; AVX512-NEXT:    vzeroupper
 ; AVX512-NEXT:    retq
@@ -96,7 +96,7 @@ define void @test3(<4 x i32> %induction30, ptr %tmp16, ptr %tmp17,  <4 x i16> %t
 ; AVX1-LABEL: test3:
 ; AVX1:       ## %bb.0:
 ; AVX1-NEXT:    vpmulld {{\.?LCPI[0-9]+_[0-9]+}}(%rip), %xmm0, %xmm0 ## [2863311531,2863311531,2863311531,2863311531]
-; AVX1-NEXT:    vpaddd {{\.?LCPI[0-9]+_[0-9]+}}(%rip), %xmm0, %xmm0
+; AVX1-NEXT:    vpaddd {{\.?LCPI[0-9]+_[0-9]+}}(%rip), %xmm0, %xmm0 ## [715827882,715827882,715827882,715827882]
 ; AVX1-NEXT:    vpminud {{\.?LCPI[0-9]+_[0-9]+}}(%rip), %xmm0, %xmm3
 ; AVX1-NEXT:    vpcmpeqd %xmm3, %xmm0, %xmm0
 ; AVX1-NEXT:    vpackssdw %xmm0, %xmm0, %xmm0
@@ -128,9 +128,9 @@ define void @test3(<4 x i32> %induction30, ptr %tmp16, ptr %tmp17,  <4 x i16> %t
 ; AVX512-NEXT:    vpcmpeqd %ymm0, %ymm0, %ymm0
 ; AVX512-NEXT:    vmovdqa32 %ymm0, %ymm0 {%k1} {z}
 ; AVX512-NEXT:    vpmovdw %ymm0, %xmm0
-; AVX512-NEXT:    vpternlogq {{.*#+}} xmm1 = xmm2 ^ (xmm0 & (xmm1 ^ xmm2))
 ; AVX512-NEXT:    vmovq %xmm0, (%rdi)
-; AVX512-NEXT:    vmovq %xmm1, (%rsi)
+; AVX512-NEXT:    vpternlogq {{.*#+}} xmm0 = xmm2 ^ (xmm0 & (xmm1 ^ xmm2))
+; AVX512-NEXT:    vmovq %xmm0, (%rsi)
 ; AVX512-NEXT:    vzeroupper
 ; AVX512-NEXT:    retq
   %tmp6 = srem <4 x i32> %induction30, <i32 3, i32 3, i32 3, i32 3>
@@ -166,7 +166,7 @@ define <32 x i8> @PR22706(<32 x i1> %x) {
 ; AVX2-NEXT:    vpsllw $7, %ymm0, %ymm0
 ; AVX2-NEXT:    vpxor %xmm1, %xmm1, %xmm1
 ; AVX2-NEXT:    vpcmpgtb %ymm0, %ymm1, %ymm0
-; AVX2-NEXT:    vpaddb {{\.?LCPI[0-9]+_[0-9]+}}(%rip), %ymm0, %ymm0
+; AVX2-NEXT:    vpaddb {{\.?LCPI[0-9]+_[0-9]+}}(%rip), %ymm0, %ymm0 ## [2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2]
 ; AVX2-NEXT:    retq
 ;
 ; AVX512-LABEL: PR22706:
@@ -279,7 +279,8 @@ define <4 x i64> @vselect_concat_split_v16i8(<4 x i64> %a, <4 x i64> %b, <4 x i6
 ; AVX512-LABEL: vselect_concat_split_v16i8:
 ; AVX512:       ## %bb.0:
 ; AVX512-NEXT:    vpcmpgtb %ymm2, %ymm3, %ymm2
-; AVX512-NEXT:    vpternlogq {{.*#+}} ymm0 = ymm0 ^ (ymm2 & (ymm0 ^ ymm1))
+; AVX512-NEXT:    vpternlogq {{.*#+}} ymm2 = ymm0 ^ (ymm2 & (ymm1 ^ ymm0))
+; AVX512-NEXT:    vmovdqa %ymm2, %ymm0
 ; AVX512-NEXT:    retq
   %a.bc = bitcast <4 x i64> %a to <32 x i8>
   %b.bc = bitcast <4 x i64> %b to <32 x i8>
@@ -380,7 +381,7 @@ define void @vselect_concat_splat() {
 ; AVX512-NEXT:    vpermt2ps %ymm1, %ymm2, %ymm0
 ; AVX512-NEXT:    vpmovsxbd {{.*#+}} ymm1 = [8,11,14,1,9,12,15,2]
 ; AVX512-NEXT:    vpermi2ps 0, %ymm4, %ymm1
-; AVX512-NEXT:    vmovaps %ymm1, %ymm0 {%k1}
+; AVX512-NEXT:    vblendmps %ymm1, %ymm0, %ymm0 {%k1}
 ; AVX512-NEXT:    vmovups %ymm0, (%rax)
 ; AVX512-NEXT:    vzeroupper
 ; AVX512-NEXT:    retq

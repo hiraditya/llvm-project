@@ -13,15 +13,16 @@ define void @g(ptr %x, ptr %y, ptr %z) {
 ; CHECK-NEXT:    xorl %ecx, %ecx
 ; CHECK-NEXT:    testl %eax, %eax
 ; CHECK-NEXT:    sete %cl
-; CHECK-NEXT:    addl %ecx, %ecx
-; CHECK-NEXT:    orl (%rdi), %ecx
+; CHECK-NEXT:    leal (%rcx,%rcx), %eax
+; CHECK-NEXT:    movl (%rdi), %ecx
+; CHECK-NEXT:    orl %eax, %ecx
 ; CHECK-NEXT:    movl $0, (%rsi)
 ; CHECK-NEXT:    #APP
 ; CHECK-NEXT:    #NO_APP
 ; CHECK-NEXT:    shll $8, %eax
 ; CHECK-NEXT:    bextrl %eax, f(%rip), %eax
-; CHECK-NEXT:    orl %ecx, %eax
-; CHECK-NEXT:    movl %eax, (%rdx)
+; CHECK-NEXT:    orl %eax, %ecx
+; CHECK-NEXT:    movl %ecx, (%rdx)
 ; CHECK-NEXT:    retq
 entry:
   %0 = load i32, ptr @a, align 4

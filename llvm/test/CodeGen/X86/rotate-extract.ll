@@ -12,13 +12,13 @@
 define i64 @rolq_extract_shl(i64 %i) nounwind {
 ; X86-LABEL: rolq_extract_shl:
 ; X86:       # %bb.0:
+; X86-NEXT:    movl {{[0-9]+}}(%esp), %eax
 ; X86-NEXT:    movl {{[0-9]+}}(%esp), %edx
-; X86-NEXT:    movl {{[0-9]+}}(%esp), %ecx
-; X86-NEXT:    shldl $3, %edx, %ecx
-; X86-NEXT:    shll $3, %edx
-; X86-NEXT:    movl %edx, %eax
-; X86-NEXT:    shldl $7, %ecx, %eax
-; X86-NEXT:    shrdl $25, %ecx, %edx
+; X86-NEXT:    shldl $3, %eax, %edx
+; X86-NEXT:    leal (,%eax,8), %ecx
+; X86-NEXT:    movl %ecx, %eax
+; X86-NEXT:    shldl $7, %edx, %eax
+; X86-NEXT:    shldl $7, %ecx, %edx
 ; X86-NEXT:    retl
 ;
 ; X64-LABEL: rolq_extract_shl:
@@ -109,9 +109,9 @@ define i64 @rolq_extract_mul_with_mask(i64 %i) nounwind {
 ; X86-NEXT:    leal (%eax,%eax,8), %ecx
 ; X86-NEXT:    movl $9, %eax
 ; X86-NEXT:    mull {{[0-9]+}}(%esp)
-; X86-NEXT:    addl %ecx, %edx
-; X86-NEXT:    shrdl $25, %eax, %edx
-; X86-NEXT:    movzbl %dl, %eax
+; X86-NEXT:    addl %edx, %ecx
+; X86-NEXT:    shrdl $25, %eax, %ecx
+; X86-NEXT:    movzbl %cl, %eax
 ; X86-NEXT:    xorl %edx, %edx
 ; X86-NEXT:    retl
 ;
@@ -133,13 +133,13 @@ define i64 @rolq_extract_mul_with_mask(i64 %i) nounwind {
 define i64 @no_extract_shl(i64 %i) nounwind {
 ; X86-LABEL: no_extract_shl:
 ; X86:       # %bb.0:
-; X86-NEXT:    movl {{[0-9]+}}(%esp), %ecx
 ; X86-NEXT:    movl {{[0-9]+}}(%esp), %eax
-; X86-NEXT:    movl %eax, %edx
-; X86-NEXT:    shldl $10, %ecx, %edx
-; X86-NEXT:    shll $10, %ecx
-; X86-NEXT:    shrl $20, %eax
-; X86-NEXT:    andl $127, %eax
+; X86-NEXT:    movl {{[0-9]+}}(%esp), %ecx
+; X86-NEXT:    movl %ecx, %edx
+; X86-NEXT:    shldl $10, %eax, %edx
+; X86-NEXT:    shll $10, %eax
+; X86-NEXT:    shrl $20, %ecx
+; X86-NEXT:    andl $127, %ecx
 ; X86-NEXT:    orl %ecx, %eax
 ; X86-NEXT:    retl
 ;
@@ -162,11 +162,11 @@ define i64 @no_extract_shl(i64 %i) nounwind {
 define i32 @no_extract_shrl(i32 %i) nounwind {
 ; X86-LABEL: no_extract_shrl:
 ; X86:       # %bb.0:
-; X86-NEXT:    movl {{[0-9]+}}(%esp), %eax
-; X86-NEXT:    movl %eax, %ecx
-; X86-NEXT:    shrl $9, %ecx
-; X86-NEXT:    andl $-8, %eax
-; X86-NEXT:    shll $25, %eax
+; X86-NEXT:    movl {{[0-9]+}}(%esp), %ecx
+; X86-NEXT:    movl %ecx, %eax
+; X86-NEXT:    shrl $9, %eax
+; X86-NEXT:    andl $-8, %ecx
+; X86-NEXT:    shll $25, %ecx
 ; X86-NEXT:    orl %ecx, %eax
 ; X86-NEXT:    retl
 ;
@@ -202,10 +202,10 @@ define i16 @no_extract_mul(i16 %i) nounwind {
 ; X64-LABEL: no_extract_mul:
 ; X64:       # %bb.0:
 ; X64-NEXT:    # kill: def $edi killed $edi def $rdi
-; X64-NEXT:    movl %edi, %eax
+; X64-NEXT:    leal (%rdi,%rdi,8), %eax
+; X64-NEXT:    # kill: def $edi killed $edi killed $rdi def $rdi
 ; X64-NEXT:    shll $8, %edi
 ; X64-NEXT:    leal (%rdi,%rdi,8), %ecx
-; X64-NEXT:    leal (%rax,%rax,8), %eax
 ; X64-NEXT:    movzwl %ax, %eax
 ; X64-NEXT:    shrl $9, %eax
 ; X64-NEXT:    orl %ecx, %eax
@@ -230,23 +230,23 @@ define i8 @no_extract_udiv(i8 %i) nounwind {
 ; X86-NEXT:    addb %dh, %al
 ; X86-NEXT:    shrb $5, %al
 ; X86-NEXT:    shlb $3, %ch
-; X86-NEXT:    orb %al, %ch
-; X86-NEXT:    andb $-9, %ch
-; X86-NEXT:    movb %ch, %al
+; X86-NEXT:    orb %ch, %al
+; X86-NEXT:    andb $-9, %al
+; X86-NEXT:    # kill: def $al killed $al killed $eax
 ; X86-NEXT:    retl
 ;
 ; X64-LABEL: no_extract_udiv:
 ; X64:       # %bb.0:
-; X64-NEXT:    movzbl %dil, %ecx
-; X64-NEXT:    imull $171, %ecx, %eax
-; X64-NEXT:    shrl $8, %eax
-; X64-NEXT:    imull $79, %ecx, %edx
+; X64-NEXT:    movzbl %dil, %eax
+; X64-NEXT:    imull $171, %eax, %ecx
+; X64-NEXT:    shrl $8, %ecx
+; X64-NEXT:    imull $79, %eax, %edx
 ; X64-NEXT:    shrl $8, %edx
-; X64-NEXT:    subb %dl, %cl
-; X64-NEXT:    shrb %cl
-; X64-NEXT:    addb %dl, %cl
-; X64-NEXT:    shrb $5, %cl
-; X64-NEXT:    shlb $3, %al
+; X64-NEXT:    subb %dl, %al
+; X64-NEXT:    shrb %al
+; X64-NEXT:    addl %edx, %eax
+; X64-NEXT:    shrb $5, %al
+; X64-NEXT:    leal (,%rcx,8), %ecx
 ; X64-NEXT:    orb %cl, %al
 ; X64-NEXT:    andb $-9, %al
 ; X64-NEXT:    # kill: def $al killed $al killed $eax
@@ -306,10 +306,11 @@ define i32 @no_extract_add_1(i32 %i) nounwind {
 ;
 ; X64-LABEL: no_extract_add_1:
 ; X64:       # %bb.0:
-; X64-NEXT:    # kill: def $edi killed $edi def $rdi
-; X64-NEXT:    leal (%rdi,%rdi), %eax
-; X64-NEXT:    shrl $27, %edi
-; X64-NEXT:    orl %edi, %eax
+; X64-NEXT:    movl %edi, %eax
+; X64-NEXT:    leal (%rax,%rax), %ecx
+; X64-NEXT:    shrl $27, %eax
+; X64-NEXT:    orl %ecx, %eax
+; X64-NEXT:    # kill: def $eax killed $eax killed $rax
 ; X64-NEXT:    retq
   %ii = add i32 %i, %i
   %rhs = lshr i32 %i, 27

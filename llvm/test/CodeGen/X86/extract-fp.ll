@@ -5,7 +5,9 @@ define float @ext_fadd_v4f32(<4 x float> %x) {
 ; CHECK-LABEL: ext_fadd_v4f32:
 ; CHECK:       # %bb.0:
 ; CHECK-NEXT:    movhlps {{.*#+}} xmm0 = xmm0[1,1]
-; CHECK-NEXT:    addss {{\.?LCPI[0-9]+_[0-9]+}}(%rip), %xmm0
+; CHECK-NEXT:    movss {{.*#+}} xmm1 = [3.0E+0,0.0E+0,0.0E+0,0.0E+0]
+; CHECK-NEXT:    addss %xmm0, %xmm1
+; CHECK-NEXT:    movaps %xmm1, %xmm0
 ; CHECK-NEXT:    retq
   %bo = fadd <4 x float> %x, <float 1.0, float 2.0, float 3.0, float 42.0>
   %ext = extractelement <4 x float> %bo, i32 2
@@ -29,7 +31,9 @@ define float @ext_fmul_v4f32(<4 x float> %x) {
 ; CHECK-LABEL: ext_fmul_v4f32:
 ; CHECK:       # %bb.0:
 ; CHECK-NEXT:    shufps {{.*#+}} xmm0 = xmm0[3,3,3,3]
-; CHECK-NEXT:    mulss {{\.?LCPI[0-9]+_[0-9]+}}(%rip), %xmm0
+; CHECK-NEXT:    movss {{.*#+}} xmm1 = [4.2E+1,0.0E+0,0.0E+0,0.0E+0]
+; CHECK-NEXT:    mulss %xmm0, %xmm1
+; CHECK-NEXT:    movaps %xmm1, %xmm0
 ; CHECK-NEXT:    retq
   %bo = fmul <4 x float> %x, <float 1.0, float 2.0, float 3.0, float 42.0>
   %ext = extractelement <4 x float> %bo, i32 3

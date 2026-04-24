@@ -180,8 +180,9 @@ define <4 x i32> @PR30512(<4 x i32> %x, <4 x i32> %y) nounwind {
 ; X86-NEXT:    movss {{.*#+}} xmm2 = mem[0],zero,zero,zero
 ; X86-NEXT:    unpcklps {{.*#+}} xmm2 = xmm2[0],xmm0[0],xmm2[1],xmm0[1]
 ; X86-NEXT:    movlhps {{.*#+}} xmm2 = xmm2[0],xmm1[0]
-; X86-NEXT:    andps {{\.?LCPI[0-9]+_[0-9]+}}, %xmm2
-; X86-NEXT:    movaps %xmm2, (%eax)
+; X86-NEXT:    movaps {{.*#+}} xmm0 = [1.40129846E-45,1.40129846E-45,1.40129846E-45,1.40129846E-45]
+; X86-NEXT:    andps %xmm2, %xmm0
+; X86-NEXT:    movaps %xmm0, (%eax)
 ; X86-NEXT:    addl $16, %esp
 ; X86-NEXT:    popl %esi
 ; X86-NEXT:    popl %edi
@@ -218,8 +219,9 @@ define <4 x i32> @PR30512(<4 x i32> %x, <4 x i32> %y) nounwind {
 ; X64-NEXT:    movss {{.*#+}} xmm2 = mem[0],zero,zero,zero
 ; X64-NEXT:    unpcklps {{.*#+}} xmm2 = xmm2[0],xmm0[0],xmm2[1],xmm0[1]
 ; X64-NEXT:    movlhps {{.*#+}} xmm2 = xmm2[0],xmm1[0]
-; X64-NEXT:    andps {{\.?LCPI[0-9]+_[0-9]+}}(%rip), %xmm2
-; X64-NEXT:    movaps %xmm2, (%rax)
+; X64-NEXT:    movaps {{.*#+}} xmm0 = [1.40129846E-45,1.40129846E-45,1.40129846E-45,1.40129846E-45]
+; X64-NEXT:    andps %xmm2, %xmm0
+; X64-NEXT:    movaps %xmm0, (%rax)
 ; X64-NEXT:    retq
   %cmp = icmp eq <4 x i32> %x, %y
   %zext = zext <4 x i1> %cmp to <4 x i32>

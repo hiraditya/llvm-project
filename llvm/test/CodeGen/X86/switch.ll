@@ -9,11 +9,11 @@ define void @basic(i32 %x) {
 ; CHECK-LABEL: basic:
 ; CHECK:       # %bb.0: # %entry
 ; CHECK-NEXT:    # kill: def $edi killed $edi def $rdi
-; CHECK-NEXT:    decl %edi
-; CHECK-NEXT:    cmpl $4, %edi
+; CHECK-NEXT:    leal -1(%rdi), %eax
+; CHECK-NEXT:    cmpl $4, %eax
 ; CHECK-NEXT:    ja .LBB0_4
 ; CHECK-NEXT:  # %bb.1: # %entry
-; CHECK-NEXT:    jmpq *.LJTI0_0(,%rdi,8)
+; CHECK-NEXT:    jmpq *.LJTI0_0(,%rax,8)
 ; CHECK-NEXT:  .LBB0_3: # %bb2
 ; CHECK-NEXT:    movl $1, %edi
 ; CHECK-NEXT:    jmp g@PLT # TAILCALL
@@ -148,11 +148,11 @@ define void @basic_nojumptable_false(i32 %x) "no-jump-tables"="false" {
 ; CHECK-LABEL: basic_nojumptable_false:
 ; CHECK:       # %bb.0: # %entry
 ; CHECK-NEXT:    # kill: def $edi killed $edi def $rdi
-; CHECK-NEXT:    decl %edi
-; CHECK-NEXT:    cmpl $4, %edi
+; CHECK-NEXT:    leal -1(%rdi), %eax
+; CHECK-NEXT:    cmpl $4, %eax
 ; CHECK-NEXT:    ja .LBB2_4
 ; CHECK-NEXT:  # %bb.1: # %entry
-; CHECK-NEXT:    jmpq *.LJTI2_0(,%rdi,8)
+; CHECK-NEXT:    jmpq *.LJTI2_0(,%rax,8)
 ; CHECK-NEXT:  .LBB2_3: # %bb2
 ; CHECK-NEXT:    movl $1, %edi
 ; CHECK-NEXT:    jmp g@PLT # TAILCALL
@@ -789,21 +789,21 @@ define void @optimal_pivot2(i32 %x) {
 ; CHECK-NEXT:    cmpl $3, %eax
 ; CHECK-NEXT:    jbe .LBB9_12
 ; CHECK-NEXT:  # %bb.2: # %entry
-; CHECK-NEXT:    addl $-200, %edi
-; CHECK-NEXT:    cmpl $3, %edi
+; CHECK-NEXT:    leal -200(%rdi), %eax
+; CHECK-NEXT:    cmpl $3, %eax
 ; CHECK-NEXT:    ja .LBB9_11
 ; CHECK-NEXT:  # %bb.3: # %entry
-; CHECK-NEXT:    jmpq *.LJTI9_1(,%rdi,8)
+; CHECK-NEXT:    jmpq *.LJTI9_1(,%rax,8)
 ; CHECK-NEXT:  .LBB9_4: # %entry
 ; CHECK-NEXT:    leal -300(%rdi), %eax
 ; CHECK-NEXT:    cmpl $3, %eax
 ; CHECK-NEXT:    jbe .LBB9_13
 ; CHECK-NEXT:  # %bb.5: # %entry
-; CHECK-NEXT:    addl $-400, %edi # imm = 0xFE70
-; CHECK-NEXT:    cmpl $3, %edi
+; CHECK-NEXT:    leal -400(%rdi), %eax
+; CHECK-NEXT:    cmpl $3, %eax
 ; CHECK-NEXT:    ja .LBB9_11
 ; CHECK-NEXT:  # %bb.6: # %entry
-; CHECK-NEXT:    jmpq *.LJTI9_3(,%rdi,8)
+; CHECK-NEXT:    jmpq *.LJTI9_3(,%rax,8)
 ; CHECK-NEXT:  .LBB9_12: # %entry
 ; CHECK-NEXT:    jmpq *.LJTI9_0(,%rax,8)
 ; CHECK-NEXT:  .LBB9_13: # %entry
@@ -2505,19 +2505,20 @@ return: ret void
 define i32 @pr27135(i32 %i) {
 ; CHECK-LABEL: pr27135:
 ; CHECK:       # %bb.0: # %entry
+; CHECK-NEXT:    # kill: def $edi killed $edi def $rdi
 ; CHECK-NEXT:    xorl %eax, %eax
 ; CHECK-NEXT:    testb %al, %al
 ; CHECK-NEXT:    jne .LBB24_5
 ; CHECK-NEXT:  # %bb.1: # %sw
 ; CHECK-NEXT:    movl $1, %eax
-; CHECK-NEXT:    addl $-96, %edi
-; CHECK-NEXT:    cmpl $5, %edi
+; CHECK-NEXT:    leal -96(%rdi), %ecx
+; CHECK-NEXT:    cmpl $5, %ecx
 ; CHECK-NEXT:    jbe .LBB24_2
 ; CHECK-NEXT:  .LBB24_5: # %end
 ; CHECK-NEXT:    retq
 ; CHECK-NEXT:  .LBB24_2: # %sw
 ; CHECK-NEXT:    movl $19, %eax
-; CHECK-NEXT:    btl %edi, %eax
+; CHECK-NEXT:    btl %ecx, %eax
 ; CHECK-NEXT:    jae .LBB24_3
 ; CHECK-NEXT:  # %bb.4: # %sw.bb2
 ; CHECK-NEXT:  .LBB24_3: # %sw.bb
@@ -2588,8 +2589,9 @@ end:
 define void @range_with_unreachable_fallthrough(i32 %i) {
 ; CHECK-LABEL: range_with_unreachable_fallthrough:
 ; CHECK:       # %bb.0: # %entry
-; CHECK-NEXT:    addl $-4, %edi
-; CHECK-NEXT:    cmpl $3, %edi
+; CHECK-NEXT:    # kill: def $edi killed $edi def $rdi
+; CHECK-NEXT:    leal -4(%rdi), %eax
+; CHECK-NEXT:    cmpl $3, %eax
 ; CHECK-NEXT:    jae .LBB25_1
 ; CHECK-NEXT:  # %bb.2: # %bb2
 ; CHECK-NEXT:    movl $1, %edi

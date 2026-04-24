@@ -158,20 +158,22 @@ define <2 x double> @test_x86_fma_vfmadd_bac_sd(<2 x double> %a0, <2 x double> %
 define <4 x float> @test_x86_fma_vfmadd_ps(<4 x float> %a0, <4 x float> %a1, <4 x float> %a2) #0 {
 ; CHECK-FMA-LABEL: test_x86_fma_vfmadd_ps:
 ; CHECK-FMA:       # %bb.0:
-; CHECK-FMA-NEXT:    vfmadd213ps %xmm2, %xmm1, %xmm0 # encoding: [0xc4,0xe2,0x71,0xa8,0xc2]
-; CHECK-FMA-NEXT:    # xmm0 = (xmm1 * xmm0) + xmm2
+; CHECK-FMA-NEXT:    vfmadd213ps %xmm2, %xmm0, %xmm1 # encoding: [0xc4,0xe2,0x79,0xa8,0xca]
+; CHECK-FMA-NEXT:    # xmm1 = (xmm0 * xmm1) + xmm2
+; CHECK-FMA-NEXT:    vmovaps %xmm1, %xmm0 # encoding: [0xc5,0xf8,0x28,0xc1]
 ; CHECK-FMA-NEXT:    retq # encoding: [0xc3]
 ;
 ; CHECK-AVX512VL-LABEL: test_x86_fma_vfmadd_ps:
 ; CHECK-AVX512VL:       # %bb.0:
-; CHECK-AVX512VL-NEXT:    vfmadd213ps %xmm2, %xmm1, %xmm0 # EVEX TO VEX Compression encoding: [0xc4,0xe2,0x71,0xa8,0xc2]
-; CHECK-AVX512VL-NEXT:    # xmm0 = (xmm1 * xmm0) + xmm2
+; CHECK-AVX512VL-NEXT:    vfmadd213ps %xmm2, %xmm0, %xmm1 # EVEX TO VEX Compression encoding: [0xc4,0xe2,0x79,0xa8,0xca]
+; CHECK-AVX512VL-NEXT:    # xmm1 = (xmm0 * xmm1) + xmm2
+; CHECK-AVX512VL-NEXT:    vmovaps %xmm1, %xmm0 # EVEX TO VEX Compression encoding: [0xc5,0xf8,0x28,0xc1]
 ; CHECK-AVX512VL-NEXT:    retq # encoding: [0xc3]
 ;
 ; CHECK-FMA-WIN-LABEL: test_x86_fma_vfmadd_ps:
 ; CHECK-FMA-WIN:       # %bb.0:
-; CHECK-FMA-WIN-NEXT:    vmovaps (%rcx), %xmm1 # encoding: [0xc5,0xf8,0x28,0x09]
-; CHECK-FMA-WIN-NEXT:    vmovaps (%rdx), %xmm0 # encoding: [0xc5,0xf8,0x28,0x02]
+; CHECK-FMA-WIN-NEXT:    vmovaps (%rcx), %xmm0 # encoding: [0xc5,0xf8,0x28,0x01]
+; CHECK-FMA-WIN-NEXT:    vmovaps (%rdx), %xmm1 # encoding: [0xc5,0xf8,0x28,0x0a]
 ; CHECK-FMA-WIN-NEXT:    vfmadd213ps (%r8), %xmm1, %xmm0 # encoding: [0xc4,0xc2,0x71,0xa8,0x00]
 ; CHECK-FMA-WIN-NEXT:    # xmm0 = (xmm1 * xmm0) + mem
 ; CHECK-FMA-WIN-NEXT:    retq # encoding: [0xc3]
@@ -182,20 +184,22 @@ define <4 x float> @test_x86_fma_vfmadd_ps(<4 x float> %a0, <4 x float> %a1, <4 
 define <2 x double> @test_x86_fma_vfmadd_pd(<2 x double> %a0, <2 x double> %a1, <2 x double> %a2) #0 {
 ; CHECK-FMA-LABEL: test_x86_fma_vfmadd_pd:
 ; CHECK-FMA:       # %bb.0:
-; CHECK-FMA-NEXT:    vfmadd213pd %xmm2, %xmm1, %xmm0 # encoding: [0xc4,0xe2,0xf1,0xa8,0xc2]
-; CHECK-FMA-NEXT:    # xmm0 = (xmm1 * xmm0) + xmm2
+; CHECK-FMA-NEXT:    vfmadd213pd %xmm2, %xmm0, %xmm1 # encoding: [0xc4,0xe2,0xf9,0xa8,0xca]
+; CHECK-FMA-NEXT:    # xmm1 = (xmm0 * xmm1) + xmm2
+; CHECK-FMA-NEXT:    vmovapd %xmm1, %xmm0 # encoding: [0xc5,0xf9,0x28,0xc1]
 ; CHECK-FMA-NEXT:    retq # encoding: [0xc3]
 ;
 ; CHECK-AVX512VL-LABEL: test_x86_fma_vfmadd_pd:
 ; CHECK-AVX512VL:       # %bb.0:
-; CHECK-AVX512VL-NEXT:    vfmadd213pd %xmm2, %xmm1, %xmm0 # EVEX TO VEX Compression encoding: [0xc4,0xe2,0xf1,0xa8,0xc2]
-; CHECK-AVX512VL-NEXT:    # xmm0 = (xmm1 * xmm0) + xmm2
+; CHECK-AVX512VL-NEXT:    vfmadd213pd %xmm2, %xmm0, %xmm1 # EVEX TO VEX Compression encoding: [0xc4,0xe2,0xf9,0xa8,0xca]
+; CHECK-AVX512VL-NEXT:    # xmm1 = (xmm0 * xmm1) + xmm2
+; CHECK-AVX512VL-NEXT:    vmovapd %xmm1, %xmm0 # EVEX TO VEX Compression encoding: [0xc5,0xf9,0x28,0xc1]
 ; CHECK-AVX512VL-NEXT:    retq # encoding: [0xc3]
 ;
 ; CHECK-FMA-WIN-LABEL: test_x86_fma_vfmadd_pd:
 ; CHECK-FMA-WIN:       # %bb.0:
-; CHECK-FMA-WIN-NEXT:    vmovapd (%rcx), %xmm1 # encoding: [0xc5,0xf9,0x28,0x09]
-; CHECK-FMA-WIN-NEXT:    vmovapd (%rdx), %xmm0 # encoding: [0xc5,0xf9,0x28,0x02]
+; CHECK-FMA-WIN-NEXT:    vmovapd (%rcx), %xmm0 # encoding: [0xc5,0xf9,0x28,0x01]
+; CHECK-FMA-WIN-NEXT:    vmovapd (%rdx), %xmm1 # encoding: [0xc5,0xf9,0x28,0x0a]
 ; CHECK-FMA-WIN-NEXT:    vfmadd213pd (%r8), %xmm1, %xmm0 # encoding: [0xc4,0xc2,0xf1,0xa8,0x00]
 ; CHECK-FMA-WIN-NEXT:    # xmm0 = (xmm1 * xmm0) + mem
 ; CHECK-FMA-WIN-NEXT:    retq # encoding: [0xc3]
@@ -206,20 +210,22 @@ define <2 x double> @test_x86_fma_vfmadd_pd(<2 x double> %a0, <2 x double> %a1, 
 define <8 x float> @test_x86_fma_vfmadd_ps_256(<8 x float> %a0, <8 x float> %a1, <8 x float> %a2) #0 {
 ; CHECK-FMA-LABEL: test_x86_fma_vfmadd_ps_256:
 ; CHECK-FMA:       # %bb.0:
-; CHECK-FMA-NEXT:    vfmadd213ps %ymm2, %ymm1, %ymm0 # encoding: [0xc4,0xe2,0x75,0xa8,0xc2]
-; CHECK-FMA-NEXT:    # ymm0 = (ymm1 * ymm0) + ymm2
+; CHECK-FMA-NEXT:    vfmadd213ps %ymm2, %ymm0, %ymm1 # encoding: [0xc4,0xe2,0x7d,0xa8,0xca]
+; CHECK-FMA-NEXT:    # ymm1 = (ymm0 * ymm1) + ymm2
+; CHECK-FMA-NEXT:    vmovaps %ymm1, %ymm0 # encoding: [0xc5,0xfc,0x28,0xc1]
 ; CHECK-FMA-NEXT:    retq # encoding: [0xc3]
 ;
 ; CHECK-AVX512VL-LABEL: test_x86_fma_vfmadd_ps_256:
 ; CHECK-AVX512VL:       # %bb.0:
-; CHECK-AVX512VL-NEXT:    vfmadd213ps %ymm2, %ymm1, %ymm0 # EVEX TO VEX Compression encoding: [0xc4,0xe2,0x75,0xa8,0xc2]
-; CHECK-AVX512VL-NEXT:    # ymm0 = (ymm1 * ymm0) + ymm2
+; CHECK-AVX512VL-NEXT:    vfmadd213ps %ymm2, %ymm0, %ymm1 # EVEX TO VEX Compression encoding: [0xc4,0xe2,0x7d,0xa8,0xca]
+; CHECK-AVX512VL-NEXT:    # ymm1 = (ymm0 * ymm1) + ymm2
+; CHECK-AVX512VL-NEXT:    vmovaps %ymm1, %ymm0 # EVEX TO VEX Compression encoding: [0xc5,0xfc,0x28,0xc1]
 ; CHECK-AVX512VL-NEXT:    retq # encoding: [0xc3]
 ;
 ; CHECK-FMA-WIN-LABEL: test_x86_fma_vfmadd_ps_256:
 ; CHECK-FMA-WIN:       # %bb.0:
-; CHECK-FMA-WIN-NEXT:    vmovaps (%rcx), %ymm1 # encoding: [0xc5,0xfc,0x28,0x09]
-; CHECK-FMA-WIN-NEXT:    vmovaps (%rdx), %ymm0 # encoding: [0xc5,0xfc,0x28,0x02]
+; CHECK-FMA-WIN-NEXT:    vmovaps (%rcx), %ymm0 # encoding: [0xc5,0xfc,0x28,0x01]
+; CHECK-FMA-WIN-NEXT:    vmovaps (%rdx), %ymm1 # encoding: [0xc5,0xfc,0x28,0x0a]
 ; CHECK-FMA-WIN-NEXT:    vfmadd213ps (%r8), %ymm1, %ymm0 # encoding: [0xc4,0xc2,0x75,0xa8,0x00]
 ; CHECK-FMA-WIN-NEXT:    # ymm0 = (ymm1 * ymm0) + mem
 ; CHECK-FMA-WIN-NEXT:    retq # encoding: [0xc3]
@@ -230,20 +236,22 @@ define <8 x float> @test_x86_fma_vfmadd_ps_256(<8 x float> %a0, <8 x float> %a1,
 define <4 x double> @test_x86_fma_vfmadd_pd_256(<4 x double> %a0, <4 x double> %a1, <4 x double> %a2) #0 {
 ; CHECK-FMA-LABEL: test_x86_fma_vfmadd_pd_256:
 ; CHECK-FMA:       # %bb.0:
-; CHECK-FMA-NEXT:    vfmadd213pd %ymm2, %ymm1, %ymm0 # encoding: [0xc4,0xe2,0xf5,0xa8,0xc2]
-; CHECK-FMA-NEXT:    # ymm0 = (ymm1 * ymm0) + ymm2
+; CHECK-FMA-NEXT:    vfmadd213pd %ymm2, %ymm0, %ymm1 # encoding: [0xc4,0xe2,0xfd,0xa8,0xca]
+; CHECK-FMA-NEXT:    # ymm1 = (ymm0 * ymm1) + ymm2
+; CHECK-FMA-NEXT:    vmovapd %ymm1, %ymm0 # encoding: [0xc5,0xfd,0x28,0xc1]
 ; CHECK-FMA-NEXT:    retq # encoding: [0xc3]
 ;
 ; CHECK-AVX512VL-LABEL: test_x86_fma_vfmadd_pd_256:
 ; CHECK-AVX512VL:       # %bb.0:
-; CHECK-AVX512VL-NEXT:    vfmadd213pd %ymm2, %ymm1, %ymm0 # EVEX TO VEX Compression encoding: [0xc4,0xe2,0xf5,0xa8,0xc2]
-; CHECK-AVX512VL-NEXT:    # ymm0 = (ymm1 * ymm0) + ymm2
+; CHECK-AVX512VL-NEXT:    vfmadd213pd %ymm2, %ymm0, %ymm1 # EVEX TO VEX Compression encoding: [0xc4,0xe2,0xfd,0xa8,0xca]
+; CHECK-AVX512VL-NEXT:    # ymm1 = (ymm0 * ymm1) + ymm2
+; CHECK-AVX512VL-NEXT:    vmovapd %ymm1, %ymm0 # EVEX TO VEX Compression encoding: [0xc5,0xfd,0x28,0xc1]
 ; CHECK-AVX512VL-NEXT:    retq # encoding: [0xc3]
 ;
 ; CHECK-FMA-WIN-LABEL: test_x86_fma_vfmadd_pd_256:
 ; CHECK-FMA-WIN:       # %bb.0:
-; CHECK-FMA-WIN-NEXT:    vmovapd (%rcx), %ymm1 # encoding: [0xc5,0xfd,0x28,0x09]
-; CHECK-FMA-WIN-NEXT:    vmovapd (%rdx), %ymm0 # encoding: [0xc5,0xfd,0x28,0x02]
+; CHECK-FMA-WIN-NEXT:    vmovapd (%rcx), %ymm0 # encoding: [0xc5,0xfd,0x28,0x01]
+; CHECK-FMA-WIN-NEXT:    vmovapd (%rdx), %ymm1 # encoding: [0xc5,0xfd,0x28,0x0a]
 ; CHECK-FMA-WIN-NEXT:    vfmadd213pd (%r8), %ymm1, %ymm0 # encoding: [0xc4,0xc2,0xf5,0xa8,0x00]
 ; CHECK-FMA-WIN-NEXT:    # ymm0 = (ymm1 * ymm0) + mem
 ; CHECK-FMA-WIN-NEXT:    retq # encoding: [0xc3]
@@ -379,20 +387,22 @@ define <2 x double> @test_x86_fma_vfmsub_bac_sd(<2 x double> %a0, <2 x double> %
 define <4 x float> @test_x86_fma_vfmsub_ps(<4 x float> %a0, <4 x float> %a1, <4 x float> %a2) #0 {
 ; CHECK-FMA-LABEL: test_x86_fma_vfmsub_ps:
 ; CHECK-FMA:       # %bb.0:
-; CHECK-FMA-NEXT:    vfmsub213ps %xmm2, %xmm1, %xmm0 # encoding: [0xc4,0xe2,0x71,0xaa,0xc2]
-; CHECK-FMA-NEXT:    # xmm0 = (xmm1 * xmm0) - xmm2
+; CHECK-FMA-NEXT:    vfmsub213ps %xmm2, %xmm0, %xmm1 # encoding: [0xc4,0xe2,0x79,0xaa,0xca]
+; CHECK-FMA-NEXT:    # xmm1 = (xmm0 * xmm1) - xmm2
+; CHECK-FMA-NEXT:    vmovaps %xmm1, %xmm0 # encoding: [0xc5,0xf8,0x28,0xc1]
 ; CHECK-FMA-NEXT:    retq # encoding: [0xc3]
 ;
 ; CHECK-AVX512VL-LABEL: test_x86_fma_vfmsub_ps:
 ; CHECK-AVX512VL:       # %bb.0:
-; CHECK-AVX512VL-NEXT:    vfmsub213ps %xmm2, %xmm1, %xmm0 # EVEX TO VEX Compression encoding: [0xc4,0xe2,0x71,0xaa,0xc2]
-; CHECK-AVX512VL-NEXT:    # xmm0 = (xmm1 * xmm0) - xmm2
+; CHECK-AVX512VL-NEXT:    vfmsub213ps %xmm2, %xmm0, %xmm1 # EVEX TO VEX Compression encoding: [0xc4,0xe2,0x79,0xaa,0xca]
+; CHECK-AVX512VL-NEXT:    # xmm1 = (xmm0 * xmm1) - xmm2
+; CHECK-AVX512VL-NEXT:    vmovaps %xmm1, %xmm0 # EVEX TO VEX Compression encoding: [0xc5,0xf8,0x28,0xc1]
 ; CHECK-AVX512VL-NEXT:    retq # encoding: [0xc3]
 ;
 ; CHECK-FMA-WIN-LABEL: test_x86_fma_vfmsub_ps:
 ; CHECK-FMA-WIN:       # %bb.0:
-; CHECK-FMA-WIN-NEXT:    vmovaps (%rcx), %xmm1 # encoding: [0xc5,0xf8,0x28,0x09]
-; CHECK-FMA-WIN-NEXT:    vmovaps (%rdx), %xmm0 # encoding: [0xc5,0xf8,0x28,0x02]
+; CHECK-FMA-WIN-NEXT:    vmovaps (%rcx), %xmm0 # encoding: [0xc5,0xf8,0x28,0x01]
+; CHECK-FMA-WIN-NEXT:    vmovaps (%rdx), %xmm1 # encoding: [0xc5,0xf8,0x28,0x0a]
 ; CHECK-FMA-WIN-NEXT:    vfmsub213ps (%r8), %xmm1, %xmm0 # encoding: [0xc4,0xc2,0x71,0xaa,0x00]
 ; CHECK-FMA-WIN-NEXT:    # xmm0 = (xmm1 * xmm0) - mem
 ; CHECK-FMA-WIN-NEXT:    retq # encoding: [0xc3]
@@ -404,20 +414,22 @@ define <4 x float> @test_x86_fma_vfmsub_ps(<4 x float> %a0, <4 x float> %a1, <4 
 define <2 x double> @test_x86_fma_vfmsub_pd(<2 x double> %a0, <2 x double> %a1, <2 x double> %a2) #0 {
 ; CHECK-FMA-LABEL: test_x86_fma_vfmsub_pd:
 ; CHECK-FMA:       # %bb.0:
-; CHECK-FMA-NEXT:    vfmsub213pd %xmm2, %xmm1, %xmm0 # encoding: [0xc4,0xe2,0xf1,0xaa,0xc2]
-; CHECK-FMA-NEXT:    # xmm0 = (xmm1 * xmm0) - xmm2
+; CHECK-FMA-NEXT:    vfmsub213pd %xmm2, %xmm0, %xmm1 # encoding: [0xc4,0xe2,0xf9,0xaa,0xca]
+; CHECK-FMA-NEXT:    # xmm1 = (xmm0 * xmm1) - xmm2
+; CHECK-FMA-NEXT:    vmovapd %xmm1, %xmm0 # encoding: [0xc5,0xf9,0x28,0xc1]
 ; CHECK-FMA-NEXT:    retq # encoding: [0xc3]
 ;
 ; CHECK-AVX512VL-LABEL: test_x86_fma_vfmsub_pd:
 ; CHECK-AVX512VL:       # %bb.0:
-; CHECK-AVX512VL-NEXT:    vfmsub213pd %xmm2, %xmm1, %xmm0 # EVEX TO VEX Compression encoding: [0xc4,0xe2,0xf1,0xaa,0xc2]
-; CHECK-AVX512VL-NEXT:    # xmm0 = (xmm1 * xmm0) - xmm2
+; CHECK-AVX512VL-NEXT:    vfmsub213pd %xmm2, %xmm0, %xmm1 # EVEX TO VEX Compression encoding: [0xc4,0xe2,0xf9,0xaa,0xca]
+; CHECK-AVX512VL-NEXT:    # xmm1 = (xmm0 * xmm1) - xmm2
+; CHECK-AVX512VL-NEXT:    vmovapd %xmm1, %xmm0 # EVEX TO VEX Compression encoding: [0xc5,0xf9,0x28,0xc1]
 ; CHECK-AVX512VL-NEXT:    retq # encoding: [0xc3]
 ;
 ; CHECK-FMA-WIN-LABEL: test_x86_fma_vfmsub_pd:
 ; CHECK-FMA-WIN:       # %bb.0:
-; CHECK-FMA-WIN-NEXT:    vmovapd (%rcx), %xmm1 # encoding: [0xc5,0xf9,0x28,0x09]
-; CHECK-FMA-WIN-NEXT:    vmovapd (%rdx), %xmm0 # encoding: [0xc5,0xf9,0x28,0x02]
+; CHECK-FMA-WIN-NEXT:    vmovapd (%rcx), %xmm0 # encoding: [0xc5,0xf9,0x28,0x01]
+; CHECK-FMA-WIN-NEXT:    vmovapd (%rdx), %xmm1 # encoding: [0xc5,0xf9,0x28,0x0a]
 ; CHECK-FMA-WIN-NEXT:    vfmsub213pd (%r8), %xmm1, %xmm0 # encoding: [0xc4,0xc2,0xf1,0xaa,0x00]
 ; CHECK-FMA-WIN-NEXT:    # xmm0 = (xmm1 * xmm0) - mem
 ; CHECK-FMA-WIN-NEXT:    retq # encoding: [0xc3]
@@ -429,20 +441,22 @@ define <2 x double> @test_x86_fma_vfmsub_pd(<2 x double> %a0, <2 x double> %a1, 
 define <8 x float> @test_x86_fma_vfmsub_ps_256(<8 x float> %a0, <8 x float> %a1, <8 x float> %a2) #0 {
 ; CHECK-FMA-LABEL: test_x86_fma_vfmsub_ps_256:
 ; CHECK-FMA:       # %bb.0:
-; CHECK-FMA-NEXT:    vfmsub213ps %ymm2, %ymm1, %ymm0 # encoding: [0xc4,0xe2,0x75,0xaa,0xc2]
-; CHECK-FMA-NEXT:    # ymm0 = (ymm1 * ymm0) - ymm2
+; CHECK-FMA-NEXT:    vfmsub213ps %ymm2, %ymm0, %ymm1 # encoding: [0xc4,0xe2,0x7d,0xaa,0xca]
+; CHECK-FMA-NEXT:    # ymm1 = (ymm0 * ymm1) - ymm2
+; CHECK-FMA-NEXT:    vmovaps %ymm1, %ymm0 # encoding: [0xc5,0xfc,0x28,0xc1]
 ; CHECK-FMA-NEXT:    retq # encoding: [0xc3]
 ;
 ; CHECK-AVX512VL-LABEL: test_x86_fma_vfmsub_ps_256:
 ; CHECK-AVX512VL:       # %bb.0:
-; CHECK-AVX512VL-NEXT:    vfmsub213ps %ymm2, %ymm1, %ymm0 # EVEX TO VEX Compression encoding: [0xc4,0xe2,0x75,0xaa,0xc2]
-; CHECK-AVX512VL-NEXT:    # ymm0 = (ymm1 * ymm0) - ymm2
+; CHECK-AVX512VL-NEXT:    vfmsub213ps %ymm2, %ymm0, %ymm1 # EVEX TO VEX Compression encoding: [0xc4,0xe2,0x7d,0xaa,0xca]
+; CHECK-AVX512VL-NEXT:    # ymm1 = (ymm0 * ymm1) - ymm2
+; CHECK-AVX512VL-NEXT:    vmovaps %ymm1, %ymm0 # EVEX TO VEX Compression encoding: [0xc5,0xfc,0x28,0xc1]
 ; CHECK-AVX512VL-NEXT:    retq # encoding: [0xc3]
 ;
 ; CHECK-FMA-WIN-LABEL: test_x86_fma_vfmsub_ps_256:
 ; CHECK-FMA-WIN:       # %bb.0:
-; CHECK-FMA-WIN-NEXT:    vmovaps (%rcx), %ymm1 # encoding: [0xc5,0xfc,0x28,0x09]
-; CHECK-FMA-WIN-NEXT:    vmovaps (%rdx), %ymm0 # encoding: [0xc5,0xfc,0x28,0x02]
+; CHECK-FMA-WIN-NEXT:    vmovaps (%rcx), %ymm0 # encoding: [0xc5,0xfc,0x28,0x01]
+; CHECK-FMA-WIN-NEXT:    vmovaps (%rdx), %ymm1 # encoding: [0xc5,0xfc,0x28,0x0a]
 ; CHECK-FMA-WIN-NEXT:    vfmsub213ps (%r8), %ymm1, %ymm0 # encoding: [0xc4,0xc2,0x75,0xaa,0x00]
 ; CHECK-FMA-WIN-NEXT:    # ymm0 = (ymm1 * ymm0) - mem
 ; CHECK-FMA-WIN-NEXT:    retq # encoding: [0xc3]
@@ -454,20 +468,22 @@ define <8 x float> @test_x86_fma_vfmsub_ps_256(<8 x float> %a0, <8 x float> %a1,
 define <4 x double> @test_x86_fma_vfmsub_pd_256(<4 x double> %a0, <4 x double> %a1, <4 x double> %a2) #0 {
 ; CHECK-FMA-LABEL: test_x86_fma_vfmsub_pd_256:
 ; CHECK-FMA:       # %bb.0:
-; CHECK-FMA-NEXT:    vfmsub213pd %ymm2, %ymm1, %ymm0 # encoding: [0xc4,0xe2,0xf5,0xaa,0xc2]
-; CHECK-FMA-NEXT:    # ymm0 = (ymm1 * ymm0) - ymm2
+; CHECK-FMA-NEXT:    vfmsub213pd %ymm2, %ymm0, %ymm1 # encoding: [0xc4,0xe2,0xfd,0xaa,0xca]
+; CHECK-FMA-NEXT:    # ymm1 = (ymm0 * ymm1) - ymm2
+; CHECK-FMA-NEXT:    vmovapd %ymm1, %ymm0 # encoding: [0xc5,0xfd,0x28,0xc1]
 ; CHECK-FMA-NEXT:    retq # encoding: [0xc3]
 ;
 ; CHECK-AVX512VL-LABEL: test_x86_fma_vfmsub_pd_256:
 ; CHECK-AVX512VL:       # %bb.0:
-; CHECK-AVX512VL-NEXT:    vfmsub213pd %ymm2, %ymm1, %ymm0 # EVEX TO VEX Compression encoding: [0xc4,0xe2,0xf5,0xaa,0xc2]
-; CHECK-AVX512VL-NEXT:    # ymm0 = (ymm1 * ymm0) - ymm2
+; CHECK-AVX512VL-NEXT:    vfmsub213pd %ymm2, %ymm0, %ymm1 # EVEX TO VEX Compression encoding: [0xc4,0xe2,0xfd,0xaa,0xca]
+; CHECK-AVX512VL-NEXT:    # ymm1 = (ymm0 * ymm1) - ymm2
+; CHECK-AVX512VL-NEXT:    vmovapd %ymm1, %ymm0 # EVEX TO VEX Compression encoding: [0xc5,0xfd,0x28,0xc1]
 ; CHECK-AVX512VL-NEXT:    retq # encoding: [0xc3]
 ;
 ; CHECK-FMA-WIN-LABEL: test_x86_fma_vfmsub_pd_256:
 ; CHECK-FMA-WIN:       # %bb.0:
-; CHECK-FMA-WIN-NEXT:    vmovapd (%rcx), %ymm1 # encoding: [0xc5,0xfd,0x28,0x09]
-; CHECK-FMA-WIN-NEXT:    vmovapd (%rdx), %ymm0 # encoding: [0xc5,0xfd,0x28,0x02]
+; CHECK-FMA-WIN-NEXT:    vmovapd (%rcx), %ymm0 # encoding: [0xc5,0xfd,0x28,0x01]
+; CHECK-FMA-WIN-NEXT:    vmovapd (%rdx), %ymm1 # encoding: [0xc5,0xfd,0x28,0x0a]
 ; CHECK-FMA-WIN-NEXT:    vfmsub213pd (%r8), %ymm1, %ymm0 # encoding: [0xc4,0xc2,0xf5,0xaa,0x00]
 ; CHECK-FMA-WIN-NEXT:    # ymm0 = (ymm1 * ymm0) - mem
 ; CHECK-FMA-WIN-NEXT:    retq # encoding: [0xc3]
@@ -604,20 +620,22 @@ define <2 x double> @test_x86_fma_vfnmadd_bac_sd(<2 x double> %a0, <2 x double> 
 define <4 x float> @test_x86_fma_vfnmadd_ps(<4 x float> %a0, <4 x float> %a1, <4 x float> %a2) #0 {
 ; CHECK-FMA-LABEL: test_x86_fma_vfnmadd_ps:
 ; CHECK-FMA:       # %bb.0:
-; CHECK-FMA-NEXT:    vfnmadd213ps %xmm2, %xmm1, %xmm0 # encoding: [0xc4,0xe2,0x71,0xac,0xc2]
-; CHECK-FMA-NEXT:    # xmm0 = -(xmm1 * xmm0) + xmm2
+; CHECK-FMA-NEXT:    vfnmadd213ps %xmm2, %xmm0, %xmm1 # encoding: [0xc4,0xe2,0x79,0xac,0xca]
+; CHECK-FMA-NEXT:    # xmm1 = -(xmm0 * xmm1) + xmm2
+; CHECK-FMA-NEXT:    vmovaps %xmm1, %xmm0 # encoding: [0xc5,0xf8,0x28,0xc1]
 ; CHECK-FMA-NEXT:    retq # encoding: [0xc3]
 ;
 ; CHECK-AVX512VL-LABEL: test_x86_fma_vfnmadd_ps:
 ; CHECK-AVX512VL:       # %bb.0:
-; CHECK-AVX512VL-NEXT:    vfnmadd213ps %xmm2, %xmm1, %xmm0 # EVEX TO VEX Compression encoding: [0xc4,0xe2,0x71,0xac,0xc2]
-; CHECK-AVX512VL-NEXT:    # xmm0 = -(xmm1 * xmm0) + xmm2
+; CHECK-AVX512VL-NEXT:    vfnmadd213ps %xmm2, %xmm0, %xmm1 # EVEX TO VEX Compression encoding: [0xc4,0xe2,0x79,0xac,0xca]
+; CHECK-AVX512VL-NEXT:    # xmm1 = -(xmm0 * xmm1) + xmm2
+; CHECK-AVX512VL-NEXT:    vmovaps %xmm1, %xmm0 # EVEX TO VEX Compression encoding: [0xc5,0xf8,0x28,0xc1]
 ; CHECK-AVX512VL-NEXT:    retq # encoding: [0xc3]
 ;
 ; CHECK-FMA-WIN-LABEL: test_x86_fma_vfnmadd_ps:
 ; CHECK-FMA-WIN:       # %bb.0:
-; CHECK-FMA-WIN-NEXT:    vmovaps (%rcx), %xmm1 # encoding: [0xc5,0xf8,0x28,0x09]
-; CHECK-FMA-WIN-NEXT:    vmovaps (%rdx), %xmm0 # encoding: [0xc5,0xf8,0x28,0x02]
+; CHECK-FMA-WIN-NEXT:    vmovaps (%rcx), %xmm0 # encoding: [0xc5,0xf8,0x28,0x01]
+; CHECK-FMA-WIN-NEXT:    vmovaps (%rdx), %xmm1 # encoding: [0xc5,0xf8,0x28,0x0a]
 ; CHECK-FMA-WIN-NEXT:    vfnmadd213ps (%r8), %xmm1, %xmm0 # encoding: [0xc4,0xc2,0x71,0xac,0x00]
 ; CHECK-FMA-WIN-NEXT:    # xmm0 = -(xmm1 * xmm0) + mem
 ; CHECK-FMA-WIN-NEXT:    retq # encoding: [0xc3]
@@ -629,20 +647,22 @@ define <4 x float> @test_x86_fma_vfnmadd_ps(<4 x float> %a0, <4 x float> %a1, <4
 define <2 x double> @test_x86_fma_vfnmadd_pd(<2 x double> %a0, <2 x double> %a1, <2 x double> %a2) #0 {
 ; CHECK-FMA-LABEL: test_x86_fma_vfnmadd_pd:
 ; CHECK-FMA:       # %bb.0:
-; CHECK-FMA-NEXT:    vfnmadd213pd %xmm2, %xmm1, %xmm0 # encoding: [0xc4,0xe2,0xf1,0xac,0xc2]
-; CHECK-FMA-NEXT:    # xmm0 = -(xmm1 * xmm0) + xmm2
+; CHECK-FMA-NEXT:    vfnmadd213pd %xmm2, %xmm0, %xmm1 # encoding: [0xc4,0xe2,0xf9,0xac,0xca]
+; CHECK-FMA-NEXT:    # xmm1 = -(xmm0 * xmm1) + xmm2
+; CHECK-FMA-NEXT:    vmovapd %xmm1, %xmm0 # encoding: [0xc5,0xf9,0x28,0xc1]
 ; CHECK-FMA-NEXT:    retq # encoding: [0xc3]
 ;
 ; CHECK-AVX512VL-LABEL: test_x86_fma_vfnmadd_pd:
 ; CHECK-AVX512VL:       # %bb.0:
-; CHECK-AVX512VL-NEXT:    vfnmadd213pd %xmm2, %xmm1, %xmm0 # EVEX TO VEX Compression encoding: [0xc4,0xe2,0xf1,0xac,0xc2]
-; CHECK-AVX512VL-NEXT:    # xmm0 = -(xmm1 * xmm0) + xmm2
+; CHECK-AVX512VL-NEXT:    vfnmadd213pd %xmm2, %xmm0, %xmm1 # EVEX TO VEX Compression encoding: [0xc4,0xe2,0xf9,0xac,0xca]
+; CHECK-AVX512VL-NEXT:    # xmm1 = -(xmm0 * xmm1) + xmm2
+; CHECK-AVX512VL-NEXT:    vmovapd %xmm1, %xmm0 # EVEX TO VEX Compression encoding: [0xc5,0xf9,0x28,0xc1]
 ; CHECK-AVX512VL-NEXT:    retq # encoding: [0xc3]
 ;
 ; CHECK-FMA-WIN-LABEL: test_x86_fma_vfnmadd_pd:
 ; CHECK-FMA-WIN:       # %bb.0:
-; CHECK-FMA-WIN-NEXT:    vmovapd (%rcx), %xmm1 # encoding: [0xc5,0xf9,0x28,0x09]
-; CHECK-FMA-WIN-NEXT:    vmovapd (%rdx), %xmm0 # encoding: [0xc5,0xf9,0x28,0x02]
+; CHECK-FMA-WIN-NEXT:    vmovapd (%rcx), %xmm0 # encoding: [0xc5,0xf9,0x28,0x01]
+; CHECK-FMA-WIN-NEXT:    vmovapd (%rdx), %xmm1 # encoding: [0xc5,0xf9,0x28,0x0a]
 ; CHECK-FMA-WIN-NEXT:    vfnmadd213pd (%r8), %xmm1, %xmm0 # encoding: [0xc4,0xc2,0xf1,0xac,0x00]
 ; CHECK-FMA-WIN-NEXT:    # xmm0 = -(xmm1 * xmm0) + mem
 ; CHECK-FMA-WIN-NEXT:    retq # encoding: [0xc3]
@@ -654,20 +674,22 @@ define <2 x double> @test_x86_fma_vfnmadd_pd(<2 x double> %a0, <2 x double> %a1,
 define <8 x float> @test_x86_fma_vfnmadd_ps_256(<8 x float> %a0, <8 x float> %a1, <8 x float> %a2) #0 {
 ; CHECK-FMA-LABEL: test_x86_fma_vfnmadd_ps_256:
 ; CHECK-FMA:       # %bb.0:
-; CHECK-FMA-NEXT:    vfnmadd213ps %ymm2, %ymm1, %ymm0 # encoding: [0xc4,0xe2,0x75,0xac,0xc2]
-; CHECK-FMA-NEXT:    # ymm0 = -(ymm1 * ymm0) + ymm2
+; CHECK-FMA-NEXT:    vfnmadd213ps %ymm2, %ymm0, %ymm1 # encoding: [0xc4,0xe2,0x7d,0xac,0xca]
+; CHECK-FMA-NEXT:    # ymm1 = -(ymm0 * ymm1) + ymm2
+; CHECK-FMA-NEXT:    vmovaps %ymm1, %ymm0 # encoding: [0xc5,0xfc,0x28,0xc1]
 ; CHECK-FMA-NEXT:    retq # encoding: [0xc3]
 ;
 ; CHECK-AVX512VL-LABEL: test_x86_fma_vfnmadd_ps_256:
 ; CHECK-AVX512VL:       # %bb.0:
-; CHECK-AVX512VL-NEXT:    vfnmadd213ps %ymm2, %ymm1, %ymm0 # EVEX TO VEX Compression encoding: [0xc4,0xe2,0x75,0xac,0xc2]
-; CHECK-AVX512VL-NEXT:    # ymm0 = -(ymm1 * ymm0) + ymm2
+; CHECK-AVX512VL-NEXT:    vfnmadd213ps %ymm2, %ymm0, %ymm1 # EVEX TO VEX Compression encoding: [0xc4,0xe2,0x7d,0xac,0xca]
+; CHECK-AVX512VL-NEXT:    # ymm1 = -(ymm0 * ymm1) + ymm2
+; CHECK-AVX512VL-NEXT:    vmovaps %ymm1, %ymm0 # EVEX TO VEX Compression encoding: [0xc5,0xfc,0x28,0xc1]
 ; CHECK-AVX512VL-NEXT:    retq # encoding: [0xc3]
 ;
 ; CHECK-FMA-WIN-LABEL: test_x86_fma_vfnmadd_ps_256:
 ; CHECK-FMA-WIN:       # %bb.0:
-; CHECK-FMA-WIN-NEXT:    vmovaps (%rcx), %ymm1 # encoding: [0xc5,0xfc,0x28,0x09]
-; CHECK-FMA-WIN-NEXT:    vmovaps (%rdx), %ymm0 # encoding: [0xc5,0xfc,0x28,0x02]
+; CHECK-FMA-WIN-NEXT:    vmovaps (%rcx), %ymm0 # encoding: [0xc5,0xfc,0x28,0x01]
+; CHECK-FMA-WIN-NEXT:    vmovaps (%rdx), %ymm1 # encoding: [0xc5,0xfc,0x28,0x0a]
 ; CHECK-FMA-WIN-NEXT:    vfnmadd213ps (%r8), %ymm1, %ymm0 # encoding: [0xc4,0xc2,0x75,0xac,0x00]
 ; CHECK-FMA-WIN-NEXT:    # ymm0 = -(ymm1 * ymm0) + mem
 ; CHECK-FMA-WIN-NEXT:    retq # encoding: [0xc3]
@@ -679,20 +701,22 @@ define <8 x float> @test_x86_fma_vfnmadd_ps_256(<8 x float> %a0, <8 x float> %a1
 define <4 x double> @test_x86_fma_vfnmadd_pd_256(<4 x double> %a0, <4 x double> %a1, <4 x double> %a2) #0 {
 ; CHECK-FMA-LABEL: test_x86_fma_vfnmadd_pd_256:
 ; CHECK-FMA:       # %bb.0:
-; CHECK-FMA-NEXT:    vfnmadd213pd %ymm2, %ymm1, %ymm0 # encoding: [0xc4,0xe2,0xf5,0xac,0xc2]
-; CHECK-FMA-NEXT:    # ymm0 = -(ymm1 * ymm0) + ymm2
+; CHECK-FMA-NEXT:    vfnmadd213pd %ymm2, %ymm0, %ymm1 # encoding: [0xc4,0xe2,0xfd,0xac,0xca]
+; CHECK-FMA-NEXT:    # ymm1 = -(ymm0 * ymm1) + ymm2
+; CHECK-FMA-NEXT:    vmovapd %ymm1, %ymm0 # encoding: [0xc5,0xfd,0x28,0xc1]
 ; CHECK-FMA-NEXT:    retq # encoding: [0xc3]
 ;
 ; CHECK-AVX512VL-LABEL: test_x86_fma_vfnmadd_pd_256:
 ; CHECK-AVX512VL:       # %bb.0:
-; CHECK-AVX512VL-NEXT:    vfnmadd213pd %ymm2, %ymm1, %ymm0 # EVEX TO VEX Compression encoding: [0xc4,0xe2,0xf5,0xac,0xc2]
-; CHECK-AVX512VL-NEXT:    # ymm0 = -(ymm1 * ymm0) + ymm2
+; CHECK-AVX512VL-NEXT:    vfnmadd213pd %ymm2, %ymm0, %ymm1 # EVEX TO VEX Compression encoding: [0xc4,0xe2,0xfd,0xac,0xca]
+; CHECK-AVX512VL-NEXT:    # ymm1 = -(ymm0 * ymm1) + ymm2
+; CHECK-AVX512VL-NEXT:    vmovapd %ymm1, %ymm0 # EVEX TO VEX Compression encoding: [0xc5,0xfd,0x28,0xc1]
 ; CHECK-AVX512VL-NEXT:    retq # encoding: [0xc3]
 ;
 ; CHECK-FMA-WIN-LABEL: test_x86_fma_vfnmadd_pd_256:
 ; CHECK-FMA-WIN:       # %bb.0:
-; CHECK-FMA-WIN-NEXT:    vmovapd (%rcx), %ymm1 # encoding: [0xc5,0xfd,0x28,0x09]
-; CHECK-FMA-WIN-NEXT:    vmovapd (%rdx), %ymm0 # encoding: [0xc5,0xfd,0x28,0x02]
+; CHECK-FMA-WIN-NEXT:    vmovapd (%rcx), %ymm0 # encoding: [0xc5,0xfd,0x28,0x01]
+; CHECK-FMA-WIN-NEXT:    vmovapd (%rdx), %ymm1 # encoding: [0xc5,0xfd,0x28,0x0a]
 ; CHECK-FMA-WIN-NEXT:    vfnmadd213pd (%r8), %ymm1, %ymm0 # encoding: [0xc4,0xc2,0xf5,0xac,0x00]
 ; CHECK-FMA-WIN-NEXT:    # ymm0 = -(ymm1 * ymm0) + mem
 ; CHECK-FMA-WIN-NEXT:    retq # encoding: [0xc3]
@@ -833,20 +857,22 @@ define <2 x double> @test_x86_fma_vfnmsub_bac_sd(<2 x double> %a0, <2 x double> 
 define <4 x float> @test_x86_fma_vfnmsub_ps(<4 x float> %a0, <4 x float> %a1, <4 x float> %a2) #0 {
 ; CHECK-FMA-LABEL: test_x86_fma_vfnmsub_ps:
 ; CHECK-FMA:       # %bb.0:
-; CHECK-FMA-NEXT:    vfnmsub213ps %xmm2, %xmm1, %xmm0 # encoding: [0xc4,0xe2,0x71,0xae,0xc2]
-; CHECK-FMA-NEXT:    # xmm0 = -(xmm1 * xmm0) - xmm2
+; CHECK-FMA-NEXT:    vfnmsub213ps %xmm2, %xmm0, %xmm1 # encoding: [0xc4,0xe2,0x79,0xae,0xca]
+; CHECK-FMA-NEXT:    # xmm1 = -(xmm0 * xmm1) - xmm2
+; CHECK-FMA-NEXT:    vmovaps %xmm1, %xmm0 # encoding: [0xc5,0xf8,0x28,0xc1]
 ; CHECK-FMA-NEXT:    retq # encoding: [0xc3]
 ;
 ; CHECK-AVX512VL-LABEL: test_x86_fma_vfnmsub_ps:
 ; CHECK-AVX512VL:       # %bb.0:
-; CHECK-AVX512VL-NEXT:    vfnmsub213ps %xmm2, %xmm1, %xmm0 # EVEX TO VEX Compression encoding: [0xc4,0xe2,0x71,0xae,0xc2]
-; CHECK-AVX512VL-NEXT:    # xmm0 = -(xmm1 * xmm0) - xmm2
+; CHECK-AVX512VL-NEXT:    vfnmsub213ps %xmm2, %xmm0, %xmm1 # EVEX TO VEX Compression encoding: [0xc4,0xe2,0x79,0xae,0xca]
+; CHECK-AVX512VL-NEXT:    # xmm1 = -(xmm0 * xmm1) - xmm2
+; CHECK-AVX512VL-NEXT:    vmovaps %xmm1, %xmm0 # EVEX TO VEX Compression encoding: [0xc5,0xf8,0x28,0xc1]
 ; CHECK-AVX512VL-NEXT:    retq # encoding: [0xc3]
 ;
 ; CHECK-FMA-WIN-LABEL: test_x86_fma_vfnmsub_ps:
 ; CHECK-FMA-WIN:       # %bb.0:
-; CHECK-FMA-WIN-NEXT:    vmovaps (%rcx), %xmm1 # encoding: [0xc5,0xf8,0x28,0x09]
-; CHECK-FMA-WIN-NEXT:    vmovaps (%rdx), %xmm0 # encoding: [0xc5,0xf8,0x28,0x02]
+; CHECK-FMA-WIN-NEXT:    vmovaps (%rcx), %xmm0 # encoding: [0xc5,0xf8,0x28,0x01]
+; CHECK-FMA-WIN-NEXT:    vmovaps (%rdx), %xmm1 # encoding: [0xc5,0xf8,0x28,0x0a]
 ; CHECK-FMA-WIN-NEXT:    vfnmsub213ps (%r8), %xmm1, %xmm0 # encoding: [0xc4,0xc2,0x71,0xae,0x00]
 ; CHECK-FMA-WIN-NEXT:    # xmm0 = -(xmm1 * xmm0) - mem
 ; CHECK-FMA-WIN-NEXT:    retq # encoding: [0xc3]
@@ -859,20 +885,22 @@ define <4 x float> @test_x86_fma_vfnmsub_ps(<4 x float> %a0, <4 x float> %a1, <4
 define <2 x double> @test_x86_fma_vfnmsub_pd(<2 x double> %a0, <2 x double> %a1, <2 x double> %a2) #0 {
 ; CHECK-FMA-LABEL: test_x86_fma_vfnmsub_pd:
 ; CHECK-FMA:       # %bb.0:
-; CHECK-FMA-NEXT:    vfnmsub213pd %xmm2, %xmm1, %xmm0 # encoding: [0xc4,0xe2,0xf1,0xae,0xc2]
-; CHECK-FMA-NEXT:    # xmm0 = -(xmm1 * xmm0) - xmm2
+; CHECK-FMA-NEXT:    vfnmsub213pd %xmm2, %xmm0, %xmm1 # encoding: [0xc4,0xe2,0xf9,0xae,0xca]
+; CHECK-FMA-NEXT:    # xmm1 = -(xmm0 * xmm1) - xmm2
+; CHECK-FMA-NEXT:    vmovapd %xmm1, %xmm0 # encoding: [0xc5,0xf9,0x28,0xc1]
 ; CHECK-FMA-NEXT:    retq # encoding: [0xc3]
 ;
 ; CHECK-AVX512VL-LABEL: test_x86_fma_vfnmsub_pd:
 ; CHECK-AVX512VL:       # %bb.0:
-; CHECK-AVX512VL-NEXT:    vfnmsub213pd %xmm2, %xmm1, %xmm0 # EVEX TO VEX Compression encoding: [0xc4,0xe2,0xf1,0xae,0xc2]
-; CHECK-AVX512VL-NEXT:    # xmm0 = -(xmm1 * xmm0) - xmm2
+; CHECK-AVX512VL-NEXT:    vfnmsub213pd %xmm2, %xmm0, %xmm1 # EVEX TO VEX Compression encoding: [0xc4,0xe2,0xf9,0xae,0xca]
+; CHECK-AVX512VL-NEXT:    # xmm1 = -(xmm0 * xmm1) - xmm2
+; CHECK-AVX512VL-NEXT:    vmovapd %xmm1, %xmm0 # EVEX TO VEX Compression encoding: [0xc5,0xf9,0x28,0xc1]
 ; CHECK-AVX512VL-NEXT:    retq # encoding: [0xc3]
 ;
 ; CHECK-FMA-WIN-LABEL: test_x86_fma_vfnmsub_pd:
 ; CHECK-FMA-WIN:       # %bb.0:
-; CHECK-FMA-WIN-NEXT:    vmovapd (%rcx), %xmm1 # encoding: [0xc5,0xf9,0x28,0x09]
-; CHECK-FMA-WIN-NEXT:    vmovapd (%rdx), %xmm0 # encoding: [0xc5,0xf9,0x28,0x02]
+; CHECK-FMA-WIN-NEXT:    vmovapd (%rcx), %xmm0 # encoding: [0xc5,0xf9,0x28,0x01]
+; CHECK-FMA-WIN-NEXT:    vmovapd (%rdx), %xmm1 # encoding: [0xc5,0xf9,0x28,0x0a]
 ; CHECK-FMA-WIN-NEXT:    vfnmsub213pd (%r8), %xmm1, %xmm0 # encoding: [0xc4,0xc2,0xf1,0xae,0x00]
 ; CHECK-FMA-WIN-NEXT:    # xmm0 = -(xmm1 * xmm0) - mem
 ; CHECK-FMA-WIN-NEXT:    retq # encoding: [0xc3]
@@ -885,20 +913,22 @@ define <2 x double> @test_x86_fma_vfnmsub_pd(<2 x double> %a0, <2 x double> %a1,
 define <8 x float> @test_x86_fma_vfnmsub_ps_256(<8 x float> %a0, <8 x float> %a1, <8 x float> %a2) #0 {
 ; CHECK-FMA-LABEL: test_x86_fma_vfnmsub_ps_256:
 ; CHECK-FMA:       # %bb.0:
-; CHECK-FMA-NEXT:    vfnmsub213ps %ymm2, %ymm1, %ymm0 # encoding: [0xc4,0xe2,0x75,0xae,0xc2]
-; CHECK-FMA-NEXT:    # ymm0 = -(ymm1 * ymm0) - ymm2
+; CHECK-FMA-NEXT:    vfnmsub213ps %ymm2, %ymm0, %ymm1 # encoding: [0xc4,0xe2,0x7d,0xae,0xca]
+; CHECK-FMA-NEXT:    # ymm1 = -(ymm0 * ymm1) - ymm2
+; CHECK-FMA-NEXT:    vmovaps %ymm1, %ymm0 # encoding: [0xc5,0xfc,0x28,0xc1]
 ; CHECK-FMA-NEXT:    retq # encoding: [0xc3]
 ;
 ; CHECK-AVX512VL-LABEL: test_x86_fma_vfnmsub_ps_256:
 ; CHECK-AVX512VL:       # %bb.0:
-; CHECK-AVX512VL-NEXT:    vfnmsub213ps %ymm2, %ymm1, %ymm0 # EVEX TO VEX Compression encoding: [0xc4,0xe2,0x75,0xae,0xc2]
-; CHECK-AVX512VL-NEXT:    # ymm0 = -(ymm1 * ymm0) - ymm2
+; CHECK-AVX512VL-NEXT:    vfnmsub213ps %ymm2, %ymm0, %ymm1 # EVEX TO VEX Compression encoding: [0xc4,0xe2,0x7d,0xae,0xca]
+; CHECK-AVX512VL-NEXT:    # ymm1 = -(ymm0 * ymm1) - ymm2
+; CHECK-AVX512VL-NEXT:    vmovaps %ymm1, %ymm0 # EVEX TO VEX Compression encoding: [0xc5,0xfc,0x28,0xc1]
 ; CHECK-AVX512VL-NEXT:    retq # encoding: [0xc3]
 ;
 ; CHECK-FMA-WIN-LABEL: test_x86_fma_vfnmsub_ps_256:
 ; CHECK-FMA-WIN:       # %bb.0:
-; CHECK-FMA-WIN-NEXT:    vmovaps (%rcx), %ymm1 # encoding: [0xc5,0xfc,0x28,0x09]
-; CHECK-FMA-WIN-NEXT:    vmovaps (%rdx), %ymm0 # encoding: [0xc5,0xfc,0x28,0x02]
+; CHECK-FMA-WIN-NEXT:    vmovaps (%rcx), %ymm0 # encoding: [0xc5,0xfc,0x28,0x01]
+; CHECK-FMA-WIN-NEXT:    vmovaps (%rdx), %ymm1 # encoding: [0xc5,0xfc,0x28,0x0a]
 ; CHECK-FMA-WIN-NEXT:    vfnmsub213ps (%r8), %ymm1, %ymm0 # encoding: [0xc4,0xc2,0x75,0xae,0x00]
 ; CHECK-FMA-WIN-NEXT:    # ymm0 = -(ymm1 * ymm0) - mem
 ; CHECK-FMA-WIN-NEXT:    retq # encoding: [0xc3]
@@ -911,20 +941,22 @@ define <8 x float> @test_x86_fma_vfnmsub_ps_256(<8 x float> %a0, <8 x float> %a1
 define <4 x double> @test_x86_fma_vfnmsub_pd_256(<4 x double> %a0, <4 x double> %a1, <4 x double> %a2) #0 {
 ; CHECK-FMA-LABEL: test_x86_fma_vfnmsub_pd_256:
 ; CHECK-FMA:       # %bb.0:
-; CHECK-FMA-NEXT:    vfnmsub213pd %ymm2, %ymm1, %ymm0 # encoding: [0xc4,0xe2,0xf5,0xae,0xc2]
-; CHECK-FMA-NEXT:    # ymm0 = -(ymm1 * ymm0) - ymm2
+; CHECK-FMA-NEXT:    vfnmsub213pd %ymm2, %ymm0, %ymm1 # encoding: [0xc4,0xe2,0xfd,0xae,0xca]
+; CHECK-FMA-NEXT:    # ymm1 = -(ymm0 * ymm1) - ymm2
+; CHECK-FMA-NEXT:    vmovapd %ymm1, %ymm0 # encoding: [0xc5,0xfd,0x28,0xc1]
 ; CHECK-FMA-NEXT:    retq # encoding: [0xc3]
 ;
 ; CHECK-AVX512VL-LABEL: test_x86_fma_vfnmsub_pd_256:
 ; CHECK-AVX512VL:       # %bb.0:
-; CHECK-AVX512VL-NEXT:    vfnmsub213pd %ymm2, %ymm1, %ymm0 # EVEX TO VEX Compression encoding: [0xc4,0xe2,0xf5,0xae,0xc2]
-; CHECK-AVX512VL-NEXT:    # ymm0 = -(ymm1 * ymm0) - ymm2
+; CHECK-AVX512VL-NEXT:    vfnmsub213pd %ymm2, %ymm0, %ymm1 # EVEX TO VEX Compression encoding: [0xc4,0xe2,0xfd,0xae,0xca]
+; CHECK-AVX512VL-NEXT:    # ymm1 = -(ymm0 * ymm1) - ymm2
+; CHECK-AVX512VL-NEXT:    vmovapd %ymm1, %ymm0 # EVEX TO VEX Compression encoding: [0xc5,0xfd,0x28,0xc1]
 ; CHECK-AVX512VL-NEXT:    retq # encoding: [0xc3]
 ;
 ; CHECK-FMA-WIN-LABEL: test_x86_fma_vfnmsub_pd_256:
 ; CHECK-FMA-WIN:       # %bb.0:
-; CHECK-FMA-WIN-NEXT:    vmovapd (%rcx), %ymm1 # encoding: [0xc5,0xfd,0x28,0x09]
-; CHECK-FMA-WIN-NEXT:    vmovapd (%rdx), %ymm0 # encoding: [0xc5,0xfd,0x28,0x02]
+; CHECK-FMA-WIN-NEXT:    vmovapd (%rcx), %ymm0 # encoding: [0xc5,0xfd,0x28,0x01]
+; CHECK-FMA-WIN-NEXT:    vmovapd (%rdx), %ymm1 # encoding: [0xc5,0xfd,0x28,0x0a]
 ; CHECK-FMA-WIN-NEXT:    vfnmsub213pd (%r8), %ymm1, %ymm0 # encoding: [0xc4,0xc2,0xf5,0xae,0x00]
 ; CHECK-FMA-WIN-NEXT:    # ymm0 = -(ymm1 * ymm0) - mem
 ; CHECK-FMA-WIN-NEXT:    retq # encoding: [0xc3]
@@ -938,20 +970,22 @@ define <4 x double> @test_x86_fma_vfnmsub_pd_256(<4 x double> %a0, <4 x double> 
 define <4 x float> @test_x86_fma_vfmaddsub_ps(<4 x float> %a0, <4 x float> %a1, <4 x float> %a2) #0 {
 ; CHECK-FMA-LABEL: test_x86_fma_vfmaddsub_ps:
 ; CHECK-FMA:       # %bb.0:
-; CHECK-FMA-NEXT:    vfmaddsub213ps %xmm2, %xmm1, %xmm0 # encoding: [0xc4,0xe2,0x71,0xa6,0xc2]
-; CHECK-FMA-NEXT:    # xmm0 = (xmm1 * xmm0) +/- xmm2
+; CHECK-FMA-NEXT:    vfmaddsub213ps %xmm2, %xmm0, %xmm1 # encoding: [0xc4,0xe2,0x79,0xa6,0xca]
+; CHECK-FMA-NEXT:    # xmm1 = (xmm0 * xmm1) +/- xmm2
+; CHECK-FMA-NEXT:    vmovaps %xmm1, %xmm0 # encoding: [0xc5,0xf8,0x28,0xc1]
 ; CHECK-FMA-NEXT:    retq # encoding: [0xc3]
 ;
 ; CHECK-AVX512VL-LABEL: test_x86_fma_vfmaddsub_ps:
 ; CHECK-AVX512VL:       # %bb.0:
-; CHECK-AVX512VL-NEXT:    vfmaddsub213ps %xmm2, %xmm1, %xmm0 # EVEX TO VEX Compression encoding: [0xc4,0xe2,0x71,0xa6,0xc2]
-; CHECK-AVX512VL-NEXT:    # xmm0 = (xmm1 * xmm0) +/- xmm2
+; CHECK-AVX512VL-NEXT:    vfmaddsub213ps %xmm2, %xmm0, %xmm1 # EVEX TO VEX Compression encoding: [0xc4,0xe2,0x79,0xa6,0xca]
+; CHECK-AVX512VL-NEXT:    # xmm1 = (xmm0 * xmm1) +/- xmm2
+; CHECK-AVX512VL-NEXT:    vmovaps %xmm1, %xmm0 # EVEX TO VEX Compression encoding: [0xc5,0xf8,0x28,0xc1]
 ; CHECK-AVX512VL-NEXT:    retq # encoding: [0xc3]
 ;
 ; CHECK-FMA-WIN-LABEL: test_x86_fma_vfmaddsub_ps:
 ; CHECK-FMA-WIN:       # %bb.0:
-; CHECK-FMA-WIN-NEXT:    vmovaps (%rcx), %xmm1 # encoding: [0xc5,0xf8,0x28,0x09]
-; CHECK-FMA-WIN-NEXT:    vmovaps (%rdx), %xmm0 # encoding: [0xc5,0xf8,0x28,0x02]
+; CHECK-FMA-WIN-NEXT:    vmovaps (%rcx), %xmm0 # encoding: [0xc5,0xf8,0x28,0x01]
+; CHECK-FMA-WIN-NEXT:    vmovaps (%rdx), %xmm1 # encoding: [0xc5,0xf8,0x28,0x0a]
 ; CHECK-FMA-WIN-NEXT:    vfmaddsub213ps (%r8), %xmm1, %xmm0 # encoding: [0xc4,0xc2,0x71,0xa6,0x00]
 ; CHECK-FMA-WIN-NEXT:    # xmm0 = (xmm1 * xmm0) +/- mem
 ; CHECK-FMA-WIN-NEXT:    retq # encoding: [0xc3]
@@ -965,20 +999,22 @@ define <4 x float> @test_x86_fma_vfmaddsub_ps(<4 x float> %a0, <4 x float> %a1, 
 define <2 x double> @test_x86_fma_vfmaddsub_pd(<2 x double> %a0, <2 x double> %a1, <2 x double> %a2) #0 {
 ; CHECK-FMA-LABEL: test_x86_fma_vfmaddsub_pd:
 ; CHECK-FMA:       # %bb.0:
-; CHECK-FMA-NEXT:    vfmaddsub213pd %xmm2, %xmm1, %xmm0 # encoding: [0xc4,0xe2,0xf1,0xa6,0xc2]
-; CHECK-FMA-NEXT:    # xmm0 = (xmm1 * xmm0) +/- xmm2
+; CHECK-FMA-NEXT:    vfmaddsub213pd %xmm2, %xmm0, %xmm1 # encoding: [0xc4,0xe2,0xf9,0xa6,0xca]
+; CHECK-FMA-NEXT:    # xmm1 = (xmm0 * xmm1) +/- xmm2
+; CHECK-FMA-NEXT:    vmovapd %xmm1, %xmm0 # encoding: [0xc5,0xf9,0x28,0xc1]
 ; CHECK-FMA-NEXT:    retq # encoding: [0xc3]
 ;
 ; CHECK-AVX512VL-LABEL: test_x86_fma_vfmaddsub_pd:
 ; CHECK-AVX512VL:       # %bb.0:
-; CHECK-AVX512VL-NEXT:    vfmaddsub213pd %xmm2, %xmm1, %xmm0 # EVEX TO VEX Compression encoding: [0xc4,0xe2,0xf1,0xa6,0xc2]
-; CHECK-AVX512VL-NEXT:    # xmm0 = (xmm1 * xmm0) +/- xmm2
+; CHECK-AVX512VL-NEXT:    vfmaddsub213pd %xmm2, %xmm0, %xmm1 # EVEX TO VEX Compression encoding: [0xc4,0xe2,0xf9,0xa6,0xca]
+; CHECK-AVX512VL-NEXT:    # xmm1 = (xmm0 * xmm1) +/- xmm2
+; CHECK-AVX512VL-NEXT:    vmovapd %xmm1, %xmm0 # EVEX TO VEX Compression encoding: [0xc5,0xf9,0x28,0xc1]
 ; CHECK-AVX512VL-NEXT:    retq # encoding: [0xc3]
 ;
 ; CHECK-FMA-WIN-LABEL: test_x86_fma_vfmaddsub_pd:
 ; CHECK-FMA-WIN:       # %bb.0:
-; CHECK-FMA-WIN-NEXT:    vmovapd (%rcx), %xmm1 # encoding: [0xc5,0xf9,0x28,0x09]
-; CHECK-FMA-WIN-NEXT:    vmovapd (%rdx), %xmm0 # encoding: [0xc5,0xf9,0x28,0x02]
+; CHECK-FMA-WIN-NEXT:    vmovapd (%rcx), %xmm0 # encoding: [0xc5,0xf9,0x28,0x01]
+; CHECK-FMA-WIN-NEXT:    vmovapd (%rdx), %xmm1 # encoding: [0xc5,0xf9,0x28,0x0a]
 ; CHECK-FMA-WIN-NEXT:    vfmaddsub213pd (%r8), %xmm1, %xmm0 # encoding: [0xc4,0xc2,0xf1,0xa6,0x00]
 ; CHECK-FMA-WIN-NEXT:    # xmm0 = (xmm1 * xmm0) +/- mem
 ; CHECK-FMA-WIN-NEXT:    retq # encoding: [0xc3]
@@ -992,20 +1028,22 @@ define <2 x double> @test_x86_fma_vfmaddsub_pd(<2 x double> %a0, <2 x double> %a
 define <8 x float> @test_x86_fma_vfmaddsub_ps_256(<8 x float> %a0, <8 x float> %a1, <8 x float> %a2) #0 {
 ; CHECK-FMA-LABEL: test_x86_fma_vfmaddsub_ps_256:
 ; CHECK-FMA:       # %bb.0:
-; CHECK-FMA-NEXT:    vfmaddsub213ps %ymm2, %ymm1, %ymm0 # encoding: [0xc4,0xe2,0x75,0xa6,0xc2]
-; CHECK-FMA-NEXT:    # ymm0 = (ymm1 * ymm0) +/- ymm2
+; CHECK-FMA-NEXT:    vfmaddsub213ps %ymm2, %ymm0, %ymm1 # encoding: [0xc4,0xe2,0x7d,0xa6,0xca]
+; CHECK-FMA-NEXT:    # ymm1 = (ymm0 * ymm1) +/- ymm2
+; CHECK-FMA-NEXT:    vmovaps %ymm1, %ymm0 # encoding: [0xc5,0xfc,0x28,0xc1]
 ; CHECK-FMA-NEXT:    retq # encoding: [0xc3]
 ;
 ; CHECK-AVX512VL-LABEL: test_x86_fma_vfmaddsub_ps_256:
 ; CHECK-AVX512VL:       # %bb.0:
-; CHECK-AVX512VL-NEXT:    vfmaddsub213ps %ymm2, %ymm1, %ymm0 # EVEX TO VEX Compression encoding: [0xc4,0xe2,0x75,0xa6,0xc2]
-; CHECK-AVX512VL-NEXT:    # ymm0 = (ymm1 * ymm0) +/- ymm2
+; CHECK-AVX512VL-NEXT:    vfmaddsub213ps %ymm2, %ymm0, %ymm1 # EVEX TO VEX Compression encoding: [0xc4,0xe2,0x7d,0xa6,0xca]
+; CHECK-AVX512VL-NEXT:    # ymm1 = (ymm0 * ymm1) +/- ymm2
+; CHECK-AVX512VL-NEXT:    vmovaps %ymm1, %ymm0 # EVEX TO VEX Compression encoding: [0xc5,0xfc,0x28,0xc1]
 ; CHECK-AVX512VL-NEXT:    retq # encoding: [0xc3]
 ;
 ; CHECK-FMA-WIN-LABEL: test_x86_fma_vfmaddsub_ps_256:
 ; CHECK-FMA-WIN:       # %bb.0:
-; CHECK-FMA-WIN-NEXT:    vmovaps (%rcx), %ymm1 # encoding: [0xc5,0xfc,0x28,0x09]
-; CHECK-FMA-WIN-NEXT:    vmovaps (%rdx), %ymm0 # encoding: [0xc5,0xfc,0x28,0x02]
+; CHECK-FMA-WIN-NEXT:    vmovaps (%rcx), %ymm0 # encoding: [0xc5,0xfc,0x28,0x01]
+; CHECK-FMA-WIN-NEXT:    vmovaps (%rdx), %ymm1 # encoding: [0xc5,0xfc,0x28,0x0a]
 ; CHECK-FMA-WIN-NEXT:    vfmaddsub213ps (%r8), %ymm1, %ymm0 # encoding: [0xc4,0xc2,0x75,0xa6,0x00]
 ; CHECK-FMA-WIN-NEXT:    # ymm0 = (ymm1 * ymm0) +/- mem
 ; CHECK-FMA-WIN-NEXT:    retq # encoding: [0xc3]
@@ -1019,20 +1057,22 @@ define <8 x float> @test_x86_fma_vfmaddsub_ps_256(<8 x float> %a0, <8 x float> %
 define <4 x double> @test_x86_fma_vfmaddsub_pd_256(<4 x double> %a0, <4 x double> %a1, <4 x double> %a2) #0 {
 ; CHECK-FMA-LABEL: test_x86_fma_vfmaddsub_pd_256:
 ; CHECK-FMA:       # %bb.0:
-; CHECK-FMA-NEXT:    vfmaddsub213pd %ymm2, %ymm1, %ymm0 # encoding: [0xc4,0xe2,0xf5,0xa6,0xc2]
-; CHECK-FMA-NEXT:    # ymm0 = (ymm1 * ymm0) +/- ymm2
+; CHECK-FMA-NEXT:    vfmaddsub213pd %ymm2, %ymm0, %ymm1 # encoding: [0xc4,0xe2,0xfd,0xa6,0xca]
+; CHECK-FMA-NEXT:    # ymm1 = (ymm0 * ymm1) +/- ymm2
+; CHECK-FMA-NEXT:    vmovapd %ymm1, %ymm0 # encoding: [0xc5,0xfd,0x28,0xc1]
 ; CHECK-FMA-NEXT:    retq # encoding: [0xc3]
 ;
 ; CHECK-AVX512VL-LABEL: test_x86_fma_vfmaddsub_pd_256:
 ; CHECK-AVX512VL:       # %bb.0:
-; CHECK-AVX512VL-NEXT:    vfmaddsub213pd %ymm2, %ymm1, %ymm0 # EVEX TO VEX Compression encoding: [0xc4,0xe2,0xf5,0xa6,0xc2]
-; CHECK-AVX512VL-NEXT:    # ymm0 = (ymm1 * ymm0) +/- ymm2
+; CHECK-AVX512VL-NEXT:    vfmaddsub213pd %ymm2, %ymm0, %ymm1 # EVEX TO VEX Compression encoding: [0xc4,0xe2,0xfd,0xa6,0xca]
+; CHECK-AVX512VL-NEXT:    # ymm1 = (ymm0 * ymm1) +/- ymm2
+; CHECK-AVX512VL-NEXT:    vmovapd %ymm1, %ymm0 # EVEX TO VEX Compression encoding: [0xc5,0xfd,0x28,0xc1]
 ; CHECK-AVX512VL-NEXT:    retq # encoding: [0xc3]
 ;
 ; CHECK-FMA-WIN-LABEL: test_x86_fma_vfmaddsub_pd_256:
 ; CHECK-FMA-WIN:       # %bb.0:
-; CHECK-FMA-WIN-NEXT:    vmovapd (%rcx), %ymm1 # encoding: [0xc5,0xfd,0x28,0x09]
-; CHECK-FMA-WIN-NEXT:    vmovapd (%rdx), %ymm0 # encoding: [0xc5,0xfd,0x28,0x02]
+; CHECK-FMA-WIN-NEXT:    vmovapd (%rcx), %ymm0 # encoding: [0xc5,0xfd,0x28,0x01]
+; CHECK-FMA-WIN-NEXT:    vmovapd (%rdx), %ymm1 # encoding: [0xc5,0xfd,0x28,0x0a]
 ; CHECK-FMA-WIN-NEXT:    vfmaddsub213pd (%r8), %ymm1, %ymm0 # encoding: [0xc4,0xc2,0xf5,0xa6,0x00]
 ; CHECK-FMA-WIN-NEXT:    # ymm0 = (ymm1 * ymm0) +/- mem
 ; CHECK-FMA-WIN-NEXT:    retq # encoding: [0xc3]
@@ -1047,20 +1087,22 @@ define <4 x double> @test_x86_fma_vfmaddsub_pd_256(<4 x double> %a0, <4 x double
 define <4 x float> @test_x86_fma_vfmsubadd_ps(<4 x float> %a0, <4 x float> %a1, <4 x float> %a2) #0 {
 ; CHECK-FMA-LABEL: test_x86_fma_vfmsubadd_ps:
 ; CHECK-FMA:       # %bb.0:
-; CHECK-FMA-NEXT:    vfmsubadd213ps %xmm2, %xmm1, %xmm0 # encoding: [0xc4,0xe2,0x71,0xa7,0xc2]
-; CHECK-FMA-NEXT:    # xmm0 = (xmm1 * xmm0) -/+ xmm2
+; CHECK-FMA-NEXT:    vfmsubadd213ps %xmm2, %xmm0, %xmm1 # encoding: [0xc4,0xe2,0x79,0xa7,0xca]
+; CHECK-FMA-NEXT:    # xmm1 = (xmm0 * xmm1) -/+ xmm2
+; CHECK-FMA-NEXT:    vmovaps %xmm1, %xmm0 # encoding: [0xc5,0xf8,0x28,0xc1]
 ; CHECK-FMA-NEXT:    retq # encoding: [0xc3]
 ;
 ; CHECK-AVX512VL-LABEL: test_x86_fma_vfmsubadd_ps:
 ; CHECK-AVX512VL:       # %bb.0:
-; CHECK-AVX512VL-NEXT:    vfmsubadd213ps %xmm2, %xmm1, %xmm0 # EVEX TO VEX Compression encoding: [0xc4,0xe2,0x71,0xa7,0xc2]
-; CHECK-AVX512VL-NEXT:    # xmm0 = (xmm1 * xmm0) -/+ xmm2
+; CHECK-AVX512VL-NEXT:    vfmsubadd213ps %xmm2, %xmm0, %xmm1 # EVEX TO VEX Compression encoding: [0xc4,0xe2,0x79,0xa7,0xca]
+; CHECK-AVX512VL-NEXT:    # xmm1 = (xmm0 * xmm1) -/+ xmm2
+; CHECK-AVX512VL-NEXT:    vmovaps %xmm1, %xmm0 # EVEX TO VEX Compression encoding: [0xc5,0xf8,0x28,0xc1]
 ; CHECK-AVX512VL-NEXT:    retq # encoding: [0xc3]
 ;
 ; CHECK-FMA-WIN-LABEL: test_x86_fma_vfmsubadd_ps:
 ; CHECK-FMA-WIN:       # %bb.0:
-; CHECK-FMA-WIN-NEXT:    vmovaps (%rcx), %xmm1 # encoding: [0xc5,0xf8,0x28,0x09]
-; CHECK-FMA-WIN-NEXT:    vmovaps (%rdx), %xmm0 # encoding: [0xc5,0xf8,0x28,0x02]
+; CHECK-FMA-WIN-NEXT:    vmovaps (%rcx), %xmm0 # encoding: [0xc5,0xf8,0x28,0x01]
+; CHECK-FMA-WIN-NEXT:    vmovaps (%rdx), %xmm1 # encoding: [0xc5,0xf8,0x28,0x0a]
 ; CHECK-FMA-WIN-NEXT:    vfmsubadd213ps (%r8), %xmm1, %xmm0 # encoding: [0xc4,0xc2,0x71,0xa7,0x00]
 ; CHECK-FMA-WIN-NEXT:    # xmm0 = (xmm1 * xmm0) -/+ mem
 ; CHECK-FMA-WIN-NEXT:    retq # encoding: [0xc3]
@@ -1074,20 +1116,22 @@ define <4 x float> @test_x86_fma_vfmsubadd_ps(<4 x float> %a0, <4 x float> %a1, 
 define <2 x double> @test_x86_fma_vfmsubadd_pd(<2 x double> %a0, <2 x double> %a1, <2 x double> %a2) #0 {
 ; CHECK-FMA-LABEL: test_x86_fma_vfmsubadd_pd:
 ; CHECK-FMA:       # %bb.0:
-; CHECK-FMA-NEXT:    vfmsubadd213pd %xmm2, %xmm1, %xmm0 # encoding: [0xc4,0xe2,0xf1,0xa7,0xc2]
-; CHECK-FMA-NEXT:    # xmm0 = (xmm1 * xmm0) -/+ xmm2
+; CHECK-FMA-NEXT:    vfmsubadd213pd %xmm2, %xmm0, %xmm1 # encoding: [0xc4,0xe2,0xf9,0xa7,0xca]
+; CHECK-FMA-NEXT:    # xmm1 = (xmm0 * xmm1) -/+ xmm2
+; CHECK-FMA-NEXT:    vmovapd %xmm1, %xmm0 # encoding: [0xc5,0xf9,0x28,0xc1]
 ; CHECK-FMA-NEXT:    retq # encoding: [0xc3]
 ;
 ; CHECK-AVX512VL-LABEL: test_x86_fma_vfmsubadd_pd:
 ; CHECK-AVX512VL:       # %bb.0:
-; CHECK-AVX512VL-NEXT:    vfmsubadd213pd %xmm2, %xmm1, %xmm0 # EVEX TO VEX Compression encoding: [0xc4,0xe2,0xf1,0xa7,0xc2]
-; CHECK-AVX512VL-NEXT:    # xmm0 = (xmm1 * xmm0) -/+ xmm2
+; CHECK-AVX512VL-NEXT:    vfmsubadd213pd %xmm2, %xmm0, %xmm1 # EVEX TO VEX Compression encoding: [0xc4,0xe2,0xf9,0xa7,0xca]
+; CHECK-AVX512VL-NEXT:    # xmm1 = (xmm0 * xmm1) -/+ xmm2
+; CHECK-AVX512VL-NEXT:    vmovapd %xmm1, %xmm0 # EVEX TO VEX Compression encoding: [0xc5,0xf9,0x28,0xc1]
 ; CHECK-AVX512VL-NEXT:    retq # encoding: [0xc3]
 ;
 ; CHECK-FMA-WIN-LABEL: test_x86_fma_vfmsubadd_pd:
 ; CHECK-FMA-WIN:       # %bb.0:
-; CHECK-FMA-WIN-NEXT:    vmovapd (%rcx), %xmm1 # encoding: [0xc5,0xf9,0x28,0x09]
-; CHECK-FMA-WIN-NEXT:    vmovapd (%rdx), %xmm0 # encoding: [0xc5,0xf9,0x28,0x02]
+; CHECK-FMA-WIN-NEXT:    vmovapd (%rcx), %xmm0 # encoding: [0xc5,0xf9,0x28,0x01]
+; CHECK-FMA-WIN-NEXT:    vmovapd (%rdx), %xmm1 # encoding: [0xc5,0xf9,0x28,0x0a]
 ; CHECK-FMA-WIN-NEXT:    vfmsubadd213pd (%r8), %xmm1, %xmm0 # encoding: [0xc4,0xc2,0xf1,0xa7,0x00]
 ; CHECK-FMA-WIN-NEXT:    # xmm0 = (xmm1 * xmm0) -/+ mem
 ; CHECK-FMA-WIN-NEXT:    retq # encoding: [0xc3]
@@ -1101,20 +1145,22 @@ define <2 x double> @test_x86_fma_vfmsubadd_pd(<2 x double> %a0, <2 x double> %a
 define <8 x float> @test_x86_fma_vfmsubadd_ps_256(<8 x float> %a0, <8 x float> %a1, <8 x float> %a2) #0 {
 ; CHECK-FMA-LABEL: test_x86_fma_vfmsubadd_ps_256:
 ; CHECK-FMA:       # %bb.0:
-; CHECK-FMA-NEXT:    vfmsubadd213ps %ymm2, %ymm1, %ymm0 # encoding: [0xc4,0xe2,0x75,0xa7,0xc2]
-; CHECK-FMA-NEXT:    # ymm0 = (ymm1 * ymm0) -/+ ymm2
+; CHECK-FMA-NEXT:    vfmsubadd213ps %ymm2, %ymm0, %ymm1 # encoding: [0xc4,0xe2,0x7d,0xa7,0xca]
+; CHECK-FMA-NEXT:    # ymm1 = (ymm0 * ymm1) -/+ ymm2
+; CHECK-FMA-NEXT:    vmovaps %ymm1, %ymm0 # encoding: [0xc5,0xfc,0x28,0xc1]
 ; CHECK-FMA-NEXT:    retq # encoding: [0xc3]
 ;
 ; CHECK-AVX512VL-LABEL: test_x86_fma_vfmsubadd_ps_256:
 ; CHECK-AVX512VL:       # %bb.0:
-; CHECK-AVX512VL-NEXT:    vfmsubadd213ps %ymm2, %ymm1, %ymm0 # EVEX TO VEX Compression encoding: [0xc4,0xe2,0x75,0xa7,0xc2]
-; CHECK-AVX512VL-NEXT:    # ymm0 = (ymm1 * ymm0) -/+ ymm2
+; CHECK-AVX512VL-NEXT:    vfmsubadd213ps %ymm2, %ymm0, %ymm1 # EVEX TO VEX Compression encoding: [0xc4,0xe2,0x7d,0xa7,0xca]
+; CHECK-AVX512VL-NEXT:    # ymm1 = (ymm0 * ymm1) -/+ ymm2
+; CHECK-AVX512VL-NEXT:    vmovaps %ymm1, %ymm0 # EVEX TO VEX Compression encoding: [0xc5,0xfc,0x28,0xc1]
 ; CHECK-AVX512VL-NEXT:    retq # encoding: [0xc3]
 ;
 ; CHECK-FMA-WIN-LABEL: test_x86_fma_vfmsubadd_ps_256:
 ; CHECK-FMA-WIN:       # %bb.0:
-; CHECK-FMA-WIN-NEXT:    vmovaps (%rcx), %ymm1 # encoding: [0xc5,0xfc,0x28,0x09]
-; CHECK-FMA-WIN-NEXT:    vmovaps (%rdx), %ymm0 # encoding: [0xc5,0xfc,0x28,0x02]
+; CHECK-FMA-WIN-NEXT:    vmovaps (%rcx), %ymm0 # encoding: [0xc5,0xfc,0x28,0x01]
+; CHECK-FMA-WIN-NEXT:    vmovaps (%rdx), %ymm1 # encoding: [0xc5,0xfc,0x28,0x0a]
 ; CHECK-FMA-WIN-NEXT:    vfmsubadd213ps (%r8), %ymm1, %ymm0 # encoding: [0xc4,0xc2,0x75,0xa7,0x00]
 ; CHECK-FMA-WIN-NEXT:    # ymm0 = (ymm1 * ymm0) -/+ mem
 ; CHECK-FMA-WIN-NEXT:    retq # encoding: [0xc3]
@@ -1128,20 +1174,22 @@ define <8 x float> @test_x86_fma_vfmsubadd_ps_256(<8 x float> %a0, <8 x float> %
 define <4 x double> @test_x86_fma_vfmsubadd_pd_256(<4 x double> %a0, <4 x double> %a1, <4 x double> %a2) #0 {
 ; CHECK-FMA-LABEL: test_x86_fma_vfmsubadd_pd_256:
 ; CHECK-FMA:       # %bb.0:
-; CHECK-FMA-NEXT:    vfmsubadd213pd %ymm2, %ymm1, %ymm0 # encoding: [0xc4,0xe2,0xf5,0xa7,0xc2]
-; CHECK-FMA-NEXT:    # ymm0 = (ymm1 * ymm0) -/+ ymm2
+; CHECK-FMA-NEXT:    vfmsubadd213pd %ymm2, %ymm0, %ymm1 # encoding: [0xc4,0xe2,0xfd,0xa7,0xca]
+; CHECK-FMA-NEXT:    # ymm1 = (ymm0 * ymm1) -/+ ymm2
+; CHECK-FMA-NEXT:    vmovapd %ymm1, %ymm0 # encoding: [0xc5,0xfd,0x28,0xc1]
 ; CHECK-FMA-NEXT:    retq # encoding: [0xc3]
 ;
 ; CHECK-AVX512VL-LABEL: test_x86_fma_vfmsubadd_pd_256:
 ; CHECK-AVX512VL:       # %bb.0:
-; CHECK-AVX512VL-NEXT:    vfmsubadd213pd %ymm2, %ymm1, %ymm0 # EVEX TO VEX Compression encoding: [0xc4,0xe2,0xf5,0xa7,0xc2]
-; CHECK-AVX512VL-NEXT:    # ymm0 = (ymm1 * ymm0) -/+ ymm2
+; CHECK-AVX512VL-NEXT:    vfmsubadd213pd %ymm2, %ymm0, %ymm1 # EVEX TO VEX Compression encoding: [0xc4,0xe2,0xfd,0xa7,0xca]
+; CHECK-AVX512VL-NEXT:    # ymm1 = (ymm0 * ymm1) -/+ ymm2
+; CHECK-AVX512VL-NEXT:    vmovapd %ymm1, %ymm0 # EVEX TO VEX Compression encoding: [0xc5,0xfd,0x28,0xc1]
 ; CHECK-AVX512VL-NEXT:    retq # encoding: [0xc3]
 ;
 ; CHECK-FMA-WIN-LABEL: test_x86_fma_vfmsubadd_pd_256:
 ; CHECK-FMA-WIN:       # %bb.0:
-; CHECK-FMA-WIN-NEXT:    vmovapd (%rcx), %ymm1 # encoding: [0xc5,0xfd,0x28,0x09]
-; CHECK-FMA-WIN-NEXT:    vmovapd (%rdx), %ymm0 # encoding: [0xc5,0xfd,0x28,0x02]
+; CHECK-FMA-WIN-NEXT:    vmovapd (%rcx), %ymm0 # encoding: [0xc5,0xfd,0x28,0x01]
+; CHECK-FMA-WIN-NEXT:    vmovapd (%rdx), %ymm1 # encoding: [0xc5,0xfd,0x28,0x0a]
 ; CHECK-FMA-WIN-NEXT:    vfmsubadd213pd (%r8), %ymm1, %ymm0 # encoding: [0xc4,0xc2,0xf5,0xa7,0x00]
 ; CHECK-FMA-WIN-NEXT:    # ymm0 = (ymm1 * ymm0) -/+ mem
 ; CHECK-FMA-WIN-NEXT:    retq # encoding: [0xc3]

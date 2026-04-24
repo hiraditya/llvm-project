@@ -16,8 +16,10 @@ define <16 x i8> @test_fixed_v16i8(<16 x i8> %a0, <16 x i8> %a1) nounwind {
 ; SSE-NEXT:    pand %xmm1, %xmm2
 ; SSE-NEXT:    pxor %xmm1, %xmm0
 ; SSE-NEXT:    psrlw $1, %xmm0
-; SSE-NEXT:    pand {{\.?LCPI[0-9]+_[0-9]+}}(%rip), %xmm0
-; SSE-NEXT:    paddb %xmm2, %xmm0
+; SSE-NEXT:    movdqa {{.*#+}} xmm1 = [127,127,127,127,127,127,127,127,127,127,127,127,127,127,127,127]
+; SSE-NEXT:    pand %xmm0, %xmm1
+; SSE-NEXT:    paddb %xmm2, %xmm1
+; SSE-NEXT:    movdqa %xmm1, %xmm0
 ; SSE-NEXT:    retq
 ;
 ; AVX1-LABEL: test_fixed_v16i8:
@@ -60,8 +62,10 @@ define <16 x i8> @test_ext_v16i8(<16 x i8> %a0, <16 x i8> %a1) nounwind {
 ; SSE-NEXT:    pand %xmm1, %xmm2
 ; SSE-NEXT:    pxor %xmm1, %xmm0
 ; SSE-NEXT:    psrlw $1, %xmm0
-; SSE-NEXT:    pand {{\.?LCPI[0-9]+_[0-9]+}}(%rip), %xmm0
-; SSE-NEXT:    paddb %xmm2, %xmm0
+; SSE-NEXT:    movdqa {{.*#+}} xmm1 = [127,127,127,127,127,127,127,127,127,127,127,127,127,127,127,127]
+; SSE-NEXT:    pand %xmm0, %xmm1
+; SSE-NEXT:    paddb %xmm2, %xmm1
+; SSE-NEXT:    movdqa %xmm1, %xmm0
 ; SSE-NEXT:    retq
 ;
 ; AVX1-LABEL: test_ext_v16i8:

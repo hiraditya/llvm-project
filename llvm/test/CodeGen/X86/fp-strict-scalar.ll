@@ -30,8 +30,9 @@ define double @fadd_f64(double %a, double %b) nounwind strictfp {
 ; SSE-X86-NEXT:    andl $-8, %esp
 ; SSE-X86-NEXT:    subl $8, %esp
 ; SSE-X86-NEXT:    movsd {{.*#+}} xmm0 = mem[0],zero
-; SSE-X86-NEXT:    addsd 16(%ebp), %xmm0
-; SSE-X86-NEXT:    movsd %xmm0, (%esp)
+; SSE-X86-NEXT:    movsd {{.*#+}} xmm1 = mem[0],zero
+; SSE-X86-NEXT:    addsd %xmm0, %xmm1
+; SSE-X86-NEXT:    movsd %xmm1, (%esp)
 ; SSE-X86-NEXT:    fldl (%esp)
 ; SSE-X86-NEXT:    wait
 ; SSE-X86-NEXT:    movl %ebp, %esp
@@ -80,8 +81,9 @@ define float @fadd_f32(float %a, float %b) nounwind strictfp {
 ; SSE-X86:       # %bb.0:
 ; SSE-X86-NEXT:    pushl %eax
 ; SSE-X86-NEXT:    movss {{.*#+}} xmm0 = mem[0],zero,zero,zero
-; SSE-X86-NEXT:    addss {{[0-9]+}}(%esp), %xmm0
-; SSE-X86-NEXT:    movss %xmm0, (%esp)
+; SSE-X86-NEXT:    movss {{.*#+}} xmm1 = mem[0],zero,zero,zero
+; SSE-X86-NEXT:    addss %xmm0, %xmm1
+; SSE-X86-NEXT:    movss %xmm1, (%esp)
 ; SSE-X86-NEXT:    flds (%esp)
 ; SSE-X86-NEXT:    wait
 ; SSE-X86-NEXT:    popl %eax
@@ -226,8 +228,9 @@ define double @fmul_f64(double %a, double %b) nounwind strictfp {
 ; SSE-X86-NEXT:    andl $-8, %esp
 ; SSE-X86-NEXT:    subl $8, %esp
 ; SSE-X86-NEXT:    movsd {{.*#+}} xmm0 = mem[0],zero
-; SSE-X86-NEXT:    mulsd 16(%ebp), %xmm0
-; SSE-X86-NEXT:    movsd %xmm0, (%esp)
+; SSE-X86-NEXT:    movsd {{.*#+}} xmm1 = mem[0],zero
+; SSE-X86-NEXT:    mulsd %xmm0, %xmm1
+; SSE-X86-NEXT:    movsd %xmm1, (%esp)
 ; SSE-X86-NEXT:    fldl (%esp)
 ; SSE-X86-NEXT:    wait
 ; SSE-X86-NEXT:    movl %ebp, %esp
@@ -276,8 +279,9 @@ define float @fmul_f32(float %a, float %b) nounwind strictfp {
 ; SSE-X86:       # %bb.0:
 ; SSE-X86-NEXT:    pushl %eax
 ; SSE-X86-NEXT:    movss {{.*#+}} xmm0 = mem[0],zero,zero,zero
-; SSE-X86-NEXT:    mulss {{[0-9]+}}(%esp), %xmm0
-; SSE-X86-NEXT:    movss %xmm0, (%esp)
+; SSE-X86-NEXT:    movss {{.*#+}} xmm1 = mem[0],zero,zero,zero
+; SSE-X86-NEXT:    mulss %xmm0, %xmm1
+; SSE-X86-NEXT:    movss %xmm1, (%esp)
 ; SSE-X86-NEXT:    flds (%esp)
 ; SSE-X86-NEXT:    wait
 ; SSE-X86-NEXT:    popl %eax
@@ -638,8 +642,8 @@ define double @fma_f64(double %a, double %b, double %c) nounwind strictfp {
 ; AVX-X86-NEXT:    subl $8, %esp
 ; AVX-X86-NEXT:    vmovsd {{.*#+}} xmm0 = mem[0],zero
 ; AVX-X86-NEXT:    vmovsd {{.*#+}} xmm1 = mem[0],zero
-; AVX-X86-NEXT:    vfmadd213sd {{.*#+}} xmm1 = (xmm0 * xmm1) + mem
-; AVX-X86-NEXT:    vmovsd %xmm1, (%esp)
+; AVX-X86-NEXT:    vfmadd213sd {{.*#+}} xmm0 = (xmm1 * xmm0) + mem
+; AVX-X86-NEXT:    vmovsd %xmm0, (%esp)
 ; AVX-X86-NEXT:    fldl (%esp)
 ; AVX-X86-NEXT:    wait
 ; AVX-X86-NEXT:    movl %ebp, %esp
@@ -648,7 +652,8 @@ define double @fma_f64(double %a, double %b, double %c) nounwind strictfp {
 ;
 ; AVX-X64-LABEL: fma_f64:
 ; AVX-X64:       # %bb.0:
-; AVX-X64-NEXT:    vfmadd213sd {{.*#+}} xmm0 = (xmm1 * xmm0) + xmm2
+; AVX-X64-NEXT:    vfmadd213sd {{.*#+}} xmm1 = (xmm0 * xmm1) + xmm2
+; AVX-X64-NEXT:    vmovapd %xmm1, %xmm0
 ; AVX-X64-NEXT:    retq
 ;
 ; X87-LABEL: fma_f64:
@@ -696,8 +701,8 @@ define float @fma_f32(float %a, float %b, float %c) nounwind strictfp {
 ; AVX-X86-NEXT:    pushl %eax
 ; AVX-X86-NEXT:    vmovss {{.*#+}} xmm0 = mem[0],zero,zero,zero
 ; AVX-X86-NEXT:    vmovss {{.*#+}} xmm1 = mem[0],zero,zero,zero
-; AVX-X86-NEXT:    vfmadd213ss {{.*#+}} xmm1 = (xmm0 * xmm1) + mem
-; AVX-X86-NEXT:    vmovss %xmm1, (%esp)
+; AVX-X86-NEXT:    vfmadd213ss {{.*#+}} xmm0 = (xmm1 * xmm0) + mem
+; AVX-X86-NEXT:    vmovss %xmm0, (%esp)
 ; AVX-X86-NEXT:    flds (%esp)
 ; AVX-X86-NEXT:    wait
 ; AVX-X86-NEXT:    popl %eax
@@ -705,7 +710,8 @@ define float @fma_f32(float %a, float %b, float %c) nounwind strictfp {
 ;
 ; AVX-X64-LABEL: fma_f32:
 ; AVX-X64:       # %bb.0:
-; AVX-X64-NEXT:    vfmadd213ss {{.*#+}} xmm0 = (xmm1 * xmm0) + xmm2
+; AVX-X64-NEXT:    vfmadd213ss {{.*#+}} xmm1 = (xmm0 * xmm1) + xmm2
+; AVX-X64-NEXT:    vmovaps %xmm1, %xmm0
 ; AVX-X64-NEXT:    retq
 ;
 ; X87-LABEL: fma_f32:

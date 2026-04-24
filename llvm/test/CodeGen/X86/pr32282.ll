@@ -28,7 +28,7 @@ define dso_local void @foo(i64 %x) nounwind {
 ; X86-NEXT:    pushl {{[0-9]+}}(%esp)
 ; X86-NEXT:    calll __divdi3
 ; X86-NEXT:    addl $16, %esp
-; X86-NEXT:    orl %eax, %edx
+; X86-NEXT:    orl %edx, %eax
 ; X86-NEXT:    setne {{[0-9]+}}(%esp)
 ; X86-NEXT:    popl %eax
 ; X86-NEXT:    retl
@@ -54,7 +54,7 @@ define dso_local void @foo(i64 %x) nounwind {
 ; X64-NEXT:    xorl %edx, %edx
 ; X64-NEXT:    divl %ecx
 ; X64-NEXT:    # kill: def $eax killed $eax def $rax
-; X64-NEXT:  .LBB0_3:
+; X64-NEXT:  .LBB0_3: # %.split
 ; X64-NEXT:    testq %rax, %rax
 ; X64-NEXT:    setne -{{[0-9]+}}(%rsp)
 ; X64-NEXT:    retq

@@ -8,8 +8,9 @@ declare <8 x double> @llvm.x86.avx512.vfmadd.pd.512(<8 x double>, <8 x double>, 
 define <16 x float> @test_x86_vfnmadd_ps_z(<16 x float> %a0, <16 x float> %a1, <16 x float> %a2) {
 ; CHECK-LABEL: test_x86_vfnmadd_ps_z:
 ; CHECK:       # %bb.0:
-; CHECK-NEXT:    vfnmadd213ps %zmm2, %zmm1, %zmm0 # encoding: [0x62,0xf2,0x75,0x48,0xac,0xc2]
-; CHECK-NEXT:    # zmm0 = -(zmm1 * zmm0) + zmm2
+; CHECK-NEXT:    vfnmadd213ps %zmm2, %zmm0, %zmm1 # encoding: [0x62,0xf2,0x7d,0x48,0xac,0xca]
+; CHECK-NEXT:    # zmm1 = -(zmm0 * zmm1) + zmm2
+; CHECK-NEXT:    vmovaps %zmm1, %zmm0 # encoding: [0x62,0xf1,0x7c,0x48,0x28,0xc1]
 ; CHECK-NEXT:    ret{{[l|q]}} # encoding: [0xc3]
   %1 = fsub <16 x float> <float -0.000000e+00, float -0.000000e+00, float -0.000000e+00, float -0.000000e+00, float -0.000000e+00, float -0.000000e+00, float -0.000000e+00, float -0.000000e+00, float -0.000000e+00, float -0.000000e+00, float -0.000000e+00, float -0.000000e+00, float -0.000000e+00, float -0.000000e+00, float -0.000000e+00, float -0.000000e+00>, %a1
   %2 = call <16 x float> @llvm.fma.v16f32(<16 x float> %a0, <16 x float> %1, <16 x float> %a2)
@@ -40,8 +41,9 @@ define <16 x float> @test_mask_vfnmadd_ps(<16 x float> %a0, <16 x float> %a1, <1
 define <8 x double> @test_x86_vfnmadd_pd_z(<8 x double> %a0, <8 x double> %a1, <8 x double> %a2) {
 ; CHECK-LABEL: test_x86_vfnmadd_pd_z:
 ; CHECK:       # %bb.0:
-; CHECK-NEXT:    vfnmadd213pd %zmm2, %zmm1, %zmm0 # encoding: [0x62,0xf2,0xf5,0x48,0xac,0xc2]
-; CHECK-NEXT:    # zmm0 = -(zmm1 * zmm0) + zmm2
+; CHECK-NEXT:    vfnmadd213pd %zmm2, %zmm0, %zmm1 # encoding: [0x62,0xf2,0xfd,0x48,0xac,0xca]
+; CHECK-NEXT:    # zmm1 = -(zmm0 * zmm1) + zmm2
+; CHECK-NEXT:    vmovapd %zmm1, %zmm0 # encoding: [0x62,0xf1,0xfd,0x48,0x28,0xc1]
 ; CHECK-NEXT:    ret{{[l|q]}} # encoding: [0xc3]
   %1 = fsub <8 x double> <double -0.000000e+00, double -0.000000e+00, double -0.000000e+00, double -0.000000e+00, double -0.000000e+00, double -0.000000e+00, double -0.000000e+00, double -0.000000e+00>, %a1
   %2 = call <8 x double> @llvm.fma.v8f64(<8 x double> %a0, <8 x double> %1, <8 x double> %a2)
@@ -73,8 +75,9 @@ define <8 x double> @test_mask_vfnmadd_pd(<8 x double> %a0, <8 x double> %a1, <8
 define <16 x float> @test_x86_vfnmsubps_z(<16 x float> %a0, <16 x float> %a1, <16 x float> %a2) {
 ; CHECK-LABEL: test_x86_vfnmsubps_z:
 ; CHECK:       # %bb.0:
-; CHECK-NEXT:    vfnmsub213ps %zmm2, %zmm1, %zmm0 # encoding: [0x62,0xf2,0x75,0x48,0xae,0xc2]
-; CHECK-NEXT:    # zmm0 = -(zmm1 * zmm0) - zmm2
+; CHECK-NEXT:    vfnmsub213ps %zmm2, %zmm0, %zmm1 # encoding: [0x62,0xf2,0x7d,0x48,0xae,0xca]
+; CHECK-NEXT:    # zmm1 = -(zmm0 * zmm1) - zmm2
+; CHECK-NEXT:    vmovaps %zmm1, %zmm0 # encoding: [0x62,0xf1,0x7c,0x48,0x28,0xc1]
 ; CHECK-NEXT:    ret{{[l|q]}} # encoding: [0xc3]
   %1 = fsub <16 x float> <float -0.000000e+00, float -0.000000e+00, float -0.000000e+00, float -0.000000e+00, float -0.000000e+00, float -0.000000e+00, float -0.000000e+00, float -0.000000e+00, float -0.000000e+00, float -0.000000e+00, float -0.000000e+00, float -0.000000e+00, float -0.000000e+00, float -0.000000e+00, float -0.000000e+00, float -0.000000e+00>, %a1
   %2 = fsub <16 x float> <float -0.000000e+00, float -0.000000e+00, float -0.000000e+00, float -0.000000e+00, float -0.000000e+00, float -0.000000e+00, float -0.000000e+00, float -0.000000e+00, float -0.000000e+00, float -0.000000e+00, float -0.000000e+00, float -0.000000e+00, float -0.000000e+00, float -0.000000e+00, float -0.000000e+00, float -0.000000e+00>, %a2
@@ -107,8 +110,9 @@ define <16 x float> @test_mask_vfnmsub_ps(<16 x float> %a0, <16 x float> %a1, <1
 define <8 x double> @test_x86_vfnmsubpd_z(<8 x double> %a0, <8 x double> %a1, <8 x double> %a2) {
 ; CHECK-LABEL: test_x86_vfnmsubpd_z:
 ; CHECK:       # %bb.0:
-; CHECK-NEXT:    vfnmsub213pd %zmm2, %zmm1, %zmm0 # encoding: [0x62,0xf2,0xf5,0x48,0xae,0xc2]
-; CHECK-NEXT:    # zmm0 = -(zmm1 * zmm0) - zmm2
+; CHECK-NEXT:    vfnmsub213pd %zmm2, %zmm0, %zmm1 # encoding: [0x62,0xf2,0xfd,0x48,0xae,0xca]
+; CHECK-NEXT:    # zmm1 = -(zmm0 * zmm1) - zmm2
+; CHECK-NEXT:    vmovapd %zmm1, %zmm0 # encoding: [0x62,0xf1,0xfd,0x48,0x28,0xc1]
 ; CHECK-NEXT:    ret{{[l|q]}} # encoding: [0xc3]
   %1 = fsub <8 x double> <double -0.000000e+00, double -0.000000e+00, double -0.000000e+00, double -0.000000e+00, double -0.000000e+00, double -0.000000e+00, double -0.000000e+00, double -0.000000e+00>, %a1
   %2 = fsub <8 x double> <double -0.000000e+00, double -0.000000e+00, double -0.000000e+00, double -0.000000e+00, double -0.000000e+00, double -0.000000e+00, double -0.000000e+00, double -0.000000e+00>, %a2
@@ -142,8 +146,9 @@ define <8 x double> @test_mask_vfnmsub_pd(<8 x double> %a0, <8 x double> %a1, <8
 define <16 x float> @test_x86_vfmaddsubps_z(<16 x float> %a0, <16 x float> %a1, <16 x float> %a2) {
 ; CHECK-LABEL: test_x86_vfmaddsubps_z:
 ; CHECK:       # %bb.0:
-; CHECK-NEXT:    vfmaddsub213ps %zmm2, %zmm1, %zmm0 # encoding: [0x62,0xf2,0x75,0x48,0xa6,0xc2]
-; CHECK-NEXT:    # zmm0 = (zmm1 * zmm0) +/- zmm2
+; CHECK-NEXT:    vfmaddsub213ps %zmm2, %zmm0, %zmm1 # encoding: [0x62,0xf2,0x7d,0x48,0xa6,0xca]
+; CHECK-NEXT:    # zmm1 = (zmm0 * zmm1) +/- zmm2
+; CHECK-NEXT:    vmovaps %zmm1, %zmm0 # encoding: [0x62,0xf1,0x7c,0x48,0x28,0xc1]
 ; CHECK-NEXT:    ret{{[l|q]}} # encoding: [0xc3]
   %res = call <16 x float> @llvm.x86.avx512.vfmaddsub.ps.512(<16 x float> %a0, <16 x float> %a1, <16 x float> %a2, i32 4) #2
   ret <16 x float> %res
@@ -174,8 +179,9 @@ declare <16 x float> @llvm.x86.avx512.vfmaddsub.ps.512(<16 x float>, <16 x float
 define <8 x double> @test_x86_vfmaddsubpd_z(<8 x double> %a0, <8 x double> %a1, <8 x double> %a2) {
 ; CHECK-LABEL: test_x86_vfmaddsubpd_z:
 ; CHECK:       # %bb.0:
-; CHECK-NEXT:    vfmaddsub213pd %zmm2, %zmm1, %zmm0 # encoding: [0x62,0xf2,0xf5,0x48,0xa6,0xc2]
-; CHECK-NEXT:    # zmm0 = (zmm1 * zmm0) +/- zmm2
+; CHECK-NEXT:    vfmaddsub213pd %zmm2, %zmm0, %zmm1 # encoding: [0x62,0xf2,0xfd,0x48,0xa6,0xca]
+; CHECK-NEXT:    # zmm1 = (zmm0 * zmm1) +/- zmm2
+; CHECK-NEXT:    vmovapd %zmm1, %zmm0 # encoding: [0x62,0xf1,0xfd,0x48,0x28,0xc1]
 ; CHECK-NEXT:    ret{{[l|q]}} # encoding: [0xc3]
   %res = call <8 x double> @llvm.x86.avx512.vfmaddsub.pd.512(<8 x double> %a0, <8 x double> %a1, <8 x double> %a2, i32 4) #2
   ret <8 x double> %res
@@ -255,15 +261,17 @@ define <8 x double>@test_int_x86_avx512_maskz_vfmaddsub_pd_512(<8 x double> %x0,
 ; X86:       # %bb.0:
 ; X86-NEXT:    movzbl {{[0-9]+}}(%esp), %eax # encoding: [0x0f,0xb6,0x44,0x24,0x04]
 ; X86-NEXT:    kmovw %eax, %k1 # encoding: [0xc5,0xf8,0x92,0xc8]
-; X86-NEXT:    vfmaddsub213pd %zmm2, %zmm1, %zmm0 {%k1} {z} # encoding: [0x62,0xf2,0xf5,0xc9,0xa6,0xc2]
-; X86-NEXT:    # zmm0 {%k1} {z} = (zmm1 * zmm0) +/- zmm2
+; X86-NEXT:    vfmaddsub213pd %zmm2, %zmm0, %zmm1 {%k1} {z} # encoding: [0x62,0xf2,0xfd,0xc9,0xa6,0xca]
+; X86-NEXT:    # zmm1 {%k1} {z} = (zmm0 * zmm1) +/- zmm2
+; X86-NEXT:    vmovapd %zmm1, %zmm0 # encoding: [0x62,0xf1,0xfd,0x48,0x28,0xc1]
 ; X86-NEXT:    retl # encoding: [0xc3]
 ;
 ; X64-LABEL: test_int_x86_avx512_maskz_vfmaddsub_pd_512:
 ; X64:       # %bb.0:
 ; X64-NEXT:    kmovw %edi, %k1 # encoding: [0xc5,0xf8,0x92,0xcf]
-; X64-NEXT:    vfmaddsub213pd %zmm2, %zmm1, %zmm0 {%k1} {z} # encoding: [0x62,0xf2,0xf5,0xc9,0xa6,0xc2]
-; X64-NEXT:    # zmm0 {%k1} {z} = (zmm1 * zmm0) +/- zmm2
+; X64-NEXT:    vfmaddsub213pd %zmm2, %zmm0, %zmm1 {%k1} {z} # encoding: [0x62,0xf2,0xfd,0xc9,0xa6,0xca]
+; X64-NEXT:    # zmm1 {%k1} {z} = (zmm0 * zmm1) +/- zmm2
+; X64-NEXT:    vmovapd %zmm1, %zmm0 # encoding: [0x62,0xf1,0xfd,0x48,0x28,0xc1]
 ; X64-NEXT:    retq # encoding: [0xc3]
   %1 = call <8 x double> @llvm.fma.v8f64(<8 x double> %x0, <8 x double> %x1, <8 x double> %x2)
   %2 = fsub <8 x double> <double -0.000000e+00, double -0.000000e+00, double -0.000000e+00, double -0.000000e+00, double -0.000000e+00, double -0.000000e+00, double -0.000000e+00, double -0.000000e+00>, %x2
@@ -323,15 +331,17 @@ define <16 x float>@test_int_x86_avx512_maskz_vfmaddsub_ps_512(<16 x float> %x0,
 ; X86-LABEL: test_int_x86_avx512_maskz_vfmaddsub_ps_512:
 ; X86:       # %bb.0:
 ; X86-NEXT:    kmovw {{[0-9]+}}(%esp), %k1 # encoding: [0xc5,0xf8,0x90,0x4c,0x24,0x04]
-; X86-NEXT:    vfmaddsub213ps %zmm2, %zmm1, %zmm0 {%k1} {z} # encoding: [0x62,0xf2,0x75,0xc9,0xa6,0xc2]
-; X86-NEXT:    # zmm0 {%k1} {z} = (zmm1 * zmm0) +/- zmm2
+; X86-NEXT:    vfmaddsub213ps %zmm2, %zmm0, %zmm1 {%k1} {z} # encoding: [0x62,0xf2,0x7d,0xc9,0xa6,0xca]
+; X86-NEXT:    # zmm1 {%k1} {z} = (zmm0 * zmm1) +/- zmm2
+; X86-NEXT:    vmovaps %zmm1, %zmm0 # encoding: [0x62,0xf1,0x7c,0x48,0x28,0xc1]
 ; X86-NEXT:    retl # encoding: [0xc3]
 ;
 ; X64-LABEL: test_int_x86_avx512_maskz_vfmaddsub_ps_512:
 ; X64:       # %bb.0:
 ; X64-NEXT:    kmovw %edi, %k1 # encoding: [0xc5,0xf8,0x92,0xcf]
-; X64-NEXT:    vfmaddsub213ps %zmm2, %zmm1, %zmm0 {%k1} {z} # encoding: [0x62,0xf2,0x75,0xc9,0xa6,0xc2]
-; X64-NEXT:    # zmm0 {%k1} {z} = (zmm1 * zmm0) +/- zmm2
+; X64-NEXT:    vfmaddsub213ps %zmm2, %zmm0, %zmm1 {%k1} {z} # encoding: [0x62,0xf2,0x7d,0xc9,0xa6,0xca]
+; X64-NEXT:    # zmm1 {%k1} {z} = (zmm0 * zmm1) +/- zmm2
+; X64-NEXT:    vmovaps %zmm1, %zmm0 # encoding: [0x62,0xf1,0x7c,0x48,0x28,0xc1]
 ; X64-NEXT:    retq # encoding: [0xc3]
   %1 = call <16 x float> @llvm.fma.v16f32(<16 x float> %x0, <16 x float> %x1, <16 x float> %x2)
   %2 = fsub <16 x float> <float -0.000000e+00, float -0.000000e+00, float -0.000000e+00, float -0.000000e+00, float -0.000000e+00, float -0.000000e+00, float -0.000000e+00, float -0.000000e+00, float -0.000000e+00, float -0.000000e+00, float -0.000000e+00, float -0.000000e+00, float -0.000000e+00, float -0.000000e+00, float -0.000000e+00, float -0.000000e+00>, %x2
@@ -488,7 +498,8 @@ define <16 x float> @test_mask_round_vfmadd512_ps_rrb_current(<16 x float> %a0, 
 define <16 x float> @test_mask_round_vfmadd512_ps_rrbz_rne(<16 x float> %a0, <16 x float> %a1, <16 x float> %a2) {
 ; CHECK-LABEL: test_mask_round_vfmadd512_ps_rrbz_rne:
 ; CHECK:       # %bb.0:
-; CHECK-NEXT:    vfmadd213ps {rn-sae}, %zmm2, %zmm1, %zmm0 # encoding: [0x62,0xf2,0x75,0x18,0xa8,0xc2]
+; CHECK-NEXT:    vfmadd213ps {rn-sae}, %zmm2, %zmm0, %zmm1 # encoding: [0x62,0xf2,0x7d,0x18,0xa8,0xca]
+; CHECK-NEXT:    vmovaps %zmm1, %zmm0 # encoding: [0x62,0xf1,0x7c,0x48,0x28,0xc1]
 ; CHECK-NEXT:    ret{{[l|q]}} # encoding: [0xc3]
   %res = call <16 x float> @llvm.x86.avx512.vfmadd.ps.512(<16 x float> %a0, <16 x float> %a1, <16 x float> %a2, i32 8) nounwind
   ret <16 x float> %res
@@ -497,7 +508,8 @@ define <16 x float> @test_mask_round_vfmadd512_ps_rrbz_rne(<16 x float> %a0, <16
 define <16 x float> @test_mask_round_vfmadd512_ps_rrbz_rtn(<16 x float> %a0, <16 x float> %a1, <16 x float> %a2) {
 ; CHECK-LABEL: test_mask_round_vfmadd512_ps_rrbz_rtn:
 ; CHECK:       # %bb.0:
-; CHECK-NEXT:    vfmadd213ps {rd-sae}, %zmm2, %zmm1, %zmm0 # encoding: [0x62,0xf2,0x75,0x38,0xa8,0xc2]
+; CHECK-NEXT:    vfmadd213ps {rd-sae}, %zmm2, %zmm0, %zmm1 # encoding: [0x62,0xf2,0x7d,0x38,0xa8,0xca]
+; CHECK-NEXT:    vmovaps %zmm1, %zmm0 # encoding: [0x62,0xf1,0x7c,0x48,0x28,0xc1]
 ; CHECK-NEXT:    ret{{[l|q]}} # encoding: [0xc3]
   %res = call <16 x float> @llvm.x86.avx512.vfmadd.ps.512(<16 x float> %a0, <16 x float> %a1, <16 x float> %a2, i32 9) nounwind
   ret <16 x float> %res
@@ -506,7 +518,8 @@ define <16 x float> @test_mask_round_vfmadd512_ps_rrbz_rtn(<16 x float> %a0, <16
 define <16 x float> @test_mask_round_vfmadd512_ps_rrbz_rtp(<16 x float> %a0, <16 x float> %a1, <16 x float> %a2) {
 ; CHECK-LABEL: test_mask_round_vfmadd512_ps_rrbz_rtp:
 ; CHECK:       # %bb.0:
-; CHECK-NEXT:    vfmadd213ps {ru-sae}, %zmm2, %zmm1, %zmm0 # encoding: [0x62,0xf2,0x75,0x58,0xa8,0xc2]
+; CHECK-NEXT:    vfmadd213ps {ru-sae}, %zmm2, %zmm0, %zmm1 # encoding: [0x62,0xf2,0x7d,0x58,0xa8,0xca]
+; CHECK-NEXT:    vmovaps %zmm1, %zmm0 # encoding: [0x62,0xf1,0x7c,0x48,0x28,0xc1]
 ; CHECK-NEXT:    ret{{[l|q]}} # encoding: [0xc3]
   %res = call <16 x float> @llvm.x86.avx512.vfmadd.ps.512(<16 x float> %a0, <16 x float> %a1, <16 x float> %a2, i32 10) nounwind
   ret <16 x float> %res
@@ -515,7 +528,8 @@ define <16 x float> @test_mask_round_vfmadd512_ps_rrbz_rtp(<16 x float> %a0, <16
 define <16 x float> @test_mask_round_vfmadd512_ps_rrbz_rtz(<16 x float> %a0, <16 x float> %a1, <16 x float> %a2) {
 ; CHECK-LABEL: test_mask_round_vfmadd512_ps_rrbz_rtz:
 ; CHECK:       # %bb.0:
-; CHECK-NEXT:    vfmadd213ps {rz-sae}, %zmm2, %zmm1, %zmm0 # encoding: [0x62,0xf2,0x75,0x78,0xa8,0xc2]
+; CHECK-NEXT:    vfmadd213ps {rz-sae}, %zmm2, %zmm0, %zmm1 # encoding: [0x62,0xf2,0x7d,0x78,0xa8,0xca]
+; CHECK-NEXT:    vmovaps %zmm1, %zmm0 # encoding: [0x62,0xf1,0x7c,0x48,0x28,0xc1]
 ; CHECK-NEXT:    ret{{[l|q]}} # encoding: [0xc3]
   %res = call <16 x float> @llvm.x86.avx512.vfmadd.ps.512(<16 x float> %a0, <16 x float> %a1, <16 x float> %a2, i32 11) nounwind
   ret <16 x float> %res
@@ -524,8 +538,9 @@ define <16 x float> @test_mask_round_vfmadd512_ps_rrbz_rtz(<16 x float> %a0, <16
 define <16 x float> @test_mask_round_vfmadd512_ps_rrbz_current(<16 x float> %a0, <16 x float> %a1, <16 x float> %a2) {
 ; CHECK-LABEL: test_mask_round_vfmadd512_ps_rrbz_current:
 ; CHECK:       # %bb.0:
-; CHECK-NEXT:    vfmadd213ps %zmm2, %zmm1, %zmm0 # encoding: [0x62,0xf2,0x75,0x48,0xa8,0xc2]
-; CHECK-NEXT:    # zmm0 = (zmm1 * zmm0) + zmm2
+; CHECK-NEXT:    vfmadd213ps %zmm2, %zmm0, %zmm1 # encoding: [0x62,0xf2,0x7d,0x48,0xa8,0xca]
+; CHECK-NEXT:    # zmm1 = (zmm0 * zmm1) + zmm2
+; CHECK-NEXT:    vmovaps %zmm1, %zmm0 # encoding: [0x62,0xf1,0x7c,0x48,0x28,0xc1]
 ; CHECK-NEXT:    ret{{[l|q]}} # encoding: [0xc3]
   %res = call <16 x float> @llvm.x86.avx512.vfmadd.ps.512(<16 x float> %a0, <16 x float> %a1, <16 x float> %a2, i32 4) nounwind
   ret <16 x float> %res
@@ -678,7 +693,8 @@ define <8 x double> @test_mask_round_vfmadd512_pd_rrb_current(<8 x double> %a0, 
 define <8 x double> @test_mask_round_vfmadd512_pd_rrbz_rne(<8 x double> %a0, <8 x double> %a1, <8 x double> %a2) {
 ; CHECK-LABEL: test_mask_round_vfmadd512_pd_rrbz_rne:
 ; CHECK:       # %bb.0:
-; CHECK-NEXT:    vfmadd213pd {rn-sae}, %zmm2, %zmm1, %zmm0 # encoding: [0x62,0xf2,0xf5,0x18,0xa8,0xc2]
+; CHECK-NEXT:    vfmadd213pd {rn-sae}, %zmm2, %zmm0, %zmm1 # encoding: [0x62,0xf2,0xfd,0x18,0xa8,0xca]
+; CHECK-NEXT:    vmovapd %zmm1, %zmm0 # encoding: [0x62,0xf1,0xfd,0x48,0x28,0xc1]
 ; CHECK-NEXT:    ret{{[l|q]}} # encoding: [0xc3]
   %res = call <8 x double> @llvm.x86.avx512.vfmadd.pd.512(<8 x double> %a0, <8 x double> %a1, <8 x double> %a2, i32 8) nounwind
   ret <8 x double> %res
@@ -687,7 +703,8 @@ define <8 x double> @test_mask_round_vfmadd512_pd_rrbz_rne(<8 x double> %a0, <8 
 define <8 x double> @test_mask_round_vfmadd512_pd_rrbz_rtn(<8 x double> %a0, <8 x double> %a1, <8 x double> %a2) {
 ; CHECK-LABEL: test_mask_round_vfmadd512_pd_rrbz_rtn:
 ; CHECK:       # %bb.0:
-; CHECK-NEXT:    vfmadd213pd {rd-sae}, %zmm2, %zmm1, %zmm0 # encoding: [0x62,0xf2,0xf5,0x38,0xa8,0xc2]
+; CHECK-NEXT:    vfmadd213pd {rd-sae}, %zmm2, %zmm0, %zmm1 # encoding: [0x62,0xf2,0xfd,0x38,0xa8,0xca]
+; CHECK-NEXT:    vmovapd %zmm1, %zmm0 # encoding: [0x62,0xf1,0xfd,0x48,0x28,0xc1]
 ; CHECK-NEXT:    ret{{[l|q]}} # encoding: [0xc3]
   %res = call <8 x double> @llvm.x86.avx512.vfmadd.pd.512(<8 x double> %a0, <8 x double> %a1, <8 x double> %a2, i32 9) nounwind
   ret <8 x double> %res
@@ -696,7 +713,8 @@ define <8 x double> @test_mask_round_vfmadd512_pd_rrbz_rtn(<8 x double> %a0, <8 
 define <8 x double> @test_mask_round_vfmadd512_pd_rrbz_rtp(<8 x double> %a0, <8 x double> %a1, <8 x double> %a2) {
 ; CHECK-LABEL: test_mask_round_vfmadd512_pd_rrbz_rtp:
 ; CHECK:       # %bb.0:
-; CHECK-NEXT:    vfmadd213pd {ru-sae}, %zmm2, %zmm1, %zmm0 # encoding: [0x62,0xf2,0xf5,0x58,0xa8,0xc2]
+; CHECK-NEXT:    vfmadd213pd {ru-sae}, %zmm2, %zmm0, %zmm1 # encoding: [0x62,0xf2,0xfd,0x58,0xa8,0xca]
+; CHECK-NEXT:    vmovapd %zmm1, %zmm0 # encoding: [0x62,0xf1,0xfd,0x48,0x28,0xc1]
 ; CHECK-NEXT:    ret{{[l|q]}} # encoding: [0xc3]
   %res = call <8 x double> @llvm.x86.avx512.vfmadd.pd.512(<8 x double> %a0, <8 x double> %a1, <8 x double> %a2, i32 10) nounwind
   ret <8 x double> %res
@@ -705,7 +723,8 @@ define <8 x double> @test_mask_round_vfmadd512_pd_rrbz_rtp(<8 x double> %a0, <8 
 define <8 x double> @test_mask_round_vfmadd512_pd_rrbz_rtz(<8 x double> %a0, <8 x double> %a1, <8 x double> %a2) {
 ; CHECK-LABEL: test_mask_round_vfmadd512_pd_rrbz_rtz:
 ; CHECK:       # %bb.0:
-; CHECK-NEXT:    vfmadd213pd {rz-sae}, %zmm2, %zmm1, %zmm0 # encoding: [0x62,0xf2,0xf5,0x78,0xa8,0xc2]
+; CHECK-NEXT:    vfmadd213pd {rz-sae}, %zmm2, %zmm0, %zmm1 # encoding: [0x62,0xf2,0xfd,0x78,0xa8,0xca]
+; CHECK-NEXT:    vmovapd %zmm1, %zmm0 # encoding: [0x62,0xf1,0xfd,0x48,0x28,0xc1]
 ; CHECK-NEXT:    ret{{[l|q]}} # encoding: [0xc3]
   %res = call <8 x double> @llvm.x86.avx512.vfmadd.pd.512(<8 x double> %a0, <8 x double> %a1, <8 x double> %a2, i32 11) nounwind
   ret <8 x double> %res
@@ -714,8 +733,9 @@ define <8 x double> @test_mask_round_vfmadd512_pd_rrbz_rtz(<8 x double> %a0, <8 
 define <8 x double> @test_mask_round_vfmadd512_pd_rrbz_current(<8 x double> %a0, <8 x double> %a1, <8 x double> %a2) {
 ; CHECK-LABEL: test_mask_round_vfmadd512_pd_rrbz_current:
 ; CHECK:       # %bb.0:
-; CHECK-NEXT:    vfmadd213pd %zmm2, %zmm1, %zmm0 # encoding: [0x62,0xf2,0xf5,0x48,0xa8,0xc2]
-; CHECK-NEXT:    # zmm0 = (zmm1 * zmm0) + zmm2
+; CHECK-NEXT:    vfmadd213pd %zmm2, %zmm0, %zmm1 # encoding: [0x62,0xf2,0xfd,0x48,0xa8,0xca]
+; CHECK-NEXT:    # zmm1 = (zmm0 * zmm1) + zmm2
+; CHECK-NEXT:    vmovapd %zmm1, %zmm0 # encoding: [0x62,0xf1,0xfd,0x48,0x28,0xc1]
 ; CHECK-NEXT:    ret{{[l|q]}} # encoding: [0xc3]
   %res = call <8 x double> @llvm.x86.avx512.vfmadd.pd.512(<8 x double> %a0, <8 x double> %a1, <8 x double> %a2, i32 4) nounwind
   ret <8 x double> %res
@@ -770,15 +790,17 @@ define <8 x double>@test_int_x86_avx512_maskz_vfmadd_pd_512(<8 x double> %x0, <8
 ; X86:       # %bb.0:
 ; X86-NEXT:    movzbl {{[0-9]+}}(%esp), %eax # encoding: [0x0f,0xb6,0x44,0x24,0x04]
 ; X86-NEXT:    kmovw %eax, %k1 # encoding: [0xc5,0xf8,0x92,0xc8]
-; X86-NEXT:    vfmadd213pd %zmm2, %zmm1, %zmm0 {%k1} {z} # encoding: [0x62,0xf2,0xf5,0xc9,0xa8,0xc2]
-; X86-NEXT:    # zmm0 {%k1} {z} = (zmm1 * zmm0) + zmm2
+; X86-NEXT:    vfmadd213pd %zmm2, %zmm0, %zmm1 {%k1} {z} # encoding: [0x62,0xf2,0xfd,0xc9,0xa8,0xca]
+; X86-NEXT:    # zmm1 {%k1} {z} = (zmm0 * zmm1) + zmm2
+; X86-NEXT:    vmovapd %zmm1, %zmm0 # encoding: [0x62,0xf1,0xfd,0x48,0x28,0xc1]
 ; X86-NEXT:    retl # encoding: [0xc3]
 ;
 ; X64-LABEL: test_int_x86_avx512_maskz_vfmadd_pd_512:
 ; X64:       # %bb.0:
 ; X64-NEXT:    kmovw %edi, %k1 # encoding: [0xc5,0xf8,0x92,0xcf]
-; X64-NEXT:    vfmadd213pd %zmm2, %zmm1, %zmm0 {%k1} {z} # encoding: [0x62,0xf2,0xf5,0xc9,0xa8,0xc2]
-; X64-NEXT:    # zmm0 {%k1} {z} = (zmm1 * zmm0) + zmm2
+; X64-NEXT:    vfmadd213pd %zmm2, %zmm0, %zmm1 {%k1} {z} # encoding: [0x62,0xf2,0xfd,0xc9,0xa8,0xca]
+; X64-NEXT:    # zmm1 {%k1} {z} = (zmm0 * zmm1) + zmm2
+; X64-NEXT:    vmovapd %zmm1, %zmm0 # encoding: [0x62,0xf1,0xfd,0x48,0x28,0xc1]
 ; X64-NEXT:    retq # encoding: [0xc3]
   %1 = call <8 x double> @llvm.fma.v8f64(<8 x double> %x0, <8 x double> %x1, <8 x double> %x2)
   %2 = bitcast i8 %x3 to <8 x i1>
@@ -832,15 +854,17 @@ define <16 x float> @test_int_x86_avx512_maskz_vfmadd_ps_512(<16 x float> %x0, <
 ; X86-LABEL: test_int_x86_avx512_maskz_vfmadd_ps_512:
 ; X86:       # %bb.0:
 ; X86-NEXT:    kmovw {{[0-9]+}}(%esp), %k1 # encoding: [0xc5,0xf8,0x90,0x4c,0x24,0x04]
-; X86-NEXT:    vfmadd213ps %zmm2, %zmm1, %zmm0 {%k1} {z} # encoding: [0x62,0xf2,0x75,0xc9,0xa8,0xc2]
-; X86-NEXT:    # zmm0 {%k1} {z} = (zmm1 * zmm0) + zmm2
+; X86-NEXT:    vfmadd213ps %zmm2, %zmm0, %zmm1 {%k1} {z} # encoding: [0x62,0xf2,0x7d,0xc9,0xa8,0xca]
+; X86-NEXT:    # zmm1 {%k1} {z} = (zmm0 * zmm1) + zmm2
+; X86-NEXT:    vmovaps %zmm1, %zmm0 # encoding: [0x62,0xf1,0x7c,0x48,0x28,0xc1]
 ; X86-NEXT:    retl # encoding: [0xc3]
 ;
 ; X64-LABEL: test_int_x86_avx512_maskz_vfmadd_ps_512:
 ; X64:       # %bb.0:
 ; X64-NEXT:    kmovw %edi, %k1 # encoding: [0xc5,0xf8,0x92,0xcf]
-; X64-NEXT:    vfmadd213ps %zmm2, %zmm1, %zmm0 {%k1} {z} # encoding: [0x62,0xf2,0x75,0xc9,0xa8,0xc2]
-; X64-NEXT:    # zmm0 {%k1} {z} = (zmm1 * zmm0) + zmm2
+; X64-NEXT:    vfmadd213ps %zmm2, %zmm0, %zmm1 {%k1} {z} # encoding: [0x62,0xf2,0x7d,0xc9,0xa8,0xca]
+; X64-NEXT:    # zmm1 {%k1} {z} = (zmm0 * zmm1) + zmm2
+; X64-NEXT:    vmovaps %zmm1, %zmm0 # encoding: [0x62,0xf1,0x7c,0x48,0x28,0xc1]
 ; X64-NEXT:    retq # encoding: [0xc3]
   %1 = call <16 x float> @llvm.fma.v16f32(<16 x float> %x0, <16 x float> %x1, <16 x float> %x2)
   %2 = bitcast i16 %x3 to <16 x i1>
@@ -958,7 +982,8 @@ define <8 x double> @test_mask_round_vfnmsub512_pd_rrb_current(<8 x double> %a0,
 define <8 x double> @test_mask_round_vfnmsub512_pd_rrbz_rne(<8 x double> %a0, <8 x double> %a1, <8 x double> %a2) {
 ; CHECK-LABEL: test_mask_round_vfnmsub512_pd_rrbz_rne:
 ; CHECK:       # %bb.0:
-; CHECK-NEXT:    vfnmsub213pd {rn-sae}, %zmm2, %zmm1, %zmm0 # encoding: [0x62,0xf2,0xf5,0x18,0xae,0xc2]
+; CHECK-NEXT:    vfnmsub213pd {rn-sae}, %zmm2, %zmm0, %zmm1 # encoding: [0x62,0xf2,0xfd,0x18,0xae,0xca]
+; CHECK-NEXT:    vmovapd %zmm1, %zmm0 # encoding: [0x62,0xf1,0xfd,0x48,0x28,0xc1]
 ; CHECK-NEXT:    ret{{[l|q]}} # encoding: [0xc3]
   %1 = fsub <8 x double> <double -0.000000e+00, double -0.000000e+00, double -0.000000e+00, double -0.000000e+00, double -0.000000e+00, double -0.000000e+00, double -0.000000e+00, double -0.000000e+00>, %a1
   %2 = fsub <8 x double> <double -0.000000e+00, double -0.000000e+00, double -0.000000e+00, double -0.000000e+00, double -0.000000e+00, double -0.000000e+00, double -0.000000e+00, double -0.000000e+00>, %a2
@@ -969,7 +994,8 @@ define <8 x double> @test_mask_round_vfnmsub512_pd_rrbz_rne(<8 x double> %a0, <8
 define <8 x double> @test_mask_round_vfnmsub512_pd_rrbz_rtn(<8 x double> %a0, <8 x double> %a1, <8 x double> %a2) {
 ; CHECK-LABEL: test_mask_round_vfnmsub512_pd_rrbz_rtn:
 ; CHECK:       # %bb.0:
-; CHECK-NEXT:    vfnmsub213pd {rd-sae}, %zmm2, %zmm1, %zmm0 # encoding: [0x62,0xf2,0xf5,0x38,0xae,0xc2]
+; CHECK-NEXT:    vfnmsub213pd {rd-sae}, %zmm2, %zmm0, %zmm1 # encoding: [0x62,0xf2,0xfd,0x38,0xae,0xca]
+; CHECK-NEXT:    vmovapd %zmm1, %zmm0 # encoding: [0x62,0xf1,0xfd,0x48,0x28,0xc1]
 ; CHECK-NEXT:    ret{{[l|q]}} # encoding: [0xc3]
   %1 = fsub <8 x double> <double -0.000000e+00, double -0.000000e+00, double -0.000000e+00, double -0.000000e+00, double -0.000000e+00, double -0.000000e+00, double -0.000000e+00, double -0.000000e+00>, %a1
   %2 = fsub <8 x double> <double -0.000000e+00, double -0.000000e+00, double -0.000000e+00, double -0.000000e+00, double -0.000000e+00, double -0.000000e+00, double -0.000000e+00, double -0.000000e+00>, %a2
@@ -980,7 +1006,8 @@ define <8 x double> @test_mask_round_vfnmsub512_pd_rrbz_rtn(<8 x double> %a0, <8
 define <8 x double> @test_mask_round_vfnmsub512_pd_rrbz_rtp(<8 x double> %a0, <8 x double> %a1, <8 x double> %a2) {
 ; CHECK-LABEL: test_mask_round_vfnmsub512_pd_rrbz_rtp:
 ; CHECK:       # %bb.0:
-; CHECK-NEXT:    vfnmsub213pd {ru-sae}, %zmm2, %zmm1, %zmm0 # encoding: [0x62,0xf2,0xf5,0x58,0xae,0xc2]
+; CHECK-NEXT:    vfnmsub213pd {ru-sae}, %zmm2, %zmm0, %zmm1 # encoding: [0x62,0xf2,0xfd,0x58,0xae,0xca]
+; CHECK-NEXT:    vmovapd %zmm1, %zmm0 # encoding: [0x62,0xf1,0xfd,0x48,0x28,0xc1]
 ; CHECK-NEXT:    ret{{[l|q]}} # encoding: [0xc3]
   %1 = fsub <8 x double> <double -0.000000e+00, double -0.000000e+00, double -0.000000e+00, double -0.000000e+00, double -0.000000e+00, double -0.000000e+00, double -0.000000e+00, double -0.000000e+00>, %a1
   %2 = fsub <8 x double> <double -0.000000e+00, double -0.000000e+00, double -0.000000e+00, double -0.000000e+00, double -0.000000e+00, double -0.000000e+00, double -0.000000e+00, double -0.000000e+00>, %a2
@@ -991,7 +1018,8 @@ define <8 x double> @test_mask_round_vfnmsub512_pd_rrbz_rtp(<8 x double> %a0, <8
 define <8 x double> @test_mask_round_vfnmsub512_pd_rrbz_rtz(<8 x double> %a0, <8 x double> %a1, <8 x double> %a2) {
 ; CHECK-LABEL: test_mask_round_vfnmsub512_pd_rrbz_rtz:
 ; CHECK:       # %bb.0:
-; CHECK-NEXT:    vfnmsub213pd {rz-sae}, %zmm2, %zmm1, %zmm0 # encoding: [0x62,0xf2,0xf5,0x78,0xae,0xc2]
+; CHECK-NEXT:    vfnmsub213pd {rz-sae}, %zmm2, %zmm0, %zmm1 # encoding: [0x62,0xf2,0xfd,0x78,0xae,0xca]
+; CHECK-NEXT:    vmovapd %zmm1, %zmm0 # encoding: [0x62,0xf1,0xfd,0x48,0x28,0xc1]
 ; CHECK-NEXT:    ret{{[l|q]}} # encoding: [0xc3]
   %1 = fsub <8 x double> <double -0.000000e+00, double -0.000000e+00, double -0.000000e+00, double -0.000000e+00, double -0.000000e+00, double -0.000000e+00, double -0.000000e+00, double -0.000000e+00>, %a1
   %2 = fsub <8 x double> <double -0.000000e+00, double -0.000000e+00, double -0.000000e+00, double -0.000000e+00, double -0.000000e+00, double -0.000000e+00, double -0.000000e+00, double -0.000000e+00>, %a2
@@ -1002,8 +1030,9 @@ define <8 x double> @test_mask_round_vfnmsub512_pd_rrbz_rtz(<8 x double> %a0, <8
 define <8 x double> @test_mask_round_vfnmsub512_pd_rrbz_current(<8 x double> %a0, <8 x double> %a1, <8 x double> %a2) {
 ; CHECK-LABEL: test_mask_round_vfnmsub512_pd_rrbz_current:
 ; CHECK:       # %bb.0:
-; CHECK-NEXT:    vfnmsub213pd %zmm2, %zmm1, %zmm0 # encoding: [0x62,0xf2,0xf5,0x48,0xae,0xc2]
-; CHECK-NEXT:    # zmm0 = -(zmm1 * zmm0) - zmm2
+; CHECK-NEXT:    vfnmsub213pd %zmm2, %zmm0, %zmm1 # encoding: [0x62,0xf2,0xfd,0x48,0xae,0xca]
+; CHECK-NEXT:    # zmm1 = -(zmm0 * zmm1) - zmm2
+; CHECK-NEXT:    vmovapd %zmm1, %zmm0 # encoding: [0x62,0xf1,0xfd,0x48,0x28,0xc1]
 ; CHECK-NEXT:    ret{{[l|q]}} # encoding: [0xc3]
   %1 = fsub <8 x double> <double -0.000000e+00, double -0.000000e+00, double -0.000000e+00, double -0.000000e+00, double -0.000000e+00, double -0.000000e+00, double -0.000000e+00, double -0.000000e+00>, %a1
   %2 = fsub <8 x double> <double -0.000000e+00, double -0.000000e+00, double -0.000000e+00, double -0.000000e+00, double -0.000000e+00, double -0.000000e+00, double -0.000000e+00, double -0.000000e+00>, %a2

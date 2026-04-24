@@ -7,12 +7,15 @@ declare float @llvm.sqrt.f32(float %x);
 define dso_local float @fast_recip_sqrt(float %x) {
 ; X64-LABEL: fast_recip_sqrt:
 ; X64:       # %bb.0:
-; X64-NEXT:    rsqrtss %xmm0, %xmm1
-; X64-NEXT:    mulss %xmm1, %xmm0
-; X64-NEXT:    mulss %xmm1, %xmm0
-; X64-NEXT:    addss {{\.?LCPI[0-9]+_[0-9]+}}(%rip), %xmm0
-; X64-NEXT:    mulss {{\.?LCPI[0-9]+_[0-9]+}}(%rip), %xmm1
-; X64-NEXT:    mulss %xmm1, %xmm0
+; X64-NEXT:    rsqrtss %xmm0, %xmm2
+; X64-NEXT:    mulss %xmm2, %xmm0
+; X64-NEXT:    mulss %xmm2, %xmm0
+; X64-NEXT:    movss {{.*#+}} xmm1 = [-3.0E+0,0.0E+0,0.0E+0,0.0E+0]
+; X64-NEXT:    addss %xmm0, %xmm1
+; X64-NEXT:    movss {{.*#+}} xmm0 = [-5.0E-1,0.0E+0,0.0E+0,0.0E+0]
+; X64-NEXT:    mulss %xmm2, %xmm0
+; X64-NEXT:    mulss %xmm0, %xmm1
+; X64-NEXT:    movaps %xmm1, %xmm0
 ; X64-NEXT:    retq
 ;
 ; X86-LABEL: fast_recip_sqrt:
@@ -32,7 +35,9 @@ declare float @llvm.fmuladd.f32(float %a, float %b, float %c);
 define dso_local float @fast_fmuladd_opts(float %a , float %b , float %c) {
 ; X64-LABEL: fast_fmuladd_opts:
 ; X64:       # %bb.0:
-; X64-NEXT:    mulss {{\.?LCPI[0-9]+_[0-9]+}}(%rip), %xmm0
+; X64-NEXT:    movss {{.*#+}} xmm1 = [3.0E+0,0.0E+0,0.0E+0,0.0E+0]
+; X64-NEXT:    mulss %xmm0, %xmm1
+; X64-NEXT:    movaps %xmm1, %xmm0
 ; X64-NEXT:    retq
 ;
 ; X86-LABEL: fast_fmuladd_opts:
@@ -51,10 +56,12 @@ define dso_local float @fast_fmuladd_opts(float %a , float %b , float %c) {
 define dso_local double @not_so_fast_mul_add(double %x) {
 ; X64-LABEL: not_so_fast_mul_add:
 ; X64:       # %bb.0:
-; X64-NEXT:    movsd {{.*#+}} xmm1 = [4.2000000000000002E+0,0.0E+0]
+; X64-NEXT:    movsd {{.*#+}} xmm2 = [4.2000000000000002E+0,0.0E+0]
+; X64-NEXT:    mulsd %xmm0, %xmm2
+; X64-NEXT:    movsd {{.*#+}} xmm1 = [5.2000000000000002E+0,0.0E+0]
 ; X64-NEXT:    mulsd %xmm0, %xmm1
-; X64-NEXT:    mulsd {{\.?LCPI[0-9]+_[0-9]+}}(%rip), %xmm0
-; X64-NEXT:    movsd %xmm1, mul1(%rip)
+; X64-NEXT:    movsd %xmm2, mul1(%rip)
+; X64-NEXT:    movapd %xmm1, %xmm0
 ; X64-NEXT:    retq
 ;
 ; X86-LABEL: not_so_fast_mul_add:
@@ -82,11 +89,14 @@ define dso_local float @not_so_fast_recip_sqrt(float %x) {
 ; X64:       # %bb.0:
 ; X64-NEXT:    rsqrtss %xmm0, %xmm1
 ; X64-NEXT:    sqrtss %xmm0, %xmm2
-; X64-NEXT:    mulss %xmm1, %xmm0
-; X64-NEXT:    mulss %xmm1, %xmm0
-; X64-NEXT:    addss {{\.?LCPI[0-9]+_[0-9]+}}(%rip), %xmm0
-; X64-NEXT:    mulss {{\.?LCPI[0-9]+_[0-9]+}}(%rip), %xmm1
-; X64-NEXT:    mulss %xmm1, %xmm0
+; X64-NEXT:    movaps %xmm0, %xmm3
+; X64-NEXT:    mulss %xmm1, %xmm3
+; X64-NEXT:    mulss %xmm1, %xmm3
+; X64-NEXT:    movss {{.*#+}} xmm0 = [-3.0E+0,0.0E+0,0.0E+0,0.0E+0]
+; X64-NEXT:    addss %xmm3, %xmm0
+; X64-NEXT:    movss {{.*#+}} xmm3 = [-5.0E-1,0.0E+0,0.0E+0,0.0E+0]
+; X64-NEXT:    mulss %xmm1, %xmm3
+; X64-NEXT:    mulss %xmm3, %xmm0
 ; X64-NEXT:    movss %xmm2, sqrt1(%rip)
 ; X64-NEXT:    retq
 ;
@@ -112,7 +122,9 @@ define dso_local float @div_arcp_by_const(half %x) {
 ; X64-NEXT:    pushq %rax
 ; X64-NEXT:    .cfi_def_cfa_offset 16
 ; X64-NEXT:    callq __extendhfsf2@PLT
-; X64-NEXT:    mulss {{\.?LCPI[0-9]+_[0-9]+}}(%rip), %xmm0
+; X64-NEXT:    movss {{.*#+}} xmm1 = [9.99755859E-2,0.0E+0,0.0E+0,0.0E+0]
+; X64-NEXT:    mulss %xmm0, %xmm1
+; X64-NEXT:    movaps %xmm1, %xmm0
 ; X64-NEXT:    callq __truncsfhf2@PLT
 ; X64-NEXT:    popq %rax
 ; X64-NEXT:    .cfi_def_cfa_offset 8

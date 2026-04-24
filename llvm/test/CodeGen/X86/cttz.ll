@@ -145,11 +145,11 @@ define i64 @cttz_i64(i64 %x)  {
 ; X86-CMOV-LABEL: cttz_i64:
 ; X86-CMOV:       # %bb.0:
 ; X86-CMOV-NEXT:    movl {{[0-9]+}}(%esp), %ecx
-; X86-CMOV-NEXT:    rep bsfl %ecx, %edx
-; X86-CMOV-NEXT:    rep bsfl {{[0-9]+}}(%esp), %eax
-; X86-CMOV-NEXT:    addl $32, %eax
+; X86-CMOV-NEXT:    rep bsfl %ecx, %eax
+; X86-CMOV-NEXT:    rep bsfl {{[0-9]+}}(%esp), %edx
+; X86-CMOV-NEXT:    addl $32, %edx
 ; X86-CMOV-NEXT:    testl %ecx, %ecx
-; X86-CMOV-NEXT:    cmovnel %edx, %eax
+; X86-CMOV-NEXT:    cmovel %edx, %eax
 ; X86-CMOV-NEXT:    xorl %edx, %edx
 ; X86-CMOV-NEXT:    retl
 ;
@@ -206,8 +206,9 @@ define i8 @cttz_i8_zero_test(i8 %n) {
 ; X86-LABEL: cttz_i8_zero_test:
 ; X86:       # %bb.0:
 ; X86-NEXT:    movl $256, %eax # imm = 0x100
-; X86-NEXT:    orl {{[0-9]+}}(%esp), %eax
-; X86-NEXT:    rep bsfl %eax, %eax
+; X86-NEXT:    movl {{[0-9]+}}(%esp), %ecx
+; X86-NEXT:    orl %eax, %ecx
+; X86-NEXT:    rep bsfl %ecx, %eax
 ; X86-NEXT:    # kill: def $al killed $al killed $eax
 ; X86-NEXT:    retl
 ;
@@ -221,8 +222,9 @@ define i8 @cttz_i8_zero_test(i8 %n) {
 ; X86-CLZ-LABEL: cttz_i8_zero_test:
 ; X86-CLZ:       # %bb.0:
 ; X86-CLZ-NEXT:    movl $256, %eax # imm = 0x100
-; X86-CLZ-NEXT:    orl {{[0-9]+}}(%esp), %eax
-; X86-CLZ-NEXT:    tzcntl %eax, %eax
+; X86-CLZ-NEXT:    movl {{[0-9]+}}(%esp), %ecx
+; X86-CLZ-NEXT:    orl %eax, %ecx
+; X86-CLZ-NEXT:    tzcntl %ecx, %eax
 ; X86-CLZ-NEXT:    # kill: def $al killed $al killed $eax
 ; X86-CLZ-NEXT:    retl
 ;
@@ -243,8 +245,9 @@ define i8 @cttz_i8_zero_test(i8 %n) {
 ; X86-FASTLZCNT-LABEL: cttz_i8_zero_test:
 ; X86-FASTLZCNT:       # %bb.0:
 ; X86-FASTLZCNT-NEXT:    movl $256, %eax # imm = 0x100
-; X86-FASTLZCNT-NEXT:    orl {{[0-9]+}}(%esp), %eax
-; X86-FASTLZCNT-NEXT:    tzcntl %eax, %eax
+; X86-FASTLZCNT-NEXT:    movl {{[0-9]+}}(%esp), %ecx
+; X86-FASTLZCNT-NEXT:    orl %eax, %ecx
+; X86-FASTLZCNT-NEXT:    tzcntl %ecx, %eax
 ; X86-FASTLZCNT-NEXT:    # kill: def $al killed $al killed $eax
 ; X86-FASTLZCNT-NEXT:    retl
   %tmp1 = call i8 @llvm.cttz.i8(i8 %n, i1 false)
@@ -256,8 +259,9 @@ define i16 @cttz_i16_zero_test(i16 %n) {
 ; X86-LABEL: cttz_i16_zero_test:
 ; X86:       # %bb.0:
 ; X86-NEXT:    movl $65536, %eax # imm = 0x10000
-; X86-NEXT:    orl {{[0-9]+}}(%esp), %eax
-; X86-NEXT:    rep bsfl %eax, %eax
+; X86-NEXT:    movl {{[0-9]+}}(%esp), %ecx
+; X86-NEXT:    orl %eax, %ecx
+; X86-NEXT:    rep bsfl %ecx, %eax
 ; X86-NEXT:    # kill: def $ax killed $ax killed $eax
 ; X86-NEXT:    retl
 ;
@@ -271,8 +275,9 @@ define i16 @cttz_i16_zero_test(i16 %n) {
 ; X86-CLZ-LABEL: cttz_i16_zero_test:
 ; X86-CLZ:       # %bb.0:
 ; X86-CLZ-NEXT:    movl $65536, %eax # imm = 0x10000
-; X86-CLZ-NEXT:    orl {{[0-9]+}}(%esp), %eax
-; X86-CLZ-NEXT:    tzcntl %eax, %eax
+; X86-CLZ-NEXT:    movl {{[0-9]+}}(%esp), %ecx
+; X86-CLZ-NEXT:    orl %eax, %ecx
+; X86-CLZ-NEXT:    tzcntl %ecx, %eax
 ; X86-CLZ-NEXT:    # kill: def $ax killed $ax killed $eax
 ; X86-CLZ-NEXT:    retl
 ;
@@ -293,8 +298,9 @@ define i16 @cttz_i16_zero_test(i16 %n) {
 ; X86-FASTLZCNT-LABEL: cttz_i16_zero_test:
 ; X86-FASTLZCNT:       # %bb.0:
 ; X86-FASTLZCNT-NEXT:    movl $65536, %eax # imm = 0x10000
-; X86-FASTLZCNT-NEXT:    orl {{[0-9]+}}(%esp), %eax
-; X86-FASTLZCNT-NEXT:    tzcntl %eax, %eax
+; X86-FASTLZCNT-NEXT:    movl {{[0-9]+}}(%esp), %ecx
+; X86-FASTLZCNT-NEXT:    orl %eax, %ecx
+; X86-FASTLZCNT-NEXT:    tzcntl %ecx, %eax
 ; X86-FASTLZCNT-NEXT:    # kill: def $ax killed $ax killed $eax
 ; X86-FASTLZCNT-NEXT:    retl
   %tmp1 = call i16 @llvm.cttz.i16(i16 %n, i1 false)
@@ -383,9 +389,9 @@ define i64 @cttz_i64_zero_test(i64 %n) nounwind {
 ; X86-CMOV-NEXT:    bsfl {{[0-9]+}}(%esp), %ecx
 ; X86-CMOV-NEXT:    movl $32, %edx
 ; X86-CMOV-NEXT:    cmovnel %ecx, %edx
-; X86-CMOV-NEXT:    addl $32, %edx
+; X86-CMOV-NEXT:    leal 32(%edx), %ecx
 ; X86-CMOV-NEXT:    bsfl %eax, %eax
-; X86-CMOV-NEXT:    cmovel %edx, %eax
+; X86-CMOV-NEXT:    cmovel %ecx, %eax
 ; X86-CMOV-NEXT:    xorl %edx, %edx
 ; X86-CMOV-NEXT:    retl
 ;
@@ -505,9 +511,10 @@ define i64 @cttz_i64_zero_test_knownneverzero(i64 %n) {
 ; X86-NOCMOV-NEXT:    jne .LBB9_1
 ; X86-NOCMOV-NEXT:  # %bb.2:
 ; X86-NOCMOV-NEXT:    movl $-2147483648, %eax # imm = 0x80000000
-; X86-NOCMOV-NEXT:    orl {{[0-9]+}}(%esp), %eax
-; X86-NOCMOV-NEXT:    rep bsfl %eax, %eax
-; X86-NOCMOV-NEXT:    orl $32, %eax
+; X86-NOCMOV-NEXT:    movl {{[0-9]+}}(%esp), %ecx
+; X86-NOCMOV-NEXT:    orl %eax, %ecx
+; X86-NOCMOV-NEXT:    rep bsfl %ecx, %eax
+; X86-NOCMOV-NEXT:    addl $32, %eax
 ; X86-NOCMOV-NEXT:    xorl %edx, %edx
 ; X86-NOCMOV-NEXT:    retl
 ; X86-NOCMOV-NEXT:  .LBB9_1:
@@ -519,12 +526,13 @@ define i64 @cttz_i64_zero_test_knownneverzero(i64 %n) {
 ; X86-CMOV:       # %bb.0:
 ; X86-CMOV-NEXT:    movl {{[0-9]+}}(%esp), %ecx
 ; X86-CMOV-NEXT:    movl $-2147483648, %eax # imm = 0x80000000
-; X86-CMOV-NEXT:    orl {{[0-9]+}}(%esp), %eax
-; X86-CMOV-NEXT:    rep bsfl %ecx, %edx
-; X86-CMOV-NEXT:    rep bsfl %eax, %eax
-; X86-CMOV-NEXT:    orl $32, %eax
+; X86-CMOV-NEXT:    movl {{[0-9]+}}(%esp), %edx
+; X86-CMOV-NEXT:    orl %eax, %edx
+; X86-CMOV-NEXT:    rep bsfl %ecx, %eax
+; X86-CMOV-NEXT:    rep bsfl %edx, %edx
+; X86-CMOV-NEXT:    addl $32, %edx
 ; X86-CMOV-NEXT:    testl %ecx, %ecx
-; X86-CMOV-NEXT:    cmovnel %edx, %eax
+; X86-CMOV-NEXT:    cmovel %edx, %eax
 ; X86-CMOV-NEXT:    xorl %edx, %edx
 ; X86-CMOV-NEXT:    retl
 ;
@@ -542,9 +550,10 @@ define i64 @cttz_i64_zero_test_knownneverzero(i64 %n) {
 ; X86-CLZ-NEXT:    jne .LBB9_1
 ; X86-CLZ-NEXT:  # %bb.2:
 ; X86-CLZ-NEXT:    movl $-2147483648, %eax # imm = 0x80000000
-; X86-CLZ-NEXT:    orl {{[0-9]+}}(%esp), %eax
-; X86-CLZ-NEXT:    tzcntl %eax, %eax
-; X86-CLZ-NEXT:    orl $32, %eax
+; X86-CLZ-NEXT:    movl {{[0-9]+}}(%esp), %ecx
+; X86-CLZ-NEXT:    orl %eax, %ecx
+; X86-CLZ-NEXT:    tzcntl %ecx, %eax
+; X86-CLZ-NEXT:    addl $32, %eax
 ; X86-CLZ-NEXT:    xorl %edx, %edx
 ; X86-CLZ-NEXT:    retl
 ; X86-CLZ-NEXT:  .LBB9_1:
@@ -573,9 +582,10 @@ define i64 @cttz_i64_zero_test_knownneverzero(i64 %n) {
 ; X86-FASTLZCNT-NEXT:    jne .LBB9_1
 ; X86-FASTLZCNT-NEXT:  # %bb.2:
 ; X86-FASTLZCNT-NEXT:    movl $-2147483648, %eax # imm = 0x80000000
-; X86-FASTLZCNT-NEXT:    orl {{[0-9]+}}(%esp), %eax
-; X86-FASTLZCNT-NEXT:    tzcntl %eax, %eax
-; X86-FASTLZCNT-NEXT:    orl $32, %eax
+; X86-FASTLZCNT-NEXT:    movl {{[0-9]+}}(%esp), %ecx
+; X86-FASTLZCNT-NEXT:    orl %eax, %ecx
+; X86-FASTLZCNT-NEXT:    tzcntl %ecx, %eax
+; X86-FASTLZCNT-NEXT:    addl $32, %eax
 ; X86-FASTLZCNT-NEXT:    xorl %edx, %edx
 ; X86-FASTLZCNT-NEXT:    retl
 ; X86-FASTLZCNT-NEXT:  .LBB9_1:

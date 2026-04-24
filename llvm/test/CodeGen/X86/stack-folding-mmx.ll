@@ -269,8 +269,8 @@ define <1 x i64> @stack_fold_paddb(<1 x i64> %a, <1 x i64> %b) {
 ; CHECK:       # %bb.0:
 ; CHECK-NEXT:    movq %rsi, %mm0
 ; CHECK-NEXT:    movq %rdi, %mm1
-; CHECK-NEXT:    paddb %mm0, %mm1
-; CHECK-NEXT:    movq %mm1, %rax
+; CHECK-NEXT:    paddb %mm1, %mm0
+; CHECK-NEXT:    movq %mm0, %rax
 ; CHECK-NEXT:    #APP
 ; CHECK-NEXT:    nop
 ; CHECK-NEXT:    #NO_APP
@@ -286,8 +286,8 @@ define <1 x i64> @stack_fold_paddd(<1 x i64> %a, <1 x i64> %b) {
 ; CHECK:       # %bb.0:
 ; CHECK-NEXT:    movq %rsi, %mm0
 ; CHECK-NEXT:    movq %rdi, %mm1
-; CHECK-NEXT:    paddd %mm0, %mm1
-; CHECK-NEXT:    movq %mm1, %rax
+; CHECK-NEXT:    paddd %mm1, %mm0
+; CHECK-NEXT:    movq %mm0, %rax
 ; CHECK-NEXT:    #APP
 ; CHECK-NEXT:    nop
 ; CHECK-NEXT:    #NO_APP
@@ -303,8 +303,8 @@ define <1 x i64> @stack_fold_paddq(<1 x i64> %a, <1 x i64> %b) {
 ; CHECK:       # %bb.0:
 ; CHECK-NEXT:    movq %rsi, %mm0
 ; CHECK-NEXT:    movq %rdi, %mm1
-; CHECK-NEXT:    paddq %mm0, %mm1
-; CHECK-NEXT:    movq %mm1, %rax
+; CHECK-NEXT:    paddq %mm1, %mm0
+; CHECK-NEXT:    movq %mm0, %rax
 ; CHECK-NEXT:    #APP
 ; CHECK-NEXT:    nop
 ; CHECK-NEXT:    #NO_APP
@@ -320,8 +320,8 @@ define <1 x i64> @stack_fold_paddsb(<1 x i64> %a, <1 x i64> %b) {
 ; CHECK:       # %bb.0:
 ; CHECK-NEXT:    movq %rsi, %mm0
 ; CHECK-NEXT:    movq %rdi, %mm1
-; CHECK-NEXT:    paddsb %mm0, %mm1
-; CHECK-NEXT:    movq %mm1, %rax
+; CHECK-NEXT:    paddsb %mm1, %mm0
+; CHECK-NEXT:    movq %mm0, %rax
 ; CHECK-NEXT:    #APP
 ; CHECK-NEXT:    nop
 ; CHECK-NEXT:    #NO_APP
@@ -337,8 +337,8 @@ define <1 x i64> @stack_fold_paddsw(<1 x i64> %a, <1 x i64> %b) {
 ; CHECK:       # %bb.0:
 ; CHECK-NEXT:    movq %rsi, %mm0
 ; CHECK-NEXT:    movq %rdi, %mm1
-; CHECK-NEXT:    paddsw %mm0, %mm1
-; CHECK-NEXT:    movq %mm1, %rax
+; CHECK-NEXT:    paddsw %mm1, %mm0
+; CHECK-NEXT:    movq %mm0, %rax
 ; CHECK-NEXT:    #APP
 ; CHECK-NEXT:    nop
 ; CHECK-NEXT:    #NO_APP
@@ -354,8 +354,8 @@ define <1 x i64> @stack_fold_paddusb(<1 x i64> %a, <1 x i64> %b) {
 ; CHECK:       # %bb.0:
 ; CHECK-NEXT:    movq %rsi, %mm0
 ; CHECK-NEXT:    movq %rdi, %mm1
-; CHECK-NEXT:    paddusb %mm0, %mm1
-; CHECK-NEXT:    movq %mm1, %rax
+; CHECK-NEXT:    paddusb %mm1, %mm0
+; CHECK-NEXT:    movq %mm0, %rax
 ; CHECK-NEXT:    #APP
 ; CHECK-NEXT:    nop
 ; CHECK-NEXT:    #NO_APP
@@ -371,8 +371,8 @@ define <1 x i64> @stack_fold_paddusw(<1 x i64> %a, <1 x i64> %b) {
 ; CHECK:       # %bb.0:
 ; CHECK-NEXT:    movq %rsi, %mm0
 ; CHECK-NEXT:    movq %rdi, %mm1
-; CHECK-NEXT:    paddusw %mm0, %mm1
-; CHECK-NEXT:    movq %mm1, %rax
+; CHECK-NEXT:    paddusw %mm1, %mm0
+; CHECK-NEXT:    movq %mm0, %rax
 ; CHECK-NEXT:    #APP
 ; CHECK-NEXT:    nop
 ; CHECK-NEXT:    #NO_APP
@@ -388,8 +388,8 @@ define <1 x i64> @stack_fold_paddw(<1 x i64> %a, <1 x i64> %b) {
 ; CHECK:       # %bb.0:
 ; CHECK-NEXT:    movq %rsi, %mm0
 ; CHECK-NEXT:    movq %rdi, %mm1
-; CHECK-NEXT:    paddw %mm0, %mm1
-; CHECK-NEXT:    movq %mm1, %rax
+; CHECK-NEXT:    paddw %mm1, %mm0
+; CHECK-NEXT:    movq %mm0, %rax
 ; CHECK-NEXT:    #APP
 ; CHECK-NEXT:    nop
 ; CHECK-NEXT:    #NO_APP
@@ -422,8 +422,8 @@ define <1 x i64> @stack_fold_pand(<1 x i64> %a, <1 x i64> %b) {
 ; CHECK:       # %bb.0:
 ; CHECK-NEXT:    movq %rsi, %mm0
 ; CHECK-NEXT:    movq %rdi, %mm1
-; CHECK-NEXT:    pand %mm0, %mm1
-; CHECK-NEXT:    movq %mm1, %rax
+; CHECK-NEXT:    pand %mm1, %mm0
+; CHECK-NEXT:    movq %mm0, %rax
 ; CHECK-NEXT:    #APP
 ; CHECK-NEXT:    nop
 ; CHECK-NEXT:    #NO_APP
@@ -456,8 +456,8 @@ define <1 x i64> @stack_fold_pavgb(<1 x i64> %a, <1 x i64> %b) {
 ; CHECK:       # %bb.0:
 ; CHECK-NEXT:    movq %rsi, %mm0
 ; CHECK-NEXT:    movq %rdi, %mm1
-; CHECK-NEXT:    pavgb %mm0, %mm1
-; CHECK-NEXT:    movq %mm1, %rax
+; CHECK-NEXT:    pavgb %mm1, %mm0
+; CHECK-NEXT:    movq %mm0, %rax
 ; CHECK-NEXT:    #APP
 ; CHECK-NEXT:    nop
 ; CHECK-NEXT:    #NO_APP
@@ -473,8 +473,8 @@ define <1 x i64> @stack_fold_pavgw(<1 x i64> %a, <1 x i64> %b) {
 ; CHECK:       # %bb.0:
 ; CHECK-NEXT:    movq %rsi, %mm0
 ; CHECK-NEXT:    movq %rdi, %mm1
-; CHECK-NEXT:    pavgw %mm0, %mm1
-; CHECK-NEXT:    movq %mm1, %rax
+; CHECK-NEXT:    pavgw %mm1, %mm0
+; CHECK-NEXT:    movq %mm0, %rax
 ; CHECK-NEXT:    #APP
 ; CHECK-NEXT:    nop
 ; CHECK-NEXT:    #NO_APP
@@ -713,8 +713,8 @@ define <1 x i64> @stack_fold_pmaddwd(<1 x i64> %a, <1 x i64> %b) {
 ; CHECK:       # %bb.0:
 ; CHECK-NEXT:    movq %rsi, %mm0
 ; CHECK-NEXT:    movq %rdi, %mm1
-; CHECK-NEXT:    pmaddwd %mm0, %mm1
-; CHECK-NEXT:    movq %mm1, %rax
+; CHECK-NEXT:    pmaddwd %mm1, %mm0
+; CHECK-NEXT:    movq %mm0, %rax
 ; CHECK-NEXT:    #APP
 ; CHECK-NEXT:    nop
 ; CHECK-NEXT:    #NO_APP
@@ -730,8 +730,8 @@ define <1 x i64> @stack_fold_pmaxsw(<1 x i64> %a, <1 x i64> %b) {
 ; CHECK:       # %bb.0:
 ; CHECK-NEXT:    movq %rsi, %mm0
 ; CHECK-NEXT:    movq %rdi, %mm1
-; CHECK-NEXT:    pmaxsw %mm0, %mm1
-; CHECK-NEXT:    movq %mm1, %rax
+; CHECK-NEXT:    pmaxsw %mm1, %mm0
+; CHECK-NEXT:    movq %mm0, %rax
 ; CHECK-NEXT:    #APP
 ; CHECK-NEXT:    nop
 ; CHECK-NEXT:    #NO_APP
@@ -747,8 +747,8 @@ define <1 x i64> @stack_fold_pmaxub(<1 x i64> %a, <1 x i64> %b) {
 ; CHECK:       # %bb.0:
 ; CHECK-NEXT:    movq %rsi, %mm0
 ; CHECK-NEXT:    movq %rdi, %mm1
-; CHECK-NEXT:    pmaxub %mm0, %mm1
-; CHECK-NEXT:    movq %mm1, %rax
+; CHECK-NEXT:    pmaxub %mm1, %mm0
+; CHECK-NEXT:    movq %mm0, %rax
 ; CHECK-NEXT:    #APP
 ; CHECK-NEXT:    nop
 ; CHECK-NEXT:    #NO_APP
@@ -764,8 +764,8 @@ define <1 x i64> @stack_fold_pminsw(<1 x i64> %a, <1 x i64> %b) {
 ; CHECK:       # %bb.0:
 ; CHECK-NEXT:    movq %rsi, %mm0
 ; CHECK-NEXT:    movq %rdi, %mm1
-; CHECK-NEXT:    pminsw %mm0, %mm1
-; CHECK-NEXT:    movq %mm1, %rax
+; CHECK-NEXT:    pminsw %mm1, %mm0
+; CHECK-NEXT:    movq %mm0, %rax
 ; CHECK-NEXT:    #APP
 ; CHECK-NEXT:    nop
 ; CHECK-NEXT:    #NO_APP
@@ -781,8 +781,8 @@ define <1 x i64> @stack_fold_pminub(<1 x i64> %a, <1 x i64> %b) {
 ; CHECK:       # %bb.0:
 ; CHECK-NEXT:    movq %rsi, %mm0
 ; CHECK-NEXT:    movq %rdi, %mm1
-; CHECK-NEXT:    pminub %mm0, %mm1
-; CHECK-NEXT:    movq %mm1, %rax
+; CHECK-NEXT:    pminub %mm1, %mm0
+; CHECK-NEXT:    movq %mm0, %rax
 ; CHECK-NEXT:    #APP
 ; CHECK-NEXT:    nop
 ; CHECK-NEXT:    #NO_APP
@@ -798,8 +798,8 @@ define <1 x i64> @stack_fold_pmulhrsw(<1 x i64> %a, <1 x i64> %b) {
 ; CHECK:       # %bb.0:
 ; CHECK-NEXT:    movq %rsi, %mm0
 ; CHECK-NEXT:    movq %rdi, %mm1
-; CHECK-NEXT:    pmulhrsw %mm0, %mm1
-; CHECK-NEXT:    movq %mm1, %rax
+; CHECK-NEXT:    pmulhrsw %mm1, %mm0
+; CHECK-NEXT:    movq %mm0, %rax
 ; CHECK-NEXT:    #APP
 ; CHECK-NEXT:    nop
 ; CHECK-NEXT:    #NO_APP
@@ -815,8 +815,8 @@ define <1 x i64> @stack_fold_pmulhuw(<1 x i64> %a, <1 x i64> %b) {
 ; CHECK:       # %bb.0:
 ; CHECK-NEXT:    movq %rsi, %mm0
 ; CHECK-NEXT:    movq %rdi, %mm1
-; CHECK-NEXT:    pmulhuw %mm0, %mm1
-; CHECK-NEXT:    movq %mm1, %rax
+; CHECK-NEXT:    pmulhuw %mm1, %mm0
+; CHECK-NEXT:    movq %mm0, %rax
 ; CHECK-NEXT:    #APP
 ; CHECK-NEXT:    nop
 ; CHECK-NEXT:    #NO_APP
@@ -832,8 +832,8 @@ define <1 x i64> @stack_fold_pmulhw(<1 x i64> %a, <1 x i64> %b) {
 ; CHECK:       # %bb.0:
 ; CHECK-NEXT:    movq %rsi, %mm0
 ; CHECK-NEXT:    movq %rdi, %mm1
-; CHECK-NEXT:    pmulhw %mm0, %mm1
-; CHECK-NEXT:    movq %mm1, %rax
+; CHECK-NEXT:    pmulhw %mm1, %mm0
+; CHECK-NEXT:    movq %mm0, %rax
 ; CHECK-NEXT:    #APP
 ; CHECK-NEXT:    nop
 ; CHECK-NEXT:    #NO_APP
@@ -849,8 +849,8 @@ define <1 x i64> @stack_fold_pmullw(<1 x i64> %a, <1 x i64> %b) {
 ; CHECK:       # %bb.0:
 ; CHECK-NEXT:    movq %rsi, %mm0
 ; CHECK-NEXT:    movq %rdi, %mm1
-; CHECK-NEXT:    pmullw %mm0, %mm1
-; CHECK-NEXT:    movq %mm1, %rax
+; CHECK-NEXT:    pmullw %mm1, %mm0
+; CHECK-NEXT:    movq %mm0, %rax
 ; CHECK-NEXT:    #APP
 ; CHECK-NEXT:    nop
 ; CHECK-NEXT:    #NO_APP
@@ -866,8 +866,8 @@ define <1 x i64> @stack_fold_pmuludq(<1 x i64> %a, <1 x i64> %b) {
 ; CHECK:       # %bb.0:
 ; CHECK-NEXT:    movq %rsi, %mm0
 ; CHECK-NEXT:    movq %rdi, %mm1
-; CHECK-NEXT:    pmuludq %mm0, %mm1
-; CHECK-NEXT:    movq %mm1, %rax
+; CHECK-NEXT:    pmuludq %mm1, %mm0
+; CHECK-NEXT:    movq %mm0, %rax
 ; CHECK-NEXT:    #APP
 ; CHECK-NEXT:    nop
 ; CHECK-NEXT:    #NO_APP
@@ -883,8 +883,8 @@ define <1 x i64> @stack_fold_por(<1 x i64> %a, <1 x i64> %b) {
 ; CHECK:       # %bb.0:
 ; CHECK-NEXT:    movq %rsi, %mm0
 ; CHECK-NEXT:    movq %rdi, %mm1
-; CHECK-NEXT:    por %mm0, %mm1
-; CHECK-NEXT:    movq %mm1, %rax
+; CHECK-NEXT:    por %mm1, %mm0
+; CHECK-NEXT:    movq %mm0, %rax
 ; CHECK-NEXT:    #APP
 ; CHECK-NEXT:    nop
 ; CHECK-NEXT:    #NO_APP
@@ -900,8 +900,8 @@ define <1 x i64> @stack_fold_psadbw(<1 x i64> %a, <1 x i64> %b) {
 ; CHECK:       # %bb.0:
 ; CHECK-NEXT:    movq %rsi, %mm0
 ; CHECK-NEXT:    movq %rdi, %mm1
-; CHECK-NEXT:    psadbw %mm0, %mm1
-; CHECK-NEXT:    movq %mm1, %rax
+; CHECK-NEXT:    psadbw %mm1, %mm0
+; CHECK-NEXT:    movq %mm0, %rax
 ; CHECK-NEXT:    #APP
 ; CHECK-NEXT:    nop
 ; CHECK-NEXT:    #NO_APP
@@ -1377,8 +1377,8 @@ define <1 x i64> @stack_fold_pxor(<1 x i64> %a, <1 x i64> %b) {
 ; CHECK:       # %bb.0:
 ; CHECK-NEXT:    movq %rsi, %mm0
 ; CHECK-NEXT:    movq %rdi, %mm1
-; CHECK-NEXT:    pxor %mm0, %mm1
-; CHECK-NEXT:    movq %mm1, %rax
+; CHECK-NEXT:    pxor %mm1, %mm0
+; CHECK-NEXT:    movq %mm0, %rax
 ; CHECK-NEXT:    #APP
 ; CHECK-NEXT:    nop
 ; CHECK-NEXT:    #NO_APP

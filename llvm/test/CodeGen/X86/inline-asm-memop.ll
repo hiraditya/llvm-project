@@ -24,9 +24,9 @@ define i32 @PR82431_1(i32 %0, ptr %f) {
 ; CHECK-LABEL: PR82431_1:
 ; CHECK:       # %bb.0: # %entry
 ; CHECK-NEXT:    # kill: def $edi killed $edi def $rdi
-; CHECK-NEXT:    addl %edi, %edi
-; CHECK-NEXT:    andl $8, %edi
-; CHECK-NEXT:    movl 4(%rsi,%rdi), %eax
+; CHECK-NEXT:    leal (%rdi,%rdi), %eax
+; CHECK-NEXT:    andl $8, %eax
+; CHECK-NEXT:    movl 4(%rsi,%rax), %eax
 ; CHECK-NEXT:    retq
 entry:
   %shr = lshr i32 %0, 1
@@ -57,8 +57,8 @@ define void @PR82431_3(i32 %0, ptr %f) {
 ; CHECK-LABEL: PR82431_3:
 ; CHECK:       # %bb.0: # %entry
 ; CHECK-NEXT:    # kill: def $edi killed $edi def $rdi
-; CHECK-NEXT:    addl %edi, %edi
-; CHECK-NEXT:    andl $8, %edi
+; CHECK-NEXT:    leal (%rdi,%rdi), %eax
+; CHECK-NEXT:    andl $8, %eax
 ; CHECK-NEXT:    #APP
 ; CHECK-NEXT:    #NO_APP
 ; CHECK-NEXT:    retq

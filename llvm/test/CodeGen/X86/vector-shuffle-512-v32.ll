@@ -83,7 +83,8 @@ define <32 x i16> @shuffle_v32i16_0f_1f_0e_16_0d_1d_04_1e_0b_1b_0a_1a_09_19_08_1
 ; SKX-LABEL: shuffle_v32i16_0f_1f_0e_16_0d_1d_04_1e_0b_1b_0a_1a_09_19_08_18_0f_1f_0e_16_0d_1d_04_1e_0b_1b_0a_1a_09_19_08_38:
 ; SKX:       ## %bb.0:
 ; SKX-NEXT:    vmovdqa64 {{.*#+}} zmm2 = [15,31,14,22,13,29,4,28,11,27,10,26,9,25,8,24,15,31,14,22,13,29,4,28,11,27,10,26,9,25,8,56]
-; SKX-NEXT:    vpermt2w %zmm1, %zmm2, %zmm0
+; SKX-NEXT:    vpermi2w %zmm1, %zmm0, %zmm2
+; SKX-NEXT:    vmovdqa64 %zmm2, %zmm0
 ; SKX-NEXT:    retq
   %c = shufflevector <32 x i16> %a, <32 x i16> %b, <32 x i32> <i32 15, i32 31, i32 14, i32 22, i32 13, i32 29, i32 4, i32 28, i32 11, i32 27, i32 10, i32 26, i32 9, i32 25, i32 8, i32 24, i32 15, i32 31, i32 14, i32 22, i32 13, i32 29, i32 4, i32 28, i32 11, i32 27, i32 10, i32 26, i32 9, i32 25, i32 8, i32 56>
   ret <32 x i16> %c

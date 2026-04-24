@@ -177,14 +177,14 @@ define <16 x float> @concat_sqrt_v16f32_v8f32(<8 x float> %a0, <8 x float> %a1) 
 define void @concat_sqrt_fadd_v8f32_v4f32(<4 x float> %x0, <4 x float> %x1, <4 x float> %y0, <4 x float> %y1, ptr %p0){
 ; SSE-LABEL: concat_sqrt_fadd_v8f32_v4f32:
 ; SSE:       # %bb.0:
-; SSE-NEXT:    addps %xmm0, %xmm2
-; SSE-NEXT:    addps %xmm1, %xmm3
-; SSE-NEXT:    movaps %xmm3, 16(%rdi)
-; SSE-NEXT:    movaps %xmm2, (%rdi)
-; SSE-NEXT:    sqrtps %xmm0, %xmm0
-; SSE-NEXT:    sqrtps %xmm1, %xmm1
-; SSE-NEXT:    movaps %xmm1, 48(%rdi)
-; SSE-NEXT:    movaps %xmm0, 32(%rdi)
+; SSE-NEXT:    sqrtps %xmm0, %xmm4
+; SSE-NEXT:    addps %xmm2, %xmm0
+; SSE-NEXT:    sqrtps %xmm1, %xmm2
+; SSE-NEXT:    addps %xmm3, %xmm1
+; SSE-NEXT:    movaps %xmm1, 16(%rdi)
+; SSE-NEXT:    movaps %xmm0, (%rdi)
+; SSE-NEXT:    movaps %xmm2, 48(%rdi)
+; SSE-NEXT:    movaps %xmm4, 32(%rdi)
 ; SSE-NEXT:    retq
 ;
 ; AVX1-LABEL: concat_sqrt_fadd_v8f32_v4f32:

@@ -331,7 +331,8 @@ define <4 x float> @f13(<4 x float> %a, <4 x float> %b, <4 x float> %c) #0 {
 ;
 ; AVX-LABEL: f13:
 ; AVX:       # %bb.0:
-; AVX-NEXT:    vfmadd213ps {{.*#+}} xmm0 = (xmm1 * xmm0) + xmm2
+; AVX-NEXT:    vfmadd213ps {{.*#+}} xmm1 = (xmm0 * xmm1) + xmm2
+; AVX-NEXT:    vmovaps %xmm1, %xmm0
 ; AVX-NEXT:    ret{{[l|q]}}
   %res = call <4 x float> @llvm.experimental.constrained.fma.v4f32(<4 x float> %a, <4 x float> %b, <4 x float> %c,
                                                                    metadata !"round.dynamic",
@@ -399,7 +400,8 @@ define <2 x double> @f14(<2 x double> %a, <2 x double> %b, <2 x double> %c) #0 {
 ;
 ; AVX-LABEL: f14:
 ; AVX:       # %bb.0:
-; AVX-NEXT:    vfmadd213pd {{.*#+}} xmm0 = (xmm1 * xmm0) + xmm2
+; AVX-NEXT:    vfmadd213pd {{.*#+}} xmm1 = (xmm0 * xmm1) + xmm2
+; AVX-NEXT:    vmovapd %xmm1, %xmm0
 ; AVX-NEXT:    ret{{[l|q]}}
   %res = call <2 x double> @llvm.experimental.constrained.fma.v2f64(<2 x double> %a, <2 x double> %b, <2 x double> %c,
                                                                     metadata !"round.dynamic",

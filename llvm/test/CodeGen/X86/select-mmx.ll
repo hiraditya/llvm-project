@@ -33,7 +33,8 @@ define i64 @test47(i64 %arg)  {
 ; X86-NEXT:    andl $-8, %esp
 ; X86-NEXT:    subl $16, %esp
 ; X86-NEXT:    movl 8(%ebp), %eax
-; X86-NEXT:    orl 12(%ebp), %eax
+; X86-NEXT:    movl 12(%ebp), %ecx
+; X86-NEXT:    orl %eax, %ecx
 ; X86-NEXT:    movl $7, %eax
 ; X86-NEXT:    je .LBB0_2
 ; X86-NEXT:  # %bb.1:
@@ -70,8 +71,8 @@ define i64 @test49(i64 %arg, i64 %x, i64 %y) {
 ; X64-LABEL: test49:
 ; X64:       # %bb.0:
 ; X64-NEXT:    testq %rdi, %rdi
-; X64-NEXT:    cmovneq %rdx, %rsi
-; X64-NEXT:    movq %rsi, %mm0
+; X64-NEXT:    cmoveq %rsi, %rdx
+; X64-NEXT:    movq %rdx, %mm0
 ; X64-NEXT:    psllw %mm0, %mm0
 ; X64-NEXT:    movq %mm0, %rax
 ; X64-NEXT:    retq
@@ -86,7 +87,8 @@ define i64 @test49(i64 %arg, i64 %x, i64 %y) {
 ; X86-NEXT:    andl $-8, %esp
 ; X86-NEXT:    subl $8, %esp
 ; X86-NEXT:    movl 8(%ebp), %eax
-; X86-NEXT:    orl 12(%ebp), %eax
+; X86-NEXT:    movl 12(%ebp), %ecx
+; X86-NEXT:    orl %eax, %ecx
 ; X86-NEXT:    je .LBB1_1
 ; X86-NEXT:  # %bb.2:
 ; X86-NEXT:    leal 24(%ebp), %eax

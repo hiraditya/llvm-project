@@ -9,7 +9,8 @@ declare <32 x half> @llvm.fma.v32f16(<32 x half>, <32 x half>, <32 x half>)
 define half @fma_123_f16(half %x, half %y, half %z) {
 ; CHECK-LABEL: fma_123_f16:
 ; CHECK:       # %bb.0:
-; CHECK-NEXT:    vfmadd213sh %xmm2, %xmm1, %xmm0
+; CHECK-NEXT:    vfmadd213sh %xmm2, %xmm0, %xmm1
+; CHECK-NEXT:    vmovaps %xmm1, %xmm0
 ; CHECK-NEXT:    retq
   %a = call half @llvm.fma.f16(half %x, half %y, half %z)
   ret half %a
@@ -27,7 +28,8 @@ define half @fma_213_f16(half %x, half %y, half %z) {
 define half @fma_231_f16(half %x, half %y, half %z) {
 ; CHECK-LABEL: fma_231_f16:
 ; CHECK:       # %bb.0:
-; CHECK-NEXT:    vfmadd231sh %xmm1, %xmm2, %xmm0
+; CHECK-NEXT:    vfmadd213sh %xmm0, %xmm1, %xmm2
+; CHECK-NEXT:    vmovaps %xmm2, %xmm0
 ; CHECK-NEXT:    retq
   %a = call half @llvm.fma.f16(half %y, half %z, half %x)
   ret half %a
@@ -36,7 +38,8 @@ define half @fma_231_f16(half %x, half %y, half %z) {
 define half @fma_321_f16(half %x, half %y, half %z) {
 ; CHECK-LABEL: fma_321_f16:
 ; CHECK:       # %bb.0:
-; CHECK-NEXT:    vfmadd231sh %xmm1, %xmm2, %xmm0
+; CHECK-NEXT:    vfmadd213sh %xmm0, %xmm2, %xmm1
+; CHECK-NEXT:    vmovaps %xmm1, %xmm0
 ; CHECK-NEXT:    retq
   %a = call half @llvm.fma.f16(half %z, half %y, half %x)
   ret half %a
@@ -45,7 +48,8 @@ define half @fma_321_f16(half %x, half %y, half %z) {
 define half @fma_132_f16(half %x, half %y, half %z) {
 ; CHECK-LABEL: fma_132_f16:
 ; CHECK:       # %bb.0:
-; CHECK-NEXT:    vfmadd213sh %xmm1, %xmm2, %xmm0
+; CHECK-NEXT:    vfmadd213sh %xmm1, %xmm0, %xmm2
+; CHECK-NEXT:    vmovaps %xmm2, %xmm0
 ; CHECK-NEXT:    retq
   %a = call half @llvm.fma.f16(half %x, half %z, half %y)
   ret half %a
@@ -63,7 +67,9 @@ define half @fma_312_f16(half %x, half %y, half %z) {
 define half @fma_load_123_f16(half %x, half %y, ptr %zp) {
 ; CHECK-LABEL: fma_load_123_f16:
 ; CHECK:       # %bb.0:
-; CHECK-NEXT:    vfmadd213sh (%rdi), %xmm1, %xmm0
+; CHECK-NEXT:    vmovsh {{.*#+}} xmm2 = mem[0],zero,zero,zero,zero,zero,zero,zero
+; CHECK-NEXT:    vfmadd231sh %xmm1, %xmm0, %xmm2
+; CHECK-NEXT:    vmovaps %xmm2, %xmm0
 ; CHECK-NEXT:    retq
   %z = load half, ptr %zp
   %a = call half @llvm.fma.f16(half %x, half %y, half %z)
@@ -73,7 +79,9 @@ define half @fma_load_123_f16(half %x, half %y, ptr %zp) {
 define half @fma_load_213_f16(half %x, half %y, ptr %zp) {
 ; CHECK-LABEL: fma_load_213_f16:
 ; CHECK:       # %bb.0:
-; CHECK-NEXT:    vfmadd213sh (%rdi), %xmm1, %xmm0
+; CHECK-NEXT:    vmovsh {{.*#+}} xmm2 = mem[0],zero,zero,zero,zero,zero,zero,zero
+; CHECK-NEXT:    vfmadd231sh %xmm0, %xmm1, %xmm2
+; CHECK-NEXT:    vmovaps %xmm2, %xmm0
 ; CHECK-NEXT:    retq
   %z = load half, ptr %zp
   %a = call half @llvm.fma.f16(half %y, half %x, half %z)
@@ -83,7 +91,9 @@ define half @fma_load_213_f16(half %x, half %y, ptr %zp) {
 define half @fma_load_231_f16(half %x, half %y, ptr %zp) {
 ; CHECK-LABEL: fma_load_231_f16:
 ; CHECK:       # %bb.0:
-; CHECK-NEXT:    vfmadd231sh (%rdi), %xmm1, %xmm0
+; CHECK-NEXT:    vmovsh {{.*#+}} xmm2 = mem[0],zero,zero,zero,zero,zero,zero,zero
+; CHECK-NEXT:    vfmadd213sh %xmm0, %xmm1, %xmm2
+; CHECK-NEXT:    vmovaps %xmm2, %xmm0
 ; CHECK-NEXT:    retq
   %z = load half, ptr %zp
   %a = call half @llvm.fma.f16(half %y, half %z, half %x)
@@ -93,7 +103,9 @@ define half @fma_load_231_f16(half %x, half %y, ptr %zp) {
 define half @fma_load_321_f16(half %x, half %y, ptr %zp) {
 ; CHECK-LABEL: fma_load_321_f16:
 ; CHECK:       # %bb.0:
-; CHECK-NEXT:    vfmadd231sh (%rdi), %xmm1, %xmm0
+; CHECK-NEXT:    vmovsh {{.*#+}} xmm2 = mem[0],zero,zero,zero,zero,zero,zero,zero
+; CHECK-NEXT:    vfmadd132sh %xmm1, %xmm0, %xmm2
+; CHECK-NEXT:    vmovaps %xmm2, %xmm0
 ; CHECK-NEXT:    retq
   %z = load half, ptr %zp
   %a = call half @llvm.fma.f16(half %z, half %y, half %x)
@@ -103,7 +115,9 @@ define half @fma_load_321_f16(half %x, half %y, ptr %zp) {
 define half @fma_load_132_f16(half %x, half %y, ptr %zp) {
 ; CHECK-LABEL: fma_load_132_f16:
 ; CHECK:       # %bb.0:
-; CHECK-NEXT:    vfmadd132sh (%rdi), %xmm1, %xmm0
+; CHECK-NEXT:    vmovsh {{.*#+}} xmm2 = mem[0],zero,zero,zero,zero,zero,zero,zero
+; CHECK-NEXT:    vfmadd213sh %xmm1, %xmm0, %xmm2
+; CHECK-NEXT:    vmovaps %xmm2, %xmm0
 ; CHECK-NEXT:    retq
   %z = load half, ptr %zp
   %a = call half @llvm.fma.f16(half %x, half %z, half %y)
@@ -113,7 +127,9 @@ define half @fma_load_132_f16(half %x, half %y, ptr %zp) {
 define half @fma_load_312_f16(half %x, half %y, ptr %zp) {
 ; CHECK-LABEL: fma_load_312_f16:
 ; CHECK:       # %bb.0:
-; CHECK-NEXT:    vfmadd132sh (%rdi), %xmm1, %xmm0
+; CHECK-NEXT:    vmovsh {{.*#+}} xmm2 = mem[0],zero,zero,zero,zero,zero,zero,zero
+; CHECK-NEXT:    vfmadd132sh %xmm0, %xmm1, %xmm2
+; CHECK-NEXT:    vmovaps %xmm2, %xmm0
 ; CHECK-NEXT:    retq
   %z = load half, ptr %zp
   %a = call half @llvm.fma.f16(half %z, half %x, half %y)
@@ -123,7 +139,8 @@ define half @fma_load_312_f16(half %x, half %y, ptr %zp) {
 define <8 x half> @fma_123_v8f16(<8 x half> %x, <8 x half> %y, <8 x half> %z) {
 ; CHECK-LABEL: fma_123_v8f16:
 ; CHECK:       # %bb.0:
-; CHECK-NEXT:    vfmadd213ph %xmm2, %xmm1, %xmm0
+; CHECK-NEXT:    vfmadd213ph %xmm2, %xmm0, %xmm1
+; CHECK-NEXT:    vmovaps %xmm1, %xmm0
 ; CHECK-NEXT:    retq
   %a = call <8 x half> @llvm.fma.v8f16(<8 x half> %x, <8 x half> %y, <8 x half> %z)
   ret <8 x half> %a
@@ -141,7 +158,8 @@ define <8 x half> @fma_213_v8f16(<8 x half> %x, <8 x half> %y, <8 x half> %z) {
 define <8 x half> @fma_231_v8f16(<8 x half> %x, <8 x half> %y, <8 x half> %z) {
 ; CHECK-LABEL: fma_231_v8f16:
 ; CHECK:       # %bb.0:
-; CHECK-NEXT:    vfmadd231ph %xmm1, %xmm2, %xmm0
+; CHECK-NEXT:    vfmadd213ph %xmm0, %xmm1, %xmm2
+; CHECK-NEXT:    vmovaps %xmm2, %xmm0
 ; CHECK-NEXT:    retq
   %a = call <8 x half> @llvm.fma.v8f16(<8 x half> %y, <8 x half> %z, <8 x half> %x)
   ret <8 x half> %a
@@ -150,7 +168,8 @@ define <8 x half> @fma_231_v8f16(<8 x half> %x, <8 x half> %y, <8 x half> %z) {
 define <8 x half> @fma_321_v8f16(<8 x half> %x, <8 x half> %y, <8 x half> %z) {
 ; CHECK-LABEL: fma_321_v8f16:
 ; CHECK:       # %bb.0:
-; CHECK-NEXT:    vfmadd231ph %xmm1, %xmm2, %xmm0
+; CHECK-NEXT:    vfmadd213ph %xmm0, %xmm2, %xmm1
+; CHECK-NEXT:    vmovaps %xmm1, %xmm0
 ; CHECK-NEXT:    retq
   %a = call <8 x half> @llvm.fma.v8f16(<8 x half> %z, <8 x half> %y, <8 x half> %x)
   ret <8 x half> %a
@@ -159,7 +178,8 @@ define <8 x half> @fma_321_v8f16(<8 x half> %x, <8 x half> %y, <8 x half> %z) {
 define <8 x half> @fma_132_v8f16(<8 x half> %x, <8 x half> %y, <8 x half> %z) {
 ; CHECK-LABEL: fma_132_v8f16:
 ; CHECK:       # %bb.0:
-; CHECK-NEXT:    vfmadd213ph %xmm1, %xmm2, %xmm0
+; CHECK-NEXT:    vfmadd213ph %xmm1, %xmm0, %xmm2
+; CHECK-NEXT:    vmovaps %xmm2, %xmm0
 ; CHECK-NEXT:    retq
   %a = call <8 x half> @llvm.fma.v8f16(<8 x half> %x, <8 x half> %z, <8 x half> %y)
   ret <8 x half> %a
@@ -177,7 +197,9 @@ define <8 x half> @fma_312_v8f16(<8 x half> %x, <8 x half> %y, <8 x half> %z) {
 define <8 x half> @fma_load_123_v8f16(<8 x half> %x, <8 x half> %y, ptr %zp) {
 ; CHECK-LABEL: fma_load_123_v8f16:
 ; CHECK:       # %bb.0:
-; CHECK-NEXT:    vfmadd213ph (%rdi), %xmm1, %xmm0
+; CHECK-NEXT:    vmovaps (%rdi), %xmm2
+; CHECK-NEXT:    vfmadd231ph %xmm1, %xmm0, %xmm2
+; CHECK-NEXT:    vmovaps %xmm2, %xmm0
 ; CHECK-NEXT:    retq
   %z = load <8 x half>, ptr %zp
   %a = call <8 x half> @llvm.fma.v8f16(<8 x half> %x, <8 x half> %y, <8 x half> %z)
@@ -187,7 +209,9 @@ define <8 x half> @fma_load_123_v8f16(<8 x half> %x, <8 x half> %y, ptr %zp) {
 define <8 x half> @fma_load_213_v8f16(<8 x half> %x, <8 x half> %y, ptr %zp) {
 ; CHECK-LABEL: fma_load_213_v8f16:
 ; CHECK:       # %bb.0:
-; CHECK-NEXT:    vfmadd213ph (%rdi), %xmm1, %xmm0
+; CHECK-NEXT:    vmovaps (%rdi), %xmm2
+; CHECK-NEXT:    vfmadd231ph %xmm0, %xmm1, %xmm2
+; CHECK-NEXT:    vmovaps %xmm2, %xmm0
 ; CHECK-NEXT:    retq
   %z = load <8 x half>, ptr %zp
   %a = call <8 x half> @llvm.fma.v8f16(<8 x half> %y, <8 x half> %x, <8 x half> %z)
@@ -197,7 +221,9 @@ define <8 x half> @fma_load_213_v8f16(<8 x half> %x, <8 x half> %y, ptr %zp) {
 define <8 x half> @fma_load_231_v8f16(<8 x half> %x, <8 x half> %y, ptr %zp) {
 ; CHECK-LABEL: fma_load_231_v8f16:
 ; CHECK:       # %bb.0:
-; CHECK-NEXT:    vfmadd231ph (%rdi), %xmm1, %xmm0
+; CHECK-NEXT:    vmovaps (%rdi), %xmm2
+; CHECK-NEXT:    vfmadd213ph %xmm0, %xmm1, %xmm2
+; CHECK-NEXT:    vmovaps %xmm2, %xmm0
 ; CHECK-NEXT:    retq
   %z = load <8 x half>, ptr %zp
   %a = call <8 x half> @llvm.fma.v8f16(<8 x half> %y, <8 x half> %z, <8 x half> %x)
@@ -207,7 +233,9 @@ define <8 x half> @fma_load_231_v8f16(<8 x half> %x, <8 x half> %y, ptr %zp) {
 define <8 x half> @fma_load_321_v8f16(<8 x half> %x, <8 x half> %y, ptr %zp) {
 ; CHECK-LABEL: fma_load_321_v8f16:
 ; CHECK:       # %bb.0:
-; CHECK-NEXT:    vfmadd231ph (%rdi), %xmm1, %xmm0
+; CHECK-NEXT:    vmovaps (%rdi), %xmm2
+; CHECK-NEXT:    vfmadd132ph %xmm1, %xmm0, %xmm2
+; CHECK-NEXT:    vmovaps %xmm2, %xmm0
 ; CHECK-NEXT:    retq
   %z = load <8 x half>, ptr %zp
   %a = call <8 x half> @llvm.fma.v8f16(<8 x half> %z, <8 x half> %y, <8 x half> %x)
@@ -217,7 +245,9 @@ define <8 x half> @fma_load_321_v8f16(<8 x half> %x, <8 x half> %y, ptr %zp) {
 define <8 x half> @fma_load_132_v8f16(<8 x half> %x, <8 x half> %y, ptr %zp) {
 ; CHECK-LABEL: fma_load_132_v8f16:
 ; CHECK:       # %bb.0:
-; CHECK-NEXT:    vfmadd132ph (%rdi), %xmm1, %xmm0
+; CHECK-NEXT:    vmovaps (%rdi), %xmm2
+; CHECK-NEXT:    vfmadd213ph %xmm1, %xmm0, %xmm2
+; CHECK-NEXT:    vmovaps %xmm2, %xmm0
 ; CHECK-NEXT:    retq
   %z = load <8 x half>, ptr %zp
   %a = call <8 x half> @llvm.fma.v8f16(<8 x half> %x, <8 x half> %z, <8 x half> %y)
@@ -227,7 +257,9 @@ define <8 x half> @fma_load_132_v8f16(<8 x half> %x, <8 x half> %y, ptr %zp) {
 define <8 x half> @fma_load_312_v8f16(<8 x half> %x, <8 x half> %y, ptr %zp) {
 ; CHECK-LABEL: fma_load_312_v8f16:
 ; CHECK:       # %bb.0:
-; CHECK-NEXT:    vfmadd132ph (%rdi), %xmm1, %xmm0
+; CHECK-NEXT:    vmovaps (%rdi), %xmm2
+; CHECK-NEXT:    vfmadd132ph %xmm0, %xmm1, %xmm2
+; CHECK-NEXT:    vmovaps %xmm2, %xmm0
 ; CHECK-NEXT:    retq
   %z = load <8 x half>, ptr %zp
   %a = call <8 x half> @llvm.fma.v8f16(<8 x half> %z, <8 x half> %x, <8 x half> %y)
@@ -310,7 +342,8 @@ define <8 x half> @fma_maskz_123_v8f16(<8 x half> %x, <8 x half> %y, <8 x half> 
 ; CHECK-LABEL: fma_maskz_123_v8f16:
 ; CHECK:       # %bb.0:
 ; CHECK-NEXT:    kmovd %edi, %k1
-; CHECK-NEXT:    vfmadd213ph %xmm2, %xmm1, %xmm0 {%k1} {z}
+; CHECK-NEXT:    vfmadd213ph %xmm2, %xmm0, %xmm1 {%k1} {z}
+; CHECK-NEXT:    vmovaps %xmm1, %xmm0
 ; CHECK-NEXT:    retq
   %a = call <8 x half> @llvm.fma.v8f16(<8 x half> %x, <8 x half> %y, <8 x half> %z)
   %b = bitcast i8 %mask to <8 x i1>
@@ -334,7 +367,8 @@ define <8 x half> @fma_maskz_231_v8f16(<8 x half> %x, <8 x half> %y, <8 x half> 
 ; CHECK-LABEL: fma_maskz_231_v8f16:
 ; CHECK:       # %bb.0:
 ; CHECK-NEXT:    kmovd %edi, %k1
-; CHECK-NEXT:    vfmadd231ph %xmm1, %xmm2, %xmm0 {%k1} {z}
+; CHECK-NEXT:    vfmadd213ph %xmm0, %xmm1, %xmm2 {%k1} {z}
+; CHECK-NEXT:    vmovaps %xmm2, %xmm0
 ; CHECK-NEXT:    retq
   %a = call <8 x half> @llvm.fma.v8f16(<8 x half> %y, <8 x half> %z, <8 x half> %x)
   %b = bitcast i8 %mask to <8 x i1>
@@ -346,7 +380,8 @@ define <8 x half> @fma_maskz_321_v8f16(<8 x half> %x, <8 x half> %y, <8 x half> 
 ; CHECK-LABEL: fma_maskz_321_v8f16:
 ; CHECK:       # %bb.0:
 ; CHECK-NEXT:    kmovd %edi, %k1
-; CHECK-NEXT:    vfmadd231ph %xmm1, %xmm2, %xmm0 {%k1} {z}
+; CHECK-NEXT:    vfmadd213ph %xmm0, %xmm2, %xmm1 {%k1} {z}
+; CHECK-NEXT:    vmovaps %xmm1, %xmm0
 ; CHECK-NEXT:    retq
   %a = call <8 x half> @llvm.fma.v8f16(<8 x half> %z, <8 x half> %y, <8 x half> %x)
   %b = bitcast i8 %mask to <8 x i1>
@@ -358,7 +393,8 @@ define <8 x half> @fma_maskz_132_v8f16(<8 x half> %x, <8 x half> %y, <8 x half> 
 ; CHECK-LABEL: fma_maskz_132_v8f16:
 ; CHECK:       # %bb.0:
 ; CHECK-NEXT:    kmovd %edi, %k1
-; CHECK-NEXT:    vfmadd213ph %xmm1, %xmm2, %xmm0 {%k1} {z}
+; CHECK-NEXT:    vfmadd213ph %xmm1, %xmm0, %xmm2 {%k1} {z}
+; CHECK-NEXT:    vmovaps %xmm2, %xmm0
 ; CHECK-NEXT:    retq
   %a = call <8 x half> @llvm.fma.v8f16(<8 x half> %x, <8 x half> %z, <8 x half> %y)
   %b = bitcast i8 %mask to <8 x i1>
@@ -460,7 +496,9 @@ define <8 x half> @fma_maskz_load_123_v8f16(<8 x half> %x, <8 x half> %y, ptr %z
 ; CHECK-LABEL: fma_maskz_load_123_v8f16:
 ; CHECK:       # %bb.0:
 ; CHECK-NEXT:    kmovd %esi, %k1
-; CHECK-NEXT:    vfmadd213ph (%rdi), %xmm1, %xmm0 {%k1} {z}
+; CHECK-NEXT:    vmovaps (%rdi), %xmm2
+; CHECK-NEXT:    vfmadd231ph %xmm1, %xmm0, %xmm2 {%k1} {z}
+; CHECK-NEXT:    vmovaps %xmm2, %xmm0
 ; CHECK-NEXT:    retq
   %z = load <8 x half>, ptr %zp
   %a = call <8 x half> @llvm.fma.v8f16(<8 x half> %x, <8 x half> %y, <8 x half> %z)
@@ -473,7 +511,9 @@ define <8 x half> @fma_maskz_load_213_v8f16(<8 x half> %x, <8 x half> %y, ptr %z
 ; CHECK-LABEL: fma_maskz_load_213_v8f16:
 ; CHECK:       # %bb.0:
 ; CHECK-NEXT:    kmovd %esi, %k1
-; CHECK-NEXT:    vfmadd213ph (%rdi), %xmm1, %xmm0 {%k1} {z}
+; CHECK-NEXT:    vmovaps (%rdi), %xmm2
+; CHECK-NEXT:    vfmadd231ph %xmm0, %xmm1, %xmm2 {%k1} {z}
+; CHECK-NEXT:    vmovaps %xmm2, %xmm0
 ; CHECK-NEXT:    retq
   %z = load <8 x half>, ptr %zp
   %a = call <8 x half> @llvm.fma.v8f16(<8 x half> %y, <8 x half> %x, <8 x half> %z)
@@ -486,7 +526,9 @@ define <8 x half> @fma_maskz_load_231_v8f16(<8 x half> %x, <8 x half> %y, ptr %z
 ; CHECK-LABEL: fma_maskz_load_231_v8f16:
 ; CHECK:       # %bb.0:
 ; CHECK-NEXT:    kmovd %esi, %k1
-; CHECK-NEXT:    vfmadd231ph (%rdi), %xmm1, %xmm0 {%k1} {z}
+; CHECK-NEXT:    vmovaps (%rdi), %xmm2
+; CHECK-NEXT:    vfmadd213ph %xmm0, %xmm1, %xmm2 {%k1} {z}
+; CHECK-NEXT:    vmovaps %xmm2, %xmm0
 ; CHECK-NEXT:    retq
   %z = load <8 x half>, ptr %zp
   %a = call <8 x half> @llvm.fma.v8f16(<8 x half> %y, <8 x half> %z, <8 x half> %x)
@@ -499,7 +541,9 @@ define <8 x half> @fma_maskz_load_321_v8f16(<8 x half> %x, <8 x half> %y, ptr %z
 ; CHECK-LABEL: fma_maskz_load_321_v8f16:
 ; CHECK:       # %bb.0:
 ; CHECK-NEXT:    kmovd %esi, %k1
-; CHECK-NEXT:    vfmadd231ph (%rdi), %xmm1, %xmm0 {%k1} {z}
+; CHECK-NEXT:    vmovaps (%rdi), %xmm2
+; CHECK-NEXT:    vfmadd132ph %xmm1, %xmm0, %xmm2 {%k1} {z}
+; CHECK-NEXT:    vmovaps %xmm2, %xmm0
 ; CHECK-NEXT:    retq
   %z = load <8 x half>, ptr %zp
   %a = call <8 x half> @llvm.fma.v8f16(<8 x half> %z, <8 x half> %y, <8 x half> %x)
@@ -512,7 +556,9 @@ define <8 x half> @fma_maskz_load_132_v8f16(<8 x half> %x, <8 x half> %y, ptr %z
 ; CHECK-LABEL: fma_maskz_load_132_v8f16:
 ; CHECK:       # %bb.0:
 ; CHECK-NEXT:    kmovd %esi, %k1
-; CHECK-NEXT:    vfmadd132ph (%rdi), %xmm1, %xmm0 {%k1} {z}
+; CHECK-NEXT:    vmovaps (%rdi), %xmm2
+; CHECK-NEXT:    vfmadd213ph %xmm1, %xmm0, %xmm2 {%k1} {z}
+; CHECK-NEXT:    vmovaps %xmm2, %xmm0
 ; CHECK-NEXT:    retq
   %z = load <8 x half>, ptr %zp
   %a = call <8 x half> @llvm.fma.v8f16(<8 x half> %x, <8 x half> %z, <8 x half> %y)
@@ -525,7 +571,9 @@ define <8 x half> @fma_maskz_load_312_v8f16(<8 x half> %x, <8 x half> %y, ptr %z
 ; CHECK-LABEL: fma_maskz_load_312_v8f16:
 ; CHECK:       # %bb.0:
 ; CHECK-NEXT:    kmovd %esi, %k1
-; CHECK-NEXT:    vfmadd132ph (%rdi), %xmm1, %xmm0 {%k1} {z}
+; CHECK-NEXT:    vmovaps (%rdi), %xmm2
+; CHECK-NEXT:    vfmadd132ph %xmm0, %xmm1, %xmm2 {%k1} {z}
+; CHECK-NEXT:    vmovaps %xmm2, %xmm0
 ; CHECK-NEXT:    retq
   %z = load <8 x half>, ptr %zp
   %a = call <8 x half> @llvm.fma.v8f16(<8 x half> %z, <8 x half> %x, <8 x half> %y)
@@ -537,7 +585,8 @@ define <8 x half> @fma_maskz_load_312_v8f16(<8 x half> %x, <8 x half> %y, ptr %z
 define <16 x half> @fma_123_v16f16(<16 x half> %x, <16 x half> %y, <16 x half> %z) {
 ; CHECK-LABEL: fma_123_v16f16:
 ; CHECK:       # %bb.0:
-; CHECK-NEXT:    vfmadd213ph %ymm2, %ymm1, %ymm0
+; CHECK-NEXT:    vfmadd213ph %ymm2, %ymm0, %ymm1
+; CHECK-NEXT:    vmovaps %ymm1, %ymm0
 ; CHECK-NEXT:    retq
   %a = call <16 x half> @llvm.fma.v16f16(<16 x half> %x, <16 x half> %y, <16 x half> %z)
   ret <16 x half> %a
@@ -555,7 +604,8 @@ define <16 x half> @fma_213_v16f16(<16 x half> %x, <16 x half> %y, <16 x half> %
 define <16 x half> @fma_231_v16f16(<16 x half> %x, <16 x half> %y, <16 x half> %z) {
 ; CHECK-LABEL: fma_231_v16f16:
 ; CHECK:       # %bb.0:
-; CHECK-NEXT:    vfmadd231ph %ymm1, %ymm2, %ymm0
+; CHECK-NEXT:    vfmadd213ph %ymm0, %ymm1, %ymm2
+; CHECK-NEXT:    vmovaps %ymm2, %ymm0
 ; CHECK-NEXT:    retq
   %a = call <16 x half> @llvm.fma.v16f16(<16 x half> %y, <16 x half> %z, <16 x half> %x)
   ret <16 x half> %a
@@ -564,7 +614,8 @@ define <16 x half> @fma_231_v16f16(<16 x half> %x, <16 x half> %y, <16 x half> %
 define <16 x half> @fma_321_v16f16(<16 x half> %x, <16 x half> %y, <16 x half> %z) {
 ; CHECK-LABEL: fma_321_v16f16:
 ; CHECK:       # %bb.0:
-; CHECK-NEXT:    vfmadd231ph %ymm1, %ymm2, %ymm0
+; CHECK-NEXT:    vfmadd213ph %ymm0, %ymm2, %ymm1
+; CHECK-NEXT:    vmovaps %ymm1, %ymm0
 ; CHECK-NEXT:    retq
   %a = call <16 x half> @llvm.fma.v16f16(<16 x half> %z, <16 x half> %y, <16 x half> %x)
   ret <16 x half> %a
@@ -573,7 +624,8 @@ define <16 x half> @fma_321_v16f16(<16 x half> %x, <16 x half> %y, <16 x half> %
 define <16 x half> @fma_132_v16f16(<16 x half> %x, <16 x half> %y, <16 x half> %z) {
 ; CHECK-LABEL: fma_132_v16f16:
 ; CHECK:       # %bb.0:
-; CHECK-NEXT:    vfmadd213ph %ymm1, %ymm2, %ymm0
+; CHECK-NEXT:    vfmadd213ph %ymm1, %ymm0, %ymm2
+; CHECK-NEXT:    vmovaps %ymm2, %ymm0
 ; CHECK-NEXT:    retq
   %a = call <16 x half> @llvm.fma.v16f16(<16 x half> %x, <16 x half> %z, <16 x half> %y)
   ret <16 x half> %a
@@ -591,7 +643,9 @@ define <16 x half> @fma_312_v16f16(<16 x half> %x, <16 x half> %y, <16 x half> %
 define <16 x half> @fma_load_123_v16f16(<16 x half> %x, <16 x half> %y, ptr %zp) {
 ; CHECK-LABEL: fma_load_123_v16f16:
 ; CHECK:       # %bb.0:
-; CHECK-NEXT:    vfmadd213ph (%rdi), %ymm1, %ymm0
+; CHECK-NEXT:    vmovaps (%rdi), %ymm2
+; CHECK-NEXT:    vfmadd231ph %ymm1, %ymm0, %ymm2
+; CHECK-NEXT:    vmovaps %ymm2, %ymm0
 ; CHECK-NEXT:    retq
   %z = load <16 x half>, ptr %zp
   %a = call <16 x half> @llvm.fma.v16f16(<16 x half> %x, <16 x half> %y, <16 x half> %z)
@@ -601,7 +655,9 @@ define <16 x half> @fma_load_123_v16f16(<16 x half> %x, <16 x half> %y, ptr %zp)
 define <16 x half> @fma_load_213_v16f16(<16 x half> %x, <16 x half> %y, ptr %zp) {
 ; CHECK-LABEL: fma_load_213_v16f16:
 ; CHECK:       # %bb.0:
-; CHECK-NEXT:    vfmadd213ph (%rdi), %ymm1, %ymm0
+; CHECK-NEXT:    vmovaps (%rdi), %ymm2
+; CHECK-NEXT:    vfmadd231ph %ymm0, %ymm1, %ymm2
+; CHECK-NEXT:    vmovaps %ymm2, %ymm0
 ; CHECK-NEXT:    retq
   %z = load <16 x half>, ptr %zp
   %a = call <16 x half> @llvm.fma.v16f16(<16 x half> %y, <16 x half> %x, <16 x half> %z)
@@ -611,7 +667,9 @@ define <16 x half> @fma_load_213_v16f16(<16 x half> %x, <16 x half> %y, ptr %zp)
 define <16 x half> @fma_load_231_v16f16(<16 x half> %x, <16 x half> %y, ptr %zp) {
 ; CHECK-LABEL: fma_load_231_v16f16:
 ; CHECK:       # %bb.0:
-; CHECK-NEXT:    vfmadd231ph (%rdi), %ymm1, %ymm0
+; CHECK-NEXT:    vmovaps (%rdi), %ymm2
+; CHECK-NEXT:    vfmadd213ph %ymm0, %ymm1, %ymm2
+; CHECK-NEXT:    vmovaps %ymm2, %ymm0
 ; CHECK-NEXT:    retq
   %z = load <16 x half>, ptr %zp
   %a = call <16 x half> @llvm.fma.v16f16(<16 x half> %y, <16 x half> %z, <16 x half> %x)
@@ -621,7 +679,9 @@ define <16 x half> @fma_load_231_v16f16(<16 x half> %x, <16 x half> %y, ptr %zp)
 define <16 x half> @fma_load_321_v16f16(<16 x half> %x, <16 x half> %y, ptr %zp) {
 ; CHECK-LABEL: fma_load_321_v16f16:
 ; CHECK:       # %bb.0:
-; CHECK-NEXT:    vfmadd231ph (%rdi), %ymm1, %ymm0
+; CHECK-NEXT:    vmovaps (%rdi), %ymm2
+; CHECK-NEXT:    vfmadd132ph %ymm1, %ymm0, %ymm2
+; CHECK-NEXT:    vmovaps %ymm2, %ymm0
 ; CHECK-NEXT:    retq
   %z = load <16 x half>, ptr %zp
   %a = call <16 x half> @llvm.fma.v16f16(<16 x half> %z, <16 x half> %y, <16 x half> %x)
@@ -631,7 +691,9 @@ define <16 x half> @fma_load_321_v16f16(<16 x half> %x, <16 x half> %y, ptr %zp)
 define <16 x half> @fma_load_132_v16f16(<16 x half> %x, <16 x half> %y, ptr %zp) {
 ; CHECK-LABEL: fma_load_132_v16f16:
 ; CHECK:       # %bb.0:
-; CHECK-NEXT:    vfmadd132ph (%rdi), %ymm1, %ymm0
+; CHECK-NEXT:    vmovaps (%rdi), %ymm2
+; CHECK-NEXT:    vfmadd213ph %ymm1, %ymm0, %ymm2
+; CHECK-NEXT:    vmovaps %ymm2, %ymm0
 ; CHECK-NEXT:    retq
   %z = load <16 x half>, ptr %zp
   %a = call <16 x half> @llvm.fma.v16f16(<16 x half> %x, <16 x half> %z, <16 x half> %y)
@@ -641,7 +703,9 @@ define <16 x half> @fma_load_132_v16f16(<16 x half> %x, <16 x half> %y, ptr %zp)
 define <16 x half> @fma_load_312_v16f16(<16 x half> %x, <16 x half> %y, ptr %zp) {
 ; CHECK-LABEL: fma_load_312_v16f16:
 ; CHECK:       # %bb.0:
-; CHECK-NEXT:    vfmadd132ph (%rdi), %ymm1, %ymm0
+; CHECK-NEXT:    vmovaps (%rdi), %ymm2
+; CHECK-NEXT:    vfmadd132ph %ymm0, %ymm1, %ymm2
+; CHECK-NEXT:    vmovaps %ymm2, %ymm0
 ; CHECK-NEXT:    retq
   %z = load <16 x half>, ptr %zp
   %a = call <16 x half> @llvm.fma.v16f16(<16 x half> %z, <16 x half> %x, <16 x half> %y)
@@ -724,7 +788,8 @@ define <16 x half> @fma_maskz_123_v16f16(<16 x half> %x, <16 x half> %y, <16 x h
 ; CHECK-LABEL: fma_maskz_123_v16f16:
 ; CHECK:       # %bb.0:
 ; CHECK-NEXT:    kmovd %edi, %k1
-; CHECK-NEXT:    vfmadd213ph %ymm2, %ymm1, %ymm0 {%k1} {z}
+; CHECK-NEXT:    vfmadd213ph %ymm2, %ymm0, %ymm1 {%k1} {z}
+; CHECK-NEXT:    vmovaps %ymm1, %ymm0
 ; CHECK-NEXT:    retq
   %a = call <16 x half> @llvm.fma.v16f16(<16 x half> %x, <16 x half> %y, <16 x half> %z)
   %b = bitcast i16 %mask to <16 x i1>
@@ -748,7 +813,8 @@ define <16 x half> @fma_maskz_231_v16f16(<16 x half> %x, <16 x half> %y, <16 x h
 ; CHECK-LABEL: fma_maskz_231_v16f16:
 ; CHECK:       # %bb.0:
 ; CHECK-NEXT:    kmovd %edi, %k1
-; CHECK-NEXT:    vfmadd231ph %ymm1, %ymm2, %ymm0 {%k1} {z}
+; CHECK-NEXT:    vfmadd213ph %ymm0, %ymm1, %ymm2 {%k1} {z}
+; CHECK-NEXT:    vmovaps %ymm2, %ymm0
 ; CHECK-NEXT:    retq
   %a = call <16 x half> @llvm.fma.v16f16(<16 x half> %y, <16 x half> %z, <16 x half> %x)
   %b = bitcast i16 %mask to <16 x i1>
@@ -760,7 +826,8 @@ define <16 x half> @fma_maskz_321_v16f16(<16 x half> %x, <16 x half> %y, <16 x h
 ; CHECK-LABEL: fma_maskz_321_v16f16:
 ; CHECK:       # %bb.0:
 ; CHECK-NEXT:    kmovd %edi, %k1
-; CHECK-NEXT:    vfmadd231ph %ymm1, %ymm2, %ymm0 {%k1} {z}
+; CHECK-NEXT:    vfmadd213ph %ymm0, %ymm2, %ymm1 {%k1} {z}
+; CHECK-NEXT:    vmovaps %ymm1, %ymm0
 ; CHECK-NEXT:    retq
   %a = call <16 x half> @llvm.fma.v16f16(<16 x half> %z, <16 x half> %y, <16 x half> %x)
   %b = bitcast i16 %mask to <16 x i1>
@@ -772,7 +839,8 @@ define <16 x half> @fma_maskz_132_v16f16(<16 x half> %x, <16 x half> %y, <16 x h
 ; CHECK-LABEL: fma_maskz_132_v16f16:
 ; CHECK:       # %bb.0:
 ; CHECK-NEXT:    kmovd %edi, %k1
-; CHECK-NEXT:    vfmadd213ph %ymm1, %ymm2, %ymm0 {%k1} {z}
+; CHECK-NEXT:    vfmadd213ph %ymm1, %ymm0, %ymm2 {%k1} {z}
+; CHECK-NEXT:    vmovaps %ymm2, %ymm0
 ; CHECK-NEXT:    retq
   %a = call <16 x half> @llvm.fma.v16f16(<16 x half> %x, <16 x half> %z, <16 x half> %y)
   %b = bitcast i16 %mask to <16 x i1>
@@ -874,7 +942,9 @@ define <16 x half> @fma_maskz_load_123_v16f16(<16 x half> %x, <16 x half> %y, pt
 ; CHECK-LABEL: fma_maskz_load_123_v16f16:
 ; CHECK:       # %bb.0:
 ; CHECK-NEXT:    kmovd %esi, %k1
-; CHECK-NEXT:    vfmadd213ph (%rdi), %ymm1, %ymm0 {%k1} {z}
+; CHECK-NEXT:    vmovaps (%rdi), %ymm2
+; CHECK-NEXT:    vfmadd231ph %ymm1, %ymm0, %ymm2 {%k1} {z}
+; CHECK-NEXT:    vmovaps %ymm2, %ymm0
 ; CHECK-NEXT:    retq
   %z = load <16 x half>, ptr %zp
   %a = call <16 x half> @llvm.fma.v16f16(<16 x half> %x, <16 x half> %y, <16 x half> %z)
@@ -887,7 +957,9 @@ define <16 x half> @fma_maskz_load_213_v16f16(<16 x half> %x, <16 x half> %y, pt
 ; CHECK-LABEL: fma_maskz_load_213_v16f16:
 ; CHECK:       # %bb.0:
 ; CHECK-NEXT:    kmovd %esi, %k1
-; CHECK-NEXT:    vfmadd213ph (%rdi), %ymm1, %ymm0 {%k1} {z}
+; CHECK-NEXT:    vmovaps (%rdi), %ymm2
+; CHECK-NEXT:    vfmadd231ph %ymm0, %ymm1, %ymm2 {%k1} {z}
+; CHECK-NEXT:    vmovaps %ymm2, %ymm0
 ; CHECK-NEXT:    retq
   %z = load <16 x half>, ptr %zp
   %a = call <16 x half> @llvm.fma.v16f16(<16 x half> %y, <16 x half> %x, <16 x half> %z)
@@ -900,7 +972,9 @@ define <16 x half> @fma_maskz_load_231_v16f16(<16 x half> %x, <16 x half> %y, pt
 ; CHECK-LABEL: fma_maskz_load_231_v16f16:
 ; CHECK:       # %bb.0:
 ; CHECK-NEXT:    kmovd %esi, %k1
-; CHECK-NEXT:    vfmadd231ph (%rdi), %ymm1, %ymm0 {%k1} {z}
+; CHECK-NEXT:    vmovaps (%rdi), %ymm2
+; CHECK-NEXT:    vfmadd213ph %ymm0, %ymm1, %ymm2 {%k1} {z}
+; CHECK-NEXT:    vmovaps %ymm2, %ymm0
 ; CHECK-NEXT:    retq
   %z = load <16 x half>, ptr %zp
   %a = call <16 x half> @llvm.fma.v16f16(<16 x half> %y, <16 x half> %z, <16 x half> %x)
@@ -913,7 +987,9 @@ define <16 x half> @fma_maskz_load_321_v16f16(<16 x half> %x, <16 x half> %y, pt
 ; CHECK-LABEL: fma_maskz_load_321_v16f16:
 ; CHECK:       # %bb.0:
 ; CHECK-NEXT:    kmovd %esi, %k1
-; CHECK-NEXT:    vfmadd231ph (%rdi), %ymm1, %ymm0 {%k1} {z}
+; CHECK-NEXT:    vmovaps (%rdi), %ymm2
+; CHECK-NEXT:    vfmadd132ph %ymm1, %ymm0, %ymm2 {%k1} {z}
+; CHECK-NEXT:    vmovaps %ymm2, %ymm0
 ; CHECK-NEXT:    retq
   %z = load <16 x half>, ptr %zp
   %a = call <16 x half> @llvm.fma.v16f16(<16 x half> %z, <16 x half> %y, <16 x half> %x)
@@ -926,7 +1002,9 @@ define <16 x half> @fma_maskz_load_132_v16f16(<16 x half> %x, <16 x half> %y, pt
 ; CHECK-LABEL: fma_maskz_load_132_v16f16:
 ; CHECK:       # %bb.0:
 ; CHECK-NEXT:    kmovd %esi, %k1
-; CHECK-NEXT:    vfmadd132ph (%rdi), %ymm1, %ymm0 {%k1} {z}
+; CHECK-NEXT:    vmovaps (%rdi), %ymm2
+; CHECK-NEXT:    vfmadd213ph %ymm1, %ymm0, %ymm2 {%k1} {z}
+; CHECK-NEXT:    vmovaps %ymm2, %ymm0
 ; CHECK-NEXT:    retq
   %z = load <16 x half>, ptr %zp
   %a = call <16 x half> @llvm.fma.v16f16(<16 x half> %x, <16 x half> %z, <16 x half> %y)
@@ -939,7 +1017,9 @@ define <16 x half> @fma_maskz_load_312_v16f16(<16 x half> %x, <16 x half> %y, pt
 ; CHECK-LABEL: fma_maskz_load_312_v16f16:
 ; CHECK:       # %bb.0:
 ; CHECK-NEXT:    kmovd %esi, %k1
-; CHECK-NEXT:    vfmadd132ph (%rdi), %ymm1, %ymm0 {%k1} {z}
+; CHECK-NEXT:    vmovaps (%rdi), %ymm2
+; CHECK-NEXT:    vfmadd132ph %ymm0, %ymm1, %ymm2 {%k1} {z}
+; CHECK-NEXT:    vmovaps %ymm2, %ymm0
 ; CHECK-NEXT:    retq
   %z = load <16 x half>, ptr %zp
   %a = call <16 x half> @llvm.fma.v16f16(<16 x half> %z, <16 x half> %x, <16 x half> %y)
@@ -951,7 +1031,8 @@ define <16 x half> @fma_maskz_load_312_v16f16(<16 x half> %x, <16 x half> %y, pt
 define <32 x half> @fma_123_v32f16(<32 x half> %x, <32 x half> %y, <32 x half> %z) {
 ; CHECK-LABEL: fma_123_v32f16:
 ; CHECK:       # %bb.0:
-; CHECK-NEXT:    vfmadd213ph %zmm2, %zmm1, %zmm0
+; CHECK-NEXT:    vfmadd213ph %zmm2, %zmm0, %zmm1
+; CHECK-NEXT:    vmovaps %zmm1, %zmm0
 ; CHECK-NEXT:    retq
   %a = call <32 x half> @llvm.fma.v32f16(<32 x half> %x, <32 x half> %y, <32 x half> %z)
   ret <32 x half> %a
@@ -969,7 +1050,8 @@ define <32 x half> @fma_213_v32f16(<32 x half> %x, <32 x half> %y, <32 x half> %
 define <32 x half> @fma_231_v32f16(<32 x half> %x, <32 x half> %y, <32 x half> %z) {
 ; CHECK-LABEL: fma_231_v32f16:
 ; CHECK:       # %bb.0:
-; CHECK-NEXT:    vfmadd231ph %zmm1, %zmm2, %zmm0
+; CHECK-NEXT:    vfmadd213ph %zmm0, %zmm1, %zmm2
+; CHECK-NEXT:    vmovaps %zmm2, %zmm0
 ; CHECK-NEXT:    retq
   %a = call <32 x half> @llvm.fma.v32f16(<32 x half> %y, <32 x half> %z, <32 x half> %x)
   ret <32 x half> %a
@@ -978,7 +1060,8 @@ define <32 x half> @fma_231_v32f16(<32 x half> %x, <32 x half> %y, <32 x half> %
 define <32 x half> @fma_321_v32f16(<32 x half> %x, <32 x half> %y, <32 x half> %z) {
 ; CHECK-LABEL: fma_321_v32f16:
 ; CHECK:       # %bb.0:
-; CHECK-NEXT:    vfmadd231ph %zmm1, %zmm2, %zmm0
+; CHECK-NEXT:    vfmadd213ph %zmm0, %zmm2, %zmm1
+; CHECK-NEXT:    vmovaps %zmm1, %zmm0
 ; CHECK-NEXT:    retq
   %a = call <32 x half> @llvm.fma.v32f16(<32 x half> %z, <32 x half> %y, <32 x half> %x)
   ret <32 x half> %a
@@ -987,7 +1070,8 @@ define <32 x half> @fma_321_v32f16(<32 x half> %x, <32 x half> %y, <32 x half> %
 define <32 x half> @fma_132_v32f16(<32 x half> %x, <32 x half> %y, <32 x half> %z) {
 ; CHECK-LABEL: fma_132_v32f16:
 ; CHECK:       # %bb.0:
-; CHECK-NEXT:    vfmadd213ph %zmm1, %zmm2, %zmm0
+; CHECK-NEXT:    vfmadd213ph %zmm1, %zmm0, %zmm2
+; CHECK-NEXT:    vmovaps %zmm2, %zmm0
 ; CHECK-NEXT:    retq
   %a = call <32 x half> @llvm.fma.v32f16(<32 x half> %x, <32 x half> %z, <32 x half> %y)
   ret <32 x half> %a
@@ -1005,7 +1089,9 @@ define <32 x half> @fma_312_v32f16(<32 x half> %x, <32 x half> %y, <32 x half> %
 define <32 x half> @fma_load_123_v32f16(<32 x half> %x, <32 x half> %y, ptr %zp) {
 ; CHECK-LABEL: fma_load_123_v32f16:
 ; CHECK:       # %bb.0:
-; CHECK-NEXT:    vfmadd213ph (%rdi), %zmm1, %zmm0
+; CHECK-NEXT:    vmovaps (%rdi), %zmm2
+; CHECK-NEXT:    vfmadd231ph %zmm1, %zmm0, %zmm2
+; CHECK-NEXT:    vmovaps %zmm2, %zmm0
 ; CHECK-NEXT:    retq
   %z = load <32 x half>, ptr %zp
   %a = call <32 x half> @llvm.fma.v32f16(<32 x half> %x, <32 x half> %y, <32 x half> %z)
@@ -1015,7 +1101,9 @@ define <32 x half> @fma_load_123_v32f16(<32 x half> %x, <32 x half> %y, ptr %zp)
 define <32 x half> @fma_load_213_v32f16(<32 x half> %x, <32 x half> %y, ptr %zp) {
 ; CHECK-LABEL: fma_load_213_v32f16:
 ; CHECK:       # %bb.0:
-; CHECK-NEXT:    vfmadd213ph (%rdi), %zmm1, %zmm0
+; CHECK-NEXT:    vmovaps (%rdi), %zmm2
+; CHECK-NEXT:    vfmadd231ph %zmm0, %zmm1, %zmm2
+; CHECK-NEXT:    vmovaps %zmm2, %zmm0
 ; CHECK-NEXT:    retq
   %z = load <32 x half>, ptr %zp
   %a = call <32 x half> @llvm.fma.v32f16(<32 x half> %y, <32 x half> %x, <32 x half> %z)
@@ -1025,7 +1113,9 @@ define <32 x half> @fma_load_213_v32f16(<32 x half> %x, <32 x half> %y, ptr %zp)
 define <32 x half> @fma_load_231_v32f16(<32 x half> %x, <32 x half> %y, ptr %zp) {
 ; CHECK-LABEL: fma_load_231_v32f16:
 ; CHECK:       # %bb.0:
-; CHECK-NEXT:    vfmadd231ph (%rdi), %zmm1, %zmm0
+; CHECK-NEXT:    vmovaps (%rdi), %zmm2
+; CHECK-NEXT:    vfmadd213ph %zmm0, %zmm1, %zmm2
+; CHECK-NEXT:    vmovaps %zmm2, %zmm0
 ; CHECK-NEXT:    retq
   %z = load <32 x half>, ptr %zp
   %a = call <32 x half> @llvm.fma.v32f16(<32 x half> %y, <32 x half> %z, <32 x half> %x)
@@ -1035,7 +1125,9 @@ define <32 x half> @fma_load_231_v32f16(<32 x half> %x, <32 x half> %y, ptr %zp)
 define <32 x half> @fma_load_321_v32f16(<32 x half> %x, <32 x half> %y, ptr %zp) {
 ; CHECK-LABEL: fma_load_321_v32f16:
 ; CHECK:       # %bb.0:
-; CHECK-NEXT:    vfmadd231ph (%rdi), %zmm1, %zmm0
+; CHECK-NEXT:    vmovaps (%rdi), %zmm2
+; CHECK-NEXT:    vfmadd132ph %zmm1, %zmm0, %zmm2
+; CHECK-NEXT:    vmovaps %zmm2, %zmm0
 ; CHECK-NEXT:    retq
   %z = load <32 x half>, ptr %zp
   %a = call <32 x half> @llvm.fma.v32f16(<32 x half> %z, <32 x half> %y, <32 x half> %x)
@@ -1045,7 +1137,9 @@ define <32 x half> @fma_load_321_v32f16(<32 x half> %x, <32 x half> %y, ptr %zp)
 define <32 x half> @fma_load_132_v32f16(<32 x half> %x, <32 x half> %y, ptr %zp) {
 ; CHECK-LABEL: fma_load_132_v32f16:
 ; CHECK:       # %bb.0:
-; CHECK-NEXT:    vfmadd132ph (%rdi), %zmm1, %zmm0
+; CHECK-NEXT:    vmovaps (%rdi), %zmm2
+; CHECK-NEXT:    vfmadd213ph %zmm1, %zmm0, %zmm2
+; CHECK-NEXT:    vmovaps %zmm2, %zmm0
 ; CHECK-NEXT:    retq
   %z = load <32 x half>, ptr %zp
   %a = call <32 x half> @llvm.fma.v32f16(<32 x half> %x, <32 x half> %z, <32 x half> %y)
@@ -1055,7 +1149,9 @@ define <32 x half> @fma_load_132_v32f16(<32 x half> %x, <32 x half> %y, ptr %zp)
 define <32 x half> @fma_load_312_v32f16(<32 x half> %x, <32 x half> %y, ptr %zp) {
 ; CHECK-LABEL: fma_load_312_v32f16:
 ; CHECK:       # %bb.0:
-; CHECK-NEXT:    vfmadd132ph (%rdi), %zmm1, %zmm0
+; CHECK-NEXT:    vmovaps (%rdi), %zmm2
+; CHECK-NEXT:    vfmadd132ph %zmm0, %zmm1, %zmm2
+; CHECK-NEXT:    vmovaps %zmm2, %zmm0
 ; CHECK-NEXT:    retq
   %z = load <32 x half>, ptr %zp
   %a = call <32 x half> @llvm.fma.v32f16(<32 x half> %z, <32 x half> %x, <32 x half> %y)
@@ -1138,7 +1234,8 @@ define <32 x half> @fma_maskz_123_v32f16(<32 x half> %x, <32 x half> %y, <32 x h
 ; CHECK-LABEL: fma_maskz_123_v32f16:
 ; CHECK:       # %bb.0:
 ; CHECK-NEXT:    kmovd %edi, %k1
-; CHECK-NEXT:    vfmadd213ph %zmm2, %zmm1, %zmm0 {%k1} {z}
+; CHECK-NEXT:    vfmadd213ph %zmm2, %zmm0, %zmm1 {%k1} {z}
+; CHECK-NEXT:    vmovaps %zmm1, %zmm0
 ; CHECK-NEXT:    retq
   %a = call <32 x half> @llvm.fma.v32f16(<32 x half> %x, <32 x half> %y, <32 x half> %z)
   %b = bitcast i32 %mask to <32 x i1>
@@ -1162,7 +1259,8 @@ define <32 x half> @fma_maskz_231_v32f16(<32 x half> %x, <32 x half> %y, <32 x h
 ; CHECK-LABEL: fma_maskz_231_v32f16:
 ; CHECK:       # %bb.0:
 ; CHECK-NEXT:    kmovd %edi, %k1
-; CHECK-NEXT:    vfmadd231ph %zmm1, %zmm2, %zmm0 {%k1} {z}
+; CHECK-NEXT:    vfmadd213ph %zmm0, %zmm1, %zmm2 {%k1} {z}
+; CHECK-NEXT:    vmovaps %zmm2, %zmm0
 ; CHECK-NEXT:    retq
   %a = call <32 x half> @llvm.fma.v32f16(<32 x half> %y, <32 x half> %z, <32 x half> %x)
   %b = bitcast i32 %mask to <32 x i1>
@@ -1174,7 +1272,8 @@ define <32 x half> @fma_maskz_321_v32f16(<32 x half> %x, <32 x half> %y, <32 x h
 ; CHECK-LABEL: fma_maskz_321_v32f16:
 ; CHECK:       # %bb.0:
 ; CHECK-NEXT:    kmovd %edi, %k1
-; CHECK-NEXT:    vfmadd231ph %zmm1, %zmm2, %zmm0 {%k1} {z}
+; CHECK-NEXT:    vfmadd213ph %zmm0, %zmm2, %zmm1 {%k1} {z}
+; CHECK-NEXT:    vmovaps %zmm1, %zmm0
 ; CHECK-NEXT:    retq
   %a = call <32 x half> @llvm.fma.v32f16(<32 x half> %z, <32 x half> %y, <32 x half> %x)
   %b = bitcast i32 %mask to <32 x i1>
@@ -1186,7 +1285,8 @@ define <32 x half> @fma_maskz_132_v32f16(<32 x half> %x, <32 x half> %y, <32 x h
 ; CHECK-LABEL: fma_maskz_132_v32f16:
 ; CHECK:       # %bb.0:
 ; CHECK-NEXT:    kmovd %edi, %k1
-; CHECK-NEXT:    vfmadd213ph %zmm1, %zmm2, %zmm0 {%k1} {z}
+; CHECK-NEXT:    vfmadd213ph %zmm1, %zmm0, %zmm2 {%k1} {z}
+; CHECK-NEXT:    vmovaps %zmm2, %zmm0
 ; CHECK-NEXT:    retq
   %a = call <32 x half> @llvm.fma.v32f16(<32 x half> %x, <32 x half> %z, <32 x half> %y)
   %b = bitcast i32 %mask to <32 x i1>
@@ -1288,7 +1388,9 @@ define <32 x half> @fma_maskz_load_123_v32f16(<32 x half> %x, <32 x half> %y, pt
 ; CHECK-LABEL: fma_maskz_load_123_v32f16:
 ; CHECK:       # %bb.0:
 ; CHECK-NEXT:    kmovd %esi, %k1
-; CHECK-NEXT:    vfmadd213ph (%rdi), %zmm1, %zmm0 {%k1} {z}
+; CHECK-NEXT:    vmovaps (%rdi), %zmm2
+; CHECK-NEXT:    vfmadd231ph %zmm1, %zmm0, %zmm2 {%k1} {z}
+; CHECK-NEXT:    vmovaps %zmm2, %zmm0
 ; CHECK-NEXT:    retq
   %z = load <32 x half>, ptr %zp
   %a = call <32 x half> @llvm.fma.v32f16(<32 x half> %x, <32 x half> %y, <32 x half> %z)
@@ -1301,7 +1403,9 @@ define <32 x half> @fma_maskz_load_213_v32f16(<32 x half> %x, <32 x half> %y, pt
 ; CHECK-LABEL: fma_maskz_load_213_v32f16:
 ; CHECK:       # %bb.0:
 ; CHECK-NEXT:    kmovd %esi, %k1
-; CHECK-NEXT:    vfmadd213ph (%rdi), %zmm1, %zmm0 {%k1} {z}
+; CHECK-NEXT:    vmovaps (%rdi), %zmm2
+; CHECK-NEXT:    vfmadd231ph %zmm0, %zmm1, %zmm2 {%k1} {z}
+; CHECK-NEXT:    vmovaps %zmm2, %zmm0
 ; CHECK-NEXT:    retq
   %z = load <32 x half>, ptr %zp
   %a = call <32 x half> @llvm.fma.v32f16(<32 x half> %y, <32 x half> %x, <32 x half> %z)
@@ -1314,7 +1418,9 @@ define <32 x half> @fma_maskz_load_231_v32f16(<32 x half> %x, <32 x half> %y, pt
 ; CHECK-LABEL: fma_maskz_load_231_v32f16:
 ; CHECK:       # %bb.0:
 ; CHECK-NEXT:    kmovd %esi, %k1
-; CHECK-NEXT:    vfmadd231ph (%rdi), %zmm1, %zmm0 {%k1} {z}
+; CHECK-NEXT:    vmovaps (%rdi), %zmm2
+; CHECK-NEXT:    vfmadd213ph %zmm0, %zmm1, %zmm2 {%k1} {z}
+; CHECK-NEXT:    vmovaps %zmm2, %zmm0
 ; CHECK-NEXT:    retq
   %z = load <32 x half>, ptr %zp
   %a = call <32 x half> @llvm.fma.v32f16(<32 x half> %y, <32 x half> %z, <32 x half> %x)
@@ -1327,7 +1433,9 @@ define <32 x half> @fma_maskz_load_321_v32f16(<32 x half> %x, <32 x half> %y, pt
 ; CHECK-LABEL: fma_maskz_load_321_v32f16:
 ; CHECK:       # %bb.0:
 ; CHECK-NEXT:    kmovd %esi, %k1
-; CHECK-NEXT:    vfmadd231ph (%rdi), %zmm1, %zmm0 {%k1} {z}
+; CHECK-NEXT:    vmovaps (%rdi), %zmm2
+; CHECK-NEXT:    vfmadd132ph %zmm1, %zmm0, %zmm2 {%k1} {z}
+; CHECK-NEXT:    vmovaps %zmm2, %zmm0
 ; CHECK-NEXT:    retq
   %z = load <32 x half>, ptr %zp
   %a = call <32 x half> @llvm.fma.v32f16(<32 x half> %z, <32 x half> %y, <32 x half> %x)
@@ -1340,7 +1448,9 @@ define <32 x half> @fma_maskz_load_132_v32f16(<32 x half> %x, <32 x half> %y, pt
 ; CHECK-LABEL: fma_maskz_load_132_v32f16:
 ; CHECK:       # %bb.0:
 ; CHECK-NEXT:    kmovd %esi, %k1
-; CHECK-NEXT:    vfmadd132ph (%rdi), %zmm1, %zmm0 {%k1} {z}
+; CHECK-NEXT:    vmovaps (%rdi), %zmm2
+; CHECK-NEXT:    vfmadd213ph %zmm1, %zmm0, %zmm2 {%k1} {z}
+; CHECK-NEXT:    vmovaps %zmm2, %zmm0
 ; CHECK-NEXT:    retq
   %z = load <32 x half>, ptr %zp
   %a = call <32 x half> @llvm.fma.v32f16(<32 x half> %x, <32 x half> %z, <32 x half> %y)
@@ -1353,7 +1463,9 @@ define <32 x half> @fma_maskz_load_312_v32f16(<32 x half> %x, <32 x half> %y, pt
 ; CHECK-LABEL: fma_maskz_load_312_v32f16:
 ; CHECK:       # %bb.0:
 ; CHECK-NEXT:    kmovd %esi, %k1
-; CHECK-NEXT:    vfmadd132ph (%rdi), %zmm1, %zmm0 {%k1} {z}
+; CHECK-NEXT:    vmovaps (%rdi), %zmm2
+; CHECK-NEXT:    vfmadd132ph %zmm0, %zmm1, %zmm2 {%k1} {z}
+; CHECK-NEXT:    vmovaps %zmm2, %zmm0
 ; CHECK-NEXT:    retq
   %z = load <32 x half>, ptr %zp
   %a = call <32 x half> @llvm.fma.v32f16(<32 x half> %z, <32 x half> %x, <32 x half> %y)

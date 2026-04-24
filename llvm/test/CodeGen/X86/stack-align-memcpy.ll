@@ -116,53 +116,52 @@ define void @test2(ptr nocapture %x, i32 %y, ptr %z) nounwind {
 ; CHECK-NEXT:    andl $-16, %esp
 ; CHECK-NEXT:    subl $80, %esp
 ; CHECK-NEXT:    movl %esp, %esi
-; CHECK-NEXT:    movl 12(%ebp), %edi
 ; CHECK-NEXT:    movl 8(%ebp), %eax
 ; CHECK-NEXT:    subl $4, %esp
 ; CHECK-NEXT:    movl 84(%eax), %edx
 ; CHECK-NEXT:    movl 80(%eax), %ebx
 ; CHECK-NEXT:    movl 76(%eax), %ecx
 ; CHECK-NEXT:    movl %ecx, 68(%esi) ## 4-byte Spill
-; CHECK-NEXT:    movl 72(%eax), %ecx
-; CHECK-NEXT:    movl %ecx, 64(%esi) ## 4-byte Spill
+; CHECK-NEXT:    movl 72(%eax), %edi
 ; CHECK-NEXT:    movl 68(%eax), %ecx
-; CHECK-NEXT:    movl %ecx, 60(%esi) ## 4-byte Spill
+; CHECK-NEXT:    movl %ecx, 64(%esi) ## 4-byte Spill
 ; CHECK-NEXT:    movl 64(%eax), %ecx
-; CHECK-NEXT:    movl %ecx, 56(%esi) ## 4-byte Spill
+; CHECK-NEXT:    movl %ecx, 60(%esi) ## 4-byte Spill
 ; CHECK-NEXT:    movl 60(%eax), %ecx
-; CHECK-NEXT:    movl %ecx, 52(%esi) ## 4-byte Spill
+; CHECK-NEXT:    movl %ecx, 56(%esi) ## 4-byte Spill
 ; CHECK-NEXT:    movl 56(%eax), %ecx
-; CHECK-NEXT:    movl %ecx, 48(%esi) ## 4-byte Spill
+; CHECK-NEXT:    movl %ecx, 52(%esi) ## 4-byte Spill
 ; CHECK-NEXT:    movl 52(%eax), %ecx
-; CHECK-NEXT:    movl %ecx, 44(%esi) ## 4-byte Spill
+; CHECK-NEXT:    movl %ecx, 48(%esi) ## 4-byte Spill
 ; CHECK-NEXT:    movl 48(%eax), %ecx
-; CHECK-NEXT:    movl %ecx, 40(%esi) ## 4-byte Spill
+; CHECK-NEXT:    movl %ecx, 44(%esi) ## 4-byte Spill
 ; CHECK-NEXT:    movl 44(%eax), %ecx
-; CHECK-NEXT:    movl %ecx, 36(%esi) ## 4-byte Spill
+; CHECK-NEXT:    movl %ecx, 40(%esi) ## 4-byte Spill
 ; CHECK-NEXT:    movl 40(%eax), %ecx
-; CHECK-NEXT:    movl %ecx, 32(%esi) ## 4-byte Spill
+; CHECK-NEXT:    movl %ecx, 36(%esi) ## 4-byte Spill
 ; CHECK-NEXT:    movl 36(%eax), %ecx
-; CHECK-NEXT:    movl %ecx, 28(%esi) ## 4-byte Spill
+; CHECK-NEXT:    movl %ecx, 32(%esi) ## 4-byte Spill
 ; CHECK-NEXT:    movl 32(%eax), %ecx
-; CHECK-NEXT:    movl %ecx, 24(%esi) ## 4-byte Spill
+; CHECK-NEXT:    movl %ecx, 28(%esi) ## 4-byte Spill
 ; CHECK-NEXT:    movl 28(%eax), %ecx
-; CHECK-NEXT:    movl %ecx, 20(%esi) ## 4-byte Spill
+; CHECK-NEXT:    movl %ecx, 24(%esi) ## 4-byte Spill
 ; CHECK-NEXT:    movl 24(%eax), %ecx
-; CHECK-NEXT:    movl %ecx, 16(%esi) ## 4-byte Spill
+; CHECK-NEXT:    movl %ecx, 20(%esi) ## 4-byte Spill
 ; CHECK-NEXT:    movl 20(%eax), %ecx
-; CHECK-NEXT:    movl %ecx, 12(%esi) ## 4-byte Spill
+; CHECK-NEXT:    movl %ecx, 16(%esi) ## 4-byte Spill
 ; CHECK-NEXT:    movl 16(%eax), %ecx
-; CHECK-NEXT:    movl %ecx, 8(%esi) ## 4-byte Spill
+; CHECK-NEXT:    movl %ecx, 12(%esi) ## 4-byte Spill
 ; CHECK-NEXT:    movl 12(%eax), %ecx
-; CHECK-NEXT:    movl %ecx, 4(%esi) ## 4-byte Spill
+; CHECK-NEXT:    movl %ecx, 8(%esi) ## 4-byte Spill
 ; CHECK-NEXT:    movl 8(%eax), %ecx
-; CHECK-NEXT:    movl %ecx, (%esi) ## 4-byte Spill
+; CHECK-NEXT:    movl %ecx, 4(%esi) ## 4-byte Spill
 ; CHECK-NEXT:    movl (%eax), %ecx
 ; CHECK-NEXT:    movl %ecx, 72(%esi) ## 4-byte Spill
 ; CHECK-NEXT:    movl 4(%eax), %eax
 ; CHECK-NEXT:    pushl %edx
 ; CHECK-NEXT:    pushl %ebx
 ; CHECK-NEXT:    pushl 68(%esi) ## 4-byte Folded Reload
+; CHECK-NEXT:    pushl %edi
 ; CHECK-NEXT:    pushl 64(%esi) ## 4-byte Folded Reload
 ; CHECK-NEXT:    pushl 60(%esi) ## 4-byte Folded Reload
 ; CHECK-NEXT:    pushl 56(%esi) ## 4-byte Folded Reload
@@ -179,16 +178,16 @@ define void @test2(ptr nocapture %x, i32 %y, ptr %z) nounwind {
 ; CHECK-NEXT:    pushl 12(%esi) ## 4-byte Folded Reload
 ; CHECK-NEXT:    pushl 8(%esi) ## 4-byte Folded Reload
 ; CHECK-NEXT:    pushl 4(%esi) ## 4-byte Folded Reload
-; CHECK-NEXT:    pushl (%esi) ## 4-byte Folded Reload
 ; CHECK-NEXT:    pushl %eax
 ; CHECK-NEXT:    pushl 72(%esi) ## 4-byte Folded Reload
 ; CHECK-NEXT:    pushl 16(%ebp)
 ; CHECK-NEXT:    calll _bar
 ; CHECK-NEXT:    addl $96, %esp
 ; CHECK-NEXT:    movl %esp, %eax
-; CHECK-NEXT:    addl $15, %edi
-; CHECK-NEXT:    andl $-16, %edi
-; CHECK-NEXT:    subl %edi, %eax
+; CHECK-NEXT:    movl 12(%ebp), %ecx
+; CHECK-NEXT:    addl $15, %ecx
+; CHECK-NEXT:    andl $-16, %ecx
+; CHECK-NEXT:    subl %ecx, %eax
 ; CHECK-NEXT:    movl %eax, %esp
 ; CHECK-NEXT:    subl $12, %esp
 ; CHECK-NEXT:    pushl %eax

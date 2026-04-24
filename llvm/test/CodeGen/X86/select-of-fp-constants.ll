@@ -43,8 +43,9 @@ define float @fcmp_select_fp_constants(float %x) nounwind readnone {
 ; X86-SSE-LABEL: fcmp_select_fp_constants:
 ; X86-SSE:       # %bb.0:
 ; X86-SSE-NEXT:    movss {{.*#+}} xmm0 = [-4.0E+0,0.0E+0,0.0E+0,0.0E+0]
-; X86-SSE-NEXT:    cmpneqss {{[0-9]+}}(%esp), %xmm0
-; X86-SSE-NEXT:    movd %xmm0, %eax
+; X86-SSE-NEXT:    movss {{.*#+}} xmm1 = mem[0],zero,zero,zero
+; X86-SSE-NEXT:    cmpneqss %xmm0, %xmm1
+; X86-SSE-NEXT:    movd %xmm1, %eax
 ; X86-SSE-NEXT:    andl $1, %eax
 ; X86-SSE-NEXT:    flds {{\.?LCPI[0-9]+_[0-9]+}}(,%eax,4)
 ; X86-SSE-NEXT:    retl
@@ -68,8 +69,9 @@ define float @fcmp_select_fp_constants(float %x) nounwind readnone {
 ;
 ; X64-SSE-LABEL: fcmp_select_fp_constants:
 ; X64-SSE:       # %bb.0:
-; X64-SSE-NEXT:    cmpneqss {{\.?LCPI[0-9]+_[0-9]+}}(%rip), %xmm0
-; X64-SSE-NEXT:    movd %xmm0, %eax
+; X64-SSE-NEXT:    movss {{.*#+}} xmm1 = [-4.0E+0,0.0E+0,0.0E+0,0.0E+0]
+; X64-SSE-NEXT:    cmpneqss %xmm0, %xmm1
+; X64-SSE-NEXT:    movd %xmm1, %eax
 ; X64-SSE-NEXT:    andl $1, %eax
 ; X64-SSE-NEXT:    movss {{.*#+}} xmm0 = mem[0],zero,zero,zero
 ; X64-SSE-NEXT:    retq

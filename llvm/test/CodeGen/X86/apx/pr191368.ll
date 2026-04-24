@@ -118,9 +118,13 @@ define i64 @bar(ptr %a, i64 %b, ptr %f, ptr %c, ptr %d, i8 %e, i64 %g, ptr %h, p
 ; CHECK-NEXT:    movq %rdx, (%rsp) # 8-byte Spill
 ; CHECK-NEXT:    movzbl {{[0-9]+}}(%rsp), %edx
 ; CHECK-NEXT:    movzbl {{[0-9]+}}(%rsp), %r10d
-; CHECK-NEXT:    movq {{[0-9]+}}(%rsp), %rbx
+; CHECK-NEXT:    movzbl {{[0-9]+}}(%rsp), %r11d
+; CHECK-NEXT:    movzbl {{[0-9]+}}(%rsp), %ebx
+; CHECK-NEXT:    movq {{[0-9]+}}(%rsp), %rsi
 ; CHECK-NEXT:    movq {{[0-9]+}}(%rsp), %rdi
-; CHECK-NEXT:    movzbl {{[0-9]+}}(%rsp), %r15d
+; CHECK-NEXT:    movq {{[0-9]+}}(%rsp), %r14
+; CHECK-NEXT:    movzbl {{[0-9]+}}(%rsp), %ebp
+; CHECK-NEXT:    movq {{[0-9]+}}(%rsp), %r15
 ; CHECK-NEXT:    xorl %r12d, %r12d
 ; CHECK-NEXT:    .p2align 4
 ; CHECK-NEXT:  .LBB1_1: # %b4
@@ -129,33 +133,20 @@ define i64 @bar(ptr %a, i64 %b, ptr %f, ptr %c, ptr %d, i8 %e, i64 %g, ptr %h, p
 ; CHECK-NEXT:    movq (%rsp), %rax # 8-byte Reload
 ; CHECK-NEXT:    imulq %rax, %r12
 ; CHECK-NEXT:    xorl %r13d, %r13d
-; CHECK-NEXT:    movzbl {{[0-9]+}}(%rsp), %r11d
-; CHECK-NEXT:    movzbl {{[0-9]+}}(%rsp), %esi
-; CHECK-NEXT:    movq {{[0-9]+}}(%rsp), %r14
 ; CHECK-NEXT:    .p2align 4
 ; CHECK-NEXT:  .LBB1_2: # %b6
 ; CHECK-NEXT:    # Parent Loop BB1_1 Depth=1
 ; CHECK-NEXT:    # => This Inner Loop Header: Depth=2
-; CHECK-NEXT:    movzbl (%rbx), %eax
-; CHECK-NEXT:    movq %rdi, %rbp
-; CHECK-NEXT:    movq %rbx, %rdi
-; CHECK-NEXT:    movl %r10d, %ebx
-; CHECK-NEXT:    movl %edx, %r10d
-; CHECK-NEXT:    movb $1, %dl
-; CHECK-NEXT:    subb %al, %dl
-; CHECK-NEXT:    movb %r11b, (%r14)
-; CHECK-NEXT:    movq {{[0-9]+}}(%rsp), %rax
-; CHECK-NEXT:    movb %sil, (%rax)
-; CHECK-NEXT:    movb %dl, (%r8)
-; CHECK-NEXT:    movl %r10d, %edx
-; CHECK-NEXT:    movl %ebx, %r10d
-; CHECK-NEXT:    movq %rdi, %rbx
-; CHECK-NEXT:    movq %rbp, %rdi
-; CHECK-NEXT:    movb %r10b, 0
+; CHECK-NEXT:    movb $1, %al
+; CHECK-NEXT:    subb (%rsi), %al
+; CHECK-NEXT:    movb %r10b, (%rdi)
+; CHECK-NEXT:    movb %bl, (%r15)
+; CHECK-NEXT:    movb %al, (%r8)
+; CHECK-NEXT:    movb %r11b, 0
 ; CHECK-NEXT:    movb %dl, (%rcx,%r12)
-; CHECK-NEXT:    movb %r15b, (%r9)
+; CHECK-NEXT:    movb %bpl, (%r9)
 ; CHECK-NEXT:    testq %r13, %r13
-; CHECK-NEXT:    movq %rbp, %r13
+; CHECK-NEXT:    movq %r14, %r13
 ; CHECK-NEXT:    jne .LBB1_2
 ; CHECK-NEXT:  # %bb.3: # in Loop: Header=BB1_1 Depth=1
 ; CHECK-NEXT:    movl $1, %r12d
@@ -195,11 +186,11 @@ define i32 @baz(ptr %a, ptr %b, ptr %c, ptr %d, i64 %e, i32 %f, i32 %g, i1 %h) n
 ; CHECK-NEXT:    pushq %rbp
 ; CHECK-NEXT:    pushq %rbx
 ; CHECK-NEXT:    subq $72, %rsp
-; CHECK-NEXT:    movq %r9, %rdi
+; CHECK-NEXT:    movq %r9, %rsi
 ; CHECK-NEXT:    movq %r8, %rbx
 ; CHECK-NEXT:    movq %rdx, %r14
 ; CHECK-NEXT:    movq %rcx, %r15
-; CHECK-NEXT:    xorl %esi, %esi
+; CHECK-NEXT:    xorl %edi, %edi
 ; CHECK-NEXT:    movzbl {{[0-9]+}}(%rsp), %ebp
 ; CHECK-NEXT:    movl {{[0-9]+}}(%rsp), %r12d
 ; CHECK-NEXT:    movq {{[0-9]+}}(%rsp), %r13
@@ -219,13 +210,13 @@ define i32 @baz(ptr %a, ptr %b, ptr %c, ptr %d, i64 %e, i32 %f, i32 %g, i1 %h) n
 ; CHECK-NEXT:    # => This Inner Loop Header: Depth=2
 ; CHECK-NEXT:    movl %eax, 0
 ; CHECK-NEXT:    movq %r13, {{[0-9]+}}(%rsp)
-; CHECK-NEXT:    movq %rdi, {{[0-9]+}}(%rsp)
+; CHECK-NEXT:    movq %rsi, {{[0-9]+}}(%rsp)
 ; CHECK-NEXT:    movq $0, {{[0-9]+}}(%rsp)
 ; CHECK-NEXT:    movq %r15, %rcx
 ; CHECK-NEXT:    movq %r14, %rdx
 ; CHECK-NEXT:    movq %rbx, %r8
 ; CHECK-NEXT:    xorl %r9d, %r9d
-; CHECK-NEXT:    callq *%rsi
+; CHECK-NEXT:    callq *%rdi
 ; CHECK-NEXT:    testb $1, %bpl
 ; CHECK-NEXT:    movl %r12d, %eax
 ; CHECK-NEXT:    je .LBB2_3
@@ -236,9 +227,9 @@ define i32 @baz(ptr %a, ptr %b, ptr %c, ptr %d, i64 %e, i32 %f, i32 %g, i1 %h) n
 ; CHECK-NEXT:    testb $1, %bpl
 ; CHECK-NEXT:    je .LBB2_1
 ; CHECK-NEXT:  # %bb.5:
-; CHECK-NEXT:    movl $1, %esi
+; CHECK-NEXT:    movl $1, %edi
 ; CHECK-NEXT:  .LBB2_6: # %.loopexit
-; CHECK-NEXT:    movl %esi, %eax
+; CHECK-NEXT:    movl %edi, %eax
 ; CHECK-NEXT:    addq $72, %rsp
 ; CHECK-NEXT:    popq %rbx
 ; CHECK-NEXT:    popq %rbp

@@ -791,22 +791,24 @@ define void @infiniteloop3() {
 ; CHECK-LABEL: infiniteloop3:
 ; CHECK:       ; %bb.0: ; %entry
 ; CHECK-NEXT:    mov x8, xzr
-; CHECK-NEXT:    mov x9, xzr
 ; CHECK-NEXT:    mov x11, xzr
-; CHECK-NEXT:    b LBB12_2
-; CHECK-NEXT:  LBB12_1: ; %loop2b
-; CHECK-NEXT:    ; in Loop: Header=BB12_2 Depth=1
-; CHECK-NEXT:    str x10, [x11]
-; CHECK-NEXT:    mov x11, x10
-; CHECK-NEXT:  LBB12_2: ; %loop1
-; CHECK-NEXT:    ; =>This Inner Loop Header: Depth=1
+; CHECK-NEXT:  LBB12_1: ; %loop2a
+; CHECK-NEXT:    ; =>This Loop Header: Depth=1
+; CHECK-NEXT:    ; Child Loop BB12_2 Depth 2
+; CHECK-NEXT:    mov x9, x8
+; CHECK-NEXT:    mov x8, x11
 ; CHECK-NEXT:    mov x10, x9
-; CHECK-NEXT:    ldr x9, [x8]
-; CHECK-NEXT:    cbnz x8, LBB12_1
-; CHECK-NEXT:  ; %bb.3: ; in Loop: Header=BB12_2 Depth=1
-; CHECK-NEXT:    mov x8, x10
-; CHECK-NEXT:    mov x11, x10
-; CHECK-NEXT:    b LBB12_2
+; CHECK-NEXT:    ldr x11, [x8]
+; CHECK-NEXT:    cbz x9, LBB12_1
+; CHECK-NEXT:  LBB12_2: ; %loop2b
+; CHECK-NEXT:    ; Parent Loop BB12_1 Depth=1
+; CHECK-NEXT:    ; => This Inner Loop Header: Depth=2
+; CHECK-NEXT:    str x8, [x10]
+; CHECK-NEXT:    mov x10, x8
+; CHECK-NEXT:    mov x8, x11
+; CHECK-NEXT:    ldr x11, [x8]
+; CHECK-NEXT:    cbnz x9, LBB12_2
+; CHECK-NEXT:    b LBB12_1
 entry:
   br i1 undef, label %loop2a, label %body
 

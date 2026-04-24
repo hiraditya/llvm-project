@@ -18,9 +18,10 @@ define <16 x i8> @vselect_packss_v16i16(<16 x i16> %a0, <16 x i16> %a1, <16 x i8
 ; SSE2-NEXT:    pcmpeqw %xmm3, %xmm1
 ; SSE2-NEXT:    pcmpeqw %xmm2, %xmm0
 ; SSE2-NEXT:    packsswb %xmm1, %xmm0
-; SSE2-NEXT:    pand %xmm0, %xmm4
+; SSE2-NEXT:    movdqa %xmm0, %xmm1
+; SSE2-NEXT:    pand %xmm4, %xmm1
 ; SSE2-NEXT:    pandn %xmm5, %xmm0
-; SSE2-NEXT:    por %xmm4, %xmm0
+; SSE2-NEXT:    por %xmm1, %xmm0
 ; SSE2-NEXT:    retq
 ;
 ; SSE42-LABEL: vselect_packss_v16i16:
@@ -198,37 +199,45 @@ define <16 x i8> @vselect_packss_v16i32(<16 x i32> %a0, <16 x i32> %a1, <16 x i8
 define <16 x i8> @vselect_packss_v16i64(<16 x i64> %a0, <16 x i64> %a1, <16 x i8> %a2, <16 x i8> %a3) {
 ; SSE2-LABEL: vselect_packss_v16i64:
 ; SSE2:       # %bb.0:
-; SSE2-NEXT:    pcmpeqd {{[0-9]+}}(%rsp), %xmm7
-; SSE2-NEXT:    pshufd {{.*#+}} xmm8 = xmm7[1,0,3,2]
-; SSE2-NEXT:    pand %xmm7, %xmm8
-; SSE2-NEXT:    pcmpeqd {{[0-9]+}}(%rsp), %xmm6
-; SSE2-NEXT:    pshufd {{.*#+}} xmm7 = xmm6[1,0,3,2]
-; SSE2-NEXT:    pand %xmm6, %xmm7
-; SSE2-NEXT:    packssdw %xmm8, %xmm7
-; SSE2-NEXT:    pcmpeqd {{[0-9]+}}(%rsp), %xmm5
-; SSE2-NEXT:    pshufd {{.*#+}} xmm6 = xmm5[1,0,3,2]
-; SSE2-NEXT:    pand %xmm5, %xmm6
-; SSE2-NEXT:    pcmpeqd {{[0-9]+}}(%rsp), %xmm4
-; SSE2-NEXT:    pshufd {{.*#+}} xmm5 = xmm4[1,0,3,2]
-; SSE2-NEXT:    pand %xmm4, %xmm5
-; SSE2-NEXT:    packssdw %xmm6, %xmm5
-; SSE2-NEXT:    packssdw %xmm7, %xmm5
-; SSE2-NEXT:    pcmpeqd {{[0-9]+}}(%rsp), %xmm3
-; SSE2-NEXT:    pshufd {{.*#+}} xmm4 = xmm3[1,0,3,2]
-; SSE2-NEXT:    pand %xmm3, %xmm4
-; SSE2-NEXT:    pcmpeqd {{[0-9]+}}(%rsp), %xmm2
-; SSE2-NEXT:    pshufd {{.*#+}} xmm3 = xmm2[1,0,3,2]
-; SSE2-NEXT:    pand %xmm2, %xmm3
-; SSE2-NEXT:    packssdw %xmm4, %xmm3
-; SSE2-NEXT:    pcmpeqd {{[0-9]+}}(%rsp), %xmm1
-; SSE2-NEXT:    pshufd {{.*#+}} xmm2 = xmm1[1,0,3,2]
-; SSE2-NEXT:    pand %xmm1, %xmm2
-; SSE2-NEXT:    pcmpeqd {{[0-9]+}}(%rsp), %xmm0
-; SSE2-NEXT:    pshufd {{.*#+}} xmm1 = xmm0[1,0,3,2]
-; SSE2-NEXT:    pand %xmm1, %xmm0
+; SSE2-NEXT:    movdqa {{[0-9]+}}(%rsp), %xmm8
+; SSE2-NEXT:    pcmpeqd %xmm7, %xmm8
+; SSE2-NEXT:    pshufd {{.*#+}} xmm7 = xmm8[1,0,3,2]
+; SSE2-NEXT:    pand %xmm8, %xmm7
+; SSE2-NEXT:    movdqa {{[0-9]+}}(%rsp), %xmm8
+; SSE2-NEXT:    pcmpeqd %xmm6, %xmm8
+; SSE2-NEXT:    pshufd {{.*#+}} xmm6 = xmm8[1,0,3,2]
+; SSE2-NEXT:    pand %xmm8, %xmm6
+; SSE2-NEXT:    packssdw %xmm7, %xmm6
+; SSE2-NEXT:    movdqa {{[0-9]+}}(%rsp), %xmm7
+; SSE2-NEXT:    pcmpeqd %xmm5, %xmm7
+; SSE2-NEXT:    pshufd {{.*#+}} xmm5 = xmm7[1,0,3,2]
+; SSE2-NEXT:    pand %xmm7, %xmm5
+; SSE2-NEXT:    movdqa {{[0-9]+}}(%rsp), %xmm7
+; SSE2-NEXT:    pcmpeqd %xmm4, %xmm7
+; SSE2-NEXT:    pshufd {{.*#+}} xmm4 = xmm7[1,0,3,2]
+; SSE2-NEXT:    pand %xmm7, %xmm4
+; SSE2-NEXT:    packssdw %xmm5, %xmm4
+; SSE2-NEXT:    packssdw %xmm6, %xmm4
+; SSE2-NEXT:    movdqa {{[0-9]+}}(%rsp), %xmm5
+; SSE2-NEXT:    pcmpeqd %xmm3, %xmm5
+; SSE2-NEXT:    pshufd {{.*#+}} xmm3 = xmm5[1,0,3,2]
+; SSE2-NEXT:    pand %xmm5, %xmm3
+; SSE2-NEXT:    movdqa {{[0-9]+}}(%rsp), %xmm5
+; SSE2-NEXT:    pcmpeqd %xmm2, %xmm5
+; SSE2-NEXT:    pshufd {{.*#+}} xmm2 = xmm5[1,0,3,2]
+; SSE2-NEXT:    pand %xmm5, %xmm2
+; SSE2-NEXT:    packssdw %xmm3, %xmm2
+; SSE2-NEXT:    movdqa {{[0-9]+}}(%rsp), %xmm3
+; SSE2-NEXT:    pcmpeqd %xmm1, %xmm3
+; SSE2-NEXT:    pshufd {{.*#+}} xmm1 = xmm3[1,0,3,2]
+; SSE2-NEXT:    pand %xmm3, %xmm1
+; SSE2-NEXT:    movdqa {{[0-9]+}}(%rsp), %xmm3
+; SSE2-NEXT:    pcmpeqd %xmm0, %xmm3
+; SSE2-NEXT:    pshufd {{.*#+}} xmm0 = xmm3[1,0,3,2]
+; SSE2-NEXT:    pand %xmm3, %xmm0
+; SSE2-NEXT:    packssdw %xmm1, %xmm0
 ; SSE2-NEXT:    packssdw %xmm2, %xmm0
-; SSE2-NEXT:    packssdw %xmm3, %xmm0
-; SSE2-NEXT:    packsswb %xmm5, %xmm0
+; SSE2-NEXT:    packsswb %xmm4, %xmm0
 ; SSE2-NEXT:    movdqa {{[0-9]+}}(%rsp), %xmm1
 ; SSE2-NEXT:    pand %xmm0, %xmm1
 ; SSE2-NEXT:    pandn {{[0-9]+}}(%rsp), %xmm0
@@ -238,21 +247,30 @@ define <16 x i8> @vselect_packss_v16i64(<16 x i64> %a0, <16 x i64> %a1, <16 x i8
 ; SSE42-LABEL: vselect_packss_v16i64:
 ; SSE42:       # %bb.0:
 ; SSE42-NEXT:    movdqa {{[0-9]+}}(%rsp), %xmm8
-; SSE42-NEXT:    pcmpeqq {{[0-9]+}}(%rsp), %xmm7
-; SSE42-NEXT:    pcmpeqq {{[0-9]+}}(%rsp), %xmm6
-; SSE42-NEXT:    packssdw %xmm7, %xmm6
-; SSE42-NEXT:    pcmpeqq {{[0-9]+}}(%rsp), %xmm5
-; SSE42-NEXT:    pcmpeqq {{[0-9]+}}(%rsp), %xmm4
-; SSE42-NEXT:    packssdw %xmm5, %xmm4
-; SSE42-NEXT:    packssdw %xmm6, %xmm4
-; SSE42-NEXT:    pcmpeqq {{[0-9]+}}(%rsp), %xmm3
-; SSE42-NEXT:    pcmpeqq {{[0-9]+}}(%rsp), %xmm2
-; SSE42-NEXT:    packssdw %xmm3, %xmm2
-; SSE42-NEXT:    pcmpeqq {{[0-9]+}}(%rsp), %xmm1
-; SSE42-NEXT:    pcmpeqq {{[0-9]+}}(%rsp), %xmm0
-; SSE42-NEXT:    packssdw %xmm1, %xmm0
-; SSE42-NEXT:    packssdw %xmm2, %xmm0
-; SSE42-NEXT:    packsswb %xmm4, %xmm0
+; SSE42-NEXT:    movdqa {{[0-9]+}}(%rsp), %xmm9
+; SSE42-NEXT:    pcmpeqq %xmm7, %xmm9
+; SSE42-NEXT:    movdqa {{[0-9]+}}(%rsp), %xmm7
+; SSE42-NEXT:    pcmpeqq %xmm6, %xmm7
+; SSE42-NEXT:    packssdw %xmm9, %xmm7
+; SSE42-NEXT:    movdqa {{[0-9]+}}(%rsp), %xmm6
+; SSE42-NEXT:    pcmpeqq %xmm5, %xmm6
+; SSE42-NEXT:    movdqa {{[0-9]+}}(%rsp), %xmm5
+; SSE42-NEXT:    pcmpeqq %xmm4, %xmm5
+; SSE42-NEXT:    packssdw %xmm6, %xmm5
+; SSE42-NEXT:    packssdw %xmm7, %xmm5
+; SSE42-NEXT:    movdqa {{[0-9]+}}(%rsp), %xmm4
+; SSE42-NEXT:    pcmpeqq %xmm3, %xmm4
+; SSE42-NEXT:    movdqa {{[0-9]+}}(%rsp), %xmm3
+; SSE42-NEXT:    pcmpeqq %xmm2, %xmm3
+; SSE42-NEXT:    packssdw %xmm4, %xmm3
+; SSE42-NEXT:    movdqa {{[0-9]+}}(%rsp), %xmm2
+; SSE42-NEXT:    pcmpeqq %xmm1, %xmm2
+; SSE42-NEXT:    movdqa {{[0-9]+}}(%rsp), %xmm1
+; SSE42-NEXT:    pcmpeqq %xmm0, %xmm1
+; SSE42-NEXT:    packssdw %xmm2, %xmm1
+; SSE42-NEXT:    packssdw %xmm3, %xmm1
+; SSE42-NEXT:    packsswb %xmm5, %xmm1
+; SSE42-NEXT:    movdqa %xmm1, %xmm0
 ; SSE42-NEXT:    pblendvb %xmm0, {{[0-9]+}}(%rsp), %xmm8
 ; SSE42-NEXT:    movdqa %xmm8, %xmm0
 ; SSE42-NEXT:    retq
@@ -367,9 +385,10 @@ define <16 x i8> @vselect_packss(<16 x i16> %a0, <16 x i16> %a1, <16 x i8> %a2, 
 ; SSE2-NEXT:    pcmpeqw %xmm3, %xmm1
 ; SSE2-NEXT:    pcmpeqw %xmm2, %xmm0
 ; SSE2-NEXT:    packsswb %xmm1, %xmm0
-; SSE2-NEXT:    pand %xmm0, %xmm4
+; SSE2-NEXT:    movdqa %xmm0, %xmm1
+; SSE2-NEXT:    pand %xmm4, %xmm1
 ; SSE2-NEXT:    pandn %xmm5, %xmm0
-; SSE2-NEXT:    por %xmm4, %xmm0
+; SSE2-NEXT:    por %xmm1, %xmm0
 ; SSE2-NEXT:    retq
 ;
 ; SSE42-LABEL: vselect_packss:

@@ -35,13 +35,13 @@ define x86_64_sysvcc float @foo(i32 %a0, i32 %a1, float %b0) {
 ; CHECK-NEXT:    pushq %rax
 ; CHECK-NEXT:    .cfi_def_cfa_offset 16
 ; CHECK-NEXT:    movaps %xmm0, %xmm1
-; CHECK-NEXT:    movl %esi, %ecx
-; CHECK-NEXT:    movl %edi, %edx
+; CHECK-NEXT:    # kill: def $esi killed $esi def $rsi
+; CHECK-NEXT:    # kill: def $edi killed $edi def $rdi
 ; CHECK-NEXT:    callq bar@PLT
-; CHECK-NEXT:    addl %ecx, %edx
-; CHECK-NEXT:    addl %eax, %edx
+; CHECK-NEXT:    leal (%rdi,%rsi), %ecx
+; CHECK-NEXT:    addl %eax, %ecx
 ; CHECK-NEXT:    xorps %xmm0, %xmm0
-; CHECK-NEXT:    cvtsi2ss %edx, %xmm0
+; CHECK-NEXT:    cvtsi2ss %ecx, %xmm0
 ; CHECK-NEXT:    addss %xmm1, %xmm0
 ; CHECK-NEXT:    popq %rax
 ; CHECK-NEXT:    .cfi_def_cfa_offset 8

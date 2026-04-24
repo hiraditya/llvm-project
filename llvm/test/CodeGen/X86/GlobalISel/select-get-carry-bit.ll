@@ -5,12 +5,15 @@
 define i16 @use_carry_bit(i16 %2) {
 ; CHECK-LABEL: use_carry_bit:
 ; CHECK:       # %bb.0:
-; CHECK-NEXT:    movw $1, %ax
-; CHECK-NEXT:    xorl %ecx, %ecx
-; CHECK-NEXT:    addw %di, %ax
-; CHECK-NEXT:    setb %cl
-; CHECK-NEXT:    andl $1, %ecx
-; CHECK-NEXT:    cmovnew %di, %ax
+; CHECK-NEXT:    movl %edi, %eax
+; CHECK-NEXT:    movw $1, %cx
+; CHECK-NEXT:    xorl %edx, %edx
+; CHECK-NEXT:    movl %eax, %esi
+; CHECK-NEXT:    addw %cx, %si
+; CHECK-NEXT:    setb %dl
+; CHECK-NEXT:    andl $1, %edx
+; CHECK-NEXT:    cmovew %si, %ax
+; CHECK-NEXT:    # kill: def $ax killed $ax killed $eax
 ; CHECK-NEXT:    retq
   %uadd = call { i16, i1 } @llvm.uadd.with.overflow.i16(i16 %2, i16 1)
   %res = extractvalue { i16, i1 } %uadd, 0

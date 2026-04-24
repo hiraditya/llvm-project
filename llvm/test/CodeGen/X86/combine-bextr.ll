@@ -18,8 +18,9 @@ define i32 @bextr_big_shift(i32 %x, i32 %y) nounwind {
 ; X86-LABEL: bextr_big_shift:
 ; X86:       # %bb.0:
 ; X86-NEXT:    movl $255, %eax
-; X86-NEXT:    orl {{[0-9]+}}(%esp), %eax
-; X86-NEXT:    bextrl %eax, {{[0-9]+}}(%esp), %eax
+; X86-NEXT:    movl {{[0-9]+}}(%esp), %ecx
+; X86-NEXT:    orl %eax, %ecx
+; X86-NEXT:    bextrl %ecx, {{[0-9]+}}(%esp), %eax
 ; X86-NEXT:    retl
 ;
 ; X64-LABEL: bextr_big_shift:
@@ -39,9 +40,11 @@ define float @bextr_uitofp(i32 %x, i32 %y) nounwind {
 ; X86-NEXT:    movl $3855, %eax # imm = 0xF0F
 ; X86-NEXT:    bextrl %eax, {{[0-9]+}}(%esp), %eax
 ; X86-NEXT:    movd %eax, %xmm0
-; X86-NEXT:    por {{\.?LCPI[0-9]+_[0-9]+}}, %xmm0
-; X86-NEXT:    subsd {{\.?LCPI[0-9]+_[0-9]+}}, %xmm0
-; X86-NEXT:    cvtsd2ss %xmm0, %xmm0
+; X86-NEXT:    movdqa {{.*#+}} xmm1 = [4.503599627370496E+15,4.503599627370496E+15]
+; X86-NEXT:    por %xmm0, %xmm1
+; X86-NEXT:    subsd {{\.?LCPI[0-9]+_[0-9]+}}, %xmm1
+; X86-NEXT:    xorps %xmm0, %xmm0
+; X86-NEXT:    cvtsd2ss %xmm1, %xmm0
 ; X86-NEXT:    movss %xmm0, (%esp)
 ; X86-NEXT:    flds (%esp)
 ; X86-NEXT:    popl %eax

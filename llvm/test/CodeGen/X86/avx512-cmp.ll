@@ -115,13 +115,15 @@ entry:
 define i32 @test8(i32 %a1, i32 %a2, i32 %a3) {
 ; ALL-LABEL: test8:
 ; ALL:       ## %bb.0:
+; ALL-NEXT:    movl %edx, %eax
+; ALL-NEXT:    ## kill: def $esi killed $esi def $rsi
 ; ALL-NEXT:    notl %edi
-; ALL-NEXT:    addl $-2147483648, %esi ## imm = 0x80000000
+; ALL-NEXT:    leal -2147483648(%rsi), %ecx
 ; ALL-NEXT:    testl %edx, %edx
-; ALL-NEXT:    movl $1, %eax
-; ALL-NEXT:    cmovel %eax, %edx
-; ALL-NEXT:    orl %edi, %esi
-; ALL-NEXT:    cmovnel %edx, %eax
+; ALL-NEXT:    movl $1, %edx
+; ALL-NEXT:    cmovel %edx, %eax
+; ALL-NEXT:    orl %edi, %ecx
+; ALL-NEXT:    cmovel %edx, %eax
 ; ALL-NEXT:    retq
   %tmp1 = icmp eq i32 %a1, -1
   %tmp2 = icmp eq i32 %a2, -2147483648

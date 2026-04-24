@@ -8,7 +8,9 @@ define <4 x i32> @sext_vector_constants(<4 x i32> %a0) {
 ; SSE:       # %bb.0:
 ; SSE-NEXT:    psrld $9, %xmm0
 ; SSE-NEXT:    pslld $26, %xmm0
-; SSE-NEXT:    pxor {{\.?LCPI[0-9]+_[0-9]+}}(%rip), %xmm0
+; SSE-NEXT:    movdqa {{.*#+}} xmm1 = [0,2147483648,0,2147483648]
+; SSE-NEXT:    pxor %xmm0, %xmm1
+; SSE-NEXT:    movdqa %xmm1, %xmm0
 ; SSE-NEXT:    retq
 ;
 ; AVX-LABEL: sext_vector_constants:

@@ -6,7 +6,7 @@ define i32 @shl_nuw_zext(i16 zeroext %x) {
 ; X86-LABEL: shl_nuw_zext:
 ; X86:       # %bb.0:
 ; X86-NEXT:    movl {{[0-9]+}}(%esp), %eax
-; X86-NEXT:    shll $3, %eax
+; X86-NEXT:    leal (,%eax,8), %eax
 ; X86-NEXT:    movzwl %ax, %eax
 ; X86-NEXT:    retl
 ;

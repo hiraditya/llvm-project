@@ -8,9 +8,10 @@ define i64 @underflow_compare_fold_i64(i64 %a, i64 %b) {
 ; CHECK-LABEL: underflow_compare_fold_i64:
 ; CHECK:       # %bb.0:
 ; CHECK-NEXT:    movq %rdi, %rax
-; CHECK-NEXT:    subq %rsi, %rax
-; CHECK-NEXT:    cmpq %rdi, %rax
-; CHECK-NEXT:    cmovaeq %rdi, %rax
+; CHECK-NEXT:    movq %rdi, %rcx
+; CHECK-NEXT:    subq %rsi, %rcx
+; CHECK-NEXT:    cmpq %rdi, %rcx
+; CHECK-NEXT:    cmovbq %rcx, %rax
 ; CHECK-NEXT:    retq
   %sub = sub i64 %a, %b
   %cond = tail call i64 @llvm.umin.i64(i64 %sub, i64 %a)
@@ -36,10 +37,11 @@ define i64 @underflow_compare_fold_i64_multi_use(i64 %a, i64 %b, ptr addrspace(1
 ; CHECK-LABEL: underflow_compare_fold_i64_multi_use:
 ; CHECK:       # %bb.0:
 ; CHECK-NEXT:    movq %rdi, %rax
-; CHECK-NEXT:    subq %rsi, %rax
-; CHECK-NEXT:    movq %rax, (%rdx)
-; CHECK-NEXT:    cmpq %rdi, %rax
-; CHECK-NEXT:    cmovaeq %rdi, %rax
+; CHECK-NEXT:    movq %rdi, %rcx
+; CHECK-NEXT:    subq %rsi, %rcx
+; CHECK-NEXT:    movq %rcx, (%rdx)
+; CHECK-NEXT:    cmpq %rdi, %rcx
+; CHECK-NEXT:    cmovbq %rcx, %rax
 ; CHECK-NEXT:    retq
   %sub = sub i64 %a, %b
   store i64 %sub, ptr addrspace(1) %ptr
@@ -52,9 +54,10 @@ define i32 @underflow_compare_fold_i32(i32 %a, i32 %b) {
 ; CHECK-LABEL: underflow_compare_fold_i32:
 ; CHECK:       # %bb.0:
 ; CHECK-NEXT:    movl %edi, %eax
-; CHECK-NEXT:    subl %esi, %eax
-; CHECK-NEXT:    cmpl %edi, %eax
-; CHECK-NEXT:    cmovael %edi, %eax
+; CHECK-NEXT:    movl %edi, %ecx
+; CHECK-NEXT:    subl %esi, %ecx
+; CHECK-NEXT:    cmpl %edi, %ecx
+; CHECK-NEXT:    cmovbl %ecx, %eax
 ; CHECK-NEXT:    retq
   %sub = sub i32 %a, %b
   %cond = tail call i32 @llvm.umin.i32(i32 %sub, i32 %a)
@@ -80,10 +83,11 @@ define i32 @underflow_compare_fold_i32_multi_use(i32 %a, i32 %b, ptr addrspace(1
 ; CHECK-LABEL: underflow_compare_fold_i32_multi_use:
 ; CHECK:       # %bb.0:
 ; CHECK-NEXT:    movl %edi, %eax
-; CHECK-NEXT:    subl %esi, %eax
-; CHECK-NEXT:    movl %eax, (%rdx)
-; CHECK-NEXT:    cmpl %edi, %eax
-; CHECK-NEXT:    cmovael %edi, %eax
+; CHECK-NEXT:    movl %edi, %ecx
+; CHECK-NEXT:    subl %esi, %ecx
+; CHECK-NEXT:    movl %ecx, (%rdx)
+; CHECK-NEXT:    cmpl %edi, %ecx
+; CHECK-NEXT:    cmovbl %ecx, %eax
 ; CHECK-NEXT:    retq
   %sub = sub i32 %a, %b
   store i32 %sub, ptr addrspace(1) %ptr
@@ -96,9 +100,10 @@ define i16 @underflow_compare_fold_i16(i16 %a, i16 %b) {
 ; CHECK-LABEL: underflow_compare_fold_i16:
 ; CHECK:       # %bb.0:
 ; CHECK-NEXT:    movl %edi, %eax
-; CHECK-NEXT:    subl %esi, %eax
-; CHECK-NEXT:    cmpw %di, %ax
-; CHECK-NEXT:    cmovael %edi, %eax
+; CHECK-NEXT:    movl %edi, %ecx
+; CHECK-NEXT:    subl %esi, %ecx
+; CHECK-NEXT:    cmpw %ax, %cx
+; CHECK-NEXT:    cmovbl %ecx, %eax
 ; CHECK-NEXT:    # kill: def $ax killed $ax killed $eax
 ; CHECK-NEXT:    retq
   %sub = sub i16 %a, %b
@@ -126,10 +131,11 @@ define i16 @underflow_compare_fold_i16_multi_use(i16 %a, i16 %b, ptr addrspace(1
 ; CHECK-LABEL: underflow_compare_fold_i16_multi_use:
 ; CHECK:       # %bb.0:
 ; CHECK-NEXT:    movl %edi, %eax
-; CHECK-NEXT:    subl %esi, %eax
-; CHECK-NEXT:    movw %ax, (%rdx)
-; CHECK-NEXT:    cmpw %di, %ax
-; CHECK-NEXT:    cmovael %edi, %eax
+; CHECK-NEXT:    movl %edi, %ecx
+; CHECK-NEXT:    subl %esi, %ecx
+; CHECK-NEXT:    movw %cx, (%rdx)
+; CHECK-NEXT:    cmpw %ax, %cx
+; CHECK-NEXT:    cmovbl %ecx, %eax
 ; CHECK-NEXT:    # kill: def $ax killed $ax killed $eax
 ; CHECK-NEXT:    retq
   %sub = sub i16 %a, %b
@@ -145,7 +151,8 @@ define <16 x i8> @underflow_compare_dontfold_vectors(<16 x i8> %a, <16 x i8> %b)
 ; CHECK:       # %bb.0:
 ; CHECK-NEXT:    movdqa %xmm0, %xmm2
 ; CHECK-NEXT:    psubb %xmm1, %xmm2
-; CHECK-NEXT:    pminub %xmm2, %xmm0
+; CHECK-NEXT:    pminub %xmm0, %xmm2
+; CHECK-NEXT:    movdqa %xmm2, %xmm0
 ; CHECK-NEXT:    retq
   %sub = sub <16 x i8> %a, %b
   %cond = tail call <16 x i8> @llvm.umin.v16i8(<16 x i8> %sub, <16 x i8> %a)
@@ -156,9 +163,10 @@ define <16 x i8> @underflow_compare_dontfold_vectors(<16 x i8> %a, <16 x i8> %b)
 define i64 @umin_add(i64 %a, i64 %b) {
 ; CHECK-LABEL: umin_add:
 ; CHECK:       # %bb.0:
-; CHECK-NEXT:    leaq (%rsi,%rdi), %rax
-; CHECK-NEXT:    cmpq %rdi, %rax
-; CHECK-NEXT:    cmovaeq %rdi, %rax
+; CHECK-NEXT:    movq %rdi, %rax
+; CHECK-NEXT:    leaq (%rdi,%rsi), %rcx
+; CHECK-NEXT:    cmpq %rdi, %rcx
+; CHECK-NEXT:    cmovbq %rcx, %rax
 ; CHECK-NEXT:    retq
   %add = add i64 %a, %b
   %cond = tail call i64 @llvm.umin.i64(i64 %add, i64 %a)

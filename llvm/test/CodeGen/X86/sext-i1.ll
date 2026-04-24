@@ -85,7 +85,8 @@ define i32 @t4(i64 %x) nounwind readnone ssp {
 ; X86:       # %bb.0:
 ; X86-NEXT:    movl {{[0-9]+}}(%esp), %ecx
 ; X86-NEXT:    xorl %eax, %eax
-; X86-NEXT:    orl {{[0-9]+}}(%esp), %ecx
+; X86-NEXT:    movl {{[0-9]+}}(%esp), %edx
+; X86-NEXT:    orl %ecx, %edx
 ; X86-NEXT:    sete %al
 ; X86-NEXT:    negl %eax
 ; X86-NEXT:    retl

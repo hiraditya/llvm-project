@@ -64,13 +64,13 @@ define i48 @test_signed_i48_f32(float %f) nounwind {
 ;
 ; X64-LABEL: test_signed_i48_f32:
 ; X64:       # %bb.0:
-; X64-NEXT:    vcvttss2sis %xmm0, %rcx
-; X64-NEXT:    movabsq $-140737488355328, %rax # imm = 0xFFFF800000000000
-; X64-NEXT:    cmpq %rax, %rcx
-; X64-NEXT:    cmovgq %rcx, %rax
-; X64-NEXT:    movabsq $140737488355327, %rcx # imm = 0x7FFFFFFFFFFF
+; X64-NEXT:    vcvttss2sis %xmm0, %rax
+; X64-NEXT:    movabsq $-140737488355328, %rcx # imm = 0xFFFF800000000000
 ; X64-NEXT:    cmpq %rcx, %rax
-; X64-NEXT:    cmovgeq %rcx, %rax
+; X64-NEXT:    cmovgq %rax, %rcx
+; X64-NEXT:    movabsq $140737488355327, %rax # imm = 0x7FFFFFFFFFFF
+; X64-NEXT:    cmpq %rax, %rcx
+; X64-NEXT:    cmovlq %rcx, %rax
 ; X64-NEXT:    retq
     %x = call i48 @llvm.fptosi.sat.i48.f32(float %f)
     ret i48 %x
@@ -178,13 +178,13 @@ define i48 @test_signed_i48_f64(double %f) nounwind {
 ;
 ; X64-LABEL: test_signed_i48_f64:
 ; X64:       # %bb.0:
-; X64-NEXT:    vcvttsd2sis %xmm0, %rcx
-; X64-NEXT:    movabsq $-140737488355328, %rax # imm = 0xFFFF800000000000
-; X64-NEXT:    cmpq %rax, %rcx
-; X64-NEXT:    cmovgq %rcx, %rax
-; X64-NEXT:    movabsq $140737488355327, %rcx # imm = 0x7FFFFFFFFFFF
+; X64-NEXT:    vcvttsd2sis %xmm0, %rax
+; X64-NEXT:    movabsq $-140737488355328, %rcx # imm = 0xFFFF800000000000
 ; X64-NEXT:    cmpq %rcx, %rax
-; X64-NEXT:    cmovgeq %rcx, %rax
+; X64-NEXT:    cmovgq %rax, %rcx
+; X64-NEXT:    movabsq $140737488355327, %rax # imm = 0x7FFFFFFFFFFF
+; X64-NEXT:    cmpq %rax, %rcx
+; X64-NEXT:    cmovlq %rcx, %rax
 ; X64-NEXT:    retq
     %x = call i48 @llvm.fptosi.sat.i48.f64(double %f)
     ret i48 %x

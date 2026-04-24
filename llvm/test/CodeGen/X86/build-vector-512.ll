@@ -485,7 +485,7 @@ define <8 x double> @test_buildvector_8f64_2_var(double %a0, double %a1) {
 ; AVX512F-32-NEXT:    vbroadcastsd {{[0-9]+}}(%esp), %zmm0
 ; AVX512F-32-NEXT:    movb $-126, %al
 ; AVX512F-32-NEXT:    kmovw %eax, %k1
-; AVX512F-32-NEXT:    vbroadcastsd {{[0-9]+}}(%esp), %zmm0 {%k1}
+; AVX512F-32-NEXT:    vblendmpd {{[0-9]+}}(%esp){1to8}, %zmm0, %zmm0 {%k1}
 ; AVX512F-32-NEXT:    retl
 ;
 ; AVX512F-64-LABEL: test_buildvector_8f64_2_var:
@@ -501,7 +501,7 @@ define <8 x double> @test_buildvector_8f64_2_var(double %a0, double %a1) {
 ; AVX512BW-32-NEXT:    vbroadcastsd {{[0-9]+}}(%esp), %zmm0
 ; AVX512BW-32-NEXT:    movb $-126, %al
 ; AVX512BW-32-NEXT:    kmovd %eax, %k1
-; AVX512BW-32-NEXT:    vbroadcastsd {{[0-9]+}}(%esp), %zmm0 {%k1}
+; AVX512BW-32-NEXT:    vblendmpd {{[0-9]+}}(%esp){1to8}, %zmm0, %zmm0 {%k1}
 ; AVX512BW-32-NEXT:    retl
 ;
 ; AVX512BW-64-LABEL: test_buildvector_8f64_2_var:
@@ -530,7 +530,7 @@ define <8 x double> @test_buildvector_8f64_2_load(ptr %p0, ptr %p1) {
 ; AVX512F-32-NEXT:    vbroadcastsd (%ecx), %zmm0
 ; AVX512F-32-NEXT:    movb $-126, %cl
 ; AVX512F-32-NEXT:    kmovw %ecx, %k1
-; AVX512F-32-NEXT:    vbroadcastsd (%eax), %zmm0 {%k1}
+; AVX512F-32-NEXT:    vblendmpd (%eax){1to8}, %zmm0, %zmm0 {%k1}
 ; AVX512F-32-NEXT:    retl
 ;
 ; AVX512F-64-LABEL: test_buildvector_8f64_2_load:
@@ -538,7 +538,7 @@ define <8 x double> @test_buildvector_8f64_2_load(ptr %p0, ptr %p1) {
 ; AVX512F-64-NEXT:    vbroadcastsd (%rdi), %zmm0
 ; AVX512F-64-NEXT:    movb $-126, %al
 ; AVX512F-64-NEXT:    kmovw %eax, %k1
-; AVX512F-64-NEXT:    vbroadcastsd (%rsi), %zmm0 {%k1}
+; AVX512F-64-NEXT:    vblendmpd (%rsi){1to8}, %zmm0, %zmm0 {%k1}
 ; AVX512F-64-NEXT:    retq
 ;
 ; AVX512BW-32-LABEL: test_buildvector_8f64_2_load:
@@ -548,7 +548,7 @@ define <8 x double> @test_buildvector_8f64_2_load(ptr %p0, ptr %p1) {
 ; AVX512BW-32-NEXT:    vbroadcastsd (%ecx), %zmm0
 ; AVX512BW-32-NEXT:    movb $-126, %cl
 ; AVX512BW-32-NEXT:    kmovd %ecx, %k1
-; AVX512BW-32-NEXT:    vbroadcastsd (%eax), %zmm0 {%k1}
+; AVX512BW-32-NEXT:    vblendmpd (%eax){1to8}, %zmm0, %zmm0 {%k1}
 ; AVX512BW-32-NEXT:    retl
 ;
 ; AVX512BW-64-LABEL: test_buildvector_8f64_2_load:
@@ -556,7 +556,7 @@ define <8 x double> @test_buildvector_8f64_2_load(ptr %p0, ptr %p1) {
 ; AVX512BW-64-NEXT:    vbroadcastsd (%rdi), %zmm0
 ; AVX512BW-64-NEXT:    movb $-126, %al
 ; AVX512BW-64-NEXT:    kmovd %eax, %k1
-; AVX512BW-64-NEXT:    vbroadcastsd (%rsi), %zmm0 {%k1}
+; AVX512BW-64-NEXT:    vblendmpd (%rsi){1to8}, %zmm0, %zmm0 {%k1}
 ; AVX512BW-64-NEXT:    retq
   %a0 = load double, ptr %p0
   %a1 = load double, ptr %p1
@@ -591,14 +591,14 @@ define <16 x float> @test_buildvector_16f32_2_var(float %a0, float %a1) {
 ; AVX-64-NEXT:    # kill: def $xmm1 killed $xmm1 def $zmm1
 ; AVX-64-NEXT:    vpmovsxbd {{.*#+}} xmm2 = [0,16,0,0]
 ; AVX-64-NEXT:    vbroadcastss %xmm0, %xmm0
-; AVX-64-NEXT:    vmovaps %zmm1, %zmm3
-; AVX-64-NEXT:    vpermt2ps %zmm0, %zmm2, %zmm3
-; AVX-64-NEXT:    vmovss {{.*#+}} xmm4 = xmm1[0],xmm0[1,2,3]
-; AVX-64-NEXT:    vinsertf128 $1, %xmm4, %ymm3, %ymm3
-; AVX-64-NEXT:    vpermi2ps %zmm1, %zmm0, %zmm2
-; AVX-64-NEXT:    vinsertps {{.*#+}} xmm0 = xmm0[0,1,2],xmm1[0]
-; AVX-64-NEXT:    vinsertf128 $1, %xmm0, %ymm2, %ymm0
-; AVX-64-NEXT:    vinsertf64x4 $1, %ymm3, %zmm0, %zmm0
+; AVX-64-NEXT:    vmovss {{.*#+}} xmm3 = xmm1[0],xmm0[1,2,3]
+; AVX-64-NEXT:    vmovaps %zmm0, %zmm4
+; AVX-64-NEXT:    vpermt2ps %zmm1, %zmm2, %zmm4
+; AVX-64-NEXT:    vinsertps {{.*#+}} xmm5 = xmm0[0,1,2],xmm1[0]
+; AVX-64-NEXT:    vpermt2ps %zmm0, %zmm2, %zmm1
+; AVX-64-NEXT:    vinsertf128 $1, %xmm3, %ymm1, %ymm0
+; AVX-64-NEXT:    vinsertf128 $1, %xmm5, %ymm4, %ymm1
+; AVX-64-NEXT:    vinsertf64x4 $1, %ymm0, %zmm1, %zmm0
 ; AVX-64-NEXT:    retq
   %v0 = insertelement <16 x float> poison, float %a0, i32 0
   %v1 = insertelement <16 x float> %v0, float %a1, i32 1

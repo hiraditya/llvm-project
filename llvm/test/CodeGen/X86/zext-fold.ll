@@ -39,10 +39,11 @@ define void @test3(i8 %x) nounwind readnone {
 ; CHECK:       # %bb.0:
 ; CHECK-NEXT:    subl $12, %esp
 ; CHECK-NEXT:    movzbl {{[0-9]+}}(%esp), %eax
+; CHECK-NEXT:    movl %eax, %ecx
+; CHECK-NEXT:    andl $-32, %ecx
 ; CHECK-NEXT:    subl $8, %esp
 ; CHECK-NEXT:    pushl %eax
-; CHECK-NEXT:    andl $-32, %eax
-; CHECK-NEXT:    pushl %eax
+; CHECK-NEXT:    pushl %ecx
 ; CHECK-NEXT:    calll use@PLT
 ; CHECK-NEXT:    addl $28, %esp
 ; CHECK-NEXT:    retl

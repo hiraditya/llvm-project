@@ -149,8 +149,9 @@ define i17 @parity_17(i17 %x) {
 ; X86-POPCNT-LABEL: parity_17:
 ; X86-POPCNT:       # %bb.0:
 ; X86-POPCNT-NEXT:    movl $131071, %eax # imm = 0x1FFFF
-; X86-POPCNT-NEXT:    andl {{[0-9]+}}(%esp), %eax
-; X86-POPCNT-NEXT:    popcntl %eax, %eax
+; X86-POPCNT-NEXT:    movl {{[0-9]+}}(%esp), %ecx
+; X86-POPCNT-NEXT:    andl %eax, %ecx
+; X86-POPCNT-NEXT:    popcntl %ecx, %eax
 ; X86-POPCNT-NEXT:    andl $1, %eax
 ; X86-POPCNT-NEXT:    retl
 ;
@@ -207,12 +208,13 @@ define i64 @parity_64(i64 %x) {
 ; X86-NOPOPCNT-LABEL: parity_64:
 ; X86-NOPOPCNT:       # %bb.0:
 ; X86-NOPOPCNT-NEXT:    movl {{[0-9]+}}(%esp), %eax
-; X86-NOPOPCNT-NEXT:    xorl {{[0-9]+}}(%esp), %eax
-; X86-NOPOPCNT-NEXT:    movl %eax, %ecx
-; X86-NOPOPCNT-NEXT:    shrl $16, %ecx
+; X86-NOPOPCNT-NEXT:    movl {{[0-9]+}}(%esp), %ecx
 ; X86-NOPOPCNT-NEXT:    xorl %eax, %ecx
+; X86-NOPOPCNT-NEXT:    movl %ecx, %edx
+; X86-NOPOPCNT-NEXT:    shrl $16, %edx
+; X86-NOPOPCNT-NEXT:    xorl %ecx, %edx
 ; X86-NOPOPCNT-NEXT:    xorl %eax, %eax
-; X86-NOPOPCNT-NEXT:    xorb %ch, %cl
+; X86-NOPOPCNT-NEXT:    xorb %dh, %dl
 ; X86-NOPOPCNT-NEXT:    setnp %al
 ; X86-NOPOPCNT-NEXT:    xorl %edx, %edx
 ; X86-NOPOPCNT-NEXT:    retl
@@ -233,8 +235,9 @@ define i64 @parity_64(i64 %x) {
 ; X86-POPCNT-LABEL: parity_64:
 ; X86-POPCNT:       # %bb.0:
 ; X86-POPCNT-NEXT:    movl {{[0-9]+}}(%esp), %eax
-; X86-POPCNT-NEXT:    xorl {{[0-9]+}}(%esp), %eax
-; X86-POPCNT-NEXT:    popcntl %eax, %eax
+; X86-POPCNT-NEXT:    movl {{[0-9]+}}(%esp), %ecx
+; X86-POPCNT-NEXT:    xorl %eax, %ecx
+; X86-POPCNT-NEXT:    popcntl %ecx, %eax
 ; X86-POPCNT-NEXT:    andl $1, %eax
 ; X86-POPCNT-NEXT:    xorl %edx, %edx
 ; X86-POPCNT-NEXT:    retl
@@ -253,12 +256,13 @@ define i32 @parity_64_trunc(i64 %x) {
 ; X86-NOPOPCNT-LABEL: parity_64_trunc:
 ; X86-NOPOPCNT:       # %bb.0:
 ; X86-NOPOPCNT-NEXT:    movl {{[0-9]+}}(%esp), %eax
-; X86-NOPOPCNT-NEXT:    xorl {{[0-9]+}}(%esp), %eax
-; X86-NOPOPCNT-NEXT:    movl %eax, %ecx
-; X86-NOPOPCNT-NEXT:    shrl $16, %ecx
+; X86-NOPOPCNT-NEXT:    movl {{[0-9]+}}(%esp), %ecx
 ; X86-NOPOPCNT-NEXT:    xorl %eax, %ecx
+; X86-NOPOPCNT-NEXT:    movl %ecx, %edx
+; X86-NOPOPCNT-NEXT:    shrl $16, %edx
+; X86-NOPOPCNT-NEXT:    xorl %ecx, %edx
 ; X86-NOPOPCNT-NEXT:    xorl %eax, %eax
-; X86-NOPOPCNT-NEXT:    xorb %ch, %cl
+; X86-NOPOPCNT-NEXT:    xorb %dh, %dl
 ; X86-NOPOPCNT-NEXT:    setnp %al
 ; X86-NOPOPCNT-NEXT:    retl
 ;
@@ -278,8 +282,9 @@ define i32 @parity_64_trunc(i64 %x) {
 ; X86-POPCNT-LABEL: parity_64_trunc:
 ; X86-POPCNT:       # %bb.0:
 ; X86-POPCNT-NEXT:    movl {{[0-9]+}}(%esp), %eax
-; X86-POPCNT-NEXT:    xorl {{[0-9]+}}(%esp), %eax
-; X86-POPCNT-NEXT:    popcntl %eax, %eax
+; X86-POPCNT-NEXT:    movl {{[0-9]+}}(%esp), %ecx
+; X86-POPCNT-NEXT:    xorl %eax, %ecx
+; X86-POPCNT-NEXT:    popcntl %ecx, %eax
 ; X86-POPCNT-NEXT:    andl $1, %eax
 ; X86-POPCNT-NEXT:    retl
 ;
@@ -404,21 +409,21 @@ define i16 @parity_16_mask15(i16 %x) {
 define i16 @parity_16_shift(i16 %0) {
 ; X86-NOPOPCNT-LABEL: parity_16_shift:
 ; X86-NOPOPCNT:       # %bb.0:
-; X86-NOPOPCNT-NEXT:    movl {{[0-9]+}}(%esp), %ecx
-; X86-NOPOPCNT-NEXT:    xorl %eax, %eax
-; X86-NOPOPCNT-NEXT:    xorb %ch, %cl
-; X86-NOPOPCNT-NEXT:    setnp %al
-; X86-NOPOPCNT-NEXT:    addl %eax, %eax
+; X86-NOPOPCNT-NEXT:    movl {{[0-9]+}}(%esp), %eax
+; X86-NOPOPCNT-NEXT:    xorl %ecx, %ecx
+; X86-NOPOPCNT-NEXT:    xorb %ah, %al
+; X86-NOPOPCNT-NEXT:    setnp %cl
+; X86-NOPOPCNT-NEXT:    leal (%ecx,%ecx), %eax
 ; X86-NOPOPCNT-NEXT:    # kill: def $ax killed $ax killed $eax
 ; X86-NOPOPCNT-NEXT:    retl
 ;
 ; X64-NOPOPCNT-LABEL: parity_16_shift:
 ; X64-NOPOPCNT:       # %bb.0:
-; X64-NOPOPCNT-NEXT:    movl %edi, %ecx
-; X64-NOPOPCNT-NEXT:    xorl %eax, %eax
-; X64-NOPOPCNT-NEXT:    xorb %ch, %cl
-; X64-NOPOPCNT-NEXT:    setnp %al
-; X64-NOPOPCNT-NEXT:    addl %eax, %eax
+; X64-NOPOPCNT-NEXT:    movl %edi, %eax
+; X64-NOPOPCNT-NEXT:    xorl %ecx, %ecx
+; X64-NOPOPCNT-NEXT:    xorb %ah, %al
+; X64-NOPOPCNT-NEXT:    setnp %cl
+; X64-NOPOPCNT-NEXT:    leal (%rcx,%rcx), %eax
 ; X64-NOPOPCNT-NEXT:    # kill: def $ax killed $ax killed $eax
 ; X64-NOPOPCNT-NEXT:    retq
 ;
@@ -520,13 +525,13 @@ define i32 @parity_32_shift(i32 %0) {
 ;
 ; X64-NOPOPCNT-LABEL: parity_32_shift:
 ; X64-NOPOPCNT:       # %bb.0:
-; X64-NOPOPCNT-NEXT:    movl %edi, %ecx
-; X64-NOPOPCNT-NEXT:    shrl $16, %ecx
-; X64-NOPOPCNT-NEXT:    xorl %edi, %ecx
-; X64-NOPOPCNT-NEXT:    xorl %eax, %eax
-; X64-NOPOPCNT-NEXT:    xorb %ch, %cl
-; X64-NOPOPCNT-NEXT:    setnp %al
-; X64-NOPOPCNT-NEXT:    addl %eax, %eax
+; X64-NOPOPCNT-NEXT:    movl %edi, %eax
+; X64-NOPOPCNT-NEXT:    shrl $16, %eax
+; X64-NOPOPCNT-NEXT:    xorl %edi, %eax
+; X64-NOPOPCNT-NEXT:    xorl %ecx, %ecx
+; X64-NOPOPCNT-NEXT:    xorb %ah, %al
+; X64-NOPOPCNT-NEXT:    setnp %cl
+; X64-NOPOPCNT-NEXT:    leal (%rcx,%rcx), %eax
 ; X64-NOPOPCNT-NEXT:    retq
 ;
 ; X86-POPCNT-LABEL: parity_32_shift:
@@ -615,14 +620,15 @@ define i64 @parity_64_shift(i64 %0) {
 ; X86-NOPOPCNT-LABEL: parity_64_shift:
 ; X86-NOPOPCNT:       # %bb.0:
 ; X86-NOPOPCNT-NEXT:    movl {{[0-9]+}}(%esp), %eax
-; X86-NOPOPCNT-NEXT:    xorl {{[0-9]+}}(%esp), %eax
-; X86-NOPOPCNT-NEXT:    movl %eax, %ecx
-; X86-NOPOPCNT-NEXT:    shrl $16, %ecx
+; X86-NOPOPCNT-NEXT:    movl {{[0-9]+}}(%esp), %ecx
 ; X86-NOPOPCNT-NEXT:    xorl %eax, %ecx
-; X86-NOPOPCNT-NEXT:    xorl %eax, %eax
-; X86-NOPOPCNT-NEXT:    xorb %ch, %cl
-; X86-NOPOPCNT-NEXT:    setnp %al
-; X86-NOPOPCNT-NEXT:    addl %eax, %eax
+; X86-NOPOPCNT-NEXT:    movl %ecx, %eax
+; X86-NOPOPCNT-NEXT:    shrl $16, %eax
+; X86-NOPOPCNT-NEXT:    xorl %ecx, %eax
+; X86-NOPOPCNT-NEXT:    xorl %ecx, %ecx
+; X86-NOPOPCNT-NEXT:    xorb %ah, %al
+; X86-NOPOPCNT-NEXT:    setnp %cl
+; X86-NOPOPCNT-NEXT:    leal (%ecx,%ecx), %eax
 ; X86-NOPOPCNT-NEXT:    xorl %edx, %edx
 ; X86-NOPOPCNT-NEXT:    retl
 ;
@@ -631,20 +637,21 @@ define i64 @parity_64_shift(i64 %0) {
 ; X64-NOPOPCNT-NEXT:    movl %edi, %eax
 ; X64-NOPOPCNT-NEXT:    shrq $32, %rdi
 ; X64-NOPOPCNT-NEXT:    xorl %eax, %edi
-; X64-NOPOPCNT-NEXT:    movl %edi, %ecx
-; X64-NOPOPCNT-NEXT:    shrl $16, %ecx
-; X64-NOPOPCNT-NEXT:    xorl %edi, %ecx
-; X64-NOPOPCNT-NEXT:    xorl %eax, %eax
-; X64-NOPOPCNT-NEXT:    xorb %ch, %cl
-; X64-NOPOPCNT-NEXT:    setnp %al
-; X64-NOPOPCNT-NEXT:    addl %eax, %eax
+; X64-NOPOPCNT-NEXT:    movl %edi, %eax
+; X64-NOPOPCNT-NEXT:    shrl $16, %eax
+; X64-NOPOPCNT-NEXT:    xorl %edi, %eax
+; X64-NOPOPCNT-NEXT:    xorl %ecx, %ecx
+; X64-NOPOPCNT-NEXT:    xorb %ah, %al
+; X64-NOPOPCNT-NEXT:    setnp %cl
+; X64-NOPOPCNT-NEXT:    leal (%rcx,%rcx), %eax
 ; X64-NOPOPCNT-NEXT:    retq
 ;
 ; X86-POPCNT-LABEL: parity_64_shift:
 ; X86-POPCNT:       # %bb.0:
 ; X86-POPCNT-NEXT:    movl {{[0-9]+}}(%esp), %eax
-; X86-POPCNT-NEXT:    xorl {{[0-9]+}}(%esp), %eax
-; X86-POPCNT-NEXT:    popcntl %eax, %eax
+; X86-POPCNT-NEXT:    movl {{[0-9]+}}(%esp), %ecx
+; X86-POPCNT-NEXT:    xorl %eax, %ecx
+; X86-POPCNT-NEXT:    popcntl %ecx, %eax
 ; X86-POPCNT-NEXT:    andl $1, %eax
 ; X86-POPCNT-NEXT:    addl %eax, %eax
 ; X86-POPCNT-NEXT:    xorl %edx, %edx

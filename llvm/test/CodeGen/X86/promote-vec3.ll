@@ -65,8 +65,8 @@ define <3 x i16> @sext_i8(<3 x i8>) {
 ; SSE3-NEXT:    movl {{[0-9]+}}(%esp), %ecx
 ; SSE3-NEXT:    shll $24, %ecx
 ; SSE3-NEXT:    shll $8, %eax
-; SSE3-NEXT:    orl %ecx, %eax
-; SSE3-NEXT:    movd %eax, %xmm0
+; SSE3-NEXT:    orl %eax, %ecx
+; SSE3-NEXT:    movd %ecx, %xmm0
 ; SSE3-NEXT:    movl {{[0-9]+}}(%esp), %eax
 ; SSE3-NEXT:    shll $8, %eax
 ; SSE3-NEXT:    pinsrw $2, %eax, %xmm0

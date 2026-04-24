@@ -8,7 +8,8 @@ define <2 x double> @splat_fdiv_v2f64(<2 x double> %x, double %y) {
 ; SSE-NEXT:    movsd {{.*#+}} xmm2 = [1.0E+0,0.0E+0]
 ; SSE-NEXT:    divsd %xmm1, %xmm2
 ; SSE-NEXT:    unpcklpd {{.*#+}} xmm2 = xmm2[0,0]
-; SSE-NEXT:    mulpd %xmm2, %xmm0
+; SSE-NEXT:    mulpd %xmm0, %xmm2
+; SSE-NEXT:    movapd %xmm2, %xmm0
 ; SSE-NEXT:    retq
 ;
 ; AVX-LABEL: splat_fdiv_v2f64:
@@ -54,7 +55,8 @@ define <4 x float> @splat_fdiv_v4f32(<4 x float> %x, float %y) {
 ; SSE-NEXT:    movss {{.*#+}} xmm2 = [1.0E+0,0.0E+0,0.0E+0,0.0E+0]
 ; SSE-NEXT:    divss %xmm1, %xmm2
 ; SSE-NEXT:    shufps {{.*#+}} xmm2 = xmm2[0,0,0,0]
-; SSE-NEXT:    mulps %xmm2, %xmm0
+; SSE-NEXT:    mulps %xmm0, %xmm2
+; SSE-NEXT:    movaps %xmm2, %xmm0
 ; SSE-NEXT:    retq
 ;
 ; AVX-LABEL: splat_fdiv_v4f32:
@@ -97,14 +99,15 @@ define <8 x float> @splat_fdiv_v8f32(<8 x float> %x, float %y) {
 define <4 x float> @splat_fdiv_v4f32_estimate(<4 x float> %x, float %y) #0 {
 ; SSE-LABEL: splat_fdiv_v4f32_estimate:
 ; SSE:       # %bb.0:
-; SSE-NEXT:    rcpss %xmm1, %xmm2
-; SSE-NEXT:    mulss %xmm2, %xmm1
-; SSE-NEXT:    movss {{.*#+}} xmm3 = [1.0E+0,0.0E+0,0.0E+0,0.0E+0]
-; SSE-NEXT:    subss %xmm1, %xmm3
-; SSE-NEXT:    mulss %xmm2, %xmm3
-; SSE-NEXT:    addss %xmm2, %xmm3
-; SSE-NEXT:    shufps {{.*#+}} xmm3 = xmm3[0,0,0,0]
-; SSE-NEXT:    mulps %xmm3, %xmm0
+; SSE-NEXT:    rcpss %xmm1, %xmm3
+; SSE-NEXT:    mulss %xmm3, %xmm1
+; SSE-NEXT:    movss {{.*#+}} xmm2 = [1.0E+0,0.0E+0,0.0E+0,0.0E+0]
+; SSE-NEXT:    subss %xmm1, %xmm2
+; SSE-NEXT:    mulss %xmm3, %xmm2
+; SSE-NEXT:    addss %xmm3, %xmm2
+; SSE-NEXT:    shufps {{.*#+}} xmm2 = xmm2[0,0,0,0]
+; SSE-NEXT:    mulps %xmm0, %xmm2
+; SSE-NEXT:    movaps %xmm2, %xmm0
 ; SSE-NEXT:    retq
 ;
 ; AVX-LABEL: splat_fdiv_v4f32_estimate:

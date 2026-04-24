@@ -10,21 +10,19 @@
 define i8 @out8_constmask(i8 %x, i8 %y) {
 ; CHECK-NOBMI-LABEL: out8_constmask:
 ; CHECK-NOBMI:       # %bb.0:
-; CHECK-NOBMI-NEXT:    # kill: def $esi killed $esi def $rsi
-; CHECK-NOBMI-NEXT:    # kill: def $edi killed $edi def $rdi
+; CHECK-NOBMI-NEXT:    movl %esi, %eax
 ; CHECK-NOBMI-NEXT:    andb $85, %dil
-; CHECK-NOBMI-NEXT:    andb $-86, %sil
-; CHECK-NOBMI-NEXT:    leal (%rsi,%rdi), %eax
+; CHECK-NOBMI-NEXT:    andb $-86, %al
+; CHECK-NOBMI-NEXT:    orb %dil, %al
 ; CHECK-NOBMI-NEXT:    # kill: def $al killed $al killed $eax
 ; CHECK-NOBMI-NEXT:    retq
 ;
 ; CHECK-BMI-LABEL: out8_constmask:
 ; CHECK-BMI:       # %bb.0:
-; CHECK-BMI-NEXT:    # kill: def $esi killed $esi def $rsi
-; CHECK-BMI-NEXT:    # kill: def $edi killed $edi def $rdi
+; CHECK-BMI-NEXT:    movl %esi, %eax
 ; CHECK-BMI-NEXT:    andb $85, %dil
-; CHECK-BMI-NEXT:    andb $-86, %sil
-; CHECK-BMI-NEXT:    leal (%rsi,%rdi), %eax
+; CHECK-BMI-NEXT:    andb $-86, %al
+; CHECK-BMI-NEXT:    orb %dil, %al
 ; CHECK-BMI-NEXT:    # kill: def $al killed $al killed $eax
 ; CHECK-BMI-NEXT:    retq
   %mx = and i8 %x, 85
@@ -36,21 +34,19 @@ define i8 @out8_constmask(i8 %x, i8 %y) {
 define i16 @out16_constmask(i16 %x, i16 %y) {
 ; CHECK-NOBMI-LABEL: out16_constmask:
 ; CHECK-NOBMI:       # %bb.0:
-; CHECK-NOBMI-NEXT:    # kill: def $esi killed $esi def $rsi
-; CHECK-NOBMI-NEXT:    # kill: def $edi killed $edi def $rdi
+; CHECK-NOBMI-NEXT:    movl %esi, %eax
 ; CHECK-NOBMI-NEXT:    andl $21845, %edi # imm = 0x5555
-; CHECK-NOBMI-NEXT:    andl $-21846, %esi # imm = 0xAAAA
-; CHECK-NOBMI-NEXT:    leal (%rsi,%rdi), %eax
+; CHECK-NOBMI-NEXT:    andl $-21846, %eax # imm = 0xAAAA
+; CHECK-NOBMI-NEXT:    orl %edi, %eax
 ; CHECK-NOBMI-NEXT:    # kill: def $ax killed $ax killed $eax
 ; CHECK-NOBMI-NEXT:    retq
 ;
 ; CHECK-BMI-LABEL: out16_constmask:
 ; CHECK-BMI:       # %bb.0:
-; CHECK-BMI-NEXT:    # kill: def $esi killed $esi def $rsi
-; CHECK-BMI-NEXT:    # kill: def $edi killed $edi def $rdi
+; CHECK-BMI-NEXT:    movl %esi, %eax
 ; CHECK-BMI-NEXT:    andl $21845, %edi # imm = 0x5555
-; CHECK-BMI-NEXT:    andl $-21846, %esi # imm = 0xAAAA
-; CHECK-BMI-NEXT:    leal (%rsi,%rdi), %eax
+; CHECK-BMI-NEXT:    andl $-21846, %eax # imm = 0xAAAA
+; CHECK-BMI-NEXT:    orl %edi, %eax
 ; CHECK-BMI-NEXT:    # kill: def $ax killed $ax killed $eax
 ; CHECK-BMI-NEXT:    retq
   %mx = and i16 %x, 21845
@@ -62,20 +58,18 @@ define i16 @out16_constmask(i16 %x, i16 %y) {
 define i32 @out32_constmask(i32 %x, i32 %y) {
 ; CHECK-NOBMI-LABEL: out32_constmask:
 ; CHECK-NOBMI:       # %bb.0:
-; CHECK-NOBMI-NEXT:    # kill: def $esi killed $esi def $rsi
-; CHECK-NOBMI-NEXT:    # kill: def $edi killed $edi def $rdi
+; CHECK-NOBMI-NEXT:    movl %esi, %eax
 ; CHECK-NOBMI-NEXT:    andl $1431655765, %edi # imm = 0x55555555
-; CHECK-NOBMI-NEXT:    andl $-1431655766, %esi # imm = 0xAAAAAAAA
-; CHECK-NOBMI-NEXT:    leal (%rsi,%rdi), %eax
+; CHECK-NOBMI-NEXT:    andl $-1431655766, %eax # imm = 0xAAAAAAAA
+; CHECK-NOBMI-NEXT:    orl %edi, %eax
 ; CHECK-NOBMI-NEXT:    retq
 ;
 ; CHECK-BMI-LABEL: out32_constmask:
 ; CHECK-BMI:       # %bb.0:
-; CHECK-BMI-NEXT:    # kill: def $esi killed $esi def $rsi
-; CHECK-BMI-NEXT:    # kill: def $edi killed $edi def $rdi
+; CHECK-BMI-NEXT:    movl %esi, %eax
 ; CHECK-BMI-NEXT:    andl $1431655765, %edi # imm = 0x55555555
-; CHECK-BMI-NEXT:    andl $-1431655766, %esi # imm = 0xAAAAAAAA
-; CHECK-BMI-NEXT:    leal (%rsi,%rdi), %eax
+; CHECK-BMI-NEXT:    andl $-1431655766, %eax # imm = 0xAAAAAAAA
+; CHECK-BMI-NEXT:    orl %edi, %eax
 ; CHECK-BMI-NEXT:    retq
   %mx = and i32 %x, 1431655765
   %my = and i32 %y, -1431655766
@@ -114,19 +108,19 @@ define i64 @out64_constmask(i64 %x, i64 %y) {
 define i8 @in8_constmask(i8 %x, i8 %y) {
 ; CHECK-NOBMI-LABEL: in8_constmask:
 ; CHECK-NOBMI:       # %bb.0:
-; CHECK-NOBMI-NEXT:    movl %esi, %eax
-; CHECK-NOBMI-NEXT:    xorl %esi, %edi
-; CHECK-NOBMI-NEXT:    andb $85, %dil
-; CHECK-NOBMI-NEXT:    xorb %dil, %al
+; CHECK-NOBMI-NEXT:    movl %edi, %eax
+; CHECK-NOBMI-NEXT:    xorl %esi, %eax
+; CHECK-NOBMI-NEXT:    andb $85, %al
+; CHECK-NOBMI-NEXT:    xorb %sil, %al
 ; CHECK-NOBMI-NEXT:    # kill: def $al killed $al killed $eax
 ; CHECK-NOBMI-NEXT:    retq
 ;
 ; CHECK-BMI-LABEL: in8_constmask:
 ; CHECK-BMI:       # %bb.0:
-; CHECK-BMI-NEXT:    movl %esi, %eax
-; CHECK-BMI-NEXT:    xorl %esi, %edi
-; CHECK-BMI-NEXT:    andb $85, %dil
-; CHECK-BMI-NEXT:    xorb %dil, %al
+; CHECK-BMI-NEXT:    movl %edi, %eax
+; CHECK-BMI-NEXT:    xorl %esi, %eax
+; CHECK-BMI-NEXT:    andb $85, %al
+; CHECK-BMI-NEXT:    xorb %sil, %al
 ; CHECK-BMI-NEXT:    # kill: def $al killed $al killed $eax
 ; CHECK-BMI-NEXT:    retq
   %n0 = xor i8 %x, %y
@@ -232,16 +226,16 @@ define i32 @in_constmask_commutativity_0_1(i32 %x, i32 %y) {
 define i32 @in_constmask_commutativity_1_0(i32 %x, i32 %y) {
 ; CHECK-NOBMI-LABEL: in_constmask_commutativity_1_0:
 ; CHECK-NOBMI:       # %bb.0:
-; CHECK-NOBMI-NEXT:    movl %esi, %eax
-; CHECK-NOBMI-NEXT:    xorl %edi, %eax
+; CHECK-NOBMI-NEXT:    movl %edi, %eax
+; CHECK-NOBMI-NEXT:    xorl %esi, %eax
 ; CHECK-NOBMI-NEXT:    andl $1431655765, %eax # imm = 0x55555555
 ; CHECK-NOBMI-NEXT:    xorl %edi, %eax
 ; CHECK-NOBMI-NEXT:    retq
 ;
 ; CHECK-BMI-LABEL: in_constmask_commutativity_1_0:
 ; CHECK-BMI:       # %bb.0:
-; CHECK-BMI-NEXT:    movl %esi, %eax
-; CHECK-BMI-NEXT:    xorl %edi, %eax
+; CHECK-BMI-NEXT:    movl %edi, %eax
+; CHECK-BMI-NEXT:    xorl %esi, %eax
 ; CHECK-BMI-NEXT:    andl $1431655765, %eax # imm = 0x55555555
 ; CHECK-BMI-NEXT:    xorl %edi, %eax
 ; CHECK-BMI-NEXT:    retq
@@ -254,16 +248,16 @@ define i32 @in_constmask_commutativity_1_0(i32 %x, i32 %y) {
 define i32 @in_constmask_commutativity_1_1(i32 %x, i32 %y) {
 ; CHECK-NOBMI-LABEL: in_constmask_commutativity_1_1:
 ; CHECK-NOBMI:       # %bb.0:
-; CHECK-NOBMI-NEXT:    movl %esi, %eax
-; CHECK-NOBMI-NEXT:    xorl %edi, %eax
+; CHECK-NOBMI-NEXT:    movl %edi, %eax
+; CHECK-NOBMI-NEXT:    xorl %esi, %eax
 ; CHECK-NOBMI-NEXT:    andl $1431655765, %eax # imm = 0x55555555
 ; CHECK-NOBMI-NEXT:    xorl %edi, %eax
 ; CHECK-NOBMI-NEXT:    retq
 ;
 ; CHECK-BMI-LABEL: in_constmask_commutativity_1_1:
 ; CHECK-BMI:       # %bb.0:
-; CHECK-BMI-NEXT:    movl %esi, %eax
-; CHECK-BMI-NEXT:    xorl %edi, %eax
+; CHECK-BMI-NEXT:    movl %edi, %eax
+; CHECK-BMI-NEXT:    xorl %esi, %eax
 ; CHECK-BMI-NEXT:    andl $1431655765, %eax # imm = 0x55555555
 ; CHECK-BMI-NEXT:    xorl %edi, %eax
 ; CHECK-BMI-NEXT:    retq

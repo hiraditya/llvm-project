@@ -37,9 +37,9 @@ define i32 @test2(ptr %p, i32 %a, i32 %b, i32 %c) {
 ; CHECK:       # %bb.0: # %entry
 ; CHECK-NEXT:    # kill: def $edx killed $edx def $rdx
 ; CHECK-NEXT:    movl %esi, %eax
-; CHECK-NEXT:    addl %eax, %ecx
-; CHECK-NEXT:    addl %edx, %ecx
-; CHECK-NEXT:    movl %ecx, (%rdi)
+; CHECK-NEXT:    leal (%rax,%rdx), %esi
+; CHECK-NEXT:    addl %ecx, %esi
+; CHECK-NEXT:    movl %esi, (%rdi)
 ; CHECK-NEXT:    subl %edx, %eax
 ; CHECK-NEXT:    # kill: def $eax killed $eax killed $rax
 ; CHECK-NEXT:    retq
@@ -55,10 +55,11 @@ entry:
 define i32 @test3(ptr %p, i32 %a, i32 %b, i32 %c) {
 ; CHECK-LABEL: test3:
 ; CHECK:       # %bb.0: # %entry
+; CHECK-NEXT:    # kill: def $ecx killed $ecx def $rcx
 ; CHECK-NEXT:    # kill: def $edx killed $edx def $rdx
 ; CHECK-NEXT:    movl %esi, %eax
-; CHECK-NEXT:    addl %eax, %ecx
-; CHECK-NEXT:    addl %edx, %ecx
+; CHECK-NEXT:    leal (%rax,%rdx), %esi
+; CHECK-NEXT:    addl %esi, %ecx
 ; CHECK-NEXT:    movl %ecx, (%rdi)
 ; CHECK-NEXT:    subl %edx, %eax
 ; CHECK-NEXT:    # kill: def $eax killed $eax killed $rax
@@ -193,9 +194,9 @@ define void @test9(i64 %p, i64 %s) {
 ; CHECK-NEXT:    testl $4095, %eax # imm = 0xFFF
 ; CHECK-NEXT:    setne %cl
 ; CHECK-NEXT:    shll $12, %ecx
-; CHECK-NEXT:    addq %rax, %rcx
-; CHECK-NEXT:    andq $-4096, %rcx # imm = 0xF000
-; CHECK-NEXT:    addq %rcx, %rdi
+; CHECK-NEXT:    addq %rcx, %rax
+; CHECK-NEXT:    andq $-4096, %rax # imm = 0xF000
+; CHECK-NEXT:    addq %rax, %rdi
 ; CHECK-NEXT:    jmp bar@PLT # TAILCALL
 entry:
   %add = add i64 %s, %p

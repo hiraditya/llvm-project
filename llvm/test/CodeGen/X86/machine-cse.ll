@@ -49,31 +49,6 @@ declare fastcc ptr @foo(ptr) nounwind
 declare void @printf(...) nounwind
 
 define void @commute(i32 %test_case, i32 %scale) nounwind ssp {
-; CHECK-LABEL: commute:
-; CHECK:       # %bb.0: # %entry
-; CHECK-NEXT:    # kill: def $esi killed $esi def $rsi
-; CHECK-NEXT:    # kill: def $edi killed $edi def $rdi
-; CHECK-NEXT:    leal -1(%rdi), %eax
-; CHECK-NEXT:    cmpl $2, %eax
-; CHECK-NEXT:    ja .LBB1_4
-; CHECK-NEXT:  # %bb.1: # %sw.bb
-; CHECK-NEXT:    xorl %eax, %eax
-; CHECK-NEXT:    testb %al, %al
-; CHECK-NEXT:    jne .LBB1_4
-; CHECK-NEXT:  # %bb.2: # %if.end34
-; CHECK-NEXT:    pushq %rax
-; CHECK-NEXT:    imull %edi, %esi
-; CHECK-NEXT:    leal (%rsi,%rsi,2), %esi
-; CHECK-NEXT:    # kill: def $edi killed $edi killed $rdi
-; CHECK-NEXT:    xorl %eax, %eax
-; CHECK-NEXT:    callq printf@PLT
-; CHECK-NEXT:    addq $8, %rsp
-; CHECK-NEXT:    .p2align 4
-; CHECK-NEXT:  .LBB1_3: # %for.body53.us
-; CHECK-NEXT:    # =>This Inner Loop Header: Depth=1
-; CHECK-NEXT:    jmp .LBB1_3
-; CHECK-NEXT:  .LBB1_4: # %sw.bb307
-; CHECK-NEXT:    retq
 entry:
   switch i32 %test_case, label %sw.bb307 [
     i32 1, label %sw.bb

@@ -76,11 +76,12 @@ define i64 @add_shl_zext(ptr %ptr, i8 %arg) nounwind {
 ; X86-LABEL: add_shl_zext:
 ; X86:       # %bb.0:
 ; X86-NEXT:    pushl %esi
-; X86-NEXT:    movzbl {{[0-9]+}}(%esp), %ecx
-; X86-NEXT:    movl {{[0-9]+}}(%esp), %esi
-; X86-NEXT:    movl 4(%esi,%ecx,4), %edx
-; X86-NEXT:    leal (,%ecx,8), %eax
-; X86-NEXT:    addl (%esi,%ecx,4), %eax
+; X86-NEXT:    movzbl {{[0-9]+}}(%esp), %eax
+; X86-NEXT:    movl {{[0-9]+}}(%esp), %ecx
+; X86-NEXT:    movl 4(%ecx,%eax,4), %edx
+; X86-NEXT:    leal (,%eax,8), %esi
+; X86-NEXT:    movl (%ecx,%eax,4), %eax
+; X86-NEXT:    addl %esi, %eax
 ; X86-NEXT:    adcl $0, %edx
 ; X86-NEXT:    popl %esi
 ; X86-NEXT:    retl
@@ -88,8 +89,9 @@ define i64 @add_shl_zext(ptr %ptr, i8 %arg) nounwind {
 ; X64-LABEL: add_shl_zext:
 ; X64:       # %bb.0:
 ; X64-NEXT:    movzbl %sil, %eax
-; X64-NEXT:    shll $3, %eax
-; X64-NEXT:    addq (%rdi,%rax), %rax
+; X64-NEXT:    leal (,%rax,8), %ecx
+; X64-NEXT:    movq (%rdi,%rcx), %rax
+; X64-NEXT:    addq %rcx, %rax
 ; X64-NEXT:    retq
   %idx = zext i8 %arg to i64
   %gep = getelementptr ptr, ptr %ptr, i64 %idx
@@ -103,8 +105,9 @@ define i32 @PR55714_i32(i32 %n, i32 %q) {
 ; X86-LABEL: PR55714_i32:
 ; X86:       # %bb.0:
 ; X86-NEXT:    movl {{[0-9]+}}(%esp), %ecx
-; X86-NEXT:    leal (,%ecx,8), %eax
-; X86-NEXT:    addl {{[0-9]+}}(%esp), %eax
+; X86-NEXT:    leal (,%ecx,8), %edx
+; X86-NEXT:    movl {{[0-9]+}}(%esp), %eax
+; X86-NEXT:    addl %edx, %eax
 ; X86-NEXT:    subl %ecx, %eax
 ; X86-NEXT:    retl
 ;
@@ -123,13 +126,21 @@ define i32 @PR55714_i32(i32 %n, i32 %q) {
 define i64 @PR55714_i64(i64 %n, i64 %q) {
 ; X86-LABEL: PR55714_i64:
 ; X86:       # %bb.0:
+; X86-NEXT:    pushl %esi
+; X86-NEXT:    .cfi_def_cfa_offset 8
+; X86-NEXT:    .cfi_offset %esi, -8
 ; X86-NEXT:    movl {{[0-9]+}}(%esp), %ecx
 ; X86-NEXT:    movl $7, %eax
 ; X86-NEXT:    mull {{[0-9]+}}(%esp)
-; X86-NEXT:    leal (%edx,%ecx,8), %edx
-; X86-NEXT:    subl %ecx, %edx
-; X86-NEXT:    addl {{[0-9]+}}(%esp), %eax
-; X86-NEXT:    adcl {{[0-9]+}}(%esp), %edx
+; X86-NEXT:    leal (%edx,%ecx,8), %esi
+; X86-NEXT:    subl %ecx, %esi
+; X86-NEXT:    movl {{[0-9]+}}(%esp), %ecx
+; X86-NEXT:    addl %eax, %ecx
+; X86-NEXT:    movl {{[0-9]+}}(%esp), %edx
+; X86-NEXT:    adcl %esi, %edx
+; X86-NEXT:    movl %ecx, %eax
+; X86-NEXT:    popl %esi
+; X86-NEXT:    .cfi_def_cfa_offset 4
 ; X86-NEXT:    retl
 ;
 ; X64-LABEL: PR55714_i64:

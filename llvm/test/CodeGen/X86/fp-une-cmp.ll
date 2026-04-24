@@ -30,7 +30,8 @@ define double @rdar_7859988(double %x, double %y) nounwind readnone optsize ssp 
 ; CHECK-NEXT:    jne .LBB0_2
 ; CHECK-NEXT:    jp .LBB0_2
 ; CHECK-NEXT:  # %bb.1: # %bb1
-; CHECK-NEXT:    addsd {{\.?LCPI[0-9]+_[0-9]+}}(%rip), %xmm0
+; CHECK-NEXT:    movsd {{.*#+}} xmm1 = [-1.0E+0,0.0E+0]
+; CHECK-NEXT:    addsd %xmm1, %xmm0
 ; CHECK-NEXT:  .LBB0_2: # %bb2
 ; CHECK-NEXT:    retq
 
@@ -59,7 +60,8 @@ define double @profile_metadata(double %x, double %y) {
 ; CHECK-NEXT:  # %bb.2: # %bb2
 ; CHECK-NEXT:    retq
 ; CHECK-NEXT:  .LBB1_1: # %bb1
-; CHECK-NEXT:    addsd {{\.?LCPI[0-9]+_[0-9]+}}(%rip), %xmm0
+; CHECK-NEXT:    movsd {{.*#+}} xmm1 = [-1.0E+0,0.0E+0]
+; CHECK-NEXT:    addsd %xmm1, %xmm0
 ; CHECK-NEXT:    retq
 
 entry:

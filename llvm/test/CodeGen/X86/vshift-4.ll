@@ -34,8 +34,8 @@ define void @shift1b(<2 x i64> %val, ptr %dst, <2 x i64> %sh) nounwind {
 ; X86-NEXT:    psllq %xmm1, %xmm2
 ; X86-NEXT:    pshufd {{.*#+}} xmm1 = xmm1[2,3,2,3]
 ; X86-NEXT:    psllq %xmm1, %xmm0
-; X86-NEXT:    movsd {{.*#+}} xmm0 = xmm2[0],xmm0[1]
-; X86-NEXT:    movapd %xmm0, (%eax)
+; X86-NEXT:    shufps {{.*#+}} xmm2 = xmm2[0,1],xmm0[2,3]
+; X86-NEXT:    movaps %xmm2, (%eax)
 ; X86-NEXT:    retl
 ;
 ; X64-LABEL: shift1b:
@@ -44,8 +44,8 @@ define void @shift1b(<2 x i64> %val, ptr %dst, <2 x i64> %sh) nounwind {
 ; X64-NEXT:    psllq %xmm1, %xmm2
 ; X64-NEXT:    pshufd {{.*#+}} xmm1 = xmm1[2,3,2,3]
 ; X64-NEXT:    psllq %xmm1, %xmm0
-; X64-NEXT:    movsd {{.*#+}} xmm0 = xmm2[0],xmm0[1]
-; X64-NEXT:    movapd %xmm0, (%rdi)
+; X64-NEXT:    shufps {{.*#+}} xmm2 = xmm2[0,1],xmm0[2,3]
+; X64-NEXT:    movaps %xmm2, (%rdi)
 ; X64-NEXT:    retq
 entry:
   %shamt = shufflevector <2 x i64> %sh, <2 x i64> undef, <2 x i32> <i32 0, i32 1>

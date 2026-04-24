@@ -42,7 +42,9 @@ define fp128 @TestSelect(fp128 %a, fp128 %b) {
 define fp128 @TestFabs(fp128 %a) {
 ; CHECK-LABEL: TestFabs:
 ; CHECK:       # %bb.0:
-; CHECK-NEXT:    andps {{\.?LCPI[0-9]+_[0-9]+}}(%rip), %xmm0
+; CHECK-NEXT:    movaps {{.*#+}} xmm1 = [NaN]
+; CHECK-NEXT:    andps %xmm0, %xmm1
+; CHECK-NEXT:    movaps %xmm1, %xmm0
 ; CHECK-NEXT:    retq
   %res = call fp128 @llvm.fabs.f128(fp128 %a)
   ret fp128 %res
@@ -51,9 +53,12 @@ define fp128 @TestFabs(fp128 %a) {
 define fp128 @TestCopysign(fp128 %a, fp128 %b) {
 ; CHECK-LABEL: TestCopysign:
 ; CHECK:       # %bb.0:
-; CHECK-NEXT:    andps {{\.?LCPI[0-9]+_[0-9]+}}(%rip), %xmm1
-; CHECK-NEXT:    andps {{\.?LCPI[0-9]+_[0-9]+}}(%rip), %xmm0
-; CHECK-NEXT:    orps %xmm1, %xmm0
+; CHECK-NEXT:    movaps {{.*#+}} xmm2 = [-0.0E+0]
+; CHECK-NEXT:    andps %xmm1, %xmm2
+; CHECK-NEXT:    movaps {{.*#+}} xmm1 = [NaN]
+; CHECK-NEXT:    andps %xmm0, %xmm1
+; CHECK-NEXT:    orps %xmm1, %xmm2
+; CHECK-NEXT:    movaps %xmm2, %xmm0
 ; CHECK-NEXT:    retq
   %res = call fp128 @llvm.copysign.f128(fp128 %a, fp128 %b)
   ret fp128 %res
@@ -66,7 +71,9 @@ define fp128 @TestFneg(fp128 %a) {
 ; CHECK-NEXT:    .cfi_def_cfa_offset 16
 ; CHECK-NEXT:    movaps %xmm0, %xmm1
 ; CHECK-NEXT:    callq __multf3@PLT
-; CHECK-NEXT:    xorps {{\.?LCPI[0-9]+_[0-9]+}}(%rip), %xmm0
+; CHECK-NEXT:    movaps {{.*#+}} xmm1 = [-0.0E+0]
+; CHECK-NEXT:    xorps %xmm0, %xmm1
+; CHECK-NEXT:    movaps %xmm1, %xmm0
 ; CHECK-NEXT:    popq %rax
 ; CHECK-NEXT:    .cfi_def_cfa_offset 8
 ; CHECK-NEXT:    retq

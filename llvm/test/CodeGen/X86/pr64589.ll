@@ -8,9 +8,11 @@ define i8 @test(ptr %p) {
 ; CHECK-LABEL: test:
 ; CHECK:       # %bb.0:
 ; CHECK-NEXT:    movzbl 1(%rdi), %eax
-; CHECK-NEXT:    orb (%rdi), %al
+; CHECK-NEXT:    movzbl (%rdi), %ecx
+; CHECK-NEXT:    orb %al, %cl
 ; CHECK-NEXT:    setne %al
-; CHECK-NEXT:    addb %al, %al
+; CHECK-NEXT:    addl %eax, %eax
+; CHECK-NEXT:    # kill: def $al killed $al killed $eax
 ; CHECK-NEXT:    retq
   %v1 = load i8, ptr %p, align 4, !range !0, !noundef !{}
   %cmp1 = icmp ne i8 %v1, 0

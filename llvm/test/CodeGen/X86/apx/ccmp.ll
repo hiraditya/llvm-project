@@ -1738,8 +1738,8 @@ define i32 @ccmp_continous_nobranch(i32 noundef %a, i32 noundef %b, i32 noundef 
 ; SETZUCC-NEXT:    cmpl $4, %edx # encoding: [0x83,0xfa,0x04]
 ; SETZUCC-NEXT:    setzuge %dl # encoding: [0x62,0xf4,0x7f,0x18,0x4d,0xc2]
 ; SETZUCC-NEXT:    orb %al, %cl # encoding: [0x08,0xc1]
-; SETZUCC-NEXT:    andb %dl, %cl # encoding: [0x20,0xd1]
-; SETZUCC-NEXT:    movzbl %cl, %eax # encoding: [0x0f,0xb6,0xc1]
+; SETZUCC-NEXT:    andb %cl, %dl # encoding: [0x20,0xca]
+; SETZUCC-NEXT:    movzbl %dl, %eax # encoding: [0x0f,0xb6,0xc2]
 ; SETZUCC-NEXT:    retq # encoding: [0xc3]
 entry:
   %cmp = icmp sgt i32 %a, 1

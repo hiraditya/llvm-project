@@ -19,7 +19,8 @@ define <2 x float> @uitofp_2i32_cvt_buildvector(i32 %x, i32 %y, <2 x float> %v) 
 ; X86-NEXT:    xorps %xmm2, %xmm2
 ; X86-NEXT:    cvtsd2ss %xmm3, %xmm2
 ; X86-NEXT:    insertps {{.*#+}} xmm1 = xmm1[0],xmm2[0],xmm1[2,3]
-; X86-NEXT:    mulps %xmm1, %xmm0
+; X86-NEXT:    mulps %xmm0, %xmm1
+; X86-NEXT:    movaps %xmm1, %xmm0
 ; X86-NEXT:    retl
 ;
 ; X64-LABEL: uitofp_2i32_cvt_buildvector:
@@ -29,7 +30,8 @@ define <2 x float> @uitofp_2i32_cvt_buildvector(i32 %x, i32 %y, <2 x float> %v) 
 ; X64-NEXT:    movl %esi, %eax
 ; X64-NEXT:    cvtsi2ss %rax, %xmm2
 ; X64-NEXT:    insertps {{.*#+}} xmm1 = xmm1[0],xmm2[0],xmm1[2,3]
-; X64-NEXT:    mulps %xmm1, %xmm0
+; X64-NEXT:    mulps %xmm0, %xmm1
+; X64-NEXT:    movaps %xmm1, %xmm0
 ; X64-NEXT:    retq
   %t1 = uitofp i32 %x to float
   %t2 = insertelement <2 x float> undef, float %t1, i32 0
@@ -47,7 +49,8 @@ define <2 x float> @uitofp_2i32_buildvector_cvt(i32 %x, i32 %y, <2 x float> %v) 
 ; X86-NEXT:    por %xmm1, %xmm2
 ; X86-NEXT:    subpd %xmm1, %xmm2
 ; X86-NEXT:    cvtpd2ps %xmm2, %xmm1
-; X86-NEXT:    mulps %xmm1, %xmm0
+; X86-NEXT:    mulps %xmm0, %xmm1
+; X86-NEXT:    movaps %xmm1, %xmm0
 ; X86-NEXT:    retl
 ;
 ; X64-LABEL: uitofp_2i32_buildvector_cvt:
@@ -59,7 +62,8 @@ define <2 x float> @uitofp_2i32_buildvector_cvt(i32 %x, i32 %y, <2 x float> %v) 
 ; X64-NEXT:    por %xmm2, %xmm1
 ; X64-NEXT:    subpd %xmm2, %xmm1
 ; X64-NEXT:    cvtpd2ps %xmm1, %xmm1
-; X64-NEXT:    mulps %xmm1, %xmm0
+; X64-NEXT:    mulps %xmm0, %xmm1
+; X64-NEXT:    movaps %xmm1, %xmm0
 ; X64-NEXT:    retq
   %t1 = insertelement <2 x i32> undef, i32 %x, i32 0
   %t2 = insertelement <2 x i32> %t1, i32 %y, i32 1

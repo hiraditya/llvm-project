@@ -7,7 +7,9 @@
 define <4 x i32> @f(<4 x i32> %a) {
 ; CHECK-LABEL: f:
 ; CHECK:       # %bb.0:
-; CHECK-NEXT:    paddd {{\.?LCPI[0-9]+_[0-9]+}}(%rip), %xmm0
+; CHECK-NEXT:    movdqa {{.*#+}} xmm1 = [16843009,16843009,16843009,16843009]
+; CHECK-NEXT:    paddd %xmm0, %xmm1
+; CHECK-NEXT:    movdqa %xmm1, %xmm0
 ; CHECK-NEXT:    retq
   %v = add nuw nsw <4 x i32> %a, <i32 16843009, i32 16843009, i32 16843009, i32 16843009>
   ret <4 x i32> %v

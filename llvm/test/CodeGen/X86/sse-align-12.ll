@@ -55,7 +55,8 @@ define <2 x double> @d(ptr %y, <2 x double> %z) nounwind {
 ; CHECK-LABEL: d:
 ; CHECK:       # %bb.0:
 ; CHECK-NEXT:    movups (%rdi), %xmm1
-; CHECK-NEXT:    unpckhpd {{.*#+}} xmm0 = xmm0[1],xmm1[1]
+; CHECK-NEXT:    movhlps {{.*#+}} xmm1 = xmm0[1],xmm1[1]
+; CHECK-NEXT:    movaps %xmm1, %xmm0
 ; CHECK-NEXT:    retq
   %x = load <2 x double>, ptr %y, align 8
   %a = extractelement <2 x double> %x, i32 1

@@ -40,8 +40,8 @@ define void @test_sincos_v4f32(<4 x float> %x, ptr noalias %out_sin, ptr noalias
 ; X86-NEXT:    calll sincosf
 ; X86-NEXT:    leal 48(%esp), %eax
 ; X86-NEXT:    movl %eax, 8(%esp)
-; X86-NEXT:    addl $12, %edi
-; X86-NEXT:    movl %edi, 4(%esp)
+; X86-NEXT:    leal 12(%edi), %eax
+; X86-NEXT:    movl %eax, 4(%esp)
 ; X86-NEXT:    flds {{[-0-9]+}}(%e{{[sb]}}p) # 4-byte Folded Reload
 ; X86-NEXT:    fstps (%esp)
 ; X86-NEXT:    calll sincosf
@@ -234,8 +234,8 @@ define void @test_sincos_v2f64(<2 x double> %x, ptr noalias %out_sin, ptr noalia
 ; X86-NEXT:    calll sincos
 ; X86-NEXT:    leal 32(%esp), %eax
 ; X86-NEXT:    movl %eax, 12(%esp)
-; X86-NEXT:    addl $8, %edi
-; X86-NEXT:    movl %edi, 8(%esp)
+; X86-NEXT:    leal 8(%edi), %eax
+; X86-NEXT:    movl %eax, 8(%esp)
 ; X86-NEXT:    fldl {{[-0-9]+}}(%e{{[sb]}}p) # 8-byte Folded Reload
 ; X86-NEXT:    fstpl (%esp)
 ; X86-NEXT:    calll sincos

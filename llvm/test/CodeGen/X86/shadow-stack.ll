@@ -150,7 +150,7 @@ define i32 @foo(i32 %i) local_unnamed_addr {
 ; X86_64-NEXT:    je LBB1_5
 ; X86_64-NEXT:  ## %bb.3: ## %if.end
 ; X86_64-NEXT:    movq {{[-0-9]+}}(%r{{[sb]}}p), %rax ## 8-byte Reload
-; X86_64-NEXT:    shll $2, %eax
+; X86_64-NEXT:    leal (,%rax,4), %eax
 ; X86_64-NEXT:    leal (%rax,%rax,2), %eax
 ; X86_64-NEXT:    addq $8, %rsp
 ; X86_64-NEXT:    popq %rbx
@@ -198,7 +198,7 @@ define i32 @foo(i32 %i) local_unnamed_addr {
 ; X86-NEXT:    je LBB1_5
 ; X86-NEXT:  ## %bb.3: ## %if.end
 ; X86-NEXT:    movl 8(%ebp), %eax
-; X86-NEXT:    shll $2, %eax
+; X86-NEXT:    leal (,%eax,4), %eax
 ; X86-NEXT:    leal (%eax,%eax,2), %eax
 ; X86-NEXT:    addl $12, %esp
 ; X86-NEXT:    popl %esi

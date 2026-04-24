@@ -54,9 +54,9 @@ define void @t(ptr %depth, ptr %bop, i32 %mode) nounwind  {
 ; CHECK-NEXT:    movl %ecx, %edx
 ; CHECK-NEXT:    shll $16, %edx
 ; CHECK-NEXT:    subl %ecx, %edx
-; CHECK-NEXT:    incl %edx
-; CHECK-NEXT:    shrl $16, %edx
-; CHECK-NEXT:    movw %dx, 0
+; CHECK-NEXT:    leal 1(%rdx), %ecx
+; CHECK-NEXT:    shrl $16, %ecx
+; CHECK-NEXT:    movw %cx, 0
 ; CHECK-NEXT:    jmp LBB0_4
 ; CHECK-NEXT:  LBB0_10: ## %return
 ; CHECK-NEXT:    retq

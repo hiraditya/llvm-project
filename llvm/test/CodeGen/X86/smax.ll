@@ -65,25 +65,25 @@ define i16 @test_i16(i16 %a, i16 %b) nounwind {
 define i24 @test_i24(i24 %a, i24 %b) nounwind {
 ; X64-LABEL: test_i24:
 ; X64:       # %bb.0:
-; X64-NEXT:    movl %edi, %eax
-; X64-NEXT:    shll $8, %esi
-; X64-NEXT:    sarl $8, %esi
+; X64-NEXT:    movl %esi, %eax
 ; X64-NEXT:    shll $8, %eax
 ; X64-NEXT:    sarl $8, %eax
-; X64-NEXT:    cmpl %esi, %eax
-; X64-NEXT:    cmovlel %esi, %eax
+; X64-NEXT:    shll $8, %edi
+; X64-NEXT:    sarl $8, %edi
+; X64-NEXT:    cmpl %eax, %edi
+; X64-NEXT:    cmovgl %edi, %eax
 ; X64-NEXT:    retq
 ;
 ; X86-LABEL: test_i24:
 ; X86:       # %bb.0:
-; X86-NEXT:    movl {{[0-9]+}}(%esp), %ecx
-; X86-NEXT:    shll $8, %ecx
-; X86-NEXT:    sarl $8, %ecx
 ; X86-NEXT:    movl {{[0-9]+}}(%esp), %eax
 ; X86-NEXT:    shll $8, %eax
 ; X86-NEXT:    sarl $8, %eax
-; X86-NEXT:    cmpl %ecx, %eax
-; X86-NEXT:    cmovlel %ecx, %eax
+; X86-NEXT:    movl {{[0-9]+}}(%esp), %ecx
+; X86-NEXT:    shll $8, %ecx
+; X86-NEXT:    sarl $8, %ecx
+; X86-NEXT:    cmpl %eax, %ecx
+; X86-NEXT:    cmovgl %ecx, %eax
 ; X86-NEXT:    retl
   %r = call i24 @llvm.smax.i24(i24 %a, i24 %b)
   ret i24 %r
@@ -214,7 +214,8 @@ define <2 x i32> @test_v2i32(<2 x i32> %a, <2 x i32> %b) nounwind {
 ; SSE-NEXT:    pcmpgtd %xmm1, %xmm2
 ; SSE-NEXT:    pand %xmm2, %xmm0
 ; SSE-NEXT:    pandn %xmm1, %xmm2
-; SSE-NEXT:    por %xmm2, %xmm0
+; SSE-NEXT:    por %xmm0, %xmm2
+; SSE-NEXT:    movdqa %xmm2, %xmm0
 ; SSE-NEXT:    retq
 ;
 ; AVX-LABEL: test_v2i32:
@@ -246,7 +247,8 @@ define <3 x i32> @test_v3i32(<3 x i32> %a, <3 x i32> %b) nounwind {
 ; SSE-NEXT:    pcmpgtd %xmm1, %xmm2
 ; SSE-NEXT:    pand %xmm2, %xmm0
 ; SSE-NEXT:    pandn %xmm1, %xmm2
-; SSE-NEXT:    por %xmm2, %xmm0
+; SSE-NEXT:    por %xmm0, %xmm2
+; SSE-NEXT:    movdqa %xmm2, %xmm0
 ; SSE-NEXT:    retq
 ;
 ; AVX-LABEL: test_v3i32:
@@ -286,7 +288,8 @@ define <4 x i32> @test_v4i32(<4 x i32> %a, <4 x i32> %b) nounwind {
 ; SSE-NEXT:    pcmpgtd %xmm1, %xmm2
 ; SSE-NEXT:    pand %xmm2, %xmm0
 ; SSE-NEXT:    pandn %xmm1, %xmm2
-; SSE-NEXT:    por %xmm2, %xmm0
+; SSE-NEXT:    por %xmm0, %xmm2
+; SSE-NEXT:    movdqa %xmm2, %xmm0
 ; SSE-NEXT:    retq
 ;
 ; AVX-LABEL: test_v4i32:
@@ -333,12 +336,14 @@ define <8 x i32> @test_v8i32(<8 x i32> %a, <8 x i32> %b) nounwind {
 ; SSE-NEXT:    pcmpgtd %xmm2, %xmm4
 ; SSE-NEXT:    pand %xmm4, %xmm0
 ; SSE-NEXT:    pandn %xmm2, %xmm4
-; SSE-NEXT:    por %xmm4, %xmm0
+; SSE-NEXT:    por %xmm0, %xmm4
 ; SSE-NEXT:    movdqa %xmm1, %xmm2
 ; SSE-NEXT:    pcmpgtd %xmm3, %xmm2
 ; SSE-NEXT:    pand %xmm2, %xmm1
 ; SSE-NEXT:    pandn %xmm3, %xmm2
-; SSE-NEXT:    por %xmm2, %xmm1
+; SSE-NEXT:    por %xmm1, %xmm2
+; SSE-NEXT:    movdqa %xmm4, %xmm0
+; SSE-NEXT:    movdqa %xmm2, %xmm1
 ; SSE-NEXT:    retq
 ;
 ; AVX1-LABEL: test_v8i32:
@@ -499,7 +504,8 @@ define <16 x i8> @test_v16i8(<16 x i8> %a, <16 x i8> %b) nounwind {
 ; SSE-NEXT:    pcmpgtb %xmm1, %xmm2
 ; SSE-NEXT:    pand %xmm2, %xmm0
 ; SSE-NEXT:    pandn %xmm1, %xmm2
-; SSE-NEXT:    por %xmm2, %xmm0
+; SSE-NEXT:    por %xmm0, %xmm2
+; SSE-NEXT:    movdqa %xmm2, %xmm0
 ; SSE-NEXT:    retq
 ;
 ; AVX-LABEL: test_v16i8:
@@ -725,23 +731,23 @@ define i128 @test_signbits_i128(i128 %a, i128 %b) nounwind {
 ; X86-NEXT:    pushl %edi
 ; X86-NEXT:    pushl %esi
 ; X86-NEXT:    andl $-16, %esp
-; X86-NEXT:    movl 32(%ebp), %esi
+; X86-NEXT:    movl 32(%ebp), %edx
 ; X86-NEXT:    movl 36(%ebp), %eax
-; X86-NEXT:    movl 48(%ebp), %edx
-; X86-NEXT:    movl 52(%ebp), %ecx
-; X86-NEXT:    shrdl $28, %ecx, %edx
-; X86-NEXT:    sarl $28, %ecx
-; X86-NEXT:    cmpl %esi, %edx
-; X86-NEXT:    movl %ecx, %edi
+; X86-NEXT:    movl 48(%ebp), %ecx
+; X86-NEXT:    movl 52(%ebp), %esi
+; X86-NEXT:    shrdl $28, %esi, %ecx
+; X86-NEXT:    sarl $28, %esi
+; X86-NEXT:    cmpl %edx, %ecx
+; X86-NEXT:    movl %esi, %edi
 ; X86-NEXT:    sbbl %eax, %edi
-; X86-NEXT:    cmovll %esi, %edx
-; X86-NEXT:    cmovll %eax, %ecx
+; X86-NEXT:    cmovll %edx, %ecx
+; X86-NEXT:    cmovll %eax, %esi
 ; X86-NEXT:    movl 8(%ebp), %eax
-; X86-NEXT:    movl %ecx, 4(%eax)
-; X86-NEXT:    movl %edx, (%eax)
-; X86-NEXT:    sarl $31, %ecx
-; X86-NEXT:    movl %ecx, 12(%eax)
-; X86-NEXT:    movl %ecx, 8(%eax)
+; X86-NEXT:    movl %esi, 4(%eax)
+; X86-NEXT:    movl %ecx, (%eax)
+; X86-NEXT:    sarl $31, %esi
+; X86-NEXT:    movl %esi, 12(%eax)
+; X86-NEXT:    movl %esi, 8(%eax)
 ; X86-NEXT:    leal -8(%ebp), %esp
 ; X86-NEXT:    popl %esi
 ; X86-NEXT:    popl %edi

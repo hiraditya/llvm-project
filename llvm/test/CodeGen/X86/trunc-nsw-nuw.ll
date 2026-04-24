@@ -63,16 +63,15 @@ define i32 @simplify_demanded_bits_drop_flag(i1 zeroext %x, i1 zeroext %y) nounw
 ; CHECK-LABEL: simplify_demanded_bits_drop_flag:
 ; CHECK:       # %bb.0: # %entry
 ; CHECK-NEXT:    # kill: def $esi killed $esi def $rsi
-; CHECK-NEXT:    shll $2, %esi
-; CHECK-NEXT:    movl %edi, %eax
-; CHECK-NEXT:    negq %rax
-; CHECK-NEXT:    xorq %rsi, %rax
-; CHECK-NEXT:    imulq $-1634202141, %rax, %rax # imm = 0x9E980DE3
+; CHECK-NEXT:    leal (,%rsi,4), %eax
+; CHECK-NEXT:    movl %edi, %ecx
+; CHECK-NEXT:    negq %rcx
+; CHECK-NEXT:    xorq %rax, %rcx
+; CHECK-NEXT:    imulq $-1634202141, %rcx, %rax # imm = 0x9E980DE3
 ; CHECK-NEXT:    movq %rax, %rcx
 ; CHECK-NEXT:    shrq $63, %rcx
 ; CHECK-NEXT:    sarq $44, %rax
 ; CHECK-NEXT:    addl %ecx, %eax
-; CHECK-NEXT:    # kill: def $eax killed $eax killed $rax
 ; CHECK-NEXT:    retq
 entry:
   %sel = select i1 %y, i64 4, i64 0

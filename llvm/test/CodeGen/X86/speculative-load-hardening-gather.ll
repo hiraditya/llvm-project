@@ -10,11 +10,12 @@ define <4 x float> @test_llvm_x86_avx2_gather_d_ps(ptr %b, <4 x i32> %iv, <4 x f
 ; CHECK-NEXT:    movq $-1, %rcx
 ; CHECK-NEXT:    sarq $63, %rax
 ; CHECK-NEXT:    vxorps %xmm2, %xmm2, %xmm2
-; CHECK-NEXT:    orq %rax, %rdi
+; CHECK-NEXT:    movq %rax, %rcx
+; CHECK-NEXT:    orq %rdi, %rcx
 ; CHECK-NEXT:    vmovq %rax, %xmm3
 ; CHECK-NEXT:    vpbroadcastq %xmm3, %xmm3
 ; CHECK-NEXT:    vpor %xmm0, %xmm3, %xmm0
-; CHECK-NEXT:    vgatherdps %xmm1, (%rdi,%xmm0), %xmm2
+; CHECK-NEXT:    vgatherdps %xmm1, (%rcx,%xmm0), %xmm2
 ; CHECK-NEXT:    shlq $47, %rax
 ; CHECK-NEXT:    vmovaps %xmm2, %xmm0
 ; CHECK-NEXT:    orq %rax, %rsp
@@ -33,11 +34,12 @@ define <4 x float> @test_llvm_x86_avx2_gather_q_ps(ptr %b, <2 x i64> %iv, <4 x f
 ; CHECK-NEXT:    movq $-1, %rcx
 ; CHECK-NEXT:    sarq $63, %rax
 ; CHECK-NEXT:    vxorps %xmm2, %xmm2, %xmm2
-; CHECK-NEXT:    orq %rax, %rdi
+; CHECK-NEXT:    movq %rax, %rcx
+; CHECK-NEXT:    orq %rdi, %rcx
 ; CHECK-NEXT:    vmovq %rax, %xmm3
 ; CHECK-NEXT:    vpbroadcastq %xmm3, %xmm3
 ; CHECK-NEXT:    vpor %xmm0, %xmm3, %xmm0
-; CHECK-NEXT:    vgatherqps %xmm1, (%rdi,%xmm0), %xmm2
+; CHECK-NEXT:    vgatherqps %xmm1, (%rcx,%xmm0), %xmm2
 ; CHECK-NEXT:    shlq $47, %rax
 ; CHECK-NEXT:    vmovaps %xmm2, %xmm0
 ; CHECK-NEXT:    orq %rax, %rsp
@@ -56,11 +58,12 @@ define <2 x double> @test_llvm_x86_avx2_gather_d_pd(ptr %b, <4 x i32> %iv, <2 x 
 ; CHECK-NEXT:    movq $-1, %rcx
 ; CHECK-NEXT:    sarq $63, %rax
 ; CHECK-NEXT:    vxorpd %xmm2, %xmm2, %xmm2
-; CHECK-NEXT:    orq %rax, %rdi
+; CHECK-NEXT:    movq %rax, %rcx
+; CHECK-NEXT:    orq %rdi, %rcx
 ; CHECK-NEXT:    vmovq %rax, %xmm3
 ; CHECK-NEXT:    vpbroadcastq %xmm3, %xmm3
 ; CHECK-NEXT:    vpor %xmm0, %xmm3, %xmm0
-; CHECK-NEXT:    vgatherdpd %xmm1, (%rdi,%xmm0), %xmm2
+; CHECK-NEXT:    vgatherdpd %xmm1, (%rcx,%xmm0), %xmm2
 ; CHECK-NEXT:    shlq $47, %rax
 ; CHECK-NEXT:    vmovapd %xmm2, %xmm0
 ; CHECK-NEXT:    orq %rax, %rsp
@@ -79,11 +82,12 @@ define <2 x double> @test_llvm_x86_avx2_gather_q_pd(ptr %b, <2 x i64> %iv, <2 x 
 ; CHECK-NEXT:    movq $-1, %rcx
 ; CHECK-NEXT:    sarq $63, %rax
 ; CHECK-NEXT:    vxorpd %xmm2, %xmm2, %xmm2
-; CHECK-NEXT:    orq %rax, %rdi
+; CHECK-NEXT:    movq %rax, %rcx
+; CHECK-NEXT:    orq %rdi, %rcx
 ; CHECK-NEXT:    vmovq %rax, %xmm3
 ; CHECK-NEXT:    vpbroadcastq %xmm3, %xmm3
 ; CHECK-NEXT:    vpor %xmm0, %xmm3, %xmm0
-; CHECK-NEXT:    vgatherqpd %xmm1, (%rdi,%xmm0), %xmm2
+; CHECK-NEXT:    vgatherqpd %xmm1, (%rcx,%xmm0), %xmm2
 ; CHECK-NEXT:    shlq $47, %rax
 ; CHECK-NEXT:    vmovapd %xmm2, %xmm0
 ; CHECK-NEXT:    orq %rax, %rsp
@@ -102,11 +106,12 @@ define <8 x float> @test_llvm_x86_avx2_gather_d_ps_256(ptr %b, <8 x i32> %iv, <8
 ; CHECK-NEXT:    movq $-1, %rcx
 ; CHECK-NEXT:    sarq $63, %rax
 ; CHECK-NEXT:    vxorps %xmm2, %xmm2, %xmm2
-; CHECK-NEXT:    orq %rax, %rdi
+; CHECK-NEXT:    movq %rax, %rcx
+; CHECK-NEXT:    orq %rdi, %rcx
 ; CHECK-NEXT:    vmovq %rax, %xmm3
 ; CHECK-NEXT:    vpbroadcastq %xmm3, %ymm3
 ; CHECK-NEXT:    vpor %ymm0, %ymm3, %ymm0
-; CHECK-NEXT:    vgatherdps %ymm1, (%rdi,%ymm0), %ymm2
+; CHECK-NEXT:    vgatherdps %ymm1, (%rcx,%ymm0), %ymm2
 ; CHECK-NEXT:    shlq $47, %rax
 ; CHECK-NEXT:    vmovaps %ymm2, %ymm0
 ; CHECK-NEXT:    orq %rax, %rsp
@@ -125,11 +130,12 @@ define <4 x float> @test_llvm_x86_avx2_gather_q_ps_256(ptr %b, <4 x i64> %iv, <4
 ; CHECK-NEXT:    movq $-1, %rcx
 ; CHECK-NEXT:    sarq $63, %rax
 ; CHECK-NEXT:    vxorps %xmm2, %xmm2, %xmm2
-; CHECK-NEXT:    orq %rax, %rdi
+; CHECK-NEXT:    movq %rax, %rcx
+; CHECK-NEXT:    orq %rdi, %rcx
 ; CHECK-NEXT:    vmovq %rax, %xmm3
 ; CHECK-NEXT:    vpbroadcastq %xmm3, %ymm3
 ; CHECK-NEXT:    vpor %ymm0, %ymm3, %ymm0
-; CHECK-NEXT:    vgatherqps %xmm1, (%rdi,%ymm0), %xmm2
+; CHECK-NEXT:    vgatherqps %xmm1, (%rcx,%ymm0), %xmm2
 ; CHECK-NEXT:    shlq $47, %rax
 ; CHECK-NEXT:    vmovaps %xmm2, %xmm0
 ; CHECK-NEXT:    orq %rax, %rsp
@@ -149,11 +155,12 @@ define <4 x double> @test_llvm_x86_avx2_gather_d_pd_256(ptr %b, <4 x i32> %iv, <
 ; CHECK-NEXT:    movq $-1, %rcx
 ; CHECK-NEXT:    sarq $63, %rax
 ; CHECK-NEXT:    vxorpd %xmm2, %xmm2, %xmm2
-; CHECK-NEXT:    orq %rax, %rdi
+; CHECK-NEXT:    movq %rax, %rcx
+; CHECK-NEXT:    orq %rdi, %rcx
 ; CHECK-NEXT:    vmovq %rax, %xmm3
 ; CHECK-NEXT:    vpbroadcastq %xmm3, %xmm3
 ; CHECK-NEXT:    vpor %xmm0, %xmm3, %xmm0
-; CHECK-NEXT:    vgatherdpd %ymm1, (%rdi,%xmm0), %ymm2
+; CHECK-NEXT:    vgatherdpd %ymm1, (%rcx,%xmm0), %ymm2
 ; CHECK-NEXT:    shlq $47, %rax
 ; CHECK-NEXT:    vmovapd %ymm2, %ymm0
 ; CHECK-NEXT:    orq %rax, %rsp
@@ -172,11 +179,12 @@ define <4 x double> @test_llvm_x86_avx2_gather_q_pd_256(ptr %b, <4 x i64> %iv, <
 ; CHECK-NEXT:    movq $-1, %rcx
 ; CHECK-NEXT:    sarq $63, %rax
 ; CHECK-NEXT:    vxorpd %xmm2, %xmm2, %xmm2
-; CHECK-NEXT:    orq %rax, %rdi
+; CHECK-NEXT:    movq %rax, %rcx
+; CHECK-NEXT:    orq %rdi, %rcx
 ; CHECK-NEXT:    vmovq %rax, %xmm3
 ; CHECK-NEXT:    vpbroadcastq %xmm3, %ymm3
 ; CHECK-NEXT:    vpor %ymm0, %ymm3, %ymm0
-; CHECK-NEXT:    vgatherqpd %ymm1, (%rdi,%ymm0), %ymm2
+; CHECK-NEXT:    vgatherqpd %ymm1, (%rcx,%ymm0), %ymm2
 ; CHECK-NEXT:    shlq $47, %rax
 ; CHECK-NEXT:    vmovapd %ymm2, %ymm0
 ; CHECK-NEXT:    orq %rax, %rsp
@@ -195,11 +203,12 @@ define <4 x i32> @test_llvm_x86_avx2_gather_d_d(ptr %b, <4 x i32> %iv, <4 x i32>
 ; CHECK-NEXT:    movq $-1, %rcx
 ; CHECK-NEXT:    sarq $63, %rax
 ; CHECK-NEXT:    vpxor %xmm2, %xmm2, %xmm2
-; CHECK-NEXT:    orq %rax, %rdi
+; CHECK-NEXT:    movq %rax, %rcx
+; CHECK-NEXT:    orq %rdi, %rcx
 ; CHECK-NEXT:    vmovq %rax, %xmm3
 ; CHECK-NEXT:    vpbroadcastq %xmm3, %xmm3
 ; CHECK-NEXT:    vpor %xmm0, %xmm3, %xmm0
-; CHECK-NEXT:    vpgatherdd %xmm1, (%rdi,%xmm0), %xmm2
+; CHECK-NEXT:    vpgatherdd %xmm1, (%rcx,%xmm0), %xmm2
 ; CHECK-NEXT:    shlq $47, %rax
 ; CHECK-NEXT:    vmovdqa %xmm2, %xmm0
 ; CHECK-NEXT:    orq %rax, %rsp
@@ -218,11 +227,12 @@ define <4 x i32> @test_llvm_x86_avx2_gather_q_d(ptr %b, <2 x i64> %iv, <4 x i32>
 ; CHECK-NEXT:    movq $-1, %rcx
 ; CHECK-NEXT:    sarq $63, %rax
 ; CHECK-NEXT:    vpxor %xmm2, %xmm2, %xmm2
-; CHECK-NEXT:    orq %rax, %rdi
+; CHECK-NEXT:    movq %rax, %rcx
+; CHECK-NEXT:    orq %rdi, %rcx
 ; CHECK-NEXT:    vmovq %rax, %xmm3
 ; CHECK-NEXT:    vpbroadcastq %xmm3, %xmm3
 ; CHECK-NEXT:    vpor %xmm0, %xmm3, %xmm0
-; CHECK-NEXT:    vpgatherqd %xmm1, (%rdi,%xmm0), %xmm2
+; CHECK-NEXT:    vpgatherqd %xmm1, (%rcx,%xmm0), %xmm2
 ; CHECK-NEXT:    shlq $47, %rax
 ; CHECK-NEXT:    vmovdqa %xmm2, %xmm0
 ; CHECK-NEXT:    orq %rax, %rsp
@@ -241,11 +251,12 @@ define <2 x i64> @test_llvm_x86_avx2_gather_d_q(ptr %b, <4 x i32> %iv, <2 x i64>
 ; CHECK-NEXT:    movq $-1, %rcx
 ; CHECK-NEXT:    sarq $63, %rax
 ; CHECK-NEXT:    vpxor %xmm2, %xmm2, %xmm2
-; CHECK-NEXT:    orq %rax, %rdi
+; CHECK-NEXT:    movq %rax, %rcx
+; CHECK-NEXT:    orq %rdi, %rcx
 ; CHECK-NEXT:    vmovq %rax, %xmm3
 ; CHECK-NEXT:    vpbroadcastq %xmm3, %xmm3
 ; CHECK-NEXT:    vpor %xmm0, %xmm3, %xmm0
-; CHECK-NEXT:    vpgatherdq %xmm1, (%rdi,%xmm0), %xmm2
+; CHECK-NEXT:    vpgatherdq %xmm1, (%rcx,%xmm0), %xmm2
 ; CHECK-NEXT:    shlq $47, %rax
 ; CHECK-NEXT:    vmovdqa %xmm2, %xmm0
 ; CHECK-NEXT:    orq %rax, %rsp
@@ -264,11 +275,12 @@ define <2 x i64> @test_llvm_x86_avx2_gather_q_q(ptr %b, <2 x i64> %iv, <2 x i64>
 ; CHECK-NEXT:    movq $-1, %rcx
 ; CHECK-NEXT:    sarq $63, %rax
 ; CHECK-NEXT:    vpxor %xmm2, %xmm2, %xmm2
-; CHECK-NEXT:    orq %rax, %rdi
+; CHECK-NEXT:    movq %rax, %rcx
+; CHECK-NEXT:    orq %rdi, %rcx
 ; CHECK-NEXT:    vmovq %rax, %xmm3
 ; CHECK-NEXT:    vpbroadcastq %xmm3, %xmm3
 ; CHECK-NEXT:    vpor %xmm0, %xmm3, %xmm0
-; CHECK-NEXT:    vpgatherqq %xmm1, (%rdi,%xmm0), %xmm2
+; CHECK-NEXT:    vpgatherqq %xmm1, (%rcx,%xmm0), %xmm2
 ; CHECK-NEXT:    shlq $47, %rax
 ; CHECK-NEXT:    vmovdqa %xmm2, %xmm0
 ; CHECK-NEXT:    orq %rax, %rsp
@@ -287,11 +299,12 @@ define <8 x i32> @test_llvm_x86_avx2_gather_d_d_256(ptr %b, <8 x i32> %iv, <8 x 
 ; CHECK-NEXT:    movq $-1, %rcx
 ; CHECK-NEXT:    sarq $63, %rax
 ; CHECK-NEXT:    vpxor %xmm2, %xmm2, %xmm2
-; CHECK-NEXT:    orq %rax, %rdi
+; CHECK-NEXT:    movq %rax, %rcx
+; CHECK-NEXT:    orq %rdi, %rcx
 ; CHECK-NEXT:    vmovq %rax, %xmm3
 ; CHECK-NEXT:    vpbroadcastq %xmm3, %ymm3
 ; CHECK-NEXT:    vpor %ymm0, %ymm3, %ymm0
-; CHECK-NEXT:    vpgatherdd %ymm1, (%rdi,%ymm0), %ymm2
+; CHECK-NEXT:    vpgatherdd %ymm1, (%rcx,%ymm0), %ymm2
 ; CHECK-NEXT:    shlq $47, %rax
 ; CHECK-NEXT:    vmovdqa %ymm2, %ymm0
 ; CHECK-NEXT:    orq %rax, %rsp
@@ -310,11 +323,12 @@ define <4 x i32> @test_llvm_x86_avx2_gather_q_d_256(ptr %b, <4 x i64> %iv, <4 x 
 ; CHECK-NEXT:    movq $-1, %rcx
 ; CHECK-NEXT:    sarq $63, %rax
 ; CHECK-NEXT:    vpxor %xmm2, %xmm2, %xmm2
-; CHECK-NEXT:    orq %rax, %rdi
+; CHECK-NEXT:    movq %rax, %rcx
+; CHECK-NEXT:    orq %rdi, %rcx
 ; CHECK-NEXT:    vmovq %rax, %xmm3
 ; CHECK-NEXT:    vpbroadcastq %xmm3, %ymm3
 ; CHECK-NEXT:    vpor %ymm0, %ymm3, %ymm0
-; CHECK-NEXT:    vpgatherqd %xmm1, (%rdi,%ymm0), %xmm2
+; CHECK-NEXT:    vpgatherqd %xmm1, (%rcx,%ymm0), %xmm2
 ; CHECK-NEXT:    shlq $47, %rax
 ; CHECK-NEXT:    vmovdqa %xmm2, %xmm0
 ; CHECK-NEXT:    orq %rax, %rsp
@@ -334,11 +348,12 @@ define <4 x i64> @test_llvm_x86_avx2_gather_d_q_256(ptr %b, <4 x i32> %iv, <4 x 
 ; CHECK-NEXT:    movq $-1, %rcx
 ; CHECK-NEXT:    sarq $63, %rax
 ; CHECK-NEXT:    vpxor %xmm2, %xmm2, %xmm2
-; CHECK-NEXT:    orq %rax, %rdi
+; CHECK-NEXT:    movq %rax, %rcx
+; CHECK-NEXT:    orq %rdi, %rcx
 ; CHECK-NEXT:    vmovq %rax, %xmm3
 ; CHECK-NEXT:    vpbroadcastq %xmm3, %xmm3
 ; CHECK-NEXT:    vpor %xmm0, %xmm3, %xmm0
-; CHECK-NEXT:    vpgatherdq %ymm1, (%rdi,%xmm0), %ymm2
+; CHECK-NEXT:    vpgatherdq %ymm1, (%rcx,%xmm0), %ymm2
 ; CHECK-NEXT:    shlq $47, %rax
 ; CHECK-NEXT:    vmovdqa %ymm2, %ymm0
 ; CHECK-NEXT:    orq %rax, %rsp
@@ -357,11 +372,12 @@ define <4 x i64> @test_llvm_x86_avx2_gather_q_q_256(ptr %b, <4 x i64> %iv, <4 x 
 ; CHECK-NEXT:    movq $-1, %rcx
 ; CHECK-NEXT:    sarq $63, %rax
 ; CHECK-NEXT:    vpxor %xmm2, %xmm2, %xmm2
-; CHECK-NEXT:    orq %rax, %rdi
+; CHECK-NEXT:    movq %rax, %rcx
+; CHECK-NEXT:    orq %rdi, %rcx
 ; CHECK-NEXT:    vmovq %rax, %xmm3
 ; CHECK-NEXT:    vpbroadcastq %xmm3, %ymm3
 ; CHECK-NEXT:    vpor %ymm0, %ymm3, %ymm0
-; CHECK-NEXT:    vpgatherqq %ymm1, (%rdi,%ymm0), %ymm2
+; CHECK-NEXT:    vpgatherqq %ymm1, (%rcx,%ymm0), %ymm2
 ; CHECK-NEXT:    shlq $47, %rax
 ; CHECK-NEXT:    vmovdqa %ymm2, %ymm0
 ; CHECK-NEXT:    orq %rax, %rsp
@@ -381,10 +397,11 @@ define <16 x float> @test_llvm_x86_avx512_gather_dps_512(ptr %b, <16 x i32> %iv)
 ; CHECK-NEXT:    sarq $63, %rax
 ; CHECK-NEXT:    kxnorw %k0, %k0, %k1
 ; CHECK-NEXT:    vxorps %xmm1, %xmm1, %xmm1
-; CHECK-NEXT:    orq %rax, %rdi
+; CHECK-NEXT:    movq %rax, %rcx
+; CHECK-NEXT:    orq %rdi, %rcx
 ; CHECK-NEXT:    vpbroadcastq %rax, %zmm2
 ; CHECK-NEXT:    vporq %zmm0, %zmm2, %zmm0
-; CHECK-NEXT:    vgatherdps (%rdi,%zmm0), %zmm1 {%k1}
+; CHECK-NEXT:    vgatherdps (%rcx,%zmm0), %zmm1 {%k1}
 ; CHECK-NEXT:    shlq $47, %rax
 ; CHECK-NEXT:    vmovaps %zmm1, %zmm0
 ; CHECK-NEXT:    orq %rax, %rsp
@@ -404,11 +421,12 @@ define <8 x double> @test_llvm_x86_avx512_gather_dpd_512(ptr %b, <8 x i32> %iv) 
 ; CHECK-NEXT:    sarq $63, %rax
 ; CHECK-NEXT:    kxnorw %k0, %k0, %k1
 ; CHECK-NEXT:    vxorpd %xmm1, %xmm1, %xmm1
-; CHECK-NEXT:    orq %rax, %rdi
+; CHECK-NEXT:    movq %rax, %rcx
+; CHECK-NEXT:    orq %rdi, %rcx
 ; CHECK-NEXT:    vmovq %rax, %xmm2
 ; CHECK-NEXT:    vpbroadcastq %xmm2, %ymm2
 ; CHECK-NEXT:    vpor %ymm0, %ymm2, %ymm0
-; CHECK-NEXT:    vgatherdpd (%rdi,%ymm0), %zmm1 {%k1}
+; CHECK-NEXT:    vgatherdpd (%rcx,%ymm0), %zmm1 {%k1}
 ; CHECK-NEXT:    shlq $47, %rax
 ; CHECK-NEXT:    vmovapd %zmm1, %zmm0
 ; CHECK-NEXT:    orq %rax, %rsp
@@ -428,10 +446,11 @@ define <8 x float> @test_llvm_x86_avx512_gather_qps_512(ptr %b, <8 x i64> %iv) #
 ; CHECK-NEXT:    sarq $63, %rax
 ; CHECK-NEXT:    kxnorw %k0, %k0, %k1
 ; CHECK-NEXT:    vxorps %xmm1, %xmm1, %xmm1
-; CHECK-NEXT:    orq %rax, %rdi
+; CHECK-NEXT:    movq %rax, %rcx
+; CHECK-NEXT:    orq %rdi, %rcx
 ; CHECK-NEXT:    vpbroadcastq %rax, %zmm2
 ; CHECK-NEXT:    vporq %zmm0, %zmm2, %zmm0
-; CHECK-NEXT:    vgatherqps (%rdi,%zmm0), %ymm1 {%k1}
+; CHECK-NEXT:    vgatherqps (%rcx,%zmm0), %ymm1 {%k1}
 ; CHECK-NEXT:    shlq $47, %rax
 ; CHECK-NEXT:    vmovaps %ymm1, %ymm0
 ; CHECK-NEXT:    orq %rax, %rsp
@@ -451,10 +470,11 @@ define <8 x double> @test_llvm_x86_avx512_gather_qpd_512(ptr %b, <8 x i64> %iv) 
 ; CHECK-NEXT:    sarq $63, %rax
 ; CHECK-NEXT:    kxnorw %k0, %k0, %k1
 ; CHECK-NEXT:    vxorpd %xmm1, %xmm1, %xmm1
-; CHECK-NEXT:    orq %rax, %rdi
+; CHECK-NEXT:    movq %rax, %rcx
+; CHECK-NEXT:    orq %rdi, %rcx
 ; CHECK-NEXT:    vpbroadcastq %rax, %zmm2
 ; CHECK-NEXT:    vporq %zmm0, %zmm2, %zmm0
-; CHECK-NEXT:    vgatherqpd (%rdi,%zmm0), %zmm1 {%k1}
+; CHECK-NEXT:    vgatherqpd (%rcx,%zmm0), %zmm1 {%k1}
 ; CHECK-NEXT:    shlq $47, %rax
 ; CHECK-NEXT:    vmovapd %zmm1, %zmm0
 ; CHECK-NEXT:    orq %rax, %rsp
@@ -474,10 +494,11 @@ define <16 x i32> @test_llvm_x86_avx512_gather_dpi_512(ptr %b, <16 x i32> %iv) #
 ; CHECK-NEXT:    sarq $63, %rax
 ; CHECK-NEXT:    kxnorw %k0, %k0, %k1
 ; CHECK-NEXT:    vpxor %xmm1, %xmm1, %xmm1
-; CHECK-NEXT:    orq %rax, %rdi
+; CHECK-NEXT:    movq %rax, %rcx
+; CHECK-NEXT:    orq %rdi, %rcx
 ; CHECK-NEXT:    vpbroadcastq %rax, %zmm2
 ; CHECK-NEXT:    vporq %zmm0, %zmm2, %zmm0
-; CHECK-NEXT:    vpgatherdd (%rdi,%zmm0), %zmm1 {%k1}
+; CHECK-NEXT:    vpgatherdd (%rcx,%zmm0), %zmm1 {%k1}
 ; CHECK-NEXT:    shlq $47, %rax
 ; CHECK-NEXT:    vmovdqa64 %zmm1, %zmm0
 ; CHECK-NEXT:    orq %rax, %rsp
@@ -497,11 +518,12 @@ define <8 x i64> @test_llvm_x86_avx512_gather_dpq_512(ptr %b, <8 x i32> %iv) #1 
 ; CHECK-NEXT:    sarq $63, %rax
 ; CHECK-NEXT:    kxnorw %k0, %k0, %k1
 ; CHECK-NEXT:    vpxor %xmm1, %xmm1, %xmm1
-; CHECK-NEXT:    orq %rax, %rdi
+; CHECK-NEXT:    movq %rax, %rcx
+; CHECK-NEXT:    orq %rdi, %rcx
 ; CHECK-NEXT:    vmovq %rax, %xmm2
 ; CHECK-NEXT:    vpbroadcastq %xmm2, %ymm2
 ; CHECK-NEXT:    vpor %ymm0, %ymm2, %ymm0
-; CHECK-NEXT:    vpgatherdq (%rdi,%ymm0), %zmm1 {%k1}
+; CHECK-NEXT:    vpgatherdq (%rcx,%ymm0), %zmm1 {%k1}
 ; CHECK-NEXT:    shlq $47, %rax
 ; CHECK-NEXT:    vmovdqa64 %zmm1, %zmm0
 ; CHECK-NEXT:    orq %rax, %rsp
@@ -522,10 +544,11 @@ define <8 x i32> @test_llvm_x86_avx512_gather_qpi_512(ptr %b, <8 x i64> %iv) #1 
 ; CHECK-NEXT:    sarq $63, %rax
 ; CHECK-NEXT:    kxnorw %k0, %k0, %k1
 ; CHECK-NEXT:    vpxor %xmm1, %xmm1, %xmm1
-; CHECK-NEXT:    orq %rax, %rdi
+; CHECK-NEXT:    movq %rax, %rcx
+; CHECK-NEXT:    orq %rdi, %rcx
 ; CHECK-NEXT:    vpbroadcastq %rax, %zmm2
 ; CHECK-NEXT:    vporq %zmm0, %zmm2, %zmm0
-; CHECK-NEXT:    vpgatherqd (%rdi,%zmm0), %ymm1 {%k1}
+; CHECK-NEXT:    vpgatherqd (%rcx,%zmm0), %ymm1 {%k1}
 ; CHECK-NEXT:    shlq $47, %rax
 ; CHECK-NEXT:    vmovdqa %ymm1, %ymm0
 ; CHECK-NEXT:    orq %rax, %rsp
@@ -545,10 +568,11 @@ define <8 x i64> @test_llvm_x86_avx512_gather_qpq_512(ptr %b, <8 x i64> %iv) #1 
 ; CHECK-NEXT:    sarq $63, %rax
 ; CHECK-NEXT:    kxnorw %k0, %k0, %k1
 ; CHECK-NEXT:    vpxor %xmm1, %xmm1, %xmm1
-; CHECK-NEXT:    orq %rax, %rdi
+; CHECK-NEXT:    movq %rax, %rcx
+; CHECK-NEXT:    orq %rdi, %rcx
 ; CHECK-NEXT:    vpbroadcastq %rax, %zmm2
 ; CHECK-NEXT:    vporq %zmm0, %zmm2, %zmm0
-; CHECK-NEXT:    vpgatherqq (%rdi,%zmm0), %zmm1 {%k1}
+; CHECK-NEXT:    vpgatherqq (%rcx,%zmm0), %zmm1 {%k1}
 ; CHECK-NEXT:    shlq $47, %rax
 ; CHECK-NEXT:    vmovdqa64 %zmm1, %zmm0
 ; CHECK-NEXT:    orq %rax, %rsp
@@ -568,10 +592,11 @@ define <4 x float> @test_llvm_x86_avx512_gather3siv4_sf(ptr %b, <4 x i32> %iv) #
 ; CHECK-NEXT:    sarq $63, %rax
 ; CHECK-NEXT:    kxnorw %k0, %k0, %k1
 ; CHECK-NEXT:    vxorps %xmm1, %xmm1, %xmm1
-; CHECK-NEXT:    orq %rax, %rdi
+; CHECK-NEXT:    movq %rax, %rcx
+; CHECK-NEXT:    orq %rdi, %rcx
 ; CHECK-NEXT:    vpbroadcastq %rax, %xmm2
 ; CHECK-NEXT:    vpor %xmm0, %xmm2, %xmm0
-; CHECK-NEXT:    vgatherdps (%rdi,%xmm0), %xmm1 {%k1}
+; CHECK-NEXT:    vgatherdps (%rcx,%xmm0), %xmm1 {%k1}
 ; CHECK-NEXT:    shlq $47, %rax
 ; CHECK-NEXT:    vmovaps %xmm1, %xmm0
 ; CHECK-NEXT:    orq %rax, %rsp
@@ -591,10 +616,11 @@ define <4 x float> @test_llvm_x86_avx512_gather3div4_sf(ptr %b, <2 x i64> %iv) #
 ; CHECK-NEXT:    sarq $63, %rax
 ; CHECK-NEXT:    kxnorw %k0, %k0, %k1
 ; CHECK-NEXT:    vxorps %xmm1, %xmm1, %xmm1
-; CHECK-NEXT:    orq %rax, %rdi
+; CHECK-NEXT:    movq %rax, %rcx
+; CHECK-NEXT:    orq %rdi, %rcx
 ; CHECK-NEXT:    vpbroadcastq %rax, %xmm2
 ; CHECK-NEXT:    vpor %xmm0, %xmm2, %xmm0
-; CHECK-NEXT:    vgatherqps (%rdi,%xmm0), %xmm1 {%k1}
+; CHECK-NEXT:    vgatherqps (%rcx,%xmm0), %xmm1 {%k1}
 ; CHECK-NEXT:    shlq $47, %rax
 ; CHECK-NEXT:    vmovaps %xmm1, %xmm0
 ; CHECK-NEXT:    orq %rax, %rsp
@@ -614,10 +640,11 @@ define <2 x double> @test_llvm_x86_avx512_gather3siv2_df(ptr %b, <4 x i32> %iv) 
 ; CHECK-NEXT:    sarq $63, %rax
 ; CHECK-NEXT:    kxnorw %k0, %k0, %k1
 ; CHECK-NEXT:    vxorpd %xmm1, %xmm1, %xmm1
-; CHECK-NEXT:    orq %rax, %rdi
+; CHECK-NEXT:    movq %rax, %rcx
+; CHECK-NEXT:    orq %rdi, %rcx
 ; CHECK-NEXT:    vpbroadcastq %rax, %xmm2
 ; CHECK-NEXT:    vpor %xmm0, %xmm2, %xmm0
-; CHECK-NEXT:    vgatherdpd (%rdi,%xmm0), %xmm1 {%k1}
+; CHECK-NEXT:    vgatherdpd (%rcx,%xmm0), %xmm1 {%k1}
 ; CHECK-NEXT:    shlq $47, %rax
 ; CHECK-NEXT:    vmovapd %xmm1, %xmm0
 ; CHECK-NEXT:    orq %rax, %rsp
@@ -637,10 +664,11 @@ define <2 x double> @test_llvm_x86_avx512_gather3div2_df(ptr %b, <2 x i64> %iv) 
 ; CHECK-NEXT:    sarq $63, %rax
 ; CHECK-NEXT:    kxnorw %k0, %k0, %k1
 ; CHECK-NEXT:    vxorpd %xmm1, %xmm1, %xmm1
-; CHECK-NEXT:    orq %rax, %rdi
+; CHECK-NEXT:    movq %rax, %rcx
+; CHECK-NEXT:    orq %rdi, %rcx
 ; CHECK-NEXT:    vpbroadcastq %rax, %xmm2
 ; CHECK-NEXT:    vpor %xmm0, %xmm2, %xmm0
-; CHECK-NEXT:    vgatherqpd (%rdi,%xmm0), %xmm1 {%k1}
+; CHECK-NEXT:    vgatherqpd (%rcx,%xmm0), %xmm1 {%k1}
 ; CHECK-NEXT:    shlq $47, %rax
 ; CHECK-NEXT:    vmovapd %xmm1, %xmm0
 ; CHECK-NEXT:    orq %rax, %rsp
@@ -660,10 +688,11 @@ define <8 x float> @test_llvm_x86_avx512_gather3siv8_sf(ptr %b, <8 x i32> %iv) #
 ; CHECK-NEXT:    sarq $63, %rax
 ; CHECK-NEXT:    kxnorw %k0, %k0, %k1
 ; CHECK-NEXT:    vxorps %xmm1, %xmm1, %xmm1
-; CHECK-NEXT:    orq %rax, %rdi
+; CHECK-NEXT:    movq %rax, %rcx
+; CHECK-NEXT:    orq %rdi, %rcx
 ; CHECK-NEXT:    vpbroadcastq %rax, %ymm2
 ; CHECK-NEXT:    vpor %ymm0, %ymm2, %ymm0
-; CHECK-NEXT:    vgatherdps (%rdi,%ymm0), %ymm1 {%k1}
+; CHECK-NEXT:    vgatherdps (%rcx,%ymm0), %ymm1 {%k1}
 ; CHECK-NEXT:    shlq $47, %rax
 ; CHECK-NEXT:    vmovaps %ymm1, %ymm0
 ; CHECK-NEXT:    orq %rax, %rsp
@@ -683,10 +712,11 @@ define <4 x float> @test_llvm_x86_avx512_gather3div8_sf(ptr %b, <4 x i64> %iv) #
 ; CHECK-NEXT:    sarq $63, %rax
 ; CHECK-NEXT:    kxnorw %k0, %k0, %k1
 ; CHECK-NEXT:    vxorps %xmm1, %xmm1, %xmm1
-; CHECK-NEXT:    orq %rax, %rdi
+; CHECK-NEXT:    movq %rax, %rcx
+; CHECK-NEXT:    orq %rdi, %rcx
 ; CHECK-NEXT:    vpbroadcastq %rax, %ymm2
 ; CHECK-NEXT:    vpor %ymm0, %ymm2, %ymm0
-; CHECK-NEXT:    vgatherqps (%rdi,%ymm0), %xmm1 {%k1}
+; CHECK-NEXT:    vgatherqps (%rcx,%ymm0), %xmm1 {%k1}
 ; CHECK-NEXT:    shlq $47, %rax
 ; CHECK-NEXT:    vmovaps %xmm1, %xmm0
 ; CHECK-NEXT:    orq %rax, %rsp
@@ -707,10 +737,11 @@ define <4 x double> @test_llvm_x86_avx512_gather3siv4_df(ptr %b, <4 x i32> %iv) 
 ; CHECK-NEXT:    sarq $63, %rax
 ; CHECK-NEXT:    kxnorw %k0, %k0, %k1
 ; CHECK-NEXT:    vxorpd %xmm1, %xmm1, %xmm1
-; CHECK-NEXT:    orq %rax, %rdi
+; CHECK-NEXT:    movq %rax, %rcx
+; CHECK-NEXT:    orq %rdi, %rcx
 ; CHECK-NEXT:    vpbroadcastq %rax, %xmm2
 ; CHECK-NEXT:    vpor %xmm0, %xmm2, %xmm0
-; CHECK-NEXT:    vgatherdpd (%rdi,%xmm0), %ymm1 {%k1}
+; CHECK-NEXT:    vgatherdpd (%rcx,%xmm0), %ymm1 {%k1}
 ; CHECK-NEXT:    shlq $47, %rax
 ; CHECK-NEXT:    vmovapd %ymm1, %ymm0
 ; CHECK-NEXT:    orq %rax, %rsp
@@ -730,10 +761,11 @@ define <4 x double> @test_llvm_x86_avx512_gather3div4_df(ptr %b, <4 x i64> %iv) 
 ; CHECK-NEXT:    sarq $63, %rax
 ; CHECK-NEXT:    kxnorw %k0, %k0, %k1
 ; CHECK-NEXT:    vxorpd %xmm1, %xmm1, %xmm1
-; CHECK-NEXT:    orq %rax, %rdi
+; CHECK-NEXT:    movq %rax, %rcx
+; CHECK-NEXT:    orq %rdi, %rcx
 ; CHECK-NEXT:    vpbroadcastq %rax, %ymm2
 ; CHECK-NEXT:    vpor %ymm0, %ymm2, %ymm0
-; CHECK-NEXT:    vgatherqpd (%rdi,%ymm0), %ymm1 {%k1}
+; CHECK-NEXT:    vgatherqpd (%rcx,%ymm0), %ymm1 {%k1}
 ; CHECK-NEXT:    shlq $47, %rax
 ; CHECK-NEXT:    vmovapd %ymm1, %ymm0
 ; CHECK-NEXT:    orq %rax, %rsp
@@ -753,10 +785,11 @@ define <4 x i32> @test_llvm_x86_avx512_gather3siv4_si(ptr %b, <4 x i32> %iv) #2 
 ; CHECK-NEXT:    sarq $63, %rax
 ; CHECK-NEXT:    kxnorw %k0, %k0, %k1
 ; CHECK-NEXT:    vpxor %xmm1, %xmm1, %xmm1
-; CHECK-NEXT:    orq %rax, %rdi
+; CHECK-NEXT:    movq %rax, %rcx
+; CHECK-NEXT:    orq %rdi, %rcx
 ; CHECK-NEXT:    vpbroadcastq %rax, %xmm2
 ; CHECK-NEXT:    vpor %xmm0, %xmm2, %xmm0
-; CHECK-NEXT:    vpgatherdd (%rdi,%xmm0), %xmm1 {%k1}
+; CHECK-NEXT:    vpgatherdd (%rcx,%xmm0), %xmm1 {%k1}
 ; CHECK-NEXT:    shlq $47, %rax
 ; CHECK-NEXT:    vmovdqa %xmm1, %xmm0
 ; CHECK-NEXT:    orq %rax, %rsp
@@ -776,10 +809,11 @@ define <4 x i32> @test_llvm_x86_avx512_gather3div4_si(ptr %b, <2 x i64> %iv) #2 
 ; CHECK-NEXT:    sarq $63, %rax
 ; CHECK-NEXT:    kxnorw %k0, %k0, %k1
 ; CHECK-NEXT:    vpxor %xmm1, %xmm1, %xmm1
-; CHECK-NEXT:    orq %rax, %rdi
+; CHECK-NEXT:    movq %rax, %rcx
+; CHECK-NEXT:    orq %rdi, %rcx
 ; CHECK-NEXT:    vpbroadcastq %rax, %xmm2
 ; CHECK-NEXT:    vpor %xmm0, %xmm2, %xmm0
-; CHECK-NEXT:    vpgatherqd (%rdi,%xmm0), %xmm1 {%k1}
+; CHECK-NEXT:    vpgatherqd (%rcx,%xmm0), %xmm1 {%k1}
 ; CHECK-NEXT:    shlq $47, %rax
 ; CHECK-NEXT:    vmovdqa %xmm1, %xmm0
 ; CHECK-NEXT:    orq %rax, %rsp
@@ -799,10 +833,11 @@ define <2 x i64> @test_llvm_x86_avx512_gather3siv2_di(ptr %b, <4 x i32> %iv) #2 
 ; CHECK-NEXT:    sarq $63, %rax
 ; CHECK-NEXT:    kxnorw %k0, %k0, %k1
 ; CHECK-NEXT:    vpxor %xmm1, %xmm1, %xmm1
-; CHECK-NEXT:    orq %rax, %rdi
+; CHECK-NEXT:    movq %rax, %rcx
+; CHECK-NEXT:    orq %rdi, %rcx
 ; CHECK-NEXT:    vpbroadcastq %rax, %xmm2
 ; CHECK-NEXT:    vpor %xmm0, %xmm2, %xmm0
-; CHECK-NEXT:    vpgatherdq (%rdi,%xmm0), %xmm1 {%k1}
+; CHECK-NEXT:    vpgatherdq (%rcx,%xmm0), %xmm1 {%k1}
 ; CHECK-NEXT:    shlq $47, %rax
 ; CHECK-NEXT:    vmovdqa %xmm1, %xmm0
 ; CHECK-NEXT:    orq %rax, %rsp
@@ -822,10 +857,11 @@ define <2 x i64> @test_llvm_x86_avx512_gather3div2_di(ptr %b, <2 x i64> %iv) #2 
 ; CHECK-NEXT:    sarq $63, %rax
 ; CHECK-NEXT:    kxnorw %k0, %k0, %k1
 ; CHECK-NEXT:    vpxor %xmm1, %xmm1, %xmm1
-; CHECK-NEXT:    orq %rax, %rdi
+; CHECK-NEXT:    movq %rax, %rcx
+; CHECK-NEXT:    orq %rdi, %rcx
 ; CHECK-NEXT:    vpbroadcastq %rax, %xmm2
 ; CHECK-NEXT:    vpor %xmm0, %xmm2, %xmm0
-; CHECK-NEXT:    vpgatherqq (%rdi,%xmm0), %xmm1 {%k1}
+; CHECK-NEXT:    vpgatherqq (%rcx,%xmm0), %xmm1 {%k1}
 ; CHECK-NEXT:    shlq $47, %rax
 ; CHECK-NEXT:    vmovdqa %xmm1, %xmm0
 ; CHECK-NEXT:    orq %rax, %rsp
@@ -845,10 +881,11 @@ define <8 x i32> @test_llvm_x86_avx512_gather3siv8_si(ptr %b, <8 x i32> %iv) #2 
 ; CHECK-NEXT:    sarq $63, %rax
 ; CHECK-NEXT:    kxnorw %k0, %k0, %k1
 ; CHECK-NEXT:    vpxor %xmm1, %xmm1, %xmm1
-; CHECK-NEXT:    orq %rax, %rdi
+; CHECK-NEXT:    movq %rax, %rcx
+; CHECK-NEXT:    orq %rdi, %rcx
 ; CHECK-NEXT:    vpbroadcastq %rax, %ymm2
 ; CHECK-NEXT:    vpor %ymm0, %ymm2, %ymm0
-; CHECK-NEXT:    vpgatherdd (%rdi,%ymm0), %ymm1 {%k1}
+; CHECK-NEXT:    vpgatherdd (%rcx,%ymm0), %ymm1 {%k1}
 ; CHECK-NEXT:    shlq $47, %rax
 ; CHECK-NEXT:    vmovdqa %ymm1, %ymm0
 ; CHECK-NEXT:    orq %rax, %rsp
@@ -868,10 +905,11 @@ define <4 x i32> @test_llvm_x86_avx512_gather3div8_si(ptr %b, <4 x i64> %iv) #2 
 ; CHECK-NEXT:    sarq $63, %rax
 ; CHECK-NEXT:    kxnorw %k0, %k0, %k1
 ; CHECK-NEXT:    vpxor %xmm1, %xmm1, %xmm1
-; CHECK-NEXT:    orq %rax, %rdi
+; CHECK-NEXT:    movq %rax, %rcx
+; CHECK-NEXT:    orq %rdi, %rcx
 ; CHECK-NEXT:    vpbroadcastq %rax, %ymm2
 ; CHECK-NEXT:    vpor %ymm0, %ymm2, %ymm0
-; CHECK-NEXT:    vpgatherqd (%rdi,%ymm0), %xmm1 {%k1}
+; CHECK-NEXT:    vpgatherqd (%rcx,%ymm0), %xmm1 {%k1}
 ; CHECK-NEXT:    shlq $47, %rax
 ; CHECK-NEXT:    vmovdqa %xmm1, %xmm0
 ; CHECK-NEXT:    orq %rax, %rsp
@@ -892,10 +930,11 @@ define <4 x i64> @test_llvm_x86_avx512_gather3siv4_di(ptr %b, <4 x i32> %iv) #2 
 ; CHECK-NEXT:    sarq $63, %rax
 ; CHECK-NEXT:    kxnorw %k0, %k0, %k1
 ; CHECK-NEXT:    vpxor %xmm1, %xmm1, %xmm1
-; CHECK-NEXT:    orq %rax, %rdi
+; CHECK-NEXT:    movq %rax, %rcx
+; CHECK-NEXT:    orq %rdi, %rcx
 ; CHECK-NEXT:    vpbroadcastq %rax, %xmm2
 ; CHECK-NEXT:    vpor %xmm0, %xmm2, %xmm0
-; CHECK-NEXT:    vpgatherdq (%rdi,%xmm0), %ymm1 {%k1}
+; CHECK-NEXT:    vpgatherdq (%rcx,%xmm0), %ymm1 {%k1}
 ; CHECK-NEXT:    shlq $47, %rax
 ; CHECK-NEXT:    vmovdqa %ymm1, %ymm0
 ; CHECK-NEXT:    orq %rax, %rsp
@@ -915,10 +954,11 @@ define <4 x i64> @test_llvm_x86_avx512_gather3div4_di(ptr %b, <4 x i64> %iv) #2 
 ; CHECK-NEXT:    sarq $63, %rax
 ; CHECK-NEXT:    kxnorw %k0, %k0, %k1
 ; CHECK-NEXT:    vpxor %xmm1, %xmm1, %xmm1
-; CHECK-NEXT:    orq %rax, %rdi
+; CHECK-NEXT:    movq %rax, %rcx
+; CHECK-NEXT:    orq %rdi, %rcx
 ; CHECK-NEXT:    vpbroadcastq %rax, %ymm2
 ; CHECK-NEXT:    vpor %ymm0, %ymm2, %ymm0
-; CHECK-NEXT:    vpgatherqq (%rdi,%ymm0), %ymm1 {%k1}
+; CHECK-NEXT:    vpgatherqq (%rcx,%ymm0), %ymm1 {%k1}
 ; CHECK-NEXT:    shlq $47, %rax
 ; CHECK-NEXT:    vmovdqa %ymm1, %ymm0
 ; CHECK-NEXT:    orq %rax, %rsp

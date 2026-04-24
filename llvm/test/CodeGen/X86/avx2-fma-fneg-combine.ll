@@ -13,7 +13,8 @@ declare <4 x double> @llvm.fma.v4f64(<4 x double>, <4 x double>, <4 x double>)
 define <8 x float> @test1(<8 x float> %a, <8 x float> %b, <8 x float> %c)  {
 ; CHECK-LABEL: test1:
 ; CHECK:       # %bb.0:
-; CHECK-NEXT:    vfmsub213ps {{.*#+}} ymm0 = (ymm1 * ymm0) - ymm2
+; CHECK-NEXT:    vfmsub213ps {{.*#+}} ymm1 = (ymm0 * ymm1) - ymm2
+; CHECK-NEXT:    vmovaps %ymm1, %ymm0
 ; CHECK-NEXT:    ret{{[l|q]}}
   %sub.i = fsub <8 x float> <float -0.0, float -0.0, float -0.0, float -0.0, float -0.0, float -0.0, float -0.0, float -0.0>, %c
   %r = tail call nsz <8 x float> @llvm.fma.v8f32(<8 x float> %a, <8 x float> %b, <8 x float> %sub.i) #2
@@ -23,7 +24,8 @@ define <8 x float> @test1(<8 x float> %a, <8 x float> %b, <8 x float> %c)  {
 define <4 x float> @test2(<4 x float> %a, <4 x float> %b, <4 x float> %c) {
 ; CHECK-LABEL: test2:
 ; CHECK:       # %bb.0:
-; CHECK-NEXT:    vfnmsub213ps {{.*#+}} xmm0 = -(xmm1 * xmm0) - xmm2
+; CHECK-NEXT:    vfnmsub213ps {{.*#+}} xmm1 = -(xmm0 * xmm1) - xmm2
+; CHECK-NEXT:    vmovaps %xmm1, %xmm0
 ; CHECK-NEXT:    ret{{[l|q]}}
   %t0 = tail call nsz <4 x float> @llvm.fma.v4f32(<4 x float> %a, <4 x float> %b, <4 x float> %c) #2
   %sub.i = fsub <4 x float> <float -0.0, float -0.0, float -0.0, float -0.0>, %t0
@@ -50,7 +52,8 @@ define <4 x float> @test3(<4 x float> %a, <4 x float> %b, <4 x float> %c)  {
 define <8 x float> @test4(<8 x float> %a, <8 x float> %b, <8 x float> %c) {
 ; CHECK-LABEL: test4:
 ; CHECK:       # %bb.0:
-; CHECK-NEXT:    vfnmadd213ps {{.*#+}} ymm0 = -(ymm1 * ymm0) + ymm2
+; CHECK-NEXT:    vfnmadd213ps {{.*#+}} ymm1 = -(ymm0 * ymm1) + ymm2
+; CHECK-NEXT:    vmovaps %ymm1, %ymm0
 ; CHECK-NEXT:    ret{{[l|q]}}
   %negc = fneg <8 x float> %c
   %t0 = tail call nsz <8 x float> @llvm.fma.v8f32(<8 x float> %a, <8 x float> %b, <8 x float> %negc) #2
@@ -61,7 +64,8 @@ define <8 x float> @test4(<8 x float> %a, <8 x float> %b, <8 x float> %c) {
 define <8 x float> @test5(<8 x float> %a, <8 x float> %b, <8 x float> %c) {
 ; CHECK-LABEL: test5:
 ; CHECK:       # %bb.0:
-; CHECK-NEXT:    vfmadd213ps {{.*#+}} ymm0 = (ymm1 * ymm0) + ymm2
+; CHECK-NEXT:    vfmadd213ps {{.*#+}} ymm1 = (ymm0 * ymm1) + ymm2
+; CHECK-NEXT:    vmovaps %ymm1, %ymm0
 ; CHECK-NEXT:    ret{{[l|q]}}
   %sub.c = fsub <8 x float> <float -0.0, float -0.0, float -0.0, float -0.0, float -0.0, float -0.0, float -0.0, float -0.0>, %c
   %negsubc = fneg <8 x float> %sub.c
@@ -72,7 +76,8 @@ define <8 x float> @test5(<8 x float> %a, <8 x float> %b, <8 x float> %c) {
 define <2 x double> @test6(<2 x double> %a, <2 x double> %b, <2 x double> %c) {
 ; CHECK-LABEL: test6:
 ; CHECK:       # %bb.0:
-; CHECK-NEXT:    vfnmsub213pd {{.*#+}} xmm0 = -(xmm1 * xmm0) - xmm2
+; CHECK-NEXT:    vfnmsub213pd {{.*#+}} xmm1 = -(xmm0 * xmm1) - xmm2
+; CHECK-NEXT:    vmovapd %xmm1, %xmm0
 ; CHECK-NEXT:    ret{{[l|q]}}
   %t0 = tail call nsz <2 x double> @llvm.fma.v2f64(<2 x double> %a, <2 x double> %b, <2 x double> %c) #2
   %sub.i = fsub <2 x double> <double -0.0, double -0.0>, %t0
@@ -83,7 +88,8 @@ define <8 x float> @test7(float %a, <8 x float> %b, <8 x float> %c)  {
 ; X86-LABEL: test7:
 ; X86:       # %bb.0:
 ; X86-NEXT:    vbroadcastss {{[0-9]+}}(%esp), %ymm2
-; X86-NEXT:    vfnmadd213ps {{.*#+}} ymm0 = -(ymm2 * ymm0) + ymm1
+; X86-NEXT:    vfnmadd213ps {{.*#+}} ymm2 = -(ymm0 * ymm2) + ymm1
+; X86-NEXT:    vmovaps %ymm2, %ymm0
 ; X86-NEXT:    retl
 ;
 ; X64-LABEL: test7:
@@ -103,7 +109,8 @@ define <8 x float> @test8(float %a, <8 x float> %b, <8 x float> %c)  {
 ; X86-LABEL: test8:
 ; X86:       # %bb.0:
 ; X86-NEXT:    vbroadcastss {{[0-9]+}}(%esp), %ymm2
-; X86-NEXT:    vfnmadd213ps {{.*#+}} ymm0 = -(ymm2 * ymm0) + ymm1
+; X86-NEXT:    vfnmadd213ps {{.*#+}} ymm2 = -(ymm0 * ymm2) + ymm1
+; X86-NEXT:    vmovaps %ymm2, %ymm0
 ; X86-NEXT:    retl
 ;
 ; X64-LABEL: test8:
@@ -122,7 +129,8 @@ define <4 x double> @test9(<4 x double> %a) {
 ; CHECK-LABEL: test9:
 ; CHECK:       # %bb.0:
 ; CHECK-NEXT:    vbroadcastsd {{.*#+}} ymm1 = [-5.0E-1,-5.0E-1,-5.0E-1,-5.0E-1]
-; CHECK-NEXT:    vfnmadd213pd {{.*#+}} ymm0 = -(ymm1 * ymm0) + ymm1
+; CHECK-NEXT:    vfnmadd213pd {{.*#+}} ymm1 = -(ymm0 * ymm1) + ymm1
+; CHECK-NEXT:    vmovapd %ymm1, %ymm0
 ; CHECK-NEXT:    ret{{[l|q]}}
   %t = tail call <4 x double> @llvm.fma.v4f64(<4 x double> %a, <4 x double> <double 5.000000e-01, double 5.000000e-01, double 5.000000e-01, double 5.000000e-01>, <4 x double> <double -5.000000e-01, double -5.000000e-01, double -5.000000e-01, double -5.000000e-01>)
   ret <4 x double> %t
@@ -160,9 +168,11 @@ define <4 x double> @test12(<4 x double> %a, <4 x double> %b) {
 ; CHECK-LABEL: test12:
 ; CHECK:       # %bb.0:
 ; CHECK-NEXT:    vmovapd {{.*#+}} ymm2 = [-7.5E+0,-2.5E+0,-5.5E+0,-9.5E+0]
-; CHECK-NEXT:    vfnmadd213pd {{.*#+}} ymm0 = -(ymm2 * ymm0) + mem
-; CHECK-NEXT:    vfmadd132pd {{.*#+}} ymm1 = (ymm1 * mem) + ymm2
-; CHECK-NEXT:    vaddpd %ymm1, %ymm0, %ymm0
+; CHECK-NEXT:    vmovapd {{.*#+}} ymm3 = [-7.5E+0,u,-5.5E+0,-9.5E+0]
+; CHECK-NEXT:    vfnmadd231pd {{.*#+}} ymm3 = -(ymm0 * ymm2) + ymm3
+; CHECK-NEXT:    vmovapd {{.*#+}} ymm0 = [u,2.5E+0,5.5E+0,9.5E+0]
+; CHECK-NEXT:    vfmadd213pd {{.*#+}} ymm0 = (ymm1 * ymm0) + ymm2
+; CHECK-NEXT:    vaddpd %ymm0, %ymm3, %ymm0
 ; CHECK-NEXT:    ret{{[l|q]}}
   %t0 = tail call <4 x double> @llvm.fma.v4f64(<4 x double> %a, <4 x double> <double 75.00000e-01, double 25.00000e-01, double 55.00000e-01, double 95.00000e-01>, <4 x double> <double -75.00000e-01, double undef, double -55.00000e-01, double -95.00000e-01>)
   %t1 = tail call <4 x double> @llvm.fma.v4f64(<4 x double> %b, <4 x double> <double undef, double 25.00000e-01, double 55.00000e-01, double 95.00000e-01>, <4 x double> <double -75.00000e-01, double -25.00000e-01, double -55.00000e-01, double -95.00000e-01>)

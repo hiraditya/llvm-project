@@ -10,23 +10,29 @@
 define <8 x i16> @test_v8i16_nosignbit(<8 x i16> %a, <8 x i16> %b) {
 ; SSE2-LABEL: test_v8i16_nosignbit:
 ; SSE2:       # %bb.0:
-; SSE2-NEXT:    pand {{\.?LCPI[0-9]+_[0-9]+}}(%rip), %xmm0
+; SSE2-NEXT:    movdqa {{.*#+}} xmm2 = [255,0,255,0,255,0,255,0,255,0,255,0,255,0,255,0]
+; SSE2-NEXT:    pand %xmm0, %xmm2
 ; SSE2-NEXT:    psrlw $1, %xmm1
-; SSE2-NEXT:    pminsw %xmm1, %xmm0
+; SSE2-NEXT:    pminsw %xmm2, %xmm1
+; SSE2-NEXT:    movdqa %xmm1, %xmm0
 ; SSE2-NEXT:    retq
 ;
 ; SSE41-LABEL: test_v8i16_nosignbit:
 ; SSE41:       # %bb.0:
-; SSE41-NEXT:    pand {{\.?LCPI[0-9]+_[0-9]+}}(%rip), %xmm0
+; SSE41-NEXT:    pmovzxbw {{.*#+}} xmm2 = [255,255,255,255,255,255,255,255]
+; SSE41-NEXT:    pand %xmm0, %xmm2
 ; SSE41-NEXT:    psrlw $1, %xmm1
-; SSE41-NEXT:    pminuw %xmm1, %xmm0
+; SSE41-NEXT:    pminuw %xmm2, %xmm1
+; SSE41-NEXT:    movdqa %xmm1, %xmm0
 ; SSE41-NEXT:    retq
 ;
 ; SSE42-LABEL: test_v8i16_nosignbit:
 ; SSE42:       # %bb.0:
-; SSE42-NEXT:    pand {{\.?LCPI[0-9]+_[0-9]+}}(%rip), %xmm0
+; SSE42-NEXT:    pmovzxbw {{.*#+}} xmm2 = [255,255,255,255,255,255,255,255]
+; SSE42-NEXT:    pand %xmm0, %xmm2
 ; SSE42-NEXT:    psrlw $1, %xmm1
-; SSE42-NEXT:    pminuw %xmm1, %xmm0
+; SSE42-NEXT:    pminuw %xmm2, %xmm1
+; SSE42-NEXT:    movdqa %xmm1, %xmm0
 ; SSE42-NEXT:    retq
 ;
 ; AVX-LABEL: test_v8i16_nosignbit:
@@ -45,7 +51,9 @@ define <8 x i16> @test_v8i16_nosignbit(<8 x i16> %a, <8 x i16> %b) {
 define <16 x i8> @test_v16i8_reassociation(<16 x i8> %a) {
 ; SSE-LABEL: test_v16i8_reassociation:
 ; SSE:       # %bb.0:
-; SSE-NEXT:    pmaxub {{\.?LCPI[0-9]+_[0-9]+}}(%rip), %xmm0
+; SSE-NEXT:    movdqa {{.*#+}} xmm1 = [0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15]
+; SSE-NEXT:    pmaxub %xmm0, %xmm1
+; SSE-NEXT:    movdqa %xmm1, %xmm0
 ; SSE-NEXT:    retq
 ;
 ; AVX-LABEL: test_v16i8_reassociation:
@@ -63,10 +71,10 @@ define <16 x i8> @test_v16i8_demandedbits(<16 x i8> %x, <16 x i8> %y, <16 x i8> 
 ; SSE2-NEXT:    por %xmm1, %xmm0
 ; SSE2-NEXT:    pxor %xmm1, %xmm1
 ; SSE2-NEXT:    pcmpgtb %xmm0, %xmm1
-; SSE2-NEXT:    pand %xmm1, %xmm3
-; SSE2-NEXT:    pandn %xmm2, %xmm1
-; SSE2-NEXT:    por %xmm3, %xmm1
 ; SSE2-NEXT:    movdqa %xmm1, %xmm0
+; SSE2-NEXT:    pand %xmm3, %xmm0
+; SSE2-NEXT:    pandn %xmm2, %xmm1
+; SSE2-NEXT:    por %xmm1, %xmm0
 ; SSE2-NEXT:    retq
 ;
 ; SSE41-LABEL: test_v16i8_demandedbits:
@@ -119,24 +127,27 @@ define <8 x i16> @test_v8i16_knownnonnegative_no_smax(<8 x i16> %a, <8 x i16> %b
 ; SSE2:       # %bb.0:
 ; SSE2-NEXT:    movdqa {{.*#+}} xmm2 = [32767,32767,32767,32767,32767,32767,32767,32767]
 ; SSE2-NEXT:    pand %xmm2, %xmm0
-; SSE2-NEXT:    pand %xmm1, %xmm2
-; SSE2-NEXT:    pmaxsw %xmm2, %xmm0
+; SSE2-NEXT:    pand %xmm2, %xmm1
+; SSE2-NEXT:    pmaxsw %xmm0, %xmm1
+; SSE2-NEXT:    movdqa %xmm1, %xmm0
 ; SSE2-NEXT:    retq
 ;
 ; SSE41-LABEL: test_v8i16_knownnonnegative_no_smax:
 ; SSE41:       # %bb.0:
 ; SSE41-NEXT:    movdqa {{.*#+}} xmm2 = [32767,32767,32767,32767,32767,32767,32767,32767]
 ; SSE41-NEXT:    pand %xmm2, %xmm0
-; SSE41-NEXT:    pand %xmm1, %xmm2
-; SSE41-NEXT:    pmaxuw %xmm2, %xmm0
+; SSE41-NEXT:    pand %xmm2, %xmm1
+; SSE41-NEXT:    pmaxuw %xmm0, %xmm1
+; SSE41-NEXT:    movdqa %xmm1, %xmm0
 ; SSE41-NEXT:    retq
 ;
 ; SSE42-LABEL: test_v8i16_knownnonnegative_no_smax:
 ; SSE42:       # %bb.0:
 ; SSE42-NEXT:    movdqa {{.*#+}} xmm2 = [32767,32767,32767,32767,32767,32767,32767,32767]
 ; SSE42-NEXT:    pand %xmm2, %xmm0
-; SSE42-NEXT:    pand %xmm1, %xmm2
-; SSE42-NEXT:    pmaxuw %xmm2, %xmm0
+; SSE42-NEXT:    pand %xmm2, %xmm1
+; SSE42-NEXT:    pmaxuw %xmm0, %xmm1
+; SSE42-NEXT:    movdqa %xmm1, %xmm0
 ; SSE42-NEXT:    retq
 ;
 ; AVX512F-LABEL: test_v8i16_knownnonnegative_no_smax:

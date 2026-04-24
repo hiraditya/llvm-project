@@ -5,9 +5,9 @@
 define i32 @test1(double %a, ptr nocapture %b, i32 %x, i32 %y)  {
 ; CHECK-LABEL: test1:
 ; CHECK:       # %bb.0:
-; CHECK-NEXT:    movl %esi, %eax
+; CHECK-NEXT:    movl %edx, %eax
 ; CHECK-NEXT:    ucomisd (%rdi), %xmm0
-; CHECK-NEXT:    cmovbel %edx, %eax
+; CHECK-NEXT:    cmoval %esi, %eax
 ; CHECK-NEXT:    retq
   %load = load double, ptr %b, align 8
   %cmp = fcmp olt double %load, %a
@@ -19,9 +19,9 @@ define i32 @test1(double %a, ptr nocapture %b, i32 %x, i32 %y)  {
 define i32 @test2(double %a, double %b, i32 %x, i32 %y)  {
 ; CHECK-LABEL: test2:
 ; CHECK:       # %bb.0:
-; CHECK-NEXT:    movl %edi, %eax
+; CHECK-NEXT:    movl %esi, %eax
 ; CHECK-NEXT:    ucomisd %xmm1, %xmm0
-; CHECK-NEXT:    cmovbel %esi, %eax
+; CHECK-NEXT:    cmoval %edi, %eax
 ; CHECK-NEXT:    retq
   %cmp = fcmp ogt double %a, %b
   %cond = select i1 %cmp, i32 %x, i32 %y
@@ -32,10 +32,11 @@ define i32 @test2(double %a, double %b, i32 %x, i32 %y)  {
 define i32 @test4(i32 %a, ptr nocapture %b, i32 %x, i32 %y)  {
 ; CHECK-LABEL: test4:
 ; CHECK:       # %bb.0:
+; CHECK-NEXT:    # kill: def $ecx killed $ecx def $rcx
 ; CHECK-NEXT:    movl (%rsi), %eax
 ; CHECK-NEXT:    cmpl %edi, %eax
-; CHECK-NEXT:    cmovael %ecx, %edx
-; CHECK-NEXT:    addl %edx, %eax
+; CHECK-NEXT:    cmovbl %edx, %ecx
+; CHECK-NEXT:    addl %ecx, %eax
 ; CHECK-NEXT:    retq
   %load = load i32, ptr %b, align 4
   %cmp = icmp ult i32 %load, %a
@@ -65,10 +66,10 @@ define i32 @test5(i32 %a, ptr nocapture %b, i32 %x, i32 %y) {
 define void @test6(i32 %a, i32 %x, ptr %y.ptr, ptr %z.ptr) {
 ; CHECK-LABEL: test6:
 ; CHECK:       # %bb.0: # %entry
-; CHECK-NEXT:    # kill: def $esi killed $esi def $rsi
 ; CHECK-NEXT:    testl %edi, %edi
-; CHECK-NEXT:    cmovnsl (%rdx), %esi
-; CHECK-NEXT:    movq %rsi, (%rcx)
+; CHECK-NEXT:    movl (%rdx), %eax
+; CHECK-NEXT:    cmovsl %esi, %eax
+; CHECK-NEXT:    movq %rax, (%rcx)
 ; CHECK-NEXT:    retq
 entry:
   %y = load i32, ptr %y.ptr

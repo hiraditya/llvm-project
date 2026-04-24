@@ -119,8 +119,8 @@ entry:
 define i64 @xbar(i64 %x, i64 %y, i64 %z) nounwind readnone {
 ; ALL-LABEL: xbar:
 ; ALL:       # %bb.0: # %entry
-; ALL-NEXT:    movq %rdi, %rax
-; ALL-NEXT:    shrdq $57, %rsi, %rax
+; ALL-NEXT:    movq %rsi, %rax
+; ALL-NEXT:    shldq $7, %rdi, %rax
 ; ALL-NEXT:    retq
 entry:
 	%0 = shl i64 %y, 7

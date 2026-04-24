@@ -11,9 +11,10 @@ define i8 @bitselect_i8(i8 %a, i8 %b, i8 %m) nounwind {
 ; X86-LABEL: bitselect_i8:
 ; X86:       # %bb.0:
 ; X86-NEXT:    movzbl {{[0-9]+}}(%esp), %ecx
+; X86-NEXT:    movzbl {{[0-9]+}}(%esp), %edx
+; X86-NEXT:    xorb %cl, %dl
 ; X86-NEXT:    movzbl {{[0-9]+}}(%esp), %eax
-; X86-NEXT:    xorb %cl, %al
-; X86-NEXT:    andb {{[0-9]+}}(%esp), %al
+; X86-NEXT:    andb %dl, %al
 ; X86-NEXT:    xorb %cl, %al
 ; X86-NEXT:    retl
 ;
@@ -44,9 +45,10 @@ define i16 @bitselect_i16(i16 %a, i16 %b, i16 %m) nounwind {
 ; X86-LABEL: bitselect_i16:
 ; X86:       # %bb.0:
 ; X86-NEXT:    movl {{[0-9]+}}(%esp), %ecx
+; X86-NEXT:    movzwl {{[0-9]+}}(%esp), %edx
+; X86-NEXT:    xorw %cx, %dx
 ; X86-NEXT:    movzwl {{[0-9]+}}(%esp), %eax
-; X86-NEXT:    xorw %cx, %ax
-; X86-NEXT:    andw {{[0-9]+}}(%esp), %ax
+; X86-NEXT:    andw %dx, %ax
 ; X86-NEXT:    xorl %ecx, %eax
 ; X86-NEXT:    # kill: def $ax killed $ax killed $eax
 ; X86-NEXT:    retl
@@ -78,9 +80,10 @@ define i32 @bitselect_i32(i32 %a, i32 %b, i32 %m) nounwind {
 ; X86-LABEL: bitselect_i32:
 ; X86:       # %bb.0:
 ; X86-NEXT:    movl {{[0-9]+}}(%esp), %ecx
+; X86-NEXT:    movl {{[0-9]+}}(%esp), %edx
+; X86-NEXT:    xorl %ecx, %edx
 ; X86-NEXT:    movl {{[0-9]+}}(%esp), %eax
-; X86-NEXT:    xorl %ecx, %eax
-; X86-NEXT:    andl {{[0-9]+}}(%esp), %eax
+; X86-NEXT:    andl %edx, %eax
 ; X86-NEXT:    xorl %ecx, %eax
 ; X86-NEXT:    retl
 ;
@@ -94,9 +97,10 @@ define i32 @bitselect_i32(i32 %a, i32 %b, i32 %m) nounwind {
 ;
 ; X64-BMI-LABEL: bitselect_i32:
 ; X64-BMI:       # %bb.0:
-; X64-BMI-NEXT:    andnl %edi, %edx, %eax
-; X64-BMI-NEXT:    andl %edx, %esi
-; X64-BMI-NEXT:    orl %esi, %eax
+; X64-BMI-NEXT:    movl %esi, %eax
+; X64-BMI-NEXT:    andnl %edi, %edx, %ecx
+; X64-BMI-NEXT:    andl %edx, %eax
+; X64-BMI-NEXT:    orl %ecx, %eax
 ; X64-BMI-NEXT:    retq
   %not = xor i32 %m, -1
   %ma = and i32 %a, %not
@@ -109,16 +113,18 @@ define i64 @bitselect_i64(i64 %a, i64 %b, i64 %m) nounwind {
 ; X86-LABEL: bitselect_i64:
 ; X86:       # %bb.0:
 ; X86-NEXT:    pushl %esi
+; X86-NEXT:    movl {{[0-9]+}}(%esp), %edx
 ; X86-NEXT:    movl {{[0-9]+}}(%esp), %ecx
 ; X86-NEXT:    movl {{[0-9]+}}(%esp), %esi
+; X86-NEXT:    xorl %edx, %esi
 ; X86-NEXT:    movl {{[0-9]+}}(%esp), %eax
-; X86-NEXT:    xorl %ecx, %eax
-; X86-NEXT:    andl {{[0-9]+}}(%esp), %eax
-; X86-NEXT:    xorl %ecx, %eax
+; X86-NEXT:    andl %esi, %eax
+; X86-NEXT:    xorl %edx, %eax
+; X86-NEXT:    movl {{[0-9]+}}(%esp), %esi
+; X86-NEXT:    xorl %ecx, %esi
 ; X86-NEXT:    movl {{[0-9]+}}(%esp), %edx
-; X86-NEXT:    xorl %esi, %edx
-; X86-NEXT:    andl {{[0-9]+}}(%esp), %edx
-; X86-NEXT:    xorl %esi, %edx
+; X86-NEXT:    andl %esi, %edx
+; X86-NEXT:    xorl %ecx, %edx
 ; X86-NEXT:    popl %esi
 ; X86-NEXT:    retl
 ;
@@ -132,9 +138,10 @@ define i64 @bitselect_i64(i64 %a, i64 %b, i64 %m) nounwind {
 ;
 ; X64-BMI-LABEL: bitselect_i64:
 ; X64-BMI:       # %bb.0:
-; X64-BMI-NEXT:    andnq %rdi, %rdx, %rax
-; X64-BMI-NEXT:    andq %rdx, %rsi
-; X64-BMI-NEXT:    orq %rsi, %rax
+; X64-BMI-NEXT:    movq %rsi, %rax
+; X64-BMI-NEXT:    andnq %rdi, %rdx, %rcx
+; X64-BMI-NEXT:    andq %rdx, %rax
+; X64-BMI-NEXT:    orq %rcx, %rax
 ; X64-BMI-NEXT:    retq
   %not = xor i64 %m, -1
   %ma = and i64 %a, %not
@@ -148,37 +155,44 @@ define i128 @bitselect_i128(i128 %a, i128 %b, i128 %m) nounwind {
 ; X86:       # %bb.0:
 ; X86-NEXT:    pushl %ebp
 ; X86-NEXT:    movl %esp, %ebp
+; X86-NEXT:    pushl %ebx
 ; X86-NEXT:    pushl %edi
 ; X86-NEXT:    pushl %esi
 ; X86-NEXT:    andl $-16, %esp
-; X86-NEXT:    movl 32(%ebp), %edx
-; X86-NEXT:    movl 36(%ebp), %eax
-; X86-NEXT:    movl 24(%ebp), %esi
-; X86-NEXT:    movl 28(%ebp), %edi
-; X86-NEXT:    movl 40(%ebp), %ecx
-; X86-NEXT:    xorl %esi, %ecx
-; X86-NEXT:    andl 56(%ebp), %ecx
-; X86-NEXT:    xorl %esi, %ecx
-; X86-NEXT:    movl 44(%ebp), %esi
-; X86-NEXT:    xorl %edi, %esi
-; X86-NEXT:    andl 60(%ebp), %esi
-; X86-NEXT:    xorl %edi, %esi
+; X86-NEXT:    subl $16, %esp
+; X86-NEXT:    movl 32(%ebp), %eax
+; X86-NEXT:    movl 24(%ebp), %edx
+; X86-NEXT:    movl 28(%ebp), %esi
+; X86-NEXT:    movl 40(%ebp), %edi
+; X86-NEXT:    xorl %edx, %edi
+; X86-NEXT:    movl 56(%ebp), %ecx
+; X86-NEXT:    andl %edi, %ecx
+; X86-NEXT:    xorl %edx, %ecx
+; X86-NEXT:    movl 44(%ebp), %edi
+; X86-NEXT:    xorl %esi, %edi
+; X86-NEXT:    movl 60(%ebp), %edx
+; X86-NEXT:    andl %edi, %edx
+; X86-NEXT:    xorl %esi, %edx
 ; X86-NEXT:    movl 48(%ebp), %edi
-; X86-NEXT:    xorl %edx, %edi
-; X86-NEXT:    andl 64(%ebp), %edi
-; X86-NEXT:    xorl %edx, %edi
-; X86-NEXT:    movl 52(%ebp), %edx
-; X86-NEXT:    xorl %eax, %edx
-; X86-NEXT:    andl 68(%ebp), %edx
-; X86-NEXT:    xorl %eax, %edx
+; X86-NEXT:    xorl %eax, %edi
+; X86-NEXT:    movl 64(%ebp), %esi
+; X86-NEXT:    andl %edi, %esi
+; X86-NEXT:    movl 36(%ebp), %edi
+; X86-NEXT:    xorl %eax, %esi
+; X86-NEXT:    movl 52(%ebp), %eax
+; X86-NEXT:    xorl %edi, %eax
+; X86-NEXT:    movl 68(%ebp), %ebx
+; X86-NEXT:    andl %eax, %ebx
+; X86-NEXT:    xorl %edi, %ebx
 ; X86-NEXT:    movl 8(%ebp), %eax
-; X86-NEXT:    movl %edx, 12(%eax)
-; X86-NEXT:    movl %edi, 8(%eax)
-; X86-NEXT:    movl %esi, 4(%eax)
+; X86-NEXT:    movl %ebx, 12(%eax)
+; X86-NEXT:    movl %esi, 8(%eax)
+; X86-NEXT:    movl %edx, 4(%eax)
 ; X86-NEXT:    movl %ecx, (%eax)
-; X86-NEXT:    leal -8(%ebp), %esp
+; X86-NEXT:    leal -12(%ebp), %esp
 ; X86-NEXT:    popl %esi
 ; X86-NEXT:    popl %edi
+; X86-NEXT:    popl %ebx
 ; X86-NEXT:    popl %ebp
 ; X86-NEXT:    retl $4
 ;
@@ -219,8 +233,9 @@ define i128 @bitselect_i128(i128 %a, i128 %b, i128 %m) nounwind {
 define i32 @bitselect_constants_i32(i32 %m) nounwind {
 ; X86-LABEL: bitselect_constants_i32:
 ; X86:       # %bb.0:
-; X86-NEXT:    movl $-6573, %eax # imm = 0xE653
-; X86-NEXT:    andl {{[0-9]+}}(%esp), %eax
+; X86-NEXT:    movl $-6573, %ecx # imm = 0xE653
+; X86-NEXT:    movl {{[0-9]+}}(%esp), %eax
+; X86-NEXT:    andl %ecx, %eax
 ; X86-NEXT:    xorl $52, %eax
 ; X86-NEXT:    retl
 ;
@@ -234,10 +249,11 @@ define i32 @bitselect_constants_i32(i32 %m) nounwind {
 ; X64-BMI-LABEL: bitselect_constants_i32:
 ; X64-BMI:       # %bb.0:
 ; X64-BMI-NEXT:    movl %edi, %eax
-; X64-BMI-NEXT:    notl %eax
-; X64-BMI-NEXT:    andl $52, %eax
-; X64-BMI-NEXT:    andl $-6553, %edi # imm = 0xE667
-; X64-BMI-NEXT:    orl %edi, %eax
+; X64-BMI-NEXT:    movl %edi, %ecx
+; X64-BMI-NEXT:    notl %ecx
+; X64-BMI-NEXT:    andl $52, %ecx
+; X64-BMI-NEXT:    andl $-6553, %eax # imm = 0xE667
+; X64-BMI-NEXT:    orl %ecx, %eax
 ; X64-BMI-NEXT:    retq
   %not = xor i32 %m, -1
   %ma = and i32 52, %not

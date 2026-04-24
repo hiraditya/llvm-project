@@ -163,8 +163,8 @@ define dso_local i64 @neg_0x80000001() #0 {
 ;
 ; MSTATIC-LABEL: neg_0x80000001:
 ; MSTATIC:       # %bb.0: # %entry
-; MSTATIC-NEXT:    movabsq $-2147483649, %rcx # imm = 0xFFFFFFFF7FFFFFFF
-; MSTATIC-NEXT:    movabsq $foo, %rax
+; MSTATIC-NEXT:    movabsq $-2147483649, %rax # imm = 0xFFFFFFFF7FFFFFFF
+; MSTATIC-NEXT:    movabsq $foo, %rcx
 ; MSTATIC-NEXT:    addq %rcx, %rax
 ; MSTATIC-NEXT:    retq
 ;

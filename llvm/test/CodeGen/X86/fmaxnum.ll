@@ -82,12 +82,12 @@ define x86_fp80 @test_fmaxl(x86_fp80 %x, x86_fp80 %y) {
 define float @test_intrinsic_fmaxf(float %x, float %y) {
 ; SSE2-LABEL: test_intrinsic_fmaxf:
 ; SSE2:       # %bb.0:
-; SSE2-NEXT:    movaps %xmm0, %xmm2
-; SSE2-NEXT:    cmpunordss %xmm0, %xmm2
-; SSE2-NEXT:    movaps %xmm2, %xmm3
-; SSE2-NEXT:    andps %xmm1, %xmm3
+; SSE2-NEXT:    movaps %xmm0, %xmm3
+; SSE2-NEXT:    cmpunordss %xmm0, %xmm3
+; SSE2-NEXT:    movaps %xmm3, %xmm2
+; SSE2-NEXT:    andps %xmm1, %xmm2
 ; SSE2-NEXT:    maxss %xmm0, %xmm1
-; SSE2-NEXT:    andnps %xmm1, %xmm2
+; SSE2-NEXT:    andnps %xmm1, %xmm3
 ; SSE2-NEXT:    orps %xmm3, %xmm2
 ; SSE2-NEXT:    movaps %xmm2, %xmm0
 ; SSE2-NEXT:    retq
@@ -122,12 +122,12 @@ define float @test_intrinsic_fmaxf(float %x, float %y) {
 define double @test_intrinsic_fmax(double %x, double %y) {
 ; SSE2-LABEL: test_intrinsic_fmax:
 ; SSE2:       # %bb.0:
-; SSE2-NEXT:    movapd %xmm0, %xmm2
-; SSE2-NEXT:    cmpunordsd %xmm0, %xmm2
-; SSE2-NEXT:    movapd %xmm2, %xmm3
-; SSE2-NEXT:    andpd %xmm1, %xmm3
+; SSE2-NEXT:    movapd %xmm0, %xmm3
+; SSE2-NEXT:    cmpunordsd %xmm0, %xmm3
+; SSE2-NEXT:    movapd %xmm3, %xmm2
+; SSE2-NEXT:    andpd %xmm1, %xmm2
 ; SSE2-NEXT:    maxsd %xmm0, %xmm1
-; SSE2-NEXT:    andnpd %xmm1, %xmm2
+; SSE2-NEXT:    andnpd %xmm1, %xmm3
 ; SSE2-NEXT:    orpd %xmm3, %xmm2
 ; SSE2-NEXT:    movapd %xmm2, %xmm0
 ; SSE2-NEXT:    retq
@@ -348,8 +348,7 @@ define <16 x float> @test_intrinsic_fmax_v16f32(<16 x float> %x, <16 x float> %y
 ; AVX512:       # %bb.0:
 ; AVX512-NEXT:    vmaxps %zmm0, %zmm1, %zmm2
 ; AVX512-NEXT:    vcmpunordps %zmm0, %zmm0, %k1
-; AVX512-NEXT:    vmovaps %zmm1, %zmm2 {%k1}
-; AVX512-NEXT:    vmovaps %zmm2, %zmm0
+; AVX512-NEXT:    vblendmps %zmm1, %zmm2, %zmm0 {%k1}
 ; AVX512-NEXT:    retq
   %z = call <16 x float> @llvm.maxnum.v16f32(<16 x float> %x, <16 x float> %y) readnone
   ret <16 x float> %z
@@ -497,8 +496,7 @@ define <8 x double> @test_intrinsic_fmax_v8f64(<8 x double> %x, <8 x double> %y)
 ; AVX512:       # %bb.0:
 ; AVX512-NEXT:    vmaxpd %zmm0, %zmm1, %zmm2
 ; AVX512-NEXT:    vcmpunordpd %zmm0, %zmm0, %k1
-; AVX512-NEXT:    vmovapd %zmm1, %zmm2 {%k1}
-; AVX512-NEXT:    vmovapd %zmm2, %zmm0
+; AVX512-NEXT:    vblendmpd %zmm1, %zmm2, %zmm0 {%k1}
 ; AVX512-NEXT:    retq
   %z = call <8 x double> @llvm.maxnum.v8f64(<8 x double> %x, <8 x double> %y) readnone
   ret <8 x double> %z

@@ -9,20 +9,22 @@
 define i1 @xor_i1(i1 %a, i1 %b) {
 ; SDAG-X86-LABEL: xor_i1:
 ; SDAG-X86:       # %bb.0:
+; SDAG-X86-NEXT:    movzbl {{[0-9]+}}(%esp), %ecx
 ; SDAG-X86-NEXT:    movzbl {{[0-9]+}}(%esp), %eax
-; SDAG-X86-NEXT:    xorb {{[0-9]+}}(%esp), %al
+; SDAG-X86-NEXT:    xorb %cl, %al
 ; SDAG-X86-NEXT:    retl
 ;
 ; FASTISEL-X86-LABEL: xor_i1:
 ; FASTISEL-X86:       # %bb.0:
+; FASTISEL-X86-NEXT:    movzbl {{[0-9]+}}(%esp), %ecx
 ; FASTISEL-X86-NEXT:    movzbl {{[0-9]+}}(%esp), %eax
-; FASTISEL-X86-NEXT:    xorb {{[0-9]+}}(%esp), %al
+; FASTISEL-X86-NEXT:    xorb %cl, %al
 ; FASTISEL-X86-NEXT:    retl
 ;
 ; GISEL-X86-LABEL: xor_i1:
 ; GISEL-X86:       # %bb.0:
-; GISEL-X86-NEXT:    movzbl {{[0-9]+}}(%esp), %ecx
 ; GISEL-X86-NEXT:    movzbl {{[0-9]+}}(%esp), %eax
+; GISEL-X86-NEXT:    movzbl {{[0-9]+}}(%esp), %ecx
 ; GISEL-X86-NEXT:    xorb %cl, %al
 ; GISEL-X86-NEXT:    # kill: def $al killed $al killed $eax
 ; GISEL-X86-NEXT:    retl
@@ -43,8 +45,8 @@ define i1 @xor_i1(i1 %a, i1 %b) {
 ;
 ; GISEL-X64-LABEL: xor_i1:
 ; GISEL-X64:       # %bb.0:
-; GISEL-X64-NEXT:    movl %esi, %eax
-; GISEL-X64-NEXT:    xorb %dil, %al
+; GISEL-X64-NEXT:    movl %edi, %eax
+; GISEL-X64-NEXT:    xorb %sil, %al
 ; GISEL-X64-NEXT:    # kill: def $al killed $al killed $eax
 ; GISEL-X64-NEXT:    retq
   %c = xor i1 %a, %b
@@ -54,20 +56,22 @@ define i1 @xor_i1(i1 %a, i1 %b) {
 define i8 @xor_i8(i8 %a, i8 %b) {
 ; SDAG-X86-LABEL: xor_i8:
 ; SDAG-X86:       # %bb.0:
+; SDAG-X86-NEXT:    movzbl {{[0-9]+}}(%esp), %ecx
 ; SDAG-X86-NEXT:    movzbl {{[0-9]+}}(%esp), %eax
-; SDAG-X86-NEXT:    xorb {{[0-9]+}}(%esp), %al
+; SDAG-X86-NEXT:    xorb %cl, %al
 ; SDAG-X86-NEXT:    retl
 ;
 ; FASTISEL-X86-LABEL: xor_i8:
 ; FASTISEL-X86:       # %bb.0:
+; FASTISEL-X86-NEXT:    movzbl {{[0-9]+}}(%esp), %ecx
 ; FASTISEL-X86-NEXT:    movzbl {{[0-9]+}}(%esp), %eax
-; FASTISEL-X86-NEXT:    xorb {{[0-9]+}}(%esp), %al
+; FASTISEL-X86-NEXT:    xorb %cl, %al
 ; FASTISEL-X86-NEXT:    retl
 ;
 ; GISEL-X86-LABEL: xor_i8:
 ; GISEL-X86:       # %bb.0:
-; GISEL-X86-NEXT:    movzbl {{[0-9]+}}(%esp), %ecx
 ; GISEL-X86-NEXT:    movzbl {{[0-9]+}}(%esp), %eax
+; GISEL-X86-NEXT:    movzbl {{[0-9]+}}(%esp), %ecx
 ; GISEL-X86-NEXT:    xorb %cl, %al
 ; GISEL-X86-NEXT:    # kill: def $al killed $al killed $eax
 ; GISEL-X86-NEXT:    retl
@@ -88,8 +92,8 @@ define i8 @xor_i8(i8 %a, i8 %b) {
 ;
 ; GISEL-X64-LABEL: xor_i8:
 ; GISEL-X64:       # %bb.0:
-; GISEL-X64-NEXT:    movl %esi, %eax
-; GISEL-X64-NEXT:    xorb %dil, %al
+; GISEL-X64-NEXT:    movl %edi, %eax
+; GISEL-X64-NEXT:    xorb %sil, %al
 ; GISEL-X64-NEXT:    # kill: def $al killed $al killed $eax
 ; GISEL-X64-NEXT:    retq
   %c = xor i8 %a, %b
@@ -99,20 +103,22 @@ define i8 @xor_i8(i8 %a, i8 %b) {
 define i16 @xor_i16(i16 %a, i16 %b) {
 ; SDAG-X86-LABEL: xor_i16:
 ; SDAG-X86:       # %bb.0:
+; SDAG-X86-NEXT:    movzwl {{[0-9]+}}(%esp), %ecx
 ; SDAG-X86-NEXT:    movzwl {{[0-9]+}}(%esp), %eax
-; SDAG-X86-NEXT:    xorw {{[0-9]+}}(%esp), %ax
+; SDAG-X86-NEXT:    xorw %cx, %ax
 ; SDAG-X86-NEXT:    retl
 ;
 ; FASTISEL-X86-LABEL: xor_i16:
 ; FASTISEL-X86:       # %bb.0:
+; FASTISEL-X86-NEXT:    movzwl {{[0-9]+}}(%esp), %ecx
 ; FASTISEL-X86-NEXT:    movzwl {{[0-9]+}}(%esp), %eax
-; FASTISEL-X86-NEXT:    xorw {{[0-9]+}}(%esp), %ax
+; FASTISEL-X86-NEXT:    xorw %cx, %ax
 ; FASTISEL-X86-NEXT:    retl
 ;
 ; GISEL-X86-LABEL: xor_i16:
 ; GISEL-X86:       # %bb.0:
-; GISEL-X86-NEXT:    movzwl {{[0-9]+}}(%esp), %ecx
 ; GISEL-X86-NEXT:    movzwl {{[0-9]+}}(%esp), %eax
+; GISEL-X86-NEXT:    movzwl {{[0-9]+}}(%esp), %ecx
 ; GISEL-X86-NEXT:    xorw %cx, %ax
 ; GISEL-X86-NEXT:    # kill: def $ax killed $ax killed $eax
 ; GISEL-X86-NEXT:    retl
@@ -133,8 +139,8 @@ define i16 @xor_i16(i16 %a, i16 %b) {
 ;
 ; GISEL-X64-LABEL: xor_i16:
 ; GISEL-X64:       # %bb.0:
-; GISEL-X64-NEXT:    movl %esi, %eax
-; GISEL-X64-NEXT:    xorw %di, %ax
+; GISEL-X64-NEXT:    movl %edi, %eax
+; GISEL-X64-NEXT:    xorw %si, %ax
 ; GISEL-X64-NEXT:    # kill: def $ax killed $ax killed $eax
 ; GISEL-X64-NEXT:    retq
   %c = xor i16 %a, %b
@@ -144,27 +150,16 @@ define i16 @xor_i16(i16 %a, i16 %b) {
 define i32 @xor_i32(i32 %a, i32 %b) {
 ; X86-LABEL: xor_i32:
 ; X86:       # %bb.0:
+; X86-NEXT:    movl {{[0-9]+}}(%esp), %ecx
 ; X86-NEXT:    movl {{[0-9]+}}(%esp), %eax
-; X86-NEXT:    xorl {{[0-9]+}}(%esp), %eax
+; X86-NEXT:    xorl %ecx, %eax
 ; X86-NEXT:    retl
 ;
-; SDAG-X64-LABEL: xor_i32:
-; SDAG-X64:       # %bb.0:
-; SDAG-X64-NEXT:    movl %edi, %eax
-; SDAG-X64-NEXT:    xorl %esi, %eax
-; SDAG-X64-NEXT:    retq
-;
-; FASTISEL-X64-LABEL: xor_i32:
-; FASTISEL-X64:       # %bb.0:
-; FASTISEL-X64-NEXT:    movl %edi, %eax
-; FASTISEL-X64-NEXT:    xorl %esi, %eax
-; FASTISEL-X64-NEXT:    retq
-;
-; GISEL-X64-LABEL: xor_i32:
-; GISEL-X64:       # %bb.0:
-; GISEL-X64-NEXT:    movl %esi, %eax
-; GISEL-X64-NEXT:    xorl %edi, %eax
-; GISEL-X64-NEXT:    retq
+; X64-LABEL: xor_i32:
+; X64:       # %bb.0:
+; X64-NEXT:    movl %edi, %eax
+; X64-NEXT:    xorl %esi, %eax
+; X64-NEXT:    retq
   %c = xor i32 %a, %b
   ret i32 %c
 }
@@ -172,45 +167,43 @@ define i32 @xor_i32(i32 %a, i32 %b) {
 define i64 @xor_i64(i64 %a, i64 %b) nounwind {
 ; SDAG-X86-LABEL: xor_i64:
 ; SDAG-X86:       # %bb.0:
+; SDAG-X86-NEXT:    pushl %esi
+; SDAG-X86-NEXT:    movl {{[0-9]+}}(%esp), %ecx
+; SDAG-X86-NEXT:    movl {{[0-9]+}}(%esp), %esi
 ; SDAG-X86-NEXT:    movl {{[0-9]+}}(%esp), %eax
+; SDAG-X86-NEXT:    xorl %ecx, %eax
 ; SDAG-X86-NEXT:    movl {{[0-9]+}}(%esp), %edx
-; SDAG-X86-NEXT:    xorl {{[0-9]+}}(%esp), %eax
-; SDAG-X86-NEXT:    xorl {{[0-9]+}}(%esp), %edx
+; SDAG-X86-NEXT:    xorl %esi, %edx
+; SDAG-X86-NEXT:    popl %esi
 ; SDAG-X86-NEXT:    retl
 ;
 ; FASTISEL-X86-LABEL: xor_i64:
 ; FASTISEL-X86:       # %bb.0:
+; FASTISEL-X86-NEXT:    movl {{[0-9]+}}(%esp), %ecx
 ; FASTISEL-X86-NEXT:    movl {{[0-9]+}}(%esp), %edx
 ; FASTISEL-X86-NEXT:    movl {{[0-9]+}}(%esp), %eax
-; FASTISEL-X86-NEXT:    xorl {{[0-9]+}}(%esp), %eax
-; FASTISEL-X86-NEXT:    xorl {{[0-9]+}}(%esp), %edx
+; FASTISEL-X86-NEXT:    xorl %edx, %eax
+; FASTISEL-X86-NEXT:    movl {{[0-9]+}}(%esp), %edx
+; FASTISEL-X86-NEXT:    xorl %ecx, %edx
 ; FASTISEL-X86-NEXT:    retl
 ;
 ; GISEL-X86-LABEL: xor_i64:
 ; GISEL-X86:       # %bb.0:
+; GISEL-X86-NEXT:    pushl %esi
+; GISEL-X86-NEXT:    movl {{[0-9]+}}(%esp), %ecx
+; GISEL-X86-NEXT:    movl {{[0-9]+}}(%esp), %esi
 ; GISEL-X86-NEXT:    movl {{[0-9]+}}(%esp), %eax
+; GISEL-X86-NEXT:    xorl %ecx, %eax
 ; GISEL-X86-NEXT:    movl {{[0-9]+}}(%esp), %edx
-; GISEL-X86-NEXT:    xorl {{[0-9]+}}(%esp), %eax
-; GISEL-X86-NEXT:    xorl {{[0-9]+}}(%esp), %edx
+; GISEL-X86-NEXT:    xorl %esi, %edx
+; GISEL-X86-NEXT:    popl %esi
 ; GISEL-X86-NEXT:    retl
 ;
-; SDAG-X64-LABEL: xor_i64:
-; SDAG-X64:       # %bb.0:
-; SDAG-X64-NEXT:    movq %rdi, %rax
-; SDAG-X64-NEXT:    xorq %rsi, %rax
-; SDAG-X64-NEXT:    retq
-;
-; FASTISEL-X64-LABEL: xor_i64:
-; FASTISEL-X64:       # %bb.0:
-; FASTISEL-X64-NEXT:    movq %rdi, %rax
-; FASTISEL-X64-NEXT:    xorq %rsi, %rax
-; FASTISEL-X64-NEXT:    retq
-;
-; GISEL-X64-LABEL: xor_i64:
-; GISEL-X64:       # %bb.0:
-; GISEL-X64-NEXT:    movq %rsi, %rax
-; GISEL-X64-NEXT:    xorq %rdi, %rax
-; GISEL-X64-NEXT:    retq
+; X64-LABEL: xor_i64:
+; X64:       # %bb.0:
+; X64-NEXT:    movq %rdi, %rax
+; X64-NEXT:    xorq %rsi, %rax
+; X64-NEXT:    retq
   %c = xor i64 %a, %b
   ret i64 %c
 }
@@ -305,8 +298,9 @@ define i32 @xor_imm8_i32(i32 %a) {
 ;
 ; GISEL-X86-LABEL: xor_imm8_i32:
 ; GISEL-X86:       # %bb.0:
-; GISEL-X86-NEXT:    movl $-5, %eax
-; GISEL-X86-NEXT:    xorl {{[0-9]+}}(%esp), %eax
+; GISEL-X86-NEXT:    movl $-5, %ecx
+; GISEL-X86-NEXT:    movl {{[0-9]+}}(%esp), %eax
+; GISEL-X86-NEXT:    xorl %ecx, %eax
 ; GISEL-X86-NEXT:    retl
 ;
 ; X64-LABEL: xor_imm8_i32:
@@ -336,8 +330,9 @@ define i64 @xor_imm8_i64(i64 %a) {
 ; GISEL-X86-LABEL: xor_imm8_i64:
 ; GISEL-X86:       # %bb.0:
 ; GISEL-X86-NEXT:    movl {{[0-9]+}}(%esp), %edx
-; GISEL-X86-NEXT:    movl $1, %eax
-; GISEL-X86-NEXT:    xorl {{[0-9]+}}(%esp), %eax
+; GISEL-X86-NEXT:    movl $1, %ecx
+; GISEL-X86-NEXT:    movl {{[0-9]+}}(%esp), %eax
+; GISEL-X86-NEXT:    xorl %ecx, %eax
 ; GISEL-X86-NEXT:    retl
 ;
 ; X64-LABEL: xor_imm8_i64:
@@ -352,8 +347,9 @@ define i64 @xor_imm8_i64(i64 %a) {
 define i16 @xor_imm16_i16(i16 %a) {
 ; SDAG-X86-LABEL: xor_imm16_i16:
 ; SDAG-X86:       # %bb.0:
-; SDAG-X86-NEXT:    movl $1023, %eax # imm = 0x3FF
-; SDAG-X86-NEXT:    xorl {{[0-9]+}}(%esp), %eax
+; SDAG-X86-NEXT:    movl $1023, %ecx # imm = 0x3FF
+; SDAG-X86-NEXT:    movl {{[0-9]+}}(%esp), %eax
+; SDAG-X86-NEXT:    xorl %ecx, %eax
 ; SDAG-X86-NEXT:    # kill: def $ax killed $ax killed $eax
 ; SDAG-X86-NEXT:    retl
 ;
@@ -397,8 +393,9 @@ define i16 @xor_imm16_i16(i16 %a) {
 define i32 @xor_imm16_i32(i32 %a) {
 ; SDAG-X86-LABEL: xor_imm16_i32:
 ; SDAG-X86:       # %bb.0:
-; SDAG-X86-NEXT:    movl $2044, %eax # imm = 0x7FC
-; SDAG-X86-NEXT:    xorl {{[0-9]+}}(%esp), %eax
+; SDAG-X86-NEXT:    movl $2044, %ecx # imm = 0x7FC
+; SDAG-X86-NEXT:    movl {{[0-9]+}}(%esp), %eax
+; SDAG-X86-NEXT:    xorl %ecx, %eax
 ; SDAG-X86-NEXT:    retl
 ;
 ; FASTISEL-X86-LABEL: xor_imm16_i32:
@@ -409,8 +406,9 @@ define i32 @xor_imm16_i32(i32 %a) {
 ;
 ; GISEL-X86-LABEL: xor_imm16_i32:
 ; GISEL-X86:       # %bb.0:
-; GISEL-X86-NEXT:    movl $2044, %eax # imm = 0x7FC
-; GISEL-X86-NEXT:    xorl {{[0-9]+}}(%esp), %eax
+; GISEL-X86-NEXT:    movl $2044, %ecx # imm = 0x7FC
+; GISEL-X86-NEXT:    movl {{[0-9]+}}(%esp), %eax
+; GISEL-X86-NEXT:    xorl %ecx, %eax
 ; GISEL-X86-NEXT:    retl
 ;
 ; X64-LABEL: xor_imm16_i32:
@@ -426,8 +424,9 @@ define i64 @xor_imm16_i64(i64 %a) {
 ; SDAG-X86-LABEL: xor_imm16_i64:
 ; SDAG-X86:       # %bb.0:
 ; SDAG-X86-NEXT:    movl {{[0-9]+}}(%esp), %edx
-; SDAG-X86-NEXT:    movl $-5022, %eax # imm = 0xEC62
-; SDAG-X86-NEXT:    xorl {{[0-9]+}}(%esp), %eax
+; SDAG-X86-NEXT:    movl $-5022, %ecx # imm = 0xEC62
+; SDAG-X86-NEXT:    movl {{[0-9]+}}(%esp), %eax
+; SDAG-X86-NEXT:    xorl %ecx, %eax
 ; SDAG-X86-NEXT:    notl %edx
 ; SDAG-X86-NEXT:    retl
 ;
@@ -441,10 +440,17 @@ define i64 @xor_imm16_i64(i64 %a) {
 ;
 ; GISEL-X86-LABEL: xor_imm16_i64:
 ; GISEL-X86:       # %bb.0:
-; GISEL-X86-NEXT:    movl $-5022, %eax # imm = 0xEC62
-; GISEL-X86-NEXT:    movl $-1, %edx
-; GISEL-X86-NEXT:    xorl {{[0-9]+}}(%esp), %eax
-; GISEL-X86-NEXT:    xorl {{[0-9]+}}(%esp), %edx
+; GISEL-X86-NEXT:    pushl %esi
+; GISEL-X86-NEXT:    .cfi_def_cfa_offset 8
+; GISEL-X86-NEXT:    .cfi_offset %esi, -8
+; GISEL-X86-NEXT:    movl $-5022, %ecx # imm = 0xEC62
+; GISEL-X86-NEXT:    movl $-1, %esi
+; GISEL-X86-NEXT:    movl {{[0-9]+}}(%esp), %eax
+; GISEL-X86-NEXT:    xorl %ecx, %eax
+; GISEL-X86-NEXT:    movl {{[0-9]+}}(%esp), %edx
+; GISEL-X86-NEXT:    xorl %esi, %edx
+; GISEL-X86-NEXT:    popl %esi
+; GISEL-X86-NEXT:    .cfi_def_cfa_offset 4
 ; GISEL-X86-NEXT:    retl
 ;
 ; X64-LABEL: xor_imm16_i64:
@@ -459,8 +465,9 @@ define i64 @xor_imm16_i64(i64 %a) {
 define i32 @xor_imm32_i32(i32 %a) {
 ; SDAG-X86-LABEL: xor_imm32_i32:
 ; SDAG-X86:       # %bb.0:
-; SDAG-X86-NEXT:    movl $85538, %eax # imm = 0x14E22
-; SDAG-X86-NEXT:    xorl {{[0-9]+}}(%esp), %eax
+; SDAG-X86-NEXT:    movl $85538, %ecx # imm = 0x14E22
+; SDAG-X86-NEXT:    movl {{[0-9]+}}(%esp), %eax
+; SDAG-X86-NEXT:    xorl %ecx, %eax
 ; SDAG-X86-NEXT:    retl
 ;
 ; FASTISEL-X86-LABEL: xor_imm32_i32:
@@ -471,8 +478,9 @@ define i32 @xor_imm32_i32(i32 %a) {
 ;
 ; GISEL-X86-LABEL: xor_imm32_i32:
 ; GISEL-X86:       # %bb.0:
-; GISEL-X86-NEXT:    movl $85538, %eax # imm = 0x14E22
-; GISEL-X86-NEXT:    xorl {{[0-9]+}}(%esp), %eax
+; GISEL-X86-NEXT:    movl $85538, %ecx # imm = 0x14E22
+; GISEL-X86-NEXT:    movl {{[0-9]+}}(%esp), %eax
+; GISEL-X86-NEXT:    xorl %ecx, %eax
 ; GISEL-X86-NEXT:    retl
 ;
 ; X64-LABEL: xor_imm32_i32:
@@ -488,8 +496,9 @@ define i64 @xor_imm32_i64(i64 %a) {
 ; SDAG-X86-LABEL: xor_imm32_i64:
 ; SDAG-X86:       # %bb.0:
 ; SDAG-X86-NEXT:    movl {{[0-9]+}}(%esp), %edx
-; SDAG-X86-NEXT:    movl $-125778, %eax # imm = 0xFFFE14AE
-; SDAG-X86-NEXT:    xorl {{[0-9]+}}(%esp), %eax
+; SDAG-X86-NEXT:    movl $-125778, %ecx # imm = 0xFFFE14AE
+; SDAG-X86-NEXT:    movl {{[0-9]+}}(%esp), %eax
+; SDAG-X86-NEXT:    xorl %ecx, %eax
 ; SDAG-X86-NEXT:    notl %edx
 ; SDAG-X86-NEXT:    retl
 ;
@@ -503,10 +512,17 @@ define i64 @xor_imm32_i64(i64 %a) {
 ;
 ; GISEL-X86-LABEL: xor_imm32_i64:
 ; GISEL-X86:       # %bb.0:
-; GISEL-X86-NEXT:    movl $-125778, %eax # imm = 0xFFFE14AE
-; GISEL-X86-NEXT:    movl $-1, %edx
-; GISEL-X86-NEXT:    xorl {{[0-9]+}}(%esp), %eax
-; GISEL-X86-NEXT:    xorl {{[0-9]+}}(%esp), %edx
+; GISEL-X86-NEXT:    pushl %esi
+; GISEL-X86-NEXT:    .cfi_def_cfa_offset 8
+; GISEL-X86-NEXT:    .cfi_offset %esi, -8
+; GISEL-X86-NEXT:    movl $-125778, %ecx # imm = 0xFFFE14AE
+; GISEL-X86-NEXT:    movl $-1, %esi
+; GISEL-X86-NEXT:    movl {{[0-9]+}}(%esp), %eax
+; GISEL-X86-NEXT:    xorl %ecx, %eax
+; GISEL-X86-NEXT:    movl {{[0-9]+}}(%esp), %edx
+; GISEL-X86-NEXT:    xorl %esi, %edx
+; GISEL-X86-NEXT:    popl %esi
+; GISEL-X86-NEXT:    .cfi_def_cfa_offset 4
 ; GISEL-X86-NEXT:    retl
 ;
 ; X64-LABEL: xor_imm32_i64:
@@ -522,8 +538,9 @@ define i64 @xor_imm64_i64(i64 %a) {
 ; SDAG-X86-LABEL: xor_imm64_i64:
 ; SDAG-X86:       # %bb.0:
 ; SDAG-X86-NEXT:    movl {{[0-9]+}}(%esp), %edx
-; SDAG-X86-NEXT:    movl $-1850691612, %eax # imm = 0x91B0AFE4
-; SDAG-X86-NEXT:    xorl {{[0-9]+}}(%esp), %eax
+; SDAG-X86-NEXT:    movl $-1850691612, %ecx # imm = 0x91B0AFE4
+; SDAG-X86-NEXT:    movl {{[0-9]+}}(%esp), %eax
+; SDAG-X86-NEXT:    xorl %ecx, %eax
 ; SDAG-X86-NEXT:    xorl $-2, %edx
 ; SDAG-X86-NEXT:    retl
 ;
@@ -537,17 +554,38 @@ define i64 @xor_imm64_i64(i64 %a) {
 ;
 ; GISEL-X86-LABEL: xor_imm64_i64:
 ; GISEL-X86:       # %bb.0:
-; GISEL-X86-NEXT:    movl $-1850691612, %eax # imm = 0x91B0AFE4
-; GISEL-X86-NEXT:    movl $-2, %edx
-; GISEL-X86-NEXT:    xorl {{[0-9]+}}(%esp), %eax
-; GISEL-X86-NEXT:    xorl {{[0-9]+}}(%esp), %edx
+; GISEL-X86-NEXT:    pushl %esi
+; GISEL-X86-NEXT:    .cfi_def_cfa_offset 8
+; GISEL-X86-NEXT:    .cfi_offset %esi, -8
+; GISEL-X86-NEXT:    movl $-1850691612, %ecx # imm = 0x91B0AFE4
+; GISEL-X86-NEXT:    movl $-2, %esi
+; GISEL-X86-NEXT:    movl {{[0-9]+}}(%esp), %eax
+; GISEL-X86-NEXT:    xorl %ecx, %eax
+; GISEL-X86-NEXT:    movl {{[0-9]+}}(%esp), %edx
+; GISEL-X86-NEXT:    xorl %esi, %edx
+; GISEL-X86-NEXT:    popl %esi
+; GISEL-X86-NEXT:    .cfi_def_cfa_offset 4
 ; GISEL-X86-NEXT:    retl
 ;
-; X64-LABEL: xor_imm64_i64:
-; X64:       # %bb.0:
-; X64-NEXT:    movabsq $-6145658908, %rax # imm = 0xFFFFFFFE91B0AFE4
-; X64-NEXT:    xorq %rdi, %rax
-; X64-NEXT:    retq
+; SDAG-X64-LABEL: xor_imm64_i64:
+; SDAG-X64:       # %bb.0:
+; SDAG-X64-NEXT:    movabsq $-6145658908, %rax # imm = 0xFFFFFFFE91B0AFE4
+; SDAG-X64-NEXT:    xorq %rdi, %rax
+; SDAG-X64-NEXT:    retq
+;
+; FASTISEL-X64-LABEL: xor_imm64_i64:
+; FASTISEL-X64:       # %bb.0:
+; FASTISEL-X64-NEXT:    movq %rdi, %rax
+; FASTISEL-X64-NEXT:    movabsq $-6145658908, %rcx # imm = 0xFFFFFFFE91B0AFE4
+; FASTISEL-X64-NEXT:    xorq %rcx, %rax
+; FASTISEL-X64-NEXT:    retq
+;
+; GISEL-X64-LABEL: xor_imm64_i64:
+; GISEL-X64:       # %bb.0:
+; GISEL-X64-NEXT:    movq %rdi, %rax
+; GISEL-X64-NEXT:    movabsq $-6145658908, %rcx # imm = 0xFFFFFFFE91B0AFE4
+; GISEL-X64-NEXT:    xorq %rcx, %rax
+; GISEL-X64-NEXT:    retq
   %c = xor i64 %a, -6145658908
   ret i64 %c
 }

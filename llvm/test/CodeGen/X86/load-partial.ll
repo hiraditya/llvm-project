@@ -309,8 +309,10 @@ define dso_local i32 @load_partial_illegal_type()  {
 ; SSE2:       # %bb.0:
 ; SSE2-NEXT:    movzwl h(%rip), %eax
 ; SSE2-NEXT:    movd %eax, %xmm0
-; SSE2-NEXT:    pand {{\.?LCPI[0-9]+_[0-9]+}}(%rip), %xmm0
-; SSE2-NEXT:    por {{\.?LCPI[0-9]+_[0-9]+}}(%rip), %xmm0
+; SSE2-NEXT:    movdqa {{.*#+}} xmm1 = [255,255,0,255,255,255,255,255,255,255,255,255,255,255,255,255]
+; SSE2-NEXT:    pand %xmm0, %xmm1
+; SSE2-NEXT:    movd {{.*#+}} xmm0 = [0,0,2,0,0,0,0,0,0,0,0,0,0,0,0,0]
+; SSE2-NEXT:    por %xmm1, %xmm0
 ; SSE2-NEXT:    movd %xmm0, %eax
 ; SSE2-NEXT:    retq
 ;
@@ -319,8 +321,9 @@ define dso_local i32 @load_partial_illegal_type()  {
 ; SSSE3-NEXT:    movzwl h(%rip), %eax
 ; SSSE3-NEXT:    movd %eax, %xmm0
 ; SSSE3-NEXT:    pshufb {{.*#+}} xmm0 = xmm0[0,1],zero,xmm0[3,u,u,u,u,u,u,u,u,u,u,u,u]
-; SSSE3-NEXT:    por {{\.?LCPI[0-9]+_[0-9]+}}(%rip), %xmm0
-; SSSE3-NEXT:    movd %xmm0, %eax
+; SSSE3-NEXT:    movd {{.*#+}} xmm1 = [0,0,2,0,0,0,0,0,0,0,0,0,0,0,0,0]
+; SSSE3-NEXT:    por %xmm0, %xmm1
+; SSSE3-NEXT:    movd %xmm1, %eax
 ; SSSE3-NEXT:    retq
 ;
 ; SSE41-LABEL: load_partial_illegal_type:

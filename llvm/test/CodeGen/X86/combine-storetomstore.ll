@@ -27,8 +27,8 @@ define void @test_masked_store_success_v4i8(<4 x i8> %x, ptr %ptr, <4 x i1> %mas
 ; AVX512-NEXT:    vpslld $31, %xmm1, %xmm1
 ; AVX512-NEXT:    vpmovd2m %xmm1, %k1
 ; AVX512-NEXT:    vmovdqa (%rdi), %xmm1
-; AVX512-NEXT:    vmovdqu8 %xmm0, %xmm1 {%k1}
-; AVX512-NEXT:    vmovd %xmm1, (%rdi)
+; AVX512-NEXT:    vpblendmb %xmm0, %xmm1, %xmm0 {%k1}
+; AVX512-NEXT:    vmovd %xmm0, (%rdi)
 ; AVX512-NEXT:    retq
   %load = load <4 x i8>, ptr %ptr, align 32
   %sel = select <4 x i1> %mask, <4 x i8> %x, <4 x i8> %load
@@ -62,8 +62,8 @@ define void @test_masked_store_success_v4i16(<4 x i16> %x, ptr %ptr, <4 x i1> %m
 ; AVX512-NEXT:    vpslld $31, %xmm1, %xmm1
 ; AVX512-NEXT:    vpmovd2m %xmm1, %k1
 ; AVX512-NEXT:    vmovq {{.*#+}} xmm1 = mem[0],zero
-; AVX512-NEXT:    vmovdqu16 %xmm0, %xmm1 {%k1}
-; AVX512-NEXT:    vmovq %xmm1, (%rdi)
+; AVX512-NEXT:    vpblendmw %xmm0, %xmm1, %xmm0 {%k1}
+; AVX512-NEXT:    vmovq %xmm0, (%rdi)
 ; AVX512-NEXT:    retq
   %load = load <4 x i16>, ptr %ptr, align 32
   %sel = select <4 x i1> %mask, <4 x i16> %x, <4 x i16> %load
@@ -213,8 +213,8 @@ define void @test_masked_store_success_v4f16(<4 x half> %x, ptr %ptr, <4 x i1> %
 ; AVX512-NEXT:    vpslld $31, %xmm1, %xmm1
 ; AVX512-NEXT:    vpmovd2m %xmm1, %k1
 ; AVX512-NEXT:    vmovdqa (%rdi), %xmm1
-; AVX512-NEXT:    vmovdqu16 %xmm0, %xmm1 {%k1}
-; AVX512-NEXT:    vmovq %xmm1, (%rdi)
+; AVX512-NEXT:    vpblendmw %xmm0, %xmm1, %xmm0 {%k1}
+; AVX512-NEXT:    vmovq %xmm0, (%rdi)
 ; AVX512-NEXT:    retq
   %load = load <4 x half>, ptr %ptr, align 32
   %sel = select <4 x i1> %mask, <4 x half> %x, <4 x half> %load
@@ -304,8 +304,8 @@ define void @test_masked_store_success_v8i8(<8 x i8> %x, ptr %ptr, <8 x i1> %mas
 ; AVX512-NEXT:    vpsllw $15, %xmm1, %xmm1
 ; AVX512-NEXT:    vpmovw2m %xmm1, %k1
 ; AVX512-NEXT:    vmovq {{.*#+}} xmm1 = mem[0],zero
-; AVX512-NEXT:    vmovdqu8 %xmm0, %xmm1 {%k1}
-; AVX512-NEXT:    vmovq %xmm1, (%rdi)
+; AVX512-NEXT:    vpblendmb %xmm0, %xmm1, %xmm0 {%k1}
+; AVX512-NEXT:    vmovq %xmm0, (%rdi)
 ; AVX512-NEXT:    retq
   %load = load <8 x i8>, ptr %ptr, align 32
   %sel = select <8 x i1> %mask, <8 x i8> %x, <8 x i8> %load
@@ -1088,8 +1088,8 @@ define void @test_masked_store_zextload(<4 x i64> %x, ptr %ptr, <4 x i1> %mask) 
 ; AVX512-NEXT:    vpslld $31, %xmm1, %xmm1
 ; AVX512-NEXT:    vpmovd2m %xmm1, %k1
 ; AVX512-NEXT:    vpmovzxdq {{.*#+}} ymm1 = mem[0],zero,mem[1],zero,mem[2],zero,mem[3],zero
-; AVX512-NEXT:    vmovdqa64 %ymm0, %ymm1 {%k1}
-; AVX512-NEXT:    vmovdqa %ymm1, (%rdi)
+; AVX512-NEXT:    vpblendmq %ymm0, %ymm1, %ymm0 {%k1}
+; AVX512-NEXT:    vmovdqa %ymm0, (%rdi)
 ; AVX512-NEXT:    vzeroupper
 ; AVX512-NEXT:    retq
   %load = load <4 x i32>, ptr %ptr, align 32
@@ -1128,8 +1128,8 @@ define void @test_masked_store_volatile_load(<8 x i32> %x, ptr %ptr, <8 x i1> %m
 ; AVX512-NEXT:    vpsllw $15, %xmm1, %xmm1
 ; AVX512-NEXT:    vpmovw2m %xmm1, %k1
 ; AVX512-NEXT:    vmovdqa (%rdi), %ymm1
-; AVX512-NEXT:    vmovdqa32 %ymm0, %ymm1 {%k1}
-; AVX512-NEXT:    vmovdqa %ymm1, (%rdi)
+; AVX512-NEXT:    vpblendmd %ymm0, %ymm1, %ymm0 {%k1}
+; AVX512-NEXT:    vmovdqa %ymm0, (%rdi)
 ; AVX512-NEXT:    vzeroupper
 ; AVX512-NEXT:    retq
   %load = load volatile <8 x i32>, ptr %ptr, align 32
@@ -1167,8 +1167,8 @@ define void @test_masked_store_volatile_store(<8 x i32> %x, ptr %ptr, <8 x i1> %
 ; AVX512-NEXT:    vpsllw $15, %xmm1, %xmm1
 ; AVX512-NEXT:    vpmovw2m %xmm1, %k1
 ; AVX512-NEXT:    vmovdqa (%rdi), %ymm1
-; AVX512-NEXT:    vmovdqa32 %ymm0, %ymm1 {%k1}
-; AVX512-NEXT:    vmovdqa %ymm1, (%rdi)
+; AVX512-NEXT:    vpblendmd %ymm0, %ymm1, %ymm0 {%k1}
+; AVX512-NEXT:    vmovdqa %ymm0, (%rdi)
 ; AVX512-NEXT:    vzeroupper
 ; AVX512-NEXT:    retq
   %load = load <8 x i32>, ptr %ptr, align 32
@@ -1237,11 +1237,10 @@ define void @test_masked_store_intervening(<8 x i32> %x, ptr %ptr, <8 x i1> %mas
 ; AVX512-NEXT:    vxorps %xmm0, %xmm0, %xmm0
 ; AVX512-NEXT:    vmovaps %ymm0, (%rdi)
 ; AVX512-NEXT:    callq use_vec@PLT
-; AVX512-NEXT:    vmovdqu {{[-0-9]+}}(%r{{[sb]}}p), %ymm0 # 32-byte Reload
 ; AVX512-NEXT:    kmovw {{[-0-9]+}}(%r{{[sb]}}p), %k1 # 2-byte Reload
-; AVX512-NEXT:    vmovdqu {{[-0-9]+}}(%r{{[sb]}}p), %ymm1 # 32-byte Reload
-; AVX512-NEXT:    vmovdqa32 %ymm0, %ymm1 {%k1}
-; AVX512-NEXT:    vmovdqa %ymm1, (%rbx)
+; AVX512-NEXT:    vmovdqu {{[-0-9]+}}(%r{{[sb]}}p), %ymm0 # 32-byte Reload
+; AVX512-NEXT:    vpblendmd {{[-0-9]+}}(%r{{[sb]}}p), %ymm0, %ymm0 {%k1} # 32-byte Folded Reload
+; AVX512-NEXT:    vmovdqa %ymm0, (%rbx)
 ; AVX512-NEXT:    addq $80, %rsp
 ; AVX512-NEXT:    popq %rbx
 ; AVX512-NEXT:    vzeroupper
@@ -1296,9 +1295,9 @@ define void @test_masked_store_multiple_v8i32(<8 x i32> %x, <8 x i32> %y, ptr %p
 ; AVX512-NEXT:    vpsllw $15, %xmm3, %xmm2
 ; AVX512-NEXT:    vmovdqa (%rsi), %ymm3
 ; AVX512-NEXT:    vpmovw2m %xmm2, %k2
-; AVX512-NEXT:    vmovdqa32 %ymm1, %ymm3 {%k2}
+; AVX512-NEXT:    vpblendmd %ymm1, %ymm3, %ymm1 {%k2}
 ; AVX512-NEXT:    vmovdqa32 %ymm0, (%rdi) {%k1}
-; AVX512-NEXT:    vmovdqa %ymm3, (%rsi)
+; AVX512-NEXT:    vmovdqa %ymm1, (%rsi)
 ; AVX512-NEXT:    vzeroupper
 ; AVX512-NEXT:    retq
   %load = load <8 x i32>, ptr %ptr1, align 32
@@ -1380,9 +1379,9 @@ define void @test_masked_store_multiple_v8i64(<8 x i64> %x, <8 x i64> %y, ptr %p
 ; AVX512-NEXT:    vpsllw $15, %xmm3, %xmm2
 ; AVX512-NEXT:    vmovdqu64 (%rsi), %zmm3
 ; AVX512-NEXT:    vpmovw2m %xmm2, %k2
-; AVX512-NEXT:    vmovdqa64 %zmm1, %zmm3 {%k2}
+; AVX512-NEXT:    vpblendmq %zmm1, %zmm3, %zmm1 {%k2}
 ; AVX512-NEXT:    vmovdqu64 %zmm0, (%rdi) {%k1}
-; AVX512-NEXT:    vmovdqu64 %zmm3, (%rsi)
+; AVX512-NEXT:    vmovdqu64 %zmm1, (%rsi)
 ; AVX512-NEXT:    vzeroupper
 ; AVX512-NEXT:    retq
   %load = load <8 x i64>, ptr %ptr1, align 32

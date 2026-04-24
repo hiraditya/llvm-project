@@ -41,8 +41,8 @@ define i1 @test_srem_even(i4 %X) nounwind {
 ; X86-NEXT:    movl %ecx, %edx
 ; X86-NEXT:    shrb $7, %dl
 ; X86-NEXT:    shrb $4, %cl
-; X86-NEXT:    addb %dl, %cl
-; X86-NEXT:    movzbl %cl, %ecx
+; X86-NEXT:    addb %cl, %dl
+; X86-NEXT:    movzbl %dl, %ecx
 ; X86-NEXT:    addl %ecx, %ecx
 ; X86-NEXT:    leal (%ecx,%ecx,2), %ecx
 ; X86-NEXT:    subb %cl, %al
@@ -61,8 +61,8 @@ define i1 @test_srem_even(i4 %X) nounwind {
 ; X64-NEXT:    movl %eax, %ecx
 ; X64-NEXT:    shrb $7, %cl
 ; X64-NEXT:    shrb $4, %al
-; X64-NEXT:    addb %cl, %al
-; X64-NEXT:    movzbl %al, %eax
+; X64-NEXT:    addb %al, %cl
+; X64-NEXT:    movzbl %cl, %eax
 ; X64-NEXT:    addl %eax, %eax
 ; X64-NEXT:    leal (%rax,%rax,2), %eax
 ; X64-NEXT:    subb %al, %dil
@@ -182,7 +182,7 @@ define <3 x i1> @test_srem_vec(<3 x i33> %X) nounwind {
 ; SSE2-NEXT:    addq %rdx, %rax
 ; SSE2-NEXT:    leaq (%rax,%rax,8), %rax
 ; SSE2-NEXT:    subq %rax, %rsi
-; SSE2-NEXT:    movq %rsi, %xmm1
+; SSE2-NEXT:    movq %rsi, %xmm0
 ; SSE2-NEXT:    movq %rdi, %rax
 ; SSE2-NEXT:    imulq %r8
 ; SSE2-NEXT:    movq %rdx, %rax
@@ -190,10 +190,10 @@ define <3 x i1> @test_srem_vec(<3 x i33> %X) nounwind {
 ; SSE2-NEXT:    addq %rdx, %rax
 ; SSE2-NEXT:    leaq (%rax,%rax,8), %rax
 ; SSE2-NEXT:    subq %rax, %rdi
-; SSE2-NEXT:    movq %rdi, %xmm0
-; SSE2-NEXT:    punpcklqdq {{.*#+}} xmm0 = xmm0[0],xmm1[0]
-; SSE2-NEXT:    movdqa {{.*#+}} xmm1 = [8589934591,8589934591]
-; SSE2-NEXT:    pand %xmm1, %xmm0
+; SSE2-NEXT:    movq %rdi, %xmm1
+; SSE2-NEXT:    punpcklqdq {{.*#+}} xmm1 = xmm1[0],xmm0[0]
+; SSE2-NEXT:    movdqa {{.*#+}} xmm0 = [8589934591,8589934591]
+; SSE2-NEXT:    pand %xmm0, %xmm1
 ; SSE2-NEXT:    movabsq $2049638230412172401, %rdx # imm = 0x1C71C71C71C71C71
 ; SSE2-NEXT:    movq %rcx, %rax
 ; SSE2-NEXT:    imulq %rdx
@@ -201,20 +201,22 @@ define <3 x i1> @test_srem_vec(<3 x i33> %X) nounwind {
 ; SSE2-NEXT:    movq %rdx, %rax
 ; SSE2-NEXT:    shrq $63, %rax
 ; SSE2-NEXT:    sarq $3, %rdx
-; SSE2-NEXT:    addq %rax, %rdx
-; SSE2-NEXT:    leaq (%rdx,%rdx,8), %rax
+; SSE2-NEXT:    addq %rdx, %rax
+; SSE2-NEXT:    leaq (%rax,%rax,8), %rax
 ; SSE2-NEXT:    addq %rcx, %rax
 ; SSE2-NEXT:    movq %rax, %xmm2
-; SSE2-NEXT:    pand %xmm1, %xmm2
-; SSE2-NEXT:    pcmpeqd {{\.?LCPI[0-9]+_[0-9]+}}(%rip), %xmm0
-; SSE2-NEXT:    pcmpeqd {{\.?LCPI[0-9]+_[0-9]+}}(%rip), %xmm2
-; SSE2-NEXT:    movdqa %xmm0, %xmm1
-; SSE2-NEXT:    shufps {{.*#+}} xmm1 = xmm1[1,3],xmm2[1,2]
-; SSE2-NEXT:    shufps {{.*#+}} xmm0 = xmm0[0,2],xmm2[0,3]
-; SSE2-NEXT:    andps %xmm1, %xmm0
-; SSE2-NEXT:    pcmpeqd %xmm1, %xmm1
-; SSE2-NEXT:    pxor %xmm0, %xmm1
-; SSE2-NEXT:    movdqa %xmm1, -{{[0-9]+}}(%rsp)
+; SSE2-NEXT:    pand %xmm0, %xmm2
+; SSE2-NEXT:    movdqa {{.*#+}} xmm0 = [3,8589934589]
+; SSE2-NEXT:    pcmpeqd %xmm1, %xmm0
+; SSE2-NEXT:    movd {{.*#+}} xmm1 = [3,0,0,0]
+; SSE2-NEXT:    pcmpeqd %xmm2, %xmm1
+; SSE2-NEXT:    movdqa %xmm0, %xmm2
+; SSE2-NEXT:    shufps {{.*#+}} xmm2 = xmm2[1,3],xmm1[1,2]
+; SSE2-NEXT:    shufps {{.*#+}} xmm0 = xmm0[0,2],xmm1[0,3]
+; SSE2-NEXT:    andps %xmm0, %xmm2
+; SSE2-NEXT:    pcmpeqd %xmm0, %xmm0
+; SSE2-NEXT:    pxor %xmm2, %xmm0
+; SSE2-NEXT:    movdqa %xmm0, -{{[0-9]+}}(%rsp)
 ; SSE2-NEXT:    movzbl -{{[0-9]+}}(%rsp), %eax
 ; SSE2-NEXT:    movzbl -{{[0-9]+}}(%rsp), %edx
 ; SSE2-NEXT:    movzbl -{{[0-9]+}}(%rsp), %ecx
@@ -237,7 +239,7 @@ define <3 x i1> @test_srem_vec(<3 x i33> %X) nounwind {
 ; SSE41-NEXT:    addq %rdx, %rax
 ; SSE41-NEXT:    leaq (%rax,%rax,8), %rax
 ; SSE41-NEXT:    subq %rax, %rsi
-; SSE41-NEXT:    movq %rsi, %xmm1
+; SSE41-NEXT:    movq %rsi, %xmm0
 ; SSE41-NEXT:    movq %rdi, %rax
 ; SSE41-NEXT:    imulq %r8
 ; SSE41-NEXT:    movq %rdx, %rax
@@ -245,10 +247,10 @@ define <3 x i1> @test_srem_vec(<3 x i33> %X) nounwind {
 ; SSE41-NEXT:    addq %rdx, %rax
 ; SSE41-NEXT:    leaq (%rax,%rax,8), %rax
 ; SSE41-NEXT:    subq %rax, %rdi
-; SSE41-NEXT:    movq %rdi, %xmm0
-; SSE41-NEXT:    punpcklqdq {{.*#+}} xmm0 = xmm0[0],xmm1[0]
-; SSE41-NEXT:    pmovsxbd {{.*#+}} xmm1 = [4294967295,1,4294967295,1]
-; SSE41-NEXT:    pand %xmm1, %xmm0
+; SSE41-NEXT:    movq %rdi, %xmm1
+; SSE41-NEXT:    punpcklqdq {{.*#+}} xmm1 = xmm1[0],xmm0[0]
+; SSE41-NEXT:    pmovsxbd {{.*#+}} xmm0 = [4294967295,1,4294967295,1]
+; SSE41-NEXT:    pand %xmm0, %xmm1
 ; SSE41-NEXT:    movabsq $2049638230412172401, %rdx # imm = 0x1C71C71C71C71C71
 ; SSE41-NEXT:    movq %rcx, %rax
 ; SSE41-NEXT:    imulq %rdx
@@ -256,12 +258,13 @@ define <3 x i1> @test_srem_vec(<3 x i33> %X) nounwind {
 ; SSE41-NEXT:    movq %rdx, %rax
 ; SSE41-NEXT:    shrq $63, %rax
 ; SSE41-NEXT:    sarq $3, %rdx
-; SSE41-NEXT:    addq %rax, %rdx
-; SSE41-NEXT:    leaq (%rdx,%rdx,8), %rax
+; SSE41-NEXT:    addq %rdx, %rax
+; SSE41-NEXT:    leaq (%rax,%rax,8), %rax
 ; SSE41-NEXT:    addq %rcx, %rax
 ; SSE41-NEXT:    movq %rax, %xmm2
-; SSE41-NEXT:    pand %xmm1, %xmm2
-; SSE41-NEXT:    pcmpeqq {{\.?LCPI[0-9]+_[0-9]+}}(%rip), %xmm0
+; SSE41-NEXT:    pand %xmm0, %xmm2
+; SSE41-NEXT:    pmovsxbd {{.*#+}} xmm0 = [3,0,4294967293,1]
+; SSE41-NEXT:    pcmpeqq %xmm1, %xmm0
 ; SSE41-NEXT:    pcmpeqd %xmm1, %xmm1
 ; SSE41-NEXT:    pxor %xmm1, %xmm0
 ; SSE41-NEXT:    movl $3, %eax
@@ -310,8 +313,8 @@ define <3 x i1> @test_srem_vec(<3 x i33> %X) nounwind {
 ; AVX1-NEXT:    movq %rdx, %rax
 ; AVX1-NEXT:    shrq $63, %rax
 ; AVX1-NEXT:    sarq $3, %rdx
-; AVX1-NEXT:    addq %rax, %rdx
-; AVX1-NEXT:    leaq (%rdx,%rdx,8), %rax
+; AVX1-NEXT:    addq %rdx, %rax
+; AVX1-NEXT:    leaq (%rax,%rax,8), %rax
 ; AVX1-NEXT:    addq %rcx, %rax
 ; AVX1-NEXT:    vmovq %rax, %xmm1
 ; AVX1-NEXT:    vinsertf128 $1, %xmm1, %ymm0, %ymm0
@@ -367,8 +370,8 @@ define <3 x i1> @test_srem_vec(<3 x i33> %X) nounwind {
 ; AVX2-NEXT:    movq %rdx, %rax
 ; AVX2-NEXT:    shrq $63, %rax
 ; AVX2-NEXT:    sarq $3, %rdx
-; AVX2-NEXT:    addq %rax, %rdx
-; AVX2-NEXT:    leaq (%rdx,%rdx,8), %rax
+; AVX2-NEXT:    addq %rdx, %rax
+; AVX2-NEXT:    leaq (%rax,%rax,8), %rax
 ; AVX2-NEXT:    addq %rcx, %rax
 ; AVX2-NEXT:    vmovq %rax, %xmm1
 ; AVX2-NEXT:    vinserti128 $1, %xmm1, %ymm0, %ymm0
@@ -422,8 +425,8 @@ define <3 x i1> @test_srem_vec(<3 x i33> %X) nounwind {
 ; AVX512VL-NEXT:    movq %rdx, %rax
 ; AVX512VL-NEXT:    shrq $63, %rax
 ; AVX512VL-NEXT:    sarq $3, %rdx
-; AVX512VL-NEXT:    addq %rax, %rdx
-; AVX512VL-NEXT:    leaq (%rdx,%rdx,8), %rax
+; AVX512VL-NEXT:    addq %rdx, %rax
+; AVX512VL-NEXT:    leaq (%rax,%rax,8), %rax
 ; AVX512VL-NEXT:    addq %rcx, %rax
 ; AVX512VL-NEXT:    vmovq %rax, %xmm1
 ; AVX512VL-NEXT:    vinserti128 $1, %xmm1, %ymm0, %ymm0

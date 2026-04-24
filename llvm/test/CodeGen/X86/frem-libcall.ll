@@ -20,13 +20,14 @@ define float @frem(<2 x float> %a0, <2 x float> %a1, <2 x float> %a2, ptr%p3) no
 ; CHECK-NEXT:    movaps {{[-0-9]+}}(%r{{[sb]}}p), %xmm1 # 16-byte Reload
 ; CHECK-NEXT:    shufps {{.*#+}} xmm1 = xmm1[1,1,1,1]
 ; CHECK-NEXT:    callq fmodf@PLT
-; CHECK-NEXT:    movaps {{[-0-9]+}}(%r{{[sb]}}p), %xmm1 # 16-byte Reload
-; CHECK-NEXT:    unpcklps {{.*#+}} xmm1 = xmm1[0],xmm0[0],xmm1[1],xmm0[1]
-; CHECK-NEXT:    divps {{[-0-9]+}}(%r{{[sb]}}p), %xmm1 # 16-byte Folded Reload
-; CHECK-NEXT:    movaps %xmm1, %xmm0
-; CHECK-NEXT:    shufps {{.*#+}} xmm0 = xmm0[1,1],xmm1[1,1]
+; CHECK-NEXT:    movaps {{[-0-9]+}}(%r{{[sb]}}p), %xmm2 # 16-byte Reload
+; CHECK-NEXT:    unpcklps {{.*#+}} xmm2 = xmm2[0],xmm0[0],xmm2[1],xmm0[1]
+; CHECK-NEXT:    divps {{[-0-9]+}}(%r{{[sb]}}p), %xmm2 # 16-byte Folded Reload
+; CHECK-NEXT:    movaps %xmm2, %xmm1
+; CHECK-NEXT:    shufps {{.*#+}} xmm1 = xmm1[1,1],xmm2[1,1]
+; CHECK-NEXT:    movaps %xmm2, %xmm0
 ; CHECK-NEXT:    addss %xmm1, %xmm0
-; CHECK-NEXT:    movlps %xmm1, (%rbx)
+; CHECK-NEXT:    movlps %xmm2, (%rbx)
 ; CHECK-NEXT:    addq $64, %rsp
 ; CHECK-NEXT:    popq %rbx
 ; CHECK-NEXT:    retq

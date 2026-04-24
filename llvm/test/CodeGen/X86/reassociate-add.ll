@@ -10,15 +10,16 @@
 define void @add8(i8 %x0, i8 %x1, i8 %x2, ptr %p) {
 ; CHECK-LABEL: add8:
 ; CHECK:       # %bb.0:
+; CHECK-NEXT:    # kill: def $edx killed $edx def $rdx
 ; CHECK-NEXT:    orb $16, %dil
 ; CHECK-NEXT:    orb $32, %sil
 ; CHECK-NEXT:    addb %dil, %sil
-; CHECK-NEXT:    addb $-8, %dl
-; CHECK-NEXT:    orb $7, %dl
-; CHECK-NEXT:    movzbl %dl, %eax
+; CHECK-NEXT:    leal -8(%rdx), %eax
+; CHECK-NEXT:    orb $7, %al
+; CHECK-NEXT:    movzbl %al, %eax
 ; CHECK-NEXT:    imull $100, %eax, %eax
-; CHECK-NEXT:    addb %sil, %al
-; CHECK-NEXT:    movb %al, (%rcx)
+; CHECK-NEXT:    addb %al, %sil
+; CHECK-NEXT:    movb %sil, (%rcx)
 ; CHECK-NEXT:    retq
   %v0 = or i8 %x0, 16
   %v1 = or i8 %x1, 32
@@ -34,14 +35,15 @@ define void @add8(i8 %x0, i8 %x1, i8 %x2, ptr %p) {
 define void @add16(i16 %x0, i16 %x1, i16 %x2, ptr %p) {
 ; CHECK-LABEL: add16:
 ; CHECK:       # %bb.0:
+; CHECK-NEXT:    # kill: def $edx killed $edx def $rdx
 ; CHECK-NEXT:    orl $16, %edi
 ; CHECK-NEXT:    orl $32, %esi
 ; CHECK-NEXT:    addl %edi, %esi
-; CHECK-NEXT:    addl $-8, %edx
-; CHECK-NEXT:    orl $7, %edx
-; CHECK-NEXT:    imull $100, %edx, %eax
-; CHECK-NEXT:    addl %esi, %eax
-; CHECK-NEXT:    movw %ax, (%rcx)
+; CHECK-NEXT:    leal -8(%rdx), %eax
+; CHECK-NEXT:    orl $7, %eax
+; CHECK-NEXT:    imull $100, %eax, %eax
+; CHECK-NEXT:    addl %eax, %esi
+; CHECK-NEXT:    movw %si, (%rcx)
 ; CHECK-NEXT:    retq
   %v0 = or i16 %x0, 16
   %v1 = or i16 %x1, 32
@@ -57,14 +59,15 @@ define void @add16(i16 %x0, i16 %x1, i16 %x2, ptr %p) {
 define void @add32(i32 %x0, i32 %x1, i32 %x2, ptr %p) {
 ; CHECK-LABEL: add32:
 ; CHECK:       # %bb.0:
+; CHECK-NEXT:    # kill: def $edx killed $edx def $rdx
 ; CHECK-NEXT:    orl $16, %edi
 ; CHECK-NEXT:    orl $32, %esi
 ; CHECK-NEXT:    addl %edi, %esi
-; CHECK-NEXT:    addl $-8, %edx
-; CHECK-NEXT:    orl $7, %edx
-; CHECK-NEXT:    imull $100, %edx, %eax
-; CHECK-NEXT:    addl %esi, %eax
-; CHECK-NEXT:    movl %eax, (%rcx)
+; CHECK-NEXT:    leal -8(%rdx), %eax
+; CHECK-NEXT:    orl $7, %eax
+; CHECK-NEXT:    imull $100, %eax, %eax
+; CHECK-NEXT:    addl %eax, %esi
+; CHECK-NEXT:    movl %esi, (%rcx)
 ; CHECK-NEXT:    retq
   %v0 = or i32 %x0, 16
   %v1 = or i32 %x1, 32
@@ -83,11 +86,11 @@ define void @add64(i64 %x0, i64 %x1, i64 %x2, ptr %p) {
 ; CHECK-NEXT:    orq $16, %rdi
 ; CHECK-NEXT:    orq $32, %rsi
 ; CHECK-NEXT:    addq %rdi, %rsi
-; CHECK-NEXT:    addq $-8, %rdx
-; CHECK-NEXT:    orq $7, %rdx
-; CHECK-NEXT:    imulq $100, %rdx, %rax
-; CHECK-NEXT:    addq %rsi, %rax
-; CHECK-NEXT:    movq %rax, (%rcx)
+; CHECK-NEXT:    leaq -8(%rdx), %rax
+; CHECK-NEXT:    orq $7, %rax
+; CHECK-NEXT:    imulq $100, %rax, %rax
+; CHECK-NEXT:    addq %rax, %rsi
+; CHECK-NEXT:    movq %rsi, (%rcx)
 ; CHECK-NEXT:    retq
   %v0 = or i64 %x0, 16
   %v1 = or i64 %x1, 32
@@ -107,9 +110,9 @@ define void @add64_negative(i64 %x0, i64 %x1, i64 %x2, ptr %p) {
 ; CHECK-NEXT:    orq $16, %rdi
 ; CHECK-NEXT:    orq $32, %rsi
 ; CHECK-NEXT:    addq %rdi, %rsi
-; CHECK-NEXT:    addq $-8, %rdx
-; CHECK-NEXT:    orq $7, %rdx
-; CHECK-NEXT:    imulq $100, %rdx, %rax
+; CHECK-NEXT:    leaq -8(%rdx), %rax
+; CHECK-NEXT:    orq $7, %rax
+; CHECK-NEXT:    imulq $100, %rax, %rax
 ; CHECK-NEXT:    addq %rsi, %rax
 ; CHECK-NEXT:    movq %rax, (%rcx)
 ; CHECK-NEXT:    retq

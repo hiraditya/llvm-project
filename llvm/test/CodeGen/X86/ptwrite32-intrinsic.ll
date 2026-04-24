@@ -27,8 +27,9 @@ define void @test_ptwrite2(i32 %x) {
 ;
 ; X86_64-LABEL: test_ptwrite2:
 ; X86_64:       # %bb.0: # %entry
-; X86_64-NEXT:    incl %edi
-; X86_64-NEXT:    ptwritel %edi
+; X86_64-NEXT:    # kill: def $edi killed $edi def $rdi
+; X86_64-NEXT:    leal 1(%rdi), %eax
+; X86_64-NEXT:    ptwritel %eax
 ; X86_64-NEXT:    retq
 entry:
   %value = add i32 %x, 1

@@ -14,49 +14,76 @@ define <16 x float> @testf16_inp(<16 x float> %a, <16 x float> %b) nounwind {
 ; WIN32-NEXT:    movl %esp, %ebp
 ; WIN32-NEXT:    andl $-16, %esp
 ; WIN32-NEXT:    subl $80, %esp
-; WIN32-NEXT:    movups 72(%ebp), %xmm4
-; WIN32-NEXT:    movups 8(%ebp), %xmm3
+; WIN32-NEXT:    movups 72(%ebp), %xmm3
+; WIN32-NEXT:    movups 8(%ebp), %xmm4
 ; WIN32-NEXT:    addps %xmm4, %xmm3
 ; WIN32-NEXT:    movups 56(%ebp), %xmm4
 ; WIN32-NEXT:    movups 40(%ebp), %xmm5
 ; WIN32-NEXT:    movups 24(%ebp), %xmm6
 ; WIN32-NEXT:    movl %esp, %eax
-; WIN32-NEXT:    addps %xmm6, %xmm0
-; WIN32-NEXT:    addps %xmm5, %xmm1
-; WIN32-NEXT:    addps %xmm4, %xmm2
+; WIN32-NEXT:    addps %xmm0, %xmm6
+; WIN32-NEXT:    addps %xmm1, %xmm5
+; WIN32-NEXT:    addps %xmm2, %xmm4
+; WIN32-NEXT:    movaps %xmm6, %xmm0
+; WIN32-NEXT:    movaps %xmm5, %xmm1
+; WIN32-NEXT:    movaps %xmm4, %xmm2
 ; WIN32-NEXT:    pushl %eax
 ; WIN32-NEXT:    calll _func_float16_ptr
 ; WIN32-NEXT:    addl $4, %esp
-; WIN32-NEXT:    addps (%esp), %xmm0
-; WIN32-NEXT:    addps {{[0-9]+}}(%esp), %xmm1
-; WIN32-NEXT:    addps {{[0-9]+}}(%esp), %xmm2
-; WIN32-NEXT:    addps {{[0-9]+}}(%esp), %xmm3
+; WIN32-NEXT:    movaps (%esp), %xmm4
+; WIN32-NEXT:    addps %xmm0, %xmm4
+; WIN32-NEXT:    movaps {{[0-9]+}}(%esp), %xmm5
+; WIN32-NEXT:    addps %xmm1, %xmm5
+; WIN32-NEXT:    movaps {{[0-9]+}}(%esp), %xmm6
+; WIN32-NEXT:    addps %xmm2, %xmm6
+; WIN32-NEXT:    movaps {{[0-9]+}}(%esp), %xmm7
+; WIN32-NEXT:    addps %xmm3, %xmm7
+; WIN32-NEXT:    movaps %xmm4, %xmm0
+; WIN32-NEXT:    movaps %xmm5, %xmm1
+; WIN32-NEXT:    movaps %xmm6, %xmm2
+; WIN32-NEXT:    movaps %xmm7, %xmm3
 ; WIN32-NEXT:    movl %ebp, %esp
 ; WIN32-NEXT:    popl %ebp
 ; WIN32-NEXT:    retl
 ;
 ; WIN64-LABEL: testf16_inp:
 ; WIN64:       # %bb.0:
-; WIN64-NEXT:    subq $104, %rsp
-; WIN64-NEXT:    movaps (%r9), %xmm3
-; WIN64-NEXT:    movaps (%r8), %xmm2
-; WIN64-NEXT:    movaps (%rdx), %xmm1
-; WIN64-NEXT:    movaps (%rcx), %xmm0
+; WIN64-NEXT:    subq $136, %rsp
+; WIN64-NEXT:    movaps %xmm7, {{[-0-9]+}}(%r{{[sb]}}p) # 16-byte Spill
+; WIN64-NEXT:    movaps %xmm6, {{[-0-9]+}}(%r{{[sb]}}p) # 16-byte Spill
+; WIN64-NEXT:    movaps (%r9), %xmm4
+; WIN64-NEXT:    movaps (%r8), %xmm3
+; WIN64-NEXT:    movaps (%rdx), %xmm2
+; WIN64-NEXT:    movaps (%rcx), %xmm1
 ; WIN64-NEXT:    movq {{[0-9]+}}(%rsp), %rax
 ; WIN64-NEXT:    movq {{[0-9]+}}(%rsp), %rcx
 ; WIN64-NEXT:    movq {{[0-9]+}}(%rsp), %rdx
 ; WIN64-NEXT:    movq {{[0-9]+}}(%rsp), %r8
-; WIN64-NEXT:    addps (%r8), %xmm0
-; WIN64-NEXT:    addps (%rdx), %xmm1
-; WIN64-NEXT:    addps (%rcx), %xmm2
-; WIN64-NEXT:    addps (%rax), %xmm3
+; WIN64-NEXT:    movaps (%r8), %xmm0
+; WIN64-NEXT:    addps %xmm1, %xmm0
+; WIN64-NEXT:    movaps (%rdx), %xmm1
+; WIN64-NEXT:    addps %xmm2, %xmm1
+; WIN64-NEXT:    movaps (%rcx), %xmm2
+; WIN64-NEXT:    addps %xmm3, %xmm2
+; WIN64-NEXT:    movaps (%rax), %xmm3
+; WIN64-NEXT:    addps %xmm4, %xmm3
 ; WIN64-NEXT:    leaq {{[0-9]+}}(%rsp), %rcx
 ; WIN64-NEXT:    callq func_float16_ptr
-; WIN64-NEXT:    addps {{[0-9]+}}(%rsp), %xmm0
-; WIN64-NEXT:    addps {{[0-9]+}}(%rsp), %xmm1
-; WIN64-NEXT:    addps {{[0-9]+}}(%rsp), %xmm2
-; WIN64-NEXT:    addps {{[0-9]+}}(%rsp), %xmm3
-; WIN64-NEXT:    addq $104, %rsp
+; WIN64-NEXT:    movaps {{[0-9]+}}(%rsp), %xmm4
+; WIN64-NEXT:    addps %xmm0, %xmm4
+; WIN64-NEXT:    movaps {{[0-9]+}}(%rsp), %xmm5
+; WIN64-NEXT:    addps %xmm1, %xmm5
+; WIN64-NEXT:    movaps {{[0-9]+}}(%rsp), %xmm6
+; WIN64-NEXT:    addps %xmm2, %xmm6
+; WIN64-NEXT:    movaps {{[0-9]+}}(%rsp), %xmm7
+; WIN64-NEXT:    addps %xmm3, %xmm7
+; WIN64-NEXT:    movaps %xmm4, %xmm0
+; WIN64-NEXT:    movaps %xmm5, %xmm1
+; WIN64-NEXT:    movaps %xmm6, %xmm2
+; WIN64-NEXT:    movaps %xmm7, %xmm3
+; WIN64-NEXT:    movaps {{[-0-9]+}}(%r{{[sb]}}p), %xmm6 # 16-byte Reload
+; WIN64-NEXT:    movaps {{[-0-9]+}}(%r{{[sb]}}p), %xmm7 # 16-byte Reload
+; WIN64-NEXT:    addq $136, %rsp
 ; WIN64-NEXT:    retq
 ;
 ; NOT_WIN-LABEL: testf16_inp:
@@ -68,10 +95,18 @@ define <16 x float> @testf16_inp(<16 x float> %a, <16 x float> %b) nounwind {
 ; NOT_WIN-NEXT:    addps %xmm7, %xmm3
 ; NOT_WIN-NEXT:    movq %rsp, %rdi
 ; NOT_WIN-NEXT:    callq _func_float16_ptr
-; NOT_WIN-NEXT:    addps (%rsp), %xmm0
-; NOT_WIN-NEXT:    addps {{[0-9]+}}(%rsp), %xmm1
-; NOT_WIN-NEXT:    addps {{[0-9]+}}(%rsp), %xmm2
-; NOT_WIN-NEXT:    addps {{[0-9]+}}(%rsp), %xmm3
+; NOT_WIN-NEXT:    movaps (%rsp), %xmm4
+; NOT_WIN-NEXT:    addps %xmm0, %xmm4
+; NOT_WIN-NEXT:    movaps {{[0-9]+}}(%rsp), %xmm5
+; NOT_WIN-NEXT:    addps %xmm1, %xmm5
+; NOT_WIN-NEXT:    movaps {{[0-9]+}}(%rsp), %xmm6
+; NOT_WIN-NEXT:    addps %xmm2, %xmm6
+; NOT_WIN-NEXT:    movaps {{[0-9]+}}(%rsp), %xmm7
+; NOT_WIN-NEXT:    addps %xmm3, %xmm7
+; NOT_WIN-NEXT:    movaps %xmm4, %xmm0
+; NOT_WIN-NEXT:    movaps %xmm5, %xmm1
+; NOT_WIN-NEXT:    movaps %xmm6, %xmm2
+; NOT_WIN-NEXT:    movaps %xmm7, %xmm3
 ; NOT_WIN-NEXT:    addq $72, %rsp
 ; NOT_WIN-NEXT:    retq
   %y = alloca <16 x float>, align 16
@@ -113,10 +148,18 @@ define <16 x float> @testf16_regs(<16 x float> %a, <16 x float> %b) nounwind {
 ; WIN32-NEXT:    addps %xmm4, %xmm1
 ; WIN32-NEXT:    movups 24(%ebp), %xmm4
 ; WIN32-NEXT:    addps %xmm4, %xmm0
-; WIN32-NEXT:    addps (%esp), %xmm0
-; WIN32-NEXT:    addps {{[0-9]+}}(%esp), %xmm1
-; WIN32-NEXT:    addps {{[0-9]+}}(%esp), %xmm2
-; WIN32-NEXT:    addps {{[0-9]+}}(%esp), %xmm3
+; WIN32-NEXT:    movaps (%esp), %xmm4
+; WIN32-NEXT:    addps %xmm0, %xmm4
+; WIN32-NEXT:    movaps {{[0-9]+}}(%esp), %xmm5
+; WIN32-NEXT:    addps %xmm1, %xmm5
+; WIN32-NEXT:    movaps {{[0-9]+}}(%esp), %xmm6
+; WIN32-NEXT:    addps %xmm2, %xmm6
+; WIN32-NEXT:    movaps {{[0-9]+}}(%esp), %xmm7
+; WIN32-NEXT:    addps %xmm3, %xmm7
+; WIN32-NEXT:    movaps %xmm4, %xmm0
+; WIN32-NEXT:    movaps %xmm5, %xmm1
+; WIN32-NEXT:    movaps %xmm6, %xmm2
+; WIN32-NEXT:    movaps %xmm7, %xmm3
 ; WIN32-NEXT:    movl %ebp, %esp
 ; WIN32-NEXT:    popl %ebp
 ; WIN32-NEXT:    retl
@@ -150,10 +193,18 @@ define <16 x float> @testf16_regs(<16 x float> %a, <16 x float> %b) nounwind {
 ; WIN64-NEXT:    addps %xmm7, %xmm2
 ; WIN64-NEXT:    addps %xmm8, %xmm1
 ; WIN64-NEXT:    addps %xmm9, %xmm0
-; WIN64-NEXT:    addps {{[0-9]+}}(%rsp), %xmm0
-; WIN64-NEXT:    addps {{[0-9]+}}(%rsp), %xmm1
-; WIN64-NEXT:    addps {{[0-9]+}}(%rsp), %xmm2
-; WIN64-NEXT:    addps {{[0-9]+}}(%rsp), %xmm3
+; WIN64-NEXT:    movaps {{[0-9]+}}(%rsp), %xmm4
+; WIN64-NEXT:    addps %xmm0, %xmm4
+; WIN64-NEXT:    movaps {{[0-9]+}}(%rsp), %xmm5
+; WIN64-NEXT:    addps %xmm1, %xmm5
+; WIN64-NEXT:    movaps {{[0-9]+}}(%rsp), %xmm6
+; WIN64-NEXT:    addps %xmm2, %xmm6
+; WIN64-NEXT:    movaps {{[0-9]+}}(%rsp), %xmm7
+; WIN64-NEXT:    addps %xmm3, %xmm7
+; WIN64-NEXT:    movaps %xmm4, %xmm0
+; WIN64-NEXT:    movaps %xmm5, %xmm1
+; WIN64-NEXT:    movaps %xmm6, %xmm2
+; WIN64-NEXT:    movaps %xmm7, %xmm3
 ; WIN64-NEXT:    movaps {{[-0-9]+}}(%r{{[sb]}}p), %xmm6 # 16-byte Reload
 ; WIN64-NEXT:    movaps {{[-0-9]+}}(%r{{[sb]}}p), %xmm7 # 16-byte Reload
 ; WIN64-NEXT:    movaps {{[-0-9]+}}(%r{{[sb]}}p), %xmm8 # 16-byte Reload
@@ -178,10 +229,18 @@ define <16 x float> @testf16_regs(<16 x float> %a, <16 x float> %b) nounwind {
 ; NOT_WIN-NEXT:    addps %xmm10, %xmm2
 ; NOT_WIN-NEXT:    addps %xmm11, %xmm1
 ; NOT_WIN-NEXT:    addps %xmm8, %xmm0
-; NOT_WIN-NEXT:    addps (%rsp), %xmm0
-; NOT_WIN-NEXT:    addps {{[0-9]+}}(%rsp), %xmm1
-; NOT_WIN-NEXT:    addps {{[0-9]+}}(%rsp), %xmm2
-; NOT_WIN-NEXT:    addps {{[0-9]+}}(%rsp), %xmm3
+; NOT_WIN-NEXT:    movaps (%rsp), %xmm4
+; NOT_WIN-NEXT:    addps %xmm0, %xmm4
+; NOT_WIN-NEXT:    movaps {{[0-9]+}}(%rsp), %xmm5
+; NOT_WIN-NEXT:    addps %xmm1, %xmm5
+; NOT_WIN-NEXT:    movaps {{[0-9]+}}(%rsp), %xmm6
+; NOT_WIN-NEXT:    addps %xmm2, %xmm6
+; NOT_WIN-NEXT:    movaps {{[0-9]+}}(%rsp), %xmm7
+; NOT_WIN-NEXT:    addps %xmm3, %xmm7
+; NOT_WIN-NEXT:    movaps %xmm4, %xmm0
+; NOT_WIN-NEXT:    movaps %xmm5, %xmm1
+; NOT_WIN-NEXT:    movaps %xmm6, %xmm2
+; NOT_WIN-NEXT:    movaps %xmm7, %xmm3
 ; NOT_WIN-NEXT:    addq $72, %rsp
 ; NOT_WIN-NEXT:    retq
   %y = alloca <16 x float>, align 16

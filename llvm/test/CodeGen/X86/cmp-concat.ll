@@ -19,7 +19,7 @@ define i1 @cmp_allbits_concat_i8(i8 %x, i8 %y) {
 define i1 @cmp_anybits_concat_i32(i32 %x, i32 %y) {
 ; CHECK-LABEL: cmp_anybits_concat_i32:
 ; CHECK:       # %bb.0:
-; CHECK-NEXT:    orl %esi, %edi
+; CHECK-NEXT:    orl %edi, %esi
 ; CHECK-NEXT:    setne %al
 ; CHECK-NEXT:    retq
   %zx = zext i32 %x to i64
@@ -36,7 +36,7 @@ define i1 @cmp_anybits_concat_shl_shl_i16(i16 %x, i16 %y) {
 ; CHECK-NEXT:    movzwl %di, %eax
 ; CHECK-NEXT:    movzwl %si, %ecx
 ; CHECK-NEXT:    shll $8, %ecx
-; CHECK-NEXT:    orl %eax, %ecx
+; CHECK-NEXT:    orl %ecx, %eax
 ; CHECK-NEXT:    sete %al
 ; CHECK-NEXT:    retq
   %zx = zext i16 %x to i64
@@ -54,7 +54,7 @@ define i1 @cmp_anybits_concat_shl_shl_i16_commute(i16 %x, i16 %y) {
 ; CHECK-NEXT:    movzwl %di, %eax
 ; CHECK-NEXT:    movzwl %si, %ecx
 ; CHECK-NEXT:    shll $8, %ecx
-; CHECK-NEXT:    orl %eax, %ecx
+; CHECK-NEXT:    orl %ecx, %eax
 ; CHECK-NEXT:    sete %al
 ; CHECK-NEXT:    retq
   %zx = zext i16 %x to i64
@@ -98,12 +98,12 @@ define <2 x i64> @cmp_nobits_concat_v2i64(<2 x i64> %x, <2 x i64> %y) {
 ; CHECK-NEXT:    movq %xmm1, %rdx
 ; CHECK-NEXT:    pextrq $1, %xmm1, %rsi
 ; CHECK-NEXT:    xorl %edi, %edi
-; CHECK-NEXT:    orq %rcx, %rsi
+; CHECK-NEXT:    orq %rsi, %rcx
 ; CHECK-NEXT:    sete %dil
 ; CHECK-NEXT:    negq %rdi
 ; CHECK-NEXT:    movq %rdi, %xmm1
 ; CHECK-NEXT:    xorl %ecx, %ecx
-; CHECK-NEXT:    orq %rax, %rdx
+; CHECK-NEXT:    orq %rdx, %rax
 ; CHECK-NEXT:    sete %cl
 ; CHECK-NEXT:    negq %rcx
 ; CHECK-NEXT:    movq %rcx, %xmm0

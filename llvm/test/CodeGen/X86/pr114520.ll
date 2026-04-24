@@ -26,7 +26,8 @@ define <8 x half> @test2(<8 x half> %x) {
 ; CHECK-NEXT:    vpcmpeqd %ymm2, %ymm2, %ymm2
 ; CHECK-NEXT:    vmovdqa32 %ymm2, %ymm2 {%k1} {z}
 ; CHECK-NEXT:    vpmovdw %ymm2, %xmm2
-; CHECK-NEXT:    vpternlogq {{.*#+}} xmm0 = xmm1 ^ (xmm2 & (xmm0 ^ xmm1))
+; CHECK-NEXT:    vpternlogq {{.*#+}} xmm1 = xmm1 ^ (xmm2 & (xmm1 ^ xmm0))
+; CHECK-NEXT:    vmovdqa %xmm1, %xmm0
 ; CHECK-NEXT:    vzeroupper
 ; CHECK-NEXT:    retq
 entry:

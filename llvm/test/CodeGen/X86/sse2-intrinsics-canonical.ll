@@ -180,7 +180,8 @@ define <8 x i16> @add_addusw(<8 x i16> %x, <8 x i16> %y, <8 x i16> %z) {
 ; SSE-LABEL: add_addusw:
 ; SSE:       ## %bb.0:
 ; SSE-NEXT:    paddw %xmm2, %xmm1 ## encoding: [0x66,0x0f,0xfd,0xca]
-; SSE-NEXT:    paddusw %xmm1, %xmm0 ## encoding: [0x66,0x0f,0xdd,0xc1]
+; SSE-NEXT:    paddusw %xmm0, %xmm1 ## encoding: [0x66,0x0f,0xdd,0xc8]
+; SSE-NEXT:    movdqa %xmm1, %xmm0 ## encoding: [0x66,0x0f,0x6f,0xc1]
 ; SSE-NEXT:    retl ## encoding: [0xc3]
 ;
 ; AVX2-LABEL: add_addusw:

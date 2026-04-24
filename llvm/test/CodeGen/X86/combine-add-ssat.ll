@@ -86,11 +86,6 @@ define i32 @combine_constant_i32(i32 %a0) {
 }
 
 define <8 x i16> @combine_constant_v8i16(<8 x i16> %a0) {
-; SSE-LABEL: combine_constant_v8i16:
-; SSE:       # %bb.0:
-; SSE-NEXT:    paddsw {{\.?LCPI[0-9]+_[0-9]+}}(%rip), %xmm0
-; SSE-NEXT:    retq
-;
 ; AVX-LABEL: combine_constant_v8i16:
 ; AVX:       # %bb.0:
 ; AVX-NEXT:    vpaddsw {{\.?LCPI[0-9]+_[0-9]+}}(%rip), %xmm0, %xmm0
@@ -121,11 +116,10 @@ define <8 x i16> @combine_zero_v8i16(<8 x i16> %a0) {
 define i32 @combine_no_overflow_i32(i32 %a0, i32 %a1) {
 ; CHECK-LABEL: combine_no_overflow_i32:
 ; CHECK:       # %bb.0:
-; CHECK-NEXT:    # kill: def $esi killed $esi def $rsi
-; CHECK-NEXT:    # kill: def $edi killed $edi def $rdi
+; CHECK-NEXT:    movl %esi, %eax
 ; CHECK-NEXT:    sarl $16, %edi
-; CHECK-NEXT:    shrl $16, %esi
-; CHECK-NEXT:    leal (%rsi,%rdi), %eax
+; CHECK-NEXT:    shrl $16, %eax
+; CHECK-NEXT:    addl %edi, %eax
 ; CHECK-NEXT:    retq
   %1 = ashr i32 %a0, 16
   %2 = lshr i32 %a1, 16
@@ -138,7 +132,8 @@ define <8 x i16> @combine_no_overflow_v8i16(<8 x i16> %a0, <8 x i16> %a1) {
 ; SSE:       # %bb.0:
 ; SSE-NEXT:    psraw $10, %xmm0
 ; SSE-NEXT:    psrlw $10, %xmm1
-; SSE-NEXT:    paddw %xmm1, %xmm0
+; SSE-NEXT:    paddw %xmm0, %xmm1
+; SSE-NEXT:    movdqa %xmm1, %xmm0
 ; SSE-NEXT:    retq
 ;
 ; AVX-LABEL: combine_no_overflow_v8i16:

@@ -61,6 +61,7 @@ define i32 @test_extra_use(i32 %x, ptr %p) {
 define i32 @test_different_operand(i32 %x, i32 %y) {
 ; CHECK-LABEL: test_different_operand:
 ; CHECK:       # %bb.0:
+; CHECK-NEXT:    # kill: def $esi killed $esi def $rsi
 ; CHECK-NEXT:    # kill: def $edi killed $edi def $rdi
 ; CHECK-NEXT:    leal (%rdi,%rdi,2), %eax
 ; CHECK-NEXT:    addl %esi, %eax

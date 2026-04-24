@@ -870,18 +870,18 @@ define i64 @red_mla_dup_ext_u8_s8_s64(ptr noalias noundef readonly captures(none
 ; CHECK-GI-LABEL: red_mla_dup_ext_u8_s8_s64:
 ; CHECK-GI:       // %bb.0: // %entry
 ; CHECK-GI-NEXT:    // kill: def $w1 killed $w1 def $x1
-; CHECK-GI-NEXT:    cbz w2, .LBB6_7
+; CHECK-GI-NEXT:    cbz w2, .LBB6_13
 ; CHECK-GI-NEXT:  // %bb.1: // %iter.check
 ; CHECK-GI-NEXT:    movi d0, #0000000000000000
 ; CHECK-GI-NEXT:    mov x10, xzr
 ; CHECK-GI-NEXT:    cmp w2, #4
 ; CHECK-GI-NEXT:    mov w9, w2
-; CHECK-GI-NEXT:    b.lo .LBB6_12
+; CHECK-GI-NEXT:    b.lo .LBB6_10
 ; CHECK-GI-NEXT:  // %bb.2: // %vector.main.loop.iter.check
 ; CHECK-GI-NEXT:    movi d0, #0000000000000000
 ; CHECK-GI-NEXT:    mov x10, xzr
 ; CHECK-GI-NEXT:    cmp w2, #16
-; CHECK-GI-NEXT:    b.lo .LBB6_9
+; CHECK-GI-NEXT:    b.lo .LBB6_7
 ; CHECK-GI-NEXT:  // %bb.3: // %vector.ph
 ; CHECK-GI-NEXT:    mov w8, w1
 ; CHECK-GI-NEXT:    movi v0.2d, #0000000000000000
@@ -891,17 +891,17 @@ define i64 @red_mla_dup_ext_u8_s8_s64(ptr noalias noundef readonly captures(none
 ; CHECK-GI-NEXT:    movi v3.2d, #0000000000000000
 ; CHECK-GI-NEXT:    movi v4.2d, #0000000000000000
 ; CHECK-GI-NEXT:    movi v6.2d, #0000000000000000
-; CHECK-GI-NEXT:    and x10, x9, #0xfffffff0
+; CHECK-GI-NEXT:    and x11, x9, #0xc
 ; CHECK-GI-NEXT:    dup v5.2d, x8
 ; CHECK-GI-NEXT:    movi v7.2d, #0000000000000000
-; CHECK-GI-NEXT:    and x8, x9, #0xc
-; CHECK-GI-NEXT:    mov x11, x0
+; CHECK-GI-NEXT:    and x10, x9, #0xfffffff0
+; CHECK-GI-NEXT:    mov x8, x0
 ; CHECK-GI-NEXT:    and x12, x9, #0xfffffff0
 ; CHECK-GI-NEXT:    xtn v16.2s, v5.2d
 ; CHECK-GI-NEXT:    movi v5.2d, #0000000000000000
 ; CHECK-GI-NEXT:  .LBB6_4: // %vector.body
 ; CHECK-GI-NEXT:    // =>This Inner Loop Header: Depth=1
-; CHECK-GI-NEXT:    ldr q17, [x11], #16
+; CHECK-GI-NEXT:    ldr q17, [x8], #16
 ; CHECK-GI-NEXT:    subs x12, x12, #16
 ; CHECK-GI-NEXT:    ushll v18.8h, v17.8b, #0
 ; CHECK-GI-NEXT:    ushll2 v17.8h, v17.16b, #0
@@ -932,18 +932,11 @@ define i64 @red_mla_dup_ext_u8_s8_s64(ptr noalias noundef readonly captures(none
 ; CHECK-GI-NEXT:    add v1.2d, v2.2d, v3.2d
 ; CHECK-GI-NEXT:    add v0.2d, v0.2d, v1.2d
 ; CHECK-GI-NEXT:    addp d0, v0.2d
-; CHECK-GI-NEXT:    b.ne .LBB6_8
-; CHECK-GI-NEXT:  // %bb.6:
 ; CHECK-GI-NEXT:    fmov x8, d0
-; CHECK-GI-NEXT:    mov x0, x8
-; CHECK-GI-NEXT:    ret
-; CHECK-GI-NEXT:  .LBB6_7:
-; CHECK-GI-NEXT:    mov x8, xzr
-; CHECK-GI-NEXT:    mov x0, x8
-; CHECK-GI-NEXT:    ret
-; CHECK-GI-NEXT:  .LBB6_8: // %vec.epilog.iter.check
-; CHECK-GI-NEXT:    cbz x8, .LBB6_12
-; CHECK-GI-NEXT:  .LBB6_9: // %vec.epilog.ph
+; CHECK-GI-NEXT:    b.eq .LBB6_12
+; CHECK-GI-NEXT:  // %bb.6: // %vec.epilog.iter.check
+; CHECK-GI-NEXT:    cbz x11, .LBB6_10
+; CHECK-GI-NEXT:  .LBB6_7: // %vec.epilog.ph
 ; CHECK-GI-NEXT:    mov w8, w1
 ; CHECK-GI-NEXT:    mov v0.d[1], xzr
 ; CHECK-GI-NEXT:    movi v1.2d, #0000000000000000
@@ -954,7 +947,7 @@ define i64 @red_mla_dup_ext_u8_s8_s64(ptr noalias noundef readonly captures(none
 ; CHECK-GI-NEXT:    sub x8, x11, x10
 ; CHECK-GI-NEXT:    add x11, x0, x11
 ; CHECK-GI-NEXT:    xtn v2.2s, v2.2d
-; CHECK-GI-NEXT:  .LBB6_10: // %vec.epilog.vector.body
+; CHECK-GI-NEXT:  .LBB6_8: // %vec.epilog.vector.body
 ; CHECK-GI-NEXT:    // =>This Inner Loop Header: Depth=1
 ; CHECK-GI-NEXT:    ldr w12, [x11], #4
 ; CHECK-GI-NEXT:    adds x8, x8, #4
@@ -975,26 +968,30 @@ define i64 @red_mla_dup_ext_u8_s8_s64(ptr noalias noundef readonly captures(none
 ; CHECK-GI-NEXT:    mov v4.s[1], w15
 ; CHECK-GI-NEXT:    smlal v0.2d, v2.2s, v3.2s
 ; CHECK-GI-NEXT:    smlal v1.2d, v2.2s, v4.2s
-; CHECK-GI-NEXT:    b.ne .LBB6_10
-; CHECK-GI-NEXT:  // %bb.11: // %vec.epilog.middle.block
+; CHECK-GI-NEXT:    b.ne .LBB6_8
+; CHECK-GI-NEXT:  // %bb.9: // %vec.epilog.middle.block
 ; CHECK-GI-NEXT:    add v0.2d, v0.2d, v1.2d
 ; CHECK-GI-NEXT:    cmp x10, x9
 ; CHECK-GI-NEXT:    addp d0, v0.2d
 ; CHECK-GI-NEXT:    fmov x8, d0
-; CHECK-GI-NEXT:    b.eq .LBB6_14
-; CHECK-GI-NEXT:  .LBB6_12: // %for.body.preheader
+; CHECK-GI-NEXT:    b.eq .LBB6_12
+; CHECK-GI-NEXT:  .LBB6_10: // %for.body.preheader
 ; CHECK-GI-NEXT:    sxtb x11, w1
 ; CHECK-GI-NEXT:    sub x9, x9, x10
 ; CHECK-GI-NEXT:    add x10, x0, x10
-; CHECK-GI-NEXT:  .LBB6_13: // %for.body
+; CHECK-GI-NEXT:  .LBB6_11: // %for.body
 ; CHECK-GI-NEXT:    // =>This Inner Loop Header: Depth=1
 ; CHECK-GI-NEXT:    ldrb w8, [x10], #1
 ; CHECK-GI-NEXT:    fmov x12, d0
 ; CHECK-GI-NEXT:    subs x9, x9, #1
 ; CHECK-GI-NEXT:    madd x8, x8, x11, x12
 ; CHECK-GI-NEXT:    fmov d0, x8
-; CHECK-GI-NEXT:    b.ne .LBB6_13
-; CHECK-GI-NEXT:  .LBB6_14: // %for.cond.cleanup
+; CHECK-GI-NEXT:    b.ne .LBB6_11
+; CHECK-GI-NEXT:  .LBB6_12: // %for.cond.cleanup
+; CHECK-GI-NEXT:    mov x0, x8
+; CHECK-GI-NEXT:    ret
+; CHECK-GI-NEXT:  .LBB6_13:
+; CHECK-GI-NEXT:    mov x8, xzr
 ; CHECK-GI-NEXT:    mov x0, x8
 ; CHECK-GI-NEXT:    ret
 entry:

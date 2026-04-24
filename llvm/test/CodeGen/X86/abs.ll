@@ -402,7 +402,8 @@ define <8 x i16> @test_v8i16(<8 x i16> %a) nounwind {
 ; SSE:       # %bb.0:
 ; SSE-NEXT:    pxor %xmm1, %xmm1
 ; SSE-NEXT:    psubw %xmm0, %xmm1
-; SSE-NEXT:    pmaxsw %xmm1, %xmm0
+; SSE-NEXT:    pmaxsw %xmm0, %xmm1
+; SSE-NEXT:    movdqa %xmm1, %xmm0
 ; SSE-NEXT:    retq
 ;
 ; AVX-LABEL: test_v8i16:
@@ -478,7 +479,8 @@ define <16 x i8> @test_v16i8(<16 x i8> %a) nounwind {
 ; SSE:       # %bb.0:
 ; SSE-NEXT:    pxor %xmm1, %xmm1
 ; SSE-NEXT:    psubb %xmm0, %xmm1
-; SSE-NEXT:    pminub %xmm1, %xmm0
+; SSE-NEXT:    pminub %xmm0, %xmm1
+; SSE-NEXT:    movdqa %xmm1, %xmm0
 ; SSE-NEXT:    retq
 ;
 ; AVX-LABEL: test_v16i8:
@@ -797,11 +799,12 @@ define i32 @test_minsigned_i32(i32 %a0, i32 %a1) nounwind {
 ;
 ; X86-LABEL: test_minsigned_i32:
 ; X86:       # %bb.0:
-; X86-NEXT:    movl {{[0-9]+}}(%esp), %ecx
-; X86-NEXT:    movl %ecx, %eax
-; X86-NEXT:    negl %eax
-; X86-NEXT:    cmovsl %ecx, %eax
-; X86-NEXT:    cmovol {{[0-9]+}}(%esp), %eax
+; X86-NEXT:    movl {{[0-9]+}}(%esp), %eax
+; X86-NEXT:    movl %eax, %ecx
+; X86-NEXT:    negl %ecx
+; X86-NEXT:    cmovsl %eax, %ecx
+; X86-NEXT:    movl {{[0-9]+}}(%esp), %eax
+; X86-NEXT:    cmovnol %ecx, %eax
 ; X86-NEXT:    retl
   %lim = icmp eq i32 %a0, -2147483648
   %abs = tail call i32 @llvm.abs.i32(i32 %a0, i1 false)

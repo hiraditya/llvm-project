@@ -15,7 +15,8 @@ define <2 x double> @mul_addsub_pd128(<2 x double> %A, <2 x double> %B,  <2 x do
 ;
 ; FMA3-LABEL: mul_addsub_pd128:
 ; FMA3:       # %bb.0: # %entry
-; FMA3-NEXT:    vfmaddsub213pd {{.*#+}} xmm0 = (xmm1 * xmm0) +/- xmm2
+; FMA3-NEXT:    vfmaddsub213pd {{.*#+}} xmm1 = (xmm0 * xmm1) +/- xmm2
+; FMA3-NEXT:    vmovapd %xmm1, %xmm0
 ; FMA3-NEXT:    retq
 ;
 ; FMA4-LABEL: mul_addsub_pd128:
@@ -39,7 +40,8 @@ define <4 x float> @mul_addsub_ps128(<4 x float> %A, <4 x float> %B, <4 x float>
 ;
 ; FMA3-LABEL: mul_addsub_ps128:
 ; FMA3:       # %bb.0: # %entry
-; FMA3-NEXT:    vfmaddsub213ps {{.*#+}} xmm0 = (xmm1 * xmm0) +/- xmm2
+; FMA3-NEXT:    vfmaddsub213ps {{.*#+}} xmm1 = (xmm0 * xmm1) +/- xmm2
+; FMA3-NEXT:    vmovaps %xmm1, %xmm0
 ; FMA3-NEXT:    retq
 ;
 ; FMA4-LABEL: mul_addsub_ps128:
@@ -63,7 +65,8 @@ define <4 x double> @mul_addsub_pd256(<4 x double> %A, <4 x double> %B, <4 x dou
 ;
 ; FMA3-LABEL: mul_addsub_pd256:
 ; FMA3:       # %bb.0: # %entry
-; FMA3-NEXT:    vfmaddsub213pd {{.*#+}} ymm0 = (ymm1 * ymm0) +/- ymm2
+; FMA3-NEXT:    vfmaddsub213pd {{.*#+}} ymm1 = (ymm0 * ymm1) +/- ymm2
+; FMA3-NEXT:    vmovapd %ymm1, %ymm0
 ; FMA3-NEXT:    retq
 ;
 ; FMA4-LABEL: mul_addsub_pd256:
@@ -87,7 +90,8 @@ define <8 x float> @mul_addsub_ps256(<8 x float> %A, <8 x float> %B, <8 x float>
 ;
 ; FMA3-LABEL: mul_addsub_ps256:
 ; FMA3:       # %bb.0: # %entry
-; FMA3-NEXT:    vfmaddsub213ps {{.*#+}} ymm0 = (ymm1 * ymm0) +/- ymm2
+; FMA3-NEXT:    vfmaddsub213ps {{.*#+}} ymm1 = (ymm0 * ymm1) +/- ymm2
+; FMA3-NEXT:    vmovaps %ymm1, %ymm0
 ; FMA3-NEXT:    retq
 ;
 ; FMA4-LABEL: mul_addsub_ps256:
@@ -113,13 +117,16 @@ define <8 x double> @mul_addsub_pd512(<8 x double> %A, <8 x double> %B, <8 x dou
 ;
 ; FMA3_256-LABEL: mul_addsub_pd512:
 ; FMA3_256:       # %bb.0: # %entry
-; FMA3_256-NEXT:    vfmaddsub213pd {{.*#+}} ymm0 = (ymm2 * ymm0) +/- ymm4
-; FMA3_256-NEXT:    vfmaddsub213pd {{.*#+}} ymm1 = (ymm3 * ymm1) +/- ymm5
+; FMA3_256-NEXT:    vfmaddsub213pd {{.*#+}} ymm2 = (ymm0 * ymm2) +/- ymm4
+; FMA3_256-NEXT:    vfmaddsub213pd {{.*#+}} ymm3 = (ymm1 * ymm3) +/- ymm5
+; FMA3_256-NEXT:    vmovapd %ymm2, %ymm0
+; FMA3_256-NEXT:    vmovapd %ymm3, %ymm1
 ; FMA3_256-NEXT:    retq
 ;
 ; FMA3_512-LABEL: mul_addsub_pd512:
 ; FMA3_512:       # %bb.0: # %entry
-; FMA3_512-NEXT:    vfmaddsub213pd {{.*#+}} zmm0 = (zmm1 * zmm0) +/- zmm2
+; FMA3_512-NEXT:    vfmaddsub213pd {{.*#+}} zmm1 = (zmm0 * zmm1) +/- zmm2
+; FMA3_512-NEXT:    vmovapd %zmm1, %zmm0
 ; FMA3_512-NEXT:    retq
 ;
 ; FMA4-LABEL: mul_addsub_pd512:
@@ -146,13 +153,16 @@ define <16 x float> @mul_addsub_ps512(<16 x float> %A, <16 x float> %B, <16 x fl
 ;
 ; FMA3_256-LABEL: mul_addsub_ps512:
 ; FMA3_256:       # %bb.0: # %entry
-; FMA3_256-NEXT:    vfmaddsub213ps {{.*#+}} ymm0 = (ymm2 * ymm0) +/- ymm4
-; FMA3_256-NEXT:    vfmaddsub213ps {{.*#+}} ymm1 = (ymm3 * ymm1) +/- ymm5
+; FMA3_256-NEXT:    vfmaddsub213ps {{.*#+}} ymm2 = (ymm0 * ymm2) +/- ymm4
+; FMA3_256-NEXT:    vfmaddsub213ps {{.*#+}} ymm3 = (ymm1 * ymm3) +/- ymm5
+; FMA3_256-NEXT:    vmovaps %ymm2, %ymm0
+; FMA3_256-NEXT:    vmovaps %ymm3, %ymm1
 ; FMA3_256-NEXT:    retq
 ;
 ; FMA3_512-LABEL: mul_addsub_ps512:
 ; FMA3_512:       # %bb.0: # %entry
-; FMA3_512-NEXT:    vfmaddsub213ps {{.*#+}} zmm0 = (zmm1 * zmm0) +/- zmm2
+; FMA3_512-NEXT:    vfmaddsub213ps {{.*#+}} zmm1 = (zmm0 * zmm1) +/- zmm2
+; FMA3_512-NEXT:    vmovaps %zmm1, %zmm0
 ; FMA3_512-NEXT:    retq
 ;
 ; FMA4-LABEL: mul_addsub_ps512:
@@ -177,7 +187,8 @@ define <4 x float> @buildvector_mul_addsub_ps128(<4 x float> %C, <4 x float> %D,
 ;
 ; FMA3-LABEL: buildvector_mul_addsub_ps128:
 ; FMA3:       # %bb.0: # %bb
-; FMA3-NEXT:    vfmaddsub213ps {{.*#+}} xmm0 = (xmm1 * xmm0) +/- xmm2
+; FMA3-NEXT:    vfmaddsub213ps {{.*#+}} xmm1 = (xmm0 * xmm1) +/- xmm2
+; FMA3-NEXT:    vmovaps %xmm1, %xmm0
 ; FMA3-NEXT:    retq
 ;
 ; FMA4-LABEL: buildvector_mul_addsub_ps128:
@@ -214,7 +225,8 @@ define <2 x double> @buildvector_mul_addsub_pd128(<2 x double> %C, <2 x double> 
 ;
 ; FMA3-LABEL: buildvector_mul_addsub_pd128:
 ; FMA3:       # %bb.0: # %bb
-; FMA3-NEXT:    vfmaddsub213pd {{.*#+}} xmm0 = (xmm1 * xmm0) +/- xmm2
+; FMA3-NEXT:    vfmaddsub213pd {{.*#+}} xmm1 = (xmm0 * xmm1) +/- xmm2
+; FMA3-NEXT:    vmovapd %xmm1, %xmm0
 ; FMA3-NEXT:    retq
 ;
 ; FMA4-LABEL: buildvector_mul_addsub_pd128:
@@ -243,7 +255,8 @@ define <8 x float> @buildvector_mul_addsub_ps256(<8 x float> %C, <8 x float> %D,
 ;
 ; FMA3-LABEL: buildvector_mul_addsub_ps256:
 ; FMA3:       # %bb.0: # %bb
-; FMA3-NEXT:    vfmaddsub213ps {{.*#+}} ymm0 = (ymm1 * ymm0) +/- ymm2
+; FMA3-NEXT:    vfmaddsub213ps {{.*#+}} ymm1 = (ymm0 * ymm1) +/- ymm2
+; FMA3-NEXT:    vmovaps %ymm1, %ymm0
 ; FMA3-NEXT:    retq
 ;
 ; FMA4-LABEL: buildvector_mul_addsub_ps256:
@@ -296,7 +309,8 @@ define <4 x double> @buildvector_mul_addsub_pd256(<4 x double> %C, <4 x double> 
 ;
 ; FMA3-LABEL: buildvector_mul_addsub_pd256:
 ; FMA3:       # %bb.0: # %bb
-; FMA3-NEXT:    vfmaddsub213pd {{.*#+}} ymm0 = (ymm1 * ymm0) +/- ymm2
+; FMA3-NEXT:    vfmaddsub213pd {{.*#+}} ymm1 = (ymm0 * ymm1) +/- ymm2
+; FMA3-NEXT:    vmovapd %ymm1, %ymm0
 ; FMA3-NEXT:    retq
 ;
 ; FMA4-LABEL: buildvector_mul_addsub_pd256:
@@ -335,13 +349,16 @@ define <16 x float> @buildvector_mul_addsub_ps512(<16 x float> %C, <16 x float> 
 ;
 ; FMA3_256-LABEL: buildvector_mul_addsub_ps512:
 ; FMA3_256:       # %bb.0: # %bb
-; FMA3_256-NEXT:    vfmaddsub213ps {{.*#+}} ymm0 = (ymm2 * ymm0) +/- ymm4
-; FMA3_256-NEXT:    vfmaddsub213ps {{.*#+}} ymm1 = (ymm3 * ymm1) +/- ymm5
+; FMA3_256-NEXT:    vfmaddsub213ps {{.*#+}} ymm2 = (ymm0 * ymm2) +/- ymm4
+; FMA3_256-NEXT:    vfmaddsub213ps {{.*#+}} ymm3 = (ymm1 * ymm3) +/- ymm5
+; FMA3_256-NEXT:    vmovaps %ymm2, %ymm0
+; FMA3_256-NEXT:    vmovaps %ymm3, %ymm1
 ; FMA3_256-NEXT:    retq
 ;
 ; FMA3_512-LABEL: buildvector_mul_addsub_ps512:
 ; FMA3_512:       # %bb.0: # %bb
-; FMA3_512-NEXT:    vfmaddsub213ps {{.*#+}} zmm0 = (zmm1 * zmm0) +/- zmm2
+; FMA3_512-NEXT:    vfmaddsub213ps {{.*#+}} zmm1 = (zmm0 * zmm1) +/- zmm2
+; FMA3_512-NEXT:    vmovaps %zmm1, %zmm0
 ; FMA3_512-NEXT:    retq
 ;
 ; FMA4-LABEL: buildvector_mul_addsub_ps512:
@@ -429,13 +446,16 @@ define <8 x double> @buildvector_mul_addsub_pd512(<8 x double> %C, <8 x double> 
 ;
 ; FMA3_256-LABEL: buildvector_mul_addsub_pd512:
 ; FMA3_256:       # %bb.0: # %bb
-; FMA3_256-NEXT:    vfmaddsub213pd {{.*#+}} ymm0 = (ymm2 * ymm0) +/- ymm4
-; FMA3_256-NEXT:    vfmaddsub213pd {{.*#+}} ymm1 = (ymm3 * ymm1) +/- ymm5
+; FMA3_256-NEXT:    vfmaddsub213pd {{.*#+}} ymm2 = (ymm0 * ymm2) +/- ymm4
+; FMA3_256-NEXT:    vfmaddsub213pd {{.*#+}} ymm3 = (ymm1 * ymm3) +/- ymm5
+; FMA3_256-NEXT:    vmovapd %ymm2, %ymm0
+; FMA3_256-NEXT:    vmovapd %ymm3, %ymm1
 ; FMA3_256-NEXT:    retq
 ;
 ; FMA3_512-LABEL: buildvector_mul_addsub_pd512:
 ; FMA3_512:       # %bb.0: # %bb
-; FMA3_512-NEXT:    vfmaddsub213pd {{.*#+}} zmm0 = (zmm1 * zmm0) +/- zmm2
+; FMA3_512-NEXT:    vfmaddsub213pd {{.*#+}} zmm1 = (zmm0 * zmm1) +/- zmm2
+; FMA3_512-NEXT:    vmovapd %zmm1, %zmm0
 ; FMA3_512-NEXT:    retq
 ;
 ; FMA4-LABEL: buildvector_mul_addsub_pd512:
@@ -498,7 +518,8 @@ define <4 x float> @buildvector_mul_subadd_ps128(<4 x float> %C, <4 x float> %D,
 ;
 ; FMA3-LABEL: buildvector_mul_subadd_ps128:
 ; FMA3:       # %bb.0: # %bb
-; FMA3-NEXT:    vfmsubadd213ps {{.*#+}} xmm0 = (xmm1 * xmm0) -/+ xmm2
+; FMA3-NEXT:    vfmsubadd213ps {{.*#+}} xmm1 = (xmm0 * xmm1) -/+ xmm2
+; FMA3-NEXT:    vmovaps %xmm1, %xmm0
 ; FMA3-NEXT:    retq
 ;
 ; FMA4-LABEL: buildvector_mul_subadd_ps128:
@@ -539,7 +560,8 @@ define <2 x double> @buildvector_mul_subadd_pd128(<2 x double> %C, <2 x double> 
 ;
 ; FMA3-LABEL: buildvector_mul_subadd_pd128:
 ; FMA3:       # %bb.0: # %bb
-; FMA3-NEXT:    vfmsubadd213pd {{.*#+}} xmm0 = (xmm1 * xmm0) -/+ xmm2
+; FMA3-NEXT:    vfmsubadd213pd {{.*#+}} xmm1 = (xmm0 * xmm1) -/+ xmm2
+; FMA3-NEXT:    vmovapd %xmm1, %xmm0
 ; FMA3-NEXT:    retq
 ;
 ; FMA4-LABEL: buildvector_mul_subadd_pd128:
@@ -596,7 +618,8 @@ define <8 x float> @buildvector_mul_subadd_ps256(<8 x float> %C, <8 x float> %D,
 ;
 ; FMA3-LABEL: buildvector_mul_subadd_ps256:
 ; FMA3:       # %bb.0: # %bb
-; FMA3-NEXT:    vfmsubadd213ps {{.*#+}} ymm0 = (ymm1 * ymm0) -/+ ymm2
+; FMA3-NEXT:    vfmsubadd213ps {{.*#+}} ymm1 = (ymm0 * ymm1) -/+ ymm2
+; FMA3-NEXT:    vmovaps %ymm1, %ymm0
 ; FMA3-NEXT:    retq
 ;
 ; FMA4-LABEL: buildvector_mul_subadd_ps256:
@@ -661,7 +684,8 @@ define <4 x double> @buildvector_mul_subadd_pd256(<4 x double> %C, <4 x double> 
 ;
 ; FMA3-LABEL: buildvector_mul_subadd_pd256:
 ; FMA3:       # %bb.0: # %bb
-; FMA3-NEXT:    vfmsubadd213pd {{.*#+}} ymm0 = (ymm1 * ymm0) -/+ ymm2
+; FMA3-NEXT:    vfmsubadd213pd {{.*#+}} ymm1 = (ymm0 * ymm1) -/+ ymm2
+; FMA3-NEXT:    vmovapd %ymm1, %ymm0
 ; FMA3-NEXT:    retq
 ;
 ; FMA4-LABEL: buildvector_mul_subadd_pd256:
@@ -750,13 +774,16 @@ define <16 x float> @buildvector_mul_subadd_ps512(<16 x float> %C, <16 x float> 
 ;
 ; FMA3_256-LABEL: buildvector_mul_subadd_ps512:
 ; FMA3_256:       # %bb.0: # %bb
-; FMA3_256-NEXT:    vfmsubadd213ps {{.*#+}} ymm0 = (ymm2 * ymm0) -/+ ymm4
-; FMA3_256-NEXT:    vfmsubadd213ps {{.*#+}} ymm1 = (ymm3 * ymm1) -/+ ymm5
+; FMA3_256-NEXT:    vfmsubadd213ps {{.*#+}} ymm2 = (ymm0 * ymm2) -/+ ymm4
+; FMA3_256-NEXT:    vfmsubadd213ps {{.*#+}} ymm3 = (ymm1 * ymm3) -/+ ymm5
+; FMA3_256-NEXT:    vmovaps %ymm2, %ymm0
+; FMA3_256-NEXT:    vmovaps %ymm3, %ymm1
 ; FMA3_256-NEXT:    retq
 ;
 ; FMA3_512-LABEL: buildvector_mul_subadd_ps512:
 ; FMA3_512:       # %bb.0: # %bb
-; FMA3_512-NEXT:    vfmsubadd213ps {{.*#+}} zmm0 = (zmm1 * zmm0) -/+ zmm2
+; FMA3_512-NEXT:    vfmsubadd213ps {{.*#+}} zmm1 = (zmm0 * zmm1) -/+ zmm2
+; FMA3_512-NEXT:    vmovaps %zmm1, %zmm0
 ; FMA3_512-NEXT:    retq
 ;
 ; FMA4-LABEL: buildvector_mul_subadd_ps512:
@@ -864,13 +891,16 @@ define <8 x double> @buildvector_mul_subadd_pd512(<8 x double> %C, <8 x double> 
 ;
 ; FMA3_256-LABEL: buildvector_mul_subadd_pd512:
 ; FMA3_256:       # %bb.0: # %bb
-; FMA3_256-NEXT:    vfmsubadd213pd {{.*#+}} ymm0 = (ymm2 * ymm0) -/+ ymm4
-; FMA3_256-NEXT:    vfmsubadd213pd {{.*#+}} ymm1 = (ymm3 * ymm1) -/+ ymm5
+; FMA3_256-NEXT:    vfmsubadd213pd {{.*#+}} ymm2 = (ymm0 * ymm2) -/+ ymm4
+; FMA3_256-NEXT:    vfmsubadd213pd {{.*#+}} ymm3 = (ymm1 * ymm3) -/+ ymm5
+; FMA3_256-NEXT:    vmovapd %ymm2, %ymm0
+; FMA3_256-NEXT:    vmovapd %ymm3, %ymm1
 ; FMA3_256-NEXT:    retq
 ;
 ; FMA3_512-LABEL: buildvector_mul_subadd_pd512:
 ; FMA3_512:       # %bb.0: # %bb
-; FMA3_512-NEXT:    vfmsubadd213pd {{.*#+}} zmm0 = (zmm1 * zmm0) -/+ zmm2
+; FMA3_512-NEXT:    vfmsubadd213pd {{.*#+}} zmm1 = (zmm0 * zmm1) -/+ zmm2
+; FMA3_512-NEXT:    vmovapd %zmm1, %zmm0
 ; FMA3_512-NEXT:    retq
 ;
 ; FMA4-LABEL: buildvector_mul_subadd_pd512:

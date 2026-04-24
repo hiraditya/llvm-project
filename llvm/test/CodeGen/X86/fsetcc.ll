@@ -4,15 +4,15 @@
 define i8 @PR43088(double, double) nounwind {
 ; CHECK-LABEL: PR43088:
 ; CHECK:       # %bb.0: # %start
-; CHECK-NEXT:    xorl %ecx, %ecx
+; CHECK-NEXT:    xorl %eax, %eax
 ; CHECK-NEXT:    ucomisd %xmm1, %xmm0
-; CHECK-NEXT:    movl $0, %eax
-; CHECK-NEXT:    adcb $1, %al
+; CHECK-NEXT:    movl $0, %ecx
+; CHECK-NEXT:    adcb $1, %cl
 ; CHECK-NEXT:    ucomisd %xmm1, %xmm0
-; CHECK-NEXT:    sbbl %ecx, %ecx
+; CHECK-NEXT:    sbbl %eax, %eax
 ; CHECK-NEXT:    ucomisd %xmm0, %xmm1
-; CHECK-NEXT:    movzbl %al, %eax
-; CHECK-NEXT:    cmovael %ecx, %eax
+; CHECK-NEXT:    movzbl %cl, %ecx
+; CHECK-NEXT:    cmovbl %ecx, %eax
 ; CHECK-NEXT:    # kill: def $al killed $al killed $eax
 ; CHECK-NEXT:    retq
 start:

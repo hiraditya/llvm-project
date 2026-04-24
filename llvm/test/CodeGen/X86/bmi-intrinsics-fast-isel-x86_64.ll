@@ -44,16 +44,18 @@ define i64 @test__bextr_u64(i64 %a0, i64 %a1) {
 define i64 @test__blsi_u64(i64 %a0) {
 ; X64-LABEL: test__blsi_u64:
 ; X64:       # %bb.0:
-; X64-NEXT:    xorl %eax, %eax
-; X64-NEXT:    subq %rdi, %rax
-; X64-NEXT:    andq %rdi, %rax
+; X64-NEXT:    movq %rdi, %rax
+; X64-NEXT:    xorl %ecx, %ecx
+; X64-NEXT:    subq %rdi, %rcx
+; X64-NEXT:    andq %rcx, %rax
 ; X64-NEXT:    retq
 ;
 ; EGPR-LABEL: test__blsi_u64:
 ; EGPR:       # %bb.0:
-; EGPR-NEXT:    xorl %eax, %eax # encoding: [0x31,0xc0]
-; EGPR-NEXT:    subq %rdi, %rax # encoding: [0x48,0x29,0xf8]
-; EGPR-NEXT:    andq %rdi, %rax # encoding: [0x48,0x21,0xf8]
+; EGPR-NEXT:    movq %rdi, %rax # encoding: [0x48,0x89,0xf8]
+; EGPR-NEXT:    xorl %ecx, %ecx # encoding: [0x31,0xc9]
+; EGPR-NEXT:    subq %rdi, %rcx # encoding: [0x48,0x29,0xf9]
+; EGPR-NEXT:    andq %rcx, %rax # encoding: [0x48,0x21,0xc8]
 ; EGPR-NEXT:    retq # encoding: [0xc3]
   %neg = sub i64 0, %a0
   %res = and i64 %a0, %neg
@@ -63,14 +65,18 @@ define i64 @test__blsi_u64(i64 %a0) {
 define i64 @test__blsmsk_u64(i64 %a0) {
 ; X64-LABEL: test__blsmsk_u64:
 ; X64:       # %bb.0:
-; X64-NEXT:    leaq -1(%rdi), %rax
-; X64-NEXT:    xorq %rdi, %rax
+; X64-NEXT:    movq %rdi, %rax
+; X64-NEXT:    movq %rdi, %rcx
+; X64-NEXT:    subq $1, %rcx
+; X64-NEXT:    xorq %rcx, %rax
 ; X64-NEXT:    retq
 ;
 ; EGPR-LABEL: test__blsmsk_u64:
 ; EGPR:       # %bb.0:
-; EGPR-NEXT:    leaq -1(%rdi), %rax # encoding: [0x48,0x8d,0x47,0xff]
-; EGPR-NEXT:    xorq %rdi, %rax # encoding: [0x48,0x31,0xf8]
+; EGPR-NEXT:    movq %rdi, %rax # encoding: [0x48,0x89,0xf8]
+; EGPR-NEXT:    movq %rdi, %rcx # encoding: [0x48,0x89,0xf9]
+; EGPR-NEXT:    subq $1, %rcx # encoding: [0x48,0x83,0xe9,0x01]
+; EGPR-NEXT:    xorq %rcx, %rax # encoding: [0x48,0x31,0xc8]
 ; EGPR-NEXT:    retq # encoding: [0xc3]
   %dec = sub i64 %a0, 1
   %res = xor i64 %a0, %dec
@@ -80,14 +86,18 @@ define i64 @test__blsmsk_u64(i64 %a0) {
 define i64 @test__blsr_u64(i64 %a0) {
 ; X64-LABEL: test__blsr_u64:
 ; X64:       # %bb.0:
-; X64-NEXT:    leaq -1(%rdi), %rax
-; X64-NEXT:    andq %rdi, %rax
+; X64-NEXT:    movq %rdi, %rax
+; X64-NEXT:    movq %rdi, %rcx
+; X64-NEXT:    subq $1, %rcx
+; X64-NEXT:    andq %rcx, %rax
 ; X64-NEXT:    retq
 ;
 ; EGPR-LABEL: test__blsr_u64:
 ; EGPR:       # %bb.0:
-; EGPR-NEXT:    leaq -1(%rdi), %rax # encoding: [0x48,0x8d,0x47,0xff]
-; EGPR-NEXT:    andq %rdi, %rax # encoding: [0x48,0x21,0xf8]
+; EGPR-NEXT:    movq %rdi, %rax # encoding: [0x48,0x89,0xf8]
+; EGPR-NEXT:    movq %rdi, %rcx # encoding: [0x48,0x89,0xf9]
+; EGPR-NEXT:    subq $1, %rcx # encoding: [0x48,0x83,0xe9,0x01]
+; EGPR-NEXT:    andq %rcx, %rax # encoding: [0x48,0x21,0xc8]
 ; EGPR-NEXT:    retq # encoding: [0xc3]
   %dec = sub i64 %a0, 1
   %res = and i64 %a0, %dec
@@ -138,8 +148,8 @@ define i64 @test_bextr_u64(i64 %a0, i32 %a1, i32 %a2) {
 ; X64-NEXT:    andl $255, %esi
 ; X64-NEXT:    andl $255, %edx
 ; X64-NEXT:    shll $8, %edx
-; X64-NEXT:    orl %esi, %edx
-; X64-NEXT:    movl %edx, %eax
+; X64-NEXT:    orl %edx, %esi
+; X64-NEXT:    movl %esi, %eax
 ; X64-NEXT:    bextrq %rax, %rdi, %rax
 ; X64-NEXT:    retq
 ;
@@ -148,8 +158,8 @@ define i64 @test_bextr_u64(i64 %a0, i32 %a1, i32 %a2) {
 ; EGPR-NEXT:    andl $255, %esi # encoding: [0x81,0xe6,0xff,0x00,0x00,0x00]
 ; EGPR-NEXT:    andl $255, %edx # encoding: [0x81,0xe2,0xff,0x00,0x00,0x00]
 ; EGPR-NEXT:    shll $8, %edx # encoding: [0xc1,0xe2,0x08]
-; EGPR-NEXT:    orl %esi, %edx # encoding: [0x09,0xf2]
-; EGPR-NEXT:    movl %edx, %eax # encoding: [0x89,0xd0]
+; EGPR-NEXT:    orl %edx, %esi # encoding: [0x09,0xd6]
+; EGPR-NEXT:    movl %esi, %eax # encoding: [0x89,0xf0]
 ; EGPR-NEXT:    bextrq %rax, %rdi, %rax # EVEX TO VEX Compression encoding: [0xc4,0xe2,0xf8,0xf7,0xc7]
 ; EGPR-NEXT:    retq # encoding: [0xc3]
   %and1 = and i32 %a1, 255
@@ -164,16 +174,18 @@ define i64 @test_bextr_u64(i64 %a0, i32 %a1, i32 %a2) {
 define i64 @test_blsi_u64(i64 %a0) {
 ; X64-LABEL: test_blsi_u64:
 ; X64:       # %bb.0:
-; X64-NEXT:    xorl %eax, %eax
-; X64-NEXT:    subq %rdi, %rax
-; X64-NEXT:    andq %rdi, %rax
+; X64-NEXT:    movq %rdi, %rax
+; X64-NEXT:    xorl %ecx, %ecx
+; X64-NEXT:    subq %rdi, %rcx
+; X64-NEXT:    andq %rcx, %rax
 ; X64-NEXT:    retq
 ;
 ; EGPR-LABEL: test_blsi_u64:
 ; EGPR:       # %bb.0:
-; EGPR-NEXT:    xorl %eax, %eax # encoding: [0x31,0xc0]
-; EGPR-NEXT:    subq %rdi, %rax # encoding: [0x48,0x29,0xf8]
-; EGPR-NEXT:    andq %rdi, %rax # encoding: [0x48,0x21,0xf8]
+; EGPR-NEXT:    movq %rdi, %rax # encoding: [0x48,0x89,0xf8]
+; EGPR-NEXT:    xorl %ecx, %ecx # encoding: [0x31,0xc9]
+; EGPR-NEXT:    subq %rdi, %rcx # encoding: [0x48,0x29,0xf9]
+; EGPR-NEXT:    andq %rcx, %rax # encoding: [0x48,0x21,0xc8]
 ; EGPR-NEXT:    retq # encoding: [0xc3]
   %neg = sub i64 0, %a0
   %res = and i64 %a0, %neg
@@ -183,14 +195,18 @@ define i64 @test_blsi_u64(i64 %a0) {
 define i64 @test_blsmsk_u64(i64 %a0) {
 ; X64-LABEL: test_blsmsk_u64:
 ; X64:       # %bb.0:
-; X64-NEXT:    leaq -1(%rdi), %rax
-; X64-NEXT:    xorq %rdi, %rax
+; X64-NEXT:    movq %rdi, %rax
+; X64-NEXT:    movq %rdi, %rcx
+; X64-NEXT:    subq $1, %rcx
+; X64-NEXT:    xorq %rcx, %rax
 ; X64-NEXT:    retq
 ;
 ; EGPR-LABEL: test_blsmsk_u64:
 ; EGPR:       # %bb.0:
-; EGPR-NEXT:    leaq -1(%rdi), %rax # encoding: [0x48,0x8d,0x47,0xff]
-; EGPR-NEXT:    xorq %rdi, %rax # encoding: [0x48,0x31,0xf8]
+; EGPR-NEXT:    movq %rdi, %rax # encoding: [0x48,0x89,0xf8]
+; EGPR-NEXT:    movq %rdi, %rcx # encoding: [0x48,0x89,0xf9]
+; EGPR-NEXT:    subq $1, %rcx # encoding: [0x48,0x83,0xe9,0x01]
+; EGPR-NEXT:    xorq %rcx, %rax # encoding: [0x48,0x31,0xc8]
 ; EGPR-NEXT:    retq # encoding: [0xc3]
   %dec = sub i64 %a0, 1
   %res = xor i64 %a0, %dec
@@ -200,14 +216,18 @@ define i64 @test_blsmsk_u64(i64 %a0) {
 define i64 @test_blsr_u64(i64 %a0) {
 ; X64-LABEL: test_blsr_u64:
 ; X64:       # %bb.0:
-; X64-NEXT:    leaq -1(%rdi), %rax
-; X64-NEXT:    andq %rdi, %rax
+; X64-NEXT:    movq %rdi, %rax
+; X64-NEXT:    movq %rdi, %rcx
+; X64-NEXT:    subq $1, %rcx
+; X64-NEXT:    andq %rcx, %rax
 ; X64-NEXT:    retq
 ;
 ; EGPR-LABEL: test_blsr_u64:
 ; EGPR:       # %bb.0:
-; EGPR-NEXT:    leaq -1(%rdi), %rax # encoding: [0x48,0x8d,0x47,0xff]
-; EGPR-NEXT:    andq %rdi, %rax # encoding: [0x48,0x21,0xf8]
+; EGPR-NEXT:    movq %rdi, %rax # encoding: [0x48,0x89,0xf8]
+; EGPR-NEXT:    movq %rdi, %rcx # encoding: [0x48,0x89,0xf9]
+; EGPR-NEXT:    subq $1, %rcx # encoding: [0x48,0x83,0xe9,0x01]
+; EGPR-NEXT:    andq %rcx, %rax # encoding: [0x48,0x21,0xc8]
 ; EGPR-NEXT:    retq # encoding: [0xc3]
   %dec = sub i64 %a0, 1
   %res = and i64 %a0, %dec

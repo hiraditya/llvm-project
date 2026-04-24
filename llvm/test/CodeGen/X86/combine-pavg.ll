@@ -22,7 +22,8 @@ define <16 x i8> @combine_pavgb_zero(<16 x i8> %a0) {
 ; SSE-LABEL: combine_pavgb_zero:
 ; SSE:       # %bb.0:
 ; SSE-NEXT:    pxor %xmm1, %xmm1
-; SSE-NEXT:    pavgb %xmm1, %xmm0
+; SSE-NEXT:    pavgb %xmm0, %xmm1
+; SSE-NEXT:    movdqa %xmm1, %xmm0
 ; SSE-NEXT:    retq
 ;
 ; AVX-LABEL: combine_pavgb_zero:
@@ -40,11 +41,12 @@ define <16 x i8> @combine_pavgw_knownbits(<8 x i16> %a0, <8 x i16> %a1, <8 x i16
 ; SSE-NEXT:    pmovsxbw {{.*#+}} xmm4 = [31,31,31,31,31,31,31,31]
 ; SSE-NEXT:    pand %xmm4, %xmm0
 ; SSE-NEXT:    pand %xmm4, %xmm1
-; SSE-NEXT:    pavgw %xmm1, %xmm0
+; SSE-NEXT:    pavgw %xmm0, %xmm1
 ; SSE-NEXT:    pand %xmm4, %xmm2
 ; SSE-NEXT:    pand %xmm4, %xmm3
 ; SSE-NEXT:    pavgw %xmm2, %xmm3
-; SSE-NEXT:    packuswb %xmm3, %xmm0
+; SSE-NEXT:    packuswb %xmm3, %xmm1
+; SSE-NEXT:    movdqa %xmm1, %xmm0
 ; SSE-NEXT:    retq
 ;
 ; AVX1-LABEL: combine_pavgw_knownbits:

@@ -12,10 +12,10 @@ declare <4 x i32> @llvm.usub.sat.v4i32(<4 x i32>, <4 x i32>)
 define i32 @func(i32 %x, i32 %y) nounwind {
 ; X86-LABEL: func:
 ; X86:       # %bb.0:
-; X86-NEXT:    movl {{[0-9]+}}(%esp), %eax
-; X86-NEXT:    xorl %ecx, %ecx
-; X86-NEXT:    subl {{[0-9]+}}(%esp), %eax
-; X86-NEXT:    cmovbl %ecx, %eax
+; X86-NEXT:    movl {{[0-9]+}}(%esp), %ecx
+; X86-NEXT:    xorl %eax, %eax
+; X86-NEXT:    subl {{[0-9]+}}(%esp), %ecx
+; X86-NEXT:    cmovael %ecx, %eax
 ; X86-NEXT:    retl
 ;
 ; X64-LABEL: func:
@@ -53,10 +53,10 @@ define i64 @func2(i64 %x, i64 %y) nounwind {
 define zeroext i16 @func16(i16 zeroext %x, i16 zeroext %y) nounwind {
 ; X86-LABEL: func16:
 ; X86:       # %bb.0:
-; X86-NEXT:    movzwl {{[0-9]+}}(%esp), %eax
-; X86-NEXT:    xorl %ecx, %ecx
-; X86-NEXT:    subw {{[0-9]+}}(%esp), %ax
-; X86-NEXT:    cmovbl %ecx, %eax
+; X86-NEXT:    movzwl {{[0-9]+}}(%esp), %ecx
+; X86-NEXT:    xorl %eax, %eax
+; X86-NEXT:    subw {{[0-9]+}}(%esp), %cx
+; X86-NEXT:    cmovael %ecx, %eax
 ; X86-NEXT:    # kill: def $ax killed $ax killed $eax
 ; X86-NEXT:    retl
 ;
@@ -74,20 +74,20 @@ define zeroext i16 @func16(i16 zeroext %x, i16 zeroext %y) nounwind {
 define zeroext i8 @func8(i8 zeroext %x, i8 zeroext %y) nounwind {
 ; X86-LABEL: func8:
 ; X86:       # %bb.0:
-; X86-NEXT:    movzbl {{[0-9]+}}(%esp), %eax
-; X86-NEXT:    xorl %ecx, %ecx
-; X86-NEXT:    subb {{[0-9]+}}(%esp), %al
-; X86-NEXT:    movzbl %al, %eax
-; X86-NEXT:    cmovbl %ecx, %eax
+; X86-NEXT:    movzbl {{[0-9]+}}(%esp), %ecx
+; X86-NEXT:    xorl %eax, %eax
+; X86-NEXT:    subb {{[0-9]+}}(%esp), %cl
+; X86-NEXT:    movzbl %cl, %ecx
+; X86-NEXT:    cmovael %ecx, %eax
 ; X86-NEXT:    # kill: def $al killed $al killed $eax
 ; X86-NEXT:    retl
 ;
 ; X64-LABEL: func8:
 ; X64:       # %bb.0:
-; X64-NEXT:    xorl %ecx, %ecx
+; X64-NEXT:    xorl %eax, %eax
 ; X64-NEXT:    subb %sil, %dil
-; X64-NEXT:    movzbl %dil, %eax
-; X64-NEXT:    cmovbl %ecx, %eax
+; X64-NEXT:    movzbl %dil, %ecx
+; X64-NEXT:    cmovael %ecx, %eax
 ; X64-NEXT:    # kill: def $al killed $al killed $eax
 ; X64-NEXT:    retq
   %tmp = call i8 @llvm.usub.sat.i8(i8 %x, i8 %y)
@@ -101,8 +101,8 @@ define zeroext i4 @func3(i4 zeroext %x, i4 zeroext %y) nounwind {
 ; X86-NEXT:    xorl %ecx, %ecx
 ; X86-NEXT:    subb {{[0-9]+}}(%esp), %al
 ; X86-NEXT:    movzbl %al, %eax
-; X86-NEXT:    cmovbl %ecx, %eax
-; X86-NEXT:    movzbl %al, %eax
+; X86-NEXT:    cmovael %eax, %ecx
+; X86-NEXT:    movzbl %cl, %eax
 ; X86-NEXT:    retl
 ;
 ; X64-LABEL: func3:
@@ -110,8 +110,8 @@ define zeroext i4 @func3(i4 zeroext %x, i4 zeroext %y) nounwind {
 ; X64-NEXT:    xorl %eax, %eax
 ; X64-NEXT:    subb %sil, %dil
 ; X64-NEXT:    movzbl %dil, %ecx
-; X64-NEXT:    cmovbl %eax, %ecx
-; X64-NEXT:    movzbl %cl, %eax
+; X64-NEXT:    cmovael %ecx, %eax
+; X64-NEXT:    movzbl %al, %eax
 ; X64-NEXT:    retq
   %tmp = call i4 @llvm.usub.sat.i4(i4 %x, i4 %y)
   ret i4 %tmp
@@ -149,12 +149,12 @@ define <4 x i32> @vec(<4 x i32> %x, <4 x i32> %y) nounwind {
 ; X64-LABEL: vec:
 ; X64:       # %bb.0:
 ; X64-NEXT:    movdqa {{.*#+}} xmm2 = [2147483648,2147483648,2147483648,2147483648]
-; X64-NEXT:    movdqa %xmm1, %xmm3
-; X64-NEXT:    pxor %xmm2, %xmm3
-; X64-NEXT:    pxor %xmm0, %xmm2
-; X64-NEXT:    pcmpgtd %xmm3, %xmm2
+; X64-NEXT:    movdqa %xmm0, %xmm3
 ; X64-NEXT:    psubd %xmm1, %xmm0
-; X64-NEXT:    pand %xmm2, %xmm0
+; X64-NEXT:    pxor %xmm2, %xmm1
+; X64-NEXT:    pxor %xmm2, %xmm3
+; X64-NEXT:    pcmpgtd %xmm1, %xmm3
+; X64-NEXT:    pand %xmm3, %xmm0
 ; X64-NEXT:    retq
   %tmp = call <4 x i32> @llvm.usub.sat.v4i32(<4 x i32> %x, <4 x i32> %y)
   ret <4 x i32> %tmp

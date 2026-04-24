@@ -20,13 +20,15 @@ define double @fneg_f64(double %x) nounwind {
 ; FASTISEL-SSE-X64:       # %bb.0:
 ; FASTISEL-SSE-X64-NEXT:    movq %xmm0, %rax
 ; FASTISEL-SSE-X64-NEXT:    movabsq $-9223372036854775808, %rcx # imm = 0x8000000000000000
-; FASTISEL-SSE-X64-NEXT:    xorq %rax, %rcx
-; FASTISEL-SSE-X64-NEXT:    movq %rcx, %xmm0
+; FASTISEL-SSE-X64-NEXT:    xorq %rcx, %rax
+; FASTISEL-SSE-X64-NEXT:    movq %rax, %xmm0
 ; FASTISEL-SSE-X64-NEXT:    retq
 ;
 ; SDAG-SSE-X64-LABEL: fneg_f64:
 ; SDAG-SSE-X64:       # %bb.0:
-; SDAG-SSE-X64-NEXT:    xorps {{\.?LCPI[0-9]+_[0-9]+}}(%rip), %xmm0
+; SDAG-SSE-X64-NEXT:    movaps {{.*#+}} xmm1 = [-0.0E+0,-0.0E+0]
+; SDAG-SSE-X64-NEXT:    xorps %xmm0, %xmm1
+; SDAG-SSE-X64-NEXT:    movaps %xmm1, %xmm0
 ; SDAG-SSE-X64-NEXT:    retq
 ;
 ; GISEL-SSE-X64-LABEL: fneg_f64:
@@ -57,8 +59,9 @@ define float @fneg_f32(float %x) nounwind {
 ; SSE-X86:       # %bb.0:
 ; SSE-X86-NEXT:    pushl %eax
 ; SSE-X86-NEXT:    movss {{.*#+}} xmm0 = mem[0],zero,zero,zero
-; SSE-X86-NEXT:    xorps {{\.?LCPI[0-9]+_[0-9]+}}, %xmm0
-; SSE-X86-NEXT:    movss %xmm0, (%esp)
+; SSE-X86-NEXT:    movaps {{.*#+}} xmm1 = [-0.0E+0,-0.0E+0,-0.0E+0,-0.0E+0]
+; SSE-X86-NEXT:    xorps %xmm0, %xmm1
+; SSE-X86-NEXT:    movss %xmm1, (%esp)
 ; SSE-X86-NEXT:    flds (%esp)
 ; SSE-X86-NEXT:    popl %eax
 ; SSE-X86-NEXT:    retl
@@ -72,7 +75,9 @@ define float @fneg_f32(float %x) nounwind {
 ;
 ; SDAG-SSE-X64-LABEL: fneg_f32:
 ; SDAG-SSE-X64:       # %bb.0:
-; SDAG-SSE-X64-NEXT:    xorps {{\.?LCPI[0-9]+_[0-9]+}}(%rip), %xmm0
+; SDAG-SSE-X64-NEXT:    movaps {{.*#+}} xmm1 = [-0.0E+0,-0.0E+0,-0.0E+0,-0.0E+0]
+; SDAG-SSE-X64-NEXT:    xorps %xmm0, %xmm1
+; SDAG-SSE-X64-NEXT:    movaps %xmm1, %xmm0
 ; SDAG-SSE-X64-NEXT:    retq
 ;
 ; GISEL-SSE-X64-LABEL: fneg_f32:
@@ -100,23 +105,25 @@ define void @fneg_f64_mem(ptr %x, ptr %y) nounwind {
 ; FASTISEL-SSE-X64-NEXT:    movq {{.*#+}} xmm0 = mem[0],zero
 ; FASTISEL-SSE-X64-NEXT:    movq %xmm0, %rax
 ; FASTISEL-SSE-X64-NEXT:    movabsq $-9223372036854775808, %rcx # imm = 0x8000000000000000
-; FASTISEL-SSE-X64-NEXT:    xorq %rax, %rcx
-; FASTISEL-SSE-X64-NEXT:    movq %rcx, %xmm0
+; FASTISEL-SSE-X64-NEXT:    xorq %rcx, %rax
+; FASTISEL-SSE-X64-NEXT:    movq %rax, %xmm0
 ; FASTISEL-SSE-X64-NEXT:    movq %xmm0, (%rsi)
 ; FASTISEL-SSE-X64-NEXT:    retq
 ;
 ; SDAG-SSE-X64-LABEL: fneg_f64_mem:
 ; SDAG-SSE-X64:       # %bb.0:
 ; SDAG-SSE-X64-NEXT:    movabsq $-9223372036854775808, %rax # imm = 0x8000000000000000
-; SDAG-SSE-X64-NEXT:    xorq (%rdi), %rax
-; SDAG-SSE-X64-NEXT:    movq %rax, (%rsi)
+; SDAG-SSE-X64-NEXT:    movq (%rdi), %rcx
+; SDAG-SSE-X64-NEXT:    xorq %rax, %rcx
+; SDAG-SSE-X64-NEXT:    movq %rcx, (%rsi)
 ; SDAG-SSE-X64-NEXT:    retq
 ;
 ; GISEL-SSE-X64-LABEL: fneg_f64_mem:
 ; GISEL-SSE-X64:       # %bb.0:
 ; GISEL-SSE-X64-NEXT:    movabsq $-9223372036854775808, %rax # imm = 0x8000000000000000
-; GISEL-SSE-X64-NEXT:    xorq (%rdi), %rax
-; GISEL-SSE-X64-NEXT:    movq %rax, (%rsi)
+; GISEL-SSE-X64-NEXT:    movq (%rdi), %rcx
+; GISEL-SSE-X64-NEXT:    xorq %rax, %rcx
+; GISEL-SSE-X64-NEXT:    movq %rcx, (%rsi)
 ; GISEL-SSE-X64-NEXT:    retq
   %a = load double, ptr %x
   %b = fneg double %a
@@ -130,8 +137,9 @@ define void @fneg_f32_mem(ptr %x, ptr %y) nounwind {
 ; FASTISEL-X86-NEXT:    movl {{[0-9]+}}(%esp), %eax
 ; FASTISEL-X86-NEXT:    movl {{[0-9]+}}(%esp), %ecx
 ; FASTISEL-X86-NEXT:    movl $-2147483648, %edx # imm = 0x80000000
-; FASTISEL-X86-NEXT:    xorl (%ecx), %edx
-; FASTISEL-X86-NEXT:    movl %edx, (%eax)
+; FASTISEL-X86-NEXT:    movl (%ecx), %ecx
+; FASTISEL-X86-NEXT:    xorl %edx, %ecx
+; FASTISEL-X86-NEXT:    movl %ecx, (%eax)
 ; FASTISEL-X86-NEXT:    retl
 ;
 ; SDAG-X86-LABEL: fneg_f32_mem:
@@ -139,8 +147,9 @@ define void @fneg_f32_mem(ptr %x, ptr %y) nounwind {
 ; SDAG-X86-NEXT:    movl {{[0-9]+}}(%esp), %eax
 ; SDAG-X86-NEXT:    movl {{[0-9]+}}(%esp), %ecx
 ; SDAG-X86-NEXT:    movl $-2147483648, %edx # imm = 0x80000000
-; SDAG-X86-NEXT:    xorl (%ecx), %edx
-; SDAG-X86-NEXT:    movl %edx, (%eax)
+; SDAG-X86-NEXT:    movl (%ecx), %ecx
+; SDAG-X86-NEXT:    xorl %edx, %ecx
+; SDAG-X86-NEXT:    movl %ecx, (%eax)
 ; SDAG-X86-NEXT:    retl
 ;
 ; FASTISEL-SSE-X86-LABEL: fneg_f32_mem:
@@ -148,8 +157,9 @@ define void @fneg_f32_mem(ptr %x, ptr %y) nounwind {
 ; FASTISEL-SSE-X86-NEXT:    movl {{[0-9]+}}(%esp), %eax
 ; FASTISEL-SSE-X86-NEXT:    movl {{[0-9]+}}(%esp), %ecx
 ; FASTISEL-SSE-X86-NEXT:    movss {{.*#+}} xmm0 = mem[0],zero,zero,zero
-; FASTISEL-SSE-X86-NEXT:    xorps {{\.?LCPI[0-9]+_[0-9]+}}, %xmm0
-; FASTISEL-SSE-X86-NEXT:    movss %xmm0, (%eax)
+; FASTISEL-SSE-X86-NEXT:    movaps {{.*#+}} xmm1 = [-0.0E+0,-0.0E+0,-0.0E+0,-0.0E+0]
+; FASTISEL-SSE-X86-NEXT:    xorps %xmm0, %xmm1
+; FASTISEL-SSE-X86-NEXT:    movss %xmm1, (%eax)
 ; FASTISEL-SSE-X86-NEXT:    retl
 ;
 ; SDAG-SSE-X86-LABEL: fneg_f32_mem:
@@ -157,8 +167,9 @@ define void @fneg_f32_mem(ptr %x, ptr %y) nounwind {
 ; SDAG-SSE-X86-NEXT:    movl {{[0-9]+}}(%esp), %eax
 ; SDAG-SSE-X86-NEXT:    movl {{[0-9]+}}(%esp), %ecx
 ; SDAG-SSE-X86-NEXT:    movl $-2147483648, %edx # imm = 0x80000000
-; SDAG-SSE-X86-NEXT:    xorl (%ecx), %edx
-; SDAG-SSE-X86-NEXT:    movl %edx, (%eax)
+; SDAG-SSE-X86-NEXT:    movl (%ecx), %ecx
+; SDAG-SSE-X86-NEXT:    xorl %edx, %ecx
+; SDAG-SSE-X86-NEXT:    movl %ecx, (%eax)
 ; SDAG-SSE-X86-NEXT:    retl
 ;
 ; FASTISEL-SSE-X64-LABEL: fneg_f32_mem:
@@ -173,15 +184,17 @@ define void @fneg_f32_mem(ptr %x, ptr %y) nounwind {
 ; SDAG-SSE-X64-LABEL: fneg_f32_mem:
 ; SDAG-SSE-X64:       # %bb.0:
 ; SDAG-SSE-X64-NEXT:    movl $-2147483648, %eax # imm = 0x80000000
-; SDAG-SSE-X64-NEXT:    xorl (%rdi), %eax
-; SDAG-SSE-X64-NEXT:    movl %eax, (%rsi)
+; SDAG-SSE-X64-NEXT:    movl (%rdi), %ecx
+; SDAG-SSE-X64-NEXT:    xorl %eax, %ecx
+; SDAG-SSE-X64-NEXT:    movl %ecx, (%rsi)
 ; SDAG-SSE-X64-NEXT:    retq
 ;
 ; GISEL-SSE-X64-LABEL: fneg_f32_mem:
 ; GISEL-SSE-X64:       # %bb.0:
 ; GISEL-SSE-X64-NEXT:    movl $-2147483648, %eax # imm = 0x80000000
-; GISEL-SSE-X64-NEXT:    xorl (%rdi), %eax
-; GISEL-SSE-X64-NEXT:    movl %eax, (%rsi)
+; GISEL-SSE-X64-NEXT:    movl (%rdi), %ecx
+; GISEL-SSE-X64-NEXT:    xorl %eax, %ecx
+; GISEL-SSE-X64-NEXT:    movl %ecx, (%rsi)
 ; GISEL-SSE-X64-NEXT:    retq
   %a = load float, ptr %x
   %b = fneg float %a

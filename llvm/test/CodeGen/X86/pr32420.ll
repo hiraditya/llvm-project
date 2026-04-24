@@ -17,12 +17,13 @@ define i32 @PR32420() {
 ; CHECK-NEXT:    movswl %dx, %edx
 ; CHECK-NEXT:    shrl $12, %edx
 ; CHECK-NEXT:    movq _b@GOTPCREL(%rip), %rsi
-; CHECK-NEXT:    orw (%rsi), %dx
+; CHECK-NEXT:    movzwl (%rsi), %edi
+; CHECK-NEXT:    orw %dx, %di
 ; CHECK-NEXT:    movl (%rcx), %ecx
 ; CHECK-NEXT:    shll $12, %ecx
 ; CHECK-NEXT:    movswl %cx, %ecx
 ; CHECK-NEXT:    shrl $12, %ecx
-; CHECK-NEXT:    andl %edx, %ecx
+; CHECK-NEXT:    andl %edi, %ecx
 ; CHECK-NEXT:    movw %cx, (%rsi)
 ; CHECK-NEXT:    retq
   %load2 = load i16, ptr @a, align 4

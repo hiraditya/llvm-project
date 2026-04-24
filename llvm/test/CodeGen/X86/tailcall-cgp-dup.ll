@@ -9,14 +9,14 @@ define i32 @foo(i32 %x) nounwind ssp {
 ; CHECK-LABEL: foo:
 ; CHECK:       ## %bb.0: ## %entry
 ; CHECK-NEXT:    ## kill: def $edi killed $edi def $rdi
-; CHECK-NEXT:    decl %edi
-; CHECK-NEXT:    cmpl $5, %edi
+; CHECK-NEXT:    leal -1(%rdi), %eax
+; CHECK-NEXT:    cmpl $5, %eax
 ; CHECK-NEXT:    ja LBB0_8
 ; CHECK-NEXT:  ## %bb.1: ## %entry
-; CHECK-NEXT:    leaq LJTI0_0(%rip), %rax
-; CHECK-NEXT:    movslq (%rax,%rdi,4), %rcx
-; CHECK-NEXT:    addq %rax, %rcx
-; CHECK-NEXT:    jmpq *%rcx
+; CHECK-NEXT:    leaq LJTI0_0(%rip), %rcx
+; CHECK-NEXT:    movslq (%rcx,%rax,4), %rax
+; CHECK-NEXT:    addq %rcx, %rax
+; CHECK-NEXT:    jmpq *%rax
 ; CHECK-NEXT:  LBB0_2: ## %sw.bb
 ; CHECK-NEXT:    jmp _f1 ## TAILCALL
 ; CHECK-NEXT:  LBB0_6: ## %sw.bb7

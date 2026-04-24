@@ -23,33 +23,44 @@ define void @eggs(ptr %arg, ptr %arg1, ptr %arg2, ptr %arg3, ptr %arg4, ptr %arg
 ; CHECK-NEXT:    movq {{[0-9]+}}(%rsp), %r15
 ; CHECK-NEXT:    addq %r12, %r15
 ; CHECK-NEXT:    vmovupd (%r14,%r15,8), %zmm2
-; CHECK-NEXT:    addq {{[0-9]+}}(%rsp), %r12
-; CHECK-NEXT:    vmovupd (%r14,%r12,8), %zmm8
-; CHECK-NEXT:    vxorpd %xmm3, %xmm3, %xmm3
-; CHECK-NEXT:    vxorpd %xmm4, %xmm4, %xmm4
+; CHECK-NEXT:    movq {{[0-9]+}}(%rsp), %r15
+; CHECK-NEXT:    addq %r12, %r15
+; CHECK-NEXT:    vmovupd (%r14,%r15,8), %zmm3
 ; CHECK-NEXT:    vxorpd %xmm5, %xmm5, %xmm5
+; CHECK-NEXT:    vxorpd %xmm4, %xmm4, %xmm4
 ; CHECK-NEXT:    vxorpd %xmm6, %xmm6, %xmm6
+; CHECK-NEXT:    vxorpd %xmm8, %xmm8, %xmm8
 ; CHECK-NEXT:    vxorpd %xmm7, %xmm7, %xmm7
 ; CHECK-NEXT:    .p2align 4
 ; CHECK-NEXT:  LBB0_1: ## %bb15
 ; CHECK-NEXT:    ## =>This Inner Loop Header: Depth=1
-; CHECK-NEXT:    vbroadcastsd (%r11,%rbx,8), %zmm9
-; CHECK-NEXT:    vfmadd231pd {{.*#+}} zmm0 = (zmm1 * zmm9) + zmm0
-; CHECK-NEXT:    vfmadd231pd {{.*#+}} zmm3 = (zmm2 * zmm9) + zmm3
-; CHECK-NEXT:    vfmadd231pd {{.*#+}} zmm4 = (zmm8 * zmm9) + zmm4
-; CHECK-NEXT:    vbroadcastsd (%r10,%rbx,8), %zmm9
-; CHECK-NEXT:    vfmadd231pd {{.*#+}} zmm5 = (zmm1 * zmm9) + zmm5
-; CHECK-NEXT:    vfmadd231pd {{.*#+}} zmm6 = (zmm2 * zmm9) + zmm6
-; CHECK-NEXT:    vfmadd231pd {{.*#+}} zmm7 = (zmm8 * zmm9) + zmm7
+; CHECK-NEXT:    vmovapd %zmm7, %zmm9
+; CHECK-NEXT:    vmovapd %zmm8, %zmm10
+; CHECK-NEXT:    vmovapd %zmm6, %zmm8
+; CHECK-NEXT:    vmovapd %zmm4, %zmm6
+; CHECK-NEXT:    vmovapd %zmm5, %zmm7
+; CHECK-NEXT:    vmovapd %zmm0, %zmm5
+; CHECK-NEXT:    vbroadcastsd (%r11,%rbx,8), %zmm4
+; CHECK-NEXT:    vmovapd %zmm4, %zmm0
+; CHECK-NEXT:    vfmadd213pd {{.*#+}} zmm0 = (zmm1 * zmm0) + zmm5
+; CHECK-NEXT:    vmovapd %zmm4, %zmm5
+; CHECK-NEXT:    vfmadd213pd {{.*#+}} zmm5 = (zmm2 * zmm5) + zmm7
+; CHECK-NEXT:    vfmadd213pd {{.*#+}} zmm4 = (zmm3 * zmm4) + zmm6
+; CHECK-NEXT:    vbroadcastsd (%r10,%rbx,8), %zmm7
+; CHECK-NEXT:    vmovapd %zmm7, %zmm6
+; CHECK-NEXT:    vfmadd213pd {{.*#+}} zmm6 = (zmm1 * zmm6) + zmm8
+; CHECK-NEXT:    vmovapd %zmm7, %zmm8
+; CHECK-NEXT:    vfmadd213pd {{.*#+}} zmm8 = (zmm2 * zmm8) + zmm10
+; CHECK-NEXT:    vfmadd213pd {{.*#+}} zmm7 = (zmm3 * zmm7) + zmm9
 ; CHECK-NEXT:    incq %rbx
 ; CHECK-NEXT:    cmpq %rbx, %rax
 ; CHECK-NEXT:    jne LBB0_1
 ; CHECK-NEXT:  ## %bb.2: ## %bb51
 ; CHECK-NEXT:    vmovapd %zmm0, (%rdi)
-; CHECK-NEXT:    vmovapd %zmm3, (%rsi)
+; CHECK-NEXT:    vmovapd %zmm5, (%rsi)
 ; CHECK-NEXT:    vmovapd %zmm4, (%rdx)
-; CHECK-NEXT:    vmovapd %zmm5, (%rcx)
-; CHECK-NEXT:    vmovapd %zmm6, (%r8)
+; CHECK-NEXT:    vmovapd %zmm6, (%rcx)
+; CHECK-NEXT:    vmovapd %zmm8, (%r8)
 ; CHECK-NEXT:    vmovapd %zmm7, (%r9)
 ; CHECK-NEXT:    popq %rbx
 ; CHECK-NEXT:    popq %r12

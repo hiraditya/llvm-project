@@ -9,12 +9,21 @@
 ; trunc(concat(x,y)) -> pack
 
 define <8 x i16> @trunc_concat_packssdw_128(<4 x i32> %a0, <4 x i32> %a1) nounwind {
-; SSE-LABEL: trunc_concat_packssdw_128:
-; SSE:       # %bb.0:
-; SSE-NEXT:    psrad $17, %xmm0
-; SSE-NEXT:    pand {{\.?LCPI[0-9]+_[0-9]+}}(%rip), %xmm1
-; SSE-NEXT:    packssdw %xmm1, %xmm0
-; SSE-NEXT:    retq
+; SSE2-LABEL: trunc_concat_packssdw_128:
+; SSE2:       # %bb.0:
+; SSE2-NEXT:    psrad $17, %xmm0
+; SSE2-NEXT:    movdqa {{.*#+}} xmm2 = [15,15,15,15]
+; SSE2-NEXT:    pand %xmm1, %xmm2
+; SSE2-NEXT:    packssdw %xmm2, %xmm0
+; SSE2-NEXT:    retq
+;
+; SSE4-LABEL: trunc_concat_packssdw_128:
+; SSE4:       # %bb.0:
+; SSE4-NEXT:    psrad $17, %xmm0
+; SSE4-NEXT:    pmovsxbd {{.*#+}} xmm2 = [15,15,15,15]
+; SSE4-NEXT:    pand %xmm1, %xmm2
+; SSE4-NEXT:    packssdw %xmm2, %xmm0
+; SSE4-NEXT:    retq
 ;
 ; AVX1-LABEL: trunc_concat_packssdw_128:
 ; AVX1:       # %bb.0:
@@ -48,15 +57,17 @@ define <8 x i16> @trunc_concat_packusdw_128(<4 x i32> %a0, <4 x i32> %a1) nounwi
 ; SSE2-LABEL: trunc_concat_packusdw_128:
 ; SSE2:       # %bb.0:
 ; SSE2-NEXT:    psrld $17, %xmm0
-; SSE2-NEXT:    pand {{\.?LCPI[0-9]+_[0-9]+}}(%rip), %xmm1
-; SSE2-NEXT:    packssdw %xmm1, %xmm0
+; SSE2-NEXT:    movdqa {{.*#+}} xmm2 = [15,15,15,15]
+; SSE2-NEXT:    pand %xmm1, %xmm2
+; SSE2-NEXT:    packssdw %xmm2, %xmm0
 ; SSE2-NEXT:    retq
 ;
 ; SSE4-LABEL: trunc_concat_packusdw_128:
 ; SSE4:       # %bb.0:
 ; SSE4-NEXT:    psrld $17, %xmm0
-; SSE4-NEXT:    pand {{\.?LCPI[0-9]+_[0-9]+}}(%rip), %xmm1
-; SSE4-NEXT:    packusdw %xmm1, %xmm0
+; SSE4-NEXT:    pmovsxbd {{.*#+}} xmm2 = [15,15,15,15]
+; SSE4-NEXT:    pand %xmm1, %xmm2
+; SSE4-NEXT:    packusdw %xmm2, %xmm0
 ; SSE4-NEXT:    retq
 ;
 ; AVX1-LABEL: trunc_concat_packusdw_128:
@@ -88,12 +99,21 @@ define <8 x i16> @trunc_concat_packusdw_128(<4 x i32> %a0, <4 x i32> %a1) nounwi
 }
 
 define <16 x i8> @trunc_concat_packsswb_128(<8 x i16> %a0, <8 x i16> %a1) nounwind {
-; SSE-LABEL: trunc_concat_packsswb_128:
-; SSE:       # %bb.0:
-; SSE-NEXT:    psraw $15, %xmm0
-; SSE-NEXT:    pand {{\.?LCPI[0-9]+_[0-9]+}}(%rip), %xmm1
-; SSE-NEXT:    packsswb %xmm1, %xmm0
-; SSE-NEXT:    retq
+; SSE2-LABEL: trunc_concat_packsswb_128:
+; SSE2:       # %bb.0:
+; SSE2-NEXT:    psraw $15, %xmm0
+; SSE2-NEXT:    movdqa {{.*#+}} xmm2 = [1,1,1,1,1,1,1,1]
+; SSE2-NEXT:    pand %xmm1, %xmm2
+; SSE2-NEXT:    packsswb %xmm2, %xmm0
+; SSE2-NEXT:    retq
+;
+; SSE4-LABEL: trunc_concat_packsswb_128:
+; SSE4:       # %bb.0:
+; SSE4-NEXT:    psraw $15, %xmm0
+; SSE4-NEXT:    pmovsxbw {{.*#+}} xmm2 = [1,1,1,1,1,1,1,1]
+; SSE4-NEXT:    pand %xmm1, %xmm2
+; SSE4-NEXT:    packsswb %xmm2, %xmm0
+; SSE4-NEXT:    retq
 ;
 ; AVX1-LABEL: trunc_concat_packsswb_128:
 ; AVX1:       # %bb.0:
@@ -123,12 +143,21 @@ define <16 x i8> @trunc_concat_packsswb_128(<8 x i16> %a0, <8 x i16> %a1) nounwi
 }
 
 define <16 x i8> @trunc_concat_packuswb_128(<8 x i16> %a0, <8 x i16> %a1) nounwind {
-; SSE-LABEL: trunc_concat_packuswb_128:
-; SSE:       # %bb.0:
-; SSE-NEXT:    psrlw $15, %xmm0
-; SSE-NEXT:    pand {{\.?LCPI[0-9]+_[0-9]+}}(%rip), %xmm1
-; SSE-NEXT:    packuswb %xmm1, %xmm0
-; SSE-NEXT:    retq
+; SSE2-LABEL: trunc_concat_packuswb_128:
+; SSE2:       # %bb.0:
+; SSE2-NEXT:    psrlw $15, %xmm0
+; SSE2-NEXT:    movdqa {{.*#+}} xmm2 = [1,1,1,1,1,1,1,1]
+; SSE2-NEXT:    pand %xmm1, %xmm2
+; SSE2-NEXT:    packuswb %xmm2, %xmm0
+; SSE2-NEXT:    retq
+;
+; SSE4-LABEL: trunc_concat_packuswb_128:
+; SSE4:       # %bb.0:
+; SSE4-NEXT:    psrlw $15, %xmm0
+; SSE4-NEXT:    pmovsxbw {{.*#+}} xmm2 = [1,1,1,1,1,1,1,1]
+; SSE4-NEXT:    pand %xmm1, %xmm2
+; SSE4-NEXT:    packuswb %xmm2, %xmm0
+; SSE4-NEXT:    retq
 ;
 ; AVX1-LABEL: trunc_concat_packuswb_128:
 ; AVX1:       # %bb.0:
@@ -163,17 +192,19 @@ define <8 x i16> @concat_trunc_packssdw_128(<4 x i32> %a0, <4 x i32> %a1) nounwi
 ; SSE2-LABEL: concat_trunc_packssdw_128:
 ; SSE2:       # %bb.0:
 ; SSE2-NEXT:    psrad $17, %xmm0
-; SSE2-NEXT:    pand {{\.?LCPI[0-9]+_[0-9]+}}(%rip), %xmm1
+; SSE2-NEXT:    movdqa {{.*#+}} xmm2 = [15,15,15,15]
+; SSE2-NEXT:    pand %xmm1, %xmm2
 ; SSE2-NEXT:    packssdw %xmm0, %xmm0
-; SSE2-NEXT:    packuswb %xmm1, %xmm1
-; SSE2-NEXT:    punpcklqdq {{.*#+}} xmm0 = xmm0[0],xmm1[0]
+; SSE2-NEXT:    packuswb %xmm2, %xmm2
+; SSE2-NEXT:    punpcklqdq {{.*#+}} xmm0 = xmm0[0],xmm2[0]
 ; SSE2-NEXT:    retq
 ;
 ; SSE4-LABEL: concat_trunc_packssdw_128:
 ; SSE4:       # %bb.0:
 ; SSE4-NEXT:    psrad $17, %xmm0
-; SSE4-NEXT:    pand {{\.?LCPI[0-9]+_[0-9]+}}(%rip), %xmm1
-; SSE4-NEXT:    packssdw %xmm1, %xmm0
+; SSE4-NEXT:    pmovsxbd {{.*#+}} xmm2 = [15,15,15,15]
+; SSE4-NEXT:    pand %xmm1, %xmm2
+; SSE4-NEXT:    packssdw %xmm2, %xmm0
 ; SSE4-NEXT:    retq
 ;
 ; AVX1-LABEL: concat_trunc_packssdw_128:
@@ -209,17 +240,19 @@ define <8 x i16> @concat_trunc_packusdw_128(<4 x i32> %a0, <4 x i32> %a1) nounwi
 ; SSE2-LABEL: concat_trunc_packusdw_128:
 ; SSE2:       # %bb.0:
 ; SSE2-NEXT:    psrld $17, %xmm0
-; SSE2-NEXT:    pand {{\.?LCPI[0-9]+_[0-9]+}}(%rip), %xmm1
+; SSE2-NEXT:    movdqa {{.*#+}} xmm2 = [15,15,15,15]
+; SSE2-NEXT:    pand %xmm1, %xmm2
 ; SSE2-NEXT:    packssdw %xmm0, %xmm0
-; SSE2-NEXT:    packuswb %xmm1, %xmm1
-; SSE2-NEXT:    punpcklqdq {{.*#+}} xmm0 = xmm0[0],xmm1[0]
+; SSE2-NEXT:    packuswb %xmm2, %xmm2
+; SSE2-NEXT:    punpcklqdq {{.*#+}} xmm0 = xmm0[0],xmm2[0]
 ; SSE2-NEXT:    retq
 ;
 ; SSE4-LABEL: concat_trunc_packusdw_128:
 ; SSE4:       # %bb.0:
 ; SSE4-NEXT:    psrld $17, %xmm0
-; SSE4-NEXT:    pand {{\.?LCPI[0-9]+_[0-9]+}}(%rip), %xmm1
-; SSE4-NEXT:    packusdw %xmm1, %xmm0
+; SSE4-NEXT:    pmovsxbd {{.*#+}} xmm2 = [15,15,15,15]
+; SSE4-NEXT:    pand %xmm1, %xmm2
+; SSE4-NEXT:    packusdw %xmm2, %xmm0
 ; SSE4-NEXT:    retq
 ;
 ; AVX1-LABEL: concat_trunc_packusdw_128:
@@ -252,12 +285,21 @@ define <8 x i16> @concat_trunc_packusdw_128(<4 x i32> %a0, <4 x i32> %a1) nounwi
 }
 
 define <16 x i8> @concat_trunc_packsswb_128(<8 x i16> %a0, <8 x i16> %a1) nounwind {
-; SSE-LABEL: concat_trunc_packsswb_128:
-; SSE:       # %bb.0:
-; SSE-NEXT:    psraw $15, %xmm0
-; SSE-NEXT:    pand {{\.?LCPI[0-9]+_[0-9]+}}(%rip), %xmm1
-; SSE-NEXT:    packsswb %xmm1, %xmm0
-; SSE-NEXT:    retq
+; SSE2-LABEL: concat_trunc_packsswb_128:
+; SSE2:       # %bb.0:
+; SSE2-NEXT:    psraw $15, %xmm0
+; SSE2-NEXT:    movdqa {{.*#+}} xmm2 = [1,1,1,1,1,1,1,1]
+; SSE2-NEXT:    pand %xmm1, %xmm2
+; SSE2-NEXT:    packsswb %xmm2, %xmm0
+; SSE2-NEXT:    retq
+;
+; SSE4-LABEL: concat_trunc_packsswb_128:
+; SSE4:       # %bb.0:
+; SSE4-NEXT:    psraw $15, %xmm0
+; SSE4-NEXT:    pmovsxbw {{.*#+}} xmm2 = [1,1,1,1,1,1,1,1]
+; SSE4-NEXT:    pand %xmm1, %xmm2
+; SSE4-NEXT:    packsswb %xmm2, %xmm0
+; SSE4-NEXT:    retq
 ;
 ; AVX1-LABEL: concat_trunc_packsswb_128:
 ; AVX1:       # %bb.0:
@@ -288,12 +330,21 @@ define <16 x i8> @concat_trunc_packsswb_128(<8 x i16> %a0, <8 x i16> %a1) nounwi
 }
 
 define <16 x i8> @concat_trunc_packuswb_128(<8 x i16> %a0, <8 x i16> %a1) nounwind {
-; SSE-LABEL: concat_trunc_packuswb_128:
-; SSE:       # %bb.0:
-; SSE-NEXT:    psrlw $15, %xmm0
-; SSE-NEXT:    pand {{\.?LCPI[0-9]+_[0-9]+}}(%rip), %xmm1
-; SSE-NEXT:    packuswb %xmm1, %xmm0
-; SSE-NEXT:    retq
+; SSE2-LABEL: concat_trunc_packuswb_128:
+; SSE2:       # %bb.0:
+; SSE2-NEXT:    psrlw $15, %xmm0
+; SSE2-NEXT:    movdqa {{.*#+}} xmm2 = [1,1,1,1,1,1,1,1]
+; SSE2-NEXT:    pand %xmm1, %xmm2
+; SSE2-NEXT:    packuswb %xmm2, %xmm0
+; SSE2-NEXT:    retq
+;
+; SSE4-LABEL: concat_trunc_packuswb_128:
+; SSE4:       # %bb.0:
+; SSE4-NEXT:    psrlw $15, %xmm0
+; SSE4-NEXT:    pmovsxbw {{.*#+}} xmm2 = [1,1,1,1,1,1,1,1]
+; SSE4-NEXT:    pand %xmm1, %xmm2
+; SSE4-NEXT:    packuswb %xmm2, %xmm0
+; SSE4-NEXT:    retq
 ;
 ; AVX1-LABEL: concat_trunc_packuswb_128:
 ; AVX1:       # %bb.0:
@@ -344,3 +395,4 @@ CF:                                               ; preds = %CF, %BB
 
 ;; NOTE: These prefixes are unused and the list is autogenerated. Do not add tests below this line:
 ; AVX: {{.*}}
+; SSE: {{.*}}

@@ -14,8 +14,9 @@ define <4 x float> @test(float %a, float %b, float %c) nounwind {
 ; X64:       # %bb.0:
 ; X64-NEXT:    insertps {{.*#+}} xmm1 = xmm1[0],xmm2[0],zero,zero
 ; X64-NEXT:    xorps %xmm2, %xmm2
-; X64-NEXT:    blendps {{.*#+}} xmm0 = xmm0[0],xmm2[1,2,3]
-; X64-NEXT:    shufps {{.*#+}} xmm0 = xmm0[1,0],xmm1[0,1]
+; X64-NEXT:    movss {{.*#+}} xmm2 = xmm0[0],xmm2[1,2,3]
+; X64-NEXT:    shufps {{.*#+}} xmm2 = xmm2[1,0],xmm1[0,1]
+; X64-NEXT:    movaps %xmm2, %xmm0
 ; X64-NEXT:    retq
   %tmp = insertelement <4 x float> zeroinitializer, float %a, i32 1
   %tmp8 = insertelement <4 x float> %tmp, float %b, i32 2

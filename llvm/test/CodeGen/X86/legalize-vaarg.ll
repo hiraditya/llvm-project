@@ -17,7 +17,8 @@ define <32 x i32> @test_large_vec_vaarg(i32 %n, ...) {
 ; CHECK-NEXT:    movq (%rsp), %rax
 ; CHECK-NEXT:    addq $31, %rax
 ; CHECK-NEXT:    andq $-32, %rax
-; CHECK-NEXT:    leaq 32(%rax), %rcx
+; CHECK-NEXT:    movq %rax, %rcx
+; CHECK-NEXT:    addq $32, %rcx
 ; CHECK-NEXT:    movq %rcx, (%rsp)
 ; CHECK-NEXT:  .LBB0_3:
 ; CHECK-NEXT:    vmovaps (%rax), %ymm0
@@ -34,7 +35,8 @@ define <32 x i32> @test_large_vec_vaarg(i32 %n, ...) {
 ; CHECK-NEXT:    movq (%rsp), %rax
 ; CHECK-NEXT:    addq $31, %rax
 ; CHECK-NEXT:    andq $-32, %rax
-; CHECK-NEXT:    leaq 32(%rax), %rcx
+; CHECK-NEXT:    movq %rax, %rcx
+; CHECK-NEXT:    addq $32, %rcx
 ; CHECK-NEXT:    movq %rcx, (%rsp)
 ; CHECK-NEXT:  .LBB0_6:
 ; CHECK-NEXT:    vmovaps (%rax), %ymm1
@@ -51,7 +53,8 @@ define <32 x i32> @test_large_vec_vaarg(i32 %n, ...) {
 ; CHECK-NEXT:    movq (%rsp), %rax
 ; CHECK-NEXT:    addq $31, %rax
 ; CHECK-NEXT:    andq $-32, %rax
-; CHECK-NEXT:    leaq 32(%rax), %rcx
+; CHECK-NEXT:    movq %rax, %rcx
+; CHECK-NEXT:    addq $32, %rcx
 ; CHECK-NEXT:    movq %rcx, (%rsp)
 ; CHECK-NEXT:  .LBB0_9:
 ; CHECK-NEXT:    vmovaps (%rax), %ymm2
@@ -69,7 +72,8 @@ define <32 x i32> @test_large_vec_vaarg(i32 %n, ...) {
 ; CHECK-NEXT:    movq (%rsp), %rax
 ; CHECK-NEXT:    addq $31, %rax
 ; CHECK-NEXT:    andq $-32, %rax
-; CHECK-NEXT:    leaq 32(%rax), %rcx
+; CHECK-NEXT:    movq %rax, %rcx
+; CHECK-NEXT:    addq $32, %rcx
 ; CHECK-NEXT:    movq %rcx, (%rsp)
 ; CHECK-NEXT:    vmovaps (%rax), %ymm3
 ; CHECK-NEXT:    retq

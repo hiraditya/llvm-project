@@ -470,14 +470,14 @@ define <32 x half> @load32f16mask(ptr %a, <32 x half> %b, i32 %c) {
 ; X64-LABEL: load32f16mask:
 ; X64:       # %bb.0:
 ; X64-NEXT:    kmovd %esi, %k1
-; X64-NEXT:    vmovdqu16 (%rdi), %zmm0 {%k1}
+; X64-NEXT:    vpblendmw (%rdi), %zmm0, %zmm0 {%k1}
 ; X64-NEXT:    retq
 ;
 ; X86-LABEL: load32f16mask:
 ; X86:       # %bb.0:
 ; X86-NEXT:    movl {{[0-9]+}}(%esp), %eax
 ; X86-NEXT:    kmovd {{[0-9]+}}(%esp), %k1
-; X86-NEXT:    vmovdqu16 (%eax), %zmm0 {%k1}
+; X86-NEXT:    vpblendmw (%eax), %zmm0, %zmm0 {%k1}
 ; X86-NEXT:    retl
   %msk = bitcast i32 %c to <32 x i1>
   %res0 = load <32 x half>, ptr %a
@@ -523,14 +523,14 @@ define <32 x half> @loadu32f16mask(ptr %a, <32 x half> %b, i32 %c) {
 ; X64-LABEL: loadu32f16mask:
 ; X64:       # %bb.0:
 ; X64-NEXT:    kmovd %esi, %k1
-; X64-NEXT:    vmovdqu16 (%rdi), %zmm0 {%k1}
+; X64-NEXT:    vpblendmw (%rdi), %zmm0, %zmm0 {%k1}
 ; X64-NEXT:    retq
 ;
 ; X86-LABEL: loadu32f16mask:
 ; X86:       # %bb.0:
 ; X86-NEXT:    movl {{[0-9]+}}(%esp), %eax
 ; X86-NEXT:    kmovd {{[0-9]+}}(%esp), %k1
-; X86-NEXT:    vmovdqu16 (%eax), %zmm0 {%k1}
+; X86-NEXT:    vpblendmw (%eax), %zmm0, %zmm0 {%k1}
 ; X86-NEXT:    retl
   %msk = bitcast i32 %c to <32 x i1>
   %res0 = load <32 x half>, ptr %a, align 8
@@ -628,7 +628,7 @@ define <32 x half> @maskloadu32f16(ptr %addr, <32 x half> %val, <32 x i1> %mask)
 ; X64VL:       # %bb.0:
 ; X64VL-NEXT:    vpsllw $7, %ymm1, %ymm1
 ; X64VL-NEXT:    vpmovb2m %ymm1, %k1
-; X64VL-NEXT:    vmovdqu16 (%rdi), %zmm0 {%k1}
+; X64VL-NEXT:    vpblendmw (%rdi), %zmm0, %zmm0 {%k1}
 ; X64VL-NEXT:    retq
 ;
 ; X86-LABEL: maskloadu32f16:
@@ -636,14 +636,14 @@ define <32 x half> @maskloadu32f16(ptr %addr, <32 x half> %val, <32 x i1> %mask)
 ; X86-NEXT:    vpsllw $7, %ymm1, %ymm1
 ; X86-NEXT:    vpmovb2m %ymm1, %k1
 ; X86-NEXT:    movl {{[0-9]+}}(%esp), %eax
-; X86-NEXT:    vmovdqu16 (%eax), %zmm0 {%k1}
+; X86-NEXT:    vpblendmw (%eax), %zmm0, %zmm0 {%k1}
 ; X86-NEXT:    retl
 ;
 ; X64-NOVL-LABEL: maskloadu32f16:
 ; X64-NOVL:       # %bb.0:
 ; X64-NOVL-NEXT:    vpsllw $7, %ymm1, %ymm1
 ; X64-NOVL-NEXT:    vpmovb2m %zmm1, %k1
-; X64-NOVL-NEXT:    vmovdqu16 (%rdi), %zmm0 {%k1}
+; X64-NOVL-NEXT:    vpblendmw (%rdi), %zmm0, %zmm0 {%k1}
 ; X64-NOVL-NEXT:    retq
   %res = call <32 x half> @llvm.masked.load.v32f16.p0(ptr %addr, i32 4, <32 x i1> %mask, <32 x half> %val)
   ret <32 x half> %res
@@ -762,14 +762,14 @@ define <16 x half> @load16f16mask(ptr %a, <16 x half> %b, i16 %c) {
 ; X64VL-LABEL: load16f16mask:
 ; X64VL:       # %bb.0:
 ; X64VL-NEXT:    kmovd %esi, %k1
-; X64VL-NEXT:    vmovdqu16 (%rdi), %ymm0 {%k1}
+; X64VL-NEXT:    vpblendmw (%rdi), %ymm0, %ymm0 {%k1}
 ; X64VL-NEXT:    retq
 ;
 ; X86-LABEL: load16f16mask:
 ; X86:       # %bb.0:
 ; X86-NEXT:    movl {{[0-9]+}}(%esp), %eax
 ; X86-NEXT:    kmovw {{[0-9]+}}(%esp), %k1
-; X86-NEXT:    vmovdqu16 (%eax), %ymm0 {%k1}
+; X86-NEXT:    vpblendmw (%eax), %ymm0, %ymm0 {%k1}
 ; X86-NEXT:    retl
 ;
 ; X64-NOVL-LABEL: load16f16mask:
@@ -777,7 +777,7 @@ define <16 x half> @load16f16mask(ptr %a, <16 x half> %b, i16 %c) {
 ; X64-NOVL-NEXT:    # kill: def $ymm0 killed $ymm0 def $zmm0
 ; X64-NOVL-NEXT:    kmovd %esi, %k1
 ; X64-NOVL-NEXT:    vmovdqa (%rdi), %ymm1
-; X64-NOVL-NEXT:    vmovdqu16 %zmm1, %zmm0 {%k1}
+; X64-NOVL-NEXT:    vpblendmw %zmm1, %zmm0, %zmm0 {%k1}
 ; X64-NOVL-NEXT:    # kill: def $ymm0 killed $ymm0 killed $zmm0
 ; X64-NOVL-NEXT:    retq
   %msk = bitcast i16 %c to <16 x i1>
@@ -832,14 +832,14 @@ define <16 x half> @loadu16f16mask(ptr %a, <16 x half> %b, i16 %c) {
 ; X64VL-LABEL: loadu16f16mask:
 ; X64VL:       # %bb.0:
 ; X64VL-NEXT:    kmovd %esi, %k1
-; X64VL-NEXT:    vmovdqu16 (%rdi), %ymm0 {%k1}
+; X64VL-NEXT:    vpblendmw (%rdi), %ymm0, %ymm0 {%k1}
 ; X64VL-NEXT:    retq
 ;
 ; X86-LABEL: loadu16f16mask:
 ; X86:       # %bb.0:
 ; X86-NEXT:    movl {{[0-9]+}}(%esp), %eax
 ; X86-NEXT:    kmovw {{[0-9]+}}(%esp), %k1
-; X86-NEXT:    vmovdqu16 (%eax), %ymm0 {%k1}
+; X86-NEXT:    vpblendmw (%eax), %ymm0, %ymm0 {%k1}
 ; X86-NEXT:    retl
 ;
 ; X64-NOVL-LABEL: loadu16f16mask:
@@ -847,7 +847,7 @@ define <16 x half> @loadu16f16mask(ptr %a, <16 x half> %b, i16 %c) {
 ; X64-NOVL-NEXT:    # kill: def $ymm0 killed $ymm0 def $zmm0
 ; X64-NOVL-NEXT:    kmovd %esi, %k1
 ; X64-NOVL-NEXT:    vmovdqu (%rdi), %ymm1
-; X64-NOVL-NEXT:    vmovdqu16 %zmm1, %zmm0 {%k1}
+; X64-NOVL-NEXT:    vpblendmw %zmm1, %zmm0, %zmm0 {%k1}
 ; X64-NOVL-NEXT:    # kill: def $ymm0 killed $ymm0 killed $zmm0
 ; X64-NOVL-NEXT:    retq
   %msk = bitcast i16 %c to <16 x i1>
@@ -956,7 +956,7 @@ define <16 x half> @maskloadu16f16(ptr %addr, <16 x half> %val, <16 x i1> %mask)
 ; X64VL:       # %bb.0:
 ; X64VL-NEXT:    vpsllw $7, %xmm1, %xmm1
 ; X64VL-NEXT:    vpmovb2m %xmm1, %k1
-; X64VL-NEXT:    vmovdqu16 (%rdi), %ymm0 {%k1}
+; X64VL-NEXT:    vpblendmw (%rdi), %ymm0, %ymm0 {%k1}
 ; X64VL-NEXT:    retq
 ;
 ; X86-LABEL: maskloadu16f16:
@@ -964,7 +964,7 @@ define <16 x half> @maskloadu16f16(ptr %addr, <16 x half> %val, <16 x i1> %mask)
 ; X86-NEXT:    vpsllw $7, %xmm1, %xmm1
 ; X86-NEXT:    vpmovb2m %xmm1, %k1
 ; X86-NEXT:    movl {{[0-9]+}}(%esp), %eax
-; X86-NEXT:    vmovdqu16 (%eax), %ymm0 {%k1}
+; X86-NEXT:    vpblendmw (%eax), %ymm0, %ymm0 {%k1}
 ; X86-NEXT:    retl
 ;
 ; X64-NOVL-LABEL: maskloadu16f16:
@@ -973,7 +973,7 @@ define <16 x half> @maskloadu16f16(ptr %addr, <16 x half> %val, <16 x i1> %mask)
 ; X64-NOVL-NEXT:    vpsllw $7, %xmm1, %xmm1
 ; X64-NOVL-NEXT:    vpmovb2m %zmm1, %k0
 ; X64-NOVL-NEXT:    kmovw %k0, %k1
-; X64-NOVL-NEXT:    vmovdqu16 (%rdi), %zmm0 {%k1}
+; X64-NOVL-NEXT:    vpblendmw (%rdi), %zmm0, %zmm0 {%k1}
 ; X64-NOVL-NEXT:    # kill: def $ymm0 killed $ymm0 killed $zmm0
 ; X64-NOVL-NEXT:    retq
   %res = call <16 x half> @llvm.masked.load.v16f16.p0(ptr %addr, i32 4, <16 x i1> %mask, <16 x half> %val)
@@ -1114,7 +1114,7 @@ define <8 x half> @load8f16mask(ptr %a, <8 x half> %b, i8 %c) {
 ; X64VL-LABEL: load8f16mask:
 ; X64VL:       # %bb.0:
 ; X64VL-NEXT:    kmovd %esi, %k1
-; X64VL-NEXT:    vmovdqu16 (%rdi), %xmm0 {%k1}
+; X64VL-NEXT:    vpblendmw (%rdi), %xmm0, %xmm0 {%k1}
 ; X64VL-NEXT:    retq
 ;
 ; X86-LABEL: load8f16mask:
@@ -1122,7 +1122,7 @@ define <8 x half> @load8f16mask(ptr %a, <8 x half> %b, i8 %c) {
 ; X86-NEXT:    movl {{[0-9]+}}(%esp), %eax
 ; X86-NEXT:    movzbl {{[0-9]+}}(%esp), %ecx
 ; X86-NEXT:    kmovd %ecx, %k1
-; X86-NEXT:    vmovdqu16 (%eax), %xmm0 {%k1}
+; X86-NEXT:    vpblendmw (%eax), %xmm0, %xmm0 {%k1}
 ; X86-NEXT:    retl
 ;
 ; X64-NOVL-LABEL: load8f16mask:
@@ -1130,7 +1130,7 @@ define <8 x half> @load8f16mask(ptr %a, <8 x half> %b, i8 %c) {
 ; X64-NOVL-NEXT:    # kill: def $xmm0 killed $xmm0 def $zmm0
 ; X64-NOVL-NEXT:    kmovd %esi, %k1
 ; X64-NOVL-NEXT:    vmovdqa (%rdi), %xmm1
-; X64-NOVL-NEXT:    vmovdqu16 %zmm1, %zmm0 {%k1}
+; X64-NOVL-NEXT:    vpblendmw %zmm1, %zmm0, %zmm0 {%k1}
 ; X64-NOVL-NEXT:    # kill: def $xmm0 killed $xmm0 killed $zmm0
 ; X64-NOVL-NEXT:    vzeroupper
 ; X64-NOVL-NEXT:    retq
@@ -1188,7 +1188,7 @@ define <8 x half> @loadu8f16mask(ptr %a, <8 x half> %b, i8 %c) {
 ; X64VL-LABEL: loadu8f16mask:
 ; X64VL:       # %bb.0:
 ; X64VL-NEXT:    kmovd %esi, %k1
-; X64VL-NEXT:    vmovdqu16 (%rdi), %xmm0 {%k1}
+; X64VL-NEXT:    vpblendmw (%rdi), %xmm0, %xmm0 {%k1}
 ; X64VL-NEXT:    retq
 ;
 ; X86-LABEL: loadu8f16mask:
@@ -1196,7 +1196,7 @@ define <8 x half> @loadu8f16mask(ptr %a, <8 x half> %b, i8 %c) {
 ; X86-NEXT:    movl {{[0-9]+}}(%esp), %eax
 ; X86-NEXT:    movzbl {{[0-9]+}}(%esp), %ecx
 ; X86-NEXT:    kmovd %ecx, %k1
-; X86-NEXT:    vmovdqu16 (%eax), %xmm0 {%k1}
+; X86-NEXT:    vpblendmw (%eax), %xmm0, %xmm0 {%k1}
 ; X86-NEXT:    retl
 ;
 ; X64-NOVL-LABEL: loadu8f16mask:
@@ -1204,7 +1204,7 @@ define <8 x half> @loadu8f16mask(ptr %a, <8 x half> %b, i8 %c) {
 ; X64-NOVL-NEXT:    # kill: def $xmm0 killed $xmm0 def $zmm0
 ; X64-NOVL-NEXT:    kmovd %esi, %k1
 ; X64-NOVL-NEXT:    vmovdqu (%rdi), %xmm1
-; X64-NOVL-NEXT:    vmovdqu16 %zmm1, %zmm0 {%k1}
+; X64-NOVL-NEXT:    vpblendmw %zmm1, %zmm0, %zmm0 {%k1}
 ; X64-NOVL-NEXT:    # kill: def $xmm0 killed $xmm0 killed $zmm0
 ; X64-NOVL-NEXT:    vzeroupper
 ; X64-NOVL-NEXT:    retq
@@ -1311,7 +1311,7 @@ define <8 x half> @maskloadu8f16(ptr %addr, <8 x half> %val, <8 x i1> %mask) {
 ; X64VL:       # %bb.0:
 ; X64VL-NEXT:    vpsllw $15, %xmm1, %xmm1
 ; X64VL-NEXT:    vpmovw2m %xmm1, %k1
-; X64VL-NEXT:    vmovdqu16 (%rdi), %xmm0 {%k1}
+; X64VL-NEXT:    vpblendmw (%rdi), %xmm0, %xmm0 {%k1}
 ; X64VL-NEXT:    retq
 ;
 ; X86-LABEL: maskloadu8f16:
@@ -1319,7 +1319,7 @@ define <8 x half> @maskloadu8f16(ptr %addr, <8 x half> %val, <8 x i1> %mask) {
 ; X86-NEXT:    vpsllw $15, %xmm1, %xmm1
 ; X86-NEXT:    vpmovw2m %xmm1, %k1
 ; X86-NEXT:    movl {{[0-9]+}}(%esp), %eax
-; X86-NEXT:    vmovdqu16 (%eax), %xmm0 {%k1}
+; X86-NEXT:    vpblendmw (%eax), %xmm0, %xmm0 {%k1}
 ; X86-NEXT:    retl
 ;
 ; X64-NOVL-LABEL: maskloadu8f16:
@@ -1329,7 +1329,7 @@ define <8 x half> @maskloadu8f16(ptr %addr, <8 x half> %val, <8 x i1> %mask) {
 ; X64-NOVL-NEXT:    vpmovw2m %zmm1, %k0
 ; X64-NOVL-NEXT:    kshiftld $24, %k0, %k0
 ; X64-NOVL-NEXT:    kshiftrd $24, %k0, %k1
-; X64-NOVL-NEXT:    vmovdqu16 (%rdi), %zmm0 {%k1}
+; X64-NOVL-NEXT:    vpblendmw (%rdi), %zmm0, %zmm0 {%k1}
 ; X64-NOVL-NEXT:    # kill: def $xmm0 killed $xmm0 killed $zmm0
 ; X64-NOVL-NEXT:    vzeroupper
 ; X64-NOVL-NEXT:    retq
@@ -2334,16 +2334,18 @@ define <16 x i16> @test22(ptr %mem) nounwind {
 ; X64-LABEL: test22:
 ; X64:       # %bb.0:
 ; X64-NEXT:    movzwl 0, %eax
-; X64-NEXT:    andw (%rdi), %ax
-; X64-NEXT:    vmovw %eax, %xmm0
+; X64-NEXT:    movzwl (%rdi), %ecx
+; X64-NEXT:    andw %ax, %cx
+; X64-NEXT:    vmovw %ecx, %xmm0
 ; X64-NEXT:    retq
 ;
 ; X86-LABEL: test22:
 ; X86:       # %bb.0:
 ; X86-NEXT:    movl {{[0-9]+}}(%esp), %eax
 ; X86-NEXT:    movzwl 0, %ecx
-; X86-NEXT:    andw (%eax), %cx
-; X86-NEXT:    vmovw %ecx, %xmm0
+; X86-NEXT:    movzwl (%eax), %eax
+; X86-NEXT:    andw %cx, %ax
+; X86-NEXT:    vmovw %eax, %xmm0
 ; X86-NEXT:    retl
   %1 = load i16, ptr null, align 2
   %2 = load i16, ptr %mem, align 2

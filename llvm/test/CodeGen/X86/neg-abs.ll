@@ -158,12 +158,13 @@ define i128 @neg_abs_i128(i128 %x) nounwind {
 define i8 @sub_abs_i8(i8 %x, i8 %y) nounwind {
 ; X86-LABEL: sub_abs_i8:
 ; X86:       # %bb.0:
-; X86-NEXT:    movzbl {{[0-9]+}}(%esp), %ecx
-; X86-NEXT:    movl %ecx, %eax
-; X86-NEXT:    sarb $7, %al
-; X86-NEXT:    xorb %al, %cl
-; X86-NEXT:    subb %cl, %al
-; X86-NEXT:    addb {{[0-9]+}}(%esp), %al
+; X86-NEXT:    movzbl {{[0-9]+}}(%esp), %eax
+; X86-NEXT:    movl %eax, %ecx
+; X86-NEXT:    sarb $7, %cl
+; X86-NEXT:    xorb %cl, %al
+; X86-NEXT:    subb %al, %cl
+; X86-NEXT:    movzbl {{[0-9]+}}(%esp), %eax
+; X86-NEXT:    addb %cl, %al
 ; X86-NEXT:    retl
 ;
 ; X64-LABEL: sub_abs_i8:
@@ -182,12 +183,13 @@ define i8 @sub_abs_i8(i8 %x, i8 %y) nounwind {
 define i16 @sub_abs_i16(i16 %x, i16 %y) nounwind {
 ; X86-LABEL: sub_abs_i16:
 ; X86:       # %bb.0:
-; X86-NEXT:    movswl {{[0-9]+}}(%esp), %ecx
-; X86-NEXT:    movl %ecx, %eax
-; X86-NEXT:    sarl $15, %eax
-; X86-NEXT:    xorl %eax, %ecx
-; X86-NEXT:    subl %ecx, %eax
-; X86-NEXT:    addl {{[0-9]+}}(%esp), %eax
+; X86-NEXT:    movswl {{[0-9]+}}(%esp), %eax
+; X86-NEXT:    movl %eax, %ecx
+; X86-NEXT:    sarl $15, %ecx
+; X86-NEXT:    xorl %ecx, %eax
+; X86-NEXT:    subl %eax, %ecx
+; X86-NEXT:    movl {{[0-9]+}}(%esp), %eax
+; X86-NEXT:    addl %ecx, %eax
 ; X86-NEXT:    # kill: def $ax killed $ax killed $eax
 ; X86-NEXT:    retl
 ;
@@ -207,12 +209,13 @@ define i16 @sub_abs_i16(i16 %x, i16 %y) nounwind {
 define i32 @sub_abs_i32(i32 %x, i32 %y) nounwind {
 ; X86-LABEL: sub_abs_i32:
 ; X86:       # %bb.0:
-; X86-NEXT:    movl {{[0-9]+}}(%esp), %ecx
-; X86-NEXT:    movl %ecx, %eax
-; X86-NEXT:    sarl $31, %eax
-; X86-NEXT:    xorl %eax, %ecx
-; X86-NEXT:    subl %ecx, %eax
-; X86-NEXT:    addl {{[0-9]+}}(%esp), %eax
+; X86-NEXT:    movl {{[0-9]+}}(%esp), %eax
+; X86-NEXT:    movl %eax, %ecx
+; X86-NEXT:    sarl $31, %ecx
+; X86-NEXT:    xorl %ecx, %eax
+; X86-NEXT:    subl %eax, %ecx
+; X86-NEXT:    movl {{[0-9]+}}(%esp), %eax
+; X86-NEXT:    addl %ecx, %eax
 ; X86-NEXT:    retl
 ;
 ; X64-LABEL: sub_abs_i32:

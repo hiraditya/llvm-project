@@ -6334,31 +6334,33 @@ define void @one_mask_bit_set1_variable(ptr %addr, <4 x float> %val, <4 x i32> %
 define void @widen_masked_store(<3 x i32> %v, ptr %p, <3 x i1> %mask) nounwind {
 ; SSE2-LABEL: widen_masked_store:
 ; SSE2:       ## %bb.0:
+; SSE2-NEXT:    ## kill: def $ecx killed $ecx def $rcx
+; SSE2-NEXT:    ## kill: def $edx killed $edx def $rdx
 ; SSE2-NEXT:    andb $1, %sil
 ; SSE2-NEXT:    andb $1, %dl
-; SSE2-NEXT:    addb %dl, %dl
+; SSE2-NEXT:    addl %edx, %edx
 ; SSE2-NEXT:    orb %sil, %dl
 ; SSE2-NEXT:    andb $1, %cl
-; SSE2-NEXT:    shlb $2, %cl
-; SSE2-NEXT:    orb %dl, %cl
-; SSE2-NEXT:    testb $1, %cl
+; SSE2-NEXT:    leal (,%rcx,4), %eax
+; SSE2-NEXT:    orb %dl, %al
+; SSE2-NEXT:    testb $1, %al
 ; SSE2-NEXT:    jne LBB35_1
 ; SSE2-NEXT:  ## %bb.2: ## %else
-; SSE2-NEXT:    testb $2, %cl
+; SSE2-NEXT:    testb $2, %al
 ; SSE2-NEXT:    jne LBB35_3
 ; SSE2-NEXT:  LBB35_4: ## %else2
-; SSE2-NEXT:    testb $4, %cl
+; SSE2-NEXT:    testb $4, %al
 ; SSE2-NEXT:    jne LBB35_5
 ; SSE2-NEXT:  LBB35_6: ## %else4
 ; SSE2-NEXT:    retq
 ; SSE2-NEXT:  LBB35_1: ## %cond.store
 ; SSE2-NEXT:    movd %xmm0, (%rdi)
-; SSE2-NEXT:    testb $2, %cl
+; SSE2-NEXT:    testb $2, %al
 ; SSE2-NEXT:    je LBB35_4
 ; SSE2-NEXT:  LBB35_3: ## %cond.store1
 ; SSE2-NEXT:    pshufd {{.*#+}} xmm1 = xmm0[1,1,1,1]
 ; SSE2-NEXT:    movd %xmm1, 4(%rdi)
-; SSE2-NEXT:    testb $4, %cl
+; SSE2-NEXT:    testb $4, %al
 ; SSE2-NEXT:    je LBB35_6
 ; SSE2-NEXT:  LBB35_5: ## %cond.store3
 ; SSE2-NEXT:    pshufd {{.*#+}} xmm0 = xmm0[2,3,2,3]
@@ -6367,30 +6369,32 @@ define void @widen_masked_store(<3 x i32> %v, ptr %p, <3 x i1> %mask) nounwind {
 ;
 ; SSE4-LABEL: widen_masked_store:
 ; SSE4:       ## %bb.0:
+; SSE4-NEXT:    ## kill: def $ecx killed $ecx def $rcx
+; SSE4-NEXT:    ## kill: def $edx killed $edx def $rdx
 ; SSE4-NEXT:    andb $1, %sil
 ; SSE4-NEXT:    andb $1, %dl
-; SSE4-NEXT:    addb %dl, %dl
+; SSE4-NEXT:    addl %edx, %edx
 ; SSE4-NEXT:    orb %sil, %dl
 ; SSE4-NEXT:    andb $1, %cl
-; SSE4-NEXT:    shlb $2, %cl
-; SSE4-NEXT:    orb %dl, %cl
-; SSE4-NEXT:    testb $1, %cl
+; SSE4-NEXT:    leal (,%rcx,4), %eax
+; SSE4-NEXT:    orb %dl, %al
+; SSE4-NEXT:    testb $1, %al
 ; SSE4-NEXT:    jne LBB35_1
 ; SSE4-NEXT:  ## %bb.2: ## %else
-; SSE4-NEXT:    testb $2, %cl
+; SSE4-NEXT:    testb $2, %al
 ; SSE4-NEXT:    jne LBB35_3
 ; SSE4-NEXT:  LBB35_4: ## %else2
-; SSE4-NEXT:    testb $4, %cl
+; SSE4-NEXT:    testb $4, %al
 ; SSE4-NEXT:    jne LBB35_5
 ; SSE4-NEXT:  LBB35_6: ## %else4
 ; SSE4-NEXT:    retq
 ; SSE4-NEXT:  LBB35_1: ## %cond.store
 ; SSE4-NEXT:    movss %xmm0, (%rdi)
-; SSE4-NEXT:    testb $2, %cl
+; SSE4-NEXT:    testb $2, %al
 ; SSE4-NEXT:    je LBB35_4
 ; SSE4-NEXT:  LBB35_3: ## %cond.store1
 ; SSE4-NEXT:    extractps $1, %xmm0, 4(%rdi)
-; SSE4-NEXT:    testb $4, %cl
+; SSE4-NEXT:    testb $4, %al
 ; SSE4-NEXT:    je LBB35_6
 ; SSE4-NEXT:  LBB35_5: ## %cond.store3
 ; SSE4-NEXT:    extractps $2, %xmm0, 8(%rdi)
@@ -7163,9 +7167,10 @@ define void @undefshuffle(<8 x i1> %i0, ptr %src, ptr %dst) nounwind {
 ; SSE4-LABEL: undefshuffle:
 ; SSE4:       ## %bb.0: ## %else
 ; SSE4-NEXT:    psllw $15, %xmm0
-; SSE4-NEXT:    pand {{\.?LCPI[0-9]+_[0-9]+}}(%rip), %xmm0
-; SSE4-NEXT:    packsswb %xmm0, %xmm0
-; SSE4-NEXT:    pmovmskb %xmm0, %eax
+; SSE4-NEXT:    movq {{.*#+}} xmm1 = [32768,32768,32768,32768,0,0,0,0]
+; SSE4-NEXT:    pand %xmm0, %xmm1
+; SSE4-NEXT:    packsswb %xmm1, %xmm1
+; SSE4-NEXT:    pmovmskb %xmm1, %eax
 ; SSE4-NEXT:    testb $1, %al
 ; SSE4-NEXT:    jne LBB39_1
 ; SSE4-NEXT:  ## %bb.2: ## %else23

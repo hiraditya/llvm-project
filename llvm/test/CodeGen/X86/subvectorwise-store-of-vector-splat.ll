@@ -192,10 +192,11 @@ define void @vec128_v2i8(ptr %in.subvec.ptr, ptr %out.subvec.ptr, ptr %out.vec.p
 ; SSE2-ONLY-LABEL: vec128_v2i8:
 ; SSE2-ONLY:       # %bb.0:
 ; SSE2-ONLY-NEXT:    pcmpeqd %xmm0, %xmm0
-; SSE2-ONLY-NEXT:    pxor (%rdi), %xmm0
-; SSE2-ONLY-NEXT:    movd %xmm0, %eax
+; SSE2-ONLY-NEXT:    movdqa (%rdi), %xmm1
+; SSE2-ONLY-NEXT:    pxor %xmm0, %xmm1
+; SSE2-ONLY-NEXT:    movd %xmm1, %eax
 ; SSE2-ONLY-NEXT:    movw %ax, (%rsi)
-; SSE2-ONLY-NEXT:    pshuflw {{.*#+}} xmm0 = xmm0[0,0,0,0,4,5,6,7]
+; SSE2-ONLY-NEXT:    pshuflw {{.*#+}} xmm0 = xmm1[0,0,0,0,4,5,6,7]
 ; SSE2-ONLY-NEXT:    pshufd {{.*#+}} xmm0 = xmm0[0,1,0,1]
 ; SSE2-ONLY-NEXT:    movdqa %xmm0, (%rdx)
 ; SSE2-ONLY-NEXT:    retq
@@ -203,10 +204,11 @@ define void @vec128_v2i8(ptr %in.subvec.ptr, ptr %out.subvec.ptr, ptr %out.vec.p
 ; SSE3-LABEL: vec128_v2i8:
 ; SSE3:       # %bb.0:
 ; SSE3-NEXT:    pcmpeqd %xmm0, %xmm0
-; SSE3-NEXT:    pxor (%rdi), %xmm0
-; SSE3-NEXT:    movd %xmm0, %eax
+; SSE3-NEXT:    movdqa (%rdi), %xmm1
+; SSE3-NEXT:    pxor %xmm0, %xmm1
+; SSE3-NEXT:    movd %xmm1, %eax
 ; SSE3-NEXT:    movw %ax, (%rsi)
-; SSE3-NEXT:    pshuflw {{.*#+}} xmm0 = xmm0[0,0,0,0,4,5,6,7]
+; SSE3-NEXT:    pshuflw {{.*#+}} xmm0 = xmm1[0,0,0,0,4,5,6,7]
 ; SSE3-NEXT:    pshufd {{.*#+}} xmm0 = xmm0[0,1,0,1]
 ; SSE3-NEXT:    movdqa %xmm0, (%rdx)
 ; SSE3-NEXT:    retq
@@ -214,10 +216,11 @@ define void @vec128_v2i8(ptr %in.subvec.ptr, ptr %out.subvec.ptr, ptr %out.vec.p
 ; SSSE3-ONLY-LABEL: vec128_v2i8:
 ; SSSE3-ONLY:       # %bb.0:
 ; SSSE3-ONLY-NEXT:    pcmpeqd %xmm0, %xmm0
-; SSSE3-ONLY-NEXT:    pxor (%rdi), %xmm0
-; SSSE3-ONLY-NEXT:    movd %xmm0, %eax
+; SSSE3-ONLY-NEXT:    movdqa (%rdi), %xmm1
+; SSSE3-ONLY-NEXT:    pxor %xmm0, %xmm1
+; SSSE3-ONLY-NEXT:    movd %xmm1, %eax
 ; SSSE3-ONLY-NEXT:    movw %ax, (%rsi)
-; SSSE3-ONLY-NEXT:    pshuflw {{.*#+}} xmm0 = xmm0[0,0,0,0,4,5,6,7]
+; SSSE3-ONLY-NEXT:    pshuflw {{.*#+}} xmm0 = xmm1[0,0,0,0,4,5,6,7]
 ; SSSE3-ONLY-NEXT:    pshufd {{.*#+}} xmm0 = xmm0[0,1,0,1]
 ; SSSE3-ONLY-NEXT:    movdqa %xmm0, (%rdx)
 ; SSSE3-ONLY-NEXT:    retq
@@ -225,9 +228,10 @@ define void @vec128_v2i8(ptr %in.subvec.ptr, ptr %out.subvec.ptr, ptr %out.vec.p
 ; SSE41-LABEL: vec128_v2i8:
 ; SSE41:       # %bb.0:
 ; SSE41-NEXT:    pcmpeqd %xmm0, %xmm0
-; SSE41-NEXT:    pxor (%rdi), %xmm0
-; SSE41-NEXT:    pextrw $0, %xmm0, (%rsi)
-; SSE41-NEXT:    pshuflw {{.*#+}} xmm0 = xmm0[0,0,0,0,4,5,6,7]
+; SSE41-NEXT:    movdqa (%rdi), %xmm1
+; SSE41-NEXT:    pxor %xmm0, %xmm1
+; SSE41-NEXT:    pextrw $0, %xmm1, (%rsi)
+; SSE41-NEXT:    pshuflw {{.*#+}} xmm0 = xmm1[0,0,0,0,4,5,6,7]
 ; SSE41-NEXT:    pshufd {{.*#+}} xmm0 = xmm0[0,1,0,1]
 ; SSE41-NEXT:    movdqa %xmm0, (%rdx)
 ; SSE41-NEXT:    retq
@@ -235,9 +239,10 @@ define void @vec128_v2i8(ptr %in.subvec.ptr, ptr %out.subvec.ptr, ptr %out.vec.p
 ; SSE42-LABEL: vec128_v2i8:
 ; SSE42:       # %bb.0:
 ; SSE42-NEXT:    pcmpeqd %xmm0, %xmm0
-; SSE42-NEXT:    pxor (%rdi), %xmm0
-; SSE42-NEXT:    pextrw $0, %xmm0, (%rsi)
-; SSE42-NEXT:    pshuflw {{.*#+}} xmm0 = xmm0[0,0,0,0,4,5,6,7]
+; SSE42-NEXT:    movdqa (%rdi), %xmm1
+; SSE42-NEXT:    pxor %xmm0, %xmm1
+; SSE42-NEXT:    pextrw $0, %xmm1, (%rsi)
+; SSE42-NEXT:    pshuflw {{.*#+}} xmm0 = xmm1[0,0,0,0,4,5,6,7]
 ; SSE42-NEXT:    pshufd {{.*#+}} xmm0 = xmm0[0,1,0,1]
 ; SSE42-NEXT:    movdqa %xmm0, (%rdx)
 ; SSE42-NEXT:    retq
@@ -304,9 +309,10 @@ define void @vec128_v2i16(ptr %in.subvec.ptr, ptr %out.subvec.ptr, ptr %out.vec.
 ; SSE2-LABEL: vec128_v2i16:
 ; SSE2:       # %bb.0:
 ; SSE2-NEXT:    pcmpeqd %xmm0, %xmm0
-; SSE2-NEXT:    pxor (%rdi), %xmm0
-; SSE2-NEXT:    movd %xmm0, (%rsi)
-; SSE2-NEXT:    pshufd {{.*#+}} xmm0 = xmm0[0,0,0,0]
+; SSE2-NEXT:    movdqa (%rdi), %xmm1
+; SSE2-NEXT:    pxor %xmm0, %xmm1
+; SSE2-NEXT:    movd %xmm1, (%rsi)
+; SSE2-NEXT:    pshufd {{.*#+}} xmm0 = xmm1[0,0,0,0]
 ; SSE2-NEXT:    movdqa %xmm0, (%rdx)
 ; SSE2-NEXT:    retq
 ;
@@ -504,9 +510,10 @@ define void @vec128_v4i8(ptr %in.subvec.ptr, ptr %out.subvec.ptr, ptr %out.vec.p
 ; SSE2-LABEL: vec128_v4i8:
 ; SSE2:       # %bb.0:
 ; SSE2-NEXT:    pcmpeqd %xmm0, %xmm0
-; SSE2-NEXT:    pxor (%rdi), %xmm0
-; SSE2-NEXT:    movd %xmm0, (%rsi)
-; SSE2-NEXT:    pshufd {{.*#+}} xmm0 = xmm0[0,0,0,0]
+; SSE2-NEXT:    movdqa (%rdi), %xmm1
+; SSE2-NEXT:    pxor %xmm0, %xmm1
+; SSE2-NEXT:    movd %xmm1, (%rsi)
+; SSE2-NEXT:    pshufd {{.*#+}} xmm0 = xmm1[0,0,0,0]
 ; SSE2-NEXT:    movdqa %xmm0, (%rdx)
 ; SSE2-NEXT:    retq
 ;
@@ -755,10 +762,11 @@ define void @vec256_v2i8(ptr %in.subvec.ptr, ptr %out.subvec.ptr, ptr %out.vec.p
 ; SSE2-ONLY-LABEL: vec256_v2i8:
 ; SSE2-ONLY:       # %bb.0:
 ; SSE2-ONLY-NEXT:    pcmpeqd %xmm0, %xmm0
-; SSE2-ONLY-NEXT:    pxor (%rdi), %xmm0
-; SSE2-ONLY-NEXT:    movd %xmm0, %eax
+; SSE2-ONLY-NEXT:    movdqa (%rdi), %xmm1
+; SSE2-ONLY-NEXT:    pxor %xmm0, %xmm1
+; SSE2-ONLY-NEXT:    movd %xmm1, %eax
 ; SSE2-ONLY-NEXT:    movw %ax, (%rsi)
-; SSE2-ONLY-NEXT:    pshuflw {{.*#+}} xmm0 = xmm0[0,0,0,0,4,5,6,7]
+; SSE2-ONLY-NEXT:    pshuflw {{.*#+}} xmm0 = xmm1[0,0,0,0,4,5,6,7]
 ; SSE2-ONLY-NEXT:    pshufd {{.*#+}} xmm0 = xmm0[0,1,0,1]
 ; SSE2-ONLY-NEXT:    movdqa %xmm0, (%rdx)
 ; SSE2-ONLY-NEXT:    movdqa %xmm0, 16(%rdx)
@@ -767,10 +775,11 @@ define void @vec256_v2i8(ptr %in.subvec.ptr, ptr %out.subvec.ptr, ptr %out.vec.p
 ; SSE3-LABEL: vec256_v2i8:
 ; SSE3:       # %bb.0:
 ; SSE3-NEXT:    pcmpeqd %xmm0, %xmm0
-; SSE3-NEXT:    pxor (%rdi), %xmm0
-; SSE3-NEXT:    movd %xmm0, %eax
+; SSE3-NEXT:    movdqa (%rdi), %xmm1
+; SSE3-NEXT:    pxor %xmm0, %xmm1
+; SSE3-NEXT:    movd %xmm1, %eax
 ; SSE3-NEXT:    movw %ax, (%rsi)
-; SSE3-NEXT:    pshuflw {{.*#+}} xmm0 = xmm0[0,0,0,0,4,5,6,7]
+; SSE3-NEXT:    pshuflw {{.*#+}} xmm0 = xmm1[0,0,0,0,4,5,6,7]
 ; SSE3-NEXT:    pshufd {{.*#+}} xmm0 = xmm0[0,1,0,1]
 ; SSE3-NEXT:    movdqa %xmm0, (%rdx)
 ; SSE3-NEXT:    movdqa %xmm0, 16(%rdx)
@@ -779,10 +788,11 @@ define void @vec256_v2i8(ptr %in.subvec.ptr, ptr %out.subvec.ptr, ptr %out.vec.p
 ; SSSE3-ONLY-LABEL: vec256_v2i8:
 ; SSSE3-ONLY:       # %bb.0:
 ; SSSE3-ONLY-NEXT:    pcmpeqd %xmm0, %xmm0
-; SSSE3-ONLY-NEXT:    pxor (%rdi), %xmm0
-; SSSE3-ONLY-NEXT:    movd %xmm0, %eax
+; SSSE3-ONLY-NEXT:    movdqa (%rdi), %xmm1
+; SSSE3-ONLY-NEXT:    pxor %xmm0, %xmm1
+; SSSE3-ONLY-NEXT:    movd %xmm1, %eax
 ; SSSE3-ONLY-NEXT:    movw %ax, (%rsi)
-; SSSE3-ONLY-NEXT:    pshuflw {{.*#+}} xmm0 = xmm0[0,0,0,0,4,5,6,7]
+; SSSE3-ONLY-NEXT:    pshuflw {{.*#+}} xmm0 = xmm1[0,0,0,0,4,5,6,7]
 ; SSSE3-ONLY-NEXT:    pshufd {{.*#+}} xmm0 = xmm0[0,1,0,1]
 ; SSSE3-ONLY-NEXT:    movdqa %xmm0, (%rdx)
 ; SSSE3-ONLY-NEXT:    movdqa %xmm0, 16(%rdx)
@@ -791,9 +801,10 @@ define void @vec256_v2i8(ptr %in.subvec.ptr, ptr %out.subvec.ptr, ptr %out.vec.p
 ; SSE41-LABEL: vec256_v2i8:
 ; SSE41:       # %bb.0:
 ; SSE41-NEXT:    pcmpeqd %xmm0, %xmm0
-; SSE41-NEXT:    pxor (%rdi), %xmm0
-; SSE41-NEXT:    pextrw $0, %xmm0, (%rsi)
-; SSE41-NEXT:    pshuflw {{.*#+}} xmm0 = xmm0[0,0,0,0,4,5,6,7]
+; SSE41-NEXT:    movdqa (%rdi), %xmm1
+; SSE41-NEXT:    pxor %xmm0, %xmm1
+; SSE41-NEXT:    pextrw $0, %xmm1, (%rsi)
+; SSE41-NEXT:    pshuflw {{.*#+}} xmm0 = xmm1[0,0,0,0,4,5,6,7]
 ; SSE41-NEXT:    pshufd {{.*#+}} xmm0 = xmm0[0,1,0,1]
 ; SSE41-NEXT:    movdqa %xmm0, (%rdx)
 ; SSE41-NEXT:    movdqa %xmm0, 16(%rdx)
@@ -802,9 +813,10 @@ define void @vec256_v2i8(ptr %in.subvec.ptr, ptr %out.subvec.ptr, ptr %out.vec.p
 ; SSE42-LABEL: vec256_v2i8:
 ; SSE42:       # %bb.0:
 ; SSE42-NEXT:    pcmpeqd %xmm0, %xmm0
-; SSE42-NEXT:    pxor (%rdi), %xmm0
-; SSE42-NEXT:    pextrw $0, %xmm0, (%rsi)
-; SSE42-NEXT:    pshuflw {{.*#+}} xmm0 = xmm0[0,0,0,0,4,5,6,7]
+; SSE42-NEXT:    movdqa (%rdi), %xmm1
+; SSE42-NEXT:    pxor %xmm0, %xmm1
+; SSE42-NEXT:    pextrw $0, %xmm1, (%rsi)
+; SSE42-NEXT:    pshuflw {{.*#+}} xmm0 = xmm1[0,0,0,0,4,5,6,7]
 ; SSE42-NEXT:    pshufd {{.*#+}} xmm0 = xmm0[0,1,0,1]
 ; SSE42-NEXT:    movdqa %xmm0, (%rdx)
 ; SSE42-NEXT:    movdqa %xmm0, 16(%rdx)
@@ -899,9 +911,10 @@ define void @vec256_v2i16(ptr %in.subvec.ptr, ptr %out.subvec.ptr, ptr %out.vec.
 ; SSE2-LABEL: vec256_v2i16:
 ; SSE2:       # %bb.0:
 ; SSE2-NEXT:    pcmpeqd %xmm0, %xmm0
-; SSE2-NEXT:    pxor (%rdi), %xmm0
-; SSE2-NEXT:    movd %xmm0, (%rsi)
-; SSE2-NEXT:    pshufd {{.*#+}} xmm0 = xmm0[0,0,0,0]
+; SSE2-NEXT:    movdqa (%rdi), %xmm1
+; SSE2-NEXT:    pxor %xmm0, %xmm1
+; SSE2-NEXT:    movd %xmm1, (%rsi)
+; SSE2-NEXT:    pshufd {{.*#+}} xmm0 = xmm1[0,0,0,0]
 ; SSE2-NEXT:    movdqa %xmm0, (%rdx)
 ; SSE2-NEXT:    movdqa %xmm0, 16(%rdx)
 ; SSE2-NEXT:    retq
@@ -1118,10 +1131,11 @@ define void @vec256_v2i64(ptr %in.subvec.ptr, ptr %out.subvec.ptr, ptr %out.vec.
 ; SSE2-LABEL: vec256_v2i64:
 ; SSE2:       # %bb.0:
 ; SSE2-NEXT:    pcmpeqd %xmm0, %xmm0
-; SSE2-NEXT:    pxor (%rdi), %xmm0
-; SSE2-NEXT:    movdqa %xmm0, (%rsi)
-; SSE2-NEXT:    movdqa %xmm0, (%rdx)
-; SSE2-NEXT:    movdqa %xmm0, 16(%rdx)
+; SSE2-NEXT:    movdqa (%rdi), %xmm1
+; SSE2-NEXT:    pxor %xmm0, %xmm1
+; SSE2-NEXT:    movdqa %xmm1, (%rsi)
+; SSE2-NEXT:    movdqa %xmm1, (%rdx)
+; SSE2-NEXT:    movdqa %xmm1, 16(%rdx)
 ; SSE2-NEXT:    retq
 ;
 ; AVX-LABEL: vec256_v2i64:
@@ -1160,10 +1174,11 @@ define void @vec256_v2f64(ptr %in.subvec.ptr, ptr %out.subvec.ptr, ptr %out.vec.
 ; SSE2-LABEL: vec256_v2f64:
 ; SSE2:       # %bb.0:
 ; SSE2-NEXT:    pcmpeqd %xmm0, %xmm0
-; SSE2-NEXT:    pxor (%rdi), %xmm0
-; SSE2-NEXT:    movdqa %xmm0, (%rsi)
-; SSE2-NEXT:    movdqa %xmm0, (%rdx)
-; SSE2-NEXT:    movdqa %xmm0, 16(%rdx)
+; SSE2-NEXT:    movdqa (%rdi), %xmm1
+; SSE2-NEXT:    pxor %xmm0, %xmm1
+; SSE2-NEXT:    movdqa %xmm1, (%rsi)
+; SSE2-NEXT:    movdqa %xmm1, (%rdx)
+; SSE2-NEXT:    movdqa %xmm1, 16(%rdx)
 ; SSE2-NEXT:    retq
 ;
 ; AVX-LABEL: vec256_v2f64:
@@ -1237,9 +1252,10 @@ define void @vec256_v4i8(ptr %in.subvec.ptr, ptr %out.subvec.ptr, ptr %out.vec.p
 ; SSE2-LABEL: vec256_v4i8:
 ; SSE2:       # %bb.0:
 ; SSE2-NEXT:    pcmpeqd %xmm0, %xmm0
-; SSE2-NEXT:    pxor (%rdi), %xmm0
-; SSE2-NEXT:    movd %xmm0, (%rsi)
-; SSE2-NEXT:    pshufd {{.*#+}} xmm0 = xmm0[0,0,0,0]
+; SSE2-NEXT:    movdqa (%rdi), %xmm1
+; SSE2-NEXT:    pxor %xmm0, %xmm1
+; SSE2-NEXT:    movd %xmm1, (%rsi)
+; SSE2-NEXT:    pshufd {{.*#+}} xmm0 = xmm1[0,0,0,0]
 ; SSE2-NEXT:    movdqa %xmm0, (%rdx)
 ; SSE2-NEXT:    movdqa %xmm0, 16(%rdx)
 ; SSE2-NEXT:    retq
@@ -1379,19 +1395,21 @@ define void @vec256_v4i32(ptr %in.subvec.ptr, ptr %out.subvec.ptr, ptr %out.vec.
 ; SCALAR-LABEL: vec256_v4i32:
 ; SCALAR:       # %bb.0:
 ; SCALAR-NEXT:    movaps (%rdi), %xmm0
-; SCALAR-NEXT:    xorps {{\.?LCPI[0-9]+_[0-9]+}}(%rip), %xmm0
-; SCALAR-NEXT:    movaps %xmm0, (%rsi)
-; SCALAR-NEXT:    movaps %xmm0, (%rdx)
-; SCALAR-NEXT:    movaps %xmm0, 16(%rdx)
+; SCALAR-NEXT:    movaps {{.*#+}} xmm1 = [NaN,NaN,NaN,NaN]
+; SCALAR-NEXT:    xorps %xmm0, %xmm1
+; SCALAR-NEXT:    movaps %xmm1, (%rsi)
+; SCALAR-NEXT:    movaps %xmm1, (%rdx)
+; SCALAR-NEXT:    movaps %xmm1, 16(%rdx)
 ; SCALAR-NEXT:    retq
 ;
 ; SSE2-LABEL: vec256_v4i32:
 ; SSE2:       # %bb.0:
 ; SSE2-NEXT:    pcmpeqd %xmm0, %xmm0
-; SSE2-NEXT:    pxor (%rdi), %xmm0
-; SSE2-NEXT:    movdqa %xmm0, (%rsi)
-; SSE2-NEXT:    movdqa %xmm0, (%rdx)
-; SSE2-NEXT:    movdqa %xmm0, 16(%rdx)
+; SSE2-NEXT:    movdqa (%rdi), %xmm1
+; SSE2-NEXT:    pxor %xmm0, %xmm1
+; SSE2-NEXT:    movdqa %xmm1, (%rsi)
+; SSE2-NEXT:    movdqa %xmm1, (%rdx)
+; SSE2-NEXT:    movdqa %xmm1, 16(%rdx)
 ; SSE2-NEXT:    retq
 ;
 ; AVX-LABEL: vec256_v4i32:
@@ -1416,19 +1434,21 @@ define void @vec256_v4f32(ptr %in.subvec.ptr, ptr %out.subvec.ptr, ptr %out.vec.
 ; SCALAR-LABEL: vec256_v4f32:
 ; SCALAR:       # %bb.0:
 ; SCALAR-NEXT:    movaps (%rdi), %xmm0
-; SCALAR-NEXT:    xorps {{\.?LCPI[0-9]+_[0-9]+}}(%rip), %xmm0
-; SCALAR-NEXT:    movaps %xmm0, (%rsi)
-; SCALAR-NEXT:    movaps %xmm0, (%rdx)
-; SCALAR-NEXT:    movaps %xmm0, 16(%rdx)
+; SCALAR-NEXT:    movaps {{.*#+}} xmm1 = [NaN,NaN,NaN,NaN]
+; SCALAR-NEXT:    xorps %xmm0, %xmm1
+; SCALAR-NEXT:    movaps %xmm1, (%rsi)
+; SCALAR-NEXT:    movaps %xmm1, (%rdx)
+; SCALAR-NEXT:    movaps %xmm1, 16(%rdx)
 ; SCALAR-NEXT:    retq
 ;
 ; SSE2-LABEL: vec256_v4f32:
 ; SSE2:       # %bb.0:
 ; SSE2-NEXT:    pcmpeqd %xmm0, %xmm0
-; SSE2-NEXT:    pxor (%rdi), %xmm0
-; SSE2-NEXT:    movdqa %xmm0, (%rsi)
-; SSE2-NEXT:    movdqa %xmm0, (%rdx)
-; SSE2-NEXT:    movdqa %xmm0, 16(%rdx)
+; SSE2-NEXT:    movdqa (%rdi), %xmm1
+; SSE2-NEXT:    pxor %xmm0, %xmm1
+; SSE2-NEXT:    movdqa %xmm1, (%rsi)
+; SSE2-NEXT:    movdqa %xmm1, (%rdx)
+; SSE2-NEXT:    movdqa %xmm1, 16(%rdx)
 ; SSE2-NEXT:    retq
 ;
 ; AVX-LABEL: vec256_v4f32:
@@ -1620,10 +1640,11 @@ define void @vec256_v8i16(ptr %in.subvec.ptr, ptr %out.subvec.ptr, ptr %out.vec.
 ; SSE2-LABEL: vec256_v8i16:
 ; SSE2:       # %bb.0:
 ; SSE2-NEXT:    pcmpeqd %xmm0, %xmm0
-; SSE2-NEXT:    pxor (%rdi), %xmm0
-; SSE2-NEXT:    movdqa %xmm0, (%rsi)
-; SSE2-NEXT:    movdqa %xmm0, (%rdx)
-; SSE2-NEXT:    movdqa %xmm0, 16(%rdx)
+; SSE2-NEXT:    movdqa (%rdi), %xmm1
+; SSE2-NEXT:    pxor %xmm0, %xmm1
+; SSE2-NEXT:    movdqa %xmm1, (%rsi)
+; SSE2-NEXT:    movdqa %xmm1, (%rdx)
+; SSE2-NEXT:    movdqa %xmm1, 16(%rdx)
 ; SSE2-NEXT:    retq
 ;
 ; AVX-LABEL: vec256_v8i16:
@@ -1787,10 +1808,11 @@ define void @vec256_v16i8(ptr %in.subvec.ptr, ptr %out.subvec.ptr, ptr %out.vec.
 ; SSE2-LABEL: vec256_v16i8:
 ; SSE2:       # %bb.0:
 ; SSE2-NEXT:    pcmpeqd %xmm0, %xmm0
-; SSE2-NEXT:    pxor (%rdi), %xmm0
-; SSE2-NEXT:    movdqa %xmm0, (%rsi)
-; SSE2-NEXT:    movdqa %xmm0, (%rdx)
-; SSE2-NEXT:    movdqa %xmm0, 16(%rdx)
+; SSE2-NEXT:    movdqa (%rdi), %xmm1
+; SSE2-NEXT:    pxor %xmm0, %xmm1
+; SSE2-NEXT:    movdqa %xmm1, (%rsi)
+; SSE2-NEXT:    movdqa %xmm1, (%rdx)
+; SSE2-NEXT:    movdqa %xmm1, 16(%rdx)
 ; SSE2-NEXT:    retq
 ;
 ; AVX-LABEL: vec256_v16i8:
@@ -1873,10 +1895,11 @@ define void @vec384_v2i8(ptr %in.subvec.ptr, ptr %out.subvec.ptr, ptr %out.vec.p
 ; SSE2-ONLY-LABEL: vec384_v2i8:
 ; SSE2-ONLY:       # %bb.0:
 ; SSE2-ONLY-NEXT:    pcmpeqd %xmm0, %xmm0
-; SSE2-ONLY-NEXT:    pxor (%rdi), %xmm0
-; SSE2-ONLY-NEXT:    movd %xmm0, %eax
+; SSE2-ONLY-NEXT:    movdqa (%rdi), %xmm1
+; SSE2-ONLY-NEXT:    pxor %xmm0, %xmm1
+; SSE2-ONLY-NEXT:    movd %xmm1, %eax
 ; SSE2-ONLY-NEXT:    movw %ax, (%rsi)
-; SSE2-ONLY-NEXT:    pshuflw {{.*#+}} xmm0 = xmm0[0,0,0,0,4,5,6,7]
+; SSE2-ONLY-NEXT:    pshuflw {{.*#+}} xmm0 = xmm1[0,0,0,0,4,5,6,7]
 ; SSE2-ONLY-NEXT:    pshufd {{.*#+}} xmm0 = xmm0[0,1,0,1]
 ; SSE2-ONLY-NEXT:    movdqa %xmm0, (%rdx)
 ; SSE2-ONLY-NEXT:    movdqa %xmm0, 16(%rdx)
@@ -1886,10 +1909,11 @@ define void @vec384_v2i8(ptr %in.subvec.ptr, ptr %out.subvec.ptr, ptr %out.vec.p
 ; SSE3-LABEL: vec384_v2i8:
 ; SSE3:       # %bb.0:
 ; SSE3-NEXT:    pcmpeqd %xmm0, %xmm0
-; SSE3-NEXT:    pxor (%rdi), %xmm0
-; SSE3-NEXT:    movd %xmm0, %eax
+; SSE3-NEXT:    movdqa (%rdi), %xmm1
+; SSE3-NEXT:    pxor %xmm0, %xmm1
+; SSE3-NEXT:    movd %xmm1, %eax
 ; SSE3-NEXT:    movw %ax, (%rsi)
-; SSE3-NEXT:    pshuflw {{.*#+}} xmm0 = xmm0[0,0,0,0,4,5,6,7]
+; SSE3-NEXT:    pshuflw {{.*#+}} xmm0 = xmm1[0,0,0,0,4,5,6,7]
 ; SSE3-NEXT:    pshufd {{.*#+}} xmm0 = xmm0[0,1,0,1]
 ; SSE3-NEXT:    movdqa %xmm0, (%rdx)
 ; SSE3-NEXT:    movdqa %xmm0, 16(%rdx)
@@ -1899,10 +1923,11 @@ define void @vec384_v2i8(ptr %in.subvec.ptr, ptr %out.subvec.ptr, ptr %out.vec.p
 ; SSSE3-ONLY-LABEL: vec384_v2i8:
 ; SSSE3-ONLY:       # %bb.0:
 ; SSSE3-ONLY-NEXT:    pcmpeqd %xmm0, %xmm0
-; SSSE3-ONLY-NEXT:    pxor (%rdi), %xmm0
-; SSSE3-ONLY-NEXT:    movd %xmm0, %eax
+; SSSE3-ONLY-NEXT:    movdqa (%rdi), %xmm1
+; SSSE3-ONLY-NEXT:    pxor %xmm0, %xmm1
+; SSSE3-ONLY-NEXT:    movd %xmm1, %eax
 ; SSSE3-ONLY-NEXT:    movw %ax, (%rsi)
-; SSSE3-ONLY-NEXT:    pshuflw {{.*#+}} xmm0 = xmm0[0,0,0,0,4,5,6,7]
+; SSSE3-ONLY-NEXT:    pshuflw {{.*#+}} xmm0 = xmm1[0,0,0,0,4,5,6,7]
 ; SSSE3-ONLY-NEXT:    pshufd {{.*#+}} xmm0 = xmm0[0,1,0,1]
 ; SSSE3-ONLY-NEXT:    movdqa %xmm0, (%rdx)
 ; SSSE3-ONLY-NEXT:    movdqa %xmm0, 16(%rdx)
@@ -1912,9 +1937,10 @@ define void @vec384_v2i8(ptr %in.subvec.ptr, ptr %out.subvec.ptr, ptr %out.vec.p
 ; SSE41-LABEL: vec384_v2i8:
 ; SSE41:       # %bb.0:
 ; SSE41-NEXT:    pcmpeqd %xmm0, %xmm0
-; SSE41-NEXT:    pxor (%rdi), %xmm0
-; SSE41-NEXT:    pextrw $0, %xmm0, (%rsi)
-; SSE41-NEXT:    pshuflw {{.*#+}} xmm0 = xmm0[0,0,0,0,4,5,6,7]
+; SSE41-NEXT:    movdqa (%rdi), %xmm1
+; SSE41-NEXT:    pxor %xmm0, %xmm1
+; SSE41-NEXT:    pextrw $0, %xmm1, (%rsi)
+; SSE41-NEXT:    pshuflw {{.*#+}} xmm0 = xmm1[0,0,0,0,4,5,6,7]
 ; SSE41-NEXT:    pshufd {{.*#+}} xmm0 = xmm0[0,1,0,1]
 ; SSE41-NEXT:    movdqa %xmm0, (%rdx)
 ; SSE41-NEXT:    movdqa %xmm0, 16(%rdx)
@@ -1924,9 +1950,10 @@ define void @vec384_v2i8(ptr %in.subvec.ptr, ptr %out.subvec.ptr, ptr %out.vec.p
 ; SSE42-LABEL: vec384_v2i8:
 ; SSE42:       # %bb.0:
 ; SSE42-NEXT:    pcmpeqd %xmm0, %xmm0
-; SSE42-NEXT:    pxor (%rdi), %xmm0
-; SSE42-NEXT:    pextrw $0, %xmm0, (%rsi)
-; SSE42-NEXT:    pshuflw {{.*#+}} xmm0 = xmm0[0,0,0,0,4,5,6,7]
+; SSE42-NEXT:    movdqa (%rdi), %xmm1
+; SSE42-NEXT:    pxor %xmm0, %xmm1
+; SSE42-NEXT:    pextrw $0, %xmm1, (%rsi)
+; SSE42-NEXT:    pshuflw {{.*#+}} xmm0 = xmm1[0,0,0,0,4,5,6,7]
 ; SSE42-NEXT:    pshufd {{.*#+}} xmm0 = xmm0[0,1,0,1]
 ; SSE42-NEXT:    movdqa %xmm0, (%rdx)
 ; SSE42-NEXT:    movdqa %xmm0, 16(%rdx)
@@ -2048,9 +2075,10 @@ define void @vec384_v2i16(ptr %in.subvec.ptr, ptr %out.subvec.ptr, ptr %out.vec.
 ; SSE2-LABEL: vec384_v2i16:
 ; SSE2:       # %bb.0:
 ; SSE2-NEXT:    pcmpeqd %xmm0, %xmm0
-; SSE2-NEXT:    pxor (%rdi), %xmm0
-; SSE2-NEXT:    movd %xmm0, (%rsi)
-; SSE2-NEXT:    pshufd {{.*#+}} xmm0 = xmm0[0,0,0,0]
+; SSE2-NEXT:    movdqa (%rdi), %xmm1
+; SSE2-NEXT:    pxor %xmm0, %xmm1
+; SSE2-NEXT:    movd %xmm1, (%rsi)
+; SSE2-NEXT:    pshufd {{.*#+}} xmm0 = xmm1[0,0,0,0]
 ; SSE2-NEXT:    movdqa %xmm0, (%rdx)
 ; SSE2-NEXT:    movdqa %xmm0, 16(%rdx)
 ; SSE2-NEXT:    movdqa %xmm0, 32(%rdx)
@@ -2304,11 +2332,12 @@ define void @vec384_v2i64(ptr %in.subvec.ptr, ptr %out.subvec.ptr, ptr %out.vec.
 ; SSE2-LABEL: vec384_v2i64:
 ; SSE2:       # %bb.0:
 ; SSE2-NEXT:    pcmpeqd %xmm0, %xmm0
-; SSE2-NEXT:    pxor (%rdi), %xmm0
-; SSE2-NEXT:    movdqa %xmm0, (%rsi)
-; SSE2-NEXT:    movdqa %xmm0, (%rdx)
-; SSE2-NEXT:    movdqa %xmm0, 16(%rdx)
-; SSE2-NEXT:    movdqa %xmm0, 32(%rdx)
+; SSE2-NEXT:    movdqa (%rdi), %xmm1
+; SSE2-NEXT:    pxor %xmm0, %xmm1
+; SSE2-NEXT:    movdqa %xmm1, (%rsi)
+; SSE2-NEXT:    movdqa %xmm1, (%rdx)
+; SSE2-NEXT:    movdqa %xmm1, 16(%rdx)
+; SSE2-NEXT:    movdqa %xmm1, 32(%rdx)
 ; SSE2-NEXT:    retq
 ;
 ; AVX-LABEL: vec384_v2i64:
@@ -2352,11 +2381,12 @@ define void @vec384_v2f64(ptr %in.subvec.ptr, ptr %out.subvec.ptr, ptr %out.vec.
 ; SSE2-LABEL: vec384_v2f64:
 ; SSE2:       # %bb.0:
 ; SSE2-NEXT:    pcmpeqd %xmm0, %xmm0
-; SSE2-NEXT:    pxor (%rdi), %xmm0
-; SSE2-NEXT:    movdqa %xmm0, (%rsi)
-; SSE2-NEXT:    movdqa %xmm0, (%rdx)
-; SSE2-NEXT:    movdqa %xmm0, 16(%rdx)
-; SSE2-NEXT:    movdqa %xmm0, 32(%rdx)
+; SSE2-NEXT:    movdqa (%rdi), %xmm1
+; SSE2-NEXT:    pxor %xmm0, %xmm1
+; SSE2-NEXT:    movdqa %xmm1, (%rsi)
+; SSE2-NEXT:    movdqa %xmm1, (%rdx)
+; SSE2-NEXT:    movdqa %xmm1, 16(%rdx)
+; SSE2-NEXT:    movdqa %xmm1, 32(%rdx)
 ; SSE2-NEXT:    retq
 ;
 ; AVX-LABEL: vec384_v2f64:
@@ -3070,84 +3100,89 @@ define void @vec384_v3i32(ptr %in.subvec.ptr, ptr %out.subvec.ptr, ptr %out.vec.
 ; SSE2-ONLY-LABEL: vec384_v3i32:
 ; SSE2-ONLY:       # %bb.0:
 ; SSE2-ONLY-NEXT:    pcmpeqd %xmm0, %xmm0
-; SSE2-ONLY-NEXT:    pxor (%rdi), %xmm0
-; SSE2-ONLY-NEXT:    movq %xmm0, (%rsi)
-; SSE2-ONLY-NEXT:    pshufd {{.*#+}} xmm1 = xmm0[2,3,2,3]
-; SSE2-ONLY-NEXT:    movd %xmm1, 8(%rsi)
-; SSE2-ONLY-NEXT:    movd %xmm1, 8(%rdx)
-; SSE2-ONLY-NEXT:    movq %xmm0, (%rdx)
-; SSE2-ONLY-NEXT:    movd %xmm1, 24(%rdx)
-; SSE2-ONLY-NEXT:    movq %xmm0, 16(%rdx)
-; SSE2-ONLY-NEXT:    movd %xmm1, 40(%rdx)
-; SSE2-ONLY-NEXT:    movq %xmm0, 32(%rdx)
-; SSE2-ONLY-NEXT:    movd %xmm1, 56(%rdx)
-; SSE2-ONLY-NEXT:    movq %xmm0, 48(%rdx)
+; SSE2-ONLY-NEXT:    movdqa (%rdi), %xmm1
+; SSE2-ONLY-NEXT:    pxor %xmm0, %xmm1
+; SSE2-ONLY-NEXT:    movq %xmm1, (%rsi)
+; SSE2-ONLY-NEXT:    pshufd {{.*#+}} xmm0 = xmm1[2,3,2,3]
+; SSE2-ONLY-NEXT:    movd %xmm0, 8(%rsi)
+; SSE2-ONLY-NEXT:    movd %xmm0, 8(%rdx)
+; SSE2-ONLY-NEXT:    movq %xmm1, (%rdx)
+; SSE2-ONLY-NEXT:    movd %xmm0, 24(%rdx)
+; SSE2-ONLY-NEXT:    movq %xmm1, 16(%rdx)
+; SSE2-ONLY-NEXT:    movd %xmm0, 40(%rdx)
+; SSE2-ONLY-NEXT:    movq %xmm1, 32(%rdx)
+; SSE2-ONLY-NEXT:    movd %xmm0, 56(%rdx)
+; SSE2-ONLY-NEXT:    movq %xmm1, 48(%rdx)
 ; SSE2-ONLY-NEXT:    retq
 ;
 ; SSE3-LABEL: vec384_v3i32:
 ; SSE3:       # %bb.0:
 ; SSE3-NEXT:    pcmpeqd %xmm0, %xmm0
-; SSE3-NEXT:    pxor (%rdi), %xmm0
-; SSE3-NEXT:    movq %xmm0, (%rsi)
-; SSE3-NEXT:    pshufd {{.*#+}} xmm1 = xmm0[2,3,2,3]
-; SSE3-NEXT:    movd %xmm1, 8(%rsi)
-; SSE3-NEXT:    movd %xmm1, 8(%rdx)
-; SSE3-NEXT:    movq %xmm0, (%rdx)
-; SSE3-NEXT:    movd %xmm1, 24(%rdx)
-; SSE3-NEXT:    movq %xmm0, 16(%rdx)
-; SSE3-NEXT:    movd %xmm1, 40(%rdx)
-; SSE3-NEXT:    movq %xmm0, 32(%rdx)
-; SSE3-NEXT:    movd %xmm1, 56(%rdx)
-; SSE3-NEXT:    movq %xmm0, 48(%rdx)
+; SSE3-NEXT:    movdqa (%rdi), %xmm1
+; SSE3-NEXT:    pxor %xmm0, %xmm1
+; SSE3-NEXT:    movq %xmm1, (%rsi)
+; SSE3-NEXT:    pshufd {{.*#+}} xmm0 = xmm1[2,3,2,3]
+; SSE3-NEXT:    movd %xmm0, 8(%rsi)
+; SSE3-NEXT:    movd %xmm0, 8(%rdx)
+; SSE3-NEXT:    movq %xmm1, (%rdx)
+; SSE3-NEXT:    movd %xmm0, 24(%rdx)
+; SSE3-NEXT:    movq %xmm1, 16(%rdx)
+; SSE3-NEXT:    movd %xmm0, 40(%rdx)
+; SSE3-NEXT:    movq %xmm1, 32(%rdx)
+; SSE3-NEXT:    movd %xmm0, 56(%rdx)
+; SSE3-NEXT:    movq %xmm1, 48(%rdx)
 ; SSE3-NEXT:    retq
 ;
 ; SSSE3-ONLY-LABEL: vec384_v3i32:
 ; SSSE3-ONLY:       # %bb.0:
 ; SSSE3-ONLY-NEXT:    pcmpeqd %xmm0, %xmm0
-; SSSE3-ONLY-NEXT:    pxor (%rdi), %xmm0
-; SSSE3-ONLY-NEXT:    movq %xmm0, (%rsi)
-; SSSE3-ONLY-NEXT:    pshufd {{.*#+}} xmm1 = xmm0[2,3,2,3]
-; SSSE3-ONLY-NEXT:    movd %xmm1, 8(%rsi)
-; SSSE3-ONLY-NEXT:    movd %xmm1, 8(%rdx)
-; SSSE3-ONLY-NEXT:    movq %xmm0, (%rdx)
-; SSSE3-ONLY-NEXT:    movd %xmm1, 24(%rdx)
-; SSSE3-ONLY-NEXT:    movq %xmm0, 16(%rdx)
-; SSSE3-ONLY-NEXT:    movd %xmm1, 40(%rdx)
-; SSSE3-ONLY-NEXT:    movq %xmm0, 32(%rdx)
-; SSSE3-ONLY-NEXT:    movd %xmm1, 56(%rdx)
-; SSSE3-ONLY-NEXT:    movq %xmm0, 48(%rdx)
+; SSSE3-ONLY-NEXT:    movdqa (%rdi), %xmm1
+; SSSE3-ONLY-NEXT:    pxor %xmm0, %xmm1
+; SSSE3-ONLY-NEXT:    movq %xmm1, (%rsi)
+; SSSE3-ONLY-NEXT:    pshufd {{.*#+}} xmm0 = xmm1[2,3,2,3]
+; SSSE3-ONLY-NEXT:    movd %xmm0, 8(%rsi)
+; SSSE3-ONLY-NEXT:    movd %xmm0, 8(%rdx)
+; SSSE3-ONLY-NEXT:    movq %xmm1, (%rdx)
+; SSSE3-ONLY-NEXT:    movd %xmm0, 24(%rdx)
+; SSSE3-ONLY-NEXT:    movq %xmm1, 16(%rdx)
+; SSSE3-ONLY-NEXT:    movd %xmm0, 40(%rdx)
+; SSSE3-ONLY-NEXT:    movq %xmm1, 32(%rdx)
+; SSSE3-ONLY-NEXT:    movd %xmm0, 56(%rdx)
+; SSSE3-ONLY-NEXT:    movq %xmm1, 48(%rdx)
 ; SSSE3-ONLY-NEXT:    retq
 ;
 ; SSE41-LABEL: vec384_v3i32:
 ; SSE41:       # %bb.0:
 ; SSE41-NEXT:    pcmpeqd %xmm0, %xmm0
-; SSE41-NEXT:    pxor (%rdi), %xmm0
-; SSE41-NEXT:    pextrd $2, %xmm0, 8(%rsi)
-; SSE41-NEXT:    movq %xmm0, (%rsi)
-; SSE41-NEXT:    pextrd $2, %xmm0, 8(%rdx)
-; SSE41-NEXT:    movq %xmm0, (%rdx)
-; SSE41-NEXT:    pextrd $2, %xmm0, 24(%rdx)
-; SSE41-NEXT:    movq %xmm0, 16(%rdx)
-; SSE41-NEXT:    pextrd $2, %xmm0, 40(%rdx)
-; SSE41-NEXT:    movq %xmm0, 32(%rdx)
-; SSE41-NEXT:    pextrd $2, %xmm0, 56(%rdx)
-; SSE41-NEXT:    movq %xmm0, 48(%rdx)
+; SSE41-NEXT:    movdqa (%rdi), %xmm1
+; SSE41-NEXT:    pxor %xmm0, %xmm1
+; SSE41-NEXT:    pextrd $2, %xmm1, 8(%rsi)
+; SSE41-NEXT:    movq %xmm1, (%rsi)
+; SSE41-NEXT:    pextrd $2, %xmm1, 8(%rdx)
+; SSE41-NEXT:    movq %xmm1, (%rdx)
+; SSE41-NEXT:    pextrd $2, %xmm1, 24(%rdx)
+; SSE41-NEXT:    movq %xmm1, 16(%rdx)
+; SSE41-NEXT:    pextrd $2, %xmm1, 40(%rdx)
+; SSE41-NEXT:    movq %xmm1, 32(%rdx)
+; SSE41-NEXT:    pextrd $2, %xmm1, 56(%rdx)
+; SSE41-NEXT:    movq %xmm1, 48(%rdx)
 ; SSE41-NEXT:    retq
 ;
 ; SSE42-LABEL: vec384_v3i32:
 ; SSE42:       # %bb.0:
 ; SSE42-NEXT:    pcmpeqd %xmm0, %xmm0
-; SSE42-NEXT:    pxor (%rdi), %xmm0
-; SSE42-NEXT:    pextrd $2, %xmm0, 8(%rsi)
-; SSE42-NEXT:    movq %xmm0, (%rsi)
-; SSE42-NEXT:    pextrd $2, %xmm0, 8(%rdx)
-; SSE42-NEXT:    movq %xmm0, (%rdx)
-; SSE42-NEXT:    pextrd $2, %xmm0, 24(%rdx)
-; SSE42-NEXT:    movq %xmm0, 16(%rdx)
-; SSE42-NEXT:    pextrd $2, %xmm0, 40(%rdx)
-; SSE42-NEXT:    movq %xmm0, 32(%rdx)
-; SSE42-NEXT:    pextrd $2, %xmm0, 56(%rdx)
-; SSE42-NEXT:    movq %xmm0, 48(%rdx)
+; SSE42-NEXT:    movdqa (%rdi), %xmm1
+; SSE42-NEXT:    pxor %xmm0, %xmm1
+; SSE42-NEXT:    pextrd $2, %xmm1, 8(%rsi)
+; SSE42-NEXT:    movq %xmm1, (%rsi)
+; SSE42-NEXT:    pextrd $2, %xmm1, 8(%rdx)
+; SSE42-NEXT:    movq %xmm1, (%rdx)
+; SSE42-NEXT:    pextrd $2, %xmm1, 24(%rdx)
+; SSE42-NEXT:    movq %xmm1, 16(%rdx)
+; SSE42-NEXT:    pextrd $2, %xmm1, 40(%rdx)
+; SSE42-NEXT:    movq %xmm1, 32(%rdx)
+; SSE42-NEXT:    pextrd $2, %xmm1, 56(%rdx)
+; SSE42-NEXT:    movq %xmm1, 48(%rdx)
 ; SSE42-NEXT:    retq
 ;
 ; AVX-LABEL: vec384_v3i32:
@@ -3201,84 +3236,89 @@ define void @vec384_v3f32(ptr %in.subvec.ptr, ptr %out.subvec.ptr, ptr %out.vec.
 ; SSE2-ONLY-LABEL: vec384_v3f32:
 ; SSE2-ONLY:       # %bb.0:
 ; SSE2-ONLY-NEXT:    pcmpeqd %xmm0, %xmm0
-; SSE2-ONLY-NEXT:    pxor (%rdi), %xmm0
-; SSE2-ONLY-NEXT:    movq %xmm0, (%rsi)
-; SSE2-ONLY-NEXT:    pshufd {{.*#+}} xmm1 = xmm0[2,3,2,3]
-; SSE2-ONLY-NEXT:    movd %xmm1, 8(%rsi)
-; SSE2-ONLY-NEXT:    movd %xmm1, 8(%rdx)
-; SSE2-ONLY-NEXT:    movq %xmm0, (%rdx)
-; SSE2-ONLY-NEXT:    movd %xmm1, 24(%rdx)
-; SSE2-ONLY-NEXT:    movq %xmm0, 16(%rdx)
-; SSE2-ONLY-NEXT:    movd %xmm1, 40(%rdx)
-; SSE2-ONLY-NEXT:    movq %xmm0, 32(%rdx)
-; SSE2-ONLY-NEXT:    movd %xmm1, 56(%rdx)
-; SSE2-ONLY-NEXT:    movq %xmm0, 48(%rdx)
+; SSE2-ONLY-NEXT:    movdqa (%rdi), %xmm1
+; SSE2-ONLY-NEXT:    pxor %xmm0, %xmm1
+; SSE2-ONLY-NEXT:    movq %xmm1, (%rsi)
+; SSE2-ONLY-NEXT:    pshufd {{.*#+}} xmm0 = xmm1[2,3,2,3]
+; SSE2-ONLY-NEXT:    movd %xmm0, 8(%rsi)
+; SSE2-ONLY-NEXT:    movd %xmm0, 8(%rdx)
+; SSE2-ONLY-NEXT:    movq %xmm1, (%rdx)
+; SSE2-ONLY-NEXT:    movd %xmm0, 24(%rdx)
+; SSE2-ONLY-NEXT:    movq %xmm1, 16(%rdx)
+; SSE2-ONLY-NEXT:    movd %xmm0, 40(%rdx)
+; SSE2-ONLY-NEXT:    movq %xmm1, 32(%rdx)
+; SSE2-ONLY-NEXT:    movd %xmm0, 56(%rdx)
+; SSE2-ONLY-NEXT:    movq %xmm1, 48(%rdx)
 ; SSE2-ONLY-NEXT:    retq
 ;
 ; SSE3-LABEL: vec384_v3f32:
 ; SSE3:       # %bb.0:
 ; SSE3-NEXT:    pcmpeqd %xmm0, %xmm0
-; SSE3-NEXT:    pxor (%rdi), %xmm0
-; SSE3-NEXT:    movq %xmm0, (%rsi)
-; SSE3-NEXT:    pshufd {{.*#+}} xmm1 = xmm0[2,3,2,3]
-; SSE3-NEXT:    movd %xmm1, 8(%rsi)
-; SSE3-NEXT:    movd %xmm1, 8(%rdx)
-; SSE3-NEXT:    movq %xmm0, (%rdx)
-; SSE3-NEXT:    movd %xmm1, 24(%rdx)
-; SSE3-NEXT:    movq %xmm0, 16(%rdx)
-; SSE3-NEXT:    movd %xmm1, 40(%rdx)
-; SSE3-NEXT:    movq %xmm0, 32(%rdx)
-; SSE3-NEXT:    movd %xmm1, 56(%rdx)
-; SSE3-NEXT:    movq %xmm0, 48(%rdx)
+; SSE3-NEXT:    movdqa (%rdi), %xmm1
+; SSE3-NEXT:    pxor %xmm0, %xmm1
+; SSE3-NEXT:    movq %xmm1, (%rsi)
+; SSE3-NEXT:    pshufd {{.*#+}} xmm0 = xmm1[2,3,2,3]
+; SSE3-NEXT:    movd %xmm0, 8(%rsi)
+; SSE3-NEXT:    movd %xmm0, 8(%rdx)
+; SSE3-NEXT:    movq %xmm1, (%rdx)
+; SSE3-NEXT:    movd %xmm0, 24(%rdx)
+; SSE3-NEXT:    movq %xmm1, 16(%rdx)
+; SSE3-NEXT:    movd %xmm0, 40(%rdx)
+; SSE3-NEXT:    movq %xmm1, 32(%rdx)
+; SSE3-NEXT:    movd %xmm0, 56(%rdx)
+; SSE3-NEXT:    movq %xmm1, 48(%rdx)
 ; SSE3-NEXT:    retq
 ;
 ; SSSE3-ONLY-LABEL: vec384_v3f32:
 ; SSSE3-ONLY:       # %bb.0:
 ; SSSE3-ONLY-NEXT:    pcmpeqd %xmm0, %xmm0
-; SSSE3-ONLY-NEXT:    pxor (%rdi), %xmm0
-; SSSE3-ONLY-NEXT:    movq %xmm0, (%rsi)
-; SSSE3-ONLY-NEXT:    pshufd {{.*#+}} xmm1 = xmm0[2,3,2,3]
-; SSSE3-ONLY-NEXT:    movd %xmm1, 8(%rsi)
-; SSSE3-ONLY-NEXT:    movd %xmm1, 8(%rdx)
-; SSSE3-ONLY-NEXT:    movq %xmm0, (%rdx)
-; SSSE3-ONLY-NEXT:    movd %xmm1, 24(%rdx)
-; SSSE3-ONLY-NEXT:    movq %xmm0, 16(%rdx)
-; SSSE3-ONLY-NEXT:    movd %xmm1, 40(%rdx)
-; SSSE3-ONLY-NEXT:    movq %xmm0, 32(%rdx)
-; SSSE3-ONLY-NEXT:    movd %xmm1, 56(%rdx)
-; SSSE3-ONLY-NEXT:    movq %xmm0, 48(%rdx)
+; SSSE3-ONLY-NEXT:    movdqa (%rdi), %xmm1
+; SSSE3-ONLY-NEXT:    pxor %xmm0, %xmm1
+; SSSE3-ONLY-NEXT:    movq %xmm1, (%rsi)
+; SSSE3-ONLY-NEXT:    pshufd {{.*#+}} xmm0 = xmm1[2,3,2,3]
+; SSSE3-ONLY-NEXT:    movd %xmm0, 8(%rsi)
+; SSSE3-ONLY-NEXT:    movd %xmm0, 8(%rdx)
+; SSSE3-ONLY-NEXT:    movq %xmm1, (%rdx)
+; SSSE3-ONLY-NEXT:    movd %xmm0, 24(%rdx)
+; SSSE3-ONLY-NEXT:    movq %xmm1, 16(%rdx)
+; SSSE3-ONLY-NEXT:    movd %xmm0, 40(%rdx)
+; SSSE3-ONLY-NEXT:    movq %xmm1, 32(%rdx)
+; SSSE3-ONLY-NEXT:    movd %xmm0, 56(%rdx)
+; SSSE3-ONLY-NEXT:    movq %xmm1, 48(%rdx)
 ; SSSE3-ONLY-NEXT:    retq
 ;
 ; SSE41-LABEL: vec384_v3f32:
 ; SSE41:       # %bb.0:
 ; SSE41-NEXT:    pcmpeqd %xmm0, %xmm0
-; SSE41-NEXT:    pxor (%rdi), %xmm0
-; SSE41-NEXT:    pextrd $2, %xmm0, 8(%rsi)
-; SSE41-NEXT:    movq %xmm0, (%rsi)
-; SSE41-NEXT:    pextrd $2, %xmm0, 8(%rdx)
-; SSE41-NEXT:    movq %xmm0, (%rdx)
-; SSE41-NEXT:    pextrd $2, %xmm0, 24(%rdx)
-; SSE41-NEXT:    movq %xmm0, 16(%rdx)
-; SSE41-NEXT:    pextrd $2, %xmm0, 40(%rdx)
-; SSE41-NEXT:    movq %xmm0, 32(%rdx)
-; SSE41-NEXT:    pextrd $2, %xmm0, 56(%rdx)
-; SSE41-NEXT:    movq %xmm0, 48(%rdx)
+; SSE41-NEXT:    movdqa (%rdi), %xmm1
+; SSE41-NEXT:    pxor %xmm0, %xmm1
+; SSE41-NEXT:    pextrd $2, %xmm1, 8(%rsi)
+; SSE41-NEXT:    movq %xmm1, (%rsi)
+; SSE41-NEXT:    pextrd $2, %xmm1, 8(%rdx)
+; SSE41-NEXT:    movq %xmm1, (%rdx)
+; SSE41-NEXT:    pextrd $2, %xmm1, 24(%rdx)
+; SSE41-NEXT:    movq %xmm1, 16(%rdx)
+; SSE41-NEXT:    pextrd $2, %xmm1, 40(%rdx)
+; SSE41-NEXT:    movq %xmm1, 32(%rdx)
+; SSE41-NEXT:    pextrd $2, %xmm1, 56(%rdx)
+; SSE41-NEXT:    movq %xmm1, 48(%rdx)
 ; SSE41-NEXT:    retq
 ;
 ; SSE42-LABEL: vec384_v3f32:
 ; SSE42:       # %bb.0:
 ; SSE42-NEXT:    pcmpeqd %xmm0, %xmm0
-; SSE42-NEXT:    pxor (%rdi), %xmm0
-; SSE42-NEXT:    pextrd $2, %xmm0, 8(%rsi)
-; SSE42-NEXT:    movq %xmm0, (%rsi)
-; SSE42-NEXT:    pextrd $2, %xmm0, 8(%rdx)
-; SSE42-NEXT:    movq %xmm0, (%rdx)
-; SSE42-NEXT:    pextrd $2, %xmm0, 24(%rdx)
-; SSE42-NEXT:    movq %xmm0, 16(%rdx)
-; SSE42-NEXT:    pextrd $2, %xmm0, 40(%rdx)
-; SSE42-NEXT:    movq %xmm0, 32(%rdx)
-; SSE42-NEXT:    pextrd $2, %xmm0, 56(%rdx)
-; SSE42-NEXT:    movq %xmm0, 48(%rdx)
+; SSE42-NEXT:    movdqa (%rdi), %xmm1
+; SSE42-NEXT:    pxor %xmm0, %xmm1
+; SSE42-NEXT:    pextrd $2, %xmm1, 8(%rsi)
+; SSE42-NEXT:    movq %xmm1, (%rsi)
+; SSE42-NEXT:    pextrd $2, %xmm1, 8(%rdx)
+; SSE42-NEXT:    movq %xmm1, (%rdx)
+; SSE42-NEXT:    pextrd $2, %xmm1, 24(%rdx)
+; SSE42-NEXT:    movq %xmm1, 16(%rdx)
+; SSE42-NEXT:    pextrd $2, %xmm1, 40(%rdx)
+; SSE42-NEXT:    movq %xmm1, 32(%rdx)
+; SSE42-NEXT:    pextrd $2, %xmm1, 56(%rdx)
+; SSE42-NEXT:    movq %xmm1, 48(%rdx)
 ; SSE42-NEXT:    retq
 ;
 ; AVX-LABEL: vec384_v3f32:
@@ -3335,14 +3375,15 @@ define void @vec384_v3i64(ptr %in.subvec.ptr, ptr %out.subvec.ptr, ptr %out.vec.
 ; SSE2:       # %bb.0:
 ; SSE2-NEXT:    movq 16(%rdi), %rax
 ; SSE2-NEXT:    pcmpeqd %xmm0, %xmm0
-; SSE2-NEXT:    pxor (%rdi), %xmm0
-; SSE2-NEXT:    movdqa %xmm0, (%rsi)
+; SSE2-NEXT:    movdqa (%rdi), %xmm1
+; SSE2-NEXT:    pxor %xmm0, %xmm1
+; SSE2-NEXT:    movdqa %xmm1, (%rsi)
 ; SSE2-NEXT:    notq %rax
 ; SSE2-NEXT:    movq %rax, 16(%rsi)
 ; SSE2-NEXT:    movq %rax, 16(%rdx)
-; SSE2-NEXT:    movdqa %xmm0, (%rdx)
+; SSE2-NEXT:    movdqa %xmm1, (%rdx)
 ; SSE2-NEXT:    movq %rax, 48(%rdx)
-; SSE2-NEXT:    movdqu %xmm0, 32(%rdx)
+; SSE2-NEXT:    movdqu %xmm1, 32(%rdx)
 ; SSE2-NEXT:    retq
 ;
 ; AVX1-LABEL: vec384_v3i64:
@@ -3407,14 +3448,15 @@ define void @vec384_v3f64(ptr %in.subvec.ptr, ptr %out.subvec.ptr, ptr %out.vec.
 ; SSE2:       # %bb.0:
 ; SSE2-NEXT:    movq 16(%rdi), %rax
 ; SSE2-NEXT:    pcmpeqd %xmm0, %xmm0
-; SSE2-NEXT:    pxor (%rdi), %xmm0
-; SSE2-NEXT:    movdqa %xmm0, (%rsi)
+; SSE2-NEXT:    movdqa (%rdi), %xmm1
+; SSE2-NEXT:    pxor %xmm0, %xmm1
+; SSE2-NEXT:    movdqa %xmm1, (%rsi)
 ; SSE2-NEXT:    notq %rax
 ; SSE2-NEXT:    movq %rax, 16(%rsi)
 ; SSE2-NEXT:    movq %rax, 16(%rdx)
-; SSE2-NEXT:    movdqa %xmm0, (%rdx)
+; SSE2-NEXT:    movdqa %xmm1, (%rdx)
 ; SSE2-NEXT:    movq %rax, 48(%rdx)
-; SSE2-NEXT:    movdqu %xmm0, 32(%rdx)
+; SSE2-NEXT:    movdqu %xmm1, 32(%rdx)
 ; SSE2-NEXT:    retq
 ;
 ; AVX1-LABEL: vec384_v3f64:
@@ -3524,9 +3566,10 @@ define void @vec384_v4i8(ptr %in.subvec.ptr, ptr %out.subvec.ptr, ptr %out.vec.p
 ; SSE2-LABEL: vec384_v4i8:
 ; SSE2:       # %bb.0:
 ; SSE2-NEXT:    pcmpeqd %xmm0, %xmm0
-; SSE2-NEXT:    pxor (%rdi), %xmm0
-; SSE2-NEXT:    movd %xmm0, (%rsi)
-; SSE2-NEXT:    pshufd {{.*#+}} xmm0 = xmm0[0,0,0,0]
+; SSE2-NEXT:    movdqa (%rdi), %xmm1
+; SSE2-NEXT:    pxor %xmm0, %xmm1
+; SSE2-NEXT:    movd %xmm1, (%rsi)
+; SSE2-NEXT:    pshufd {{.*#+}} xmm0 = xmm1[0,0,0,0]
 ; SSE2-NEXT:    movdqa %xmm0, (%rdx)
 ; SSE2-NEXT:    movdqa %xmm0, 16(%rdx)
 ; SSE2-NEXT:    movdqa %xmm0, 32(%rdx)
@@ -3693,21 +3736,23 @@ define void @vec384_v4i32(ptr %in.subvec.ptr, ptr %out.subvec.ptr, ptr %out.vec.
 ; SCALAR-LABEL: vec384_v4i32:
 ; SCALAR:       # %bb.0:
 ; SCALAR-NEXT:    movaps (%rdi), %xmm0
-; SCALAR-NEXT:    xorps {{\.?LCPI[0-9]+_[0-9]+}}(%rip), %xmm0
-; SCALAR-NEXT:    movaps %xmm0, (%rsi)
-; SCALAR-NEXT:    movaps %xmm0, (%rdx)
-; SCALAR-NEXT:    movaps %xmm0, 16(%rdx)
-; SCALAR-NEXT:    movaps %xmm0, 32(%rdx)
+; SCALAR-NEXT:    movaps {{.*#+}} xmm1 = [NaN,NaN,NaN,NaN]
+; SCALAR-NEXT:    xorps %xmm0, %xmm1
+; SCALAR-NEXT:    movaps %xmm1, (%rsi)
+; SCALAR-NEXT:    movaps %xmm1, (%rdx)
+; SCALAR-NEXT:    movaps %xmm1, 16(%rdx)
+; SCALAR-NEXT:    movaps %xmm1, 32(%rdx)
 ; SCALAR-NEXT:    retq
 ;
 ; SSE2-LABEL: vec384_v4i32:
 ; SSE2:       # %bb.0:
 ; SSE2-NEXT:    pcmpeqd %xmm0, %xmm0
-; SSE2-NEXT:    pxor (%rdi), %xmm0
-; SSE2-NEXT:    movdqa %xmm0, (%rsi)
-; SSE2-NEXT:    movdqa %xmm0, (%rdx)
-; SSE2-NEXT:    movdqa %xmm0, 16(%rdx)
-; SSE2-NEXT:    movdqa %xmm0, 32(%rdx)
+; SSE2-NEXT:    movdqa (%rdi), %xmm1
+; SSE2-NEXT:    pxor %xmm0, %xmm1
+; SSE2-NEXT:    movdqa %xmm1, (%rsi)
+; SSE2-NEXT:    movdqa %xmm1, (%rdx)
+; SSE2-NEXT:    movdqa %xmm1, 16(%rdx)
+; SSE2-NEXT:    movdqa %xmm1, 32(%rdx)
 ; SSE2-NEXT:    retq
 ;
 ; AVX-LABEL: vec384_v4i32:
@@ -3735,21 +3780,23 @@ define void @vec384_v4f32(ptr %in.subvec.ptr, ptr %out.subvec.ptr, ptr %out.vec.
 ; SCALAR-LABEL: vec384_v4f32:
 ; SCALAR:       # %bb.0:
 ; SCALAR-NEXT:    movaps (%rdi), %xmm0
-; SCALAR-NEXT:    xorps {{\.?LCPI[0-9]+_[0-9]+}}(%rip), %xmm0
-; SCALAR-NEXT:    movaps %xmm0, (%rsi)
-; SCALAR-NEXT:    movaps %xmm0, (%rdx)
-; SCALAR-NEXT:    movaps %xmm0, 16(%rdx)
-; SCALAR-NEXT:    movaps %xmm0, 32(%rdx)
+; SCALAR-NEXT:    movaps {{.*#+}} xmm1 = [NaN,NaN,NaN,NaN]
+; SCALAR-NEXT:    xorps %xmm0, %xmm1
+; SCALAR-NEXT:    movaps %xmm1, (%rsi)
+; SCALAR-NEXT:    movaps %xmm1, (%rdx)
+; SCALAR-NEXT:    movaps %xmm1, 16(%rdx)
+; SCALAR-NEXT:    movaps %xmm1, 32(%rdx)
 ; SCALAR-NEXT:    retq
 ;
 ; SSE2-LABEL: vec384_v4f32:
 ; SSE2:       # %bb.0:
 ; SSE2-NEXT:    pcmpeqd %xmm0, %xmm0
-; SSE2-NEXT:    pxor (%rdi), %xmm0
-; SSE2-NEXT:    movdqa %xmm0, (%rsi)
-; SSE2-NEXT:    movdqa %xmm0, (%rdx)
-; SSE2-NEXT:    movdqa %xmm0, 16(%rdx)
-; SSE2-NEXT:    movdqa %xmm0, 32(%rdx)
+; SSE2-NEXT:    movdqa (%rdi), %xmm1
+; SSE2-NEXT:    pxor %xmm0, %xmm1
+; SSE2-NEXT:    movdqa %xmm1, (%rsi)
+; SSE2-NEXT:    movdqa %xmm1, (%rdx)
+; SSE2-NEXT:    movdqa %xmm1, 16(%rdx)
+; SSE2-NEXT:    movdqa %xmm1, 32(%rdx)
 ; SSE2-NEXT:    retq
 ;
 ; AVX-LABEL: vec384_v4f32:
@@ -4047,84 +4094,89 @@ define void @vec384_v6i16(ptr %in.subvec.ptr, ptr %out.subvec.ptr, ptr %out.vec.
 ; SSE2-ONLY-LABEL: vec384_v6i16:
 ; SSE2-ONLY:       # %bb.0:
 ; SSE2-ONLY-NEXT:    pcmpeqd %xmm0, %xmm0
-; SSE2-ONLY-NEXT:    pxor (%rdi), %xmm0
-; SSE2-ONLY-NEXT:    movq %xmm0, (%rsi)
-; SSE2-ONLY-NEXT:    pshufd {{.*#+}} xmm1 = xmm0[2,3,2,3]
-; SSE2-ONLY-NEXT:    movd %xmm1, 8(%rsi)
-; SSE2-ONLY-NEXT:    movd %xmm1, 8(%rdx)
-; SSE2-ONLY-NEXT:    movq %xmm0, (%rdx)
-; SSE2-ONLY-NEXT:    movd %xmm1, 24(%rdx)
-; SSE2-ONLY-NEXT:    movq %xmm0, 16(%rdx)
-; SSE2-ONLY-NEXT:    movd %xmm1, 40(%rdx)
-; SSE2-ONLY-NEXT:    movq %xmm0, 32(%rdx)
-; SSE2-ONLY-NEXT:    movd %xmm1, 56(%rdx)
-; SSE2-ONLY-NEXT:    movq %xmm0, 48(%rdx)
+; SSE2-ONLY-NEXT:    movdqa (%rdi), %xmm1
+; SSE2-ONLY-NEXT:    pxor %xmm0, %xmm1
+; SSE2-ONLY-NEXT:    movq %xmm1, (%rsi)
+; SSE2-ONLY-NEXT:    pshufd {{.*#+}} xmm0 = xmm1[2,3,2,3]
+; SSE2-ONLY-NEXT:    movd %xmm0, 8(%rsi)
+; SSE2-ONLY-NEXT:    movd %xmm0, 8(%rdx)
+; SSE2-ONLY-NEXT:    movq %xmm1, (%rdx)
+; SSE2-ONLY-NEXT:    movd %xmm0, 24(%rdx)
+; SSE2-ONLY-NEXT:    movq %xmm1, 16(%rdx)
+; SSE2-ONLY-NEXT:    movd %xmm0, 40(%rdx)
+; SSE2-ONLY-NEXT:    movq %xmm1, 32(%rdx)
+; SSE2-ONLY-NEXT:    movd %xmm0, 56(%rdx)
+; SSE2-ONLY-NEXT:    movq %xmm1, 48(%rdx)
 ; SSE2-ONLY-NEXT:    retq
 ;
 ; SSE3-LABEL: vec384_v6i16:
 ; SSE3:       # %bb.0:
 ; SSE3-NEXT:    pcmpeqd %xmm0, %xmm0
-; SSE3-NEXT:    pxor (%rdi), %xmm0
-; SSE3-NEXT:    movq %xmm0, (%rsi)
-; SSE3-NEXT:    pshufd {{.*#+}} xmm1 = xmm0[2,3,2,3]
-; SSE3-NEXT:    movd %xmm1, 8(%rsi)
-; SSE3-NEXT:    movd %xmm1, 8(%rdx)
-; SSE3-NEXT:    movq %xmm0, (%rdx)
-; SSE3-NEXT:    movd %xmm1, 24(%rdx)
-; SSE3-NEXT:    movq %xmm0, 16(%rdx)
-; SSE3-NEXT:    movd %xmm1, 40(%rdx)
-; SSE3-NEXT:    movq %xmm0, 32(%rdx)
-; SSE3-NEXT:    movd %xmm1, 56(%rdx)
-; SSE3-NEXT:    movq %xmm0, 48(%rdx)
+; SSE3-NEXT:    movdqa (%rdi), %xmm1
+; SSE3-NEXT:    pxor %xmm0, %xmm1
+; SSE3-NEXT:    movq %xmm1, (%rsi)
+; SSE3-NEXT:    pshufd {{.*#+}} xmm0 = xmm1[2,3,2,3]
+; SSE3-NEXT:    movd %xmm0, 8(%rsi)
+; SSE3-NEXT:    movd %xmm0, 8(%rdx)
+; SSE3-NEXT:    movq %xmm1, (%rdx)
+; SSE3-NEXT:    movd %xmm0, 24(%rdx)
+; SSE3-NEXT:    movq %xmm1, 16(%rdx)
+; SSE3-NEXT:    movd %xmm0, 40(%rdx)
+; SSE3-NEXT:    movq %xmm1, 32(%rdx)
+; SSE3-NEXT:    movd %xmm0, 56(%rdx)
+; SSE3-NEXT:    movq %xmm1, 48(%rdx)
 ; SSE3-NEXT:    retq
 ;
 ; SSSE3-ONLY-LABEL: vec384_v6i16:
 ; SSSE3-ONLY:       # %bb.0:
 ; SSSE3-ONLY-NEXT:    pcmpeqd %xmm0, %xmm0
-; SSSE3-ONLY-NEXT:    pxor (%rdi), %xmm0
-; SSSE3-ONLY-NEXT:    movq %xmm0, (%rsi)
-; SSSE3-ONLY-NEXT:    pshufd {{.*#+}} xmm1 = xmm0[2,3,2,3]
-; SSSE3-ONLY-NEXT:    movd %xmm1, 8(%rsi)
-; SSSE3-ONLY-NEXT:    movd %xmm1, 8(%rdx)
-; SSSE3-ONLY-NEXT:    movq %xmm0, (%rdx)
-; SSSE3-ONLY-NEXT:    movd %xmm1, 24(%rdx)
-; SSSE3-ONLY-NEXT:    movq %xmm0, 16(%rdx)
-; SSSE3-ONLY-NEXT:    movd %xmm1, 40(%rdx)
-; SSSE3-ONLY-NEXT:    movq %xmm0, 32(%rdx)
-; SSSE3-ONLY-NEXT:    movd %xmm1, 56(%rdx)
-; SSSE3-ONLY-NEXT:    movq %xmm0, 48(%rdx)
+; SSSE3-ONLY-NEXT:    movdqa (%rdi), %xmm1
+; SSSE3-ONLY-NEXT:    pxor %xmm0, %xmm1
+; SSSE3-ONLY-NEXT:    movq %xmm1, (%rsi)
+; SSSE3-ONLY-NEXT:    pshufd {{.*#+}} xmm0 = xmm1[2,3,2,3]
+; SSSE3-ONLY-NEXT:    movd %xmm0, 8(%rsi)
+; SSSE3-ONLY-NEXT:    movd %xmm0, 8(%rdx)
+; SSSE3-ONLY-NEXT:    movq %xmm1, (%rdx)
+; SSSE3-ONLY-NEXT:    movd %xmm0, 24(%rdx)
+; SSSE3-ONLY-NEXT:    movq %xmm1, 16(%rdx)
+; SSSE3-ONLY-NEXT:    movd %xmm0, 40(%rdx)
+; SSSE3-ONLY-NEXT:    movq %xmm1, 32(%rdx)
+; SSSE3-ONLY-NEXT:    movd %xmm0, 56(%rdx)
+; SSSE3-ONLY-NEXT:    movq %xmm1, 48(%rdx)
 ; SSSE3-ONLY-NEXT:    retq
 ;
 ; SSE41-LABEL: vec384_v6i16:
 ; SSE41:       # %bb.0:
 ; SSE41-NEXT:    pcmpeqd %xmm0, %xmm0
-; SSE41-NEXT:    pxor (%rdi), %xmm0
-; SSE41-NEXT:    pextrd $2, %xmm0, 8(%rsi)
-; SSE41-NEXT:    movq %xmm0, (%rsi)
-; SSE41-NEXT:    pextrd $2, %xmm0, 8(%rdx)
-; SSE41-NEXT:    movq %xmm0, (%rdx)
-; SSE41-NEXT:    pextrd $2, %xmm0, 24(%rdx)
-; SSE41-NEXT:    movq %xmm0, 16(%rdx)
-; SSE41-NEXT:    pextrd $2, %xmm0, 40(%rdx)
-; SSE41-NEXT:    movq %xmm0, 32(%rdx)
-; SSE41-NEXT:    pextrd $2, %xmm0, 56(%rdx)
-; SSE41-NEXT:    movq %xmm0, 48(%rdx)
+; SSE41-NEXT:    movdqa (%rdi), %xmm1
+; SSE41-NEXT:    pxor %xmm0, %xmm1
+; SSE41-NEXT:    pextrd $2, %xmm1, 8(%rsi)
+; SSE41-NEXT:    movq %xmm1, (%rsi)
+; SSE41-NEXT:    pextrd $2, %xmm1, 8(%rdx)
+; SSE41-NEXT:    movq %xmm1, (%rdx)
+; SSE41-NEXT:    pextrd $2, %xmm1, 24(%rdx)
+; SSE41-NEXT:    movq %xmm1, 16(%rdx)
+; SSE41-NEXT:    pextrd $2, %xmm1, 40(%rdx)
+; SSE41-NEXT:    movq %xmm1, 32(%rdx)
+; SSE41-NEXT:    pextrd $2, %xmm1, 56(%rdx)
+; SSE41-NEXT:    movq %xmm1, 48(%rdx)
 ; SSE41-NEXT:    retq
 ;
 ; SSE42-LABEL: vec384_v6i16:
 ; SSE42:       # %bb.0:
 ; SSE42-NEXT:    pcmpeqd %xmm0, %xmm0
-; SSE42-NEXT:    pxor (%rdi), %xmm0
-; SSE42-NEXT:    pextrd $2, %xmm0, 8(%rsi)
-; SSE42-NEXT:    movq %xmm0, (%rsi)
-; SSE42-NEXT:    pextrd $2, %xmm0, 8(%rdx)
-; SSE42-NEXT:    movq %xmm0, (%rdx)
-; SSE42-NEXT:    pextrd $2, %xmm0, 24(%rdx)
-; SSE42-NEXT:    movq %xmm0, 16(%rdx)
-; SSE42-NEXT:    pextrd $2, %xmm0, 40(%rdx)
-; SSE42-NEXT:    movq %xmm0, 32(%rdx)
-; SSE42-NEXT:    pextrd $2, %xmm0, 56(%rdx)
-; SSE42-NEXT:    movq %xmm0, 48(%rdx)
+; SSE42-NEXT:    movdqa (%rdi), %xmm1
+; SSE42-NEXT:    pxor %xmm0, %xmm1
+; SSE42-NEXT:    pextrd $2, %xmm1, 8(%rsi)
+; SSE42-NEXT:    movq %xmm1, (%rsi)
+; SSE42-NEXT:    pextrd $2, %xmm1, 8(%rdx)
+; SSE42-NEXT:    movq %xmm1, (%rdx)
+; SSE42-NEXT:    pextrd $2, %xmm1, 24(%rdx)
+; SSE42-NEXT:    movq %xmm1, 16(%rdx)
+; SSE42-NEXT:    pextrd $2, %xmm1, 40(%rdx)
+; SSE42-NEXT:    movq %xmm1, 32(%rdx)
+; SSE42-NEXT:    pextrd $2, %xmm1, 56(%rdx)
+; SSE42-NEXT:    movq %xmm1, 48(%rdx)
 ; SSE42-NEXT:    retq
 ;
 ; AVX-LABEL: vec384_v6i16:
@@ -4181,13 +4233,14 @@ define void @vec384_v6i32(ptr %in.subvec.ptr, ptr %out.subvec.ptr, ptr %out.vec.
 ; SSE2-NEXT:    pcmpeqd %xmm0, %xmm0
 ; SSE2-NEXT:    movdqa 16(%rdi), %xmm1
 ; SSE2-NEXT:    pxor %xmm0, %xmm1
-; SSE2-NEXT:    pxor (%rdi), %xmm0
-; SSE2-NEXT:    movdqa %xmm0, (%rsi)
+; SSE2-NEXT:    movdqa (%rdi), %xmm2
+; SSE2-NEXT:    pxor %xmm0, %xmm2
+; SSE2-NEXT:    movdqa %xmm2, (%rsi)
 ; SSE2-NEXT:    movq %xmm1, 16(%rsi)
 ; SSE2-NEXT:    movq %xmm1, 16(%rdx)
-; SSE2-NEXT:    movdqa %xmm0, (%rdx)
+; SSE2-NEXT:    movdqa %xmm2, (%rdx)
 ; SSE2-NEXT:    movq %xmm1, 48(%rdx)
-; SSE2-NEXT:    movdqu %xmm0, 32(%rdx)
+; SSE2-NEXT:    movdqu %xmm2, 32(%rdx)
 ; SSE2-NEXT:    retq
 ;
 ; AVX1-LABEL: vec384_v6i32:
@@ -4253,13 +4306,14 @@ define void @vec384_v6f32(ptr %in.subvec.ptr, ptr %out.subvec.ptr, ptr %out.vec.
 ; SSE2-NEXT:    pcmpeqd %xmm0, %xmm0
 ; SSE2-NEXT:    movdqa 16(%rdi), %xmm1
 ; SSE2-NEXT:    pxor %xmm0, %xmm1
-; SSE2-NEXT:    pxor (%rdi), %xmm0
-; SSE2-NEXT:    movdqa %xmm0, (%rsi)
+; SSE2-NEXT:    movdqa (%rdi), %xmm2
+; SSE2-NEXT:    pxor %xmm0, %xmm2
+; SSE2-NEXT:    movdqa %xmm2, (%rsi)
 ; SSE2-NEXT:    movq %xmm1, 16(%rsi)
 ; SSE2-NEXT:    movq %xmm1, 16(%rdx)
-; SSE2-NEXT:    movdqa %xmm0, (%rdx)
+; SSE2-NEXT:    movdqa %xmm2, (%rdx)
 ; SSE2-NEXT:    movq %xmm1, 48(%rdx)
-; SSE2-NEXT:    movdqu %xmm0, 32(%rdx)
+; SSE2-NEXT:    movdqu %xmm2, 32(%rdx)
 ; SSE2-NEXT:    retq
 ;
 ; AVX1-LABEL: vec384_v6f32:
@@ -4503,11 +4557,12 @@ define void @vec384_v8i16(ptr %in.subvec.ptr, ptr %out.subvec.ptr, ptr %out.vec.
 ; SSE2-LABEL: vec384_v8i16:
 ; SSE2:       # %bb.0:
 ; SSE2-NEXT:    pcmpeqd %xmm0, %xmm0
-; SSE2-NEXT:    pxor (%rdi), %xmm0
-; SSE2-NEXT:    movdqa %xmm0, (%rsi)
-; SSE2-NEXT:    movdqa %xmm0, (%rdx)
-; SSE2-NEXT:    movdqa %xmm0, 16(%rdx)
-; SSE2-NEXT:    movdqa %xmm0, 32(%rdx)
+; SSE2-NEXT:    movdqa (%rdi), %xmm1
+; SSE2-NEXT:    pxor %xmm0, %xmm1
+; SSE2-NEXT:    movdqa %xmm1, (%rsi)
+; SSE2-NEXT:    movdqa %xmm1, (%rdx)
+; SSE2-NEXT:    movdqa %xmm1, 16(%rdx)
+; SSE2-NEXT:    movdqa %xmm1, 32(%rdx)
 ; SSE2-NEXT:    retq
 ;
 ; AVX-LABEL: vec384_v8i16:
@@ -4553,84 +4608,89 @@ define void @vec384_v12i8(ptr %in.subvec.ptr, ptr %out.subvec.ptr, ptr %out.vec.
 ; SSE2-ONLY-LABEL: vec384_v12i8:
 ; SSE2-ONLY:       # %bb.0:
 ; SSE2-ONLY-NEXT:    pcmpeqd %xmm0, %xmm0
-; SSE2-ONLY-NEXT:    pxor (%rdi), %xmm0
-; SSE2-ONLY-NEXT:    movq %xmm0, (%rsi)
-; SSE2-ONLY-NEXT:    pshufd {{.*#+}} xmm1 = xmm0[2,3,2,3]
-; SSE2-ONLY-NEXT:    movd %xmm1, 8(%rsi)
-; SSE2-ONLY-NEXT:    movd %xmm1, 8(%rdx)
-; SSE2-ONLY-NEXT:    movq %xmm0, (%rdx)
-; SSE2-ONLY-NEXT:    movd %xmm1, 24(%rdx)
-; SSE2-ONLY-NEXT:    movq %xmm0, 16(%rdx)
-; SSE2-ONLY-NEXT:    movd %xmm1, 40(%rdx)
-; SSE2-ONLY-NEXT:    movq %xmm0, 32(%rdx)
-; SSE2-ONLY-NEXT:    movd %xmm1, 56(%rdx)
-; SSE2-ONLY-NEXT:    movq %xmm0, 48(%rdx)
+; SSE2-ONLY-NEXT:    movdqa (%rdi), %xmm1
+; SSE2-ONLY-NEXT:    pxor %xmm0, %xmm1
+; SSE2-ONLY-NEXT:    movq %xmm1, (%rsi)
+; SSE2-ONLY-NEXT:    pshufd {{.*#+}} xmm0 = xmm1[2,3,2,3]
+; SSE2-ONLY-NEXT:    movd %xmm0, 8(%rsi)
+; SSE2-ONLY-NEXT:    movd %xmm0, 8(%rdx)
+; SSE2-ONLY-NEXT:    movq %xmm1, (%rdx)
+; SSE2-ONLY-NEXT:    movd %xmm0, 24(%rdx)
+; SSE2-ONLY-NEXT:    movq %xmm1, 16(%rdx)
+; SSE2-ONLY-NEXT:    movd %xmm0, 40(%rdx)
+; SSE2-ONLY-NEXT:    movq %xmm1, 32(%rdx)
+; SSE2-ONLY-NEXT:    movd %xmm0, 56(%rdx)
+; SSE2-ONLY-NEXT:    movq %xmm1, 48(%rdx)
 ; SSE2-ONLY-NEXT:    retq
 ;
 ; SSE3-LABEL: vec384_v12i8:
 ; SSE3:       # %bb.0:
 ; SSE3-NEXT:    pcmpeqd %xmm0, %xmm0
-; SSE3-NEXT:    pxor (%rdi), %xmm0
-; SSE3-NEXT:    movq %xmm0, (%rsi)
-; SSE3-NEXT:    pshufd {{.*#+}} xmm1 = xmm0[2,3,2,3]
-; SSE3-NEXT:    movd %xmm1, 8(%rsi)
-; SSE3-NEXT:    movd %xmm1, 8(%rdx)
-; SSE3-NEXT:    movq %xmm0, (%rdx)
-; SSE3-NEXT:    movd %xmm1, 24(%rdx)
-; SSE3-NEXT:    movq %xmm0, 16(%rdx)
-; SSE3-NEXT:    movd %xmm1, 40(%rdx)
-; SSE3-NEXT:    movq %xmm0, 32(%rdx)
-; SSE3-NEXT:    movd %xmm1, 56(%rdx)
-; SSE3-NEXT:    movq %xmm0, 48(%rdx)
+; SSE3-NEXT:    movdqa (%rdi), %xmm1
+; SSE3-NEXT:    pxor %xmm0, %xmm1
+; SSE3-NEXT:    movq %xmm1, (%rsi)
+; SSE3-NEXT:    pshufd {{.*#+}} xmm0 = xmm1[2,3,2,3]
+; SSE3-NEXT:    movd %xmm0, 8(%rsi)
+; SSE3-NEXT:    movd %xmm0, 8(%rdx)
+; SSE3-NEXT:    movq %xmm1, (%rdx)
+; SSE3-NEXT:    movd %xmm0, 24(%rdx)
+; SSE3-NEXT:    movq %xmm1, 16(%rdx)
+; SSE3-NEXT:    movd %xmm0, 40(%rdx)
+; SSE3-NEXT:    movq %xmm1, 32(%rdx)
+; SSE3-NEXT:    movd %xmm0, 56(%rdx)
+; SSE3-NEXT:    movq %xmm1, 48(%rdx)
 ; SSE3-NEXT:    retq
 ;
 ; SSSE3-ONLY-LABEL: vec384_v12i8:
 ; SSSE3-ONLY:       # %bb.0:
 ; SSSE3-ONLY-NEXT:    pcmpeqd %xmm0, %xmm0
-; SSSE3-ONLY-NEXT:    pxor (%rdi), %xmm0
-; SSSE3-ONLY-NEXT:    movq %xmm0, (%rsi)
-; SSSE3-ONLY-NEXT:    pshufd {{.*#+}} xmm1 = xmm0[2,3,2,3]
-; SSSE3-ONLY-NEXT:    movd %xmm1, 8(%rsi)
-; SSSE3-ONLY-NEXT:    movd %xmm1, 8(%rdx)
-; SSSE3-ONLY-NEXT:    movq %xmm0, (%rdx)
-; SSSE3-ONLY-NEXT:    movd %xmm1, 24(%rdx)
-; SSSE3-ONLY-NEXT:    movq %xmm0, 16(%rdx)
-; SSSE3-ONLY-NEXT:    movd %xmm1, 40(%rdx)
-; SSSE3-ONLY-NEXT:    movq %xmm0, 32(%rdx)
-; SSSE3-ONLY-NEXT:    movd %xmm1, 56(%rdx)
-; SSSE3-ONLY-NEXT:    movq %xmm0, 48(%rdx)
+; SSSE3-ONLY-NEXT:    movdqa (%rdi), %xmm1
+; SSSE3-ONLY-NEXT:    pxor %xmm0, %xmm1
+; SSSE3-ONLY-NEXT:    movq %xmm1, (%rsi)
+; SSSE3-ONLY-NEXT:    pshufd {{.*#+}} xmm0 = xmm1[2,3,2,3]
+; SSSE3-ONLY-NEXT:    movd %xmm0, 8(%rsi)
+; SSSE3-ONLY-NEXT:    movd %xmm0, 8(%rdx)
+; SSSE3-ONLY-NEXT:    movq %xmm1, (%rdx)
+; SSSE3-ONLY-NEXT:    movd %xmm0, 24(%rdx)
+; SSSE3-ONLY-NEXT:    movq %xmm1, 16(%rdx)
+; SSSE3-ONLY-NEXT:    movd %xmm0, 40(%rdx)
+; SSSE3-ONLY-NEXT:    movq %xmm1, 32(%rdx)
+; SSSE3-ONLY-NEXT:    movd %xmm0, 56(%rdx)
+; SSSE3-ONLY-NEXT:    movq %xmm1, 48(%rdx)
 ; SSSE3-ONLY-NEXT:    retq
 ;
 ; SSE41-LABEL: vec384_v12i8:
 ; SSE41:       # %bb.0:
 ; SSE41-NEXT:    pcmpeqd %xmm0, %xmm0
-; SSE41-NEXT:    pxor (%rdi), %xmm0
-; SSE41-NEXT:    pextrd $2, %xmm0, 8(%rsi)
-; SSE41-NEXT:    movq %xmm0, (%rsi)
-; SSE41-NEXT:    pextrd $2, %xmm0, 8(%rdx)
-; SSE41-NEXT:    movq %xmm0, (%rdx)
-; SSE41-NEXT:    pextrd $2, %xmm0, 24(%rdx)
-; SSE41-NEXT:    movq %xmm0, 16(%rdx)
-; SSE41-NEXT:    pextrd $2, %xmm0, 40(%rdx)
-; SSE41-NEXT:    movq %xmm0, 32(%rdx)
-; SSE41-NEXT:    pextrd $2, %xmm0, 56(%rdx)
-; SSE41-NEXT:    movq %xmm0, 48(%rdx)
+; SSE41-NEXT:    movdqa (%rdi), %xmm1
+; SSE41-NEXT:    pxor %xmm0, %xmm1
+; SSE41-NEXT:    pextrd $2, %xmm1, 8(%rsi)
+; SSE41-NEXT:    movq %xmm1, (%rsi)
+; SSE41-NEXT:    pextrd $2, %xmm1, 8(%rdx)
+; SSE41-NEXT:    movq %xmm1, (%rdx)
+; SSE41-NEXT:    pextrd $2, %xmm1, 24(%rdx)
+; SSE41-NEXT:    movq %xmm1, 16(%rdx)
+; SSE41-NEXT:    pextrd $2, %xmm1, 40(%rdx)
+; SSE41-NEXT:    movq %xmm1, 32(%rdx)
+; SSE41-NEXT:    pextrd $2, %xmm1, 56(%rdx)
+; SSE41-NEXT:    movq %xmm1, 48(%rdx)
 ; SSE41-NEXT:    retq
 ;
 ; SSE42-LABEL: vec384_v12i8:
 ; SSE42:       # %bb.0:
 ; SSE42-NEXT:    pcmpeqd %xmm0, %xmm0
-; SSE42-NEXT:    pxor (%rdi), %xmm0
-; SSE42-NEXT:    pextrd $2, %xmm0, 8(%rsi)
-; SSE42-NEXT:    movq %xmm0, (%rsi)
-; SSE42-NEXT:    pextrd $2, %xmm0, 8(%rdx)
-; SSE42-NEXT:    movq %xmm0, (%rdx)
-; SSE42-NEXT:    pextrd $2, %xmm0, 24(%rdx)
-; SSE42-NEXT:    movq %xmm0, 16(%rdx)
-; SSE42-NEXT:    pextrd $2, %xmm0, 40(%rdx)
-; SSE42-NEXT:    movq %xmm0, 32(%rdx)
-; SSE42-NEXT:    pextrd $2, %xmm0, 56(%rdx)
-; SSE42-NEXT:    movq %xmm0, 48(%rdx)
+; SSE42-NEXT:    movdqa (%rdi), %xmm1
+; SSE42-NEXT:    pxor %xmm0, %xmm1
+; SSE42-NEXT:    pextrd $2, %xmm1, 8(%rsi)
+; SSE42-NEXT:    movq %xmm1, (%rsi)
+; SSE42-NEXT:    pextrd $2, %xmm1, 8(%rdx)
+; SSE42-NEXT:    movq %xmm1, (%rdx)
+; SSE42-NEXT:    pextrd $2, %xmm1, 24(%rdx)
+; SSE42-NEXT:    movq %xmm1, 16(%rdx)
+; SSE42-NEXT:    pextrd $2, %xmm1, 40(%rdx)
+; SSE42-NEXT:    movq %xmm1, 32(%rdx)
+; SSE42-NEXT:    pextrd $2, %xmm1, 56(%rdx)
+; SSE42-NEXT:    movq %xmm1, 48(%rdx)
 ; SSE42-NEXT:    retq
 ;
 ; AVX-LABEL: vec384_v12i8:
@@ -4687,13 +4747,14 @@ define void @vec384_v12i16(ptr %in.subvec.ptr, ptr %out.subvec.ptr, ptr %out.vec
 ; SSE2-NEXT:    pcmpeqd %xmm0, %xmm0
 ; SSE2-NEXT:    movdqa 16(%rdi), %xmm1
 ; SSE2-NEXT:    pxor %xmm0, %xmm1
-; SSE2-NEXT:    pxor (%rdi), %xmm0
-; SSE2-NEXT:    movdqa %xmm0, (%rsi)
+; SSE2-NEXT:    movdqa (%rdi), %xmm2
+; SSE2-NEXT:    pxor %xmm0, %xmm2
+; SSE2-NEXT:    movdqa %xmm2, (%rsi)
 ; SSE2-NEXT:    movq %xmm1, 16(%rsi)
 ; SSE2-NEXT:    movq %xmm1, 16(%rdx)
-; SSE2-NEXT:    movdqa %xmm0, (%rdx)
+; SSE2-NEXT:    movdqa %xmm2, (%rdx)
 ; SSE2-NEXT:    movq %xmm1, 48(%rdx)
-; SSE2-NEXT:    movdqu %xmm0, 32(%rdx)
+; SSE2-NEXT:    movdqu %xmm2, 32(%rdx)
 ; SSE2-NEXT:    retq
 ;
 ; AVX1-LABEL: vec384_v12i16:
@@ -4894,11 +4955,12 @@ define void @vec384_v16i8(ptr %in.subvec.ptr, ptr %out.subvec.ptr, ptr %out.vec.
 ; SSE2-LABEL: vec384_v16i8:
 ; SSE2:       # %bb.0:
 ; SSE2-NEXT:    pcmpeqd %xmm0, %xmm0
-; SSE2-NEXT:    pxor (%rdi), %xmm0
-; SSE2-NEXT:    movdqa %xmm0, (%rsi)
-; SSE2-NEXT:    movdqa %xmm0, (%rdx)
-; SSE2-NEXT:    movdqa %xmm0, 16(%rdx)
-; SSE2-NEXT:    movdqa %xmm0, 32(%rdx)
+; SSE2-NEXT:    movdqa (%rdi), %xmm1
+; SSE2-NEXT:    pxor %xmm0, %xmm1
+; SSE2-NEXT:    movdqa %xmm1, (%rsi)
+; SSE2-NEXT:    movdqa %xmm1, (%rdx)
+; SSE2-NEXT:    movdqa %xmm1, 16(%rdx)
+; SSE2-NEXT:    movdqa %xmm1, 32(%rdx)
 ; SSE2-NEXT:    retq
 ;
 ; AVX-LABEL: vec384_v16i8:
@@ -4947,13 +5009,14 @@ define void @vec384_v24i8(ptr %in.subvec.ptr, ptr %out.subvec.ptr, ptr %out.vec.
 ; SSE2-NEXT:    pcmpeqd %xmm0, %xmm0
 ; SSE2-NEXT:    movdqa 16(%rdi), %xmm1
 ; SSE2-NEXT:    pxor %xmm0, %xmm1
-; SSE2-NEXT:    pxor (%rdi), %xmm0
-; SSE2-NEXT:    movdqa %xmm0, (%rsi)
+; SSE2-NEXT:    movdqa (%rdi), %xmm2
+; SSE2-NEXT:    pxor %xmm0, %xmm2
+; SSE2-NEXT:    movdqa %xmm2, (%rsi)
 ; SSE2-NEXT:    movq %xmm1, 16(%rsi)
 ; SSE2-NEXT:    movq %xmm1, 16(%rdx)
-; SSE2-NEXT:    movdqa %xmm0, (%rdx)
+; SSE2-NEXT:    movdqa %xmm2, (%rdx)
 ; SSE2-NEXT:    movq %xmm1, 48(%rdx)
-; SSE2-NEXT:    movdqu %xmm0, 32(%rdx)
+; SSE2-NEXT:    movdqu %xmm2, 32(%rdx)
 ; SSE2-NEXT:    retq
 ;
 ; AVX1-LABEL: vec384_v24i8:
@@ -5072,10 +5135,11 @@ define void @vec512_v2i8(ptr %in.subvec.ptr, ptr %out.subvec.ptr, ptr %out.vec.p
 ; SSE2-ONLY-LABEL: vec512_v2i8:
 ; SSE2-ONLY:       # %bb.0:
 ; SSE2-ONLY-NEXT:    pcmpeqd %xmm0, %xmm0
-; SSE2-ONLY-NEXT:    pxor (%rdi), %xmm0
-; SSE2-ONLY-NEXT:    movd %xmm0, %eax
+; SSE2-ONLY-NEXT:    movdqa (%rdi), %xmm1
+; SSE2-ONLY-NEXT:    pxor %xmm0, %xmm1
+; SSE2-ONLY-NEXT:    movd %xmm1, %eax
 ; SSE2-ONLY-NEXT:    movw %ax, (%rsi)
-; SSE2-ONLY-NEXT:    pshuflw {{.*#+}} xmm0 = xmm0[0,0,0,0,4,5,6,7]
+; SSE2-ONLY-NEXT:    pshuflw {{.*#+}} xmm0 = xmm1[0,0,0,0,4,5,6,7]
 ; SSE2-ONLY-NEXT:    pshufd {{.*#+}} xmm0 = xmm0[0,1,0,1]
 ; SSE2-ONLY-NEXT:    movdqa %xmm0, (%rdx)
 ; SSE2-ONLY-NEXT:    movdqa %xmm0, 16(%rdx)
@@ -5086,10 +5150,11 @@ define void @vec512_v2i8(ptr %in.subvec.ptr, ptr %out.subvec.ptr, ptr %out.vec.p
 ; SSE3-LABEL: vec512_v2i8:
 ; SSE3:       # %bb.0:
 ; SSE3-NEXT:    pcmpeqd %xmm0, %xmm0
-; SSE3-NEXT:    pxor (%rdi), %xmm0
-; SSE3-NEXT:    movd %xmm0, %eax
+; SSE3-NEXT:    movdqa (%rdi), %xmm1
+; SSE3-NEXT:    pxor %xmm0, %xmm1
+; SSE3-NEXT:    movd %xmm1, %eax
 ; SSE3-NEXT:    movw %ax, (%rsi)
-; SSE3-NEXT:    pshuflw {{.*#+}} xmm0 = xmm0[0,0,0,0,4,5,6,7]
+; SSE3-NEXT:    pshuflw {{.*#+}} xmm0 = xmm1[0,0,0,0,4,5,6,7]
 ; SSE3-NEXT:    pshufd {{.*#+}} xmm0 = xmm0[0,1,0,1]
 ; SSE3-NEXT:    movdqa %xmm0, (%rdx)
 ; SSE3-NEXT:    movdqa %xmm0, 16(%rdx)
@@ -5100,10 +5165,11 @@ define void @vec512_v2i8(ptr %in.subvec.ptr, ptr %out.subvec.ptr, ptr %out.vec.p
 ; SSSE3-ONLY-LABEL: vec512_v2i8:
 ; SSSE3-ONLY:       # %bb.0:
 ; SSSE3-ONLY-NEXT:    pcmpeqd %xmm0, %xmm0
-; SSSE3-ONLY-NEXT:    pxor (%rdi), %xmm0
-; SSSE3-ONLY-NEXT:    movd %xmm0, %eax
+; SSSE3-ONLY-NEXT:    movdqa (%rdi), %xmm1
+; SSSE3-ONLY-NEXT:    pxor %xmm0, %xmm1
+; SSSE3-ONLY-NEXT:    movd %xmm1, %eax
 ; SSSE3-ONLY-NEXT:    movw %ax, (%rsi)
-; SSSE3-ONLY-NEXT:    pshuflw {{.*#+}} xmm0 = xmm0[0,0,0,0,4,5,6,7]
+; SSSE3-ONLY-NEXT:    pshuflw {{.*#+}} xmm0 = xmm1[0,0,0,0,4,5,6,7]
 ; SSSE3-ONLY-NEXT:    pshufd {{.*#+}} xmm0 = xmm0[0,1,0,1]
 ; SSSE3-ONLY-NEXT:    movdqa %xmm0, (%rdx)
 ; SSSE3-ONLY-NEXT:    movdqa %xmm0, 16(%rdx)
@@ -5114,9 +5180,10 @@ define void @vec512_v2i8(ptr %in.subvec.ptr, ptr %out.subvec.ptr, ptr %out.vec.p
 ; SSE41-LABEL: vec512_v2i8:
 ; SSE41:       # %bb.0:
 ; SSE41-NEXT:    pcmpeqd %xmm0, %xmm0
-; SSE41-NEXT:    pxor (%rdi), %xmm0
-; SSE41-NEXT:    pextrw $0, %xmm0, (%rsi)
-; SSE41-NEXT:    pshuflw {{.*#+}} xmm0 = xmm0[0,0,0,0,4,5,6,7]
+; SSE41-NEXT:    movdqa (%rdi), %xmm1
+; SSE41-NEXT:    pxor %xmm0, %xmm1
+; SSE41-NEXT:    pextrw $0, %xmm1, (%rsi)
+; SSE41-NEXT:    pshuflw {{.*#+}} xmm0 = xmm1[0,0,0,0,4,5,6,7]
 ; SSE41-NEXT:    pshufd {{.*#+}} xmm0 = xmm0[0,1,0,1]
 ; SSE41-NEXT:    movdqa %xmm0, (%rdx)
 ; SSE41-NEXT:    movdqa %xmm0, 16(%rdx)
@@ -5127,9 +5194,10 @@ define void @vec512_v2i8(ptr %in.subvec.ptr, ptr %out.subvec.ptr, ptr %out.vec.p
 ; SSE42-LABEL: vec512_v2i8:
 ; SSE42:       # %bb.0:
 ; SSE42-NEXT:    pcmpeqd %xmm0, %xmm0
-; SSE42-NEXT:    pxor (%rdi), %xmm0
-; SSE42-NEXT:    pextrw $0, %xmm0, (%rsi)
-; SSE42-NEXT:    pshuflw {{.*#+}} xmm0 = xmm0[0,0,0,0,4,5,6,7]
+; SSE42-NEXT:    movdqa (%rdi), %xmm1
+; SSE42-NEXT:    pxor %xmm0, %xmm1
+; SSE42-NEXT:    pextrw $0, %xmm1, (%rsi)
+; SSE42-NEXT:    pshuflw {{.*#+}} xmm0 = xmm1[0,0,0,0,4,5,6,7]
 ; SSE42-NEXT:    pshufd {{.*#+}} xmm0 = xmm0[0,1,0,1]
 ; SSE42-NEXT:    movdqa %xmm0, (%rdx)
 ; SSE42-NEXT:    movdqa %xmm0, 16(%rdx)
@@ -5297,9 +5365,10 @@ define void @vec512_v2i16(ptr %in.subvec.ptr, ptr %out.subvec.ptr, ptr %out.vec.
 ; SSE2-LABEL: vec512_v2i16:
 ; SSE2:       # %bb.0:
 ; SSE2-NEXT:    pcmpeqd %xmm0, %xmm0
-; SSE2-NEXT:    pxor (%rdi), %xmm0
-; SSE2-NEXT:    movd %xmm0, (%rsi)
-; SSE2-NEXT:    pshufd {{.*#+}} xmm0 = xmm0[0,0,0,0]
+; SSE2-NEXT:    movdqa (%rdi), %xmm1
+; SSE2-NEXT:    pxor %xmm0, %xmm1
+; SSE2-NEXT:    movd %xmm1, (%rsi)
+; SSE2-NEXT:    pshufd {{.*#+}} xmm0 = xmm1[0,0,0,0]
 ; SSE2-NEXT:    movdqa %xmm0, (%rdx)
 ; SSE2-NEXT:    movdqa %xmm0, 16(%rdx)
 ; SSE2-NEXT:    movdqa %xmm0, 32(%rdx)
@@ -5591,12 +5660,13 @@ define void @vec512_v2i64(ptr %in.subvec.ptr, ptr %out.subvec.ptr, ptr %out.vec.
 ; SSE2-LABEL: vec512_v2i64:
 ; SSE2:       # %bb.0:
 ; SSE2-NEXT:    pcmpeqd %xmm0, %xmm0
-; SSE2-NEXT:    pxor (%rdi), %xmm0
-; SSE2-NEXT:    movdqa %xmm0, (%rsi)
-; SSE2-NEXT:    movdqa %xmm0, (%rdx)
-; SSE2-NEXT:    movdqa %xmm0, 16(%rdx)
-; SSE2-NEXT:    movdqa %xmm0, 32(%rdx)
-; SSE2-NEXT:    movdqa %xmm0, 48(%rdx)
+; SSE2-NEXT:    movdqa (%rdi), %xmm1
+; SSE2-NEXT:    pxor %xmm0, %xmm1
+; SSE2-NEXT:    movdqa %xmm1, (%rsi)
+; SSE2-NEXT:    movdqa %xmm1, (%rdx)
+; SSE2-NEXT:    movdqa %xmm1, 16(%rdx)
+; SSE2-NEXT:    movdqa %xmm1, 32(%rdx)
+; SSE2-NEXT:    movdqa %xmm1, 48(%rdx)
 ; SSE2-NEXT:    retq
 ;
 ; AVX-LABEL: vec512_v2i64:
@@ -5645,12 +5715,13 @@ define void @vec512_v2f64(ptr %in.subvec.ptr, ptr %out.subvec.ptr, ptr %out.vec.
 ; SSE2-LABEL: vec512_v2f64:
 ; SSE2:       # %bb.0:
 ; SSE2-NEXT:    pcmpeqd %xmm0, %xmm0
-; SSE2-NEXT:    pxor (%rdi), %xmm0
-; SSE2-NEXT:    movdqa %xmm0, (%rsi)
-; SSE2-NEXT:    movdqa %xmm0, (%rdx)
-; SSE2-NEXT:    movdqa %xmm0, 16(%rdx)
-; SSE2-NEXT:    movdqa %xmm0, 32(%rdx)
-; SSE2-NEXT:    movdqa %xmm0, 48(%rdx)
+; SSE2-NEXT:    movdqa (%rdi), %xmm1
+; SSE2-NEXT:    pxor %xmm0, %xmm1
+; SSE2-NEXT:    movdqa %xmm1, (%rsi)
+; SSE2-NEXT:    movdqa %xmm1, (%rdx)
+; SSE2-NEXT:    movdqa %xmm1, 16(%rdx)
+; SSE2-NEXT:    movdqa %xmm1, 32(%rdx)
+; SSE2-NEXT:    movdqa %xmm1, 48(%rdx)
 ; SSE2-NEXT:    retq
 ;
 ; AVX-LABEL: vec512_v2f64:
@@ -5708,12 +5779,13 @@ define void @vec512_v2i128(ptr %in.subvec.ptr, ptr %out.subvec.ptr, ptr %out.vec
 ; SSE2-NEXT:    pcmpeqd %xmm0, %xmm0
 ; SSE2-NEXT:    movdqa (%rdi), %xmm1
 ; SSE2-NEXT:    pxor %xmm0, %xmm1
-; SSE2-NEXT:    pxor 16(%rdi), %xmm0
-; SSE2-NEXT:    movdqa %xmm0, 16(%rsi)
+; SSE2-NEXT:    movdqa 16(%rdi), %xmm2
+; SSE2-NEXT:    pxor %xmm0, %xmm2
+; SSE2-NEXT:    movdqa %xmm2, 16(%rsi)
 ; SSE2-NEXT:    movdqa %xmm1, (%rsi)
-; SSE2-NEXT:    movdqa %xmm0, 16(%rdx)
+; SSE2-NEXT:    movdqa %xmm2, 16(%rdx)
 ; SSE2-NEXT:    movdqa %xmm1, (%rdx)
-; SSE2-NEXT:    movdqa %xmm0, 48(%rdx)
+; SSE2-NEXT:    movdqa %xmm2, 48(%rdx)
 ; SSE2-NEXT:    movdqa %xmm1, 32(%rdx)
 ; SSE2-NEXT:    retq
 ;
@@ -5823,9 +5895,10 @@ define void @vec512_v4i8(ptr %in.subvec.ptr, ptr %out.subvec.ptr, ptr %out.vec.p
 ; SSE2-LABEL: vec512_v4i8:
 ; SSE2:       # %bb.0:
 ; SSE2-NEXT:    pcmpeqd %xmm0, %xmm0
-; SSE2-NEXT:    pxor (%rdi), %xmm0
-; SSE2-NEXT:    movd %xmm0, (%rsi)
-; SSE2-NEXT:    pshufd {{.*#+}} xmm0 = xmm0[0,0,0,0]
+; SSE2-NEXT:    movdqa (%rdi), %xmm1
+; SSE2-NEXT:    pxor %xmm0, %xmm1
+; SSE2-NEXT:    movd %xmm1, (%rsi)
+; SSE2-NEXT:    pshufd {{.*#+}} xmm0 = xmm1[0,0,0,0]
 ; SSE2-NEXT:    movdqa %xmm0, (%rdx)
 ; SSE2-NEXT:    movdqa %xmm0, 16(%rdx)
 ; SSE2-NEXT:    movdqa %xmm0, 32(%rdx)
@@ -6024,23 +6097,25 @@ define void @vec512_v4i32(ptr %in.subvec.ptr, ptr %out.subvec.ptr, ptr %out.vec.
 ; SCALAR-LABEL: vec512_v4i32:
 ; SCALAR:       # %bb.0:
 ; SCALAR-NEXT:    movaps (%rdi), %xmm0
-; SCALAR-NEXT:    xorps {{\.?LCPI[0-9]+_[0-9]+}}(%rip), %xmm0
-; SCALAR-NEXT:    movaps %xmm0, (%rsi)
-; SCALAR-NEXT:    movaps %xmm0, (%rdx)
-; SCALAR-NEXT:    movaps %xmm0, 16(%rdx)
-; SCALAR-NEXT:    movaps %xmm0, 32(%rdx)
-; SCALAR-NEXT:    movaps %xmm0, 48(%rdx)
+; SCALAR-NEXT:    movaps {{.*#+}} xmm1 = [NaN,NaN,NaN,NaN]
+; SCALAR-NEXT:    xorps %xmm0, %xmm1
+; SCALAR-NEXT:    movaps %xmm1, (%rsi)
+; SCALAR-NEXT:    movaps %xmm1, (%rdx)
+; SCALAR-NEXT:    movaps %xmm1, 16(%rdx)
+; SCALAR-NEXT:    movaps %xmm1, 32(%rdx)
+; SCALAR-NEXT:    movaps %xmm1, 48(%rdx)
 ; SCALAR-NEXT:    retq
 ;
 ; SSE2-LABEL: vec512_v4i32:
 ; SSE2:       # %bb.0:
 ; SSE2-NEXT:    pcmpeqd %xmm0, %xmm0
-; SSE2-NEXT:    pxor (%rdi), %xmm0
-; SSE2-NEXT:    movdqa %xmm0, (%rsi)
-; SSE2-NEXT:    movdqa %xmm0, (%rdx)
-; SSE2-NEXT:    movdqa %xmm0, 16(%rdx)
-; SSE2-NEXT:    movdqa %xmm0, 32(%rdx)
-; SSE2-NEXT:    movdqa %xmm0, 48(%rdx)
+; SSE2-NEXT:    movdqa (%rdi), %xmm1
+; SSE2-NEXT:    pxor %xmm0, %xmm1
+; SSE2-NEXT:    movdqa %xmm1, (%rsi)
+; SSE2-NEXT:    movdqa %xmm1, (%rdx)
+; SSE2-NEXT:    movdqa %xmm1, 16(%rdx)
+; SSE2-NEXT:    movdqa %xmm1, 32(%rdx)
+; SSE2-NEXT:    movdqa %xmm1, 48(%rdx)
 ; SSE2-NEXT:    retq
 ;
 ; AVX-LABEL: vec512_v4i32:
@@ -6071,23 +6146,25 @@ define void @vec512_v4f32(ptr %in.subvec.ptr, ptr %out.subvec.ptr, ptr %out.vec.
 ; SCALAR-LABEL: vec512_v4f32:
 ; SCALAR:       # %bb.0:
 ; SCALAR-NEXT:    movaps (%rdi), %xmm0
-; SCALAR-NEXT:    xorps {{\.?LCPI[0-9]+_[0-9]+}}(%rip), %xmm0
-; SCALAR-NEXT:    movaps %xmm0, (%rsi)
-; SCALAR-NEXT:    movaps %xmm0, (%rdx)
-; SCALAR-NEXT:    movaps %xmm0, 16(%rdx)
-; SCALAR-NEXT:    movaps %xmm0, 32(%rdx)
-; SCALAR-NEXT:    movaps %xmm0, 48(%rdx)
+; SCALAR-NEXT:    movaps {{.*#+}} xmm1 = [NaN,NaN,NaN,NaN]
+; SCALAR-NEXT:    xorps %xmm0, %xmm1
+; SCALAR-NEXT:    movaps %xmm1, (%rsi)
+; SCALAR-NEXT:    movaps %xmm1, (%rdx)
+; SCALAR-NEXT:    movaps %xmm1, 16(%rdx)
+; SCALAR-NEXT:    movaps %xmm1, 32(%rdx)
+; SCALAR-NEXT:    movaps %xmm1, 48(%rdx)
 ; SCALAR-NEXT:    retq
 ;
 ; SSE2-LABEL: vec512_v4f32:
 ; SSE2:       # %bb.0:
 ; SSE2-NEXT:    pcmpeqd %xmm0, %xmm0
-; SSE2-NEXT:    pxor (%rdi), %xmm0
-; SSE2-NEXT:    movdqa %xmm0, (%rsi)
-; SSE2-NEXT:    movdqa %xmm0, (%rdx)
-; SSE2-NEXT:    movdqa %xmm0, 16(%rdx)
-; SSE2-NEXT:    movdqa %xmm0, 32(%rdx)
-; SSE2-NEXT:    movdqa %xmm0, 48(%rdx)
+; SSE2-NEXT:    movdqa (%rdi), %xmm1
+; SSE2-NEXT:    pxor %xmm0, %xmm1
+; SSE2-NEXT:    movdqa %xmm1, (%rsi)
+; SSE2-NEXT:    movdqa %xmm1, (%rdx)
+; SSE2-NEXT:    movdqa %xmm1, 16(%rdx)
+; SSE2-NEXT:    movdqa %xmm1, 32(%rdx)
+; SSE2-NEXT:    movdqa %xmm1, 48(%rdx)
 ; SSE2-NEXT:    retq
 ;
 ; AVX-LABEL: vec512_v4f32:
@@ -6145,13 +6222,14 @@ define void @vec512_v4i64(ptr %in.subvec.ptr, ptr %out.subvec.ptr, ptr %out.vec.
 ; SSE2-NEXT:    pcmpeqd %xmm0, %xmm0
 ; SSE2-NEXT:    movdqa 16(%rdi), %xmm1
 ; SSE2-NEXT:    pxor %xmm0, %xmm1
-; SSE2-NEXT:    pxor (%rdi), %xmm0
-; SSE2-NEXT:    movdqa %xmm0, (%rsi)
+; SSE2-NEXT:    movdqa (%rdi), %xmm2
+; SSE2-NEXT:    pxor %xmm0, %xmm2
+; SSE2-NEXT:    movdqa %xmm2, (%rsi)
 ; SSE2-NEXT:    movdqa %xmm1, 16(%rsi)
-; SSE2-NEXT:    movdqa %xmm0, (%rdx)
+; SSE2-NEXT:    movdqa %xmm2, (%rdx)
 ; SSE2-NEXT:    movdqa %xmm1, 16(%rdx)
 ; SSE2-NEXT:    movdqa %xmm1, 48(%rdx)
-; SSE2-NEXT:    movdqa %xmm0, 32(%rdx)
+; SSE2-NEXT:    movdqa %xmm2, 32(%rdx)
 ; SSE2-NEXT:    retq
 ;
 ; AVX1-LABEL: vec512_v4i64:
@@ -6214,13 +6292,14 @@ define void @vec512_v4f64(ptr %in.subvec.ptr, ptr %out.subvec.ptr, ptr %out.vec.
 ; SSE2-NEXT:    pcmpeqd %xmm0, %xmm0
 ; SSE2-NEXT:    movdqa 16(%rdi), %xmm1
 ; SSE2-NEXT:    pxor %xmm0, %xmm1
-; SSE2-NEXT:    pxor (%rdi), %xmm0
-; SSE2-NEXT:    movdqa %xmm0, (%rsi)
+; SSE2-NEXT:    movdqa (%rdi), %xmm2
+; SSE2-NEXT:    pxor %xmm0, %xmm2
+; SSE2-NEXT:    movdqa %xmm2, (%rsi)
 ; SSE2-NEXT:    movdqa %xmm1, 16(%rsi)
-; SSE2-NEXT:    movdqa %xmm0, (%rdx)
+; SSE2-NEXT:    movdqa %xmm2, (%rdx)
 ; SSE2-NEXT:    movdqa %xmm1, 16(%rdx)
 ; SSE2-NEXT:    movdqa %xmm1, 48(%rdx)
-; SSE2-NEXT:    movdqa %xmm0, 32(%rdx)
+; SSE2-NEXT:    movdqa %xmm2, 32(%rdx)
 ; SSE2-NEXT:    retq
 ;
 ; AVX1-LABEL: vec512_v4f64:
@@ -6484,12 +6563,13 @@ define void @vec512_v8i16(ptr %in.subvec.ptr, ptr %out.subvec.ptr, ptr %out.vec.
 ; SSE2-LABEL: vec512_v8i16:
 ; SSE2:       # %bb.0:
 ; SSE2-NEXT:    pcmpeqd %xmm0, %xmm0
-; SSE2-NEXT:    pxor (%rdi), %xmm0
-; SSE2-NEXT:    movdqa %xmm0, (%rsi)
-; SSE2-NEXT:    movdqa %xmm0, (%rdx)
-; SSE2-NEXT:    movdqa %xmm0, 16(%rdx)
-; SSE2-NEXT:    movdqa %xmm0, 32(%rdx)
-; SSE2-NEXT:    movdqa %xmm0, 48(%rdx)
+; SSE2-NEXT:    movdqa (%rdi), %xmm1
+; SSE2-NEXT:    pxor %xmm0, %xmm1
+; SSE2-NEXT:    movdqa %xmm1, (%rsi)
+; SSE2-NEXT:    movdqa %xmm1, (%rdx)
+; SSE2-NEXT:    movdqa %xmm1, 16(%rdx)
+; SSE2-NEXT:    movdqa %xmm1, 32(%rdx)
+; SSE2-NEXT:    movdqa %xmm1, 48(%rdx)
 ; SSE2-NEXT:    retq
 ;
 ; AVX-LABEL: vec512_v8i16:
@@ -6568,13 +6648,14 @@ define void @vec512_v8i32(ptr %in.subvec.ptr, ptr %out.subvec.ptr, ptr %out.vec.
 ; SSE2-NEXT:    pcmpeqd %xmm0, %xmm0
 ; SSE2-NEXT:    movdqa 16(%rdi), %xmm1
 ; SSE2-NEXT:    pxor %xmm0, %xmm1
-; SSE2-NEXT:    pxor (%rdi), %xmm0
-; SSE2-NEXT:    movdqa %xmm0, (%rsi)
+; SSE2-NEXT:    movdqa (%rdi), %xmm2
+; SSE2-NEXT:    pxor %xmm0, %xmm2
+; SSE2-NEXT:    movdqa %xmm2, (%rsi)
 ; SSE2-NEXT:    movdqa %xmm1, 16(%rsi)
-; SSE2-NEXT:    movdqa %xmm0, (%rdx)
+; SSE2-NEXT:    movdqa %xmm2, (%rdx)
 ; SSE2-NEXT:    movdqa %xmm1, 16(%rdx)
 ; SSE2-NEXT:    movdqa %xmm1, 48(%rdx)
-; SSE2-NEXT:    movdqa %xmm0, 32(%rdx)
+; SSE2-NEXT:    movdqa %xmm2, 32(%rdx)
 ; SSE2-NEXT:    retq
 ;
 ; AVX1-LABEL: vec512_v8i32:
@@ -6659,13 +6740,14 @@ define void @vec512_v8f32(ptr %in.subvec.ptr, ptr %out.subvec.ptr, ptr %out.vec.
 ; SSE2-NEXT:    pcmpeqd %xmm0, %xmm0
 ; SSE2-NEXT:    movdqa 16(%rdi), %xmm1
 ; SSE2-NEXT:    pxor %xmm0, %xmm1
-; SSE2-NEXT:    pxor (%rdi), %xmm0
-; SSE2-NEXT:    movdqa %xmm0, (%rsi)
+; SSE2-NEXT:    movdqa (%rdi), %xmm2
+; SSE2-NEXT:    pxor %xmm0, %xmm2
+; SSE2-NEXT:    movdqa %xmm2, (%rsi)
 ; SSE2-NEXT:    movdqa %xmm1, 16(%rsi)
-; SSE2-NEXT:    movdqa %xmm0, (%rdx)
+; SSE2-NEXT:    movdqa %xmm2, (%rdx)
 ; SSE2-NEXT:    movdqa %xmm1, 16(%rdx)
 ; SSE2-NEXT:    movdqa %xmm1, 48(%rdx)
-; SSE2-NEXT:    movdqa %xmm0, 32(%rdx)
+; SSE2-NEXT:    movdqa %xmm2, 32(%rdx)
 ; SSE2-NEXT:    retq
 ;
 ; AVX1-LABEL: vec512_v8f32:
@@ -6890,12 +6972,13 @@ define void @vec512_v16i8(ptr %in.subvec.ptr, ptr %out.subvec.ptr, ptr %out.vec.
 ; SSE2-LABEL: vec512_v16i8:
 ; SSE2:       # %bb.0:
 ; SSE2-NEXT:    pcmpeqd %xmm0, %xmm0
-; SSE2-NEXT:    pxor (%rdi), %xmm0
-; SSE2-NEXT:    movdqa %xmm0, (%rsi)
-; SSE2-NEXT:    movdqa %xmm0, (%rdx)
-; SSE2-NEXT:    movdqa %xmm0, 16(%rdx)
-; SSE2-NEXT:    movdqa %xmm0, 32(%rdx)
-; SSE2-NEXT:    movdqa %xmm0, 48(%rdx)
+; SSE2-NEXT:    movdqa (%rdi), %xmm1
+; SSE2-NEXT:    pxor %xmm0, %xmm1
+; SSE2-NEXT:    movdqa %xmm1, (%rsi)
+; SSE2-NEXT:    movdqa %xmm1, (%rdx)
+; SSE2-NEXT:    movdqa %xmm1, 16(%rdx)
+; SSE2-NEXT:    movdqa %xmm1, 32(%rdx)
+; SSE2-NEXT:    movdqa %xmm1, 48(%rdx)
 ; SSE2-NEXT:    retq
 ;
 ; AVX-LABEL: vec512_v16i8:
@@ -7058,13 +7141,14 @@ define void @vec512_v16i16(ptr %in.subvec.ptr, ptr %out.subvec.ptr, ptr %out.vec
 ; SSE2-NEXT:    pcmpeqd %xmm0, %xmm0
 ; SSE2-NEXT:    movdqa 16(%rdi), %xmm1
 ; SSE2-NEXT:    pxor %xmm0, %xmm1
-; SSE2-NEXT:    pxor (%rdi), %xmm0
-; SSE2-NEXT:    movdqa %xmm0, (%rsi)
+; SSE2-NEXT:    movdqa (%rdi), %xmm2
+; SSE2-NEXT:    pxor %xmm0, %xmm2
+; SSE2-NEXT:    movdqa %xmm2, (%rsi)
 ; SSE2-NEXT:    movdqa %xmm1, 16(%rsi)
-; SSE2-NEXT:    movdqa %xmm0, (%rdx)
+; SSE2-NEXT:    movdqa %xmm2, (%rdx)
 ; SSE2-NEXT:    movdqa %xmm1, 16(%rdx)
 ; SSE2-NEXT:    movdqa %xmm1, 48(%rdx)
-; SSE2-NEXT:    movdqa %xmm0, 32(%rdx)
+; SSE2-NEXT:    movdqa %xmm2, 32(%rdx)
 ; SSE2-NEXT:    retq
 ;
 ; AVX1-LABEL: vec512_v16i16:
@@ -7373,13 +7457,14 @@ define void @vec512_v32i8(ptr %in.subvec.ptr, ptr %out.subvec.ptr, ptr %out.vec.
 ; SSE2-NEXT:    pcmpeqd %xmm0, %xmm0
 ; SSE2-NEXT:    movdqa 16(%rdi), %xmm1
 ; SSE2-NEXT:    pxor %xmm0, %xmm1
-; SSE2-NEXT:    pxor (%rdi), %xmm0
-; SSE2-NEXT:    movdqa %xmm0, (%rsi)
+; SSE2-NEXT:    movdqa (%rdi), %xmm2
+; SSE2-NEXT:    pxor %xmm0, %xmm2
+; SSE2-NEXT:    movdqa %xmm2, (%rsi)
 ; SSE2-NEXT:    movdqa %xmm1, 16(%rsi)
-; SSE2-NEXT:    movdqa %xmm0, (%rdx)
+; SSE2-NEXT:    movdqa %xmm2, (%rdx)
 ; SSE2-NEXT:    movdqa %xmm1, 16(%rdx)
 ; SSE2-NEXT:    movdqa %xmm1, 48(%rdx)
-; SSE2-NEXT:    movdqa %xmm0, 32(%rdx)
+; SSE2-NEXT:    movdqa %xmm2, 32(%rdx)
 ; SSE2-NEXT:    retq
 ;
 ; AVX1-LABEL: vec512_v32i8:

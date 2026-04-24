@@ -63,14 +63,14 @@ define i64 @i64_zext_shift_i32_zext_i8(i8 %a0) nounwind {
 ; X86-LABEL: i64_zext_shift_i32_zext_i8:
 ; X86:       # %bb.0:
 ; X86-NEXT:    movzbl {{[0-9]+}}(%esp), %eax
-; X86-NEXT:    shll $3, %eax
+; X86-NEXT:    leal (,%eax,8), %eax
 ; X86-NEXT:    xorl %edx, %edx
 ; X86-NEXT:    retl
 ;
 ; X64-LABEL: i64_zext_shift_i32_zext_i8:
 ; X64:       # %bb.0:
 ; X64-NEXT:    movzbl %dil, %eax
-; X64-NEXT:    shll $3, %eax
+; X64-NEXT:    leal (,%rax,8), %eax
 ; X64-NEXT:    retq
   %t0 = zext i8 %a0 to i32
   %t1 = shl i32 %t0, 3

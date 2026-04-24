@@ -203,10 +203,11 @@ define i32 @abd_ext_i32(i32 %a, i32 %b) nounwind {
 ;
 ; X64-LABEL: abd_ext_i32:
 ; X64:       # %bb.0:
-; X64-NEXT:    movl %edi, %eax
-; X64-NEXT:    subl %esi, %eax
-; X64-NEXT:    subl %edi, %esi
-; X64-NEXT:    cmovbl %esi, %eax
+; X64-NEXT:    movl %esi, %eax
+; X64-NEXT:    movl %edi, %ecx
+; X64-NEXT:    subl %esi, %ecx
+; X64-NEXT:    subl %edi, %eax
+; X64-NEXT:    cmovael %ecx, %eax
 ; X64-NEXT:    retq
   %aext = zext i32 %a to i64
   %bext = zext i32 %b to i64
@@ -258,10 +259,11 @@ define i32 @abd_ext_i32_undef(i32 %a, i32 %b) nounwind {
 ;
 ; X64-LABEL: abd_ext_i32_undef:
 ; X64:       # %bb.0:
-; X64-NEXT:    movl %edi, %eax
-; X64-NEXT:    subl %esi, %eax
-; X64-NEXT:    subl %edi, %esi
-; X64-NEXT:    cmovbl %esi, %eax
+; X64-NEXT:    movl %esi, %eax
+; X64-NEXT:    movl %edi, %ecx
+; X64-NEXT:    subl %esi, %ecx
+; X64-NEXT:    subl %edi, %eax
+; X64-NEXT:    cmovael %ecx, %eax
 ; X64-NEXT:    retq
   %aext = zext i32 %a to i64
   %bext = zext i32 %b to i64
@@ -294,10 +296,11 @@ define i64 @abd_ext_i64(i64 %a, i64 %b) nounwind {
 ;
 ; X64-LABEL: abd_ext_i64:
 ; X64:       # %bb.0:
-; X64-NEXT:    movq %rdi, %rax
-; X64-NEXT:    subq %rsi, %rax
-; X64-NEXT:    subq %rdi, %rsi
-; X64-NEXT:    cmovbq %rsi, %rax
+; X64-NEXT:    movq %rsi, %rax
+; X64-NEXT:    movq %rdi, %rcx
+; X64-NEXT:    subq %rsi, %rcx
+; X64-NEXT:    subq %rdi, %rax
+; X64-NEXT:    cmovaeq %rcx, %rax
 ; X64-NEXT:    retq
   %aext = zext i64 %a to i128
   %bext = zext i64 %b to i128
@@ -330,10 +333,11 @@ define i64 @abd_ext_i64_undef(i64 %a, i64 %b) nounwind {
 ;
 ; X64-LABEL: abd_ext_i64_undef:
 ; X64:       # %bb.0:
-; X64-NEXT:    movq %rdi, %rax
-; X64-NEXT:    subq %rsi, %rax
-; X64-NEXT:    subq %rdi, %rsi
-; X64-NEXT:    cmovbq %rsi, %rax
+; X64-NEXT:    movq %rsi, %rax
+; X64-NEXT:    movq %rdi, %rcx
+; X64-NEXT:    subq %rsi, %rcx
+; X64-NEXT:    subq %rdi, %rax
+; X64-NEXT:    cmovaeq %rcx, %rax
 ; X64-NEXT:    retq
   %aext = zext i64 %a to i128
   %bext = zext i64 %b to i128
@@ -559,10 +563,11 @@ define i32 @abd_minmax_i32(i32 %a, i32 %b) nounwind {
 ;
 ; X64-LABEL: abd_minmax_i32:
 ; X64:       # %bb.0:
-; X64-NEXT:    movl %edi, %eax
-; X64-NEXT:    subl %esi, %eax
-; X64-NEXT:    subl %edi, %esi
-; X64-NEXT:    cmovbl %esi, %eax
+; X64-NEXT:    movl %esi, %eax
+; X64-NEXT:    movl %edi, %ecx
+; X64-NEXT:    subl %esi, %ecx
+; X64-NEXT:    subl %edi, %eax
+; X64-NEXT:    cmovael %ecx, %eax
 ; X64-NEXT:    retq
   %min = call i32 @llvm.umin.i32(i32 %a, i32 %b)
   %max = call i32 @llvm.umax.i32(i32 %a, i32 %b)
@@ -603,10 +608,11 @@ define i64 @abd_minmax_i64(i64 %a, i64 %b) nounwind {
 ;
 ; X64-LABEL: abd_minmax_i64:
 ; X64:       # %bb.0:
-; X64-NEXT:    movq %rdi, %rax
-; X64-NEXT:    subq %rsi, %rax
-; X64-NEXT:    subq %rdi, %rsi
-; X64-NEXT:    cmovbq %rsi, %rax
+; X64-NEXT:    movq %rsi, %rax
+; X64-NEXT:    movq %rdi, %rcx
+; X64-NEXT:    subq %rsi, %rcx
+; X64-NEXT:    subq %rdi, %rax
+; X64-NEXT:    cmovaeq %rcx, %rax
 ; X64-NEXT:    retq
   %min = call i64 @llvm.umin.i64(i64 %a, i64 %b)
   %max = call i64 @llvm.umax.i64(i64 %a, i64 %b)
@@ -774,10 +780,11 @@ define i32 @abd_cmp_i32(i32 %a, i32 %b) nounwind {
 ;
 ; X64-LABEL: abd_cmp_i32:
 ; X64:       # %bb.0:
-; X64-NEXT:    movl %edi, %eax
-; X64-NEXT:    subl %esi, %eax
-; X64-NEXT:    subl %edi, %esi
-; X64-NEXT:    cmovbl %esi, %eax
+; X64-NEXT:    movl %esi, %eax
+; X64-NEXT:    movl %edi, %ecx
+; X64-NEXT:    subl %esi, %ecx
+; X64-NEXT:    subl %edi, %eax
+; X64-NEXT:    cmovael %ecx, %eax
 ; X64-NEXT:    retq
   %cmp = icmp uge i32 %a, %b
   %ab = sub i32 %a, %b
@@ -808,10 +815,11 @@ define i64 @abd_cmp_i64(i64 %a, i64 %b) nounwind {
 ;
 ; X64-LABEL: abd_cmp_i64:
 ; X64:       # %bb.0:
-; X64-NEXT:    movq %rdi, %rax
-; X64-NEXT:    subq %rsi, %rax
-; X64-NEXT:    subq %rdi, %rsi
-; X64-NEXT:    cmovbq %rsi, %rax
+; X64-NEXT:    movq %rsi, %rax
+; X64-NEXT:    movq %rdi, %rcx
+; X64-NEXT:    subq %rsi, %rcx
+; X64-NEXT:    subq %rdi, %rax
+; X64-NEXT:    cmovaeq %rcx, %rax
 ; X64-NEXT:    retq
   %cmp = icmp ult i64 %a, %b
   %ab = sub i64 %a, %b

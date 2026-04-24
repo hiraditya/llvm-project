@@ -611,10 +611,10 @@ define float @uitofp_i64tof32(i64 %x) #0 {
 ; SSE-X64-NEXT:    shrq %rax
 ; SSE-X64-NEXT:    movl %edi, %ecx
 ; SSE-X64-NEXT:    andl $1, %ecx
-; SSE-X64-NEXT:    orq %rax, %rcx
+; SSE-X64-NEXT:    orq %rcx, %rax
 ; SSE-X64-NEXT:    testq %rdi, %rdi
-; SSE-X64-NEXT:    cmovnsq %rdi, %rcx
-; SSE-X64-NEXT:    cvtsi2ss %rcx, %xmm0
+; SSE-X64-NEXT:    cmovnsq %rdi, %rax
+; SSE-X64-NEXT:    cvtsi2ss %rax, %xmm0
 ; SSE-X64-NEXT:    jns .LBB9_2
 ; SSE-X64-NEXT:  # %bb.1:
 ; SSE-X64-NEXT:    addss %xmm0, %xmm0
@@ -653,10 +653,10 @@ define float @uitofp_i64tof32(i64 %x) #0 {
 ; AVX1-X64-NEXT:    shrq %rax
 ; AVX1-X64-NEXT:    movl %edi, %ecx
 ; AVX1-X64-NEXT:    andl $1, %ecx
-; AVX1-X64-NEXT:    orq %rax, %rcx
+; AVX1-X64-NEXT:    orq %rcx, %rax
 ; AVX1-X64-NEXT:    testq %rdi, %rdi
-; AVX1-X64-NEXT:    cmovnsq %rdi, %rcx
-; AVX1-X64-NEXT:    vcvtsi2ss %rcx, %xmm15, %xmm0
+; AVX1-X64-NEXT:    cmovnsq %rdi, %rax
+; AVX1-X64-NEXT:    vcvtsi2ss %rax, %xmm15, %xmm0
 ; AVX1-X64-NEXT:    jns .LBB9_2
 ; AVX1-X64-NEXT:  # %bb.1:
 ; AVX1-X64-NEXT:    vaddss %xmm0, %xmm0, %xmm0
@@ -1300,10 +1300,10 @@ define double @uitofp_i64tof64(i64 %x) #0 {
 ; SSE-X64-NEXT:    shrq %rax
 ; SSE-X64-NEXT:    movl %edi, %ecx
 ; SSE-X64-NEXT:    andl $1, %ecx
-; SSE-X64-NEXT:    orq %rax, %rcx
+; SSE-X64-NEXT:    orq %rcx, %rax
 ; SSE-X64-NEXT:    testq %rdi, %rdi
-; SSE-X64-NEXT:    cmovnsq %rdi, %rcx
-; SSE-X64-NEXT:    cvtsi2sd %rcx, %xmm0
+; SSE-X64-NEXT:    cmovnsq %rdi, %rax
+; SSE-X64-NEXT:    cvtsi2sd %rax, %xmm0
 ; SSE-X64-NEXT:    jns .LBB18_2
 ; SSE-X64-NEXT:  # %bb.1:
 ; SSE-X64-NEXT:    addsd %xmm0, %xmm0
@@ -1342,10 +1342,10 @@ define double @uitofp_i64tof64(i64 %x) #0 {
 ; AVX1-X64-NEXT:    shrq %rax
 ; AVX1-X64-NEXT:    movl %edi, %ecx
 ; AVX1-X64-NEXT:    andl $1, %ecx
-; AVX1-X64-NEXT:    orq %rax, %rcx
+; AVX1-X64-NEXT:    orq %rcx, %rax
 ; AVX1-X64-NEXT:    testq %rdi, %rdi
-; AVX1-X64-NEXT:    cmovnsq %rdi, %rcx
-; AVX1-X64-NEXT:    vcvtsi2sd %rcx, %xmm15, %xmm0
+; AVX1-X64-NEXT:    cmovnsq %rdi, %rax
+; AVX1-X64-NEXT:    vcvtsi2sd %rax, %xmm15, %xmm0
 ; AVX1-X64-NEXT:    jns .LBB18_2
 ; AVX1-X64-NEXT:  # %bb.1:
 ; AVX1-X64-NEXT:    vaddsd %xmm0, %xmm0, %xmm0

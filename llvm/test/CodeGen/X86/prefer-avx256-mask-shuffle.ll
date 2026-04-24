@@ -189,7 +189,7 @@ define <32 x i1> @shuf32i1_3_6_22_12_3_7_7_0_3_6_1_13_3_21_7_0_3_6_22_12_3_7_7_0
 ; AVX256VLBW-NEXT:    vpshufb {{.*#+}} ymm0 = ymm0[3,6,u,12,3,7,7,0,3,6,1,13,3,u,7,0,19,22,u,28,19,23,23,16,19,22,17,29,19,u,23,16]
 ; AVX256VLBW-NEXT:    movl $537141252, %eax # imm = 0x20042004
 ; AVX256VLBW-NEXT:    kmovd %eax, %k1
-; AVX256VLBW-NEXT:    vmovdqu8 %ymm1, %ymm0 {%k1}
+; AVX256VLBW-NEXT:    vpblendmb %ymm1, %ymm0, %ymm0 {%k1}
 ; AVX256VLBW-NEXT:    vpmovb2m %ymm0, %k0
 ; AVX256VLBW-NEXT:    vpmovm2b %k0, %ymm0
 ; AVX256VLBW-NEXT:    retq

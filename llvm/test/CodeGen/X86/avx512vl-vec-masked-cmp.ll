@@ -293,16 +293,17 @@ define zeroext i64 @test_masked_vpcmpeqb_v32i1_v64i1_mask(i32 zeroext %__u, <4 x
 ; NoVLX-NEXT:    vpcmpeqb %ymm1, %ymm0, %ymm0
 ; NoVLX-NEXT:    vpmovsxbd %xmm0, %zmm1
 ; NoVLX-NEXT:    vptestmd %zmm1, %zmm1, %k0
-; NoVLX-NEXT:    kmovw %k0, %eax
-; NoVLX-NEXT:    andl %edi, %eax
-; NoVLX-NEXT:    shrl $16, %edi
+; NoVLX-NEXT:    kmovw %k0, %ecx
+; NoVLX-NEXT:    andl %edi, %ecx
+; NoVLX-NEXT:    movl %edi, %eax
+; NoVLX-NEXT:    shrl $16, %eax
 ; NoVLX-NEXT:    vextracti128 $1, %ymm0, %xmm0
 ; NoVLX-NEXT:    vpmovsxbd %xmm0, %zmm0
 ; NoVLX-NEXT:    vptestmd %zmm0, %zmm0, %k0
-; NoVLX-NEXT:    kmovw %k0, %ecx
-; NoVLX-NEXT:    andl %edi, %ecx
-; NoVLX-NEXT:    shll $16, %ecx
-; NoVLX-NEXT:    movzwl %ax, %eax
+; NoVLX-NEXT:    kmovw %k0, %edx
+; NoVLX-NEXT:    andl %edx, %eax
+; NoVLX-NEXT:    shll $16, %eax
+; NoVLX-NEXT:    movzwl %cx, %ecx
 ; NoVLX-NEXT:    orl %ecx, %eax
 ; NoVLX-NEXT:    vzeroupper
 ; NoVLX-NEXT:    retq
@@ -331,16 +332,17 @@ define zeroext i64 @test_masked_vpcmpeqb_v32i1_v64i1_mask_mem(i32 zeroext %__u, 
 ; NoVLX-NEXT:    vpcmpeqb (%rsi), %ymm0, %ymm0
 ; NoVLX-NEXT:    vpmovsxbd %xmm0, %zmm1
 ; NoVLX-NEXT:    vptestmd %zmm1, %zmm1, %k0
-; NoVLX-NEXT:    kmovw %k0, %eax
-; NoVLX-NEXT:    andl %edi, %eax
-; NoVLX-NEXT:    shrl $16, %edi
+; NoVLX-NEXT:    kmovw %k0, %ecx
+; NoVLX-NEXT:    andl %edi, %ecx
+; NoVLX-NEXT:    movl %edi, %eax
+; NoVLX-NEXT:    shrl $16, %eax
 ; NoVLX-NEXT:    vextracti128 $1, %ymm0, %xmm0
 ; NoVLX-NEXT:    vpmovsxbd %xmm0, %zmm0
 ; NoVLX-NEXT:    vptestmd %zmm0, %zmm0, %k0
-; NoVLX-NEXT:    kmovw %k0, %ecx
-; NoVLX-NEXT:    andl %edi, %ecx
-; NoVLX-NEXT:    shll $16, %ecx
-; NoVLX-NEXT:    movzwl %ax, %eax
+; NoVLX-NEXT:    kmovw %k0, %edx
+; NoVLX-NEXT:    andl %edx, %eax
+; NoVLX-NEXT:    shll $16, %eax
+; NoVLX-NEXT:    movzwl %cx, %ecx
 ; NoVLX-NEXT:    orl %ecx, %eax
 ; NoVLX-NEXT:    vzeroupper
 ; NoVLX-NEXT:    retq
@@ -988,18 +990,19 @@ define zeroext i64 @test_masked_vpcmpeqw_v32i1_v64i1_mask(i32 zeroext %__u, <8 x
 ; NoVLX-NEXT:    vpcmpeqw %ymm1, %ymm0, %ymm2
 ; NoVLX-NEXT:    vpmovsxwd %ymm2, %zmm2
 ; NoVLX-NEXT:    vptestmd %zmm2, %zmm2, %k0
-; NoVLX-NEXT:    kmovw %k0, %eax
-; NoVLX-NEXT:    andl %edi, %eax
-; NoVLX-NEXT:    shrl $16, %edi
+; NoVLX-NEXT:    kmovw %k0, %ecx
+; NoVLX-NEXT:    andl %edi, %ecx
+; NoVLX-NEXT:    movl %edi, %eax
+; NoVLX-NEXT:    shrl $16, %eax
 ; NoVLX-NEXT:    vextracti64x4 $1, %zmm1, %ymm1
 ; NoVLX-NEXT:    vextracti64x4 $1, %zmm0, %ymm0
 ; NoVLX-NEXT:    vpcmpeqw %ymm1, %ymm0, %ymm0
 ; NoVLX-NEXT:    vpmovsxwd %ymm0, %zmm0
 ; NoVLX-NEXT:    vptestmd %zmm0, %zmm0, %k0
-; NoVLX-NEXT:    kmovw %k0, %ecx
-; NoVLX-NEXT:    andl %edi, %ecx
-; NoVLX-NEXT:    shll $16, %ecx
-; NoVLX-NEXT:    movzwl %ax, %eax
+; NoVLX-NEXT:    kmovw %k0, %edx
+; NoVLX-NEXT:    andl %edx, %eax
+; NoVLX-NEXT:    shll $16, %eax
+; NoVLX-NEXT:    movzwl %cx, %ecx
 ; NoVLX-NEXT:    orl %ecx, %eax
 ; NoVLX-NEXT:    vzeroupper
 ; NoVLX-NEXT:    retq
@@ -1028,17 +1031,18 @@ define zeroext i64 @test_masked_vpcmpeqw_v32i1_v64i1_mask_mem(i32 zeroext %__u, 
 ; NoVLX-NEXT:    vpcmpeqw (%rsi), %ymm0, %ymm1
 ; NoVLX-NEXT:    vpmovsxwd %ymm1, %zmm1
 ; NoVLX-NEXT:    vptestmd %zmm1, %zmm1, %k0
-; NoVLX-NEXT:    kmovw %k0, %eax
-; NoVLX-NEXT:    andl %edi, %eax
-; NoVLX-NEXT:    shrl $16, %edi
+; NoVLX-NEXT:    kmovw %k0, %ecx
+; NoVLX-NEXT:    andl %edi, %ecx
+; NoVLX-NEXT:    movl %edi, %eax
+; NoVLX-NEXT:    shrl $16, %eax
 ; NoVLX-NEXT:    vextracti64x4 $1, %zmm0, %ymm0
 ; NoVLX-NEXT:    vpcmpeqw 32(%rsi), %ymm0, %ymm0
 ; NoVLX-NEXT:    vpmovsxwd %ymm0, %zmm0
 ; NoVLX-NEXT:    vptestmd %zmm0, %zmm0, %k0
-; NoVLX-NEXT:    kmovw %k0, %ecx
-; NoVLX-NEXT:    andl %edi, %ecx
-; NoVLX-NEXT:    shll $16, %ecx
-; NoVLX-NEXT:    movzwl %ax, %eax
+; NoVLX-NEXT:    kmovw %k0, %edx
+; NoVLX-NEXT:    andl %edx, %eax
+; NoVLX-NEXT:    shll $16, %eax
+; NoVLX-NEXT:    movzwl %cx, %ecx
 ; NoVLX-NEXT:    orl %ecx, %eax
 ; NoVLX-NEXT:    vzeroupper
 ; NoVLX-NEXT:    retq
@@ -5128,16 +5132,17 @@ define zeroext i64 @test_masked_vpcmpsgtb_v32i1_v64i1_mask(i32 zeroext %__u, <4 
 ; NoVLX-NEXT:    vpcmpgtb %ymm1, %ymm0, %ymm0
 ; NoVLX-NEXT:    vpmovsxbd %xmm0, %zmm1
 ; NoVLX-NEXT:    vptestmd %zmm1, %zmm1, %k0
-; NoVLX-NEXT:    kmovw %k0, %eax
-; NoVLX-NEXT:    andl %edi, %eax
-; NoVLX-NEXT:    shrl $16, %edi
+; NoVLX-NEXT:    kmovw %k0, %ecx
+; NoVLX-NEXT:    andl %edi, %ecx
+; NoVLX-NEXT:    movl %edi, %eax
+; NoVLX-NEXT:    shrl $16, %eax
 ; NoVLX-NEXT:    vextracti128 $1, %ymm0, %xmm0
 ; NoVLX-NEXT:    vpmovsxbd %xmm0, %zmm0
 ; NoVLX-NEXT:    vptestmd %zmm0, %zmm0, %k0
-; NoVLX-NEXT:    kmovw %k0, %ecx
-; NoVLX-NEXT:    andl %edi, %ecx
-; NoVLX-NEXT:    shll $16, %ecx
-; NoVLX-NEXT:    movzwl %ax, %eax
+; NoVLX-NEXT:    kmovw %k0, %edx
+; NoVLX-NEXT:    andl %edx, %eax
+; NoVLX-NEXT:    shll $16, %eax
+; NoVLX-NEXT:    movzwl %cx, %ecx
 ; NoVLX-NEXT:    orl %ecx, %eax
 ; NoVLX-NEXT:    vzeroupper
 ; NoVLX-NEXT:    retq
@@ -5166,16 +5171,17 @@ define zeroext i64 @test_masked_vpcmpsgtb_v32i1_v64i1_mask_mem(i32 zeroext %__u,
 ; NoVLX-NEXT:    vpcmpgtb (%rsi), %ymm0, %ymm0
 ; NoVLX-NEXT:    vpmovsxbd %xmm0, %zmm1
 ; NoVLX-NEXT:    vptestmd %zmm1, %zmm1, %k0
-; NoVLX-NEXT:    kmovw %k0, %eax
-; NoVLX-NEXT:    andl %edi, %eax
-; NoVLX-NEXT:    shrl $16, %edi
+; NoVLX-NEXT:    kmovw %k0, %ecx
+; NoVLX-NEXT:    andl %edi, %ecx
+; NoVLX-NEXT:    movl %edi, %eax
+; NoVLX-NEXT:    shrl $16, %eax
 ; NoVLX-NEXT:    vextracti128 $1, %ymm0, %xmm0
 ; NoVLX-NEXT:    vpmovsxbd %xmm0, %zmm0
 ; NoVLX-NEXT:    vptestmd %zmm0, %zmm0, %k0
-; NoVLX-NEXT:    kmovw %k0, %ecx
-; NoVLX-NEXT:    andl %edi, %ecx
-; NoVLX-NEXT:    shll $16, %ecx
-; NoVLX-NEXT:    movzwl %ax, %eax
+; NoVLX-NEXT:    kmovw %k0, %edx
+; NoVLX-NEXT:    andl %edx, %eax
+; NoVLX-NEXT:    shll $16, %eax
+; NoVLX-NEXT:    movzwl %cx, %ecx
 ; NoVLX-NEXT:    orl %ecx, %eax
 ; NoVLX-NEXT:    vzeroupper
 ; NoVLX-NEXT:    retq
@@ -5823,18 +5829,19 @@ define zeroext i64 @test_masked_vpcmpsgtw_v32i1_v64i1_mask(i32 zeroext %__u, <8 
 ; NoVLX-NEXT:    vpcmpgtw %ymm1, %ymm0, %ymm2
 ; NoVLX-NEXT:    vpmovsxwd %ymm2, %zmm2
 ; NoVLX-NEXT:    vptestmd %zmm2, %zmm2, %k0
-; NoVLX-NEXT:    kmovw %k0, %eax
-; NoVLX-NEXT:    andl %edi, %eax
-; NoVLX-NEXT:    shrl $16, %edi
+; NoVLX-NEXT:    kmovw %k0, %ecx
+; NoVLX-NEXT:    andl %edi, %ecx
+; NoVLX-NEXT:    movl %edi, %eax
+; NoVLX-NEXT:    shrl $16, %eax
 ; NoVLX-NEXT:    vextracti64x4 $1, %zmm1, %ymm1
 ; NoVLX-NEXT:    vextracti64x4 $1, %zmm0, %ymm0
 ; NoVLX-NEXT:    vpcmpgtw %ymm1, %ymm0, %ymm0
 ; NoVLX-NEXT:    vpmovsxwd %ymm0, %zmm0
 ; NoVLX-NEXT:    vptestmd %zmm0, %zmm0, %k0
-; NoVLX-NEXT:    kmovw %k0, %ecx
-; NoVLX-NEXT:    andl %edi, %ecx
-; NoVLX-NEXT:    shll $16, %ecx
-; NoVLX-NEXT:    movzwl %ax, %eax
+; NoVLX-NEXT:    kmovw %k0, %edx
+; NoVLX-NEXT:    andl %edx, %eax
+; NoVLX-NEXT:    shll $16, %eax
+; NoVLX-NEXT:    movzwl %cx, %ecx
 ; NoVLX-NEXT:    orl %ecx, %eax
 ; NoVLX-NEXT:    vzeroupper
 ; NoVLX-NEXT:    retq
@@ -5863,17 +5870,18 @@ define zeroext i64 @test_masked_vpcmpsgtw_v32i1_v64i1_mask_mem(i32 zeroext %__u,
 ; NoVLX-NEXT:    vpcmpgtw (%rsi), %ymm0, %ymm1
 ; NoVLX-NEXT:    vpmovsxwd %ymm1, %zmm1
 ; NoVLX-NEXT:    vptestmd %zmm1, %zmm1, %k0
-; NoVLX-NEXT:    kmovw %k0, %eax
-; NoVLX-NEXT:    andl %edi, %eax
-; NoVLX-NEXT:    shrl $16, %edi
+; NoVLX-NEXT:    kmovw %k0, %ecx
+; NoVLX-NEXT:    andl %edi, %ecx
+; NoVLX-NEXT:    movl %edi, %eax
+; NoVLX-NEXT:    shrl $16, %eax
 ; NoVLX-NEXT:    vextracti64x4 $1, %zmm0, %ymm0
 ; NoVLX-NEXT:    vpcmpgtw 32(%rsi), %ymm0, %ymm0
 ; NoVLX-NEXT:    vpmovsxwd %ymm0, %zmm0
 ; NoVLX-NEXT:    vptestmd %zmm0, %zmm0, %k0
-; NoVLX-NEXT:    kmovw %k0, %ecx
-; NoVLX-NEXT:    andl %edi, %ecx
-; NoVLX-NEXT:    shll $16, %ecx
-; NoVLX-NEXT:    movzwl %ax, %eax
+; NoVLX-NEXT:    kmovw %k0, %edx
+; NoVLX-NEXT:    andl %edx, %eax
+; NoVLX-NEXT:    shll $16, %eax
+; NoVLX-NEXT:    movzwl %cx, %ecx
 ; NoVLX-NEXT:    orl %ecx, %eax
 ; NoVLX-NEXT:    vzeroupper
 ; NoVLX-NEXT:    retq
@@ -9948,16 +9956,17 @@ define zeroext i64 @test_masked_vpcmpsgeb_v32i1_v64i1_mask(i32 zeroext %__u, <4 
 ; NoVLX-NEXT:    vpternlogq {{.*#+}} zmm0 = ~zmm0
 ; NoVLX-NEXT:    vpmovsxbd %xmm0, %zmm1
 ; NoVLX-NEXT:    vptestmd %zmm1, %zmm1, %k0
-; NoVLX-NEXT:    kmovw %k0, %eax
-; NoVLX-NEXT:    andl %edi, %eax
-; NoVLX-NEXT:    shrl $16, %edi
+; NoVLX-NEXT:    kmovw %k0, %ecx
+; NoVLX-NEXT:    andl %edi, %ecx
+; NoVLX-NEXT:    movl %edi, %eax
+; NoVLX-NEXT:    shrl $16, %eax
 ; NoVLX-NEXT:    vextracti128 $1, %ymm0, %xmm0
 ; NoVLX-NEXT:    vpmovsxbd %xmm0, %zmm0
 ; NoVLX-NEXT:    vptestmd %zmm0, %zmm0, %k0
-; NoVLX-NEXT:    kmovw %k0, %ecx
-; NoVLX-NEXT:    andl %edi, %ecx
-; NoVLX-NEXT:    shll $16, %ecx
-; NoVLX-NEXT:    movzwl %ax, %eax
+; NoVLX-NEXT:    kmovw %k0, %edx
+; NoVLX-NEXT:    andl %edx, %eax
+; NoVLX-NEXT:    shll $16, %eax
+; NoVLX-NEXT:    movzwl %cx, %ecx
 ; NoVLX-NEXT:    orl %ecx, %eax
 ; NoVLX-NEXT:    vzeroupper
 ; NoVLX-NEXT:    retq
@@ -9988,16 +9997,17 @@ define zeroext i64 @test_masked_vpcmpsgeb_v32i1_v64i1_mask_mem(i32 zeroext %__u,
 ; NoVLX-NEXT:    vpternlogq {{.*#+}} zmm0 = ~zmm0
 ; NoVLX-NEXT:    vpmovsxbd %xmm0, %zmm1
 ; NoVLX-NEXT:    vptestmd %zmm1, %zmm1, %k0
-; NoVLX-NEXT:    kmovw %k0, %eax
-; NoVLX-NEXT:    andl %edi, %eax
-; NoVLX-NEXT:    shrl $16, %edi
+; NoVLX-NEXT:    kmovw %k0, %ecx
+; NoVLX-NEXT:    andl %edi, %ecx
+; NoVLX-NEXT:    movl %edi, %eax
+; NoVLX-NEXT:    shrl $16, %eax
 ; NoVLX-NEXT:    vextracti128 $1, %ymm0, %xmm0
 ; NoVLX-NEXT:    vpmovsxbd %xmm0, %zmm0
 ; NoVLX-NEXT:    vptestmd %zmm0, %zmm0, %k0
-; NoVLX-NEXT:    kmovw %k0, %ecx
-; NoVLX-NEXT:    andl %edi, %ecx
-; NoVLX-NEXT:    shll $16, %ecx
-; NoVLX-NEXT:    movzwl %ax, %eax
+; NoVLX-NEXT:    kmovw %k0, %edx
+; NoVLX-NEXT:    andl %edx, %eax
+; NoVLX-NEXT:    shll $16, %eax
+; NoVLX-NEXT:    movzwl %cx, %ecx
 ; NoVLX-NEXT:    orl %ecx, %eax
 ; NoVLX-NEXT:    vzeroupper
 ; NoVLX-NEXT:    retq
@@ -10682,19 +10692,20 @@ define zeroext i64 @test_masked_vpcmpsgew_v32i1_v64i1_mask(i32 zeroext %__u, <8 
 ; NoVLX-NEXT:    vpternlogq {{.*#+}} zmm2 = ~zmm2
 ; NoVLX-NEXT:    vpmovsxwd %ymm2, %zmm2
 ; NoVLX-NEXT:    vptestmd %zmm2, %zmm2, %k0
-; NoVLX-NEXT:    kmovw %k0, %eax
-; NoVLX-NEXT:    andl %edi, %eax
-; NoVLX-NEXT:    shrl $16, %edi
+; NoVLX-NEXT:    kmovw %k0, %ecx
+; NoVLX-NEXT:    andl %edi, %ecx
+; NoVLX-NEXT:    movl %edi, %eax
+; NoVLX-NEXT:    shrl $16, %eax
 ; NoVLX-NEXT:    vextracti64x4 $1, %zmm0, %ymm0
 ; NoVLX-NEXT:    vextracti64x4 $1, %zmm1, %ymm1
 ; NoVLX-NEXT:    vpcmpgtw %ymm0, %ymm1, %ymm0
 ; NoVLX-NEXT:    vpternlogq {{.*#+}} zmm0 = ~zmm0
 ; NoVLX-NEXT:    vpmovsxwd %ymm0, %zmm0
 ; NoVLX-NEXT:    vptestmd %zmm0, %zmm0, %k0
-; NoVLX-NEXT:    kmovw %k0, %ecx
-; NoVLX-NEXT:    andl %edi, %ecx
-; NoVLX-NEXT:    shll $16, %ecx
-; NoVLX-NEXT:    movzwl %ax, %eax
+; NoVLX-NEXT:    kmovw %k0, %edx
+; NoVLX-NEXT:    andl %edx, %eax
+; NoVLX-NEXT:    shll $16, %eax
+; NoVLX-NEXT:    movzwl %cx, %ecx
 ; NoVLX-NEXT:    orl %ecx, %eax
 ; NoVLX-NEXT:    vzeroupper
 ; NoVLX-NEXT:    retq
@@ -10725,19 +10736,20 @@ define zeroext i64 @test_masked_vpcmpsgew_v32i1_v64i1_mask_mem(i32 zeroext %__u,
 ; NoVLX-NEXT:    vpternlogq {{.*#+}} zmm1 = ~zmm1
 ; NoVLX-NEXT:    vpmovsxwd %ymm1, %zmm1
 ; NoVLX-NEXT:    vptestmd %zmm1, %zmm1, %k0
-; NoVLX-NEXT:    kmovw %k0, %eax
-; NoVLX-NEXT:    andl %edi, %eax
-; NoVLX-NEXT:    shrl $16, %edi
+; NoVLX-NEXT:    kmovw %k0, %ecx
+; NoVLX-NEXT:    andl %edi, %ecx
+; NoVLX-NEXT:    movl %edi, %eax
+; NoVLX-NEXT:    shrl $16, %eax
 ; NoVLX-NEXT:    vmovdqa 32(%rsi), %ymm1
 ; NoVLX-NEXT:    vextracti64x4 $1, %zmm0, %ymm0
 ; NoVLX-NEXT:    vpcmpgtw %ymm0, %ymm1, %ymm0
 ; NoVLX-NEXT:    vpternlogq {{.*#+}} zmm0 = ~zmm0
 ; NoVLX-NEXT:    vpmovsxwd %ymm0, %zmm0
 ; NoVLX-NEXT:    vptestmd %zmm0, %zmm0, %k0
-; NoVLX-NEXT:    kmovw %k0, %ecx
-; NoVLX-NEXT:    andl %edi, %ecx
-; NoVLX-NEXT:    shll $16, %ecx
-; NoVLX-NEXT:    movzwl %ax, %eax
+; NoVLX-NEXT:    kmovw %k0, %edx
+; NoVLX-NEXT:    andl %edx, %eax
+; NoVLX-NEXT:    shll $16, %eax
+; NoVLX-NEXT:    movzwl %cx, %ecx
 ; NoVLX-NEXT:    orl %ecx, %eax
 ; NoVLX-NEXT:    vzeroupper
 ; NoVLX-NEXT:    retq
@@ -14818,16 +14830,17 @@ define zeroext i64 @test_masked_vpcmpultb_v32i1_v64i1_mask(i32 zeroext %__u, <4 
 ; NoVLX-NEXT:    vpternlogq {{.*#+}} zmm0 = ~zmm0
 ; NoVLX-NEXT:    vpmovsxbd %xmm0, %zmm1
 ; NoVLX-NEXT:    vptestmd %zmm1, %zmm1, %k0
-; NoVLX-NEXT:    kmovw %k0, %eax
-; NoVLX-NEXT:    andl %edi, %eax
-; NoVLX-NEXT:    shrl $16, %edi
+; NoVLX-NEXT:    kmovw %k0, %ecx
+; NoVLX-NEXT:    andl %edi, %ecx
+; NoVLX-NEXT:    movl %edi, %eax
+; NoVLX-NEXT:    shrl $16, %eax
 ; NoVLX-NEXT:    vextracti128 $1, %ymm0, %xmm0
 ; NoVLX-NEXT:    vpmovsxbd %xmm0, %zmm0
 ; NoVLX-NEXT:    vptestmd %zmm0, %zmm0, %k0
-; NoVLX-NEXT:    kmovw %k0, %ecx
-; NoVLX-NEXT:    andl %edi, %ecx
-; NoVLX-NEXT:    shll $16, %ecx
-; NoVLX-NEXT:    movzwl %ax, %eax
+; NoVLX-NEXT:    kmovw %k0, %edx
+; NoVLX-NEXT:    andl %edx, %eax
+; NoVLX-NEXT:    shll $16, %eax
+; NoVLX-NEXT:    movzwl %cx, %ecx
 ; NoVLX-NEXT:    orl %ecx, %eax
 ; NoVLX-NEXT:    vzeroupper
 ; NoVLX-NEXT:    retq
@@ -14858,16 +14871,17 @@ define zeroext i64 @test_masked_vpcmpultb_v32i1_v64i1_mask_mem(i32 zeroext %__u,
 ; NoVLX-NEXT:    vpternlogq {{.*#+}} zmm0 = ~zmm0
 ; NoVLX-NEXT:    vpmovsxbd %xmm0, %zmm1
 ; NoVLX-NEXT:    vptestmd %zmm1, %zmm1, %k0
-; NoVLX-NEXT:    kmovw %k0, %eax
-; NoVLX-NEXT:    andl %edi, %eax
-; NoVLX-NEXT:    shrl $16, %edi
+; NoVLX-NEXT:    kmovw %k0, %ecx
+; NoVLX-NEXT:    andl %edi, %ecx
+; NoVLX-NEXT:    movl %edi, %eax
+; NoVLX-NEXT:    shrl $16, %eax
 ; NoVLX-NEXT:    vextracti128 $1, %ymm0, %xmm0
 ; NoVLX-NEXT:    vpmovsxbd %xmm0, %zmm0
 ; NoVLX-NEXT:    vptestmd %zmm0, %zmm0, %k0
-; NoVLX-NEXT:    kmovw %k0, %ecx
-; NoVLX-NEXT:    andl %edi, %ecx
-; NoVLX-NEXT:    shll $16, %ecx
-; NoVLX-NEXT:    movzwl %ax, %eax
+; NoVLX-NEXT:    kmovw %k0, %edx
+; NoVLX-NEXT:    andl %edx, %eax
+; NoVLX-NEXT:    shll $16, %eax
+; NoVLX-NEXT:    movzwl %cx, %ecx
 ; NoVLX-NEXT:    orl %ecx, %eax
 ; NoVLX-NEXT:    vzeroupper
 ; NoVLX-NEXT:    retq
@@ -15565,9 +15579,10 @@ define zeroext i64 @test_masked_vpcmpultw_v32i1_v64i1_mask(i32 zeroext %__u, <8 
 ; NoVLX-NEXT:    vpternlogq {{.*#+}} zmm2 = ~zmm2
 ; NoVLX-NEXT:    vpmovsxwd %ymm2, %zmm2
 ; NoVLX-NEXT:    vptestmd %zmm2, %zmm2, %k0
-; NoVLX-NEXT:    kmovw %k0, %eax
-; NoVLX-NEXT:    andl %edi, %eax
-; NoVLX-NEXT:    shrl $16, %edi
+; NoVLX-NEXT:    kmovw %k0, %ecx
+; NoVLX-NEXT:    andl %edi, %ecx
+; NoVLX-NEXT:    movl %edi, %eax
+; NoVLX-NEXT:    shrl $16, %eax
 ; NoVLX-NEXT:    vextracti64x4 $1, %zmm1, %ymm1
 ; NoVLX-NEXT:    vextracti64x4 $1, %zmm0, %ymm0
 ; NoVLX-NEXT:    vpmaxuw %ymm1, %ymm0, %ymm1
@@ -15575,10 +15590,10 @@ define zeroext i64 @test_masked_vpcmpultw_v32i1_v64i1_mask(i32 zeroext %__u, <8 
 ; NoVLX-NEXT:    vpternlogq {{.*#+}} zmm0 = ~zmm0
 ; NoVLX-NEXT:    vpmovsxwd %ymm0, %zmm0
 ; NoVLX-NEXT:    vptestmd %zmm0, %zmm0, %k0
-; NoVLX-NEXT:    kmovw %k0, %ecx
-; NoVLX-NEXT:    andl %edi, %ecx
-; NoVLX-NEXT:    shll $16, %ecx
-; NoVLX-NEXT:    movzwl %ax, %eax
+; NoVLX-NEXT:    kmovw %k0, %edx
+; NoVLX-NEXT:    andl %edx, %eax
+; NoVLX-NEXT:    shll $16, %eax
+; NoVLX-NEXT:    movzwl %cx, %ecx
 ; NoVLX-NEXT:    orl %ecx, %eax
 ; NoVLX-NEXT:    vzeroupper
 ; NoVLX-NEXT:    retq
@@ -15609,19 +15624,20 @@ define zeroext i64 @test_masked_vpcmpultw_v32i1_v64i1_mask_mem(i32 zeroext %__u,
 ; NoVLX-NEXT:    vpternlogq {{.*#+}} zmm1 = ~zmm1
 ; NoVLX-NEXT:    vpmovsxwd %ymm1, %zmm1
 ; NoVLX-NEXT:    vptestmd %zmm1, %zmm1, %k0
-; NoVLX-NEXT:    kmovw %k0, %eax
-; NoVLX-NEXT:    andl %edi, %eax
-; NoVLX-NEXT:    shrl $16, %edi
+; NoVLX-NEXT:    kmovw %k0, %ecx
+; NoVLX-NEXT:    andl %edi, %ecx
+; NoVLX-NEXT:    movl %edi, %eax
+; NoVLX-NEXT:    shrl $16, %eax
 ; NoVLX-NEXT:    vextracti64x4 $1, %zmm0, %ymm0
 ; NoVLX-NEXT:    vpmaxuw 32(%rsi), %ymm0, %ymm1
 ; NoVLX-NEXT:    vpcmpeqw %ymm1, %ymm0, %ymm0
 ; NoVLX-NEXT:    vpternlogq {{.*#+}} zmm0 = ~zmm0
 ; NoVLX-NEXT:    vpmovsxwd %ymm0, %zmm0
 ; NoVLX-NEXT:    vptestmd %zmm0, %zmm0, %k0
-; NoVLX-NEXT:    kmovw %k0, %ecx
-; NoVLX-NEXT:    andl %edi, %ecx
-; NoVLX-NEXT:    shll $16, %ecx
-; NoVLX-NEXT:    movzwl %ax, %eax
+; NoVLX-NEXT:    kmovw %k0, %edx
+; NoVLX-NEXT:    andl %edx, %eax
+; NoVLX-NEXT:    shll $16, %eax
+; NoVLX-NEXT:    movzwl %cx, %ecx
 ; NoVLX-NEXT:    orl %ecx, %eax
 ; NoVLX-NEXT:    vzeroupper
 ; NoVLX-NEXT:    retq

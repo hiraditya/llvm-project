@@ -7,20 +7,24 @@
 define i64 @test1(i64 %X, i8 %C) nounwind {
 ; X86-LABEL: test1:
 ; X86:       # %bb.0:
+; X86-NEXT:    pushl %edi
 ; X86-NEXT:    pushl %esi
 ; X86-NEXT:    movzbl {{[0-9]+}}(%esp), %ecx
+; X86-NEXT:    movl {{[0-9]+}}(%esp), %eax
 ; X86-NEXT:    movl {{[0-9]+}}(%esp), %esi
-; X86-NEXT:    movl {{[0-9]+}}(%esp), %edx
-; X86-NEXT:    movl %esi, %eax
-; X86-NEXT:    shll %cl, %eax
-; X86-NEXT:    shldl %cl, %esi, %edx
-; X86-NEXT:    testb $32, %cl
-; X86-NEXT:    je .LBB0_2
-; X86-NEXT:  # %bb.1:
-; X86-NEXT:    movl %eax, %edx
+; X86-NEXT:    movl %eax, %edi
+; X86-NEXT:    shll %cl, %edi
+; X86-NEXT:    shldl %cl, %eax, %esi
 ; X86-NEXT:    xorl %eax, %eax
+; X86-NEXT:    testb $32, %cl
+; X86-NEXT:    movl %edi, %edx
+; X86-NEXT:    jne .LBB0_2
+; X86-NEXT:  # %bb.1:
+; X86-NEXT:    movl %esi, %edx
+; X86-NEXT:    movl %edi, %eax
 ; X86-NEXT:  .LBB0_2:
 ; X86-NEXT:    popl %esi
+; X86-NEXT:    popl %edi
 ; X86-NEXT:    retl
 ;
 ; X64-LABEL: test1:
@@ -70,20 +74,24 @@ define i64 @test2(i64 %X, i8 %C) nounwind {
 define i64 @test3(i64 %X, i8 %C) nounwind {
 ; X86-LABEL: test3:
 ; X86:       # %bb.0:
+; X86-NEXT:    pushl %edi
 ; X86-NEXT:    pushl %esi
 ; X86-NEXT:    movzbl {{[0-9]+}}(%esp), %ecx
-; X86-NEXT:    movl {{[0-9]+}}(%esp), %eax
 ; X86-NEXT:    movl {{[0-9]+}}(%esp), %esi
-; X86-NEXT:    movl %esi, %edx
-; X86-NEXT:    shrl %cl, %edx
-; X86-NEXT:    shrdl %cl, %esi, %eax
-; X86-NEXT:    testb $32, %cl
-; X86-NEXT:    je .LBB2_2
-; X86-NEXT:  # %bb.1:
-; X86-NEXT:    movl %edx, %eax
+; X86-NEXT:    movl {{[0-9]+}}(%esp), %eax
+; X86-NEXT:    movl %eax, %edi
+; X86-NEXT:    shrl %cl, %edi
+; X86-NEXT:    shrdl %cl, %eax, %esi
 ; X86-NEXT:    xorl %edx, %edx
+; X86-NEXT:    testb $32, %cl
+; X86-NEXT:    movl %edi, %eax
+; X86-NEXT:    jne .LBB2_2
+; X86-NEXT:  # %bb.1:
+; X86-NEXT:    movl %esi, %eax
+; X86-NEXT:    movl %edi, %edx
 ; X86-NEXT:  .LBB2_2:
 ; X86-NEXT:    popl %esi
+; X86-NEXT:    popl %edi
 ; X86-NEXT:    retl
 ;
 ; X64-LABEL: test3:

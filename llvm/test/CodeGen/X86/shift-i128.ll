@@ -905,24 +905,20 @@ define i128 @lshr_shl_mask(i128 %a0) {
 ; i686-NEXT:    .cfi_offset %ebp, -8
 ; i686-NEXT:    movl %esp, %ebp
 ; i686-NEXT:    .cfi_def_cfa_register %ebp
-; i686-NEXT:    pushl %edi
-; i686-NEXT:    pushl %esi
 ; i686-NEXT:    andl $-16, %esp
-; i686-NEXT:    .cfi_offset %esi, -16
-; i686-NEXT:    .cfi_offset %edi, -12
+; i686-NEXT:    subl $16, %esp
+; i686-NEXT:    movl $2147483647, %eax # imm = 0x7FFFFFFF
+; i686-NEXT:    movl 36(%ebp), %ecx
+; i686-NEXT:    andl %eax, %ecx
 ; i686-NEXT:    movl 8(%ebp), %eax
+; i686-NEXT:    movl %ecx, 12(%eax)
+; i686-NEXT:    movl 32(%ebp), %ecx
+; i686-NEXT:    movl %ecx, 8(%eax)
+; i686-NEXT:    movl 28(%ebp), %ecx
+; i686-NEXT:    movl %ecx, 4(%eax)
 ; i686-NEXT:    movl 24(%ebp), %ecx
-; i686-NEXT:    movl 28(%ebp), %edx
-; i686-NEXT:    movl 32(%ebp), %esi
-; i686-NEXT:    movl $2147483647, %edi # imm = 0x7FFFFFFF
-; i686-NEXT:    andl 36(%ebp), %edi
-; i686-NEXT:    movl %edi, 12(%eax)
-; i686-NEXT:    movl %esi, 8(%eax)
-; i686-NEXT:    movl %edx, 4(%eax)
 ; i686-NEXT:    movl %ecx, (%eax)
-; i686-NEXT:    leal -8(%ebp), %esp
-; i686-NEXT:    popl %esi
-; i686-NEXT:    popl %edi
+; i686-NEXT:    movl %ebp, %esp
 ; i686-NEXT:    popl %ebp
 ; i686-NEXT:    .cfi_def_cfa %esp, 4
 ; i686-NEXT:    retl $4
@@ -948,17 +944,19 @@ define i128 @shift_i128_limited_shamt(i128 noundef %a, i32 noundef %b) nounwind 
 ; i686-NEXT:    pushl %esi
 ; i686-NEXT:    andl $-16, %esp
 ; i686-NEXT:    subl $16, %esp
-; i686-NEXT:    movl 32(%ebp), %ebx
-; i686-NEXT:    movl 28(%ebp), %edi
+; i686-NEXT:    movl 32(%ebp), %esi
+; i686-NEXT:    movl 28(%ebp), %eax
 ; i686-NEXT:    movzbl 40(%ebp), %ecx
 ; i686-NEXT:    movb $6, %dl
 ; i686-NEXT:    subb %cl, %dl
 ; i686-NEXT:    addb $-7, %cl
-; i686-NEXT:    movl %edi, %eax
-; i686-NEXT:    shrl %eax
-; i686-NEXT:    shrl %cl, %eax
+; i686-NEXT:    movl %eax, %ebx
+; i686-NEXT:    movl %eax, %edi
+; i686-NEXT:    shrl %ebx
+; i686-NEXT:    shrl %cl, %ebx
+; i686-NEXT:    movl %esi, %eax
 ; i686-NEXT:    movl %edx, %ecx
-; i686-NEXT:    shll %cl, %ebx
+; i686-NEXT:    shll %cl, %eax
 ; i686-NEXT:    orl %eax, %ebx
 ; i686-NEXT:    movl 24(%ebp), %esi
 ; i686-NEXT:    movl %esi, %eax

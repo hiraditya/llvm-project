@@ -13,8 +13,9 @@ define double @f1(double %a) {
 ; X86-NEXT:    andl $-8, %esp
 ; X86-NEXT:    subl $8, %esp
 ; X86-NEXT:    movsd {{.*#+}} xmm0 = mem[0],zero
-; X86-NEXT:    mulsd {{\.?LCPI[0-9]+_[0-9]+}}, %xmm0
-; X86-NEXT:    movsd %xmm0, (%esp)
+; X86-NEXT:    movsd {{.*#+}} xmm1 = [4.0E+0,0.0E+0]
+; X86-NEXT:    mulsd %xmm0, %xmm1
+; X86-NEXT:    movsd %xmm1, (%esp)
 ; X86-NEXT:    fldl (%esp)
 ; X86-NEXT:    movl %ebp, %esp
 ; X86-NEXT:    popl %ebp
@@ -23,7 +24,9 @@ define double @f1(double %a) {
 ;
 ; X64-LABEL: f1:
 ; X64:       # %bb.0:
-; X64-NEXT:    mulsd {{\.?LCPI[0-9]+_[0-9]+}}(%rip), %xmm0
+; X64-NEXT:    movsd {{.*#+}} xmm1 = [4.0E+0,0.0E+0]
+; X64-NEXT:    mulsd %xmm0, %xmm1
+; X64-NEXT:    movapd %xmm1, %xmm0
 ; X64-NEXT:    retq
   %1 = fadd fast double %a, %a
   %2 = fadd fast double %a, %a
@@ -58,7 +61,8 @@ define double @f2(double %a) {
 ; X64-NEXT:    addsd %xmm0, %xmm0
 ; X64-NEXT:    movapd %xmm0, %xmm1
 ; X64-NEXT:    #ARITH_FENCE
-; X64-NEXT:    addsd %xmm1, %xmm0
+; X64-NEXT:    addsd %xmm0, %xmm1
+; X64-NEXT:    movapd %xmm1, %xmm0
 ; X64-NEXT:    retq
   %1 = fadd fast double %a, %a
   %t = call double @llvm.arithmetic.fence.f64(double %1)
@@ -70,12 +74,16 @@ define double @f2(double %a) {
 define <2 x float> @f3(<2 x float> %a) {
 ; X86-LABEL: f3:
 ; X86:       # %bb.0:
-; X86-NEXT:    mulps {{\.?LCPI[0-9]+_[0-9]+}}, %xmm0
+; X86-NEXT:    movaps {{.*#+}} xmm1 = [4.0E+0,4.0E+0,4.0E+0,4.0E+0]
+; X86-NEXT:    mulps %xmm0, %xmm1
+; X86-NEXT:    movaps %xmm1, %xmm0
 ; X86-NEXT:    retl
 ;
 ; X64-LABEL: f3:
 ; X64:       # %bb.0:
-; X64-NEXT:    mulps {{\.?LCPI[0-9]+_[0-9]+}}(%rip), %xmm0
+; X64-NEXT:    movaps {{.*#+}} xmm1 = [4.0E+0,4.0E+0,4.0E+0,4.0E+0]
+; X64-NEXT:    mulps %xmm0, %xmm1
+; X64-NEXT:    movaps %xmm1, %xmm0
 ; X64-NEXT:    retq
   %1 = fadd fast <2 x float> %a, %a
   %2 = fadd fast <2 x float> %a, %a
@@ -89,7 +97,8 @@ define <2 x float> @f4(<2 x float> %a) {
 ; X86-NEXT:    addps %xmm0, %xmm0
 ; X86-NEXT:    movaps %xmm0, %xmm1
 ; X86-NEXT:    #ARITH_FENCE
-; X86-NEXT:    addps %xmm1, %xmm0
+; X86-NEXT:    addps %xmm0, %xmm1
+; X86-NEXT:    movaps %xmm1, %xmm0
 ; X86-NEXT:    retl
 ;
 ; X64-LABEL: f4:
@@ -97,7 +106,8 @@ define <2 x float> @f4(<2 x float> %a) {
 ; X64-NEXT:    addps %xmm0, %xmm0
 ; X64-NEXT:    movaps %xmm0, %xmm1
 ; X64-NEXT:    #ARITH_FENCE
-; X64-NEXT:    addps %xmm1, %xmm0
+; X64-NEXT:    addps %xmm0, %xmm1
+; X64-NEXT:    movaps %xmm1, %xmm0
 ; X64-NEXT:    retq
   %1 = fadd fast <2 x float> %a, %a
   %t = call <2 x float> @llvm.arithmetic.fence.v2f32(<2 x float> %1)
@@ -135,8 +145,10 @@ define <8 x float> @f6(<8 x float> %a) {
 ; X86-NEXT:    #ARITH_FENCE
 ; X86-NEXT:    movaps %xmm0, %xmm3
 ; X86-NEXT:    #ARITH_FENCE
-; X86-NEXT:    addps %xmm3, %xmm0
-; X86-NEXT:    addps %xmm2, %xmm1
+; X86-NEXT:    addps %xmm0, %xmm3
+; X86-NEXT:    addps %xmm1, %xmm2
+; X86-NEXT:    movaps %xmm3, %xmm0
+; X86-NEXT:    movaps %xmm2, %xmm1
 ; X86-NEXT:    retl
 ;
 ; X64-LABEL: f6:
@@ -147,8 +159,10 @@ define <8 x float> @f6(<8 x float> %a) {
 ; X64-NEXT:    #ARITH_FENCE
 ; X64-NEXT:    movaps %xmm0, %xmm3
 ; X64-NEXT:    #ARITH_FENCE
-; X64-NEXT:    addps %xmm3, %xmm0
-; X64-NEXT:    addps %xmm2, %xmm1
+; X64-NEXT:    addps %xmm0, %xmm3
+; X64-NEXT:    addps %xmm1, %xmm2
+; X64-NEXT:    movaps %xmm3, %xmm0
+; X64-NEXT:    movaps %xmm2, %xmm1
 ; X64-NEXT:    retq
   %1 = fadd fast <8 x float> %a, %a
   %t = call <8 x float> @llvm.arithmetic.fence.v8f32(<8 x float> %1)

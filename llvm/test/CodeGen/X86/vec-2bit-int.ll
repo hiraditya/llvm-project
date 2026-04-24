@@ -8,7 +8,7 @@ define dso_local <2 x i2> @foo(<2 x i2> %v1, <2 x i2> %v2) {
 ; CHECK-NEXT:    andb $3, %al
 ; CHECK-NEXT:    pshufd {{.*#+}} xmm2 = xmm1[2,3,2,3]
 ; CHECK-NEXT:    movq %xmm2, %rcx
-; CHECK-NEXT:    shlb $2, %cl
+; CHECK-NEXT:    leal (,%rcx,4), %ecx
 ; CHECK-NEXT:    orb %al, %cl
 ; CHECK-NEXT:    andb $15, %cl
 ; CHECK-NEXT:    movb %cl, -{{[0-9]+}}(%rsp)
@@ -16,7 +16,7 @@ define dso_local <2 x i2> @foo(<2 x i2> %v1, <2 x i2> %v2) {
 ; CHECK-NEXT:    andb $3, %al
 ; CHECK-NEXT:    pshufd {{.*#+}} xmm2 = xmm0[2,3,2,3]
 ; CHECK-NEXT:    movq %xmm2, %rcx
-; CHECK-NEXT:    shlb $2, %cl
+; CHECK-NEXT:    leal (,%rcx,4), %ecx
 ; CHECK-NEXT:    orb %al, %cl
 ; CHECK-NEXT:    andb $15, %cl
 ; CHECK-NEXT:    movb %cl, -{{[0-9]+}}(%rsp)

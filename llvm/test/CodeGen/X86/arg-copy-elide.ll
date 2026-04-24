@@ -227,9 +227,11 @@ define i32 @three_args(i32 %x, i32 %y, i32 %z) {
 ; CHECK-LABEL: three_args:
 ; CHECK:       # %bb.0: # %entry
 ; CHECK-NEXT:    pushl %esi
+; CHECK-NEXT:    movl {{[0-9]+}}(%esp), %eax
+; CHECK-NEXT:    movl {{[0-9]+}}(%esp), %ecx
+; CHECK-NEXT:    addl %eax, %ecx
 ; CHECK-NEXT:    movl {{[0-9]+}}(%esp), %esi
-; CHECK-NEXT:    addl {{[0-9]+}}(%esp), %esi
-; CHECK-NEXT:    addl {{[0-9]+}}(%esp), %esi
+; CHECK-NEXT:    addl %ecx, %esi
 ; CHECK-NEXT:    leal {{[0-9]+}}(%esp), %eax
 ; CHECK-NEXT:    leal {{[0-9]+}}(%esp), %ecx
 ; CHECK-NEXT:    leal {{[0-9]+}}(%esp), %edx

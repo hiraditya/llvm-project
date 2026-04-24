@@ -571,7 +571,7 @@ define i16 @select_pow2_diff_invert(i1 zeroext %cond) {
 ; X86-NEXT:    xorb $1, %al
 ; X86-NEXT:    movzbl %al, %eax
 ; X86-NEXT:    shll $6, %eax
-; X86-NEXT:    orl $7, %eax
+; X86-NEXT:    addl $7, %eax
 ; X86-NEXT:    # kill: def $ax killed $ax killed $eax
 ; X86-NEXT:    retl
 ;
@@ -580,7 +580,7 @@ define i16 @select_pow2_diff_invert(i1 zeroext %cond) {
 ; X64-NEXT:    xorb $1, %dil
 ; X64-NEXT:    movzbl %dil, %eax
 ; X64-NEXT:    shll $6, %eax
-; X64-NEXT:    orl $7, %eax
+; X64-NEXT:    addl $7, %eax
 ; X64-NEXT:    # kill: def $ax killed $ax killed $eax
 ; X64-NEXT:    retq
   %sel = select i1 %cond, i16 7, i16 71
@@ -651,9 +651,9 @@ define i8 @sel_67_neg125(i32 %x) {
 ; X64-LABEL: sel_67_neg125:
 ; X64:       # %bb.0:
 ; X64-NEXT:    cmpl $43, %edi
-; X64-NEXT:    movl $67, %ecx
-; X64-NEXT:    movl $131, %eax
-; X64-NEXT:    cmovgel %ecx, %eax
+; X64-NEXT:    movl $67, %eax
+; X64-NEXT:    movl $131, %ecx
+; X64-NEXT:    cmovll %ecx, %eax
 ; X64-NEXT:    # kill: def $al killed $al killed $eax
 ; X64-NEXT:    retq
   %cmp = icmp sgt i32 %x, 42
@@ -678,9 +678,9 @@ define i32 @select_C1_C2(i1 %cond) {
 ; X64-LABEL: select_C1_C2:
 ; X64:       # %bb.0:
 ; X64-NEXT:    testb $1, %dil
-; X64-NEXT:    movl $421, %ecx # imm = 0x1A5
-; X64-NEXT:    movl $42, %eax
-; X64-NEXT:    cmovnel %ecx, %eax
+; X64-NEXT:    movl $421, %eax # imm = 0x1A5
+; X64-NEXT:    movl $42, %ecx
+; X64-NEXT:    cmovel %ecx, %eax
 ; X64-NEXT:    retq
   %sel = select i1 %cond, i32 421, i32 42
   ret i32 %sel
@@ -700,9 +700,9 @@ define i32 @select_C1_C2_zeroext(i1 zeroext %cond) {
 ; X64-LABEL: select_C1_C2_zeroext:
 ; X64:       # %bb.0:
 ; X64-NEXT:    testl %edi, %edi
-; X64-NEXT:    movl $421, %ecx # imm = 0x1A5
-; X64-NEXT:    movl $42, %eax
-; X64-NEXT:    cmovnel %ecx, %eax
+; X64-NEXT:    movl $421, %eax # imm = 0x1A5
+; X64-NEXT:    movl $42, %ecx
+; X64-NEXT:    cmovel %ecx, %eax
 ; X64-NEXT:    retq
   %sel = select i1 %cond, i32 421, i32 42
   ret i32 %sel
@@ -721,9 +721,9 @@ define i32 @select_C1_C2_signext(i1 signext %cond) {
 ; X64-LABEL: select_C1_C2_signext:
 ; X64:       # %bb.0:
 ; X64-NEXT:    testb $1, %dil
-; X64-NEXT:    movl $421, %ecx # imm = 0x1A5
-; X64-NEXT:    movl $42, %eax
-; X64-NEXT:    cmovnel %ecx, %eax
+; X64-NEXT:    movl $421, %eax # imm = 0x1A5
+; X64-NEXT:    movl $42, %ecx
+; X64-NEXT:    cmovel %ecx, %eax
 ; X64-NEXT:    retq
   %sel = select i1 %cond, i32 421, i32 42
   ret i32 %sel
@@ -810,7 +810,7 @@ define <4 x i32> @sel_constants_add_constant_vec(i1 %cond) {
 ; X86-NEXT:    negl %ecx
 ; X86-NEXT:    movl %ecx, %edx
 ; X86-NEXT:    andl $-15, %edx
-; X86-NEXT:    orl $12, %edx
+; X86-NEXT:    addl $12, %edx
 ; X86-NEXT:    movl %ecx, %esi
 ; X86-NEXT:    andl $3, %esi
 ; X86-NEXT:    xorl $13, %esi
@@ -895,17 +895,16 @@ define i64 @opaque_constant(i1 %cond, i64 %x) {
 ; X86-NEXT:    .cfi_offset %ebx, -8
 ; X86-NEXT:    movl {{[0-9]+}}(%esp), %ecx
 ; X86-NEXT:    movl {{[0-9]+}}(%esp), %esi
-; X86-NEXT:    movzbl {{[0-9]+}}(%esp), %eax
-; X86-NEXT:    movl %eax, %edx
+; X86-NEXT:    movzbl {{[0-9]+}}(%esp), %edx
+; X86-NEXT:    leal -1(%edx), %eax
 ; X86-NEXT:    andl $1, %edx
 ; X86-NEXT:    negl %edx
 ; X86-NEXT:    andl $1, %edx
-; X86-NEXT:    decl %eax
 ; X86-NEXT:    andl $1, %eax
 ; X86-NEXT:    xorl $1, %esi
 ; X86-NEXT:    xorl $1, %ecx
 ; X86-NEXT:    xorl %ebx, %ebx
-; X86-NEXT:    orl %esi, %ecx
+; X86-NEXT:    orl %ecx, %esi
 ; X86-NEXT:    sete %bl
 ; X86-NEXT:    subl %ebx, %eax
 ; X86-NEXT:    sbbl $0, %edx
@@ -918,9 +917,9 @@ define i64 @opaque_constant(i1 %cond, i64 %x) {
 ; X64-LABEL: opaque_constant:
 ; X64:       # %bb.0:
 ; X64-NEXT:    testb $1, %dil
-; X64-NEXT:    movq $-4, %rcx
-; X64-NEXT:    movl $23, %eax
-; X64-NEXT:    cmovneq %rcx, %rax
+; X64-NEXT:    movq $-4, %rax
+; X64-NEXT:    movl $23, %ecx
+; X64-NEXT:    cmoveq %rcx, %rax
 ; X64-NEXT:    movabsq $4294967297, %rcx # imm = 0x100000001
 ; X64-NEXT:    andq %rcx, %rax
 ; X64-NEXT:    xorl %edx, %edx
@@ -1048,11 +1047,11 @@ define i32 @select_ugt3_3_2(i32 %X) {
 define i32 @select_eq_1_2(i32 %a, i32 %b) {
 ; X86-LABEL: select_eq_1_2:
 ; X86:       # %bb.0:
-; X86-NEXT:    movl {{[0-9]+}}(%esp), %ecx
-; X86-NEXT:    xorl %eax, %eax
-; X86-NEXT:    cmpl {{[0-9]+}}(%esp), %ecx
-; X86-NEXT:    setne %al
-; X86-NEXT:    incl %eax
+; X86-NEXT:    movl {{[0-9]+}}(%esp), %eax
+; X86-NEXT:    xorl %ecx, %ecx
+; X86-NEXT:    cmpl {{[0-9]+}}(%esp), %eax
+; X86-NEXT:    setne %cl
+; X86-NEXT:    leal 1(%ecx), %eax
 ; X86-NEXT:    retl
 ;
 ; X64-FASTINC-LABEL: select_eq_1_2:

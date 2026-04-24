@@ -10,8 +10,8 @@ define i32 @f(i32 %a, i32 %b) {
 ; CHECK-NEXT:    imull %ecx, %edx
 ; CHECK-NEXT:    imull %eax, %ecx
 ; CHECK-NEXT:    imull %eax, %eax
-; CHECK-NEXT:    addl %edx, %eax
-; CHECK-NEXT:    leal (%eax,%ecx,2), %eax
+; CHECK-NEXT:    addl %eax, %edx
+; CHECK-NEXT:    leal (%edx,%ecx,2), %eax
 ; CHECK-NEXT:    retl
   %tmp.2 = mul i32 %a, %a
   %tmp.5 = shl i32 %a, 1

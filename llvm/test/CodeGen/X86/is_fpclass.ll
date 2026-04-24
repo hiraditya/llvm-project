@@ -49,24 +49,36 @@ define i1 @issignaling_f(float %x) {
 ; X86-LABEL: issignaling_f:
 ; X86:       # %bb.0: # %entry
 ; X86-NEXT:    movl $2147483647, %eax # imm = 0x7FFFFFFF
-; X86-NEXT:    andl {{[0-9]+}}(%esp), %eax
-; X86-NEXT:    cmpl $2143289344, %eax # imm = 0x7FC00000
-; X86-NEXT:    setl %cl
-; X86-NEXT:    cmpl $2139095041, %eax # imm = 0x7F800001
-; X86-NEXT:    setge %al
+; X86-NEXT:    movl {{[0-9]+}}(%esp), %ecx
+; X86-NEXT:    andl %eax, %ecx
+; X86-NEXT:    cmpl $2143289344, %ecx # imm = 0x7FC00000
+; X86-NEXT:    setl %al
+; X86-NEXT:    cmpl $2139095041, %ecx # imm = 0x7F800001
+; X86-NEXT:    setge %cl
 ; X86-NEXT:    andb %cl, %al
 ; X86-NEXT:    retl
 ;
-; X64-LABEL: issignaling_f:
-; X64:       # %bb.0: # %entry
-; X64-NEXT:    movd %xmm0, %eax
-; X64-NEXT:    andl $2147483647, %eax # imm = 0x7FFFFFFF
-; X64-NEXT:    cmpl $2143289344, %eax # imm = 0x7FC00000
-; X64-NEXT:    setl %cl
-; X64-NEXT:    cmpl $2139095041, %eax # imm = 0x7F800001
-; X64-NEXT:    setge %al
-; X64-NEXT:    andb %cl, %al
-; X64-NEXT:    retq
+; X64-GENERIC-LABEL: issignaling_f:
+; X64-GENERIC:       # %bb.0: # %entry
+; X64-GENERIC-NEXT:    movd %xmm0, %ecx
+; X64-GENERIC-NEXT:    andl $2147483647, %ecx # imm = 0x7FFFFFFF
+; X64-GENERIC-NEXT:    cmpl $2143289344, %ecx # imm = 0x7FC00000
+; X64-GENERIC-NEXT:    setl %al
+; X64-GENERIC-NEXT:    cmpl $2139095041, %ecx # imm = 0x7F800001
+; X64-GENERIC-NEXT:    setge %cl
+; X64-GENERIC-NEXT:    andb %cl, %al
+; X64-GENERIC-NEXT:    retq
+;
+; X64-NDD-LABEL: issignaling_f:
+; X64-NDD:       # %bb.0: # %entry
+; X64-NDD-NEXT:    movd %xmm0, %eax
+; X64-NDD-NEXT:    andl $2147483647, %eax # imm = 0x7FFFFFFF
+; X64-NDD-NEXT:    cmpl $2143289344, %eax # imm = 0x7FC00000
+; X64-NDD-NEXT:    setl %cl
+; X64-NDD-NEXT:    cmpl $2139095041, %eax # imm = 0x7F800001
+; X64-NDD-NEXT:    setge %al
+; X64-NDD-NEXT:    andb %cl, %al
+; X64-NDD-NEXT:    retq
 entry:
   %0 = tail call i1 @llvm.is.fpclass.f32(float %x, i32 1)  ; "snan"
   ret i1 %0
@@ -76,24 +88,36 @@ define i1 @not_issignaling_f(float %x) {
 ; X86-LABEL: not_issignaling_f:
 ; X86:       # %bb.0: # %entry
 ; X86-NEXT:    movl $2147483647, %eax # imm = 0x7FFFFFFF
-; X86-NEXT:    andl {{[0-9]+}}(%esp), %eax
-; X86-NEXT:    cmpl $2143289344, %eax # imm = 0x7FC00000
-; X86-NEXT:    setge %cl
-; X86-NEXT:    cmpl $2139095041, %eax # imm = 0x7F800001
-; X86-NEXT:    setl %al
+; X86-NEXT:    movl {{[0-9]+}}(%esp), %ecx
+; X86-NEXT:    andl %eax, %ecx
+; X86-NEXT:    cmpl $2143289344, %ecx # imm = 0x7FC00000
+; X86-NEXT:    setge %al
+; X86-NEXT:    cmpl $2139095041, %ecx # imm = 0x7F800001
+; X86-NEXT:    setl %cl
 ; X86-NEXT:    orb %cl, %al
 ; X86-NEXT:    retl
 ;
-; X64-LABEL: not_issignaling_f:
-; X64:       # %bb.0: # %entry
-; X64-NEXT:    movd %xmm0, %eax
-; X64-NEXT:    andl $2147483647, %eax # imm = 0x7FFFFFFF
-; X64-NEXT:    cmpl $2143289344, %eax # imm = 0x7FC00000
-; X64-NEXT:    setge %cl
-; X64-NEXT:    cmpl $2139095041, %eax # imm = 0x7F800001
-; X64-NEXT:    setl %al
-; X64-NEXT:    orb %cl, %al
-; X64-NEXT:    retq
+; X64-GENERIC-LABEL: not_issignaling_f:
+; X64-GENERIC:       # %bb.0: # %entry
+; X64-GENERIC-NEXT:    movd %xmm0, %ecx
+; X64-GENERIC-NEXT:    andl $2147483647, %ecx # imm = 0x7FFFFFFF
+; X64-GENERIC-NEXT:    cmpl $2143289344, %ecx # imm = 0x7FC00000
+; X64-GENERIC-NEXT:    setge %al
+; X64-GENERIC-NEXT:    cmpl $2139095041, %ecx # imm = 0x7F800001
+; X64-GENERIC-NEXT:    setl %cl
+; X64-GENERIC-NEXT:    orb %cl, %al
+; X64-GENERIC-NEXT:    retq
+;
+; X64-NDD-LABEL: not_issignaling_f:
+; X64-NDD:       # %bb.0: # %entry
+; X64-NDD-NEXT:    movd %xmm0, %eax
+; X64-NDD-NEXT:    andl $2147483647, %eax # imm = 0x7FFFFFFF
+; X64-NDD-NEXT:    cmpl $2143289344, %eax # imm = 0x7FC00000
+; X64-NDD-NEXT:    setge %cl
+; X64-NDD-NEXT:    cmpl $2139095041, %eax # imm = 0x7F800001
+; X64-NDD-NEXT:    setl %al
+; X64-NDD-NEXT:    orb %cl, %al
+; X64-NDD-NEXT:    retq
 entry:
   %0 = tail call i1 @llvm.is.fpclass.f32(float %x, i32 1022)  ; ~"snan"
   ret i1 %0
@@ -103,8 +127,9 @@ define i1 @isquiet_f(float %x) {
 ; X86-LABEL: isquiet_f:
 ; X86:       # %bb.0: # %entry
 ; X86-NEXT:    movl $2147483647, %eax # imm = 0x7FFFFFFF
-; X86-NEXT:    andl {{[0-9]+}}(%esp), %eax
-; X86-NEXT:    cmpl $2143289344, %eax # imm = 0x7FC00000
+; X86-NEXT:    movl {{[0-9]+}}(%esp), %ecx
+; X86-NEXT:    andl %eax, %ecx
+; X86-NEXT:    cmpl $2143289344, %ecx # imm = 0x7FC00000
 ; X86-NEXT:    setge %al
 ; X86-NEXT:    retl
 ;
@@ -124,8 +149,9 @@ define i1 @not_isquiet_f(float %x) {
 ; X86-LABEL: not_isquiet_f:
 ; X86:       # %bb.0: # %entry
 ; X86-NEXT:    movl $2147483647, %eax # imm = 0x7FFFFFFF
-; X86-NEXT:    andl {{[0-9]+}}(%esp), %eax
-; X86-NEXT:    cmpl $2143289344, %eax # imm = 0x7FC00000
+; X86-NEXT:    movl {{[0-9]+}}(%esp), %ecx
+; X86-NEXT:    andl %eax, %ecx
+; X86-NEXT:    cmpl $2143289344, %ecx # imm = 0x7FC00000
 ; X86-NEXT:    setl %al
 ; X86-NEXT:    retl
 ;
@@ -145,8 +171,9 @@ define i1 @isinf_f(float %x) {
 ; X86-LABEL: isinf_f:
 ; X86:       # %bb.0: # %entry
 ; X86-NEXT:    movl $2147483647, %eax # imm = 0x7FFFFFFF
-; X86-NEXT:    andl {{[0-9]+}}(%esp), %eax
-; X86-NEXT:    cmpl $2139095040, %eax # imm = 0x7F800000
+; X86-NEXT:    movl {{[0-9]+}}(%esp), %ecx
+; X86-NEXT:    andl %eax, %ecx
+; X86-NEXT:    cmpl $2139095040, %ecx # imm = 0x7F800000
 ; X86-NEXT:    sete %al
 ; X86-NEXT:    retl
 ;
@@ -166,8 +193,9 @@ define i1 @not_isinf_f(float %x) {
 ; X86-LABEL: not_isinf_f:
 ; X86:       # %bb.0: # %entry
 ; X86-NEXT:    movl $2147483647, %eax # imm = 0x7FFFFFFF
-; X86-NEXT:    andl {{[0-9]+}}(%esp), %eax
-; X86-NEXT:    cmpl $2139095040, %eax # imm = 0x7F800000
+; X86-NEXT:    movl {{[0-9]+}}(%esp), %ecx
+; X86-NEXT:    andl %eax, %ecx
+; X86-NEXT:    cmpl $2139095040, %ecx # imm = 0x7F800000
 ; X86-NEXT:    setne %al
 ; X86-NEXT:    retl
 ;
@@ -318,25 +346,36 @@ entry:
 define i1 @is_minus_finite_f(float %x) {
 ; X86-LABEL: is_minus_finite_f:
 ; X86:       # %bb.0: # %entry
-; X86-NEXT:    movl {{[0-9]+}}(%esp), %eax
-; X86-NEXT:    testl %eax, %eax
-; X86-NEXT:    sets %cl
-; X86-NEXT:    andl $2147483647, %eax # imm = 0x7FFFFFFF
-; X86-NEXT:    cmpl $2139095040, %eax # imm = 0x7F800000
-; X86-NEXT:    setl %al
+; X86-NEXT:    movl {{[0-9]+}}(%esp), %ecx
+; X86-NEXT:    testl %ecx, %ecx
+; X86-NEXT:    sets %al
+; X86-NEXT:    andl $2147483647, %ecx # imm = 0x7FFFFFFF
+; X86-NEXT:    cmpl $2139095040, %ecx # imm = 0x7F800000
+; X86-NEXT:    setl %cl
 ; X86-NEXT:    andb %cl, %al
 ; X86-NEXT:    retl
 ;
-; X64-LABEL: is_minus_finite_f:
-; X64:       # %bb.0: # %entry
-; X64-NEXT:    movd %xmm0, %eax
-; X64-NEXT:    testl %eax, %eax
-; X64-NEXT:    sets %cl
-; X64-NEXT:    andl $2147483647, %eax # imm = 0x7FFFFFFF
-; X64-NEXT:    cmpl $2139095040, %eax # imm = 0x7F800000
-; X64-NEXT:    setl %al
-; X64-NEXT:    andb %cl, %al
-; X64-NEXT:    retq
+; X64-GENERIC-LABEL: is_minus_finite_f:
+; X64-GENERIC:       # %bb.0: # %entry
+; X64-GENERIC-NEXT:    movd %xmm0, %ecx
+; X64-GENERIC-NEXT:    testl %ecx, %ecx
+; X64-GENERIC-NEXT:    sets %al
+; X64-GENERIC-NEXT:    andl $2147483647, %ecx # imm = 0x7FFFFFFF
+; X64-GENERIC-NEXT:    cmpl $2139095040, %ecx # imm = 0x7F800000
+; X64-GENERIC-NEXT:    setl %cl
+; X64-GENERIC-NEXT:    andb %cl, %al
+; X64-GENERIC-NEXT:    retq
+;
+; X64-NDD-LABEL: is_minus_finite_f:
+; X64-NDD:       # %bb.0: # %entry
+; X64-NDD-NEXT:    movd %xmm0, %eax
+; X64-NDD-NEXT:    testl %eax, %eax
+; X64-NDD-NEXT:    sets %cl
+; X64-NDD-NEXT:    andl $2147483647, %eax # imm = 0x7FFFFFFF
+; X64-NDD-NEXT:    cmpl $2139095040, %eax # imm = 0x7F800000
+; X64-NDD-NEXT:    setl %al
+; X64-NDD-NEXT:    andb %cl, %al
+; X64-NDD-NEXT:    retq
 entry:
   %0 = tail call i1 @llvm.is.fpclass.f32(float %x, i32 56)  ; 0x38 = "-finite"
   ret i1 %0
@@ -345,25 +384,36 @@ entry:
 define i1 @not_is_minus_finite_f(float %x) {
 ; X86-LABEL: not_is_minus_finite_f:
 ; X86:       # %bb.0: # %entry
-; X86-NEXT:    movl {{[0-9]+}}(%esp), %eax
-; X86-NEXT:    testl %eax, %eax
-; X86-NEXT:    setns %cl
-; X86-NEXT:    andl $2147483647, %eax # imm = 0x7FFFFFFF
-; X86-NEXT:    cmpl $2139095040, %eax # imm = 0x7F800000
-; X86-NEXT:    setge %al
+; X86-NEXT:    movl {{[0-9]+}}(%esp), %ecx
+; X86-NEXT:    testl %ecx, %ecx
+; X86-NEXT:    setns %al
+; X86-NEXT:    andl $2147483647, %ecx # imm = 0x7FFFFFFF
+; X86-NEXT:    cmpl $2139095040, %ecx # imm = 0x7F800000
+; X86-NEXT:    setge %cl
 ; X86-NEXT:    orb %cl, %al
 ; X86-NEXT:    retl
 ;
-; X64-LABEL: not_is_minus_finite_f:
-; X64:       # %bb.0: # %entry
-; X64-NEXT:    movd %xmm0, %eax
-; X64-NEXT:    testl %eax, %eax
-; X64-NEXT:    setns %cl
-; X64-NEXT:    andl $2147483647, %eax # imm = 0x7FFFFFFF
-; X64-NEXT:    cmpl $2139095040, %eax # imm = 0x7F800000
-; X64-NEXT:    setge %al
-; X64-NEXT:    orb %cl, %al
-; X64-NEXT:    retq
+; X64-GENERIC-LABEL: not_is_minus_finite_f:
+; X64-GENERIC:       # %bb.0: # %entry
+; X64-GENERIC-NEXT:    movd %xmm0, %ecx
+; X64-GENERIC-NEXT:    testl %ecx, %ecx
+; X64-GENERIC-NEXT:    setns %al
+; X64-GENERIC-NEXT:    andl $2147483647, %ecx # imm = 0x7FFFFFFF
+; X64-GENERIC-NEXT:    cmpl $2139095040, %ecx # imm = 0x7F800000
+; X64-GENERIC-NEXT:    setge %cl
+; X64-GENERIC-NEXT:    orb %cl, %al
+; X64-GENERIC-NEXT:    retq
+;
+; X64-NDD-LABEL: not_is_minus_finite_f:
+; X64-NDD:       # %bb.0: # %entry
+; X64-NDD-NEXT:    movd %xmm0, %eax
+; X64-NDD-NEXT:    testl %eax, %eax
+; X64-NDD-NEXT:    setns %cl
+; X64-NDD-NEXT:    andl $2147483647, %eax # imm = 0x7FFFFFFF
+; X64-NDD-NEXT:    cmpl $2139095040, %eax # imm = 0x7F800000
+; X64-NDD-NEXT:    setge %al
+; X64-NDD-NEXT:    orb %cl, %al
+; X64-NDD-NEXT:    retq
 entry:
   %0 = tail call i1 @llvm.is.fpclass.f32(float %x, i32 967)  ; ~0x38 = ~"-finite"
   ret i1 %0
@@ -373,8 +423,9 @@ define i1 @isnormal_f(float %x) #1 {
 ; X86-LABEL: isnormal_f:
 ; X86:       # %bb.0: # %entry
 ; X86-NEXT:    movl $2147483647, %eax # imm = 0x7FFFFFFF
-; X86-NEXT:    andl {{[0-9]+}}(%esp), %eax
-; X86-NEXT:    addl $-8388608, %eax # imm = 0xFF800000
+; X86-NEXT:    movl {{[0-9]+}}(%esp), %ecx
+; X86-NEXT:    andl %eax, %ecx
+; X86-NEXT:    leal -8388608(%ecx), %eax
 ; X86-NEXT:    cmpl $2130706432, %eax # imm = 0x7F000000
 ; X86-NEXT:    setb %al
 ; X86-NEXT:    retl
@@ -396,8 +447,9 @@ define i1 @not_isnormal_f(float %x) #1 {
 ; X86-LABEL: not_isnormal_f:
 ; X86:       # %bb.0: # %entry
 ; X86-NEXT:    movl $2147483647, %eax # imm = 0x7FFFFFFF
-; X86-NEXT:    andl {{[0-9]+}}(%esp), %eax
-; X86-NEXT:    addl $-8388608, %eax # imm = 0xFF800000
+; X86-NEXT:    movl {{[0-9]+}}(%esp), %ecx
+; X86-NEXT:    andl %eax, %ecx
+; X86-NEXT:    leal -8388608(%ecx), %eax
 ; X86-NEXT:    cmpl $2130706432, %eax # imm = 0x7F000000
 ; X86-NEXT:    setae %al
 ; X86-NEXT:    retl
@@ -418,27 +470,39 @@ entry:
 define i1 @is_plus_normal_f(float %x) {
 ; X86-LABEL: is_plus_normal_f:
 ; X86:       # %bb.0: # %entry
-; X86-NEXT:    movl {{[0-9]+}}(%esp), %eax
-; X86-NEXT:    testl %eax, %eax
-; X86-NEXT:    setns %cl
-; X86-NEXT:    andl $2147483647, %eax # imm = 0x7FFFFFFF
-; X86-NEXT:    addl $-8388608, %eax # imm = 0xFF800000
-; X86-NEXT:    cmpl $2130706432, %eax # imm = 0x7F000000
-; X86-NEXT:    setb %al
+; X86-NEXT:    movl {{[0-9]+}}(%esp), %ecx
+; X86-NEXT:    testl %ecx, %ecx
+; X86-NEXT:    setns %al
+; X86-NEXT:    andl $2147483647, %ecx # imm = 0x7FFFFFFF
+; X86-NEXT:    addl $-8388608, %ecx # imm = 0xFF800000
+; X86-NEXT:    cmpl $2130706432, %ecx # imm = 0x7F000000
+; X86-NEXT:    setb %cl
 ; X86-NEXT:    andb %cl, %al
 ; X86-NEXT:    retl
 ;
-; X64-LABEL: is_plus_normal_f:
-; X64:       # %bb.0: # %entry
-; X64-NEXT:    movd %xmm0, %eax
-; X64-NEXT:    testl %eax, %eax
-; X64-NEXT:    setns %cl
-; X64-NEXT:    andl $2147483647, %eax # imm = 0x7FFFFFFF
-; X64-NEXT:    addl $-8388608, %eax # imm = 0xFF800000
-; X64-NEXT:    cmpl $2130706432, %eax # imm = 0x7F000000
-; X64-NEXT:    setb %al
-; X64-NEXT:    andb %cl, %al
-; X64-NEXT:    retq
+; X64-GENERIC-LABEL: is_plus_normal_f:
+; X64-GENERIC:       # %bb.0: # %entry
+; X64-GENERIC-NEXT:    movd %xmm0, %ecx
+; X64-GENERIC-NEXT:    testl %ecx, %ecx
+; X64-GENERIC-NEXT:    setns %al
+; X64-GENERIC-NEXT:    andl $2147483647, %ecx # imm = 0x7FFFFFFF
+; X64-GENERIC-NEXT:    addl $-8388608, %ecx # imm = 0xFF800000
+; X64-GENERIC-NEXT:    cmpl $2130706432, %ecx # imm = 0x7F000000
+; X64-GENERIC-NEXT:    setb %cl
+; X64-GENERIC-NEXT:    andb %cl, %al
+; X64-GENERIC-NEXT:    retq
+;
+; X64-NDD-LABEL: is_plus_normal_f:
+; X64-NDD:       # %bb.0: # %entry
+; X64-NDD-NEXT:    movd %xmm0, %eax
+; X64-NDD-NEXT:    testl %eax, %eax
+; X64-NDD-NEXT:    setns %cl
+; X64-NDD-NEXT:    andl $2147483647, %eax # imm = 0x7FFFFFFF
+; X64-NDD-NEXT:    addl $-8388608, %eax # imm = 0xFF800000
+; X64-NDD-NEXT:    cmpl $2130706432, %eax # imm = 0x7F000000
+; X64-NDD-NEXT:    setb %al
+; X64-NDD-NEXT:    andb %cl, %al
+; X64-NDD-NEXT:    retq
 entry:
   %0 = tail call i1 @llvm.is.fpclass.f32(float %x, i32 256)  ; 0x100 = "+normal"
   ret i1 %0
@@ -448,8 +512,9 @@ define i1 @issubnormal_f(float %x) {
 ; X86-LABEL: issubnormal_f:
 ; X86:       # %bb.0: # %entry
 ; X86-NEXT:    movl $2147483647, %eax # imm = 0x7FFFFFFF
-; X86-NEXT:    andl {{[0-9]+}}(%esp), %eax
-; X86-NEXT:    decl %eax
+; X86-NEXT:    movl {{[0-9]+}}(%esp), %ecx
+; X86-NEXT:    andl %eax, %ecx
+; X86-NEXT:    leal -1(%ecx), %eax
 ; X86-NEXT:    cmpl $8388607, %eax # imm = 0x7FFFFF
 ; X86-NEXT:    setb %al
 ; X86-NEXT:    retl
@@ -471,8 +536,9 @@ define i1 @issubnormal_f_daz(float %x) #0 {
 ; X86-LABEL: issubnormal_f_daz:
 ; X86:       # %bb.0: # %entry
 ; X86-NEXT:    movl $2147483647, %eax # imm = 0x7FFFFFFF
-; X86-NEXT:    andl {{[0-9]+}}(%esp), %eax
-; X86-NEXT:    decl %eax
+; X86-NEXT:    movl {{[0-9]+}}(%esp), %ecx
+; X86-NEXT:    andl %eax, %ecx
+; X86-NEXT:    leal -1(%ecx), %eax
 ; X86-NEXT:    cmpl $8388607, %eax # imm = 0x7FFFFF
 ; X86-NEXT:    setb %al
 ; X86-NEXT:    retl
@@ -494,8 +560,9 @@ define i1 @issubnormal_f_maybe_daz(float %x) #1 {
 ; X86-LABEL: issubnormal_f_maybe_daz:
 ; X86:       # %bb.0: # %entry
 ; X86-NEXT:    movl $2147483647, %eax # imm = 0x7FFFFFFF
-; X86-NEXT:    andl {{[0-9]+}}(%esp), %eax
-; X86-NEXT:    decl %eax
+; X86-NEXT:    movl {{[0-9]+}}(%esp), %ecx
+; X86-NEXT:    andl %eax, %ecx
+; X86-NEXT:    leal -1(%ecx), %eax
 ; X86-NEXT:    cmpl $8388607, %eax # imm = 0x7FFFFF
 ; X86-NEXT:    setb %al
 ; X86-NEXT:    retl
@@ -517,8 +584,9 @@ define i1 @not_issubnormal_f(float %x) {
 ; X86-LABEL: not_issubnormal_f:
 ; X86:       # %bb.0: # %entry
 ; X86-NEXT:    movl $2147483647, %eax # imm = 0x7FFFFFFF
-; X86-NEXT:    andl {{[0-9]+}}(%esp), %eax
-; X86-NEXT:    decl %eax
+; X86-NEXT:    movl {{[0-9]+}}(%esp), %ecx
+; X86-NEXT:    andl %eax, %ecx
+; X86-NEXT:    leal -1(%ecx), %eax
 ; X86-NEXT:    cmpl $8388607, %eax # imm = 0x7FFFFF
 ; X86-NEXT:    setae %al
 ; X86-NEXT:    retl
@@ -540,8 +608,9 @@ define i1 @not_issubnormal_f_daz(float %x) #0 {
 ; X86-LABEL: not_issubnormal_f_daz:
 ; X86:       # %bb.0: # %entry
 ; X86-NEXT:    movl $2147483647, %eax # imm = 0x7FFFFFFF
-; X86-NEXT:    andl {{[0-9]+}}(%esp), %eax
-; X86-NEXT:    decl %eax
+; X86-NEXT:    movl {{[0-9]+}}(%esp), %ecx
+; X86-NEXT:    andl %eax, %ecx
+; X86-NEXT:    leal -1(%ecx), %eax
 ; X86-NEXT:    cmpl $8388607, %eax # imm = 0x7FFFFF
 ; X86-NEXT:    setae %al
 ; X86-NEXT:    retl
@@ -563,8 +632,9 @@ define i1 @not_issubnormal_f_maybe_daz(float %x) #1 {
 ; X86-LABEL: not_issubnormal_f_maybe_daz:
 ; X86:       # %bb.0: # %entry
 ; X86-NEXT:    movl $2147483647, %eax # imm = 0x7FFFFFFF
-; X86-NEXT:    andl {{[0-9]+}}(%esp), %eax
-; X86-NEXT:    decl %eax
+; X86-NEXT:    movl {{[0-9]+}}(%esp), %ecx
+; X86-NEXT:    andl %eax, %ecx
+; X86-NEXT:    leal -1(%ecx), %eax
 ; X86-NEXT:    cmpl $8388607, %eax # imm = 0x7FFFFF
 ; X86-NEXT:    setae %al
 ; X86-NEXT:    retl
@@ -627,27 +697,39 @@ entry:
 define i1 @is_minus_subnormal_f(float %x) {
 ; X86-LABEL: is_minus_subnormal_f:
 ; X86:       # %bb.0: # %entry
-; X86-NEXT:    movl {{[0-9]+}}(%esp), %eax
-; X86-NEXT:    testl %eax, %eax
-; X86-NEXT:    sets %cl
-; X86-NEXT:    andl $2147483647, %eax # imm = 0x7FFFFFFF
-; X86-NEXT:    decl %eax
-; X86-NEXT:    cmpl $8388607, %eax # imm = 0x7FFFFF
-; X86-NEXT:    setb %al
+; X86-NEXT:    movl {{[0-9]+}}(%esp), %ecx
+; X86-NEXT:    testl %ecx, %ecx
+; X86-NEXT:    sets %al
+; X86-NEXT:    andl $2147483647, %ecx # imm = 0x7FFFFFFF
+; X86-NEXT:    decl %ecx
+; X86-NEXT:    cmpl $8388607, %ecx # imm = 0x7FFFFF
+; X86-NEXT:    setb %cl
 ; X86-NEXT:    andb %cl, %al
 ; X86-NEXT:    retl
 ;
-; X64-LABEL: is_minus_subnormal_f:
-; X64:       # %bb.0: # %entry
-; X64-NEXT:    movd %xmm0, %eax
-; X64-NEXT:    testl %eax, %eax
-; X64-NEXT:    sets %cl
-; X64-NEXT:    andl $2147483647, %eax # imm = 0x7FFFFFFF
-; X64-NEXT:    decl %eax
-; X64-NEXT:    cmpl $8388607, %eax # imm = 0x7FFFFF
-; X64-NEXT:    setb %al
-; X64-NEXT:    andb %cl, %al
-; X64-NEXT:    retq
+; X64-GENERIC-LABEL: is_minus_subnormal_f:
+; X64-GENERIC:       # %bb.0: # %entry
+; X64-GENERIC-NEXT:    movd %xmm0, %ecx
+; X64-GENERIC-NEXT:    testl %ecx, %ecx
+; X64-GENERIC-NEXT:    sets %al
+; X64-GENERIC-NEXT:    andl $2147483647, %ecx # imm = 0x7FFFFFFF
+; X64-GENERIC-NEXT:    decl %ecx
+; X64-GENERIC-NEXT:    cmpl $8388607, %ecx # imm = 0x7FFFFF
+; X64-GENERIC-NEXT:    setb %cl
+; X64-GENERIC-NEXT:    andb %cl, %al
+; X64-GENERIC-NEXT:    retq
+;
+; X64-NDD-LABEL: is_minus_subnormal_f:
+; X64-NDD:       # %bb.0: # %entry
+; X64-NDD-NEXT:    movd %xmm0, %eax
+; X64-NDD-NEXT:    testl %eax, %eax
+; X64-NDD-NEXT:    sets %cl
+; X64-NDD-NEXT:    andl $2147483647, %eax # imm = 0x7FFFFFFF
+; X64-NDD-NEXT:    decl %eax
+; X64-NDD-NEXT:    cmpl $8388607, %eax # imm = 0x7FFFFF
+; X64-NDD-NEXT:    setb %al
+; X64-NDD-NEXT:    andb %cl, %al
+; X64-NDD-NEXT:    retq
 entry:
   %0 = tail call i1 @llvm.is.fpclass.f32(float %x, i32 16)  ; 0x10 = "-subnormal"
   ret i1 %0
@@ -656,27 +738,39 @@ entry:
 define i1 @not_is_minus_subnormal_f(float %x) {
 ; X86-LABEL: not_is_minus_subnormal_f:
 ; X86:       # %bb.0: # %entry
-; X86-NEXT:    movl {{[0-9]+}}(%esp), %eax
-; X86-NEXT:    testl %eax, %eax
-; X86-NEXT:    setns %cl
-; X86-NEXT:    andl $2147483647, %eax # imm = 0x7FFFFFFF
-; X86-NEXT:    decl %eax
-; X86-NEXT:    cmpl $8388607, %eax # imm = 0x7FFFFF
-; X86-NEXT:    setae %al
+; X86-NEXT:    movl {{[0-9]+}}(%esp), %ecx
+; X86-NEXT:    testl %ecx, %ecx
+; X86-NEXT:    setns %al
+; X86-NEXT:    andl $2147483647, %ecx # imm = 0x7FFFFFFF
+; X86-NEXT:    decl %ecx
+; X86-NEXT:    cmpl $8388607, %ecx # imm = 0x7FFFFF
+; X86-NEXT:    setae %cl
 ; X86-NEXT:    orb %cl, %al
 ; X86-NEXT:    retl
 ;
-; X64-LABEL: not_is_minus_subnormal_f:
-; X64:       # %bb.0: # %entry
-; X64-NEXT:    movd %xmm0, %eax
-; X64-NEXT:    testl %eax, %eax
-; X64-NEXT:    setns %cl
-; X64-NEXT:    andl $2147483647, %eax # imm = 0x7FFFFFFF
-; X64-NEXT:    decl %eax
-; X64-NEXT:    cmpl $8388607, %eax # imm = 0x7FFFFF
-; X64-NEXT:    setae %al
-; X64-NEXT:    orb %cl, %al
-; X64-NEXT:    retq
+; X64-GENERIC-LABEL: not_is_minus_subnormal_f:
+; X64-GENERIC:       # %bb.0: # %entry
+; X64-GENERIC-NEXT:    movd %xmm0, %ecx
+; X64-GENERIC-NEXT:    testl %ecx, %ecx
+; X64-GENERIC-NEXT:    setns %al
+; X64-GENERIC-NEXT:    andl $2147483647, %ecx # imm = 0x7FFFFFFF
+; X64-GENERIC-NEXT:    decl %ecx
+; X64-GENERIC-NEXT:    cmpl $8388607, %ecx # imm = 0x7FFFFF
+; X64-GENERIC-NEXT:    setae %cl
+; X64-GENERIC-NEXT:    orb %cl, %al
+; X64-GENERIC-NEXT:    retq
+;
+; X64-NDD-LABEL: not_is_minus_subnormal_f:
+; X64-NDD:       # %bb.0: # %entry
+; X64-NDD-NEXT:    movd %xmm0, %eax
+; X64-NDD-NEXT:    testl %eax, %eax
+; X64-NDD-NEXT:    setns %cl
+; X64-NDD-NEXT:    andl $2147483647, %eax # imm = 0x7FFFFFFF
+; X64-NDD-NEXT:    decl %eax
+; X64-NDD-NEXT:    cmpl $8388607, %eax # imm = 0x7FFFFF
+; X64-NDD-NEXT:    setae %al
+; X64-NDD-NEXT:    orb %cl, %al
+; X64-NDD-NEXT:    retq
 entry:
   %0 = tail call i1 @llvm.is.fpclass.f32(float %x, i32 1007)  ; ~0x10 = ~"-subnormal"
   ret i1 %0
@@ -976,8 +1070,9 @@ define i1 @isnan_f_strictfp(float %x) strictfp {
 ; X86-LABEL: isnan_f_strictfp:
 ; X86:       # %bb.0: # %entry
 ; X86-NEXT:    movl $2147483647, %eax # imm = 0x7FFFFFFF
-; X86-NEXT:    andl {{[0-9]+}}(%esp), %eax
-; X86-NEXT:    cmpl $2139095041, %eax # imm = 0x7F800001
+; X86-NEXT:    movl {{[0-9]+}}(%esp), %ecx
+; X86-NEXT:    andl %eax, %ecx
+; X86-NEXT:    cmpl $2139095041, %ecx # imm = 0x7F800001
 ; X86-NEXT:    setge %al
 ; X86-NEXT:    retl
 ;
@@ -997,8 +1092,9 @@ define i1 @not_isnan_f_strictfp(float %x) strictfp {
 ; X86-LABEL: not_isnan_f_strictfp:
 ; X86:       # %bb.0: # %entry
 ; X86-NEXT:    movl $2147483647, %eax # imm = 0x7FFFFFFF
-; X86-NEXT:    andl {{[0-9]+}}(%esp), %eax
-; X86-NEXT:    cmpl $2139095041, %eax # imm = 0x7F800001
+; X86-NEXT:    movl {{[0-9]+}}(%esp), %ecx
+; X86-NEXT:    andl %eax, %ecx
+; X86-NEXT:    cmpl $2139095041, %ecx # imm = 0x7F800001
 ; X86-NEXT:    setl %al
 ; X86-NEXT:    retl
 ;
@@ -1117,9 +1213,11 @@ define i1 @isinf_d(double %x) {
 ; X86-LABEL: isinf_d:
 ; X86:       # %bb.0: # %entry
 ; X86-NEXT:    movl $2147483647, %eax # imm = 0x7FFFFFFF
-; X86-NEXT:    andl {{[0-9]+}}(%esp), %eax
-; X86-NEXT:    xorl $2146435072, %eax # imm = 0x7FF00000
-; X86-NEXT:    orl {{[0-9]+}}(%esp), %eax
+; X86-NEXT:    movl {{[0-9]+}}(%esp), %ecx
+; X86-NEXT:    andl %eax, %ecx
+; X86-NEXT:    xorl $2146435072, %ecx # imm = 0x7FF00000
+; X86-NEXT:    movl {{[0-9]+}}(%esp), %eax
+; X86-NEXT:    orl %ecx, %eax
 ; X86-NEXT:    sete %al
 ; X86-NEXT:    retl
 ;
@@ -1174,8 +1272,9 @@ define i1 @isnormal_d(double %x) {
 ; X86-LABEL: isnormal_d:
 ; X86:       # %bb.0: # %entry
 ; X86-NEXT:    movl $2147483647, %eax # imm = 0x7FFFFFFF
-; X86-NEXT:    andl {{[0-9]+}}(%esp), %eax
-; X86-NEXT:    addl $-1048576, %eax # imm = 0xFFF00000
+; X86-NEXT:    movl {{[0-9]+}}(%esp), %ecx
+; X86-NEXT:    andl %eax, %ecx
+; X86-NEXT:    leal -1048576(%ecx), %eax
 ; X86-NEXT:    shrl $21, %eax
 ; X86-NEXT:    cmpl $1023, %eax # imm = 0x3FF
 ; X86-NEXT:    setb %al
@@ -1214,11 +1313,12 @@ define i1 @issubnormal_d(double %x) {
 ; X86:       # %bb.0: # %entry
 ; X86-NEXT:    movl {{[0-9]+}}(%esp), %eax
 ; X86-NEXT:    movl $2147483647, %ecx # imm = 0x7FFFFFFF
-; X86-NEXT:    andl {{[0-9]+}}(%esp), %ecx
+; X86-NEXT:    movl {{[0-9]+}}(%esp), %edx
+; X86-NEXT:    andl %ecx, %edx
 ; X86-NEXT:    addl $-1, %eax
-; X86-NEXT:    adcl $-1, %ecx
+; X86-NEXT:    adcl $-1, %edx
 ; X86-NEXT:    cmpl $-1, %eax
-; X86-NEXT:    sbbl $1048575, %ecx # imm = 0xFFFFF
+; X86-NEXT:    sbbl $1048575, %edx # imm = 0xFFFFF
 ; X86-NEXT:    setb %al
 ; X86-NEXT:    retl
 ;
@@ -1227,9 +1327,9 @@ define i1 @issubnormal_d(double %x) {
 ; X64-GENERIC-NEXT:    movq %xmm0, %rax
 ; X64-GENERIC-NEXT:    movabsq $9223372036854775807, %rcx # imm = 0x7FFFFFFFFFFFFFFF
 ; X64-GENERIC-NEXT:    andq %rax, %rcx
-; X64-GENERIC-NEXT:    decq %rcx
-; X64-GENERIC-NEXT:    movabsq $4503599627370495, %rax # imm = 0xFFFFFFFFFFFFF
-; X64-GENERIC-NEXT:    cmpq %rax, %rcx
+; X64-GENERIC-NEXT:    leaq -1(%rcx), %rax
+; X64-GENERIC-NEXT:    movabsq $4503599627370495, %rcx # imm = 0xFFFFFFFFFFFFF
+; X64-GENERIC-NEXT:    cmpq %rcx, %rax
 ; X64-GENERIC-NEXT:    setb %al
 ; X64-GENERIC-NEXT:    retq
 ;
@@ -1252,18 +1352,28 @@ define i1 @iszero_d(double %x) {
 ; X86-LABEL: iszero_d:
 ; X86:       # %bb.0: # %entry
 ; X86-NEXT:    movl $2147483647, %eax # imm = 0x7FFFFFFF
-; X86-NEXT:    andl {{[0-9]+}}(%esp), %eax
-; X86-NEXT:    orl {{[0-9]+}}(%esp), %eax
+; X86-NEXT:    movl {{[0-9]+}}(%esp), %ecx
+; X86-NEXT:    andl %eax, %ecx
+; X86-NEXT:    movl {{[0-9]+}}(%esp), %eax
+; X86-NEXT:    orl %ecx, %eax
 ; X86-NEXT:    sete %al
 ; X86-NEXT:    retl
 ;
-; X64-LABEL: iszero_d:
-; X64:       # %bb.0: # %entry
-; X64-NEXT:    movq %xmm0, %rax
-; X64-NEXT:    shlq %rax
-; X64-NEXT:    testq %rax, %rax
-; X64-NEXT:    sete %al
-; X64-NEXT:    retq
+; X64-GENERIC-LABEL: iszero_d:
+; X64-GENERIC:       # %bb.0: # %entry
+; X64-GENERIC-NEXT:    movq %xmm0, %rax
+; X64-GENERIC-NEXT:    leaq (,%rax,2), %rax
+; X64-GENERIC-NEXT:    testq %rax, %rax
+; X64-GENERIC-NEXT:    sete %al
+; X64-GENERIC-NEXT:    retq
+;
+; X64-NDD-LABEL: iszero_d:
+; X64-NDD:       # %bb.0: # %entry
+; X64-NDD-NEXT:    movq %xmm0, %rax
+; X64-NDD-NEXT:    shlq %rax
+; X64-NDD-NEXT:    testq %rax, %rax
+; X64-NDD-NEXT:    sete %al
+; X64-NDD-NEXT:    retq
 entry:
   %0 = tail call i1 @llvm.is.fpclass.f64(double %x, i32 96)  ; 0x60 = "zero"
   ret i1 %0
@@ -1273,15 +1383,16 @@ define i1 @issignaling_d(double %x) {
 ; X86-LABEL: issignaling_d:
 ; X86:       # %bb.0: # %entry
 ; X86-NEXT:    movl $2147483647, %eax # imm = 0x7FFFFFFF
-; X86-NEXT:    andl {{[0-9]+}}(%esp), %eax
-; X86-NEXT:    xorl %ecx, %ecx
-; X86-NEXT:    cmpl {{[0-9]+}}(%esp), %ecx
-; X86-NEXT:    movl $2146435072, %ecx # imm = 0x7FF00000
-; X86-NEXT:    sbbl %eax, %ecx
-; X86-NEXT:    setl %cl
-; X86-NEXT:    cmpl $2146959360, %eax # imm = 0x7FF80000
+; X86-NEXT:    movl {{[0-9]+}}(%esp), %ecx
+; X86-NEXT:    andl %eax, %ecx
+; X86-NEXT:    xorl %eax, %eax
+; X86-NEXT:    cmpl {{[0-9]+}}(%esp), %eax
+; X86-NEXT:    movl $2146435072, %eax # imm = 0x7FF00000
+; X86-NEXT:    sbbl %ecx, %eax
+; X86-NEXT:    setl %dl
+; X86-NEXT:    cmpl $2146959360, %ecx # imm = 0x7FF80000
 ; X86-NEXT:    setl %al
-; X86-NEXT:    andb %cl, %al
+; X86-NEXT:    andb %dl, %al
 ; X86-NEXT:    retl
 ;
 ; X64-GENERIC-LABEL: issignaling_d:
@@ -1291,11 +1402,11 @@ define i1 @issignaling_d(double %x) {
 ; X64-GENERIC-NEXT:    andq %rax, %rcx
 ; X64-GENERIC-NEXT:    movabsq $9221120237041090560, %rax # imm = 0x7FF8000000000000
 ; X64-GENERIC-NEXT:    cmpq %rax, %rcx
-; X64-GENERIC-NEXT:    setl %dl
-; X64-GENERIC-NEXT:    movabsq $9218868437227405312, %rax # imm = 0x7FF0000000000000
-; X64-GENERIC-NEXT:    cmpq %rax, %rcx
-; X64-GENERIC-NEXT:    setg %al
-; X64-GENERIC-NEXT:    andb %dl, %al
+; X64-GENERIC-NEXT:    setl %al
+; X64-GENERIC-NEXT:    movabsq $9218868437227405312, %rdx # imm = 0x7FF0000000000000
+; X64-GENERIC-NEXT:    cmpq %rdx, %rcx
+; X64-GENERIC-NEXT:    setg %cl
+; X64-GENERIC-NEXT:    andb %cl, %al
 ; X64-GENERIC-NEXT:    retq
 ;
 ; X64-NDD-LABEL: issignaling_d:
@@ -1320,8 +1431,9 @@ define i1 @isquiet_d(double %x) {
 ; X86-LABEL: isquiet_d:
 ; X86:       # %bb.0: # %entry
 ; X86-NEXT:    movl $2147483647, %eax # imm = 0x7FFFFFFF
-; X86-NEXT:    andl {{[0-9]+}}(%esp), %eax
-; X86-NEXT:    cmpl $2146959360, %eax # imm = 0x7FF80000
+; X86-NEXT:    movl {{[0-9]+}}(%esp), %ecx
+; X86-NEXT:    andl %eax, %ecx
+; X86-NEXT:    cmpl $2146959360, %ecx # imm = 0x7FF80000
 ; X86-NEXT:    setge %al
 ; X86-NEXT:    retl
 ;
@@ -1353,11 +1465,12 @@ define i1 @isnan_d_strictfp(double %x) strictfp {
 ; X86-LABEL: isnan_d_strictfp:
 ; X86:       # %bb.0: # %entry
 ; X86-NEXT:    movl $2147483647, %eax # imm = 0x7FFFFFFF
-; X86-NEXT:    andl {{[0-9]+}}(%esp), %eax
-; X86-NEXT:    xorl %ecx, %ecx
-; X86-NEXT:    cmpl {{[0-9]+}}(%esp), %ecx
-; X86-NEXT:    movl $2146435072, %ecx # imm = 0x7FF00000
-; X86-NEXT:    sbbl %eax, %ecx
+; X86-NEXT:    movl {{[0-9]+}}(%esp), %ecx
+; X86-NEXT:    andl %eax, %ecx
+; X86-NEXT:    xorl %eax, %eax
+; X86-NEXT:    cmpl {{[0-9]+}}(%esp), %eax
+; X86-NEXT:    movl $2146435072, %eax # imm = 0x7FF00000
+; X86-NEXT:    sbbl %ecx, %eax
 ; X86-NEXT:    setl %al
 ; X86-NEXT:    retl
 ;
@@ -1389,18 +1502,28 @@ define i1 @iszero_d_strictfp(double %x) strictfp {
 ; X86-LABEL: iszero_d_strictfp:
 ; X86:       # %bb.0: # %entry
 ; X86-NEXT:    movl $2147483647, %eax # imm = 0x7FFFFFFF
-; X86-NEXT:    andl {{[0-9]+}}(%esp), %eax
-; X86-NEXT:    orl {{[0-9]+}}(%esp), %eax
+; X86-NEXT:    movl {{[0-9]+}}(%esp), %ecx
+; X86-NEXT:    andl %eax, %ecx
+; X86-NEXT:    movl {{[0-9]+}}(%esp), %eax
+; X86-NEXT:    orl %ecx, %eax
 ; X86-NEXT:    sete %al
 ; X86-NEXT:    retl
 ;
-; X64-LABEL: iszero_d_strictfp:
-; X64:       # %bb.0: # %entry
-; X64-NEXT:    movq %xmm0, %rax
-; X64-NEXT:    shlq %rax
-; X64-NEXT:    testq %rax, %rax
-; X64-NEXT:    sete %al
-; X64-NEXT:    retq
+; X64-GENERIC-LABEL: iszero_d_strictfp:
+; X64-GENERIC:       # %bb.0: # %entry
+; X64-GENERIC-NEXT:    movq %xmm0, %rax
+; X64-GENERIC-NEXT:    leaq (,%rax,2), %rax
+; X64-GENERIC-NEXT:    testq %rax, %rax
+; X64-GENERIC-NEXT:    sete %al
+; X64-GENERIC-NEXT:    retq
+;
+; X64-NDD-LABEL: iszero_d_strictfp:
+; X64-NDD:       # %bb.0: # %entry
+; X64-NDD-NEXT:    movq %xmm0, %rax
+; X64-NDD-NEXT:    shlq %rax
+; X64-NDD-NEXT:    testq %rax, %rax
+; X64-NDD-NEXT:    sete %al
+; X64-NDD-NEXT:    retq
 entry:
   %0 = tail call i1 @llvm.is.fpclass.f64(double %x, i32 96) strictfp ; 0x60 = "zero"
   ret i1 %0
@@ -1433,8 +1556,9 @@ define <1 x i1> @isnan_v1f_strictfp(<1 x float> %x) strictfp {
 ; X86-LABEL: isnan_v1f_strictfp:
 ; X86:       # %bb.0: # %entry
 ; X86-NEXT:    movl $2147483647, %eax # imm = 0x7FFFFFFF
-; X86-NEXT:    andl {{[0-9]+}}(%esp), %eax
-; X86-NEXT:    cmpl $2139095041, %eax # imm = 0x7F800001
+; X86-NEXT:    movl {{[0-9]+}}(%esp), %ecx
+; X86-NEXT:    andl %eax, %ecx
+; X86-NEXT:    cmpl $2139095041, %ecx # imm = 0x7F800001
 ; X86-NEXT:    setge %al
 ; X86-NEXT:    retl
 ;
@@ -1515,16 +1639,19 @@ define <2 x i1> @isnan_v2f_strictfp(<2 x float> %x) strictfp {
 ; X86-NEXT:    andl %ecx, %eax
 ; X86-NEXT:    cmpl $2139095041, %eax # imm = 0x7F800001
 ; X86-NEXT:    setge %al
-; X86-NEXT:    andl {{[0-9]+}}(%esp), %ecx
-; X86-NEXT:    cmpl $2139095041, %ecx # imm = 0x7F800001
+; X86-NEXT:    movl {{[0-9]+}}(%esp), %edx
+; X86-NEXT:    andl %ecx, %edx
+; X86-NEXT:    cmpl $2139095041, %edx # imm = 0x7F800001
 ; X86-NEXT:    setge %dl
 ; X86-NEXT:    retl
 ;
 ; X64-LABEL: isnan_v2f_strictfp:
 ; X64:       # %bb.0: # %entry
 ; X64-NEXT:    shufps {{.*#+}} xmm0 = xmm0[0,1,1,3]
-; X64-NEXT:    andps {{\.?LCPI[0-9]+_[0-9]+}}(%rip), %xmm0
-; X64-NEXT:    pcmpgtd {{\.?LCPI[0-9]+_[0-9]+}}(%rip), %xmm0
+; X64-NEXT:    movaps {{.*#+}} xmm1 = [2147483647,2147483647,2147483647,u]
+; X64-NEXT:    andps %xmm0, %xmm1
+; X64-NEXT:    pcmpgtd {{\.?LCPI[0-9]+_[0-9]+}}(%rip), %xmm1
+; X64-NEXT:    movdqa %xmm1, %xmm0
 ; X64-NEXT:    retq
 entry:
   %0 = tail call <2 x i1> @llvm.is.fpclass.v2f32(<2 x float> %x, i32 3) strictfp ; "nan"
@@ -1543,15 +1670,15 @@ define <4 x i1> @isnan_v4f(<4 x float> %x) {
 ; X86-NEXT:    fnstsw %ax
 ; X86-NEXT:    # kill: def $ah killed $ah killed $ax
 ; X86-NEXT:    sahf
-; X86-NEXT:    setp %dh
-; X86-NEXT:    shlb $2, %dh
+; X86-NEXT:    setp %dl
+; X86-NEXT:    shlb $2, %dl
 ; X86-NEXT:    fucomp %st(0)
 ; X86-NEXT:    fnstsw %ax
 ; X86-NEXT:    # kill: def $ah killed $ah killed $ax
 ; X86-NEXT:    sahf
-; X86-NEXT:    setp %dl
-; X86-NEXT:    shlb $3, %dl
-; X86-NEXT:    orb %dh, %dl
+; X86-NEXT:    setp %al
+; X86-NEXT:    shlb $3, %al
+; X86-NEXT:    orb %al, %dl
 ; X86-NEXT:    fucomp %st(0)
 ; X86-NEXT:    fnstsw %ax
 ; X86-NEXT:    # kill: def $ah killed $ah killed $ax
@@ -1564,8 +1691,8 @@ define <4 x i1> @isnan_v4f(<4 x float> %x) {
 ; X86-NEXT:    setp %al
 ; X86-NEXT:    addb %al, %al
 ; X86-NEXT:    orb %dh, %al
-; X86-NEXT:    orb %dl, %al
-; X86-NEXT:    movb %al, (%ecx)
+; X86-NEXT:    orb %al, %dl
+; X86-NEXT:    movb %dl, (%ecx)
 ; X86-NEXT:    movl %ecx, %eax
 ; X86-NEXT:    retl $4
 ;
@@ -1585,27 +1712,28 @@ define <4 x i1> @isnan_v4f_strictfp(<4 x float> %x) strictfp {
 ; X86-NEXT:    .cfi_def_cfa_offset 8
 ; X86-NEXT:    .cfi_offset %esi, -8
 ; X86-NEXT:    movl {{[0-9]+}}(%esp), %eax
-; X86-NEXT:    movl $2147483647, %ecx # imm = 0x7FFFFFFF
-; X86-NEXT:    movl {{[0-9]+}}(%esp), %edx
-; X86-NEXT:    andl %ecx, %edx
-; X86-NEXT:    cmpl $2139095041, %edx # imm = 0x7F800001
-; X86-NEXT:    setge %dh
-; X86-NEXT:    shlb $2, %dh
-; X86-NEXT:    movl {{[0-9]+}}(%esp), %esi
-; X86-NEXT:    andl %ecx, %esi
-; X86-NEXT:    cmpl $2139095041, %esi # imm = 0x7F800001
-; X86-NEXT:    setge %dl
-; X86-NEXT:    shlb $3, %dl
-; X86-NEXT:    orb %dh, %dl
-; X86-NEXT:    movl {{[0-9]+}}(%esp), %esi
-; X86-NEXT:    andl %ecx, %esi
-; X86-NEXT:    cmpl $2139095041, %esi # imm = 0x7F800001
-; X86-NEXT:    setge %dh
-; X86-NEXT:    andl {{[0-9]+}}(%esp), %ecx
+; X86-NEXT:    movl $2147483647, %edx # imm = 0x7FFFFFFF
+; X86-NEXT:    movl {{[0-9]+}}(%esp), %ecx
+; X86-NEXT:    andl %edx, %ecx
 ; X86-NEXT:    cmpl $2139095041, %ecx # imm = 0x7F800001
 ; X86-NEXT:    setge %cl
-; X86-NEXT:    addb %cl, %cl
-; X86-NEXT:    orb %dh, %cl
+; X86-NEXT:    shlb $2, %cl
+; X86-NEXT:    movl {{[0-9]+}}(%esp), %esi
+; X86-NEXT:    andl %edx, %esi
+; X86-NEXT:    cmpl $2139095041, %esi # imm = 0x7F800001
+; X86-NEXT:    setge %ch
+; X86-NEXT:    shlb $3, %ch
+; X86-NEXT:    orb %ch, %cl
+; X86-NEXT:    movl {{[0-9]+}}(%esp), %esi
+; X86-NEXT:    andl %edx, %esi
+; X86-NEXT:    cmpl $2139095041, %esi # imm = 0x7F800001
+; X86-NEXT:    setge %ch
+; X86-NEXT:    movl {{[0-9]+}}(%esp), %esi
+; X86-NEXT:    andl %edx, %esi
+; X86-NEXT:    cmpl $2139095041, %esi # imm = 0x7F800001
+; X86-NEXT:    setge %dl
+; X86-NEXT:    addb %dl, %dl
+; X86-NEXT:    orb %ch, %dl
 ; X86-NEXT:    orb %dl, %cl
 ; X86-NEXT:    movb %cl, (%eax)
 ; X86-NEXT:    popl %esi
@@ -1614,8 +1742,10 @@ define <4 x i1> @isnan_v4f_strictfp(<4 x float> %x) strictfp {
 ;
 ; X64-LABEL: isnan_v4f_strictfp:
 ; X64:       # %bb.0: # %entry
-; X64-NEXT:    pand {{\.?LCPI[0-9]+_[0-9]+}}(%rip), %xmm0
-; X64-NEXT:    pcmpgtd {{\.?LCPI[0-9]+_[0-9]+}}(%rip), %xmm0
+; X64-NEXT:    movdqa {{.*#+}} xmm1 = [2147483647,2147483647,2147483647,2147483647]
+; X64-NEXT:    pand %xmm0, %xmm1
+; X64-NEXT:    pcmpgtd {{\.?LCPI[0-9]+_[0-9]+}}(%rip), %xmm1
+; X64-NEXT:    movdqa %xmm1, %xmm0
 ; X64-NEXT:    retq
 entry:
   %0 = tail call <4 x i1> @llvm.is.fpclass.v4f32(<4 x float> %x, i32 3) strictfp ; "nan"
@@ -1680,24 +1810,36 @@ define i1 @iszero_or_nan_f_daz(float %x) #0 {
 ; X86-LABEL: iszero_or_nan_f_daz:
 ; X86:       # %bb.0: # %entry
 ; X86-NEXT:    movl $2147483647, %eax # imm = 0x7FFFFFFF
-; X86-NEXT:    andl {{[0-9]+}}(%esp), %eax
-; X86-NEXT:    cmpl $2139095041, %eax # imm = 0x7F800001
-; X86-NEXT:    setge %cl
-; X86-NEXT:    testl %eax, %eax
-; X86-NEXT:    sete %al
+; X86-NEXT:    movl {{[0-9]+}}(%esp), %ecx
+; X86-NEXT:    andl %eax, %ecx
+; X86-NEXT:    cmpl $2139095041, %ecx # imm = 0x7F800001
+; X86-NEXT:    setge %al
+; X86-NEXT:    testl %ecx, %ecx
+; X86-NEXT:    sete %cl
 ; X86-NEXT:    orb %cl, %al
 ; X86-NEXT:    retl
 ;
-; X64-LABEL: iszero_or_nan_f_daz:
-; X64:       # %bb.0: # %entry
-; X64-NEXT:    movd %xmm0, %eax
-; X64-NEXT:    andl $2147483647, %eax # imm = 0x7FFFFFFF
-; X64-NEXT:    cmpl $2139095041, %eax # imm = 0x7F800001
-; X64-NEXT:    setge %cl
-; X64-NEXT:    testl %eax, %eax
-; X64-NEXT:    sete %al
-; X64-NEXT:    orb %cl, %al
-; X64-NEXT:    retq
+; X64-GENERIC-LABEL: iszero_or_nan_f_daz:
+; X64-GENERIC:       # %bb.0: # %entry
+; X64-GENERIC-NEXT:    movd %xmm0, %ecx
+; X64-GENERIC-NEXT:    andl $2147483647, %ecx # imm = 0x7FFFFFFF
+; X64-GENERIC-NEXT:    cmpl $2139095041, %ecx # imm = 0x7F800001
+; X64-GENERIC-NEXT:    setge %al
+; X64-GENERIC-NEXT:    testl %ecx, %ecx
+; X64-GENERIC-NEXT:    sete %cl
+; X64-GENERIC-NEXT:    orb %cl, %al
+; X64-GENERIC-NEXT:    retq
+;
+; X64-NDD-LABEL: iszero_or_nan_f_daz:
+; X64-NDD:       # %bb.0: # %entry
+; X64-NDD-NEXT:    movd %xmm0, %eax
+; X64-NDD-NEXT:    andl $2147483647, %eax # imm = 0x7FFFFFFF
+; X64-NDD-NEXT:    cmpl $2139095041, %eax # imm = 0x7F800001
+; X64-NDD-NEXT:    setge %cl
+; X64-NDD-NEXT:    testl %eax, %eax
+; X64-NDD-NEXT:    sete %al
+; X64-NDD-NEXT:    orb %cl, %al
+; X64-NDD-NEXT:    retq
 entry:
   %0 = tail call i1 @llvm.is.fpclass.f32(float %x, i32 99)  ; 0x60|0x3 = "zero|nan"
   ret i1 %0
@@ -1707,24 +1849,36 @@ define i1 @iszero_or_nan_f_maybe_daz(float %x) #1 {
 ; X86-LABEL: iszero_or_nan_f_maybe_daz:
 ; X86:       # %bb.0: # %entry
 ; X86-NEXT:    movl $2147483647, %eax # imm = 0x7FFFFFFF
-; X86-NEXT:    andl {{[0-9]+}}(%esp), %eax
-; X86-NEXT:    cmpl $2139095041, %eax # imm = 0x7F800001
-; X86-NEXT:    setge %cl
-; X86-NEXT:    testl %eax, %eax
-; X86-NEXT:    sete %al
+; X86-NEXT:    movl {{[0-9]+}}(%esp), %ecx
+; X86-NEXT:    andl %eax, %ecx
+; X86-NEXT:    cmpl $2139095041, %ecx # imm = 0x7F800001
+; X86-NEXT:    setge %al
+; X86-NEXT:    testl %ecx, %ecx
+; X86-NEXT:    sete %cl
 ; X86-NEXT:    orb %cl, %al
 ; X86-NEXT:    retl
 ;
-; X64-LABEL: iszero_or_nan_f_maybe_daz:
-; X64:       # %bb.0: # %entry
-; X64-NEXT:    movd %xmm0, %eax
-; X64-NEXT:    andl $2147483647, %eax # imm = 0x7FFFFFFF
-; X64-NEXT:    cmpl $2139095041, %eax # imm = 0x7F800001
-; X64-NEXT:    setge %cl
-; X64-NEXT:    testl %eax, %eax
-; X64-NEXT:    sete %al
-; X64-NEXT:    orb %cl, %al
-; X64-NEXT:    retq
+; X64-GENERIC-LABEL: iszero_or_nan_f_maybe_daz:
+; X64-GENERIC:       # %bb.0: # %entry
+; X64-GENERIC-NEXT:    movd %xmm0, %ecx
+; X64-GENERIC-NEXT:    andl $2147483647, %ecx # imm = 0x7FFFFFFF
+; X64-GENERIC-NEXT:    cmpl $2139095041, %ecx # imm = 0x7F800001
+; X64-GENERIC-NEXT:    setge %al
+; X64-GENERIC-NEXT:    testl %ecx, %ecx
+; X64-GENERIC-NEXT:    sete %cl
+; X64-GENERIC-NEXT:    orb %cl, %al
+; X64-GENERIC-NEXT:    retq
+;
+; X64-NDD-LABEL: iszero_or_nan_f_maybe_daz:
+; X64-NDD:       # %bb.0: # %entry
+; X64-NDD-NEXT:    movd %xmm0, %eax
+; X64-NDD-NEXT:    andl $2147483647, %eax # imm = 0x7FFFFFFF
+; X64-NDD-NEXT:    cmpl $2139095041, %eax # imm = 0x7F800001
+; X64-NDD-NEXT:    setge %cl
+; X64-NDD-NEXT:    testl %eax, %eax
+; X64-NDD-NEXT:    sete %al
+; X64-NDD-NEXT:    orb %cl, %al
+; X64-NDD-NEXT:    retq
 entry:
   %0 = tail call i1 @llvm.is.fpclass.f32(float %x, i32 99)  ; 0x60|0x3 = "zero|nan"
   ret i1 %0
@@ -1757,24 +1911,36 @@ define i1 @not_iszero_or_nan_f_daz(float %x) #0 {
 ; X86-LABEL: not_iszero_or_nan_f_daz:
 ; X86:       # %bb.0: # %entry
 ; X86-NEXT:    movl $2147483647, %eax # imm = 0x7FFFFFFF
-; X86-NEXT:    andl {{[0-9]+}}(%esp), %eax
-; X86-NEXT:    cmpl $2139095041, %eax # imm = 0x7F800001
-; X86-NEXT:    setl %cl
-; X86-NEXT:    testl %eax, %eax
-; X86-NEXT:    setne %al
+; X86-NEXT:    movl {{[0-9]+}}(%esp), %ecx
+; X86-NEXT:    andl %eax, %ecx
+; X86-NEXT:    cmpl $2139095041, %ecx # imm = 0x7F800001
+; X86-NEXT:    setl %al
+; X86-NEXT:    testl %ecx, %ecx
+; X86-NEXT:    setne %cl
 ; X86-NEXT:    andb %cl, %al
 ; X86-NEXT:    retl
 ;
-; X64-LABEL: not_iszero_or_nan_f_daz:
-; X64:       # %bb.0: # %entry
-; X64-NEXT:    movd %xmm0, %eax
-; X64-NEXT:    andl $2147483647, %eax # imm = 0x7FFFFFFF
-; X64-NEXT:    cmpl $2139095041, %eax # imm = 0x7F800001
-; X64-NEXT:    setl %cl
-; X64-NEXT:    testl %eax, %eax
-; X64-NEXT:    setne %al
-; X64-NEXT:    andb %cl, %al
-; X64-NEXT:    retq
+; X64-GENERIC-LABEL: not_iszero_or_nan_f_daz:
+; X64-GENERIC:       # %bb.0: # %entry
+; X64-GENERIC-NEXT:    movd %xmm0, %ecx
+; X64-GENERIC-NEXT:    andl $2147483647, %ecx # imm = 0x7FFFFFFF
+; X64-GENERIC-NEXT:    cmpl $2139095041, %ecx # imm = 0x7F800001
+; X64-GENERIC-NEXT:    setl %al
+; X64-GENERIC-NEXT:    testl %ecx, %ecx
+; X64-GENERIC-NEXT:    setne %cl
+; X64-GENERIC-NEXT:    andb %cl, %al
+; X64-GENERIC-NEXT:    retq
+;
+; X64-NDD-LABEL: not_iszero_or_nan_f_daz:
+; X64-NDD:       # %bb.0: # %entry
+; X64-NDD-NEXT:    movd %xmm0, %eax
+; X64-NDD-NEXT:    andl $2147483647, %eax # imm = 0x7FFFFFFF
+; X64-NDD-NEXT:    cmpl $2139095041, %eax # imm = 0x7F800001
+; X64-NDD-NEXT:    setl %cl
+; X64-NDD-NEXT:    testl %eax, %eax
+; X64-NDD-NEXT:    setne %al
+; X64-NDD-NEXT:    andb %cl, %al
+; X64-NDD-NEXT:    retq
 entry:
   %0 = tail call i1 @llvm.is.fpclass.f32(float %x, i32 924)  ; ~(0x60|0x3) = "~(zero|nan)"
   ret i1 %0
@@ -1784,24 +1950,36 @@ define i1 @not_iszero_or_nan_f_maybe_daz(float %x) #1 {
 ; X86-LABEL: not_iszero_or_nan_f_maybe_daz:
 ; X86:       # %bb.0: # %entry
 ; X86-NEXT:    movl $2147483647, %eax # imm = 0x7FFFFFFF
-; X86-NEXT:    andl {{[0-9]+}}(%esp), %eax
-; X86-NEXT:    cmpl $2139095041, %eax # imm = 0x7F800001
-; X86-NEXT:    setl %cl
-; X86-NEXT:    testl %eax, %eax
-; X86-NEXT:    setne %al
+; X86-NEXT:    movl {{[0-9]+}}(%esp), %ecx
+; X86-NEXT:    andl %eax, %ecx
+; X86-NEXT:    cmpl $2139095041, %ecx # imm = 0x7F800001
+; X86-NEXT:    setl %al
+; X86-NEXT:    testl %ecx, %ecx
+; X86-NEXT:    setne %cl
 ; X86-NEXT:    andb %cl, %al
 ; X86-NEXT:    retl
 ;
-; X64-LABEL: not_iszero_or_nan_f_maybe_daz:
-; X64:       # %bb.0: # %entry
-; X64-NEXT:    movd %xmm0, %eax
-; X64-NEXT:    andl $2147483647, %eax # imm = 0x7FFFFFFF
-; X64-NEXT:    cmpl $2139095041, %eax # imm = 0x7F800001
-; X64-NEXT:    setl %cl
-; X64-NEXT:    testl %eax, %eax
-; X64-NEXT:    setne %al
-; X64-NEXT:    andb %cl, %al
-; X64-NEXT:    retq
+; X64-GENERIC-LABEL: not_iszero_or_nan_f_maybe_daz:
+; X64-GENERIC:       # %bb.0: # %entry
+; X64-GENERIC-NEXT:    movd %xmm0, %ecx
+; X64-GENERIC-NEXT:    andl $2147483647, %ecx # imm = 0x7FFFFFFF
+; X64-GENERIC-NEXT:    cmpl $2139095041, %ecx # imm = 0x7F800001
+; X64-GENERIC-NEXT:    setl %al
+; X64-GENERIC-NEXT:    testl %ecx, %ecx
+; X64-GENERIC-NEXT:    setne %cl
+; X64-GENERIC-NEXT:    andb %cl, %al
+; X64-GENERIC-NEXT:    retq
+;
+; X64-NDD-LABEL: not_iszero_or_nan_f_maybe_daz:
+; X64-NDD:       # %bb.0: # %entry
+; X64-NDD-NEXT:    movd %xmm0, %eax
+; X64-NDD-NEXT:    andl $2147483647, %eax # imm = 0x7FFFFFFF
+; X64-NDD-NEXT:    cmpl $2139095041, %eax # imm = 0x7F800001
+; X64-NDD-NEXT:    setl %cl
+; X64-NDD-NEXT:    testl %eax, %eax
+; X64-NDD-NEXT:    setne %al
+; X64-NDD-NEXT:    andb %cl, %al
+; X64-NDD-NEXT:    retq
 entry:
   %0 = tail call i1 @llvm.is.fpclass.f32(float %x, i32 924)  ; ~(0x60|0x3) = "~(zero|nan)"
   ret i1 %0
@@ -1811,24 +1989,36 @@ define i1 @iszero_or_qnan_f(float %x) {
 ; X86-LABEL: iszero_or_qnan_f:
 ; X86:       # %bb.0: # %entry
 ; X86-NEXT:    movl $2147483647, %eax # imm = 0x7FFFFFFF
-; X86-NEXT:    andl {{[0-9]+}}(%esp), %eax
-; X86-NEXT:    cmpl $2143289344, %eax # imm = 0x7FC00000
-; X86-NEXT:    setge %cl
-; X86-NEXT:    testl %eax, %eax
-; X86-NEXT:    sete %al
+; X86-NEXT:    movl {{[0-9]+}}(%esp), %ecx
+; X86-NEXT:    andl %eax, %ecx
+; X86-NEXT:    cmpl $2143289344, %ecx # imm = 0x7FC00000
+; X86-NEXT:    setge %al
+; X86-NEXT:    testl %ecx, %ecx
+; X86-NEXT:    sete %cl
 ; X86-NEXT:    orb %cl, %al
 ; X86-NEXT:    retl
 ;
-; X64-LABEL: iszero_or_qnan_f:
-; X64:       # %bb.0: # %entry
-; X64-NEXT:    movd %xmm0, %eax
-; X64-NEXT:    andl $2147483647, %eax # imm = 0x7FFFFFFF
-; X64-NEXT:    cmpl $2143289344, %eax # imm = 0x7FC00000
-; X64-NEXT:    setge %cl
-; X64-NEXT:    testl %eax, %eax
-; X64-NEXT:    sete %al
-; X64-NEXT:    orb %cl, %al
-; X64-NEXT:    retq
+; X64-GENERIC-LABEL: iszero_or_qnan_f:
+; X64-GENERIC:       # %bb.0: # %entry
+; X64-GENERIC-NEXT:    movd %xmm0, %ecx
+; X64-GENERIC-NEXT:    andl $2147483647, %ecx # imm = 0x7FFFFFFF
+; X64-GENERIC-NEXT:    cmpl $2143289344, %ecx # imm = 0x7FC00000
+; X64-GENERIC-NEXT:    setge %al
+; X64-GENERIC-NEXT:    testl %ecx, %ecx
+; X64-GENERIC-NEXT:    sete %cl
+; X64-GENERIC-NEXT:    orb %cl, %al
+; X64-GENERIC-NEXT:    retq
+;
+; X64-NDD-LABEL: iszero_or_qnan_f:
+; X64-NDD:       # %bb.0: # %entry
+; X64-NDD-NEXT:    movd %xmm0, %eax
+; X64-NDD-NEXT:    andl $2147483647, %eax # imm = 0x7FFFFFFF
+; X64-NDD-NEXT:    cmpl $2143289344, %eax # imm = 0x7FC00000
+; X64-NDD-NEXT:    setge %cl
+; X64-NDD-NEXT:    testl %eax, %eax
+; X64-NDD-NEXT:    sete %al
+; X64-NDD-NEXT:    orb %cl, %al
+; X64-NDD-NEXT:    retq
 entry:
   %0 = tail call i1 @llvm.is.fpclass.f32(float %x, i32 98)  ; 0x60|0x2 = "zero|qnan"
   ret i1 %0
@@ -1838,29 +2028,30 @@ define i1 @iszero_or_snan_f(float %x) {
 ; X86-LABEL: iszero_or_snan_f:
 ; X86:       # %bb.0: # %entry
 ; X86-NEXT:    movl $2147483647, %eax # imm = 0x7FFFFFFF
-; X86-NEXT:    andl {{[0-9]+}}(%esp), %eax
-; X86-NEXT:    cmpl $2143289344, %eax # imm = 0x7FC00000
-; X86-NEXT:    setl %cl
-; X86-NEXT:    cmpl $2139095041, %eax # imm = 0x7F800001
+; X86-NEXT:    movl {{[0-9]+}}(%esp), %ecx
+; X86-NEXT:    andl %eax, %ecx
+; X86-NEXT:    cmpl $2143289344, %ecx # imm = 0x7FC00000
+; X86-NEXT:    setl %al
+; X86-NEXT:    cmpl $2139095041, %ecx # imm = 0x7F800001
 ; X86-NEXT:    setge %dl
-; X86-NEXT:    andb %cl, %dl
-; X86-NEXT:    testl %eax, %eax
-; X86-NEXT:    sete %al
-; X86-NEXT:    orb %dl, %al
+; X86-NEXT:    andb %dl, %al
+; X86-NEXT:    testl %ecx, %ecx
+; X86-NEXT:    sete %cl
+; X86-NEXT:    orb %cl, %al
 ; X86-NEXT:    retl
 ;
 ; X64-GENERIC-LABEL: iszero_or_snan_f:
 ; X64-GENERIC:       # %bb.0: # %entry
-; X64-GENERIC-NEXT:    movd %xmm0, %eax
-; X64-GENERIC-NEXT:    andl $2147483647, %eax # imm = 0x7FFFFFFF
-; X64-GENERIC-NEXT:    cmpl $2143289344, %eax # imm = 0x7FC00000
-; X64-GENERIC-NEXT:    setl %cl
-; X64-GENERIC-NEXT:    cmpl $2139095041, %eax # imm = 0x7F800001
+; X64-GENERIC-NEXT:    movd %xmm0, %ecx
+; X64-GENERIC-NEXT:    andl $2147483647, %ecx # imm = 0x7FFFFFFF
+; X64-GENERIC-NEXT:    cmpl $2143289344, %ecx # imm = 0x7FC00000
+; X64-GENERIC-NEXT:    setl %al
+; X64-GENERIC-NEXT:    cmpl $2139095041, %ecx # imm = 0x7F800001
 ; X64-GENERIC-NEXT:    setge %dl
-; X64-GENERIC-NEXT:    andb %cl, %dl
-; X64-GENERIC-NEXT:    testl %eax, %eax
-; X64-GENERIC-NEXT:    sete %al
-; X64-GENERIC-NEXT:    orb %dl, %al
+; X64-GENERIC-NEXT:    andb %dl, %al
+; X64-GENERIC-NEXT:    testl %ecx, %ecx
+; X64-GENERIC-NEXT:    sete %cl
+; X64-GENERIC-NEXT:    orb %cl, %al
 ; X64-GENERIC-NEXT:    retq
 ;
 ; X64-NDD-LABEL: iszero_or_snan_f:
@@ -1887,24 +2078,25 @@ define i1 @not_iszero_or_qnan_f(float %x) {
 ; X86-NEXT:    pushl %esi
 ; X86-NEXT:    .cfi_def_cfa_offset 8
 ; X86-NEXT:    .cfi_offset %esi, -8
-; X86-NEXT:    movl $2147483647, %eax # imm = 0x7FFFFFFF
-; X86-NEXT:    andl {{[0-9]+}}(%esp), %eax
+; X86-NEXT:    movl $2147483647, %ecx # imm = 0x7FFFFFFF
+; X86-NEXT:    movl {{[0-9]+}}(%esp), %eax
+; X86-NEXT:    andl %ecx, %eax
 ; X86-NEXT:    cmpl $2143289344, %eax # imm = 0x7FC00000
 ; X86-NEXT:    setl %cl
 ; X86-NEXT:    cmpl $2139095041, %eax # imm = 0x7F800001
 ; X86-NEXT:    setge %dl
-; X86-NEXT:    andb %cl, %dl
+; X86-NEXT:    andb %dl, %cl
 ; X86-NEXT:    cmpl $2139095040, %eax # imm = 0x7F800000
-; X86-NEXT:    sete %cl
+; X86-NEXT:    sete %dl
 ; X86-NEXT:    leal -1(%eax), %esi
 ; X86-NEXT:    cmpl $8388607, %esi # imm = 0x7FFFFF
 ; X86-NEXT:    setb %ch
-; X86-NEXT:    orb %cl, %ch
+; X86-NEXT:    orb %ch, %dl
 ; X86-NEXT:    addl $-8388608, %eax # imm = 0xFF800000
 ; X86-NEXT:    cmpl $2130706432, %eax # imm = 0x7F000000
 ; X86-NEXT:    setb %al
+; X86-NEXT:    orb %cl, %al
 ; X86-NEXT:    orb %dl, %al
-; X86-NEXT:    orb %ch, %al
 ; X86-NEXT:    popl %esi
 ; X86-NEXT:    .cfi_def_cfa_offset 4
 ; X86-NEXT:    retl
@@ -1917,18 +2109,18 @@ define i1 @not_iszero_or_qnan_f(float %x) {
 ; X64-GENERIC-NEXT:    setl %cl
 ; X64-GENERIC-NEXT:    cmpl $2139095041, %eax # imm = 0x7F800001
 ; X64-GENERIC-NEXT:    setge %dl
-; X64-GENERIC-NEXT:    andb %cl, %dl
+; X64-GENERIC-NEXT:    andb %dl, %cl
 ; X64-GENERIC-NEXT:    cmpl $2139095040, %eax # imm = 0x7F800000
-; X64-GENERIC-NEXT:    sete %cl
+; X64-GENERIC-NEXT:    sete %dl
 ; X64-GENERIC-NEXT:    leal -1(%rax), %esi
 ; X64-GENERIC-NEXT:    cmpl $8388607, %esi # imm = 0x7FFFFF
 ; X64-GENERIC-NEXT:    setb %sil
-; X64-GENERIC-NEXT:    orb %cl, %sil
+; X64-GENERIC-NEXT:    orb %sil, %dl
 ; X64-GENERIC-NEXT:    addl $-8388608, %eax # imm = 0xFF800000
 ; X64-GENERIC-NEXT:    cmpl $2130706432, %eax # imm = 0x7F000000
 ; X64-GENERIC-NEXT:    setb %al
+; X64-GENERIC-NEXT:    orb %cl, %al
 ; X64-GENERIC-NEXT:    orb %dl, %al
-; X64-GENERIC-NEXT:    orb %sil, %al
 ; X64-GENERIC-NEXT:    retq
 ;
 ; X64-NDD-LABEL: not_iszero_or_qnan_f:
@@ -1961,20 +2153,21 @@ define i1 @not_iszero_or_snan_f(float %x) {
 ; X86-LABEL: not_iszero_or_snan_f:
 ; X86:       # %bb.0: # %entry
 ; X86-NEXT:    movl $2147483647, %eax # imm = 0x7FFFFFFF
-; X86-NEXT:    andl {{[0-9]+}}(%esp), %eax
-; X86-NEXT:    cmpl $2139095040, %eax # imm = 0x7F800000
-; X86-NEXT:    sete %cl
-; X86-NEXT:    leal -1(%eax), %edx
+; X86-NEXT:    movl {{[0-9]+}}(%esp), %ecx
+; X86-NEXT:    andl %eax, %ecx
+; X86-NEXT:    cmpl $2139095040, %ecx # imm = 0x7F800000
+; X86-NEXT:    sete %al
+; X86-NEXT:    leal -1(%ecx), %edx
 ; X86-NEXT:    cmpl $8388607, %edx # imm = 0x7FFFFF
 ; X86-NEXT:    setb %dl
-; X86-NEXT:    cmpl $2143289344, %eax # imm = 0x7FC00000
-; X86-NEXT:    setge %ch
-; X86-NEXT:    orb %cl, %ch
-; X86-NEXT:    orb %dl, %ch
-; X86-NEXT:    addl $-8388608, %eax # imm = 0xFF800000
-; X86-NEXT:    cmpl $2130706432, %eax # imm = 0x7F000000
+; X86-NEXT:    cmpl $2143289344, %ecx # imm = 0x7FC00000
+; X86-NEXT:    setge %ah
+; X86-NEXT:    orb %al, %ah
+; X86-NEXT:    orb %dl, %ah
+; X86-NEXT:    addl $-8388608, %ecx # imm = 0xFF800000
+; X86-NEXT:    cmpl $2130706432, %ecx # imm = 0x7F000000
 ; X86-NEXT:    setb %al
-; X86-NEXT:    orb %ch, %al
+; X86-NEXT:    orb %ah, %al
 ; X86-NEXT:    retl
 ;
 ; X64-GENERIC-LABEL: not_iszero_or_snan_f:
@@ -2065,8 +2258,9 @@ define i1 @isfinite_or_nan_f(float %x) {
 ; X86-LABEL: isfinite_or_nan_f:
 ; X86:       # %bb.0: # %entry
 ; X86-NEXT:    movl $2147483647, %eax # imm = 0x7FFFFFFF
-; X86-NEXT:    andl {{[0-9]+}}(%esp), %eax
-; X86-NEXT:    cmpl $2139095040, %eax # imm = 0x7F800000
+; X86-NEXT:    movl {{[0-9]+}}(%esp), %ecx
+; X86-NEXT:    andl %eax, %ecx
+; X86-NEXT:    cmpl $2139095040, %ecx # imm = 0x7F800000
 ; X86-NEXT:    setne %al
 ; X86-NEXT:    retl
 ;
@@ -2086,8 +2280,9 @@ define i1 @not_isfinite_or_nan_f(float %x) {
 ; X86-LABEL: not_isfinite_or_nan_f:
 ; X86:       # %bb.0: # %entry
 ; X86-NEXT:    movl $2147483647, %eax # imm = 0x7FFFFFFF
-; X86-NEXT:    andl {{[0-9]+}}(%esp), %eax
-; X86-NEXT:    cmpl $2139095040, %eax # imm = 0x7F800000
+; X86-NEXT:    movl {{[0-9]+}}(%esp), %ecx
+; X86-NEXT:    andl %eax, %ecx
+; X86-NEXT:    cmpl $2139095040, %ecx # imm = 0x7F800000
 ; X86-NEXT:    sete %al
 ; X86-NEXT:    retl
 ;
@@ -2190,31 +2385,31 @@ define i1 @not_is_minus_inf_or_nan_f(float %x) {
 define i1 @is_plus_inf_or_snan_f(float %x) {
 ; X86-LABEL: is_plus_inf_or_snan_f:
 ; X86:       # %bb.0:
-; X86-NEXT:    movl {{[0-9]+}}(%esp), %eax
-; X86-NEXT:    movl %eax, %ecx
-; X86-NEXT:    andl $2147483647, %ecx # imm = 0x7FFFFFFF
-; X86-NEXT:    cmpl $2143289344, %ecx # imm = 0x7FC00000
-; X86-NEXT:    setl %dl
-; X86-NEXT:    cmpl $2139095041, %ecx # imm = 0x7F800001
-; X86-NEXT:    setge %cl
-; X86-NEXT:    andb %dl, %cl
-; X86-NEXT:    cmpl $2139095040, %eax # imm = 0x7F800000
-; X86-NEXT:    sete %al
+; X86-NEXT:    movl {{[0-9]+}}(%esp), %ecx
+; X86-NEXT:    movl %ecx, %edx
+; X86-NEXT:    andl $2147483647, %edx # imm = 0x7FFFFFFF
+; X86-NEXT:    cmpl $2143289344, %edx # imm = 0x7FC00000
+; X86-NEXT:    setl %al
+; X86-NEXT:    cmpl $2139095041, %edx # imm = 0x7F800001
+; X86-NEXT:    setge %dl
+; X86-NEXT:    andb %dl, %al
+; X86-NEXT:    cmpl $2139095040, %ecx # imm = 0x7F800000
+; X86-NEXT:    sete %cl
 ; X86-NEXT:    orb %cl, %al
 ; X86-NEXT:    retl
 ;
 ; X64-GENERIC-LABEL: is_plus_inf_or_snan_f:
 ; X64-GENERIC:       # %bb.0:
-; X64-GENERIC-NEXT:    movd %xmm0, %eax
-; X64-GENERIC-NEXT:    movl %eax, %ecx
-; X64-GENERIC-NEXT:    andl $2147483647, %ecx # imm = 0x7FFFFFFF
-; X64-GENERIC-NEXT:    cmpl $2143289344, %ecx # imm = 0x7FC00000
-; X64-GENERIC-NEXT:    setl %dl
-; X64-GENERIC-NEXT:    cmpl $2139095041, %ecx # imm = 0x7F800001
-; X64-GENERIC-NEXT:    setge %cl
-; X64-GENERIC-NEXT:    andb %dl, %cl
-; X64-GENERIC-NEXT:    cmpl $2139095040, %eax # imm = 0x7F800000
-; X64-GENERIC-NEXT:    sete %al
+; X64-GENERIC-NEXT:    movd %xmm0, %ecx
+; X64-GENERIC-NEXT:    movl %ecx, %edx
+; X64-GENERIC-NEXT:    andl $2147483647, %edx # imm = 0x7FFFFFFF
+; X64-GENERIC-NEXT:    cmpl $2143289344, %edx # imm = 0x7FC00000
+; X64-GENERIC-NEXT:    setl %al
+; X64-GENERIC-NEXT:    cmpl $2139095041, %edx # imm = 0x7F800001
+; X64-GENERIC-NEXT:    setge %dl
+; X64-GENERIC-NEXT:    andb %dl, %al
+; X64-GENERIC-NEXT:    cmpl $2139095040, %ecx # imm = 0x7F800000
+; X64-GENERIC-NEXT:    sete %cl
 ; X64-GENERIC-NEXT:    orb %cl, %al
 ; X64-GENERIC-NEXT:    retq
 ;
@@ -2270,42 +2465,27 @@ define i1 @not_is_plus_inf_or_snan_f(float %x) {
 ; X86-NEXT:    leal (%eax,%eax), %edx
 ; X86-NEXT:    cmpl $-16777216, %edx # imm = 0xFF000000
 ; X86-NEXT:    setb %dl
-; X86-NEXT:    orb %cl, %dl
+; X86-NEXT:    orb %dl, %cl
 ; X86-NEXT:    andl $2147483647, %eax # imm = 0x7FFFFFFF
 ; X86-NEXT:    cmpl $2143289344, %eax # imm = 0x7FC00000
 ; X86-NEXT:    setge %al
-; X86-NEXT:    orb %dl, %al
+; X86-NEXT:    orb %cl, %al
 ; X86-NEXT:    retl
 ;
-; X64-GENERIC-LABEL: not_is_plus_inf_or_snan_f:
-; X64-GENERIC:       # %bb.0:
-; X64-GENERIC-NEXT:    movd %xmm0, %eax
-; X64-GENERIC-NEXT:    cmpl $-8388608, %eax # imm = 0xFF800000
-; X64-GENERIC-NEXT:    sete %cl
-; X64-GENERIC-NEXT:    leal (%rax,%rax), %edx
-; X64-GENERIC-NEXT:    cmpl $-16777216, %edx # imm = 0xFF000000
-; X64-GENERIC-NEXT:    setb %dl
-; X64-GENERIC-NEXT:    orb %cl, %dl
-; X64-GENERIC-NEXT:    andl $2147483647, %eax # imm = 0x7FFFFFFF
-; X64-GENERIC-NEXT:    cmpl $2143289344, %eax # imm = 0x7FC00000
-; X64-GENERIC-NEXT:    setge %al
-; X64-GENERIC-NEXT:    orb %dl, %al
-; X64-GENERIC-NEXT:    retq
-;
-; X64-NDD-LABEL: not_is_plus_inf_or_snan_f:
-; X64-NDD:       # %bb.0:
-; X64-NDD-NEXT:    movd %xmm0, %eax
-; X64-NDD-NEXT:    cmpl $-8388608, %eax # imm = 0xFF800000
-; X64-NDD-NEXT:    sete %cl
-; X64-NDD-NEXT:    leal (%rax,%rax), %edx
-; X64-NDD-NEXT:    cmpl $-16777216, %edx # imm = 0xFF000000
-; X64-NDD-NEXT:    setb %dl
-; X64-NDD-NEXT:    orb %dl, %cl
-; X64-NDD-NEXT:    andl $2147483647, %eax # imm = 0x7FFFFFFF
-; X64-NDD-NEXT:    cmpl $2143289344, %eax # imm = 0x7FC00000
-; X64-NDD-NEXT:    setge %al
-; X64-NDD-NEXT:    orb %cl, %al
-; X64-NDD-NEXT:    retq
+; X64-LABEL: not_is_plus_inf_or_snan_f:
+; X64:       # %bb.0:
+; X64-NEXT:    movd %xmm0, %eax
+; X64-NEXT:    cmpl $-8388608, %eax # imm = 0xFF800000
+; X64-NEXT:    sete %cl
+; X64-NEXT:    leal (%rax,%rax), %edx
+; X64-NEXT:    cmpl $-16777216, %edx # imm = 0xFF000000
+; X64-NEXT:    setb %dl
+; X64-NEXT:    orb %dl, %cl
+; X64-NEXT:    andl $2147483647, %eax # imm = 0x7FFFFFFF
+; X64-NEXT:    cmpl $2143289344, %eax # imm = 0x7FC00000
+; X64-NEXT:    setge %al
+; X64-NEXT:    orb %cl, %al
+; X64-NEXT:    retq
   %class = tail call i1 @llvm.is.fpclass.f32(float %x, i32 510) ; ~(+inf|snan)
   ret i1 %class
 }
@@ -2313,40 +2493,40 @@ define i1 @not_is_plus_inf_or_snan_f(float %x) {
 define i1 @not_is_plus_inf_or_qnan_f(float %x) {
 ; X86-LABEL: not_is_plus_inf_or_qnan_f:
 ; X86:       # %bb.0:
-; X86-NEXT:    movl {{[0-9]+}}(%esp), %eax
-; X86-NEXT:    movl %eax, %ecx
-; X86-NEXT:    andl $2147483647, %ecx # imm = 0x7FFFFFFF
-; X86-NEXT:    cmpl $2143289344, %ecx # imm = 0x7FC00000
-; X86-NEXT:    setl %dl
-; X86-NEXT:    cmpl $2139095041, %ecx # imm = 0x7F800001
-; X86-NEXT:    setge %cl
-; X86-NEXT:    andb %dl, %cl
-; X86-NEXT:    cmpl $-8388608, %eax # imm = 0xFF800000
+; X86-NEXT:    movl {{[0-9]+}}(%esp), %ecx
+; X86-NEXT:    movl %ecx, %edx
+; X86-NEXT:    andl $2147483647, %edx # imm = 0x7FFFFFFF
+; X86-NEXT:    cmpl $2143289344, %edx # imm = 0x7FC00000
+; X86-NEXT:    setl %al
+; X86-NEXT:    cmpl $2139095041, %edx # imm = 0x7F800001
+; X86-NEXT:    setge %dl
+; X86-NEXT:    andb %dl, %al
+; X86-NEXT:    cmpl $-8388608, %ecx # imm = 0xFF800000
 ; X86-NEXT:    sete %dl
-; X86-NEXT:    addl %eax, %eax
-; X86-NEXT:    cmpl $-16777216, %eax # imm = 0xFF000000
-; X86-NEXT:    setb %al
+; X86-NEXT:    addl %ecx, %ecx
+; X86-NEXT:    cmpl $-16777216, %ecx # imm = 0xFF000000
+; X86-NEXT:    setb %cl
+; X86-NEXT:    orb %cl, %dl
 ; X86-NEXT:    orb %dl, %al
-; X86-NEXT:    orb %cl, %al
 ; X86-NEXT:    retl
 ;
 ; X64-GENERIC-LABEL: not_is_plus_inf_or_qnan_f:
 ; X64-GENERIC:       # %bb.0:
-; X64-GENERIC-NEXT:    movd %xmm0, %eax
-; X64-GENERIC-NEXT:    movl %eax, %ecx
-; X64-GENERIC-NEXT:    andl $2147483647, %ecx # imm = 0x7FFFFFFF
-; X64-GENERIC-NEXT:    cmpl $2143289344, %ecx # imm = 0x7FC00000
-; X64-GENERIC-NEXT:    setl %dl
-; X64-GENERIC-NEXT:    cmpl $2139095041, %ecx # imm = 0x7F800001
-; X64-GENERIC-NEXT:    setge %cl
-; X64-GENERIC-NEXT:    andb %dl, %cl
-; X64-GENERIC-NEXT:    cmpl $-8388608, %eax # imm = 0xFF800000
+; X64-GENERIC-NEXT:    movd %xmm0, %ecx
+; X64-GENERIC-NEXT:    movl %ecx, %edx
+; X64-GENERIC-NEXT:    andl $2147483647, %edx # imm = 0x7FFFFFFF
+; X64-GENERIC-NEXT:    cmpl $2143289344, %edx # imm = 0x7FC00000
+; X64-GENERIC-NEXT:    setl %al
+; X64-GENERIC-NEXT:    cmpl $2139095041, %edx # imm = 0x7F800001
+; X64-GENERIC-NEXT:    setge %dl
+; X64-GENERIC-NEXT:    andb %dl, %al
+; X64-GENERIC-NEXT:    cmpl $-8388608, %ecx # imm = 0xFF800000
 ; X64-GENERIC-NEXT:    sete %dl
-; X64-GENERIC-NEXT:    addl %eax, %eax
-; X64-GENERIC-NEXT:    cmpl $-16777216, %eax # imm = 0xFF000000
-; X64-GENERIC-NEXT:    setb %al
+; X64-GENERIC-NEXT:    addl %ecx, %ecx
+; X64-GENERIC-NEXT:    cmpl $-16777216, %ecx # imm = 0xFF000000
+; X64-GENERIC-NEXT:    setb %cl
+; X64-GENERIC-NEXT:    orb %cl, %dl
 ; X64-GENERIC-NEXT:    orb %dl, %al
-; X64-GENERIC-NEXT:    orb %cl, %al
 ; X64-GENERIC-NEXT:    retq
 ;
 ; X64-NDD-LABEL: not_is_plus_inf_or_qnan_f:
@@ -2373,31 +2553,31 @@ define i1 @not_is_plus_inf_or_qnan_f(float %x) {
 define i1 @is_minus_inf_or_snan_f(float %x) {
 ; X86-LABEL: is_minus_inf_or_snan_f:
 ; X86:       # %bb.0:
-; X86-NEXT:    movl {{[0-9]+}}(%esp), %eax
-; X86-NEXT:    movl %eax, %ecx
-; X86-NEXT:    andl $2147483647, %ecx # imm = 0x7FFFFFFF
-; X86-NEXT:    cmpl $2143289344, %ecx # imm = 0x7FC00000
-; X86-NEXT:    setl %dl
-; X86-NEXT:    cmpl $2139095041, %ecx # imm = 0x7F800001
-; X86-NEXT:    setge %cl
-; X86-NEXT:    andb %dl, %cl
-; X86-NEXT:    cmpl $-8388608, %eax # imm = 0xFF800000
-; X86-NEXT:    sete %al
+; X86-NEXT:    movl {{[0-9]+}}(%esp), %ecx
+; X86-NEXT:    movl %ecx, %edx
+; X86-NEXT:    andl $2147483647, %edx # imm = 0x7FFFFFFF
+; X86-NEXT:    cmpl $2143289344, %edx # imm = 0x7FC00000
+; X86-NEXT:    setl %al
+; X86-NEXT:    cmpl $2139095041, %edx # imm = 0x7F800001
+; X86-NEXT:    setge %dl
+; X86-NEXT:    andb %dl, %al
+; X86-NEXT:    cmpl $-8388608, %ecx # imm = 0xFF800000
+; X86-NEXT:    sete %cl
 ; X86-NEXT:    orb %cl, %al
 ; X86-NEXT:    retl
 ;
 ; X64-GENERIC-LABEL: is_minus_inf_or_snan_f:
 ; X64-GENERIC:       # %bb.0:
-; X64-GENERIC-NEXT:    movd %xmm0, %eax
-; X64-GENERIC-NEXT:    movl %eax, %ecx
-; X64-GENERIC-NEXT:    andl $2147483647, %ecx # imm = 0x7FFFFFFF
-; X64-GENERIC-NEXT:    cmpl $2143289344, %ecx # imm = 0x7FC00000
-; X64-GENERIC-NEXT:    setl %dl
-; X64-GENERIC-NEXT:    cmpl $2139095041, %ecx # imm = 0x7F800001
-; X64-GENERIC-NEXT:    setge %cl
-; X64-GENERIC-NEXT:    andb %dl, %cl
-; X64-GENERIC-NEXT:    cmpl $-8388608, %eax # imm = 0xFF800000
-; X64-GENERIC-NEXT:    sete %al
+; X64-GENERIC-NEXT:    movd %xmm0, %ecx
+; X64-GENERIC-NEXT:    movl %ecx, %edx
+; X64-GENERIC-NEXT:    andl $2147483647, %edx # imm = 0x7FFFFFFF
+; X64-GENERIC-NEXT:    cmpl $2143289344, %edx # imm = 0x7FC00000
+; X64-GENERIC-NEXT:    setl %al
+; X64-GENERIC-NEXT:    cmpl $2139095041, %edx # imm = 0x7F800001
+; X64-GENERIC-NEXT:    setge %dl
+; X64-GENERIC-NEXT:    andb %dl, %al
+; X64-GENERIC-NEXT:    cmpl $-8388608, %ecx # imm = 0xFF800000
+; X64-GENERIC-NEXT:    sete %cl
 ; X64-GENERIC-NEXT:    orb %cl, %al
 ; X64-GENERIC-NEXT:    retq
 ;
@@ -2453,42 +2633,27 @@ define i1 @not_is_minus_inf_or_snan_f(float %x) {
 ; X86-NEXT:    leal (%eax,%eax), %edx
 ; X86-NEXT:    cmpl $-16777216, %edx # imm = 0xFF000000
 ; X86-NEXT:    setb %dl
-; X86-NEXT:    orb %cl, %dl
+; X86-NEXT:    orb %dl, %cl
 ; X86-NEXT:    andl $2147483647, %eax # imm = 0x7FFFFFFF
 ; X86-NEXT:    cmpl $2143289344, %eax # imm = 0x7FC00000
 ; X86-NEXT:    setge %al
-; X86-NEXT:    orb %dl, %al
+; X86-NEXT:    orb %cl, %al
 ; X86-NEXT:    retl
 ;
-; X64-GENERIC-LABEL: not_is_minus_inf_or_snan_f:
-; X64-GENERIC:       # %bb.0:
-; X64-GENERIC-NEXT:    movd %xmm0, %eax
-; X64-GENERIC-NEXT:    cmpl $2139095040, %eax # imm = 0x7F800000
-; X64-GENERIC-NEXT:    sete %cl
-; X64-GENERIC-NEXT:    leal (%rax,%rax), %edx
-; X64-GENERIC-NEXT:    cmpl $-16777216, %edx # imm = 0xFF000000
-; X64-GENERIC-NEXT:    setb %dl
-; X64-GENERIC-NEXT:    orb %cl, %dl
-; X64-GENERIC-NEXT:    andl $2147483647, %eax # imm = 0x7FFFFFFF
-; X64-GENERIC-NEXT:    cmpl $2143289344, %eax # imm = 0x7FC00000
-; X64-GENERIC-NEXT:    setge %al
-; X64-GENERIC-NEXT:    orb %dl, %al
-; X64-GENERIC-NEXT:    retq
-;
-; X64-NDD-LABEL: not_is_minus_inf_or_snan_f:
-; X64-NDD:       # %bb.0:
-; X64-NDD-NEXT:    movd %xmm0, %eax
-; X64-NDD-NEXT:    cmpl $2139095040, %eax # imm = 0x7F800000
-; X64-NDD-NEXT:    sete %cl
-; X64-NDD-NEXT:    leal (%rax,%rax), %edx
-; X64-NDD-NEXT:    cmpl $-16777216, %edx # imm = 0xFF000000
-; X64-NDD-NEXT:    setb %dl
-; X64-NDD-NEXT:    orb %dl, %cl
-; X64-NDD-NEXT:    andl $2147483647, %eax # imm = 0x7FFFFFFF
-; X64-NDD-NEXT:    cmpl $2143289344, %eax # imm = 0x7FC00000
-; X64-NDD-NEXT:    setge %al
-; X64-NDD-NEXT:    orb %cl, %al
-; X64-NDD-NEXT:    retq
+; X64-LABEL: not_is_minus_inf_or_snan_f:
+; X64:       # %bb.0:
+; X64-NEXT:    movd %xmm0, %eax
+; X64-NEXT:    cmpl $2139095040, %eax # imm = 0x7F800000
+; X64-NEXT:    sete %cl
+; X64-NEXT:    leal (%rax,%rax), %edx
+; X64-NEXT:    cmpl $-16777216, %edx # imm = 0xFF000000
+; X64-NEXT:    setb %dl
+; X64-NEXT:    orb %dl, %cl
+; X64-NEXT:    andl $2147483647, %eax # imm = 0x7FFFFFFF
+; X64-NEXT:    cmpl $2143289344, %eax # imm = 0x7FC00000
+; X64-NEXT:    setge %al
+; X64-NEXT:    orb %cl, %al
+; X64-NEXT:    retq
   %class = tail call i1 @llvm.is.fpclass.f32(float %x, i32 1018)  ; "~(-inf|snan)"
   ret i1 %class
 }
@@ -2496,40 +2661,40 @@ define i1 @not_is_minus_inf_or_snan_f(float %x) {
 define i1 @not_is_minus_inf_or_qnan_f(float %x) {
 ; X86-LABEL: not_is_minus_inf_or_qnan_f:
 ; X86:       # %bb.0:
-; X86-NEXT:    movl {{[0-9]+}}(%esp), %eax
-; X86-NEXT:    movl %eax, %ecx
-; X86-NEXT:    andl $2147483647, %ecx # imm = 0x7FFFFFFF
-; X86-NEXT:    cmpl $2143289344, %ecx # imm = 0x7FC00000
-; X86-NEXT:    setl %dl
-; X86-NEXT:    cmpl $2139095041, %ecx # imm = 0x7F800001
-; X86-NEXT:    setge %cl
-; X86-NEXT:    andb %dl, %cl
-; X86-NEXT:    cmpl $2139095040, %eax # imm = 0x7F800000
+; X86-NEXT:    movl {{[0-9]+}}(%esp), %ecx
+; X86-NEXT:    movl %ecx, %edx
+; X86-NEXT:    andl $2147483647, %edx # imm = 0x7FFFFFFF
+; X86-NEXT:    cmpl $2143289344, %edx # imm = 0x7FC00000
+; X86-NEXT:    setl %al
+; X86-NEXT:    cmpl $2139095041, %edx # imm = 0x7F800001
+; X86-NEXT:    setge %dl
+; X86-NEXT:    andb %dl, %al
+; X86-NEXT:    cmpl $2139095040, %ecx # imm = 0x7F800000
 ; X86-NEXT:    sete %dl
-; X86-NEXT:    addl %eax, %eax
-; X86-NEXT:    cmpl $-16777216, %eax # imm = 0xFF000000
-; X86-NEXT:    setb %al
+; X86-NEXT:    addl %ecx, %ecx
+; X86-NEXT:    cmpl $-16777216, %ecx # imm = 0xFF000000
+; X86-NEXT:    setb %cl
+; X86-NEXT:    orb %cl, %dl
 ; X86-NEXT:    orb %dl, %al
-; X86-NEXT:    orb %cl, %al
 ; X86-NEXT:    retl
 ;
 ; X64-GENERIC-LABEL: not_is_minus_inf_or_qnan_f:
 ; X64-GENERIC:       # %bb.0:
-; X64-GENERIC-NEXT:    movd %xmm0, %eax
-; X64-GENERIC-NEXT:    movl %eax, %ecx
-; X64-GENERIC-NEXT:    andl $2147483647, %ecx # imm = 0x7FFFFFFF
-; X64-GENERIC-NEXT:    cmpl $2143289344, %ecx # imm = 0x7FC00000
-; X64-GENERIC-NEXT:    setl %dl
-; X64-GENERIC-NEXT:    cmpl $2139095041, %ecx # imm = 0x7F800001
-; X64-GENERIC-NEXT:    setge %cl
-; X64-GENERIC-NEXT:    andb %dl, %cl
-; X64-GENERIC-NEXT:    cmpl $2139095040, %eax # imm = 0x7F800000
+; X64-GENERIC-NEXT:    movd %xmm0, %ecx
+; X64-GENERIC-NEXT:    movl %ecx, %edx
+; X64-GENERIC-NEXT:    andl $2147483647, %edx # imm = 0x7FFFFFFF
+; X64-GENERIC-NEXT:    cmpl $2143289344, %edx # imm = 0x7FC00000
+; X64-GENERIC-NEXT:    setl %al
+; X64-GENERIC-NEXT:    cmpl $2139095041, %edx # imm = 0x7F800001
+; X64-GENERIC-NEXT:    setge %dl
+; X64-GENERIC-NEXT:    andb %dl, %al
+; X64-GENERIC-NEXT:    cmpl $2139095040, %ecx # imm = 0x7F800000
 ; X64-GENERIC-NEXT:    sete %dl
-; X64-GENERIC-NEXT:    addl %eax, %eax
-; X64-GENERIC-NEXT:    cmpl $-16777216, %eax # imm = 0xFF000000
-; X64-GENERIC-NEXT:    setb %al
+; X64-GENERIC-NEXT:    addl %ecx, %ecx
+; X64-GENERIC-NEXT:    cmpl $-16777216, %ecx # imm = 0xFF000000
+; X64-GENERIC-NEXT:    setb %cl
+; X64-GENERIC-NEXT:    orb %cl, %dl
 ; X64-GENERIC-NEXT:    orb %dl, %al
-; X64-GENERIC-NEXT:    orb %cl, %al
 ; X64-GENERIC-NEXT:    retq
 ;
 ; X64-NDD-LABEL: not_is_minus_inf_or_qnan_f:
@@ -2557,26 +2722,39 @@ define i1 @issubnormal_or_nan_f(float %x) {
 ; X86-LABEL: issubnormal_or_nan_f:
 ; X86:       # %bb.0:
 ; X86-NEXT:    movl $2147483647, %eax # imm = 0x7FFFFFFF
-; X86-NEXT:    andl {{[0-9]+}}(%esp), %eax
-; X86-NEXT:    cmpl $2139095041, %eax # imm = 0x7F800001
-; X86-NEXT:    setge %cl
-; X86-NEXT:    decl %eax
-; X86-NEXT:    cmpl $8388607, %eax # imm = 0x7FFFFF
-; X86-NEXT:    setb %al
+; X86-NEXT:    movl {{[0-9]+}}(%esp), %ecx
+; X86-NEXT:    andl %eax, %ecx
+; X86-NEXT:    cmpl $2139095041, %ecx # imm = 0x7F800001
+; X86-NEXT:    setge %al
+; X86-NEXT:    decl %ecx
+; X86-NEXT:    cmpl $8388607, %ecx # imm = 0x7FFFFF
+; X86-NEXT:    setb %cl
 ; X86-NEXT:    orb %cl, %al
 ; X86-NEXT:    retl
 ;
-; X64-LABEL: issubnormal_or_nan_f:
-; X64:       # %bb.0:
-; X64-NEXT:    movd %xmm0, %eax
-; X64-NEXT:    andl $2147483647, %eax # imm = 0x7FFFFFFF
-; X64-NEXT:    cmpl $2139095041, %eax # imm = 0x7F800001
-; X64-NEXT:    setge %cl
-; X64-NEXT:    decl %eax
-; X64-NEXT:    cmpl $8388607, %eax # imm = 0x7FFFFF
-; X64-NEXT:    setb %al
-; X64-NEXT:    orb %cl, %al
-; X64-NEXT:    retq
+; X64-GENERIC-LABEL: issubnormal_or_nan_f:
+; X64-GENERIC:       # %bb.0:
+; X64-GENERIC-NEXT:    movd %xmm0, %ecx
+; X64-GENERIC-NEXT:    andl $2147483647, %ecx # imm = 0x7FFFFFFF
+; X64-GENERIC-NEXT:    cmpl $2139095041, %ecx # imm = 0x7F800001
+; X64-GENERIC-NEXT:    setge %al
+; X64-GENERIC-NEXT:    decl %ecx
+; X64-GENERIC-NEXT:    cmpl $8388607, %ecx # imm = 0x7FFFFF
+; X64-GENERIC-NEXT:    setb %cl
+; X64-GENERIC-NEXT:    orb %cl, %al
+; X64-GENERIC-NEXT:    retq
+;
+; X64-NDD-LABEL: issubnormal_or_nan_f:
+; X64-NDD:       # %bb.0:
+; X64-NDD-NEXT:    movd %xmm0, %eax
+; X64-NDD-NEXT:    andl $2147483647, %eax # imm = 0x7FFFFFFF
+; X64-NDD-NEXT:    cmpl $2139095041, %eax # imm = 0x7F800001
+; X64-NDD-NEXT:    setge %cl
+; X64-NDD-NEXT:    decl %eax
+; X64-NDD-NEXT:    cmpl $8388607, %eax # imm = 0x7FFFFF
+; X64-NDD-NEXT:    setb %al
+; X64-NDD-NEXT:    orb %cl, %al
+; X64-NDD-NEXT:    retq
   %class = tail call i1 @llvm.is.fpclass.f32(float %x, i32 147)  ; 0x90|0x3 = "subnormal|nan"
   ret i1 %class
 }
@@ -2597,8 +2775,9 @@ define i1 @issubnormal_or_zero_or_nan_f(float %x) {
 ;
 ; X64-LABEL: issubnormal_or_zero_or_nan_f:
 ; X64:       # %bb.0:
-; X64-NEXT:    andps {{\.?LCPI[0-9]+_[0-9]+}}(%rip), %xmm0
-; X64-NEXT:    ucomiss {{\.?LCPI[0-9]+_[0-9]+}}(%rip), %xmm0
+; X64-NEXT:    movaps {{.*#+}} xmm1 = [NaN,NaN,NaN,NaN]
+; X64-NEXT:    andps %xmm0, %xmm1
+; X64-NEXT:    ucomiss {{\.?LCPI[0-9]+_[0-9]+}}(%rip), %xmm1
 ; X64-NEXT:    setb %al
 ; X64-NEXT:    retq
   %class = tail call i1 @llvm.is.fpclass.f32(float %x, i32 243)  ; 0xf0|0x3 = "subnormal|zero|nan"
@@ -2630,31 +2809,31 @@ define i1 @issubnormal_or_zero_or_nan_f_daz(float %x) #0 {
 define i1 @issubnormal_or_zero_or_snan_f(float %x) {
 ; X86-LABEL: issubnormal_or_zero_or_snan_f:
 ; X86:       # %bb.0:
-; X86-NEXT:    movl {{[0-9]+}}(%esp), %eax
-; X86-NEXT:    movl %eax, %ecx
-; X86-NEXT:    andl $2147483647, %ecx # imm = 0x7FFFFFFF
-; X86-NEXT:    cmpl $2143289344, %ecx # imm = 0x7FC00000
-; X86-NEXT:    setl %dl
-; X86-NEXT:    cmpl $2139095041, %ecx # imm = 0x7F800001
-; X86-NEXT:    setge %cl
-; X86-NEXT:    andb %dl, %cl
-; X86-NEXT:    testl $2139095040, %eax # imm = 0x7F800000
-; X86-NEXT:    sete %al
+; X86-NEXT:    movl {{[0-9]+}}(%esp), %ecx
+; X86-NEXT:    movl %ecx, %edx
+; X86-NEXT:    andl $2147483647, %edx # imm = 0x7FFFFFFF
+; X86-NEXT:    cmpl $2143289344, %edx # imm = 0x7FC00000
+; X86-NEXT:    setl %al
+; X86-NEXT:    cmpl $2139095041, %edx # imm = 0x7F800001
+; X86-NEXT:    setge %dl
+; X86-NEXT:    andb %dl, %al
+; X86-NEXT:    testl $2139095040, %ecx # imm = 0x7F800000
+; X86-NEXT:    sete %cl
 ; X86-NEXT:    orb %cl, %al
 ; X86-NEXT:    retl
 ;
 ; X64-GENERIC-LABEL: issubnormal_or_zero_or_snan_f:
 ; X64-GENERIC:       # %bb.0:
-; X64-GENERIC-NEXT:    movd %xmm0, %eax
-; X64-GENERIC-NEXT:    movl %eax, %ecx
-; X64-GENERIC-NEXT:    andl $2147483647, %ecx # imm = 0x7FFFFFFF
-; X64-GENERIC-NEXT:    cmpl $2143289344, %ecx # imm = 0x7FC00000
-; X64-GENERIC-NEXT:    setl %dl
-; X64-GENERIC-NEXT:    cmpl $2139095041, %ecx # imm = 0x7F800001
-; X64-GENERIC-NEXT:    setge %cl
-; X64-GENERIC-NEXT:    andb %dl, %cl
-; X64-GENERIC-NEXT:    testl $2139095040, %eax # imm = 0x7F800000
-; X64-GENERIC-NEXT:    sete %al
+; X64-GENERIC-NEXT:    movd %xmm0, %ecx
+; X64-GENERIC-NEXT:    movl %ecx, %edx
+; X64-GENERIC-NEXT:    andl $2147483647, %edx # imm = 0x7FFFFFFF
+; X64-GENERIC-NEXT:    cmpl $2143289344, %edx # imm = 0x7FC00000
+; X64-GENERIC-NEXT:    setl %al
+; X64-GENERIC-NEXT:    cmpl $2139095041, %edx # imm = 0x7F800001
+; X64-GENERIC-NEXT:    setge %dl
+; X64-GENERIC-NEXT:    andb %dl, %al
+; X64-GENERIC-NEXT:    testl $2139095040, %ecx # imm = 0x7F800000
+; X64-GENERIC-NEXT:    sete %cl
 ; X64-GENERIC-NEXT:    orb %cl, %al
 ; X64-GENERIC-NEXT:    retq
 ;
@@ -2705,47 +2884,33 @@ define i1 @not_issubnormal_or_nan_f(float %x) {
 ; X86-LABEL: not_issubnormal_or_nan_f:
 ; X86:       # %bb.0:
 ; X86-NEXT:    movl $2147483647, %eax # imm = 0x7FFFFFFF
-; X86-NEXT:    andl {{[0-9]+}}(%esp), %eax
-; X86-NEXT:    cmpl $2139095040, %eax # imm = 0x7F800000
-; X86-NEXT:    sete %cl
-; X86-NEXT:    testl %eax, %eax
+; X86-NEXT:    movl {{[0-9]+}}(%esp), %ecx
+; X86-NEXT:    andl %eax, %ecx
+; X86-NEXT:    cmpl $2139095040, %ecx # imm = 0x7F800000
 ; X86-NEXT:    sete %dl
-; X86-NEXT:    orb %cl, %dl
-; X86-NEXT:    addl $-8388608, %eax # imm = 0xFF800000
+; X86-NEXT:    testl %ecx, %ecx
+; X86-NEXT:    sete %al
+; X86-NEXT:    orb %al, %dl
+; X86-NEXT:    leal -8388608(%ecx), %eax
 ; X86-NEXT:    cmpl $2130706432, %eax # imm = 0x7F000000
 ; X86-NEXT:    setb %al
 ; X86-NEXT:    orb %dl, %al
 ; X86-NEXT:    retl
 ;
-; X64-GENERIC-LABEL: not_issubnormal_or_nan_f:
-; X64-GENERIC:       # %bb.0:
-; X64-GENERIC-NEXT:    movd %xmm0, %eax
-; X64-GENERIC-NEXT:    andl $2147483647, %eax # imm = 0x7FFFFFFF
-; X64-GENERIC-NEXT:    cmpl $2139095040, %eax # imm = 0x7F800000
-; X64-GENERIC-NEXT:    sete %cl
-; X64-GENERIC-NEXT:    testl %eax, %eax
-; X64-GENERIC-NEXT:    sete %dl
-; X64-GENERIC-NEXT:    orb %cl, %dl
-; X64-GENERIC-NEXT:    addl $-8388608, %eax # imm = 0xFF800000
-; X64-GENERIC-NEXT:    cmpl $2130706432, %eax # imm = 0x7F000000
-; X64-GENERIC-NEXT:    setb %al
-; X64-GENERIC-NEXT:    orb %dl, %al
-; X64-GENERIC-NEXT:    retq
-;
-; X64-NDD-LABEL: not_issubnormal_or_nan_f:
-; X64-NDD:       # %bb.0:
-; X64-NDD-NEXT:    movd %xmm0, %eax
-; X64-NDD-NEXT:    andl $2147483647, %eax # imm = 0x7FFFFFFF
-; X64-NDD-NEXT:    cmpl $2139095040, %eax # imm = 0x7F800000
-; X64-NDD-NEXT:    sete %cl
-; X64-NDD-NEXT:    testl %eax, %eax
-; X64-NDD-NEXT:    sete %dl
-; X64-NDD-NEXT:    orb %dl, %cl
-; X64-NDD-NEXT:    addl $-8388608, %eax # imm = 0xFF800000
-; X64-NDD-NEXT:    cmpl $2130706432, %eax # imm = 0x7F000000
-; X64-NDD-NEXT:    setb %al
-; X64-NDD-NEXT:    orb %cl, %al
-; X64-NDD-NEXT:    retq
+; X64-LABEL: not_issubnormal_or_nan_f:
+; X64:       # %bb.0:
+; X64-NEXT:    movd %xmm0, %eax
+; X64-NEXT:    andl $2147483647, %eax # imm = 0x7FFFFFFF
+; X64-NEXT:    cmpl $2139095040, %eax # imm = 0x7F800000
+; X64-NEXT:    sete %cl
+; X64-NEXT:    testl %eax, %eax
+; X64-NEXT:    sete %dl
+; X64-NEXT:    orb %dl, %cl
+; X64-NEXT:    addl $-8388608, %eax # imm = 0xFF800000
+; X64-NEXT:    cmpl $2130706432, %eax # imm = 0x7F000000
+; X64-NEXT:    setb %al
+; X64-NEXT:    orb %cl, %al
+; X64-NEXT:    retq
   %class = tail call i1 @llvm.is.fpclass.f32(float %x, i32 876)  ; ~(0x90|0x3) = ~"subnormal|nan"
   ret i1 %class
 }
@@ -2766,8 +2931,9 @@ define i1 @not_issubnormal_or_zero_or_nan_f(float %x) {
 ;
 ; X64-LABEL: not_issubnormal_or_zero_or_nan_f:
 ; X64:       # %bb.0:
-; X64-NEXT:    andps {{\.?LCPI[0-9]+_[0-9]+}}(%rip), %xmm0
-; X64-NEXT:    ucomiss {{\.?LCPI[0-9]+_[0-9]+}}(%rip), %xmm0
+; X64-NEXT:    movaps {{.*#+}} xmm1 = [NaN,NaN,NaN,NaN]
+; X64-NEXT:    andps %xmm0, %xmm1
+; X64-NEXT:    ucomiss {{\.?LCPI[0-9]+_[0-9]+}}(%rip), %xmm1
 ; X64-NEXT:    setae %al
 ; X64-NEXT:    retq
   %class = tail call i1 @llvm.is.fpclass.f32(float %x, i32 780)  ; ~(0xf0|0x3) = ~"subnormal|zero|nan"
@@ -2800,47 +2966,33 @@ define i1 @not_issubnormal_or_zero_or_snan_f(float %x) {
 ; X86-LABEL: not_issubnormal_or_zero_or_snan_f:
 ; X86:       # %bb.0:
 ; X86-NEXT:    movl $2147483647, %eax # imm = 0x7FFFFFFF
-; X86-NEXT:    andl {{[0-9]+}}(%esp), %eax
-; X86-NEXT:    cmpl $2143289344, %eax # imm = 0x7FC00000
-; X86-NEXT:    setge %cl
-; X86-NEXT:    cmpl $2139095040, %eax # imm = 0x7F800000
-; X86-NEXT:    sete %dl
-; X86-NEXT:    orb %cl, %dl
-; X86-NEXT:    addl $-8388608, %eax # imm = 0xFF800000
+; X86-NEXT:    movl {{[0-9]+}}(%esp), %ecx
+; X86-NEXT:    andl %eax, %ecx
+; X86-NEXT:    cmpl $2143289344, %ecx # imm = 0x7FC00000
+; X86-NEXT:    setge %dl
+; X86-NEXT:    cmpl $2139095040, %ecx # imm = 0x7F800000
+; X86-NEXT:    sete %al
+; X86-NEXT:    orb %al, %dl
+; X86-NEXT:    leal -8388608(%ecx), %eax
 ; X86-NEXT:    cmpl $2130706432, %eax # imm = 0x7F000000
 ; X86-NEXT:    setb %al
 ; X86-NEXT:    orb %dl, %al
 ; X86-NEXT:    retl
 ;
-; X64-GENERIC-LABEL: not_issubnormal_or_zero_or_snan_f:
-; X64-GENERIC:       # %bb.0:
-; X64-GENERIC-NEXT:    movd %xmm0, %eax
-; X64-GENERIC-NEXT:    andl $2147483647, %eax # imm = 0x7FFFFFFF
-; X64-GENERIC-NEXT:    cmpl $2143289344, %eax # imm = 0x7FC00000
-; X64-GENERIC-NEXT:    setge %cl
-; X64-GENERIC-NEXT:    cmpl $2139095040, %eax # imm = 0x7F800000
-; X64-GENERIC-NEXT:    sete %dl
-; X64-GENERIC-NEXT:    orb %cl, %dl
-; X64-GENERIC-NEXT:    addl $-8388608, %eax # imm = 0xFF800000
-; X64-GENERIC-NEXT:    cmpl $2130706432, %eax # imm = 0x7F000000
-; X64-GENERIC-NEXT:    setb %al
-; X64-GENERIC-NEXT:    orb %dl, %al
-; X64-GENERIC-NEXT:    retq
-;
-; X64-NDD-LABEL: not_issubnormal_or_zero_or_snan_f:
-; X64-NDD:       # %bb.0:
-; X64-NDD-NEXT:    movd %xmm0, %eax
-; X64-NDD-NEXT:    andl $2147483647, %eax # imm = 0x7FFFFFFF
-; X64-NDD-NEXT:    cmpl $2143289344, %eax # imm = 0x7FC00000
-; X64-NDD-NEXT:    setge %cl
-; X64-NDD-NEXT:    cmpl $2139095040, %eax # imm = 0x7F800000
-; X64-NDD-NEXT:    sete %dl
-; X64-NDD-NEXT:    orb %dl, %cl
-; X64-NDD-NEXT:    addl $-8388608, %eax # imm = 0xFF800000
-; X64-NDD-NEXT:    cmpl $2130706432, %eax # imm = 0x7F000000
-; X64-NDD-NEXT:    setb %al
-; X64-NDD-NEXT:    orb %cl, %al
-; X64-NDD-NEXT:    retq
+; X64-LABEL: not_issubnormal_or_zero_or_snan_f:
+; X64:       # %bb.0:
+; X64-NEXT:    movd %xmm0, %eax
+; X64-NEXT:    andl $2147483647, %eax # imm = 0x7FFFFFFF
+; X64-NEXT:    cmpl $2143289344, %eax # imm = 0x7FC00000
+; X64-NEXT:    setge %cl
+; X64-NEXT:    cmpl $2139095040, %eax # imm = 0x7F800000
+; X64-NEXT:    sete %dl
+; X64-NEXT:    orb %dl, %cl
+; X64-NEXT:    addl $-8388608, %eax # imm = 0xFF800000
+; X64-NEXT:    cmpl $2130706432, %eax # imm = 0x7F000000
+; X64-NEXT:    setb %al
+; X64-NEXT:    orb %cl, %al
+; X64-NEXT:    retq
   %class = tail call i1 @llvm.is.fpclass.f32(float %x, i32 782)  ; ~(0x90|0x1) = ~"subnormal|snan"
   ret i1 %class
 }
@@ -2849,56 +3001,39 @@ define i1 @not_issubnormal_or_zero_or_qnan_f(float %x) {
 ; X86-LABEL: not_issubnormal_or_zero_or_qnan_f:
 ; X86:       # %bb.0:
 ; X86-NEXT:    movl $2147483647, %eax # imm = 0x7FFFFFFF
-; X86-NEXT:    andl {{[0-9]+}}(%esp), %eax
-; X86-NEXT:    cmpl $2143289344, %eax # imm = 0x7FC00000
-; X86-NEXT:    setl %cl
-; X86-NEXT:    cmpl $2139095041, %eax # imm = 0x7F800001
-; X86-NEXT:    setge %dl
-; X86-NEXT:    andb %cl, %dl
-; X86-NEXT:    cmpl $2139095040, %eax # imm = 0x7F800000
-; X86-NEXT:    sete %cl
-; X86-NEXT:    orb %dl, %cl
-; X86-NEXT:    addl $-8388608, %eax # imm = 0xFF800000
+; X86-NEXT:    movl {{[0-9]+}}(%esp), %ecx
+; X86-NEXT:    andl %eax, %ecx
+; X86-NEXT:    cmpl $2143289344, %ecx # imm = 0x7FC00000
+; X86-NEXT:    setl %dl
+; X86-NEXT:    cmpl $2139095041, %ecx # imm = 0x7F800001
+; X86-NEXT:    setge %al
+; X86-NEXT:    andb %al, %dl
+; X86-NEXT:    cmpl $2139095040, %ecx # imm = 0x7F800000
+; X86-NEXT:    sete %al
+; X86-NEXT:    orb %al, %dl
+; X86-NEXT:    leal -8388608(%ecx), %eax
 ; X86-NEXT:    cmpl $2130706432, %eax # imm = 0x7F000000
 ; X86-NEXT:    setb %al
-; X86-NEXT:    orb %cl, %al
+; X86-NEXT:    orb %dl, %al
 ; X86-NEXT:    retl
 ;
-; X64-GENERIC-LABEL: not_issubnormal_or_zero_or_qnan_f:
-; X64-GENERIC:       # %bb.0:
-; X64-GENERIC-NEXT:    movd %xmm0, %eax
-; X64-GENERIC-NEXT:    andl $2147483647, %eax # imm = 0x7FFFFFFF
-; X64-GENERIC-NEXT:    cmpl $2143289344, %eax # imm = 0x7FC00000
-; X64-GENERIC-NEXT:    setl %cl
-; X64-GENERIC-NEXT:    cmpl $2139095041, %eax # imm = 0x7F800001
-; X64-GENERIC-NEXT:    setge %dl
-; X64-GENERIC-NEXT:    andb %cl, %dl
-; X64-GENERIC-NEXT:    cmpl $2139095040, %eax # imm = 0x7F800000
-; X64-GENERIC-NEXT:    sete %cl
-; X64-GENERIC-NEXT:    orb %dl, %cl
-; X64-GENERIC-NEXT:    addl $-8388608, %eax # imm = 0xFF800000
-; X64-GENERIC-NEXT:    cmpl $2130706432, %eax # imm = 0x7F000000
-; X64-GENERIC-NEXT:    setb %al
-; X64-GENERIC-NEXT:    orb %cl, %al
-; X64-GENERIC-NEXT:    retq
-;
-; X64-NDD-LABEL: not_issubnormal_or_zero_or_qnan_f:
-; X64-NDD:       # %bb.0:
-; X64-NDD-NEXT:    movd %xmm0, %eax
-; X64-NDD-NEXT:    andl $2147483647, %eax # imm = 0x7FFFFFFF
-; X64-NDD-NEXT:    cmpl $2143289344, %eax # imm = 0x7FC00000
-; X64-NDD-NEXT:    setl %cl
-; X64-NDD-NEXT:    cmpl $2139095041, %eax # imm = 0x7F800001
-; X64-NDD-NEXT:    setge %dl
-; X64-NDD-NEXT:    andb %dl, %cl
-; X64-NDD-NEXT:    cmpl $2139095040, %eax # imm = 0x7F800000
-; X64-NDD-NEXT:    sete %dl
-; X64-NDD-NEXT:    orb %dl, %cl
-; X64-NDD-NEXT:    addl $-8388608, %eax # imm = 0xFF800000
-; X64-NDD-NEXT:    cmpl $2130706432, %eax # imm = 0x7F000000
-; X64-NDD-NEXT:    setb %al
-; X64-NDD-NEXT:    orb %cl, %al
-; X64-NDD-NEXT:    retq
+; X64-LABEL: not_issubnormal_or_zero_or_qnan_f:
+; X64:       # %bb.0:
+; X64-NEXT:    movd %xmm0, %eax
+; X64-NEXT:    andl $2147483647, %eax # imm = 0x7FFFFFFF
+; X64-NEXT:    cmpl $2143289344, %eax # imm = 0x7FC00000
+; X64-NEXT:    setl %cl
+; X64-NEXT:    cmpl $2139095041, %eax # imm = 0x7F800001
+; X64-NEXT:    setge %dl
+; X64-NEXT:    andb %dl, %cl
+; X64-NEXT:    cmpl $2139095040, %eax # imm = 0x7F800000
+; X64-NEXT:    sete %dl
+; X64-NEXT:    orb %dl, %cl
+; X64-NEXT:    addl $-8388608, %eax # imm = 0xFF800000
+; X64-NEXT:    cmpl $2130706432, %eax # imm = 0x7F000000
+; X64-NEXT:    setb %al
+; X64-NEXT:    orb %cl, %al
+; X64-NEXT:    retq
   %class = tail call i1 @llvm.is.fpclass.f32(float %x, i32 781)  ; ~(0x90|0x2) = ~"subnormal|qnan"
   ret i1 %class
 }

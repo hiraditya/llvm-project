@@ -6,8 +6,9 @@
 define i32 @function(i32 %arg1) {
 ; CHECK-LABEL: function:
 ; CHECK:       # %bb.0: # %entry
-; CHECK-NEXT:    movl $value1, %eax
-; CHECK-NEXT:    xorl {{[0-9]+}}(%esp), %eax
+; CHECK-NEXT:    movl $value1, %ecx
+; CHECK-NEXT:    movl {{[0-9]+}}(%esp), %eax
+; CHECK-NEXT:    xorl %ecx, %eax
 ; CHECK-NEXT:    negl %eax
 ; CHECK-NEXT:    retl
 entry:

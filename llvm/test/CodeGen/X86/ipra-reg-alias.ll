@@ -6,7 +6,7 @@ define i8 @main(i8 %X) {
 ; CHECK:       # %bb.0:
 ; CHECK-NEXT:    # kill: def $edi killed $edi def $rdi
 ; CHECK-NEXT:    leal (%rdi,%rdi,4), %eax
-; CHECK-NEXT:    addb $5, %al
+; CHECK-NEXT:    addl $5, %eax
 ; CHECK-NEXT:    # kill: def $al killed $al killed $eax
 ; CHECK-NEXT:    retq
   %inc = add i8 %X, 1

@@ -110,28 +110,28 @@ define <4 x i32> @sdiv_v4i32(<4 x i32> %x, <4 x i32> %y, <4 x i1> %m) {
 ; AVX512-NEXT:    vpslld $31, %xmm2, %xmm2
 ; AVX512-NEXT:    vpmovd2m %xmm2, %k1
 ; AVX512-NEXT:    vpbroadcastd {{.*#+}} xmm2 = [1,1,1,1]
-; AVX512-NEXT:    vmovdqa32 %xmm1, %xmm2 {%k1}
-; AVX512-NEXT:    vpextrd $1, %xmm2, %ecx
+; AVX512-NEXT:    vpblendmd %xmm1, %xmm2, %xmm1 {%k1}
+; AVX512-NEXT:    vpextrd $1, %xmm1, %ecx
 ; AVX512-NEXT:    vpextrd $1, %xmm0, %eax
 ; AVX512-NEXT:    cltd
 ; AVX512-NEXT:    idivl %ecx
 ; AVX512-NEXT:    movl %eax, %ecx
-; AVX512-NEXT:    vmovd %xmm2, %esi
+; AVX512-NEXT:    vmovd %xmm1, %esi
 ; AVX512-NEXT:    vmovd %xmm0, %eax
 ; AVX512-NEXT:    cltd
 ; AVX512-NEXT:    idivl %esi
 ; AVX512-NEXT:    movl %eax, %esi
-; AVX512-NEXT:    vpextrd $2, %xmm2, %edi
+; AVX512-NEXT:    vpextrd $2, %xmm1, %edi
 ; AVX512-NEXT:    vpextrd $2, %xmm0, %eax
 ; AVX512-NEXT:    cltd
 ; AVX512-NEXT:    idivl %edi
 ; AVX512-NEXT:    movl %eax, %edi
-; AVX512-NEXT:    vmovd %esi, %xmm1
-; AVX512-NEXT:    vpextrd $3, %xmm2, %esi
+; AVX512-NEXT:    vmovd %esi, %xmm2
+; AVX512-NEXT:    vpextrd $3, %xmm1, %esi
 ; AVX512-NEXT:    vpextrd $3, %xmm0, %eax
 ; AVX512-NEXT:    cltd
 ; AVX512-NEXT:    idivl %esi
-; AVX512-NEXT:    vpinsrd $1, %ecx, %xmm1, %xmm0
+; AVX512-NEXT:    vpinsrd $1, %ecx, %xmm2, %xmm0
 ; AVX512-NEXT:    vpinsrd $2, %edi, %xmm0, %xmm0
 ; AVX512-NEXT:    vpinsrd $3, %eax, %xmm0, %xmm0
 ; AVX512-NEXT:    retq
@@ -209,13 +209,13 @@ define <2 x i64> @sdiv_v2i64(<2 x i64> %x, <2 x i64> %y, <2 x i1> %m) {
 ; AVX512-NEXT:    vpsllq $63, %xmm2, %xmm2
 ; AVX512-NEXT:    vpmovq2m %xmm2, %k1
 ; AVX512-NEXT:    vpbroadcastq {{.*#+}} xmm2 = [1,1]
-; AVX512-NEXT:    vmovdqa64 %xmm1, %xmm2 {%k1}
-; AVX512-NEXT:    vpextrq $1, %xmm2, %rcx
+; AVX512-NEXT:    vpblendmq %xmm1, %xmm2, %xmm1 {%k1}
+; AVX512-NEXT:    vpextrq $1, %xmm1, %rcx
 ; AVX512-NEXT:    vpextrq $1, %xmm0, %rax
 ; AVX512-NEXT:    cqto
 ; AVX512-NEXT:    idivq %rcx
 ; AVX512-NEXT:    movq %rax, %rcx
-; AVX512-NEXT:    vmovq %xmm2, %rsi
+; AVX512-NEXT:    vmovq %xmm1, %rsi
 ; AVX512-NEXT:    vmovq %xmm0, %rax
 ; AVX512-NEXT:    cqto
 ; AVX512-NEXT:    idivq %rsi
@@ -235,19 +235,20 @@ define <4 x i64> @sdiv_v4i64(<4 x i64> %x, <4 x i64> %y, <4 x i1> %m) {
 ; SSE2-NEXT:    pshufd {{.*#+}} xmm6 = xmm4[2,2,3,3]
 ; SSE2-NEXT:    pslld $31, %xmm6
 ; SSE2-NEXT:    psrad $31, %xmm6
-; SSE2-NEXT:    pshufd {{.*#+}} xmm4 = xmm4[0,0,1,1]
-; SSE2-NEXT:    pslld $31, %xmm4
-; SSE2-NEXT:    psrad $31, %xmm4
-; SSE2-NEXT:    movdqa {{.*#+}} xmm7 = [1,1]
-; SSE2-NEXT:    pand %xmm4, %xmm2
-; SSE2-NEXT:    pandn %xmm7, %xmm4
-; SSE2-NEXT:    por %xmm2, %xmm4
-; SSE2-NEXT:    movq %xmm4, %rcx
-; SSE2-NEXT:    movq %xmm0, %rax
+; SSE2-NEXT:    pshufd {{.*#+}} xmm0 = xmm4[0,0,1,1]
+; SSE2-NEXT:    pslld $31, %xmm0
+; SSE2-NEXT:    psrad $31, %xmm0
+; SSE2-NEXT:    movdqa {{.*#+}} xmm4 = [1,1]
+; SSE2-NEXT:    pand %xmm0, %xmm2
+; SSE2-NEXT:    movdqa %xmm0, %xmm7
+; SSE2-NEXT:    pandn %xmm4, %xmm7
+; SSE2-NEXT:    por %xmm2, %xmm7
+; SSE2-NEXT:    movq %xmm7, %rcx
+; SSE2-NEXT:    movq %xmm5, %rax
 ; SSE2-NEXT:    cqto
 ; SSE2-NEXT:    idivq %rcx
 ; SSE2-NEXT:    movq %rax, %xmm0
-; SSE2-NEXT:    pshufd {{.*#+}} xmm2 = xmm4[2,3,2,3]
+; SSE2-NEXT:    pshufd {{.*#+}} xmm2 = xmm7[2,3,2,3]
 ; SSE2-NEXT:    movq %xmm2, %rcx
 ; SSE2-NEXT:    pshufd {{.*#+}} xmm2 = xmm5[2,3,2,3]
 ; SSE2-NEXT:    movq %xmm2, %rax
@@ -256,7 +257,7 @@ define <4 x i64> @sdiv_v4i64(<4 x i64> %x, <4 x i64> %y, <4 x i1> %m) {
 ; SSE2-NEXT:    movq %rax, %xmm2
 ; SSE2-NEXT:    punpcklqdq {{.*#+}} xmm0 = xmm0[0],xmm2[0]
 ; SSE2-NEXT:    pand %xmm6, %xmm3
-; SSE2-NEXT:    pandn %xmm7, %xmm6
+; SSE2-NEXT:    pandn %xmm4, %xmm6
 ; SSE2-NEXT:    por %xmm3, %xmm6
 ; SSE2-NEXT:    movq %xmm6, %rcx
 ; SSE2-NEXT:    movq %xmm1, %rax
@@ -352,31 +353,31 @@ define <4 x i64> @sdiv_v4i64(<4 x i64> %x, <4 x i64> %y, <4 x i1> %m) {
 ; AVX512-NEXT:    vpslld $31, %xmm2, %xmm2
 ; AVX512-NEXT:    vpmovd2m %xmm2, %k1
 ; AVX512-NEXT:    vpbroadcastq {{.*#+}} ymm2 = [1,1,1,1]
-; AVX512-NEXT:    vmovdqa64 %ymm1, %ymm2 {%k1}
-; AVX512-NEXT:    vextracti128 $1, %ymm2, %xmm1
-; AVX512-NEXT:    vpextrq $1, %xmm1, %rcx
+; AVX512-NEXT:    vpblendmq %ymm1, %ymm2, %ymm1 {%k1}
+; AVX512-NEXT:    vextracti128 $1, %ymm1, %xmm2
+; AVX512-NEXT:    vpextrq $1, %xmm2, %rcx
 ; AVX512-NEXT:    vextracti128 $1, %ymm0, %xmm3
 ; AVX512-NEXT:    vpextrq $1, %xmm3, %rax
 ; AVX512-NEXT:    cqto
 ; AVX512-NEXT:    idivq %rcx
 ; AVX512-NEXT:    movq %rax, %rcx
-; AVX512-NEXT:    vmovq %xmm1, %rsi
+; AVX512-NEXT:    vmovq %xmm2, %rsi
 ; AVX512-NEXT:    vmovq %xmm3, %rax
 ; AVX512-NEXT:    cqto
 ; AVX512-NEXT:    idivq %rsi
 ; AVX512-NEXT:    movq %rax, %rsi
-; AVX512-NEXT:    vpextrq $1, %xmm2, %rdi
+; AVX512-NEXT:    vpextrq $1, %xmm1, %rdi
 ; AVX512-NEXT:    vpextrq $1, %xmm0, %rax
 ; AVX512-NEXT:    cqto
 ; AVX512-NEXT:    idivq %rdi
 ; AVX512-NEXT:    movq %rax, %rdi
-; AVX512-NEXT:    vmovq %rcx, %xmm1
-; AVX512-NEXT:    vmovq %xmm2, %rcx
+; AVX512-NEXT:    vmovq %rcx, %xmm2
+; AVX512-NEXT:    vmovq %xmm1, %rcx
 ; AVX512-NEXT:    vmovq %xmm0, %rax
 ; AVX512-NEXT:    cqto
 ; AVX512-NEXT:    idivq %rcx
 ; AVX512-NEXT:    vmovq %rsi, %xmm0
-; AVX512-NEXT:    vpunpcklqdq {{.*#+}} xmm0 = xmm0[0],xmm1[0]
+; AVX512-NEXT:    vpunpcklqdq {{.*#+}} xmm0 = xmm0[0],xmm2[0]
 ; AVX512-NEXT:    vmovq %rdi, %xmm1
 ; AVX512-NEXT:    vmovq %rax, %xmm2
 ; AVX512-NEXT:    vpunpcklqdq {{.*#+}} xmm1 = xmm2[0],xmm1[0]
@@ -496,28 +497,28 @@ define <2 x i32> @sdiv_v2i32(<2 x i32> %x, <2 x i32> %y, <2 x i1> %m) {
 ; AVX512-NEXT:    vpsllq $63, %xmm2, %xmm2
 ; AVX512-NEXT:    vpmovq2m %xmm2, %k1
 ; AVX512-NEXT:    vpbroadcastd {{.*#+}} xmm2 = [1,1,1,1]
-; AVX512-NEXT:    vmovdqa32 %xmm1, %xmm2 {%k1}
-; AVX512-NEXT:    vpextrd $1, %xmm2, %ecx
+; AVX512-NEXT:    vpblendmd %xmm1, %xmm2, %xmm1 {%k1}
+; AVX512-NEXT:    vpextrd $1, %xmm1, %ecx
 ; AVX512-NEXT:    vpextrd $1, %xmm0, %eax
 ; AVX512-NEXT:    cltd
 ; AVX512-NEXT:    idivl %ecx
 ; AVX512-NEXT:    movl %eax, %ecx
-; AVX512-NEXT:    vmovd %xmm2, %esi
+; AVX512-NEXT:    vmovd %xmm1, %esi
 ; AVX512-NEXT:    vmovd %xmm0, %eax
 ; AVX512-NEXT:    cltd
 ; AVX512-NEXT:    idivl %esi
 ; AVX512-NEXT:    movl %eax, %esi
-; AVX512-NEXT:    vpextrd $2, %xmm2, %edi
+; AVX512-NEXT:    vpextrd $2, %xmm1, %edi
 ; AVX512-NEXT:    vpextrd $2, %xmm0, %eax
 ; AVX512-NEXT:    cltd
 ; AVX512-NEXT:    idivl %edi
 ; AVX512-NEXT:    movl %eax, %edi
-; AVX512-NEXT:    vmovd %esi, %xmm1
-; AVX512-NEXT:    vpextrd $3, %xmm2, %esi
+; AVX512-NEXT:    vmovd %esi, %xmm2
+; AVX512-NEXT:    vpextrd $3, %xmm1, %esi
 ; AVX512-NEXT:    vpextrd $3, %xmm0, %eax
 ; AVX512-NEXT:    cltd
 ; AVX512-NEXT:    idivl %esi
-; AVX512-NEXT:    vpinsrd $1, %ecx, %xmm1, %xmm0
+; AVX512-NEXT:    vpinsrd $1, %ecx, %xmm2, %xmm0
 ; AVX512-NEXT:    vpinsrd $2, %edi, %xmm0, %xmm0
 ; AVX512-NEXT:    vpinsrd $3, %eax, %xmm0, %xmm0
 ; AVX512-NEXT:    retq
@@ -741,61 +742,61 @@ define <4 x i16> @sdiv_v4i16(<4 x i16> %x, <4 x i16> %y, <4 x i1> %m) {
 ; AVX512-NEXT:    vpslld $31, %xmm2, %xmm2
 ; AVX512-NEXT:    vpmovd2m %xmm2, %k1
 ; AVX512-NEXT:    vpbroadcastd {{.*#+}} xmm2 = [1,1,1,1,1,1,1,1]
-; AVX512-NEXT:    vmovdqu16 %xmm1, %xmm2 {%k1}
-; AVX512-NEXT:    vpextrw $1, %xmm2, %ecx
+; AVX512-NEXT:    vpblendmw %xmm1, %xmm2, %xmm1 {%k1}
+; AVX512-NEXT:    vpextrw $1, %xmm1, %ecx
 ; AVX512-NEXT:    vpextrw $1, %xmm0, %eax
 ; AVX512-NEXT:    # kill: def $ax killed $ax killed $eax
 ; AVX512-NEXT:    cwtd
 ; AVX512-NEXT:    idivw %cx
 ; AVX512-NEXT:    movl %eax, %ecx
-; AVX512-NEXT:    vmovd %xmm2, %esi
+; AVX512-NEXT:    vmovd %xmm1, %esi
 ; AVX512-NEXT:    vmovd %xmm0, %eax
 ; AVX512-NEXT:    # kill: def $ax killed $ax killed $eax
 ; AVX512-NEXT:    cwtd
 ; AVX512-NEXT:    idivw %si
 ; AVX512-NEXT:    # kill: def $ax killed $ax def $eax
-; AVX512-NEXT:    vmovd %eax, %xmm1
-; AVX512-NEXT:    vpinsrw $1, %ecx, %xmm1, %xmm1
-; AVX512-NEXT:    vpextrw $2, %xmm2, %ecx
+; AVX512-NEXT:    vmovd %eax, %xmm2
+; AVX512-NEXT:    vpinsrw $1, %ecx, %xmm2, %xmm2
+; AVX512-NEXT:    vpextrw $2, %xmm1, %ecx
 ; AVX512-NEXT:    vpextrw $2, %xmm0, %eax
 ; AVX512-NEXT:    # kill: def $ax killed $ax killed $eax
 ; AVX512-NEXT:    cwtd
 ; AVX512-NEXT:    idivw %cx
 ; AVX512-NEXT:    movl %eax, %ecx
-; AVX512-NEXT:    vpextrw $3, %xmm2, %esi
+; AVX512-NEXT:    vpextrw $3, %xmm1, %esi
 ; AVX512-NEXT:    vpextrw $3, %xmm0, %eax
 ; AVX512-NEXT:    # kill: def $ax killed $ax killed $eax
 ; AVX512-NEXT:    cwtd
 ; AVX512-NEXT:    idivw %si
 ; AVX512-NEXT:    movl %eax, %esi
-; AVX512-NEXT:    vpextrw $4, %xmm2, %edi
+; AVX512-NEXT:    vpextrw $4, %xmm1, %edi
 ; AVX512-NEXT:    vpextrw $4, %xmm0, %eax
 ; AVX512-NEXT:    # kill: def $ax killed $ax killed $eax
 ; AVX512-NEXT:    cwtd
 ; AVX512-NEXT:    idivw %di
 ; AVX512-NEXT:    # kill: def $ax killed $ax def $eax
-; AVX512-NEXT:    vpinsrw $2, %ecx, %xmm1, %xmm1
-; AVX512-NEXT:    vpinsrw $3, %esi, %xmm1, %xmm1
-; AVX512-NEXT:    vpinsrw $4, %eax, %xmm1, %xmm1
-; AVX512-NEXT:    vpextrw $5, %xmm2, %ecx
+; AVX512-NEXT:    vpinsrw $2, %ecx, %xmm2, %xmm2
+; AVX512-NEXT:    vpinsrw $3, %esi, %xmm2, %xmm2
+; AVX512-NEXT:    vpinsrw $4, %eax, %xmm2, %xmm2
+; AVX512-NEXT:    vpextrw $5, %xmm1, %ecx
 ; AVX512-NEXT:    vpextrw $5, %xmm0, %eax
 ; AVX512-NEXT:    # kill: def $ax killed $ax killed $eax
 ; AVX512-NEXT:    cwtd
 ; AVX512-NEXT:    idivw %cx
 ; AVX512-NEXT:    movl %eax, %ecx
-; AVX512-NEXT:    vpextrw $6, %xmm2, %esi
+; AVX512-NEXT:    vpextrw $6, %xmm1, %esi
 ; AVX512-NEXT:    vpextrw $6, %xmm0, %eax
 ; AVX512-NEXT:    # kill: def $ax killed $ax killed $eax
 ; AVX512-NEXT:    cwtd
 ; AVX512-NEXT:    idivw %si
 ; AVX512-NEXT:    movl %eax, %esi
-; AVX512-NEXT:    vpextrw $7, %xmm2, %edi
+; AVX512-NEXT:    vpextrw $7, %xmm1, %edi
 ; AVX512-NEXT:    vpextrw $7, %xmm0, %eax
 ; AVX512-NEXT:    # kill: def $ax killed $ax killed $eax
 ; AVX512-NEXT:    cwtd
 ; AVX512-NEXT:    idivw %di
 ; AVX512-NEXT:    # kill: def $ax killed $ax def $eax
-; AVX512-NEXT:    vpinsrw $5, %ecx, %xmm1, %xmm0
+; AVX512-NEXT:    vpinsrw $5, %ecx, %xmm2, %xmm0
 ; AVX512-NEXT:    vpinsrw $6, %esi, %xmm0, %xmm0
 ; AVX512-NEXT:    vpinsrw $7, %eax, %xmm0, %xmm0
 ; AVX512-NEXT:    retq
@@ -872,12 +873,13 @@ define <2 x i128> @sdiv_v2i128(<2 x i128> %x, <2 x i128> %y, <2 x i1> %m) nounwi
 ; SSE2-NEXT:    movq %rax, %rcx
 ; SSE2-NEXT:    callq __divti3@PLT
 ; SSE2-NEXT:    movq %rax, %r13
-; SSE2-NEXT:    xorl %ecx, %ecx
+; SSE2-NEXT:    xorl %esi, %esi
 ; SSE2-NEXT:    testb $1, %bpl
 ; SSE2-NEXT:    movl $1, %eax
 ; SSE2-NEXT:    cmovneq %r12, %rax
 ; SSE2-NEXT:    movq %rdx, %r12
-; SSE2-NEXT:    cmovneq {{[0-9]+}}(%rsp), %rcx
+; SSE2-NEXT:    movq {{[0-9]+}}(%rsp), %rcx
+; SSE2-NEXT:    cmoveq %rsi, %rcx
 ; SSE2-NEXT:    movq %r15, %rdi
 ; SSE2-NEXT:    movq %r14, %rsi
 ; SSE2-NEXT:    movq %rax, %rdx
@@ -926,12 +928,13 @@ define <2 x i128> @sdiv_v2i128(<2 x i128> %x, <2 x i128> %y, <2 x i1> %m) nounwi
 ; SSE42-NEXT:    movq %rax, %rcx
 ; SSE42-NEXT:    callq __divti3@PLT
 ; SSE42-NEXT:    movq %rax, %r13
-; SSE42-NEXT:    xorl %ecx, %ecx
+; SSE42-NEXT:    xorl %esi, %esi
 ; SSE42-NEXT:    testb $1, %bpl
 ; SSE42-NEXT:    movl $1, %eax
 ; SSE42-NEXT:    cmovneq %r12, %rax
 ; SSE42-NEXT:    movq %rdx, %r12
-; SSE42-NEXT:    cmovneq {{[0-9]+}}(%rsp), %rcx
+; SSE42-NEXT:    movq {{[0-9]+}}(%rsp), %rcx
+; SSE42-NEXT:    cmoveq %rsi, %rcx
 ; SSE42-NEXT:    movq %r15, %rdi
 ; SSE42-NEXT:    movq %r14, %rsi
 ; SSE42-NEXT:    movq %rax, %rdx
@@ -977,13 +980,14 @@ define <2 x i128> @sdiv_v2i128(<2 x i128> %x, <2 x i128> %y, <2 x i1> %m) nounwi
 ; AVX2-NEXT:    movq %r8, %rsi
 ; AVX2-NEXT:    movq %rax, %rcx
 ; AVX2-NEXT:    callq __divti3@PLT
-; AVX2-NEXT:    xorl %ecx, %ecx
+; AVX2-NEXT:    xorl %esi, %esi
 ; AVX2-NEXT:    testb $1, %bpl
 ; AVX2-NEXT:    movl $1, %r8d
 ; AVX2-NEXT:    cmovneq %r12, %r8
 ; AVX2-NEXT:    movq %rax, %r12
 ; AVX2-NEXT:    movq %rdx, %r13
-; AVX2-NEXT:    cmovneq {{[0-9]+}}(%rsp), %rcx
+; AVX2-NEXT:    movq {{[0-9]+}}(%rsp), %rcx
+; AVX2-NEXT:    cmoveq %rsi, %rcx
 ; AVX2-NEXT:    movq %r15, %rdi
 ; AVX2-NEXT:    movq %r14, %rsi
 ; AVX2-NEXT:    movq %r8, %rdx
@@ -1024,7 +1028,7 @@ define <2 x i128> @sdiv_v2i128(<2 x i128> %x, <2 x i128> %y, <2 x i1> %m) nounwi
 ; AVX512-NEXT:    vmovd {{.*#+}} xmm0 = [1,0,0,0]
 ; AVX512-NEXT:    negb %al
 ; AVX512-NEXT:    kmovd %eax, %k1
-; AVX512-NEXT:    vmovdqu32 {{[0-9]+}}(%rsp), %xmm0 {%k1}
+; AVX512-NEXT:    vpblendmd {{[0-9]+}}(%rsp), %xmm0, %xmm0 {%k1}
 ; AVX512-NEXT:    vmovq %xmm0, %rdx
 ; AVX512-NEXT:    vpextrq $1, %xmm0, %rax
 ; AVX512-NEXT:    movq %rcx, %rdi
@@ -1033,11 +1037,12 @@ define <2 x i128> @sdiv_v2i128(<2 x i128> %x, <2 x i128> %y, <2 x i1> %m) nounwi
 ; AVX512-NEXT:    callq __divti3@PLT
 ; AVX512-NEXT:    movq %rax, %r13
 ; AVX512-NEXT:    movq %rdx, %rbp
-; AVX512-NEXT:    xorl %ecx, %ecx
+; AVX512-NEXT:    xorl %eax, %eax
 ; AVX512-NEXT:    testb $1, %r14b
 ; AVX512-NEXT:    movl $1, %edx
 ; AVX512-NEXT:    cmovneq %r12, %rdx
-; AVX512-NEXT:    cmovneq {{[0-9]+}}(%rsp), %rcx
+; AVX512-NEXT:    movq {{[0-9]+}}(%rsp), %rcx
+; AVX512-NEXT:    cmoveq %rax, %rcx
 ; AVX512-NEXT:    movq %r15, %rdi
 ; AVX512-NEXT:    movq (%rsp), %rsi # 8-byte Reload
 ; AVX512-NEXT:    callq __divti3@PLT
@@ -1116,7 +1121,6 @@ define <3 x i10> @sdiv_v3i10(<3 x i10> %x, <3 x i10> %y, <3 x i1> %m) {
 ; SSE42-NEXT:    pinsrd $1, %esi, %xmm1
 ; SSE42-NEXT:    pinsrd $2, %edx, %xmm1
 ; SSE42-NEXT:    pslld $22, %xmm1
-; SSE42-NEXT:    psrad $22, %xmm1
 ; SSE42-NEXT:    movd {{.*#+}} xmm2 = mem[0],zero,zero,zero
 ; SSE42-NEXT:    movd {{.*#+}} xmm0 = mem[0],zero,zero,zero
 ; SSE42-NEXT:    punpckldq {{.*#+}} xmm0 = xmm0[0],xmm2[0],xmm0[1],xmm2[1]
@@ -1131,6 +1135,7 @@ define <3 x i10> @sdiv_v3i10(<3 x i10> %x, <3 x i10> %y, <3 x i1> %m) {
 ; SSE42-NEXT:    movaps {{.*#+}} xmm3 = [1,1,1,1]
 ; SSE42-NEXT:    blendvps %xmm0, %xmm2, %xmm3
 ; SSE42-NEXT:    extractps $1, %xmm3, %ecx
+; SSE42-NEXT:    psrad $22, %xmm1
 ; SSE42-NEXT:    pextrd $1, %xmm1, %eax
 ; SSE42-NEXT:    cltd
 ; SSE42-NEXT:    idivl %ecx

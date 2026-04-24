@@ -185,9 +185,9 @@ define i32 @icmpasreq(i32 %input, i32 %a, i32 %b) {
 ;
 ; X64-LABEL: icmpasreq:
 ; X64:       # %bb.0:
-; X64-NEXT:    movl %esi, %eax
+; X64-NEXT:    movl %edx, %eax
 ; X64-NEXT:    testl %edi, %edi
-; X64-NEXT:    cmovnsl %edx, %eax
+; X64-NEXT:    cmovsl %esi, %eax
 ; X64-NEXT:    retq
   %sh = ashr i32 %input, 31
   %c = icmp eq i32 %sh, -1
@@ -211,9 +211,9 @@ define i32 @icmpasrne(i32 %input, i32 %a, i32 %b) {
 ;
 ; X64-LABEL: icmpasrne:
 ; X64:       # %bb.0:
-; X64-NEXT:    movl %esi, %eax
+; X64-NEXT:    movl %edx, %eax
 ; X64-NEXT:    testl %edi, %edi
-; X64-NEXT:    cmovsl %edx, %eax
+; X64-NEXT:    cmovnsl %esi, %eax
 ; X64-NEXT:    retq
   %sh = ashr i32 %input, 31
   %c = icmp ne i32 %sh, -1
@@ -224,29 +224,31 @@ define i32 @icmpasrne(i32 %input, i32 %a, i32 %b) {
 define i32 @oneusecmp(i32 %a, i32 %b, i32 %d) {
 ; X86-LABEL: oneusecmp:
 ; X86:       # %bb.0:
-; X86-NEXT:    movl {{[0-9]+}}(%esp), %ecx
-; X86-NEXT:    movl %ecx, %eax
-; X86-NEXT:    sarl $31, %eax
-; X86-NEXT:    xorl $127, %eax
-; X86-NEXT:    testl %ecx, %ecx
+; X86-NEXT:    movl {{[0-9]+}}(%esp), %eax
+; X86-NEXT:    movl %eax, %ecx
+; X86-NEXT:    sarl $31, %ecx
+; X86-NEXT:    xorl $127, %ecx
+; X86-NEXT:    testl %eax, %eax
 ; X86-NEXT:    js .LBB10_1
 ; X86-NEXT:  # %bb.2:
-; X86-NEXT:    leal {{[0-9]+}}(%esp), %ecx
-; X86-NEXT:    addl (%ecx), %eax
-; X86-NEXT:    retl
+; X86-NEXT:    leal {{[0-9]+}}(%esp), %eax
+; X86-NEXT:    jmp .LBB10_3
 ; X86-NEXT:  .LBB10_1:
-; X86-NEXT:    leal {{[0-9]+}}(%esp), %ecx
-; X86-NEXT:    addl (%ecx), %eax
+; X86-NEXT:    leal {{[0-9]+}}(%esp), %eax
+; X86-NEXT:  .LBB10_3:
+; X86-NEXT:    movl (%eax), %eax
+; X86-NEXT:    addl %ecx, %eax
 ; X86-NEXT:    retl
 ;
 ; X64-LABEL: oneusecmp:
 ; X64:       # %bb.0:
-; X64-NEXT:    movl %edi, %eax
-; X64-NEXT:    sarl $31, %eax
-; X64-NEXT:    xorl $127, %eax
+; X64-NEXT:    movl %esi, %eax
+; X64-NEXT:    movl %edi, %ecx
+; X64-NEXT:    sarl $31, %ecx
+; X64-NEXT:    xorl $127, %ecx
 ; X64-NEXT:    testl %edi, %edi
-; X64-NEXT:    cmovsl %edx, %esi
-; X64-NEXT:    addl %esi, %eax
+; X64-NEXT:    cmovsl %edx, %eax
+; X64-NEXT:    addl %ecx, %eax
 ; X64-NEXT:    retq
   %c = icmp sle i32 %a, -1
   %s = select i1 %c, i32 -128, i32 127

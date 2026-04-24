@@ -165,7 +165,7 @@ define <32 x bfloat>@test_int_x86_avx512_mask_getexp_bf16_512(<32 x bfloat> %x0,
 ; X64:       # %bb.0:
 ; X64-NEXT:    kmovd %edi, %k1 # encoding: [0xc5,0xfb,0x92,0xcf]
 ; X64-NEXT:    vgetexpbf16 %zmm0, %zmm0 # encoding: [0x62,0xf6,0x7c,0x48,0x42,0xc0]
-; X64-NEXT:    vmovdqu16 %zmm0, %zmm1 {%k1} # encoding: [0x62,0xf1,0xff,0x49,0x6f,0xc8]
+; X64-NEXT:    vpblendmw %zmm0, %zmm1, %zmm1 {%k1} # encoding: [0x62,0xf2,0xf5,0x49,0x66,0xc8]
 ; X64-NEXT:    vaddbf16 %zmm0, %zmm1, %zmm0 # encoding: [0x62,0xf5,0x75,0x48,0x58,0xc0]
 ; X64-NEXT:    retq # encoding: [0xc3]
 ;
@@ -173,7 +173,7 @@ define <32 x bfloat>@test_int_x86_avx512_mask_getexp_bf16_512(<32 x bfloat> %x0,
 ; X86:       # %bb.0:
 ; X86-NEXT:    kmovd {{[0-9]+}}(%esp), %k1 # encoding: [0xc4,0xe1,0xf9,0x90,0x4c,0x24,0x04]
 ; X86-NEXT:    vgetexpbf16 %zmm0, %zmm0 # encoding: [0x62,0xf6,0x7c,0x48,0x42,0xc0]
-; X86-NEXT:    vmovdqu16 %zmm0, %zmm1 {%k1} # encoding: [0x62,0xf1,0xff,0x49,0x6f,0xc8]
+; X86-NEXT:    vpblendmw %zmm0, %zmm1, %zmm1 {%k1} # encoding: [0x62,0xf2,0xf5,0x49,0x66,0xc8]
 ; X86-NEXT:    vaddbf16 %zmm0, %zmm1, %zmm0 # encoding: [0x62,0xf5,0x75,0x48,0x58,0xc0]
 ; X86-NEXT:    retl # encoding: [0xc3]
   %res1 = call <32 x bfloat> @llvm.x86.avx10.mask.getexp.bf16.512(<32 x bfloat> %x0, <32 x bfloat> %x1, i32 %x2)
@@ -213,16 +213,16 @@ define <32 x bfloat>@test_int_x86_avx512_mask_scalef_bf16_512(<32 x bfloat> %x0,
 ; X64:       # %bb.0:
 ; X64-NEXT:    kmovd %edi, %k1 # encoding: [0xc5,0xfb,0x92,0xcf]
 ; X64-NEXT:    vscalefbf16 %zmm1, %zmm0, %zmm0 # encoding: [0x62,0xf6,0x7c,0x48,0x2c,0xc1]
-; X64-NEXT:    vmovdqu16 %zmm0, %zmm2 {%k1} # encoding: [0x62,0xf1,0xff,0x49,0x6f,0xd0]
-; X64-NEXT:    vaddbf16 %zmm0, %zmm2, %zmm0 # encoding: [0x62,0xf5,0x6d,0x48,0x58,0xc0]
+; X64-NEXT:    vpblendmw %zmm0, %zmm2, %zmm1 {%k1} # encoding: [0x62,0xf2,0xed,0x49,0x66,0xc8]
+; X64-NEXT:    vaddbf16 %zmm0, %zmm1, %zmm0 # encoding: [0x62,0xf5,0x75,0x48,0x58,0xc0]
 ; X64-NEXT:    retq # encoding: [0xc3]
 ;
 ; X86-LABEL: test_int_x86_avx512_mask_scalef_bf16_512:
 ; X86:       # %bb.0:
 ; X86-NEXT:    kmovd {{[0-9]+}}(%esp), %k1 # encoding: [0xc4,0xe1,0xf9,0x90,0x4c,0x24,0x04]
 ; X86-NEXT:    vscalefbf16 %zmm1, %zmm0, %zmm0 # encoding: [0x62,0xf6,0x7c,0x48,0x2c,0xc1]
-; X86-NEXT:    vmovdqu16 %zmm0, %zmm2 {%k1} # encoding: [0x62,0xf1,0xff,0x49,0x6f,0xd0]
-; X86-NEXT:    vaddbf16 %zmm0, %zmm2, %zmm0 # encoding: [0x62,0xf5,0x6d,0x48,0x58,0xc0]
+; X86-NEXT:    vpblendmw %zmm0, %zmm2, %zmm1 {%k1} # encoding: [0x62,0xf2,0xed,0x49,0x66,0xc8]
+; X86-NEXT:    vaddbf16 %zmm0, %zmm1, %zmm0 # encoding: [0x62,0xf5,0x75,0x48,0x58,0xc0]
 ; X86-NEXT:    retl # encoding: [0xc3]
   %mask = bitcast i32 %x3 to <32 x i1>
   %res1 = call <32 x bfloat> @llvm.x86.avx10.mask.scalef.bf16.512(<32 x bfloat> %x0, <32 x bfloat> %x1, <32 x bfloat> %x2, i32 %x3)

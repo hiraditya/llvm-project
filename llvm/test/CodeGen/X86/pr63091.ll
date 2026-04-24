@@ -12,7 +12,8 @@ define <4 x i32> @dont_merge_pcmpgt(<16 x i8> %0, <4 x i32> %1) {
 ; SSE-NEXT:    pxor %xmm2, %xmm2
 ; SSE-NEXT:    pcmpgtb %xmm2, %xmm0
 ; SSE-NEXT:    pcmpgtd %xmm2, %xmm1
-; SSE-NEXT:    pblendw {{.*#+}} xmm0 = xmm0[0,1,2,3,4,5],xmm1[6,7]
+; SSE-NEXT:    pblendw {{.*#+}} xmm1 = xmm0[0,1,2,3,4,5],xmm1[6,7]
+; SSE-NEXT:    movdqa %xmm1, %xmm0
 ; SSE-NEXT:    retq
 ;
 ; AVX-LABEL: dont_merge_pcmpgt:
@@ -35,9 +36,11 @@ define <4 x i32> @dont_merge_pcmpgt(<16 x i8> %0, <4 x i32> %1) {
 define <4 x i32> @merge_and(<16 x i8> %0, <4 x i32> %1) {
 ; SSE-LABEL: merge_and:
 ; SSE:       # %bb.0:
-; SSE-NEXT:    andps {{\.?LCPI[0-9]+_[0-9]+}}(%rip), %xmm0
-; SSE-NEXT:    andps {{\.?LCPI[0-9]+_[0-9]+}}(%rip), %xmm1
-; SSE-NEXT:    blendps {{.*#+}} xmm0 = xmm0[0,1,2],xmm1[3]
+; SSE-NEXT:    movaps {{.*#+}} xmm2 = [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1]
+; SSE-NEXT:    andps %xmm0, %xmm2
+; SSE-NEXT:    movaps {{.*#+}} xmm0 = [1,1,1,1]
+; SSE-NEXT:    andps %xmm1, %xmm0
+; SSE-NEXT:    blendps {{.*#+}} xmm0 = xmm2[0,1,2],xmm0[3]
 ; SSE-NEXT:    retq
 ;
 ; AVX2-LABEL: merge_and:

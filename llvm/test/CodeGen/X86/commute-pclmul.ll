@@ -8,7 +8,9 @@ declare <2 x i64> @llvm.x86.pclmulqdq(<2 x i64>, <2 x i64>, i8) nounwind readnon
 define <2 x i64> @commute_lq_lq(ptr %a0, <2 x i64> %a1) #0 {
 ; SSE-LABEL: commute_lq_lq:
 ; SSE:       # %bb.0:
-; SSE-NEXT:    pclmulqdq $0, (%rdi), %xmm0
+; SSE-NEXT:    movdqa (%rdi), %xmm1
+; SSE-NEXT:    pclmulqdq $0, %xmm0, %xmm1
+; SSE-NEXT:    movdqa %xmm1, %xmm0
 ; SSE-NEXT:    retq
 ;
 ; AVX-LABEL: commute_lq_lq:
@@ -23,7 +25,9 @@ define <2 x i64> @commute_lq_lq(ptr %a0, <2 x i64> %a1) #0 {
 define <2 x i64> @commute_lq_hq(ptr %a0, <2 x i64> %a1) #0 {
 ; SSE-LABEL: commute_lq_hq:
 ; SSE:       # %bb.0:
-; SSE-NEXT:    pclmulqdq $1, (%rdi), %xmm0
+; SSE-NEXT:    movdqa (%rdi), %xmm1
+; SSE-NEXT:    pclmulqdq $16, %xmm0, %xmm1
+; SSE-NEXT:    movdqa %xmm1, %xmm0
 ; SSE-NEXT:    retq
 ;
 ; AVX-LABEL: commute_lq_hq:
@@ -38,7 +42,9 @@ define <2 x i64> @commute_lq_hq(ptr %a0, <2 x i64> %a1) #0 {
 define <2 x i64> @commute_hq_lq(ptr %a0, <2 x i64> %a1) #0 {
 ; SSE-LABEL: commute_hq_lq:
 ; SSE:       # %bb.0:
-; SSE-NEXT:    pclmulqdq $16, (%rdi), %xmm0
+; SSE-NEXT:    movdqa (%rdi), %xmm1
+; SSE-NEXT:    pclmulqdq $1, %xmm0, %xmm1
+; SSE-NEXT:    movdqa %xmm1, %xmm0
 ; SSE-NEXT:    retq
 ;
 ; AVX-LABEL: commute_hq_lq:
@@ -53,7 +59,9 @@ define <2 x i64> @commute_hq_lq(ptr %a0, <2 x i64> %a1) #0 {
 define <2 x i64> @commute_hq_hq(ptr %a0, <2 x i64> %a1) #0 {
 ; SSE-LABEL: commute_hq_hq:
 ; SSE:       # %bb.0:
-; SSE-NEXT:    pclmulqdq $17, (%rdi), %xmm0
+; SSE-NEXT:    movdqa (%rdi), %xmm1
+; SSE-NEXT:    pclmulqdq $17, %xmm0, %xmm1
+; SSE-NEXT:    movdqa %xmm1, %xmm0
 ; SSE-NEXT:    retq
 ;
 ; AVX-LABEL: commute_hq_hq:

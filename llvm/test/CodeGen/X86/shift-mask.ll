@@ -114,7 +114,7 @@ define i16 @test_i16_shl_lshr_1(i16 %a0) {
 ; X86-LABEL: test_i16_shl_lshr_1:
 ; X86:       # %bb.0:
 ; X86-NEXT:    movl {{[0-9]+}}(%esp), %eax
-; X86-NEXT:    shll $2, %eax
+; X86-NEXT:    leal (,%eax,4), %eax
 ; X86-NEXT:    andl $65504, %eax # imm = 0xFFE0
 ; X86-NEXT:    # kill: def $ax killed $ax killed $eax
 ; X86-NEXT:    retl
@@ -160,7 +160,7 @@ define i16 @test_i16_shl_lshr_2(i16 %a0) {
 ; X64-SHIFT:       # %bb.0:
 ; X64-SHIFT-NEXT:    movzwl %di, %eax
 ; X64-SHIFT-NEXT:    shrl $5, %eax
-; X64-SHIFT-NEXT:    shll $3, %eax
+; X64-SHIFT-NEXT:    leal (,%rax,8), %eax
 ; X64-SHIFT-NEXT:    # kill: def $ax killed $ax killed $eax
 ; X64-SHIFT-NEXT:    retq
   %1 = lshr i16 %a0, 5
@@ -189,7 +189,7 @@ define i32 @test_i32_shl_lshr_1(i32 %a0) {
 ; X86-LABEL: test_i32_shl_lshr_1:
 ; X86:       # %bb.0:
 ; X86-NEXT:    movl {{[0-9]+}}(%esp), %eax
-; X86-NEXT:    shll $2, %eax
+; X86-NEXT:    leal (,%eax,4), %eax
 ; X86-NEXT:    andl $-32, %eax
 ; X86-NEXT:    retl
 ;
@@ -261,7 +261,7 @@ define i64 @test_i64_shl_lshr_1(i64 %a0) {
 ; X86-NEXT:    movl {{[0-9]+}}(%esp), %eax
 ; X86-NEXT:    movl {{[0-9]+}}(%esp), %edx
 ; X86-NEXT:    shldl $2, %eax, %edx
-; X86-NEXT:    shll $2, %eax
+; X86-NEXT:    leal (,%eax,4), %eax
 ; X86-NEXT:    andl $-32, %eax
 ; X86-NEXT:    retl
 ;
@@ -454,7 +454,7 @@ define i16 @test_i16_lshr_lshr_2(i16 %a0) {
 ; X86-LABEL: test_i16_lshr_lshr_2:
 ; X86:       # %bb.0:
 ; X86-NEXT:    movl {{[0-9]+}}(%esp), %eax
-; X86-NEXT:    shll $2, %eax
+; X86-NEXT:    leal (,%eax,4), %eax
 ; X86-NEXT:    andl $8188, %eax # imm = 0x1FFC
 ; X86-NEXT:    # kill: def $ax killed $ax killed $eax
 ; X86-NEXT:    retl
@@ -474,8 +474,9 @@ define i16 @test_i16_lshr_lshr_2(i16 %a0) {
 define i32 @test_i32_lshr_lshr_0(i32 %a0) {
 ; X86-LABEL: test_i32_lshr_lshr_0:
 ; X86:       # %bb.0:
-; X86-NEXT:    movl $536870911, %eax # imm = 0x1FFFFFFF
-; X86-NEXT:    andl {{[0-9]+}}(%esp), %eax
+; X86-NEXT:    movl $536870911, %ecx # imm = 0x1FFFFFFF
+; X86-NEXT:    movl {{[0-9]+}}(%esp), %eax
+; X86-NEXT:    andl %ecx, %eax
 ; X86-NEXT:    retl
 ;
 ; X64-LABEL: test_i32_lshr_lshr_0:
@@ -518,7 +519,7 @@ define i32 @test_i32_lshr_lshr_2(i32 %a0) {
 ; X86-LABEL: test_i32_lshr_lshr_2:
 ; X86:       # %bb.0:
 ; X86-NEXT:    movl {{[0-9]+}}(%esp), %eax
-; X86-NEXT:    shll $2, %eax
+; X86-NEXT:    leal (,%eax,4), %eax
 ; X86-NEXT:    andl $536870908, %eax # imm = 0x1FFFFFFC
 ; X86-NEXT:    retl
 ;
@@ -544,8 +545,9 @@ define i64 @test_i64_lshr_lshr_0(i64 %a0) {
 ; X86-LABEL: test_i64_lshr_lshr_0:
 ; X86:       # %bb.0:
 ; X86-NEXT:    movl {{[0-9]+}}(%esp), %eax
-; X86-NEXT:    movl $536870911, %edx # imm = 0x1FFFFFFF
-; X86-NEXT:    andl {{[0-9]+}}(%esp), %edx
+; X86-NEXT:    movl $536870911, %ecx # imm = 0x1FFFFFFF
+; X86-NEXT:    movl {{[0-9]+}}(%esp), %edx
+; X86-NEXT:    andl %ecx, %edx
 ; X86-NEXT:    retl
 ;
 ; X64-MASK-LABEL: test_i64_lshr_lshr_0:
@@ -611,10 +613,10 @@ define i64 @test_i64_lshr_lshr_1(i64 %a0) {
 define i64 @test_i64_lshr_lshr_2(i64 %a0) {
 ; X86-LABEL: test_i64_lshr_lshr_2:
 ; X86:       # %bb.0:
-; X86-NEXT:    movl {{[0-9]+}}(%esp), %eax
+; X86-NEXT:    movl {{[0-9]+}}(%esp), %ecx
 ; X86-NEXT:    movl {{[0-9]+}}(%esp), %edx
-; X86-NEXT:    shldl $2, %eax, %edx
-; X86-NEXT:    shll $2, %eax
+; X86-NEXT:    leal (,%ecx,4), %eax
+; X86-NEXT:    shldl $2, %ecx, %edx
 ; X86-NEXT:    andl $536870911, %edx # imm = 0x1FFFFFFF
 ; X86-NEXT:    retl
 ;

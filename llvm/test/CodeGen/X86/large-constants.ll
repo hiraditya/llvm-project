@@ -6,29 +6,27 @@ define i64 @constant_hoisting(i64 %o0, i64 %o1, i64 %o2, i64 %o3, i64 %o4, i64 %
 ; CHECK:       ## %bb.0: ## %entry
 ; CHECK-NEXT:    movabsq $-281474976710654, %rax ## imm = 0xFFFF000000000002
 ; CHECK-NEXT:    testq %rax, %rdi
-; CHECK-NEXT:    jne LBB0_7
+; CHECK-NEXT:    jne LBB0_6
 ; CHECK-NEXT:  ## %bb.1: ## %bb1
 ; CHECK-NEXT:    testq %rax, %rsi
-; CHECK-NEXT:    jne LBB0_7
+; CHECK-NEXT:    jne LBB0_6
 ; CHECK-NEXT:  ## %bb.2: ## %bb2
 ; CHECK-NEXT:    testq %rax, %rdx
-; CHECK-NEXT:    jne LBB0_7
+; CHECK-NEXT:    jne LBB0_6
 ; CHECK-NEXT:  ## %bb.3: ## %bb3
 ; CHECK-NEXT:    testq %rax, %rcx
-; CHECK-NEXT:    jne LBB0_7
+; CHECK-NEXT:    jne LBB0_6
 ; CHECK-NEXT:  ## %bb.4: ## %bb4
 ; CHECK-NEXT:    leaq 1(%rax), %rcx
 ; CHECK-NEXT:    testq %rcx, %r8
-; CHECK-NEXT:    jne LBB0_7
+; CHECK-NEXT:    jne LBB0_6
 ; CHECK-NEXT:  ## %bb.5: ## %bb5
 ; CHECK-NEXT:    addq $2, %rax
-; CHECK-NEXT:    andq %rax, %r9
-; CHECK-NEXT:    je LBB0_6
-; CHECK-NEXT:  LBB0_7: ## %fail
+; CHECK-NEXT:    andq %r9, %rax
+; CHECK-NEXT:    je LBB0_7
+; CHECK-NEXT:  LBB0_6: ## %fail
 ; CHECK-NEXT:    movq $-1, %rax
-; CHECK-NEXT:    retq
-; CHECK-NEXT:  LBB0_6: ## %bb6
-; CHECK-NEXT:    movq %r9, %rax
+; CHECK-NEXT:  LBB0_7: ## %bb6
 ; CHECK-NEXT:    retq
 entry:
   %l0 = and i64 %o0, -281474976710654
@@ -73,10 +71,12 @@ define void @constant_expressions() {
 ; CHECK-NEXT:    movabsq $51250129900, %rax ## imm = 0xBEEBEEBEC
 ; CHECK-NEXT:    movq (%rax), %rcx
 ; CHECK-NEXT:    movq 16(%rax), %rdx
-; CHECK-NEXT:    addq 8(%rax), %rcx
-; CHECK-NEXT:    addq 24(%rax), %rdx
-; CHECK-NEXT:    addq %rcx, %rdx
-; CHECK-NEXT:    movq %rdx, (%rax)
+; CHECK-NEXT:    movq 8(%rax), %rsi
+; CHECK-NEXT:    addq %rcx, %rsi
+; CHECK-NEXT:    movq 24(%rax), %rcx
+; CHECK-NEXT:    addq %rdx, %rcx
+; CHECK-NEXT:    addq %rsi, %rcx
+; CHECK-NEXT:    movq %rcx, (%rax)
 ; CHECK-NEXT:    retq
 entry:
   %0 = load i64, ptr inttoptr (i64 add (i64 51250129900, i64 0) to ptr)
@@ -97,10 +97,12 @@ define void @constant_expressions2() {
 ; CHECK-NEXT:    movabsq $51250129900, %rax ## imm = 0xBEEBEEBEC
 ; CHECK-NEXT:    movq (%rax), %rcx
 ; CHECK-NEXT:    movq 16(%rax), %rdx
-; CHECK-NEXT:    addq 8(%rax), %rcx
-; CHECK-NEXT:    addq 24(%rax), %rdx
-; CHECK-NEXT:    addq %rcx, %rdx
-; CHECK-NEXT:    movq %rdx, (%rax)
+; CHECK-NEXT:    movq 8(%rax), %rsi
+; CHECK-NEXT:    addq %rcx, %rsi
+; CHECK-NEXT:    movq 24(%rax), %rcx
+; CHECK-NEXT:    addq %rdx, %rcx
+; CHECK-NEXT:    addq %rsi, %rcx
+; CHECK-NEXT:    movq %rcx, (%rax)
 ; CHECK-NEXT:    retq
 entry:
   %0 = load i64, ptr inttoptr (i64 51250129900 to ptr)

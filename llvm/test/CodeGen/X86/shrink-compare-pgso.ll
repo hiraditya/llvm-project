@@ -101,8 +101,8 @@ define dso_local void @test5(i32 %X) nounwind !prof !14 {
 ; CHECK-NEXT:    movzbl x+6(%rip), %eax
 ; CHECK-NEXT:    shll $16, %eax
 ; CHECK-NEXT:    movzwl x+4(%rip), %ecx
-; CHECK-NEXT:    orl %eax, %ecx
-; CHECK-NEXT:    cmpl $1, %ecx
+; CHECK-NEXT:    orl %ecx, %eax
+; CHECK-NEXT:    cmpl $1, %eax
 ; CHECK-NEXT:    jne bar # TAILCALL
 ; CHECK-NEXT:  # %bb.1: # %if.end
 ; CHECK-NEXT:    retq

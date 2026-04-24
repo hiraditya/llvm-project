@@ -297,7 +297,8 @@ entry:
 define <32 x bfloat> @test_mm512_fmaddne_pbh(<32 x bfloat> %__A, <32 x bfloat> %__B, <32 x bfloat> %__C) {
 ; CHECK-LABEL: test_mm512_fmaddne_pbh:
 ; CHECK:       # %bb.0: # %entry
-; CHECK-NEXT:    vfmadd213bf16 %zmm2, %zmm1, %zmm0 # encoding: [0x62,0xf6,0x74,0x48,0xa8,0xc2]
+; CHECK-NEXT:    vfmadd213bf16 %zmm2, %zmm0, %zmm1 # encoding: [0x62,0xf6,0x7c,0x48,0xa8,0xca]
+; CHECK-NEXT:    vmovaps %zmm1, %zmm0 # encoding: [0x62,0xf1,0x7c,0x48,0x28,0xc1]
 ; CHECK-NEXT:    ret{{[l|q]}} # encoding: [0xc3]
 entry:
   %0 = tail call <32 x bfloat> @llvm.fma.v32bf16(<32 x bfloat> %__A, <32 x bfloat> %__B, <32 x bfloat> %__C)
@@ -348,13 +349,15 @@ define <32 x bfloat> @test_mm512_maskz_fmaddne_pbh(i32 %__U, <32 x bfloat> %__A,
 ; X64-LABEL: test_mm512_maskz_fmaddne_pbh:
 ; X64:       # %bb.0: # %entry
 ; X64-NEXT:    kmovd %edi, %k1 # encoding: [0xc5,0xfb,0x92,0xcf]
-; X64-NEXT:    vfmadd213bf16 %zmm2, %zmm1, %zmm0 {%k1} {z} # encoding: [0x62,0xf6,0x74,0xc9,0xa8,0xc2]
+; X64-NEXT:    vfmadd213bf16 %zmm2, %zmm0, %zmm1 {%k1} {z} # encoding: [0x62,0xf6,0x7c,0xc9,0xa8,0xca]
+; X64-NEXT:    vmovaps %zmm1, %zmm0 # encoding: [0x62,0xf1,0x7c,0x48,0x28,0xc1]
 ; X64-NEXT:    retq # encoding: [0xc3]
 ;
 ; X86-LABEL: test_mm512_maskz_fmaddne_pbh:
 ; X86:       # %bb.0: # %entry
 ; X86-NEXT:    kmovd {{[0-9]+}}(%esp), %k1 # encoding: [0xc4,0xe1,0xf9,0x90,0x4c,0x24,0x04]
-; X86-NEXT:    vfmadd213bf16 %zmm2, %zmm1, %zmm0 {%k1} {z} # encoding: [0x62,0xf6,0x74,0xc9,0xa8,0xc2]
+; X86-NEXT:    vfmadd213bf16 %zmm2, %zmm0, %zmm1 {%k1} {z} # encoding: [0x62,0xf6,0x7c,0xc9,0xa8,0xca]
+; X86-NEXT:    vmovaps %zmm1, %zmm0 # encoding: [0x62,0xf1,0x7c,0x48,0x28,0xc1]
 ; X86-NEXT:    retl # encoding: [0xc3]
 entry:
   %0 = tail call <32 x bfloat> @llvm.fma.v32bf16(<32 x bfloat> %__A, <32 x bfloat> %__B, <32 x bfloat> %__C)
@@ -366,7 +369,8 @@ entry:
 define <32 x bfloat> @test_mm512_fmsubne_pbh(<32 x bfloat> %__A, <32 x bfloat> %__B, <32 x bfloat> %__C) {
 ; CHECK-LABEL: test_mm512_fmsubne_pbh:
 ; CHECK:       # %bb.0: # %entry
-; CHECK-NEXT:    vfmsub213bf16 %zmm2, %zmm1, %zmm0 # encoding: [0x62,0xf6,0x74,0x48,0xaa,0xc2]
+; CHECK-NEXT:    vfmsub213bf16 %zmm2, %zmm0, %zmm1 # encoding: [0x62,0xf6,0x7c,0x48,0xaa,0xca]
+; CHECK-NEXT:    vmovaps %zmm1, %zmm0 # encoding: [0x62,0xf1,0x7c,0x48,0x28,0xc1]
 ; CHECK-NEXT:    ret{{[l|q]}} # encoding: [0xc3]
 entry:
   %fneg.i = fneg <32 x bfloat> %__C
@@ -420,13 +424,15 @@ define <32 x bfloat> @test_mm512_maskz_fmsubne_pbh(i32 %__U, <32 x bfloat> %__A,
 ; X64-LABEL: test_mm512_maskz_fmsubne_pbh:
 ; X64:       # %bb.0: # %entry
 ; X64-NEXT:    kmovd %edi, %k1 # encoding: [0xc5,0xfb,0x92,0xcf]
-; X64-NEXT:    vfmsub213bf16 %zmm2, %zmm1, %zmm0 {%k1} {z} # encoding: [0x62,0xf6,0x74,0xc9,0xaa,0xc2]
+; X64-NEXT:    vfmsub213bf16 %zmm2, %zmm0, %zmm1 {%k1} {z} # encoding: [0x62,0xf6,0x7c,0xc9,0xaa,0xca]
+; X64-NEXT:    vmovaps %zmm1, %zmm0 # encoding: [0x62,0xf1,0x7c,0x48,0x28,0xc1]
 ; X64-NEXT:    retq # encoding: [0xc3]
 ;
 ; X86-LABEL: test_mm512_maskz_fmsubne_pbh:
 ; X86:       # %bb.0: # %entry
 ; X86-NEXT:    kmovd {{[0-9]+}}(%esp), %k1 # encoding: [0xc4,0xe1,0xf9,0x90,0x4c,0x24,0x04]
-; X86-NEXT:    vfmsub213bf16 %zmm2, %zmm1, %zmm0 {%k1} {z} # encoding: [0x62,0xf6,0x74,0xc9,0xaa,0xc2]
+; X86-NEXT:    vfmsub213bf16 %zmm2, %zmm0, %zmm1 {%k1} {z} # encoding: [0x62,0xf6,0x7c,0xc9,0xaa,0xca]
+; X86-NEXT:    vmovaps %zmm1, %zmm0 # encoding: [0x62,0xf1,0x7c,0x48,0x28,0xc1]
 ; X86-NEXT:    retl # encoding: [0xc3]
 entry:
   %fneg.i.i = fneg <32 x bfloat> %__C
@@ -439,7 +445,8 @@ entry:
 define <32 x bfloat> @test_mm512_fnmaddne_pbh(<32 x bfloat> %__A, <32 x bfloat> %__B, <32 x bfloat> %__C) {
 ; CHECK-LABEL: test_mm512_fnmaddne_pbh:
 ; CHECK:       # %bb.0: # %entry
-; CHECK-NEXT:    vfnmadd213bf16 %zmm2, %zmm1, %zmm0 # encoding: [0x62,0xf6,0x74,0x48,0xac,0xc2]
+; CHECK-NEXT:    vfnmadd213bf16 %zmm2, %zmm0, %zmm1 # encoding: [0x62,0xf6,0x7c,0x48,0xac,0xca]
+; CHECK-NEXT:    vmovaps %zmm1, %zmm0 # encoding: [0x62,0xf1,0x7c,0x48,0x28,0xc1]
 ; CHECK-NEXT:    ret{{[l|q]}} # encoding: [0xc3]
 entry:
   %fneg.i = fneg <32 x bfloat> %__B
@@ -493,13 +500,15 @@ define <32 x bfloat> @test_mm512_maskz_fnmaddne_pbh(i32 %__U, <32 x bfloat> %__A
 ; X64-LABEL: test_mm512_maskz_fnmaddne_pbh:
 ; X64:       # %bb.0: # %entry
 ; X64-NEXT:    kmovd %edi, %k1 # encoding: [0xc5,0xfb,0x92,0xcf]
-; X64-NEXT:    vfnmadd213bf16 %zmm2, %zmm1, %zmm0 {%k1} {z} # encoding: [0x62,0xf6,0x74,0xc9,0xac,0xc2]
+; X64-NEXT:    vfnmadd213bf16 %zmm2, %zmm0, %zmm1 {%k1} {z} # encoding: [0x62,0xf6,0x7c,0xc9,0xac,0xca]
+; X64-NEXT:    vmovaps %zmm1, %zmm0 # encoding: [0x62,0xf1,0x7c,0x48,0x28,0xc1]
 ; X64-NEXT:    retq # encoding: [0xc3]
 ;
 ; X86-LABEL: test_mm512_maskz_fnmaddne_pbh:
 ; X86:       # %bb.0: # %entry
 ; X86-NEXT:    kmovd {{[0-9]+}}(%esp), %k1 # encoding: [0xc4,0xe1,0xf9,0x90,0x4c,0x24,0x04]
-; X86-NEXT:    vfnmadd213bf16 %zmm2, %zmm1, %zmm0 {%k1} {z} # encoding: [0x62,0xf6,0x74,0xc9,0xac,0xc2]
+; X86-NEXT:    vfnmadd213bf16 %zmm2, %zmm0, %zmm1 {%k1} {z} # encoding: [0x62,0xf6,0x7c,0xc9,0xac,0xca]
+; X86-NEXT:    vmovaps %zmm1, %zmm0 # encoding: [0x62,0xf1,0x7c,0x48,0x28,0xc1]
 ; X86-NEXT:    retl # encoding: [0xc3]
 entry:
   %fneg.i.i = fneg <32 x bfloat> %__B
@@ -512,7 +521,8 @@ entry:
 define <32 x bfloat> @test_mm512_fnmsubne_pbh(<32 x bfloat> %__A, <32 x bfloat> %__B, <32 x bfloat> %__C) {
 ; CHECK-LABEL: test_mm512_fnmsubne_pbh:
 ; CHECK:       # %bb.0: # %entry
-; CHECK-NEXT:    vfnmsub213bf16 %zmm2, %zmm1, %zmm0 # encoding: [0x62,0xf6,0x74,0x48,0xae,0xc2]
+; CHECK-NEXT:    vfnmsub213bf16 %zmm2, %zmm0, %zmm1 # encoding: [0x62,0xf6,0x7c,0x48,0xae,0xca]
+; CHECK-NEXT:    vmovaps %zmm1, %zmm0 # encoding: [0x62,0xf1,0x7c,0x48,0x28,0xc1]
 ; CHECK-NEXT:    ret{{[l|q]}} # encoding: [0xc3]
 entry:
   %fneg.i = fneg <32 x bfloat> %__B
@@ -569,13 +579,15 @@ define <32 x bfloat> @test_mm512_maskz_fnmsubne_pbh(i32 %__U, <32 x bfloat> %__A
 ; X64-LABEL: test_mm512_maskz_fnmsubne_pbh:
 ; X64:       # %bb.0: # %entry
 ; X64-NEXT:    kmovd %edi, %k1 # encoding: [0xc5,0xfb,0x92,0xcf]
-; X64-NEXT:    vfnmsub213bf16 %zmm2, %zmm1, %zmm0 {%k1} {z} # encoding: [0x62,0xf6,0x74,0xc9,0xae,0xc2]
+; X64-NEXT:    vfnmsub213bf16 %zmm2, %zmm0, %zmm1 {%k1} {z} # encoding: [0x62,0xf6,0x7c,0xc9,0xae,0xca]
+; X64-NEXT:    vmovaps %zmm1, %zmm0 # encoding: [0x62,0xf1,0x7c,0x48,0x28,0xc1]
 ; X64-NEXT:    retq # encoding: [0xc3]
 ;
 ; X86-LABEL: test_mm512_maskz_fnmsubne_pbh:
 ; X86:       # %bb.0: # %entry
 ; X86-NEXT:    kmovd {{[0-9]+}}(%esp), %k1 # encoding: [0xc4,0xe1,0xf9,0x90,0x4c,0x24,0x04]
-; X86-NEXT:    vfnmsub213bf16 %zmm2, %zmm1, %zmm0 {%k1} {z} # encoding: [0x62,0xf6,0x74,0xc9,0xae,0xc2]
+; X86-NEXT:    vfnmsub213bf16 %zmm2, %zmm0, %zmm1 {%k1} {z} # encoding: [0x62,0xf6,0x7c,0xc9,0xae,0xca]
+; X86-NEXT:    vmovaps %zmm1, %zmm0 # encoding: [0x62,0xf1,0x7c,0x48,0x28,0xc1]
 ; X86-NEXT:    retl # encoding: [0xc3]
 entry:
   %fneg.i.i = fneg <32 x bfloat> %__B

@@ -15,8 +15,9 @@ define i1 @test_v2i64(ptr %ptr) nounwind {
 ; SSE2-LABEL: test_v2i64:
 ; SSE2:       # %bb.0:
 ; SSE2-NEXT:    pcmpeqd %xmm0, %xmm0
-; SSE2-NEXT:    pcmpeqd (%rdi), %xmm0
-; SSE2-NEXT:    movmskps %xmm0, %eax
+; SSE2-NEXT:    movdqa (%rdi), %xmm1
+; SSE2-NEXT:    pcmpeqd %xmm0, %xmm1
+; SSE2-NEXT:    movmskps %xmm1, %eax
 ; SSE2-NEXT:    xorl $15, %eax
 ; SSE2-NEXT:    sete %al
 ; SSE2-NEXT:    retq
@@ -48,10 +49,11 @@ define i1 @test_v4i64(ptr %ptr) nounwind {
 ; SSE2-LABEL: test_v4i64:
 ; SSE2:       # %bb.0:
 ; SSE2-NEXT:    movdqa (%rdi), %xmm0
-; SSE2-NEXT:    pand 16(%rdi), %xmm0
-; SSE2-NEXT:    pcmpeqd %xmm1, %xmm1
-; SSE2-NEXT:    pcmpeqd %xmm0, %xmm1
-; SSE2-NEXT:    movmskps %xmm1, %eax
+; SSE2-NEXT:    movdqa 16(%rdi), %xmm1
+; SSE2-NEXT:    pand %xmm0, %xmm1
+; SSE2-NEXT:    pcmpeqd %xmm0, %xmm0
+; SSE2-NEXT:    pcmpeqd %xmm1, %xmm0
+; SSE2-NEXT:    movmskps %xmm0, %eax
 ; SSE2-NEXT:    xorl $15, %eax
 ; SSE2-NEXT:    sete %al
 ; SSE2-NEXT:    retq
@@ -59,9 +61,10 @@ define i1 @test_v4i64(ptr %ptr) nounwind {
 ; SSE41-LABEL: test_v4i64:
 ; SSE41:       # %bb.0:
 ; SSE41-NEXT:    movdqa (%rdi), %xmm0
-; SSE41-NEXT:    pand 16(%rdi), %xmm0
-; SSE41-NEXT:    pcmpeqd %xmm1, %xmm1
-; SSE41-NEXT:    ptest %xmm1, %xmm0
+; SSE41-NEXT:    movdqa 16(%rdi), %xmm1
+; SSE41-NEXT:    pand %xmm0, %xmm1
+; SSE41-NEXT:    pcmpeqd %xmm0, %xmm0
+; SSE41-NEXT:    ptest %xmm0, %xmm1
 ; SSE41-NEXT:    setb %al
 ; SSE41-NEXT:    retq
 ;
@@ -109,12 +112,14 @@ define i1 @test_v8i64(ptr %ptr) nounwind {
 ; SSE2:       # %bb.0:
 ; SSE2-NEXT:    movdqa (%rdi), %xmm0
 ; SSE2-NEXT:    movdqa 16(%rdi), %xmm1
-; SSE2-NEXT:    pand 48(%rdi), %xmm1
-; SSE2-NEXT:    pand 32(%rdi), %xmm0
-; SSE2-NEXT:    pand %xmm1, %xmm0
-; SSE2-NEXT:    pcmpeqd %xmm1, %xmm1
-; SSE2-NEXT:    pcmpeqd %xmm0, %xmm1
-; SSE2-NEXT:    movmskps %xmm1, %eax
+; SSE2-NEXT:    movdqa 48(%rdi), %xmm2
+; SSE2-NEXT:    pand %xmm1, %xmm2
+; SSE2-NEXT:    movdqa 32(%rdi), %xmm1
+; SSE2-NEXT:    pand %xmm0, %xmm1
+; SSE2-NEXT:    pand %xmm1, %xmm2
+; SSE2-NEXT:    pcmpeqd %xmm0, %xmm0
+; SSE2-NEXT:    pcmpeqd %xmm2, %xmm0
+; SSE2-NEXT:    movmskps %xmm0, %eax
 ; SSE2-NEXT:    xorl $15, %eax
 ; SSE2-NEXT:    sete %al
 ; SSE2-NEXT:    retq
@@ -123,11 +128,13 @@ define i1 @test_v8i64(ptr %ptr) nounwind {
 ; SSE41:       # %bb.0:
 ; SSE41-NEXT:    movdqa (%rdi), %xmm0
 ; SSE41-NEXT:    movdqa 16(%rdi), %xmm1
-; SSE41-NEXT:    pand 48(%rdi), %xmm1
-; SSE41-NEXT:    pand 32(%rdi), %xmm0
-; SSE41-NEXT:    pand %xmm1, %xmm0
-; SSE41-NEXT:    pcmpeqd %xmm1, %xmm1
-; SSE41-NEXT:    ptest %xmm1, %xmm0
+; SSE41-NEXT:    movdqa 48(%rdi), %xmm2
+; SSE41-NEXT:    pand %xmm1, %xmm2
+; SSE41-NEXT:    movdqa 32(%rdi), %xmm1
+; SSE41-NEXT:    pand %xmm0, %xmm1
+; SSE41-NEXT:    pand %xmm1, %xmm2
+; SSE41-NEXT:    pcmpeqd %xmm0, %xmm0
+; SSE41-NEXT:    ptest %xmm0, %xmm2
 ; SSE41-NEXT:    setb %al
 ; SSE41-NEXT:    retq
 ;
@@ -187,16 +194,20 @@ define i1 @test_v16i64(ptr %ptr) nounwind {
 ; SSE2-NEXT:    movdqa 16(%rdi), %xmm1
 ; SSE2-NEXT:    movdqa 32(%rdi), %xmm2
 ; SSE2-NEXT:    movdqa 48(%rdi), %xmm3
-; SSE2-NEXT:    pand 112(%rdi), %xmm3
-; SSE2-NEXT:    pand 80(%rdi), %xmm1
-; SSE2-NEXT:    pand %xmm3, %xmm1
-; SSE2-NEXT:    pand 96(%rdi), %xmm2
-; SSE2-NEXT:    pand 64(%rdi), %xmm0
-; SSE2-NEXT:    pand %xmm2, %xmm0
-; SSE2-NEXT:    pand %xmm1, %xmm0
-; SSE2-NEXT:    pcmpeqd %xmm1, %xmm1
-; SSE2-NEXT:    pcmpeqd %xmm0, %xmm1
-; SSE2-NEXT:    movmskps %xmm1, %eax
+; SSE2-NEXT:    movdqa 112(%rdi), %xmm4
+; SSE2-NEXT:    pand %xmm3, %xmm4
+; SSE2-NEXT:    movdqa 80(%rdi), %xmm3
+; SSE2-NEXT:    pand %xmm1, %xmm3
+; SSE2-NEXT:    pand %xmm3, %xmm4
+; SSE2-NEXT:    movdqa 96(%rdi), %xmm1
+; SSE2-NEXT:    pand %xmm2, %xmm1
+; SSE2-NEXT:    movdqa 64(%rdi), %xmm2
+; SSE2-NEXT:    pand %xmm0, %xmm2
+; SSE2-NEXT:    pand %xmm2, %xmm1
+; SSE2-NEXT:    pand %xmm1, %xmm4
+; SSE2-NEXT:    pcmpeqd %xmm0, %xmm0
+; SSE2-NEXT:    pcmpeqd %xmm4, %xmm0
+; SSE2-NEXT:    movmskps %xmm0, %eax
 ; SSE2-NEXT:    xorl $15, %eax
 ; SSE2-NEXT:    sete %al
 ; SSE2-NEXT:    retq
@@ -207,15 +218,19 @@ define i1 @test_v16i64(ptr %ptr) nounwind {
 ; SSE41-NEXT:    movdqa 16(%rdi), %xmm1
 ; SSE41-NEXT:    movdqa 32(%rdi), %xmm2
 ; SSE41-NEXT:    movdqa 48(%rdi), %xmm3
-; SSE41-NEXT:    pand 112(%rdi), %xmm3
-; SSE41-NEXT:    pand 80(%rdi), %xmm1
-; SSE41-NEXT:    pand %xmm3, %xmm1
-; SSE41-NEXT:    pand 96(%rdi), %xmm2
-; SSE41-NEXT:    pand 64(%rdi), %xmm0
-; SSE41-NEXT:    pand %xmm2, %xmm0
-; SSE41-NEXT:    pand %xmm1, %xmm0
-; SSE41-NEXT:    pcmpeqd %xmm1, %xmm1
-; SSE41-NEXT:    ptest %xmm1, %xmm0
+; SSE41-NEXT:    movdqa 112(%rdi), %xmm4
+; SSE41-NEXT:    pand %xmm3, %xmm4
+; SSE41-NEXT:    movdqa 80(%rdi), %xmm3
+; SSE41-NEXT:    pand %xmm1, %xmm3
+; SSE41-NEXT:    pand %xmm3, %xmm4
+; SSE41-NEXT:    movdqa 96(%rdi), %xmm1
+; SSE41-NEXT:    pand %xmm2, %xmm1
+; SSE41-NEXT:    movdqa 64(%rdi), %xmm2
+; SSE41-NEXT:    pand %xmm0, %xmm2
+; SSE41-NEXT:    pand %xmm2, %xmm1
+; SSE41-NEXT:    pand %xmm1, %xmm4
+; SSE41-NEXT:    pcmpeqd %xmm0, %xmm0
+; SSE41-NEXT:    ptest %xmm0, %xmm4
 ; SSE41-NEXT:    setb %al
 ; SSE41-NEXT:    retq
 ;
@@ -320,8 +335,9 @@ define i1 @test_v4i32(ptr %ptr) nounwind {
 ; SSE2-LABEL: test_v4i32:
 ; SSE2:       # %bb.0:
 ; SSE2-NEXT:    pcmpeqd %xmm0, %xmm0
-; SSE2-NEXT:    pcmpeqd (%rdi), %xmm0
-; SSE2-NEXT:    movmskps %xmm0, %eax
+; SSE2-NEXT:    movdqa (%rdi), %xmm1
+; SSE2-NEXT:    pcmpeqd %xmm0, %xmm1
+; SSE2-NEXT:    movmskps %xmm1, %eax
 ; SSE2-NEXT:    xorl $15, %eax
 ; SSE2-NEXT:    sete %al
 ; SSE2-NEXT:    retq
@@ -357,10 +373,11 @@ define i1 @test_v8i32(ptr %ptr) nounwind {
 ; SSE2-LABEL: test_v8i32:
 ; SSE2:       # %bb.0:
 ; SSE2-NEXT:    movdqa (%rdi), %xmm0
-; SSE2-NEXT:    pand 16(%rdi), %xmm0
-; SSE2-NEXT:    pcmpeqd %xmm1, %xmm1
-; SSE2-NEXT:    pcmpeqd %xmm0, %xmm1
-; SSE2-NEXT:    movmskps %xmm1, %eax
+; SSE2-NEXT:    movdqa 16(%rdi), %xmm1
+; SSE2-NEXT:    pand %xmm0, %xmm1
+; SSE2-NEXT:    pcmpeqd %xmm0, %xmm0
+; SSE2-NEXT:    pcmpeqd %xmm1, %xmm0
+; SSE2-NEXT:    movmskps %xmm0, %eax
 ; SSE2-NEXT:    xorl $15, %eax
 ; SSE2-NEXT:    sete %al
 ; SSE2-NEXT:    retq
@@ -368,9 +385,10 @@ define i1 @test_v8i32(ptr %ptr) nounwind {
 ; SSE41-LABEL: test_v8i32:
 ; SSE41:       # %bb.0:
 ; SSE41-NEXT:    movdqa (%rdi), %xmm0
-; SSE41-NEXT:    pand 16(%rdi), %xmm0
-; SSE41-NEXT:    pcmpeqd %xmm1, %xmm1
-; SSE41-NEXT:    ptest %xmm1, %xmm0
+; SSE41-NEXT:    movdqa 16(%rdi), %xmm1
+; SSE41-NEXT:    pand %xmm0, %xmm1
+; SSE41-NEXT:    pcmpeqd %xmm0, %xmm0
+; SSE41-NEXT:    ptest %xmm0, %xmm1
 ; SSE41-NEXT:    setb %al
 ; SSE41-NEXT:    retq
 ;
@@ -426,12 +444,14 @@ define i1 @test_v16i32(ptr %ptr) nounwind {
 ; SSE2:       # %bb.0:
 ; SSE2-NEXT:    movdqa (%rdi), %xmm0
 ; SSE2-NEXT:    movdqa 16(%rdi), %xmm1
-; SSE2-NEXT:    pand 48(%rdi), %xmm1
-; SSE2-NEXT:    pand 32(%rdi), %xmm0
-; SSE2-NEXT:    pand %xmm1, %xmm0
-; SSE2-NEXT:    pcmpeqd %xmm1, %xmm1
-; SSE2-NEXT:    pcmpeqd %xmm0, %xmm1
-; SSE2-NEXT:    movmskps %xmm1, %eax
+; SSE2-NEXT:    movdqa 48(%rdi), %xmm2
+; SSE2-NEXT:    pand %xmm1, %xmm2
+; SSE2-NEXT:    movdqa 32(%rdi), %xmm1
+; SSE2-NEXT:    pand %xmm0, %xmm1
+; SSE2-NEXT:    pand %xmm1, %xmm2
+; SSE2-NEXT:    pcmpeqd %xmm0, %xmm0
+; SSE2-NEXT:    pcmpeqd %xmm2, %xmm0
+; SSE2-NEXT:    movmskps %xmm0, %eax
 ; SSE2-NEXT:    xorl $15, %eax
 ; SSE2-NEXT:    sete %al
 ; SSE2-NEXT:    retq
@@ -440,11 +460,13 @@ define i1 @test_v16i32(ptr %ptr) nounwind {
 ; SSE41:       # %bb.0:
 ; SSE41-NEXT:    movdqa (%rdi), %xmm0
 ; SSE41-NEXT:    movdqa 16(%rdi), %xmm1
-; SSE41-NEXT:    pand 48(%rdi), %xmm1
-; SSE41-NEXT:    pand 32(%rdi), %xmm0
-; SSE41-NEXT:    pand %xmm1, %xmm0
-; SSE41-NEXT:    pcmpeqd %xmm1, %xmm1
-; SSE41-NEXT:    ptest %xmm1, %xmm0
+; SSE41-NEXT:    movdqa 48(%rdi), %xmm2
+; SSE41-NEXT:    pand %xmm1, %xmm2
+; SSE41-NEXT:    movdqa 32(%rdi), %xmm1
+; SSE41-NEXT:    pand %xmm0, %xmm1
+; SSE41-NEXT:    pand %xmm1, %xmm2
+; SSE41-NEXT:    pcmpeqd %xmm0, %xmm0
+; SSE41-NEXT:    ptest %xmm0, %xmm2
 ; SSE41-NEXT:    setb %al
 ; SSE41-NEXT:    retq
 ;
@@ -565,8 +587,9 @@ define i1 @test_v8i16(ptr %ptr) nounwind {
 ; SSE2-LABEL: test_v8i16:
 ; SSE2:       # %bb.0:
 ; SSE2-NEXT:    pcmpeqd %xmm0, %xmm0
-; SSE2-NEXT:    pcmpeqb (%rdi), %xmm0
-; SSE2-NEXT:    pmovmskb %xmm0, %eax
+; SSE2-NEXT:    movdqa (%rdi), %xmm1
+; SSE2-NEXT:    pcmpeqb %xmm0, %xmm1
+; SSE2-NEXT:    pmovmskb %xmm1, %eax
 ; SSE2-NEXT:    xorl $65535, %eax # imm = 0xFFFF
 ; SSE2-NEXT:    sete %al
 ; SSE2-NEXT:    retq
@@ -610,10 +633,11 @@ define i1 @test_v16i16(ptr %ptr) nounwind {
 ; SSE2-LABEL: test_v16i16:
 ; SSE2:       # %bb.0:
 ; SSE2-NEXT:    movdqa (%rdi), %xmm0
-; SSE2-NEXT:    pand 16(%rdi), %xmm0
-; SSE2-NEXT:    pcmpeqd %xmm1, %xmm1
-; SSE2-NEXT:    pcmpeqb %xmm0, %xmm1
-; SSE2-NEXT:    pmovmskb %xmm1, %eax
+; SSE2-NEXT:    movdqa 16(%rdi), %xmm1
+; SSE2-NEXT:    pand %xmm0, %xmm1
+; SSE2-NEXT:    pcmpeqd %xmm0, %xmm0
+; SSE2-NEXT:    pcmpeqb %xmm1, %xmm0
+; SSE2-NEXT:    pmovmskb %xmm0, %eax
 ; SSE2-NEXT:    xorl $65535, %eax # imm = 0xFFFF
 ; SSE2-NEXT:    sete %al
 ; SSE2-NEXT:    retq
@@ -621,9 +645,10 @@ define i1 @test_v16i16(ptr %ptr) nounwind {
 ; SSE41-LABEL: test_v16i16:
 ; SSE41:       # %bb.0:
 ; SSE41-NEXT:    movdqa (%rdi), %xmm0
-; SSE41-NEXT:    pand 16(%rdi), %xmm0
-; SSE41-NEXT:    pcmpeqd %xmm1, %xmm1
-; SSE41-NEXT:    ptest %xmm1, %xmm0
+; SSE41-NEXT:    movdqa 16(%rdi), %xmm1
+; SSE41-NEXT:    pand %xmm0, %xmm1
+; SSE41-NEXT:    pcmpeqd %xmm0, %xmm0
+; SSE41-NEXT:    ptest %xmm0, %xmm1
 ; SSE41-NEXT:    setb %al
 ; SSE41-NEXT:    retq
 ;
@@ -774,8 +799,9 @@ define i1 @test_v16i8(ptr %ptr) nounwind {
 ; SSE2-LABEL: test_v16i8:
 ; SSE2:       # %bb.0:
 ; SSE2-NEXT:    pcmpeqd %xmm0, %xmm0
-; SSE2-NEXT:    pcmpeqb (%rdi), %xmm0
-; SSE2-NEXT:    pmovmskb %xmm0, %eax
+; SSE2-NEXT:    movdqa (%rdi), %xmm1
+; SSE2-NEXT:    pcmpeqb %xmm0, %xmm1
+; SSE2-NEXT:    pmovmskb %xmm1, %eax
 ; SSE2-NEXT:    xorl $65535, %eax # imm = 0xFFFF
 ; SSE2-NEXT:    sete %al
 ; SSE2-NEXT:    retq

@@ -14,8 +14,8 @@
 ; X64-NEXT:    fldt {{[0-9]+}}(%rsp)
 ; X64-NEXT:    fucompi %st(1), %st
 ; X64-NEXT:    fstp %st(0)
-; X64-NEXT:    setnp %cl
-; X64-NEXT:    sete %al
+; X64-NEXT:    setnp %al
+; X64-NEXT:    sete %cl
 ; X64-NEXT:    andb %cl, %al
 ; X64-NEXT:    retq
 ;
@@ -26,8 +26,8 @@
 ; GISEL-X64-NEXT:    fxch %st(1)
 ; GISEL-X64-NEXT:    fucompi %st(1), %st
 ; GISEL-X64-NEXT:    fstp %st(0)
-; GISEL-X64-NEXT:    sete %cl
-; GISEL-X64-NEXT:    setnp %al
+; GISEL-X64-NEXT:    sete %al
+; GISEL-X64-NEXT:    setnp %cl
 ; GISEL-X64-NEXT:    andb %cl, %al
 ; GISEL-X64-NEXT:    retq
 ;
@@ -39,8 +39,8 @@
 ; X86-NEXT:    fnstsw %ax
 ; X86-NEXT:    ## kill: def $ah killed $ah killed $ax
 ; X86-NEXT:    sahf
-; X86-NEXT:    setnp %cl
-; X86-NEXT:    sete %al
+; X86-NEXT:    setnp %al
+; X86-NEXT:    sete %cl
 ; X86-NEXT:    andb %cl, %al
 ; X86-NEXT:    retl
 ;
@@ -51,8 +51,8 @@
 ; GISEL-X86-NEXT:    fxch %st(1)
 ; GISEL-X86-NEXT:    fucompi %st(1), %st
 ; GISEL-X86-NEXT:    fstp %st(0)
-; GISEL-X86-NEXT:    sete %cl
-; GISEL-X86-NEXT:    setnp %al
+; GISEL-X86-NEXT:    sete %al
+; GISEL-X86-NEXT:    setnp %cl
 ; GISEL-X86-NEXT:    andb %cl, %al
 ; GISEL-X86-NEXT:    retl
     %1 = fcmp oeq x86_fp80 %x, %y
@@ -674,8 +674,8 @@
 ; X64-NEXT:    fldt {{[0-9]+}}(%rsp)
 ; X64-NEXT:    fucompi %st(1), %st
 ; X64-NEXT:    fstp %st(0)
-; X64-NEXT:    setp %cl
-; X64-NEXT:    setne %al
+; X64-NEXT:    setp %al
+; X64-NEXT:    setne %cl
 ; X64-NEXT:    orb %cl, %al
 ; X64-NEXT:    retq
 ;
@@ -686,8 +686,8 @@
 ; GISEL-X64-NEXT:    fxch %st(1)
 ; GISEL-X64-NEXT:    fucompi %st(1), %st
 ; GISEL-X64-NEXT:    fstp %st(0)
-; GISEL-X64-NEXT:    setne %cl
-; GISEL-X64-NEXT:    setp %al
+; GISEL-X64-NEXT:    setne %al
+; GISEL-X64-NEXT:    setp %cl
 ; GISEL-X64-NEXT:    orb %cl, %al
 ; GISEL-X64-NEXT:    retq
 ;
@@ -699,8 +699,8 @@
 ; X86-NEXT:    fnstsw %ax
 ; X86-NEXT:    ## kill: def $ah killed $ah killed $ax
 ; X86-NEXT:    sahf
-; X86-NEXT:    setp %cl
-; X86-NEXT:    setne %al
+; X86-NEXT:    setp %al
+; X86-NEXT:    setne %cl
 ; X86-NEXT:    orb %cl, %al
 ; X86-NEXT:    retl
 ;
@@ -711,8 +711,8 @@
 ; GISEL-X86-NEXT:    fxch %st(1)
 ; GISEL-X86-NEXT:    fucompi %st(1), %st
 ; GISEL-X86-NEXT:    fstp %st(0)
-; GISEL-X86-NEXT:    setne %cl
-; GISEL-X86-NEXT:    setp %al
+; GISEL-X86-NEXT:    setne %al
+; GISEL-X86-NEXT:    setp %cl
 ; GISEL-X86-NEXT:    orb %cl, %al
 ; GISEL-X86-NEXT:    retl
     %1 = fcmp une x86_fp80 %x, %y
@@ -726,8 +726,8 @@
 ; X64-NEXT:    flds {{[0-9]+}}(%rsp)
 ; X64-NEXT:    fucompi %st(1), %st
 ; X64-NEXT:    fstp %st(0)
-; X64-NEXT:    setnp %cl
-; X64-NEXT:    sete %al
+; X64-NEXT:    setnp %al
+; X64-NEXT:    sete %cl
 ; X64-NEXT:    andb %cl, %al
 ; X64-NEXT:    retq
 ;
@@ -738,8 +738,8 @@
 ; GISEL-X64-NEXT:    fxch %st(1)
 ; GISEL-X64-NEXT:    fucompi %st(1), %st
 ; GISEL-X64-NEXT:    fstp %st(0)
-; GISEL-X64-NEXT:    sete %cl
-; GISEL-X64-NEXT:    setnp %al
+; GISEL-X64-NEXT:    sete %al
+; GISEL-X64-NEXT:    setnp %cl
 ; GISEL-X64-NEXT:    andb %cl, %al
 ; GISEL-X64-NEXT:    retq
 ;
@@ -751,8 +751,8 @@
 ; X86-NEXT:    fnstsw %ax
 ; X86-NEXT:    ## kill: def $ah killed $ah killed $ax
 ; X86-NEXT:    sahf
-; X86-NEXT:    setnp %cl
-; X86-NEXT:    sete %al
+; X86-NEXT:    setnp %al
+; X86-NEXT:    sete %cl
 ; X86-NEXT:    andb %cl, %al
 ; X86-NEXT:    retl
 ;
@@ -763,8 +763,8 @@
 ; GISEL-X86-NEXT:    fxch %st(1)
 ; GISEL-X86-NEXT:    fucompi %st(1), %st
 ; GISEL-X86-NEXT:    fstp %st(0)
-; GISEL-X86-NEXT:    sete %cl
-; GISEL-X86-NEXT:    setnp %al
+; GISEL-X86-NEXT:    sete %al
+; GISEL-X86-NEXT:    setnp %cl
 ; GISEL-X86-NEXT:    andb %cl, %al
 ; GISEL-X86-NEXT:    retl
     %1 = fcmp oeq float %x, %y
@@ -1386,8 +1386,8 @@
 ; X64-NEXT:    flds {{[0-9]+}}(%rsp)
 ; X64-NEXT:    fucompi %st(1), %st
 ; X64-NEXT:    fstp %st(0)
-; X64-NEXT:    setp %cl
-; X64-NEXT:    setne %al
+; X64-NEXT:    setp %al
+; X64-NEXT:    setne %cl
 ; X64-NEXT:    orb %cl, %al
 ; X64-NEXT:    retq
 ;
@@ -1398,8 +1398,8 @@
 ; GISEL-X64-NEXT:    fxch %st(1)
 ; GISEL-X64-NEXT:    fucompi %st(1), %st
 ; GISEL-X64-NEXT:    fstp %st(0)
-; GISEL-X64-NEXT:    setne %cl
-; GISEL-X64-NEXT:    setp %al
+; GISEL-X64-NEXT:    setne %al
+; GISEL-X64-NEXT:    setp %cl
 ; GISEL-X64-NEXT:    orb %cl, %al
 ; GISEL-X64-NEXT:    retq
 ;
@@ -1411,8 +1411,8 @@
 ; X86-NEXT:    fnstsw %ax
 ; X86-NEXT:    ## kill: def $ah killed $ah killed $ax
 ; X86-NEXT:    sahf
-; X86-NEXT:    setp %cl
-; X86-NEXT:    setne %al
+; X86-NEXT:    setp %al
+; X86-NEXT:    setne %cl
 ; X86-NEXT:    orb %cl, %al
 ; X86-NEXT:    retl
 ;
@@ -1423,8 +1423,8 @@
 ; GISEL-X86-NEXT:    fxch %st(1)
 ; GISEL-X86-NEXT:    fucompi %st(1), %st
 ; GISEL-X86-NEXT:    fstp %st(0)
-; GISEL-X86-NEXT:    setne %cl
-; GISEL-X86-NEXT:    setp %al
+; GISEL-X86-NEXT:    setne %al
+; GISEL-X86-NEXT:    setp %cl
 ; GISEL-X86-NEXT:    orb %cl, %al
 ; GISEL-X86-NEXT:    retl
     %1 = fcmp une float %x, %y

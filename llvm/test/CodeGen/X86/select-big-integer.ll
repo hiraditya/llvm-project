@@ -18,17 +18,19 @@ define void @test_not_i128(ptr %p0, ptr %p1, i1 zeroext %a2, ptr %p3) nounwind {
 ; SSE2-NEXT:    pshufd {{.*#+}} xmm0 = xmm0[0,0,0,0]
 ; SSE2-NEXT:    movdqa (%rdi), %xmm1
 ; SSE2-NEXT:    pand %xmm0, %xmm1
-; SSE2-NEXT:    por (%rsi), %xmm0
-; SSE2-NEXT:    pcmpeqd %xmm2, %xmm2
-; SSE2-NEXT:    pxor %xmm0, %xmm2
-; SSE2-NEXT:    por %xmm1, %xmm2
-; SSE2-NEXT:    movdqa %xmm2, (%rcx)
+; SSE2-NEXT:    movdqa (%rsi), %xmm2
+; SSE2-NEXT:    por %xmm0, %xmm2
+; SSE2-NEXT:    pcmpeqd %xmm0, %xmm0
+; SSE2-NEXT:    pxor %xmm2, %xmm0
+; SSE2-NEXT:    por %xmm1, %xmm0
+; SSE2-NEXT:    movdqa %xmm0, (%rcx)
 ; SSE2-NEXT:    retq
 ;
 ; SSE4-LABEL: test_not_i128:
 ; SSE4:       # %bb.0:
-; SSE4-NEXT:    pcmpeqd %xmm1, %xmm1
-; SSE4-NEXT:    pxor (%rsi), %xmm1
+; SSE4-NEXT:    pcmpeqd %xmm0, %xmm0
+; SSE4-NEXT:    movdqa (%rsi), %xmm1
+; SSE4-NEXT:    pxor %xmm0, %xmm1
 ; SSE4-NEXT:    negl %edx
 ; SSE4-NEXT:    movd %edx, %xmm0
 ; SSE4-NEXT:    pshufd {{.*#+}} xmm0 = xmm0[0,0,0,0]
@@ -65,8 +67,8 @@ define void @test_not_i128(ptr %p0, ptr %p1, i1 zeroext %a2, ptr %p3) nounwind {
 ; AVX512F-NEXT:    vpxor (%rsi), %xmm1, %xmm1
 ; AVX512F-NEXT:    negb %dl
 ; AVX512F-NEXT:    kmovw %edx, %k1
-; AVX512F-NEXT:    vmovdqa32 %zmm0, %zmm1 {%k1}
-; AVX512F-NEXT:    vmovdqa %xmm1, (%rcx)
+; AVX512F-NEXT:    vpblendmd %zmm0, %zmm1, %zmm0 {%k1}
+; AVX512F-NEXT:    vmovdqa %xmm0, (%rcx)
 ; AVX512F-NEXT:    retq
 ;
 ; AVX512VL-LABEL: test_not_i128:
@@ -75,7 +77,7 @@ define void @test_not_i128(ptr %p0, ptr %p1, i1 zeroext %a2, ptr %p3) nounwind {
 ; AVX512VL-NEXT:    vpxor (%rsi), %xmm0, %xmm0
 ; AVX512VL-NEXT:    negb %dl
 ; AVX512VL-NEXT:    kmovd %edx, %k1
-; AVX512VL-NEXT:    vmovdqa32 (%rdi), %xmm0 {%k1}
+; AVX512VL-NEXT:    vpblendmd (%rdi), %xmm0, %xmm0 {%k1}
 ; AVX512VL-NEXT:    vmovdqa %xmm0, (%rcx)
 ; AVX512VL-NEXT:    retq
   %ld0 = load i128, ptr %p0
@@ -100,26 +102,28 @@ define void @test_not_i256(ptr %p0, ptr %p1, i1 zeroext %a2, ptr %p3) nounwind {
 ; SSE2-NEXT:    pxor %xmm2, %xmm4
 ; SSE2-NEXT:    pandn %xmm4, %xmm0
 ; SSE2-NEXT:    por %xmm3, %xmm0
-; SSE2-NEXT:    pand 16(%rdi), %xmm2
+; SSE2-NEXT:    movdqa 16(%rdi), %xmm3
+; SSE2-NEXT:    pand %xmm2, %xmm3
 ; SSE2-NEXT:    pandn %xmm4, %xmm1
-; SSE2-NEXT:    por %xmm2, %xmm1
+; SSE2-NEXT:    por %xmm3, %xmm1
 ; SSE2-NEXT:    movdqa %xmm1, 16(%rcx)
 ; SSE2-NEXT:    movdqa %xmm0, (%rcx)
 ; SSE2-NEXT:    retq
 ;
 ; SSE4-LABEL: test_not_i256:
 ; SSE4:       # %bb.0:
-; SSE4-NEXT:    pcmpeqd %xmm1, %xmm1
-; SSE4-NEXT:    movdqa 16(%rsi), %xmm2
-; SSE4-NEXT:    pxor %xmm1, %xmm2
-; SSE4-NEXT:    pxor (%rsi), %xmm1
+; SSE4-NEXT:    pcmpeqd %xmm0, %xmm0
+; SSE4-NEXT:    movdqa 16(%rsi), %xmm1
+; SSE4-NEXT:    pxor %xmm0, %xmm1
+; SSE4-NEXT:    movdqa (%rsi), %xmm2
+; SSE4-NEXT:    pxor %xmm0, %xmm2
 ; SSE4-NEXT:    negl %edx
 ; SSE4-NEXT:    movd %edx, %xmm0
 ; SSE4-NEXT:    pshufd {{.*#+}} xmm0 = xmm0[0,0,0,0]
-; SSE4-NEXT:    blendvps %xmm0, (%rdi), %xmm1
-; SSE4-NEXT:    blendvps %xmm0, 16(%rdi), %xmm2
-; SSE4-NEXT:    movaps %xmm2, 16(%rcx)
-; SSE4-NEXT:    movaps %xmm1, (%rcx)
+; SSE4-NEXT:    blendvps %xmm0, (%rdi), %xmm2
+; SSE4-NEXT:    blendvps %xmm0, 16(%rdi), %xmm1
+; SSE4-NEXT:    movaps %xmm1, 16(%rcx)
+; SSE4-NEXT:    movaps %xmm2, (%rcx)
 ; SSE4-NEXT:    retq
 ;
 ; AVX1-LABEL: test_not_i256:
@@ -160,8 +164,8 @@ define void @test_not_i256(ptr %p0, ptr %p1, i1 zeroext %a2, ptr %p3) nounwind {
 ; AVX512F-NEXT:    vpxor (%rsi), %ymm1, %ymm1
 ; AVX512F-NEXT:    negb %dl
 ; AVX512F-NEXT:    kmovw %edx, %k1
-; AVX512F-NEXT:    vmovdqa32 %zmm0, %zmm1 {%k1}
-; AVX512F-NEXT:    vmovdqu %ymm1, (%rcx)
+; AVX512F-NEXT:    vpblendmd %zmm0, %zmm1, %zmm0 {%k1}
+; AVX512F-NEXT:    vmovdqu %ymm0, (%rcx)
 ; AVX512F-NEXT:    retq
 ;
 ; AVX512VL-LABEL: test_not_i256:
@@ -170,7 +174,7 @@ define void @test_not_i256(ptr %p0, ptr %p1, i1 zeroext %a2, ptr %p3) nounwind {
 ; AVX512VL-NEXT:    vpxor (%rsi), %ymm0, %ymm0
 ; AVX512VL-NEXT:    negb %dl
 ; AVX512VL-NEXT:    kmovd %edx, %k1
-; AVX512VL-NEXT:    vmovdqu32 (%rdi), %ymm0 {%k1}
+; AVX512VL-NEXT:    vpblendmd (%rdi), %ymm0, %ymm0 {%k1}
 ; AVX512VL-NEXT:    vmovdqu %ymm0, (%rcx)
 ; AVX512VL-NEXT:    vzeroupper
 ; AVX512VL-NEXT:    retq
@@ -206,9 +210,10 @@ define void @test_not_i512(ptr %p0, ptr %p1, i1 zeroext %a2, ptr %p3) nounwind {
 ; SSE2-NEXT:    pand %xmm4, %xmm5
 ; SSE2-NEXT:    pandn %xmm6, %xmm2
 ; SSE2-NEXT:    por %xmm5, %xmm2
-; SSE2-NEXT:    pand (%rdi), %xmm4
+; SSE2-NEXT:    movdqa (%rdi), %xmm5
+; SSE2-NEXT:    pand %xmm4, %xmm5
 ; SSE2-NEXT:    pandn %xmm6, %xmm3
-; SSE2-NEXT:    por %xmm4, %xmm3
+; SSE2-NEXT:    por %xmm5, %xmm3
 ; SSE2-NEXT:    movdqa %xmm3, (%rcx)
 ; SSE2-NEXT:    movdqa %xmm2, 16(%rcx)
 ; SSE2-NEXT:    movdqa %xmm1, 32(%rcx)
@@ -217,25 +222,26 @@ define void @test_not_i512(ptr %p0, ptr %p1, i1 zeroext %a2, ptr %p3) nounwind {
 ;
 ; SSE4-LABEL: test_not_i512:
 ; SSE4:       # %bb.0:
-; SSE4-NEXT:    pcmpeqd %xmm1, %xmm1
-; SSE4-NEXT:    movdqa (%rsi), %xmm2
-; SSE4-NEXT:    pxor %xmm1, %xmm2
-; SSE4-NEXT:    movdqa 16(%rsi), %xmm3
-; SSE4-NEXT:    pxor %xmm1, %xmm3
-; SSE4-NEXT:    movdqa 32(%rsi), %xmm4
-; SSE4-NEXT:    pxor %xmm1, %xmm4
-; SSE4-NEXT:    pxor 48(%rsi), %xmm1
+; SSE4-NEXT:    pcmpeqd %xmm0, %xmm0
+; SSE4-NEXT:    movdqa (%rsi), %xmm1
+; SSE4-NEXT:    pxor %xmm0, %xmm1
+; SSE4-NEXT:    movdqa 16(%rsi), %xmm2
+; SSE4-NEXT:    pxor %xmm0, %xmm2
+; SSE4-NEXT:    movdqa 32(%rsi), %xmm3
+; SSE4-NEXT:    pxor %xmm0, %xmm3
+; SSE4-NEXT:    movdqa 48(%rsi), %xmm4
+; SSE4-NEXT:    pxor %xmm0, %xmm4
 ; SSE4-NEXT:    negl %edx
 ; SSE4-NEXT:    movd %edx, %xmm0
 ; SSE4-NEXT:    pshufd {{.*#+}} xmm0 = xmm0[0,0,0,0]
-; SSE4-NEXT:    blendvps %xmm0, 48(%rdi), %xmm1
-; SSE4-NEXT:    blendvps %xmm0, 32(%rdi), %xmm4
-; SSE4-NEXT:    blendvps %xmm0, 16(%rdi), %xmm3
-; SSE4-NEXT:    blendvps %xmm0, (%rdi), %xmm2
-; SSE4-NEXT:    movaps %xmm2, (%rcx)
-; SSE4-NEXT:    movaps %xmm3, 16(%rcx)
-; SSE4-NEXT:    movaps %xmm4, 32(%rcx)
-; SSE4-NEXT:    movaps %xmm1, 48(%rcx)
+; SSE4-NEXT:    blendvps %xmm0, 48(%rdi), %xmm4
+; SSE4-NEXT:    blendvps %xmm0, 32(%rdi), %xmm3
+; SSE4-NEXT:    blendvps %xmm0, 16(%rdi), %xmm2
+; SSE4-NEXT:    blendvps %xmm0, (%rdi), %xmm1
+; SSE4-NEXT:    movaps %xmm1, (%rcx)
+; SSE4-NEXT:    movaps %xmm2, 16(%rcx)
+; SSE4-NEXT:    movaps %xmm3, 32(%rcx)
+; SSE4-NEXT:    movaps %xmm4, 48(%rcx)
 ; SSE4-NEXT:    retq
 ;
 ; AVX1-LABEL: test_not_i512:
@@ -288,7 +294,7 @@ define void @test_not_i512(ptr %p0, ptr %p1, i1 zeroext %a2, ptr %p3) nounwind {
 ; AVX512F-NEXT:    vpxord (%rsi), %zmm0, %zmm0
 ; AVX512F-NEXT:    negl %edx
 ; AVX512F-NEXT:    kmovw %edx, %k1
-; AVX512F-NEXT:    vmovdqu32 (%rdi), %zmm0 {%k1}
+; AVX512F-NEXT:    vpblendmd (%rdi), %zmm0, %zmm0 {%k1}
 ; AVX512F-NEXT:    vmovdqu64 %zmm0, (%rcx)
 ; AVX512F-NEXT:    retq
 ;
@@ -298,7 +304,7 @@ define void @test_not_i512(ptr %p0, ptr %p1, i1 zeroext %a2, ptr %p3) nounwind {
 ; AVX512VL-NEXT:    vpxord (%rsi), %zmm0, %zmm0
 ; AVX512VL-NEXT:    negl %edx
 ; AVX512VL-NEXT:    kmovd %edx, %k1
-; AVX512VL-NEXT:    vmovdqu32 (%rdi), %zmm0 {%k1}
+; AVX512VL-NEXT:    vpblendmd (%rdi), %zmm0, %zmm0 {%k1}
 ; AVX512VL-NEXT:    vmovdqu64 %zmm0, (%rcx)
 ; AVX512VL-NEXT:    vzeroupper
 ; AVX512VL-NEXT:    retq
@@ -424,8 +430,8 @@ define void @test_neg_i512(ptr %p0, ptr %p1, i1 zeroext %a2, ptr %p3) nounwind {
 ; AVX512F-NEXT:    vpxorq %zmm2, %zmm0, %zmm1 {%k1}
 ; AVX512F-NEXT:    negl %edx
 ; AVX512F-NEXT:    kmovw %edx, %k1
-; AVX512F-NEXT:    vmovdqu32 (%rdi), %zmm1 {%k1}
-; AVX512F-NEXT:    vmovdqu64 %zmm1, (%rcx)
+; AVX512F-NEXT:    vpblendmd (%rdi), %zmm1, %zmm0 {%k1}
+; AVX512F-NEXT:    vmovdqu64 %zmm0, (%rcx)
 ; AVX512F-NEXT:    retq
 ;
 ; AVX512VL-LABEL: test_neg_i512:
@@ -444,8 +450,8 @@ define void @test_neg_i512(ptr %p0, ptr %p1, i1 zeroext %a2, ptr %p3) nounwind {
 ; AVX512VL-NEXT:    vpxorq %zmm2, %zmm0, %zmm1 {%k1}
 ; AVX512VL-NEXT:    negl %edx
 ; AVX512VL-NEXT:    kmovd %edx, %k1
-; AVX512VL-NEXT:    vmovdqu32 (%rdi), %zmm1 {%k1}
-; AVX512VL-NEXT:    vmovdqu64 %zmm1, (%rcx)
+; AVX512VL-NEXT:    vpblendmd (%rdi), %zmm1, %zmm0 {%k1}
+; AVX512VL-NEXT:    vmovdqu64 %zmm0, (%rcx)
 ; AVX512VL-NEXT:    vzeroupper
 ; AVX512VL-NEXT:    retq
   %ld0 = load i512, ptr %p0

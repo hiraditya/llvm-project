@@ -62,13 +62,13 @@ define i32 @test_ogt_q(i32 %a, i32 %b, x86_fp80 %f1, x86_fp80 %f2) #0 {
 ;
 ; X64-LABEL: test_ogt_q:
 ; X64:       # %bb.0:
-; X64-NEXT:    movl %edi, %eax
+; X64-NEXT:    movl %esi, %eax
 ; X64-NEXT:    fldt {{[0-9]+}}(%rsp)
 ; X64-NEXT:    fldt {{[0-9]+}}(%rsp)
 ; X64-NEXT:    fucompi %st(1), %st
 ; X64-NEXT:    fstp %st(0)
 ; X64-NEXT:    wait
-; X64-NEXT:    cmovbel %esi, %eax
+; X64-NEXT:    cmoval %edi, %eax
 ; X64-NEXT:    retq
   %cond = call i1 @llvm.experimental.constrained.fcmp.f80(
                                                x86_fp80 %f1, x86_fp80 %f2, metadata !"ogt",
@@ -99,13 +99,13 @@ define i32 @test_oge_q(i32 %a, i32 %b, x86_fp80 %f1, x86_fp80 %f2) #0 {
 ;
 ; X64-LABEL: test_oge_q:
 ; X64:       # %bb.0:
-; X64-NEXT:    movl %edi, %eax
+; X64-NEXT:    movl %esi, %eax
 ; X64-NEXT:    fldt {{[0-9]+}}(%rsp)
 ; X64-NEXT:    fldt {{[0-9]+}}(%rsp)
 ; X64-NEXT:    fucompi %st(1), %st
 ; X64-NEXT:    fstp %st(0)
 ; X64-NEXT:    wait
-; X64-NEXT:    cmovbl %esi, %eax
+; X64-NEXT:    cmovael %edi, %eax
 ; X64-NEXT:    retq
   %cond = call i1 @llvm.experimental.constrained.fcmp.f80(
                                                x86_fp80 %f1, x86_fp80 %f2, metadata !"oge",
@@ -136,13 +136,13 @@ define i32 @test_olt_q(i32 %a, i32 %b, x86_fp80 %f1, x86_fp80 %f2) #0 {
 ;
 ; X64-LABEL: test_olt_q:
 ; X64:       # %bb.0:
-; X64-NEXT:    movl %edi, %eax
+; X64-NEXT:    movl %esi, %eax
 ; X64-NEXT:    fldt {{[0-9]+}}(%rsp)
 ; X64-NEXT:    fldt {{[0-9]+}}(%rsp)
 ; X64-NEXT:    fucompi %st(1), %st
 ; X64-NEXT:    fstp %st(0)
 ; X64-NEXT:    wait
-; X64-NEXT:    cmovbel %esi, %eax
+; X64-NEXT:    cmoval %edi, %eax
 ; X64-NEXT:    retq
   %cond = call i1 @llvm.experimental.constrained.fcmp.f80(
                                                x86_fp80 %f1, x86_fp80 %f2, metadata !"olt",
@@ -173,13 +173,13 @@ define i32 @test_ole_q(i32 %a, i32 %b, x86_fp80 %f1, x86_fp80 %f2) #0 {
 ;
 ; X64-LABEL: test_ole_q:
 ; X64:       # %bb.0:
-; X64-NEXT:    movl %edi, %eax
+; X64-NEXT:    movl %esi, %eax
 ; X64-NEXT:    fldt {{[0-9]+}}(%rsp)
 ; X64-NEXT:    fldt {{[0-9]+}}(%rsp)
 ; X64-NEXT:    fucompi %st(1), %st
 ; X64-NEXT:    fstp %st(0)
 ; X64-NEXT:    wait
-; X64-NEXT:    cmovbl %esi, %eax
+; X64-NEXT:    cmovael %edi, %eax
 ; X64-NEXT:    retq
   %cond = call i1 @llvm.experimental.constrained.fcmp.f80(
                                                x86_fp80 %f1, x86_fp80 %f2, metadata !"ole",
@@ -210,13 +210,13 @@ define i32 @test_one_q(i32 %a, i32 %b, x86_fp80 %f1, x86_fp80 %f2) #0 {
 ;
 ; X64-LABEL: test_one_q:
 ; X64:       # %bb.0:
-; X64-NEXT:    movl %edi, %eax
+; X64-NEXT:    movl %esi, %eax
 ; X64-NEXT:    fldt {{[0-9]+}}(%rsp)
 ; X64-NEXT:    fldt {{[0-9]+}}(%rsp)
 ; X64-NEXT:    fucompi %st(1), %st
 ; X64-NEXT:    fstp %st(0)
 ; X64-NEXT:    wait
-; X64-NEXT:    cmovel %esi, %eax
+; X64-NEXT:    cmovnel %edi, %eax
 ; X64-NEXT:    retq
   %cond = call i1 @llvm.experimental.constrained.fcmp.f80(
                                                x86_fp80 %f1, x86_fp80 %f2, metadata !"one",
@@ -247,13 +247,13 @@ define i32 @test_ord_q(i32 %a, i32 %b, x86_fp80 %f1, x86_fp80 %f2) #0 {
 ;
 ; X64-LABEL: test_ord_q:
 ; X64:       # %bb.0:
-; X64-NEXT:    movl %edi, %eax
+; X64-NEXT:    movl %esi, %eax
 ; X64-NEXT:    fldt {{[0-9]+}}(%rsp)
 ; X64-NEXT:    fldt {{[0-9]+}}(%rsp)
 ; X64-NEXT:    fucompi %st(1), %st
 ; X64-NEXT:    fstp %st(0)
 ; X64-NEXT:    wait
-; X64-NEXT:    cmovpl %esi, %eax
+; X64-NEXT:    cmovnpl %edi, %eax
 ; X64-NEXT:    retq
   %cond = call i1 @llvm.experimental.constrained.fcmp.f80(
                                                x86_fp80 %f1, x86_fp80 %f2, metadata !"ord",
@@ -284,13 +284,13 @@ define i32 @test_ueq_q(i32 %a, i32 %b, x86_fp80 %f1, x86_fp80 %f2) #0 {
 ;
 ; X64-LABEL: test_ueq_q:
 ; X64:       # %bb.0:
-; X64-NEXT:    movl %edi, %eax
+; X64-NEXT:    movl %esi, %eax
 ; X64-NEXT:    fldt {{[0-9]+}}(%rsp)
 ; X64-NEXT:    fldt {{[0-9]+}}(%rsp)
 ; X64-NEXT:    fucompi %st(1), %st
 ; X64-NEXT:    fstp %st(0)
 ; X64-NEXT:    wait
-; X64-NEXT:    cmovnel %esi, %eax
+; X64-NEXT:    cmovel %edi, %eax
 ; X64-NEXT:    retq
   %cond = call i1 @llvm.experimental.constrained.fcmp.f80(
                                                x86_fp80 %f1, x86_fp80 %f2, metadata !"ueq",
@@ -321,13 +321,13 @@ define i32 @test_ugt_q(i32 %a, i32 %b, x86_fp80 %f1, x86_fp80 %f2) #0 {
 ;
 ; X64-LABEL: test_ugt_q:
 ; X64:       # %bb.0:
-; X64-NEXT:    movl %edi, %eax
+; X64-NEXT:    movl %esi, %eax
 ; X64-NEXT:    fldt {{[0-9]+}}(%rsp)
 ; X64-NEXT:    fldt {{[0-9]+}}(%rsp)
 ; X64-NEXT:    fucompi %st(1), %st
 ; X64-NEXT:    fstp %st(0)
 ; X64-NEXT:    wait
-; X64-NEXT:    cmovael %esi, %eax
+; X64-NEXT:    cmovbl %edi, %eax
 ; X64-NEXT:    retq
   %cond = call i1 @llvm.experimental.constrained.fcmp.f80(
                                                x86_fp80 %f1, x86_fp80 %f2, metadata !"ugt",
@@ -358,13 +358,13 @@ define i32 @test_uge_q(i32 %a, i32 %b, x86_fp80 %f1, x86_fp80 %f2) #0 {
 ;
 ; X64-LABEL: test_uge_q:
 ; X64:       # %bb.0:
-; X64-NEXT:    movl %edi, %eax
+; X64-NEXT:    movl %esi, %eax
 ; X64-NEXT:    fldt {{[0-9]+}}(%rsp)
 ; X64-NEXT:    fldt {{[0-9]+}}(%rsp)
 ; X64-NEXT:    fucompi %st(1), %st
 ; X64-NEXT:    fstp %st(0)
 ; X64-NEXT:    wait
-; X64-NEXT:    cmoval %esi, %eax
+; X64-NEXT:    cmovbel %edi, %eax
 ; X64-NEXT:    retq
   %cond = call i1 @llvm.experimental.constrained.fcmp.f80(
                                                x86_fp80 %f1, x86_fp80 %f2, metadata !"uge",
@@ -395,13 +395,13 @@ define i32 @test_ult_q(i32 %a, i32 %b, x86_fp80 %f1, x86_fp80 %f2) #0 {
 ;
 ; X64-LABEL: test_ult_q:
 ; X64:       # %bb.0:
-; X64-NEXT:    movl %edi, %eax
+; X64-NEXT:    movl %esi, %eax
 ; X64-NEXT:    fldt {{[0-9]+}}(%rsp)
 ; X64-NEXT:    fldt {{[0-9]+}}(%rsp)
 ; X64-NEXT:    fucompi %st(1), %st
 ; X64-NEXT:    fstp %st(0)
 ; X64-NEXT:    wait
-; X64-NEXT:    cmovael %esi, %eax
+; X64-NEXT:    cmovbl %edi, %eax
 ; X64-NEXT:    retq
   %cond = call i1 @llvm.experimental.constrained.fcmp.f80(
                                                x86_fp80 %f1, x86_fp80 %f2, metadata !"ult",
@@ -432,13 +432,13 @@ define i32 @test_ule_q(i32 %a, i32 %b, x86_fp80 %f1, x86_fp80 %f2) #0 {
 ;
 ; X64-LABEL: test_ule_q:
 ; X64:       # %bb.0:
-; X64-NEXT:    movl %edi, %eax
+; X64-NEXT:    movl %esi, %eax
 ; X64-NEXT:    fldt {{[0-9]+}}(%rsp)
 ; X64-NEXT:    fldt {{[0-9]+}}(%rsp)
 ; X64-NEXT:    fucompi %st(1), %st
 ; X64-NEXT:    fstp %st(0)
 ; X64-NEXT:    wait
-; X64-NEXT:    cmoval %esi, %eax
+; X64-NEXT:    cmovbel %edi, %eax
 ; X64-NEXT:    retq
   %cond = call i1 @llvm.experimental.constrained.fcmp.f80(
                                                x86_fp80 %f1, x86_fp80 %f2, metadata !"ule",
@@ -507,13 +507,13 @@ define i32 @test_uno_q(i32 %a, i32 %b, x86_fp80 %f1, x86_fp80 %f2) #0 {
 ;
 ; X64-LABEL: test_uno_q:
 ; X64:       # %bb.0:
-; X64-NEXT:    movl %edi, %eax
+; X64-NEXT:    movl %esi, %eax
 ; X64-NEXT:    fldt {{[0-9]+}}(%rsp)
 ; X64-NEXT:    fldt {{[0-9]+}}(%rsp)
 ; X64-NEXT:    fucompi %st(1), %st
 ; X64-NEXT:    fstp %st(0)
 ; X64-NEXT:    wait
-; X64-NEXT:    cmovnpl %esi, %eax
+; X64-NEXT:    cmovpl %edi, %eax
 ; X64-NEXT:    retq
   %cond = call i1 @llvm.experimental.constrained.fcmp.f80(
                                                x86_fp80 %f1, x86_fp80 %f2, metadata !"uno",
@@ -582,13 +582,13 @@ define i32 @test_ogt_s(i32 %a, i32 %b, x86_fp80 %f1, x86_fp80 %f2) #0 {
 ;
 ; X64-LABEL: test_ogt_s:
 ; X64:       # %bb.0:
-; X64-NEXT:    movl %edi, %eax
+; X64-NEXT:    movl %esi, %eax
 ; X64-NEXT:    fldt {{[0-9]+}}(%rsp)
 ; X64-NEXT:    fldt {{[0-9]+}}(%rsp)
 ; X64-NEXT:    fcompi %st(1), %st
 ; X64-NEXT:    fstp %st(0)
 ; X64-NEXT:    wait
-; X64-NEXT:    cmovbel %esi, %eax
+; X64-NEXT:    cmoval %edi, %eax
 ; X64-NEXT:    retq
   %cond = call i1 @llvm.experimental.constrained.fcmps.f80(
                                                x86_fp80 %f1, x86_fp80 %f2, metadata !"ogt",
@@ -619,13 +619,13 @@ define i32 @test_oge_s(i32 %a, i32 %b, x86_fp80 %f1, x86_fp80 %f2) #0 {
 ;
 ; X64-LABEL: test_oge_s:
 ; X64:       # %bb.0:
-; X64-NEXT:    movl %edi, %eax
+; X64-NEXT:    movl %esi, %eax
 ; X64-NEXT:    fldt {{[0-9]+}}(%rsp)
 ; X64-NEXT:    fldt {{[0-9]+}}(%rsp)
 ; X64-NEXT:    fcompi %st(1), %st
 ; X64-NEXT:    fstp %st(0)
 ; X64-NEXT:    wait
-; X64-NEXT:    cmovbl %esi, %eax
+; X64-NEXT:    cmovael %edi, %eax
 ; X64-NEXT:    retq
   %cond = call i1 @llvm.experimental.constrained.fcmps.f80(
                                                x86_fp80 %f1, x86_fp80 %f2, metadata !"oge",
@@ -656,13 +656,13 @@ define i32 @test_olt_s(i32 %a, i32 %b, x86_fp80 %f1, x86_fp80 %f2) #0 {
 ;
 ; X64-LABEL: test_olt_s:
 ; X64:       # %bb.0:
-; X64-NEXT:    movl %edi, %eax
+; X64-NEXT:    movl %esi, %eax
 ; X64-NEXT:    fldt {{[0-9]+}}(%rsp)
 ; X64-NEXT:    fldt {{[0-9]+}}(%rsp)
 ; X64-NEXT:    fcompi %st(1), %st
 ; X64-NEXT:    fstp %st(0)
 ; X64-NEXT:    wait
-; X64-NEXT:    cmovbel %esi, %eax
+; X64-NEXT:    cmoval %edi, %eax
 ; X64-NEXT:    retq
   %cond = call i1 @llvm.experimental.constrained.fcmps.f80(
                                                x86_fp80 %f1, x86_fp80 %f2, metadata !"olt",
@@ -693,13 +693,13 @@ define i32 @test_ole_s(i32 %a, i32 %b, x86_fp80 %f1, x86_fp80 %f2) #0 {
 ;
 ; X64-LABEL: test_ole_s:
 ; X64:       # %bb.0:
-; X64-NEXT:    movl %edi, %eax
+; X64-NEXT:    movl %esi, %eax
 ; X64-NEXT:    fldt {{[0-9]+}}(%rsp)
 ; X64-NEXT:    fldt {{[0-9]+}}(%rsp)
 ; X64-NEXT:    fcompi %st(1), %st
 ; X64-NEXT:    fstp %st(0)
 ; X64-NEXT:    wait
-; X64-NEXT:    cmovbl %esi, %eax
+; X64-NEXT:    cmovael %edi, %eax
 ; X64-NEXT:    retq
   %cond = call i1 @llvm.experimental.constrained.fcmps.f80(
                                                x86_fp80 %f1, x86_fp80 %f2, metadata !"ole",
@@ -730,13 +730,13 @@ define i32 @test_one_s(i32 %a, i32 %b, x86_fp80 %f1, x86_fp80 %f2) #0 {
 ;
 ; X64-LABEL: test_one_s:
 ; X64:       # %bb.0:
-; X64-NEXT:    movl %edi, %eax
+; X64-NEXT:    movl %esi, %eax
 ; X64-NEXT:    fldt {{[0-9]+}}(%rsp)
 ; X64-NEXT:    fldt {{[0-9]+}}(%rsp)
 ; X64-NEXT:    fcompi %st(1), %st
 ; X64-NEXT:    fstp %st(0)
 ; X64-NEXT:    wait
-; X64-NEXT:    cmovel %esi, %eax
+; X64-NEXT:    cmovnel %edi, %eax
 ; X64-NEXT:    retq
   %cond = call i1 @llvm.experimental.constrained.fcmps.f80(
                                                x86_fp80 %f1, x86_fp80 %f2, metadata !"one",
@@ -767,13 +767,13 @@ define i32 @test_ord_s(i32 %a, i32 %b, x86_fp80 %f1, x86_fp80 %f2) #0 {
 ;
 ; X64-LABEL: test_ord_s:
 ; X64:       # %bb.0:
-; X64-NEXT:    movl %edi, %eax
+; X64-NEXT:    movl %esi, %eax
 ; X64-NEXT:    fldt {{[0-9]+}}(%rsp)
 ; X64-NEXT:    fldt {{[0-9]+}}(%rsp)
 ; X64-NEXT:    fcompi %st(1), %st
 ; X64-NEXT:    fstp %st(0)
 ; X64-NEXT:    wait
-; X64-NEXT:    cmovpl %esi, %eax
+; X64-NEXT:    cmovnpl %edi, %eax
 ; X64-NEXT:    retq
   %cond = call i1 @llvm.experimental.constrained.fcmps.f80(
                                                x86_fp80 %f1, x86_fp80 %f2, metadata !"ord",
@@ -804,13 +804,13 @@ define i32 @test_ueq_s(i32 %a, i32 %b, x86_fp80 %f1, x86_fp80 %f2) #0 {
 ;
 ; X64-LABEL: test_ueq_s:
 ; X64:       # %bb.0:
-; X64-NEXT:    movl %edi, %eax
+; X64-NEXT:    movl %esi, %eax
 ; X64-NEXT:    fldt {{[0-9]+}}(%rsp)
 ; X64-NEXT:    fldt {{[0-9]+}}(%rsp)
 ; X64-NEXT:    fcompi %st(1), %st
 ; X64-NEXT:    fstp %st(0)
 ; X64-NEXT:    wait
-; X64-NEXT:    cmovnel %esi, %eax
+; X64-NEXT:    cmovel %edi, %eax
 ; X64-NEXT:    retq
   %cond = call i1 @llvm.experimental.constrained.fcmps.f80(
                                                x86_fp80 %f1, x86_fp80 %f2, metadata !"ueq",
@@ -841,13 +841,13 @@ define i32 @test_ugt_s(i32 %a, i32 %b, x86_fp80 %f1, x86_fp80 %f2) #0 {
 ;
 ; X64-LABEL: test_ugt_s:
 ; X64:       # %bb.0:
-; X64-NEXT:    movl %edi, %eax
+; X64-NEXT:    movl %esi, %eax
 ; X64-NEXT:    fldt {{[0-9]+}}(%rsp)
 ; X64-NEXT:    fldt {{[0-9]+}}(%rsp)
 ; X64-NEXT:    fcompi %st(1), %st
 ; X64-NEXT:    fstp %st(0)
 ; X64-NEXT:    wait
-; X64-NEXT:    cmovael %esi, %eax
+; X64-NEXT:    cmovbl %edi, %eax
 ; X64-NEXT:    retq
   %cond = call i1 @llvm.experimental.constrained.fcmps.f80(
                                                x86_fp80 %f1, x86_fp80 %f2, metadata !"ugt",
@@ -878,13 +878,13 @@ define i32 @test_uge_s(i32 %a, i32 %b, x86_fp80 %f1, x86_fp80 %f2) #0 {
 ;
 ; X64-LABEL: test_uge_s:
 ; X64:       # %bb.0:
-; X64-NEXT:    movl %edi, %eax
+; X64-NEXT:    movl %esi, %eax
 ; X64-NEXT:    fldt {{[0-9]+}}(%rsp)
 ; X64-NEXT:    fldt {{[0-9]+}}(%rsp)
 ; X64-NEXT:    fcompi %st(1), %st
 ; X64-NEXT:    fstp %st(0)
 ; X64-NEXT:    wait
-; X64-NEXT:    cmoval %esi, %eax
+; X64-NEXT:    cmovbel %edi, %eax
 ; X64-NEXT:    retq
   %cond = call i1 @llvm.experimental.constrained.fcmps.f80(
                                                x86_fp80 %f1, x86_fp80 %f2, metadata !"uge",
@@ -915,13 +915,13 @@ define i32 @test_ult_s(i32 %a, i32 %b, x86_fp80 %f1, x86_fp80 %f2) #0 {
 ;
 ; X64-LABEL: test_ult_s:
 ; X64:       # %bb.0:
-; X64-NEXT:    movl %edi, %eax
+; X64-NEXT:    movl %esi, %eax
 ; X64-NEXT:    fldt {{[0-9]+}}(%rsp)
 ; X64-NEXT:    fldt {{[0-9]+}}(%rsp)
 ; X64-NEXT:    fcompi %st(1), %st
 ; X64-NEXT:    fstp %st(0)
 ; X64-NEXT:    wait
-; X64-NEXT:    cmovael %esi, %eax
+; X64-NEXT:    cmovbl %edi, %eax
 ; X64-NEXT:    retq
   %cond = call i1 @llvm.experimental.constrained.fcmps.f80(
                                                x86_fp80 %f1, x86_fp80 %f2, metadata !"ult",
@@ -952,13 +952,13 @@ define i32 @test_ule_s(i32 %a, i32 %b, x86_fp80 %f1, x86_fp80 %f2) #0 {
 ;
 ; X64-LABEL: test_ule_s:
 ; X64:       # %bb.0:
-; X64-NEXT:    movl %edi, %eax
+; X64-NEXT:    movl %esi, %eax
 ; X64-NEXT:    fldt {{[0-9]+}}(%rsp)
 ; X64-NEXT:    fldt {{[0-9]+}}(%rsp)
 ; X64-NEXT:    fcompi %st(1), %st
 ; X64-NEXT:    fstp %st(0)
 ; X64-NEXT:    wait
-; X64-NEXT:    cmoval %esi, %eax
+; X64-NEXT:    cmovbel %edi, %eax
 ; X64-NEXT:    retq
   %cond = call i1 @llvm.experimental.constrained.fcmps.f80(
                                                x86_fp80 %f1, x86_fp80 %f2, metadata !"ule",
@@ -1027,13 +1027,13 @@ define i32 @test_uno_s(i32 %a, i32 %b, x86_fp80 %f1, x86_fp80 %f2) #0 {
 ;
 ; X64-LABEL: test_uno_s:
 ; X64:       # %bb.0:
-; X64-NEXT:    movl %edi, %eax
+; X64-NEXT:    movl %esi, %eax
 ; X64-NEXT:    fldt {{[0-9]+}}(%rsp)
 ; X64-NEXT:    fldt {{[0-9]+}}(%rsp)
 ; X64-NEXT:    fcompi %st(1), %st
 ; X64-NEXT:    fstp %st(0)
 ; X64-NEXT:    wait
-; X64-NEXT:    cmovnpl %esi, %eax
+; X64-NEXT:    cmovpl %edi, %eax
 ; X64-NEXT:    retq
   %cond = call i1 @llvm.experimental.constrained.fcmps.f80(
                                                x86_fp80 %f1, x86_fp80 %f2, metadata !"uno",

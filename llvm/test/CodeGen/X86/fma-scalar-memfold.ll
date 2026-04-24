@@ -19,18 +19,22 @@ define void @fmadd_aab_ss(ptr %a, ptr %b) {
 ; AVX2:       # %bb.0:
 ; AVX2-NEXT:    vmovss {{.*#+}} xmm0 = mem[0],zero,zero,zero
 ; AVX2-NEXT:    # encoding: [0xc5,0xfa,0x10,0x07]
-; AVX2-NEXT:    vfmadd213ss (%rsi), %xmm0, %xmm0 # encoding: [0xc4,0xe2,0x79,0xa9,0x06]
-; AVX2-NEXT:    # xmm0 = (xmm0 * xmm0) + mem
-; AVX2-NEXT:    vmovss %xmm0, (%rdi) # encoding: [0xc5,0xfa,0x11,0x07]
+; AVX2-NEXT:    vmovss {{.*#+}} xmm1 = mem[0],zero,zero,zero
+; AVX2-NEXT:    # encoding: [0xc5,0xfa,0x10,0x0e]
+; AVX2-NEXT:    vfmadd231ss %xmm0, %xmm0, %xmm1 # encoding: [0xc4,0xe2,0x79,0xb9,0xc8]
+; AVX2-NEXT:    # xmm1 = (xmm0 * xmm0) + xmm1
+; AVX2-NEXT:    vmovss %xmm1, (%rdi) # encoding: [0xc5,0xfa,0x11,0x0f]
 ; AVX2-NEXT:    retq # encoding: [0xc3]
 ;
 ; AVX512-LABEL: fmadd_aab_ss:
 ; AVX512:       # %bb.0:
 ; AVX512-NEXT:    vmovss {{.*#+}} xmm0 = mem[0],zero,zero,zero
 ; AVX512-NEXT:    # EVEX TO VEX Compression encoding: [0xc5,0xfa,0x10,0x07]
-; AVX512-NEXT:    vfmadd213ss (%rsi), %xmm0, %xmm0 # EVEX TO VEX Compression encoding: [0xc4,0xe2,0x79,0xa9,0x06]
-; AVX512-NEXT:    # xmm0 = (xmm0 * xmm0) + mem
-; AVX512-NEXT:    vmovss %xmm0, (%rdi) # EVEX TO VEX Compression encoding: [0xc5,0xfa,0x11,0x07]
+; AVX512-NEXT:    vmovss {{.*#+}} xmm1 = mem[0],zero,zero,zero
+; AVX512-NEXT:    # EVEX TO VEX Compression encoding: [0xc5,0xfa,0x10,0x0e]
+; AVX512-NEXT:    vfmadd231ss %xmm0, %xmm0, %xmm1 # EVEX TO VEX Compression encoding: [0xc4,0xe2,0x79,0xb9,0xc8]
+; AVX512-NEXT:    # xmm1 = (xmm0 * xmm0) + xmm1
+; AVX512-NEXT:    vmovss %xmm1, (%rdi) # EVEX TO VEX Compression encoding: [0xc5,0xfa,0x11,0x0f]
 ; AVX512-NEXT:    retq # encoding: [0xc3]
   %a.val = load float, ptr %a
   %av0 = insertelement <4 x float> undef, float %a.val, i32 0
@@ -56,18 +60,22 @@ define void @fmadd_aba_ss(ptr %a, ptr %b) {
 ; AVX2:       # %bb.0:
 ; AVX2-NEXT:    vmovss {{.*#+}} xmm0 = mem[0],zero,zero,zero
 ; AVX2-NEXT:    # encoding: [0xc5,0xfa,0x10,0x07]
-; AVX2-NEXT:    vfmadd231ss (%rsi), %xmm0, %xmm0 # encoding: [0xc4,0xe2,0x79,0xb9,0x06]
-; AVX2-NEXT:    # xmm0 = (xmm0 * mem) + xmm0
-; AVX2-NEXT:    vmovss %xmm0, (%rdi) # encoding: [0xc5,0xfa,0x11,0x07]
+; AVX2-NEXT:    vmovss {{.*#+}} xmm1 = mem[0],zero,zero,zero
+; AVX2-NEXT:    # encoding: [0xc5,0xfa,0x10,0x0e]
+; AVX2-NEXT:    vfmadd213ss %xmm0, %xmm0, %xmm1 # encoding: [0xc4,0xe2,0x79,0xa9,0xc8]
+; AVX2-NEXT:    # xmm1 = (xmm0 * xmm1) + xmm0
+; AVX2-NEXT:    vmovss %xmm1, (%rdi) # encoding: [0xc5,0xfa,0x11,0x0f]
 ; AVX2-NEXT:    retq # encoding: [0xc3]
 ;
 ; AVX512-LABEL: fmadd_aba_ss:
 ; AVX512:       # %bb.0:
 ; AVX512-NEXT:    vmovss {{.*#+}} xmm0 = mem[0],zero,zero,zero
 ; AVX512-NEXT:    # EVEX TO VEX Compression encoding: [0xc5,0xfa,0x10,0x07]
-; AVX512-NEXT:    vfmadd231ss (%rsi), %xmm0, %xmm0 # EVEX TO VEX Compression encoding: [0xc4,0xe2,0x79,0xb9,0x06]
-; AVX512-NEXT:    # xmm0 = (xmm0 * mem) + xmm0
-; AVX512-NEXT:    vmovss %xmm0, (%rdi) # EVEX TO VEX Compression encoding: [0xc5,0xfa,0x11,0x07]
+; AVX512-NEXT:    vmovss {{.*#+}} xmm1 = mem[0],zero,zero,zero
+; AVX512-NEXT:    # EVEX TO VEX Compression encoding: [0xc5,0xfa,0x10,0x0e]
+; AVX512-NEXT:    vfmadd213ss %xmm0, %xmm0, %xmm1 # EVEX TO VEX Compression encoding: [0xc4,0xe2,0x79,0xa9,0xc8]
+; AVX512-NEXT:    # xmm1 = (xmm0 * xmm1) + xmm0
+; AVX512-NEXT:    vmovss %xmm1, (%rdi) # EVEX TO VEX Compression encoding: [0xc5,0xfa,0x11,0x0f]
 ; AVX512-NEXT:    retq # encoding: [0xc3]
   %a.val = load float, ptr %a
   %av0 = insertelement <4 x float> undef, float %a.val, i32 0
@@ -93,18 +101,22 @@ define void @fmsub_aab_ss(ptr %a, ptr %b) {
 ; AVX2:       # %bb.0:
 ; AVX2-NEXT:    vmovss {{.*#+}} xmm0 = mem[0],zero,zero,zero
 ; AVX2-NEXT:    # encoding: [0xc5,0xfa,0x10,0x07]
-; AVX2-NEXT:    vfmsub213ss (%rsi), %xmm0, %xmm0 # encoding: [0xc4,0xe2,0x79,0xab,0x06]
-; AVX2-NEXT:    # xmm0 = (xmm0 * xmm0) - mem
-; AVX2-NEXT:    vmovss %xmm0, (%rdi) # encoding: [0xc5,0xfa,0x11,0x07]
+; AVX2-NEXT:    vmovss {{.*#+}} xmm1 = mem[0],zero,zero,zero
+; AVX2-NEXT:    # encoding: [0xc5,0xfa,0x10,0x0e]
+; AVX2-NEXT:    vfmsub231ss %xmm0, %xmm0, %xmm1 # encoding: [0xc4,0xe2,0x79,0xbb,0xc8]
+; AVX2-NEXT:    # xmm1 = (xmm0 * xmm0) - xmm1
+; AVX2-NEXT:    vmovss %xmm1, (%rdi) # encoding: [0xc5,0xfa,0x11,0x0f]
 ; AVX2-NEXT:    retq # encoding: [0xc3]
 ;
 ; AVX512-LABEL: fmsub_aab_ss:
 ; AVX512:       # %bb.0:
 ; AVX512-NEXT:    vmovss {{.*#+}} xmm0 = mem[0],zero,zero,zero
 ; AVX512-NEXT:    # EVEX TO VEX Compression encoding: [0xc5,0xfa,0x10,0x07]
-; AVX512-NEXT:    vfmsub213ss (%rsi), %xmm0, %xmm0 # EVEX TO VEX Compression encoding: [0xc4,0xe2,0x79,0xab,0x06]
-; AVX512-NEXT:    # xmm0 = (xmm0 * xmm0) - mem
-; AVX512-NEXT:    vmovss %xmm0, (%rdi) # EVEX TO VEX Compression encoding: [0xc5,0xfa,0x11,0x07]
+; AVX512-NEXT:    vmovss {{.*#+}} xmm1 = mem[0],zero,zero,zero
+; AVX512-NEXT:    # EVEX TO VEX Compression encoding: [0xc5,0xfa,0x10,0x0e]
+; AVX512-NEXT:    vfmsub231ss %xmm0, %xmm0, %xmm1 # EVEX TO VEX Compression encoding: [0xc4,0xe2,0x79,0xbb,0xc8]
+; AVX512-NEXT:    # xmm1 = (xmm0 * xmm0) - xmm1
+; AVX512-NEXT:    vmovss %xmm1, (%rdi) # EVEX TO VEX Compression encoding: [0xc5,0xfa,0x11,0x0f]
 ; AVX512-NEXT:    retq # encoding: [0xc3]
   %a.val = load float, ptr %a
   %av0 = insertelement <4 x float> undef, float %a.val, i32 0
@@ -130,18 +142,22 @@ define void @fmsub_aba_ss(ptr %a, ptr %b) {
 ; AVX2:       # %bb.0:
 ; AVX2-NEXT:    vmovss {{.*#+}} xmm0 = mem[0],zero,zero,zero
 ; AVX2-NEXT:    # encoding: [0xc5,0xfa,0x10,0x07]
-; AVX2-NEXT:    vfmsub231ss (%rsi), %xmm0, %xmm0 # encoding: [0xc4,0xe2,0x79,0xbb,0x06]
-; AVX2-NEXT:    # xmm0 = (xmm0 * mem) - xmm0
-; AVX2-NEXT:    vmovss %xmm0, (%rdi) # encoding: [0xc5,0xfa,0x11,0x07]
+; AVX2-NEXT:    vmovss {{.*#+}} xmm1 = mem[0],zero,zero,zero
+; AVX2-NEXT:    # encoding: [0xc5,0xfa,0x10,0x0e]
+; AVX2-NEXT:    vfmsub213ss %xmm0, %xmm0, %xmm1 # encoding: [0xc4,0xe2,0x79,0xab,0xc8]
+; AVX2-NEXT:    # xmm1 = (xmm0 * xmm1) - xmm0
+; AVX2-NEXT:    vmovss %xmm1, (%rdi) # encoding: [0xc5,0xfa,0x11,0x0f]
 ; AVX2-NEXT:    retq # encoding: [0xc3]
 ;
 ; AVX512-LABEL: fmsub_aba_ss:
 ; AVX512:       # %bb.0:
 ; AVX512-NEXT:    vmovss {{.*#+}} xmm0 = mem[0],zero,zero,zero
 ; AVX512-NEXT:    # EVEX TO VEX Compression encoding: [0xc5,0xfa,0x10,0x07]
-; AVX512-NEXT:    vfmsub231ss (%rsi), %xmm0, %xmm0 # EVEX TO VEX Compression encoding: [0xc4,0xe2,0x79,0xbb,0x06]
-; AVX512-NEXT:    # xmm0 = (xmm0 * mem) - xmm0
-; AVX512-NEXT:    vmovss %xmm0, (%rdi) # EVEX TO VEX Compression encoding: [0xc5,0xfa,0x11,0x07]
+; AVX512-NEXT:    vmovss {{.*#+}} xmm1 = mem[0],zero,zero,zero
+; AVX512-NEXT:    # EVEX TO VEX Compression encoding: [0xc5,0xfa,0x10,0x0e]
+; AVX512-NEXT:    vfmsub213ss %xmm0, %xmm0, %xmm1 # EVEX TO VEX Compression encoding: [0xc4,0xe2,0x79,0xab,0xc8]
+; AVX512-NEXT:    # xmm1 = (xmm0 * xmm1) - xmm0
+; AVX512-NEXT:    vmovss %xmm1, (%rdi) # EVEX TO VEX Compression encoding: [0xc5,0xfa,0x11,0x0f]
 ; AVX512-NEXT:    retq # encoding: [0xc3]
   %a.val = load float, ptr %a
   %av0 = insertelement <4 x float> undef, float %a.val, i32 0
@@ -167,18 +183,22 @@ define void @fnmadd_aab_ss(ptr %a, ptr %b) {
 ; AVX2:       # %bb.0:
 ; AVX2-NEXT:    vmovss {{.*#+}} xmm0 = mem[0],zero,zero,zero
 ; AVX2-NEXT:    # encoding: [0xc5,0xfa,0x10,0x07]
-; AVX2-NEXT:    vfnmadd213ss (%rsi), %xmm0, %xmm0 # encoding: [0xc4,0xe2,0x79,0xad,0x06]
-; AVX2-NEXT:    # xmm0 = -(xmm0 * xmm0) + mem
-; AVX2-NEXT:    vmovss %xmm0, (%rdi) # encoding: [0xc5,0xfa,0x11,0x07]
+; AVX2-NEXT:    vmovss {{.*#+}} xmm1 = mem[0],zero,zero,zero
+; AVX2-NEXT:    # encoding: [0xc5,0xfa,0x10,0x0e]
+; AVX2-NEXT:    vfnmadd231ss %xmm0, %xmm0, %xmm1 # encoding: [0xc4,0xe2,0x79,0xbd,0xc8]
+; AVX2-NEXT:    # xmm1 = -(xmm0 * xmm0) + xmm1
+; AVX2-NEXT:    vmovss %xmm1, (%rdi) # encoding: [0xc5,0xfa,0x11,0x0f]
 ; AVX2-NEXT:    retq # encoding: [0xc3]
 ;
 ; AVX512-LABEL: fnmadd_aab_ss:
 ; AVX512:       # %bb.0:
 ; AVX512-NEXT:    vmovss {{.*#+}} xmm0 = mem[0],zero,zero,zero
 ; AVX512-NEXT:    # EVEX TO VEX Compression encoding: [0xc5,0xfa,0x10,0x07]
-; AVX512-NEXT:    vfnmadd213ss (%rsi), %xmm0, %xmm0 # EVEX TO VEX Compression encoding: [0xc4,0xe2,0x79,0xad,0x06]
-; AVX512-NEXT:    # xmm0 = -(xmm0 * xmm0) + mem
-; AVX512-NEXT:    vmovss %xmm0, (%rdi) # EVEX TO VEX Compression encoding: [0xc5,0xfa,0x11,0x07]
+; AVX512-NEXT:    vmovss {{.*#+}} xmm1 = mem[0],zero,zero,zero
+; AVX512-NEXT:    # EVEX TO VEX Compression encoding: [0xc5,0xfa,0x10,0x0e]
+; AVX512-NEXT:    vfnmadd231ss %xmm0, %xmm0, %xmm1 # EVEX TO VEX Compression encoding: [0xc4,0xe2,0x79,0xbd,0xc8]
+; AVX512-NEXT:    # xmm1 = -(xmm0 * xmm0) + xmm1
+; AVX512-NEXT:    vmovss %xmm1, (%rdi) # EVEX TO VEX Compression encoding: [0xc5,0xfa,0x11,0x0f]
 ; AVX512-NEXT:    retq # encoding: [0xc3]
   %a.val = load float, ptr %a
   %av0 = insertelement <4 x float> undef, float %a.val, i32 0
@@ -204,18 +224,22 @@ define void @fnmadd_aba_ss(ptr %a, ptr %b) {
 ; AVX2:       # %bb.0:
 ; AVX2-NEXT:    vmovss {{.*#+}} xmm0 = mem[0],zero,zero,zero
 ; AVX2-NEXT:    # encoding: [0xc5,0xfa,0x10,0x07]
-; AVX2-NEXT:    vfnmadd231ss (%rsi), %xmm0, %xmm0 # encoding: [0xc4,0xe2,0x79,0xbd,0x06]
-; AVX2-NEXT:    # xmm0 = -(xmm0 * mem) + xmm0
-; AVX2-NEXT:    vmovss %xmm0, (%rdi) # encoding: [0xc5,0xfa,0x11,0x07]
+; AVX2-NEXT:    vmovss {{.*#+}} xmm1 = mem[0],zero,zero,zero
+; AVX2-NEXT:    # encoding: [0xc5,0xfa,0x10,0x0e]
+; AVX2-NEXT:    vfnmadd213ss %xmm0, %xmm0, %xmm1 # encoding: [0xc4,0xe2,0x79,0xad,0xc8]
+; AVX2-NEXT:    # xmm1 = -(xmm0 * xmm1) + xmm0
+; AVX2-NEXT:    vmovss %xmm1, (%rdi) # encoding: [0xc5,0xfa,0x11,0x0f]
 ; AVX2-NEXT:    retq # encoding: [0xc3]
 ;
 ; AVX512-LABEL: fnmadd_aba_ss:
 ; AVX512:       # %bb.0:
 ; AVX512-NEXT:    vmovss {{.*#+}} xmm0 = mem[0],zero,zero,zero
 ; AVX512-NEXT:    # EVEX TO VEX Compression encoding: [0xc5,0xfa,0x10,0x07]
-; AVX512-NEXT:    vfnmadd231ss (%rsi), %xmm0, %xmm0 # EVEX TO VEX Compression encoding: [0xc4,0xe2,0x79,0xbd,0x06]
-; AVX512-NEXT:    # xmm0 = -(xmm0 * mem) + xmm0
-; AVX512-NEXT:    vmovss %xmm0, (%rdi) # EVEX TO VEX Compression encoding: [0xc5,0xfa,0x11,0x07]
+; AVX512-NEXT:    vmovss {{.*#+}} xmm1 = mem[0],zero,zero,zero
+; AVX512-NEXT:    # EVEX TO VEX Compression encoding: [0xc5,0xfa,0x10,0x0e]
+; AVX512-NEXT:    vfnmadd213ss %xmm0, %xmm0, %xmm1 # EVEX TO VEX Compression encoding: [0xc4,0xe2,0x79,0xad,0xc8]
+; AVX512-NEXT:    # xmm1 = -(xmm0 * xmm1) + xmm0
+; AVX512-NEXT:    vmovss %xmm1, (%rdi) # EVEX TO VEX Compression encoding: [0xc5,0xfa,0x11,0x0f]
 ; AVX512-NEXT:    retq # encoding: [0xc3]
   %a.val = load float, ptr %a
   %av0 = insertelement <4 x float> undef, float %a.val, i32 0
@@ -241,18 +265,22 @@ define void @fnmsub_aab_ss(ptr %a, ptr %b) {
 ; AVX2:       # %bb.0:
 ; AVX2-NEXT:    vmovss {{.*#+}} xmm0 = mem[0],zero,zero,zero
 ; AVX2-NEXT:    # encoding: [0xc5,0xfa,0x10,0x07]
-; AVX2-NEXT:    vfnmsub213ss (%rsi), %xmm0, %xmm0 # encoding: [0xc4,0xe2,0x79,0xaf,0x06]
-; AVX2-NEXT:    # xmm0 = -(xmm0 * xmm0) - mem
-; AVX2-NEXT:    vmovss %xmm0, (%rdi) # encoding: [0xc5,0xfa,0x11,0x07]
+; AVX2-NEXT:    vmovss {{.*#+}} xmm1 = mem[0],zero,zero,zero
+; AVX2-NEXT:    # encoding: [0xc5,0xfa,0x10,0x0e]
+; AVX2-NEXT:    vfnmsub231ss %xmm0, %xmm0, %xmm1 # encoding: [0xc4,0xe2,0x79,0xbf,0xc8]
+; AVX2-NEXT:    # xmm1 = -(xmm0 * xmm0) - xmm1
+; AVX2-NEXT:    vmovss %xmm1, (%rdi) # encoding: [0xc5,0xfa,0x11,0x0f]
 ; AVX2-NEXT:    retq # encoding: [0xc3]
 ;
 ; AVX512-LABEL: fnmsub_aab_ss:
 ; AVX512:       # %bb.0:
 ; AVX512-NEXT:    vmovss {{.*#+}} xmm0 = mem[0],zero,zero,zero
 ; AVX512-NEXT:    # EVEX TO VEX Compression encoding: [0xc5,0xfa,0x10,0x07]
-; AVX512-NEXT:    vfnmsub213ss (%rsi), %xmm0, %xmm0 # EVEX TO VEX Compression encoding: [0xc4,0xe2,0x79,0xaf,0x06]
-; AVX512-NEXT:    # xmm0 = -(xmm0 * xmm0) - mem
-; AVX512-NEXT:    vmovss %xmm0, (%rdi) # EVEX TO VEX Compression encoding: [0xc5,0xfa,0x11,0x07]
+; AVX512-NEXT:    vmovss {{.*#+}} xmm1 = mem[0],zero,zero,zero
+; AVX512-NEXT:    # EVEX TO VEX Compression encoding: [0xc5,0xfa,0x10,0x0e]
+; AVX512-NEXT:    vfnmsub231ss %xmm0, %xmm0, %xmm1 # EVEX TO VEX Compression encoding: [0xc4,0xe2,0x79,0xbf,0xc8]
+; AVX512-NEXT:    # xmm1 = -(xmm0 * xmm0) - xmm1
+; AVX512-NEXT:    vmovss %xmm1, (%rdi) # EVEX TO VEX Compression encoding: [0xc5,0xfa,0x11,0x0f]
 ; AVX512-NEXT:    retq # encoding: [0xc3]
   %a.val = load float, ptr %a
   %av0 = insertelement <4 x float> undef, float %a.val, i32 0
@@ -278,18 +306,22 @@ define void @fnmsub_aba_ss(ptr %a, ptr %b) {
 ; AVX2:       # %bb.0:
 ; AVX2-NEXT:    vmovss {{.*#+}} xmm0 = mem[0],zero,zero,zero
 ; AVX2-NEXT:    # encoding: [0xc5,0xfa,0x10,0x07]
-; AVX2-NEXT:    vfnmsub231ss (%rsi), %xmm0, %xmm0 # encoding: [0xc4,0xe2,0x79,0xbf,0x06]
-; AVX2-NEXT:    # xmm0 = -(xmm0 * mem) - xmm0
-; AVX2-NEXT:    vmovss %xmm0, (%rdi) # encoding: [0xc5,0xfa,0x11,0x07]
+; AVX2-NEXT:    vmovss {{.*#+}} xmm1 = mem[0],zero,zero,zero
+; AVX2-NEXT:    # encoding: [0xc5,0xfa,0x10,0x0e]
+; AVX2-NEXT:    vfnmsub213ss %xmm0, %xmm0, %xmm1 # encoding: [0xc4,0xe2,0x79,0xaf,0xc8]
+; AVX2-NEXT:    # xmm1 = -(xmm0 * xmm1) - xmm0
+; AVX2-NEXT:    vmovss %xmm1, (%rdi) # encoding: [0xc5,0xfa,0x11,0x0f]
 ; AVX2-NEXT:    retq # encoding: [0xc3]
 ;
 ; AVX512-LABEL: fnmsub_aba_ss:
 ; AVX512:       # %bb.0:
 ; AVX512-NEXT:    vmovss {{.*#+}} xmm0 = mem[0],zero,zero,zero
 ; AVX512-NEXT:    # EVEX TO VEX Compression encoding: [0xc5,0xfa,0x10,0x07]
-; AVX512-NEXT:    vfnmsub231ss (%rsi), %xmm0, %xmm0 # EVEX TO VEX Compression encoding: [0xc4,0xe2,0x79,0xbf,0x06]
-; AVX512-NEXT:    # xmm0 = -(xmm0 * mem) - xmm0
-; AVX512-NEXT:    vmovss %xmm0, (%rdi) # EVEX TO VEX Compression encoding: [0xc5,0xfa,0x11,0x07]
+; AVX512-NEXT:    vmovss {{.*#+}} xmm1 = mem[0],zero,zero,zero
+; AVX512-NEXT:    # EVEX TO VEX Compression encoding: [0xc5,0xfa,0x10,0x0e]
+; AVX512-NEXT:    vfnmsub213ss %xmm0, %xmm0, %xmm1 # EVEX TO VEX Compression encoding: [0xc4,0xe2,0x79,0xaf,0xc8]
+; AVX512-NEXT:    # xmm1 = -(xmm0 * xmm1) - xmm0
+; AVX512-NEXT:    vmovss %xmm1, (%rdi) # EVEX TO VEX Compression encoding: [0xc5,0xfa,0x11,0x0f]
 ; AVX512-NEXT:    retq # encoding: [0xc3]
   %a.val = load float, ptr %a
   %av0 = insertelement <4 x float> undef, float %a.val, i32 0
@@ -315,18 +347,22 @@ define void @fmadd_aab_sd(ptr %a, ptr %b) {
 ; AVX2:       # %bb.0:
 ; AVX2-NEXT:    vmovsd {{.*#+}} xmm0 = mem[0],zero
 ; AVX2-NEXT:    # encoding: [0xc5,0xfb,0x10,0x07]
-; AVX2-NEXT:    vfmadd213sd (%rsi), %xmm0, %xmm0 # encoding: [0xc4,0xe2,0xf9,0xa9,0x06]
-; AVX2-NEXT:    # xmm0 = (xmm0 * xmm0) + mem
-; AVX2-NEXT:    vmovsd %xmm0, (%rdi) # encoding: [0xc5,0xfb,0x11,0x07]
+; AVX2-NEXT:    vmovsd {{.*#+}} xmm1 = mem[0],zero
+; AVX2-NEXT:    # encoding: [0xc5,0xfb,0x10,0x0e]
+; AVX2-NEXT:    vfmadd231sd %xmm0, %xmm0, %xmm1 # encoding: [0xc4,0xe2,0xf9,0xb9,0xc8]
+; AVX2-NEXT:    # xmm1 = (xmm0 * xmm0) + xmm1
+; AVX2-NEXT:    vmovsd %xmm1, (%rdi) # encoding: [0xc5,0xfb,0x11,0x0f]
 ; AVX2-NEXT:    retq # encoding: [0xc3]
 ;
 ; AVX512-LABEL: fmadd_aab_sd:
 ; AVX512:       # %bb.0:
 ; AVX512-NEXT:    vmovsd {{.*#+}} xmm0 = mem[0],zero
 ; AVX512-NEXT:    # EVEX TO VEX Compression encoding: [0xc5,0xfb,0x10,0x07]
-; AVX512-NEXT:    vfmadd213sd (%rsi), %xmm0, %xmm0 # EVEX TO VEX Compression encoding: [0xc4,0xe2,0xf9,0xa9,0x06]
-; AVX512-NEXT:    # xmm0 = (xmm0 * xmm0) + mem
-; AVX512-NEXT:    vmovsd %xmm0, (%rdi) # EVEX TO VEX Compression encoding: [0xc5,0xfb,0x11,0x07]
+; AVX512-NEXT:    vmovsd {{.*#+}} xmm1 = mem[0],zero
+; AVX512-NEXT:    # EVEX TO VEX Compression encoding: [0xc5,0xfb,0x10,0x0e]
+; AVX512-NEXT:    vfmadd231sd %xmm0, %xmm0, %xmm1 # EVEX TO VEX Compression encoding: [0xc4,0xe2,0xf9,0xb9,0xc8]
+; AVX512-NEXT:    # xmm1 = (xmm0 * xmm0) + xmm1
+; AVX512-NEXT:    vmovsd %xmm1, (%rdi) # EVEX TO VEX Compression encoding: [0xc5,0xfb,0x11,0x0f]
 ; AVX512-NEXT:    retq # encoding: [0xc3]
   %a.val = load double, ptr %a
   %av0 = insertelement <2 x double> undef, double %a.val, i32 0
@@ -348,18 +384,22 @@ define void @fmadd_aba_sd(ptr %a, ptr %b) {
 ; AVX2:       # %bb.0:
 ; AVX2-NEXT:    vmovsd {{.*#+}} xmm0 = mem[0],zero
 ; AVX2-NEXT:    # encoding: [0xc5,0xfb,0x10,0x07]
-; AVX2-NEXT:    vfmadd231sd (%rsi), %xmm0, %xmm0 # encoding: [0xc4,0xe2,0xf9,0xb9,0x06]
-; AVX2-NEXT:    # xmm0 = (xmm0 * mem) + xmm0
-; AVX2-NEXT:    vmovsd %xmm0, (%rdi) # encoding: [0xc5,0xfb,0x11,0x07]
+; AVX2-NEXT:    vmovsd {{.*#+}} xmm1 = mem[0],zero
+; AVX2-NEXT:    # encoding: [0xc5,0xfb,0x10,0x0e]
+; AVX2-NEXT:    vfmadd213sd %xmm0, %xmm0, %xmm1 # encoding: [0xc4,0xe2,0xf9,0xa9,0xc8]
+; AVX2-NEXT:    # xmm1 = (xmm0 * xmm1) + xmm0
+; AVX2-NEXT:    vmovsd %xmm1, (%rdi) # encoding: [0xc5,0xfb,0x11,0x0f]
 ; AVX2-NEXT:    retq # encoding: [0xc3]
 ;
 ; AVX512-LABEL: fmadd_aba_sd:
 ; AVX512:       # %bb.0:
 ; AVX512-NEXT:    vmovsd {{.*#+}} xmm0 = mem[0],zero
 ; AVX512-NEXT:    # EVEX TO VEX Compression encoding: [0xc5,0xfb,0x10,0x07]
-; AVX512-NEXT:    vfmadd231sd (%rsi), %xmm0, %xmm0 # EVEX TO VEX Compression encoding: [0xc4,0xe2,0xf9,0xb9,0x06]
-; AVX512-NEXT:    # xmm0 = (xmm0 * mem) + xmm0
-; AVX512-NEXT:    vmovsd %xmm0, (%rdi) # EVEX TO VEX Compression encoding: [0xc5,0xfb,0x11,0x07]
+; AVX512-NEXT:    vmovsd {{.*#+}} xmm1 = mem[0],zero
+; AVX512-NEXT:    # EVEX TO VEX Compression encoding: [0xc5,0xfb,0x10,0x0e]
+; AVX512-NEXT:    vfmadd213sd %xmm0, %xmm0, %xmm1 # EVEX TO VEX Compression encoding: [0xc4,0xe2,0xf9,0xa9,0xc8]
+; AVX512-NEXT:    # xmm1 = (xmm0 * xmm1) + xmm0
+; AVX512-NEXT:    vmovsd %xmm1, (%rdi) # EVEX TO VEX Compression encoding: [0xc5,0xfb,0x11,0x0f]
 ; AVX512-NEXT:    retq # encoding: [0xc3]
   %a.val = load double, ptr %a
   %av0 = insertelement <2 x double> undef, double %a.val, i32 0
@@ -381,18 +421,22 @@ define void @fmsub_aab_sd(ptr %a, ptr %b) {
 ; AVX2:       # %bb.0:
 ; AVX2-NEXT:    vmovsd {{.*#+}} xmm0 = mem[0],zero
 ; AVX2-NEXT:    # encoding: [0xc5,0xfb,0x10,0x07]
-; AVX2-NEXT:    vfmsub213sd (%rsi), %xmm0, %xmm0 # encoding: [0xc4,0xe2,0xf9,0xab,0x06]
-; AVX2-NEXT:    # xmm0 = (xmm0 * xmm0) - mem
-; AVX2-NEXT:    vmovsd %xmm0, (%rdi) # encoding: [0xc5,0xfb,0x11,0x07]
+; AVX2-NEXT:    vmovsd {{.*#+}} xmm1 = mem[0],zero
+; AVX2-NEXT:    # encoding: [0xc5,0xfb,0x10,0x0e]
+; AVX2-NEXT:    vfmsub231sd %xmm0, %xmm0, %xmm1 # encoding: [0xc4,0xe2,0xf9,0xbb,0xc8]
+; AVX2-NEXT:    # xmm1 = (xmm0 * xmm0) - xmm1
+; AVX2-NEXT:    vmovsd %xmm1, (%rdi) # encoding: [0xc5,0xfb,0x11,0x0f]
 ; AVX2-NEXT:    retq # encoding: [0xc3]
 ;
 ; AVX512-LABEL: fmsub_aab_sd:
 ; AVX512:       # %bb.0:
 ; AVX512-NEXT:    vmovsd {{.*#+}} xmm0 = mem[0],zero
 ; AVX512-NEXT:    # EVEX TO VEX Compression encoding: [0xc5,0xfb,0x10,0x07]
-; AVX512-NEXT:    vfmsub213sd (%rsi), %xmm0, %xmm0 # EVEX TO VEX Compression encoding: [0xc4,0xe2,0xf9,0xab,0x06]
-; AVX512-NEXT:    # xmm0 = (xmm0 * xmm0) - mem
-; AVX512-NEXT:    vmovsd %xmm0, (%rdi) # EVEX TO VEX Compression encoding: [0xc5,0xfb,0x11,0x07]
+; AVX512-NEXT:    vmovsd {{.*#+}} xmm1 = mem[0],zero
+; AVX512-NEXT:    # EVEX TO VEX Compression encoding: [0xc5,0xfb,0x10,0x0e]
+; AVX512-NEXT:    vfmsub231sd %xmm0, %xmm0, %xmm1 # EVEX TO VEX Compression encoding: [0xc4,0xe2,0xf9,0xbb,0xc8]
+; AVX512-NEXT:    # xmm1 = (xmm0 * xmm0) - xmm1
+; AVX512-NEXT:    vmovsd %xmm1, (%rdi) # EVEX TO VEX Compression encoding: [0xc5,0xfb,0x11,0x0f]
 ; AVX512-NEXT:    retq # encoding: [0xc3]
   %a.val = load double, ptr %a
   %av0 = insertelement <2 x double> undef, double %a.val, i32 0
@@ -414,18 +458,22 @@ define void @fmsub_aba_sd(ptr %a, ptr %b) {
 ; AVX2:       # %bb.0:
 ; AVX2-NEXT:    vmovsd {{.*#+}} xmm0 = mem[0],zero
 ; AVX2-NEXT:    # encoding: [0xc5,0xfb,0x10,0x07]
-; AVX2-NEXT:    vfmsub231sd (%rsi), %xmm0, %xmm0 # encoding: [0xc4,0xe2,0xf9,0xbb,0x06]
-; AVX2-NEXT:    # xmm0 = (xmm0 * mem) - xmm0
-; AVX2-NEXT:    vmovsd %xmm0, (%rdi) # encoding: [0xc5,0xfb,0x11,0x07]
+; AVX2-NEXT:    vmovsd {{.*#+}} xmm1 = mem[0],zero
+; AVX2-NEXT:    # encoding: [0xc5,0xfb,0x10,0x0e]
+; AVX2-NEXT:    vfmsub213sd %xmm0, %xmm0, %xmm1 # encoding: [0xc4,0xe2,0xf9,0xab,0xc8]
+; AVX2-NEXT:    # xmm1 = (xmm0 * xmm1) - xmm0
+; AVX2-NEXT:    vmovsd %xmm1, (%rdi) # encoding: [0xc5,0xfb,0x11,0x0f]
 ; AVX2-NEXT:    retq # encoding: [0xc3]
 ;
 ; AVX512-LABEL: fmsub_aba_sd:
 ; AVX512:       # %bb.0:
 ; AVX512-NEXT:    vmovsd {{.*#+}} xmm0 = mem[0],zero
 ; AVX512-NEXT:    # EVEX TO VEX Compression encoding: [0xc5,0xfb,0x10,0x07]
-; AVX512-NEXT:    vfmsub231sd (%rsi), %xmm0, %xmm0 # EVEX TO VEX Compression encoding: [0xc4,0xe2,0xf9,0xbb,0x06]
-; AVX512-NEXT:    # xmm0 = (xmm0 * mem) - xmm0
-; AVX512-NEXT:    vmovsd %xmm0, (%rdi) # EVEX TO VEX Compression encoding: [0xc5,0xfb,0x11,0x07]
+; AVX512-NEXT:    vmovsd {{.*#+}} xmm1 = mem[0],zero
+; AVX512-NEXT:    # EVEX TO VEX Compression encoding: [0xc5,0xfb,0x10,0x0e]
+; AVX512-NEXT:    vfmsub213sd %xmm0, %xmm0, %xmm1 # EVEX TO VEX Compression encoding: [0xc4,0xe2,0xf9,0xab,0xc8]
+; AVX512-NEXT:    # xmm1 = (xmm0 * xmm1) - xmm0
+; AVX512-NEXT:    vmovsd %xmm1, (%rdi) # EVEX TO VEX Compression encoding: [0xc5,0xfb,0x11,0x0f]
 ; AVX512-NEXT:    retq # encoding: [0xc3]
   %a.val = load double, ptr %a
   %av0 = insertelement <2 x double> undef, double %a.val, i32 0
@@ -447,18 +495,22 @@ define void @fnmadd_aab_sd(ptr %a, ptr %b) {
 ; AVX2:       # %bb.0:
 ; AVX2-NEXT:    vmovsd {{.*#+}} xmm0 = mem[0],zero
 ; AVX2-NEXT:    # encoding: [0xc5,0xfb,0x10,0x07]
-; AVX2-NEXT:    vfnmadd213sd (%rsi), %xmm0, %xmm0 # encoding: [0xc4,0xe2,0xf9,0xad,0x06]
-; AVX2-NEXT:    # xmm0 = -(xmm0 * xmm0) + mem
-; AVX2-NEXT:    vmovsd %xmm0, (%rdi) # encoding: [0xc5,0xfb,0x11,0x07]
+; AVX2-NEXT:    vmovsd {{.*#+}} xmm1 = mem[0],zero
+; AVX2-NEXT:    # encoding: [0xc5,0xfb,0x10,0x0e]
+; AVX2-NEXT:    vfnmadd231sd %xmm0, %xmm0, %xmm1 # encoding: [0xc4,0xe2,0xf9,0xbd,0xc8]
+; AVX2-NEXT:    # xmm1 = -(xmm0 * xmm0) + xmm1
+; AVX2-NEXT:    vmovsd %xmm1, (%rdi) # encoding: [0xc5,0xfb,0x11,0x0f]
 ; AVX2-NEXT:    retq # encoding: [0xc3]
 ;
 ; AVX512-LABEL: fnmadd_aab_sd:
 ; AVX512:       # %bb.0:
 ; AVX512-NEXT:    vmovsd {{.*#+}} xmm0 = mem[0],zero
 ; AVX512-NEXT:    # EVEX TO VEX Compression encoding: [0xc5,0xfb,0x10,0x07]
-; AVX512-NEXT:    vfnmadd213sd (%rsi), %xmm0, %xmm0 # EVEX TO VEX Compression encoding: [0xc4,0xe2,0xf9,0xad,0x06]
-; AVX512-NEXT:    # xmm0 = -(xmm0 * xmm0) + mem
-; AVX512-NEXT:    vmovsd %xmm0, (%rdi) # EVEX TO VEX Compression encoding: [0xc5,0xfb,0x11,0x07]
+; AVX512-NEXT:    vmovsd {{.*#+}} xmm1 = mem[0],zero
+; AVX512-NEXT:    # EVEX TO VEX Compression encoding: [0xc5,0xfb,0x10,0x0e]
+; AVX512-NEXT:    vfnmadd231sd %xmm0, %xmm0, %xmm1 # EVEX TO VEX Compression encoding: [0xc4,0xe2,0xf9,0xbd,0xc8]
+; AVX512-NEXT:    # xmm1 = -(xmm0 * xmm0) + xmm1
+; AVX512-NEXT:    vmovsd %xmm1, (%rdi) # EVEX TO VEX Compression encoding: [0xc5,0xfb,0x11,0x0f]
 ; AVX512-NEXT:    retq # encoding: [0xc3]
   %a.val = load double, ptr %a
   %av0 = insertelement <2 x double> undef, double %a.val, i32 0
@@ -480,18 +532,22 @@ define void @fnmadd_aba_sd(ptr %a, ptr %b) {
 ; AVX2:       # %bb.0:
 ; AVX2-NEXT:    vmovsd {{.*#+}} xmm0 = mem[0],zero
 ; AVX2-NEXT:    # encoding: [0xc5,0xfb,0x10,0x07]
-; AVX2-NEXT:    vfnmadd231sd (%rsi), %xmm0, %xmm0 # encoding: [0xc4,0xe2,0xf9,0xbd,0x06]
-; AVX2-NEXT:    # xmm0 = -(xmm0 * mem) + xmm0
-; AVX2-NEXT:    vmovsd %xmm0, (%rdi) # encoding: [0xc5,0xfb,0x11,0x07]
+; AVX2-NEXT:    vmovsd {{.*#+}} xmm1 = mem[0],zero
+; AVX2-NEXT:    # encoding: [0xc5,0xfb,0x10,0x0e]
+; AVX2-NEXT:    vfnmadd213sd %xmm0, %xmm0, %xmm1 # encoding: [0xc4,0xe2,0xf9,0xad,0xc8]
+; AVX2-NEXT:    # xmm1 = -(xmm0 * xmm1) + xmm0
+; AVX2-NEXT:    vmovsd %xmm1, (%rdi) # encoding: [0xc5,0xfb,0x11,0x0f]
 ; AVX2-NEXT:    retq # encoding: [0xc3]
 ;
 ; AVX512-LABEL: fnmadd_aba_sd:
 ; AVX512:       # %bb.0:
 ; AVX512-NEXT:    vmovsd {{.*#+}} xmm0 = mem[0],zero
 ; AVX512-NEXT:    # EVEX TO VEX Compression encoding: [0xc5,0xfb,0x10,0x07]
-; AVX512-NEXT:    vfnmadd231sd (%rsi), %xmm0, %xmm0 # EVEX TO VEX Compression encoding: [0xc4,0xe2,0xf9,0xbd,0x06]
-; AVX512-NEXT:    # xmm0 = -(xmm0 * mem) + xmm0
-; AVX512-NEXT:    vmovsd %xmm0, (%rdi) # EVEX TO VEX Compression encoding: [0xc5,0xfb,0x11,0x07]
+; AVX512-NEXT:    vmovsd {{.*#+}} xmm1 = mem[0],zero
+; AVX512-NEXT:    # EVEX TO VEX Compression encoding: [0xc5,0xfb,0x10,0x0e]
+; AVX512-NEXT:    vfnmadd213sd %xmm0, %xmm0, %xmm1 # EVEX TO VEX Compression encoding: [0xc4,0xe2,0xf9,0xad,0xc8]
+; AVX512-NEXT:    # xmm1 = -(xmm0 * xmm1) + xmm0
+; AVX512-NEXT:    vmovsd %xmm1, (%rdi) # EVEX TO VEX Compression encoding: [0xc5,0xfb,0x11,0x0f]
 ; AVX512-NEXT:    retq # encoding: [0xc3]
   %a.val = load double, ptr %a
   %av0 = insertelement <2 x double> undef, double %a.val, i32 0
@@ -513,18 +569,22 @@ define void @fnmsub_aab_sd(ptr %a, ptr %b) {
 ; AVX2:       # %bb.0:
 ; AVX2-NEXT:    vmovsd {{.*#+}} xmm0 = mem[0],zero
 ; AVX2-NEXT:    # encoding: [0xc5,0xfb,0x10,0x07]
-; AVX2-NEXT:    vfnmsub213sd (%rsi), %xmm0, %xmm0 # encoding: [0xc4,0xe2,0xf9,0xaf,0x06]
-; AVX2-NEXT:    # xmm0 = -(xmm0 * xmm0) - mem
-; AVX2-NEXT:    vmovsd %xmm0, (%rdi) # encoding: [0xc5,0xfb,0x11,0x07]
+; AVX2-NEXT:    vmovsd {{.*#+}} xmm1 = mem[0],zero
+; AVX2-NEXT:    # encoding: [0xc5,0xfb,0x10,0x0e]
+; AVX2-NEXT:    vfnmsub231sd %xmm0, %xmm0, %xmm1 # encoding: [0xc4,0xe2,0xf9,0xbf,0xc8]
+; AVX2-NEXT:    # xmm1 = -(xmm0 * xmm0) - xmm1
+; AVX2-NEXT:    vmovsd %xmm1, (%rdi) # encoding: [0xc5,0xfb,0x11,0x0f]
 ; AVX2-NEXT:    retq # encoding: [0xc3]
 ;
 ; AVX512-LABEL: fnmsub_aab_sd:
 ; AVX512:       # %bb.0:
 ; AVX512-NEXT:    vmovsd {{.*#+}} xmm0 = mem[0],zero
 ; AVX512-NEXT:    # EVEX TO VEX Compression encoding: [0xc5,0xfb,0x10,0x07]
-; AVX512-NEXT:    vfnmsub213sd (%rsi), %xmm0, %xmm0 # EVEX TO VEX Compression encoding: [0xc4,0xe2,0xf9,0xaf,0x06]
-; AVX512-NEXT:    # xmm0 = -(xmm0 * xmm0) - mem
-; AVX512-NEXT:    vmovsd %xmm0, (%rdi) # EVEX TO VEX Compression encoding: [0xc5,0xfb,0x11,0x07]
+; AVX512-NEXT:    vmovsd {{.*#+}} xmm1 = mem[0],zero
+; AVX512-NEXT:    # EVEX TO VEX Compression encoding: [0xc5,0xfb,0x10,0x0e]
+; AVX512-NEXT:    vfnmsub231sd %xmm0, %xmm0, %xmm1 # EVEX TO VEX Compression encoding: [0xc4,0xe2,0xf9,0xbf,0xc8]
+; AVX512-NEXT:    # xmm1 = -(xmm0 * xmm0) - xmm1
+; AVX512-NEXT:    vmovsd %xmm1, (%rdi) # EVEX TO VEX Compression encoding: [0xc5,0xfb,0x11,0x0f]
 ; AVX512-NEXT:    retq # encoding: [0xc3]
   %a.val = load double, ptr %a
   %av0 = insertelement <2 x double> undef, double %a.val, i32 0
@@ -546,18 +606,22 @@ define void @fnmsub_aba_sd(ptr %a, ptr %b) {
 ; AVX2:       # %bb.0:
 ; AVX2-NEXT:    vmovsd {{.*#+}} xmm0 = mem[0],zero
 ; AVX2-NEXT:    # encoding: [0xc5,0xfb,0x10,0x07]
-; AVX2-NEXT:    vfnmsub231sd (%rsi), %xmm0, %xmm0 # encoding: [0xc4,0xe2,0xf9,0xbf,0x06]
-; AVX2-NEXT:    # xmm0 = -(xmm0 * mem) - xmm0
-; AVX2-NEXT:    vmovsd %xmm0, (%rdi) # encoding: [0xc5,0xfb,0x11,0x07]
+; AVX2-NEXT:    vmovsd {{.*#+}} xmm1 = mem[0],zero
+; AVX2-NEXT:    # encoding: [0xc5,0xfb,0x10,0x0e]
+; AVX2-NEXT:    vfnmsub213sd %xmm0, %xmm0, %xmm1 # encoding: [0xc4,0xe2,0xf9,0xaf,0xc8]
+; AVX2-NEXT:    # xmm1 = -(xmm0 * xmm1) - xmm0
+; AVX2-NEXT:    vmovsd %xmm1, (%rdi) # encoding: [0xc5,0xfb,0x11,0x0f]
 ; AVX2-NEXT:    retq # encoding: [0xc3]
 ;
 ; AVX512-LABEL: fnmsub_aba_sd:
 ; AVX512:       # %bb.0:
 ; AVX512-NEXT:    vmovsd {{.*#+}} xmm0 = mem[0],zero
 ; AVX512-NEXT:    # EVEX TO VEX Compression encoding: [0xc5,0xfb,0x10,0x07]
-; AVX512-NEXT:    vfnmsub231sd (%rsi), %xmm0, %xmm0 # EVEX TO VEX Compression encoding: [0xc4,0xe2,0xf9,0xbf,0x06]
-; AVX512-NEXT:    # xmm0 = -(xmm0 * mem) - xmm0
-; AVX512-NEXT:    vmovsd %xmm0, (%rdi) # EVEX TO VEX Compression encoding: [0xc5,0xfb,0x11,0x07]
+; AVX512-NEXT:    vmovsd {{.*#+}} xmm1 = mem[0],zero
+; AVX512-NEXT:    # EVEX TO VEX Compression encoding: [0xc5,0xfb,0x10,0x0e]
+; AVX512-NEXT:    vfnmsub213sd %xmm0, %xmm0, %xmm1 # EVEX TO VEX Compression encoding: [0xc4,0xe2,0xf9,0xaf,0xc8]
+; AVX512-NEXT:    # xmm1 = -(xmm0 * xmm1) - xmm0
+; AVX512-NEXT:    vmovsd %xmm1, (%rdi) # EVEX TO VEX Compression encoding: [0xc5,0xfb,0x11,0x0f]
 ; AVX512-NEXT:    retq # encoding: [0xc3]
   %a.val = load double, ptr %a
   %av0 = insertelement <2 x double> undef, double %a.val, i32 0

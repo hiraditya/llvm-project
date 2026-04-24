@@ -31,9 +31,11 @@ define float @test_without_nneg(i32 %x) nounwind {
 ; X86:       ## %bb.0:
 ; X86-NEXT:    pushl %eax
 ; X86-NEXT:    movss {{.*#+}} xmm0 = mem[0],zero,zero,zero
-; X86-NEXT:    orpd {{\.?LCPI[0-9]+_[0-9]+}}, %xmm0
-; X86-NEXT:    subsd {{\.?LCPI[0-9]+_[0-9]+}}, %xmm0
-; X86-NEXT:    cvtsd2ss %xmm0, %xmm0
+; X86-NEXT:    movapd {{.*#+}} xmm1 = [4.503599627370496E+15,4.503599627370496E+15]
+; X86-NEXT:    orpd %xmm0, %xmm1
+; X86-NEXT:    subsd {{\.?LCPI[0-9]+_[0-9]+}}, %xmm1
+; X86-NEXT:    xorps %xmm0, %xmm0
+; X86-NEXT:    cvtsd2ss %xmm1, %xmm0
 ; X86-NEXT:    movss %xmm0, (%esp)
 ; X86-NEXT:    flds (%esp)
 ; X86-NEXT:    popl %eax

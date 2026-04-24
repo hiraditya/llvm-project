@@ -24,9 +24,9 @@ define dso_local i32 @main() nounwind {
 ; CHECK-NEXT:    decl %edx
 ; CHECK-NEXT:    movzwl %ax, %eax
 ; CHECK-NEXT:    decl %eax
-; CHECK-NEXT:    xorl %edx, %eax
+; CHECK-NEXT:    xorl %eax, %edx
 ; CHECK-NEXT:    notl %ecx
-; CHECK-NEXT:    andl %eax, %ecx
+; CHECK-NEXT:    andl %edx, %ecx
 ; CHECK-NEXT:    testq %rcx, %rcx
 ; CHECK-NEXT:    jle .LBB0_2
 ; CHECK-NEXT:  # %bb.1: # %if.end

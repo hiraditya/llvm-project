@@ -193,7 +193,9 @@ define <4 x i32> @vzext_v4i32_v4i1(<4 x i1> %va, <4 x i1> %m, i32 zeroext %evl) 
 ;
 ; SSE-LABEL: vzext_v4i32_v4i1:
 ; SSE:       # %bb.0:
-; SSE-NEXT:    andps {{\.?LCPI[0-9]+_[0-9]+}}(%rip), %xmm0
+; SSE-NEXT:    movaps {{.*#+}} xmm1 = [1,1,1,1]
+; SSE-NEXT:    andps %xmm0, %xmm1
+; SSE-NEXT:    movaps %xmm1, %xmm0
 ; SSE-NEXT:    retq
 ;
 ; AVX1-LABEL: vzext_v4i32_v4i1:
@@ -227,8 +229,8 @@ define <4 x i64> @vzext_v4i64_v4i1(<4 x i1> %va, <4 x i1> %m, i32 zeroext %evl) 
 ;
 ; SSE-LABEL: vzext_v4i64_v4i1:
 ; SSE:       # %bb.0:
-; SSE-NEXT:    movaps %xmm0, %xmm1
-; SSE-NEXT:    andps {{\.?LCPI[0-9]+_[0-9]+}}(%rip), %xmm1
+; SSE-NEXT:    movaps {{.*#+}} xmm1 = [1,1,1,1]
+; SSE-NEXT:    andps %xmm0, %xmm1
 ; SSE-NEXT:    xorps %xmm2, %xmm2
 ; SSE-NEXT:    movaps %xmm1, %xmm0
 ; SSE-NEXT:    unpcklps {{.*#+}} xmm0 = xmm0[0],xmm2[0],xmm0[1],xmm2[1]
@@ -325,13 +327,14 @@ define <4 x i32> @vfptoui_v4i32_v4f32(<4 x float> %va, <4 x i1> %m, i32 zeroext 
 ;
 ; SSE-LABEL: vfptoui_v4i32_v4f32:
 ; SSE:       # %bb.0:
-; SSE-NEXT:    cvttps2dq %xmm0, %xmm1
-; SSE-NEXT:    movdqa %xmm1, %xmm2
-; SSE-NEXT:    psrad $31, %xmm2
+; SSE-NEXT:    cvttps2dq %xmm0, %xmm2
+; SSE-NEXT:    movdqa %xmm2, %xmm1
+; SSE-NEXT:    psrad $31, %xmm1
 ; SSE-NEXT:    subps {{\.?LCPI[0-9]+_[0-9]+}}(%rip), %xmm0
 ; SSE-NEXT:    cvttps2dq %xmm0, %xmm0
-; SSE-NEXT:    pand %xmm2, %xmm0
-; SSE-NEXT:    por %xmm1, %xmm0
+; SSE-NEXT:    pand %xmm0, %xmm1
+; SSE-NEXT:    por %xmm2, %xmm1
+; SSE-NEXT:    movdqa %xmm1, %xmm0
 ; SSE-NEXT:    retq
 ;
 ; AVX1-LABEL: vfptoui_v4i32_v4f32:
@@ -396,11 +399,14 @@ define <4 x float> @vuitofp_v4f32_v4i32(<4 x i32> %va, <4 x i1> %m, i32 zeroext 
 ; SSE:       # %bb.0:
 ; SSE-NEXT:    movdqa {{.*#+}} xmm1 = [65535,65535,65535,65535]
 ; SSE-NEXT:    pand %xmm0, %xmm1
-; SSE-NEXT:    por {{\.?LCPI[0-9]+_[0-9]+}}(%rip), %xmm1
+; SSE-NEXT:    movdqa {{.*#+}} xmm2 = [1258291200,1258291200,1258291200,1258291200]
+; SSE-NEXT:    por %xmm1, %xmm2
 ; SSE-NEXT:    psrld $16, %xmm0
-; SSE-NEXT:    por {{\.?LCPI[0-9]+_[0-9]+}}(%rip), %xmm0
-; SSE-NEXT:    subps {{\.?LCPI[0-9]+_[0-9]+}}(%rip), %xmm0
-; SSE-NEXT:    addps %xmm1, %xmm0
+; SSE-NEXT:    movdqa {{.*#+}} xmm1 = [1392508928,1392508928,1392508928,1392508928]
+; SSE-NEXT:    por %xmm0, %xmm1
+; SSE-NEXT:    subps {{\.?LCPI[0-9]+_[0-9]+}}(%rip), %xmm1
+; SSE-NEXT:    addps %xmm2, %xmm1
+; SSE-NEXT:    movaps %xmm1, %xmm0
 ; SSE-NEXT:    retq
 ;
 ; AVX1-LABEL: vuitofp_v4f32_v4i32:

@@ -79,14 +79,16 @@ define dso_local i32 @testRecursion(i32 %0, i32 %1, i32 %2, i32 %3, i32 %4, i32 
 define dso_local i32 @swap(ptr byval(%struct.1xi32) %0, ptr byval(%struct.1xi32) %1) noinline {
 ; X32-LABEL: swap:
 ; X32:       # %bb.0: # %entry
-; X32-NEXT:    mov eax, dword ptr [esp + 4]
-; X32-NEXT:    add eax, dword ptr [esp + 8]
+; X32-NEXT:    mov ecx, dword ptr [esp + 4]
+; X32-NEXT:    mov eax, dword ptr [esp + 8]
+; X32-NEXT:    add eax, ecx
 ; X32-NEXT:    ret
 ;
 ; X64-LABEL: swap:
 ; X64:       # %bb.0: # %entry
-; X64-NEXT:    mov eax, dword ptr [rsp + 8]
-; X64-NEXT:    add eax, dword ptr [rsp + 16]
+; X64-NEXT:    mov ecx, dword ptr [rsp + 8]
+; X64-NEXT:    mov eax, dword ptr [rsp + 16]
+; X64-NEXT:    add eax, ecx
 ; X64-NEXT:    ret
 entry:
   %a.ptr = getelementptr inbounds %struct.1xi32, ptr %0, i32 0, i32 0, i32 0

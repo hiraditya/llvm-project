@@ -26,9 +26,10 @@ define void @test2(i32 %size) nounwind #1 {
 ; CHECK:       # %bb.0: # %start
 ; CHECK-NEXT:    pushq %rbp
 ; CHECK-NEXT:    movl %esp, %ebp
-; CHECK-NEXT:    addl $15, %edi
-; CHECK-NEXT:    andl $-16, %edi
-; CHECK-NEXT:    subl %edi, %esp
+; CHECK-NEXT:    # kill: def $edi killed $edi def $rdi
+; CHECK-NEXT:    leal 15(%rdi), %eax
+; CHECK-NEXT:    andl $-16, %eax
+; CHECK-NEXT:    subl %eax, %esp
 start:
   %alloca = alloca i8, i32 %size
   unreachable

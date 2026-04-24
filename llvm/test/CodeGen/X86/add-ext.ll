@@ -58,8 +58,9 @@ define i64 @add_nsw_sext_lsh_add(i32 %i, i64 %x) {
 define i64 @add_nsw_sext(i32 %i, i64 %x) {
 ; CHECK-LABEL: add_nsw_sext:
 ; CHECK:       # %bb.0:
-; CHECK-NEXT:    addl $5, %edi
-; CHECK-NEXT:    movslq %edi, %rax
+; CHECK-NEXT:    # kill: def $edi killed $edi def $rdi
+; CHECK-NEXT:    leal 5(%rdi), %eax
+; CHECK-NEXT:    cltq
 ; CHECK-NEXT:    retq
 
   %add = add nsw i32 %i, 5
@@ -146,8 +147,9 @@ define void @PR20134(ptr %a, i32 %i) {
 ; CHECK:       # %bb.0:
 ; CHECK-NEXT:    movslq %esi, %rax
 ; CHECK-NEXT:    movl 4(%rdi,%rax,4), %ecx
-; CHECK-NEXT:    addl 8(%rdi,%rax,4), %ecx
-; CHECK-NEXT:    movl %ecx, (%rdi,%rax,4)
+; CHECK-NEXT:    movl 8(%rdi,%rax,4), %edx
+; CHECK-NEXT:    addl %ecx, %edx
+; CHECK-NEXT:    movl %edx, (%rdi,%rax,4)
 ; CHECK-NEXT:    retq
 
   %add1 = add nsw i32 %i, 1
@@ -173,8 +175,9 @@ define void @PR20134_zext(ptr %a, i32 %i) {
 ; CHECK:       # %bb.0:
 ; CHECK-NEXT:    movl %esi, %eax
 ; CHECK-NEXT:    movl 4(%rdi,%rax,4), %ecx
-; CHECK-NEXT:    addl 8(%rdi,%rax,4), %ecx
-; CHECK-NEXT:    movl %ecx, (%rdi,%rax,4)
+; CHECK-NEXT:    movl 8(%rdi,%rax,4), %edx
+; CHECK-NEXT:    addl %ecx, %edx
+; CHECK-NEXT:    movl %edx, (%rdi,%rax,4)
 ; CHECK-NEXT:    retq
 
   %add1 = add nuw i32 %i, 1

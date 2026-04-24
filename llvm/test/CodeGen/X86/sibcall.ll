@@ -137,19 +137,27 @@ define dso_local i32 @t6(i32 %x) nounwind ssp {
 ;
 ; X64-LABEL: t6:
 ; X64:       # %bb.0:
+; X64-NEXT:    # kill: def $edi killed $edi def $rdi
 ; X64-NEXT:    cmpl $9, %edi
-; X64-NEXT:    jg bar # TAILCALL
+; X64-NEXT:    jg .LBB6_2
 ; X64-NEXT:  # %bb.1: # %bb
 ; X64-NEXT:    decl %edi
 ; X64-NEXT:    jmp t6 # TAILCALL
+; X64-NEXT:  .LBB6_2: # %bb1
+; X64-NEXT:    # kill: def $edi killed $edi killed $rdi
+; X64-NEXT:    jmp bar # TAILCALL
 ;
 ; X32-LABEL: t6:
 ; X32:       # %bb.0:
+; X32-NEXT:    # kill: def $edi killed $edi def $rdi
 ; X32-NEXT:    cmpl $9, %edi
-; X32-NEXT:    jg bar # TAILCALL
+; X32-NEXT:    jg .LBB6_2
 ; X32-NEXT:  # %bb.1: # %bb
 ; X32-NEXT:    decl %edi
 ; X32-NEXT:    jmp t6 # TAILCALL
+; X32-NEXT:  .LBB6_2: # %bb1
+; X32-NEXT:    # kill: def $edi killed $edi killed $rdi
+; X32-NEXT:    jmp bar # TAILCALL
   %t0 = icmp slt i32 %x, 10
   br i1 %t0, label %bb, label %bb1
 

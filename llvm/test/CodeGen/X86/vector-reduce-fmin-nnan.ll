@@ -417,8 +417,8 @@ define half @test_v2f16(<2 x half> %a0) nounwind {
 ; AVX512F-NEXT:    vucomiss %xmm3, %xmm2
 ; AVX512F-NEXT:    setb %al
 ; AVX512F-NEXT:    kmovd %eax, %k1
-; AVX512F-NEXT:    vmovdqu16 %zmm0, %zmm1 {%k1}
-; AVX512F-NEXT:    vmovdqa %xmm1, %xmm0
+; AVX512F-NEXT:    vpblendmw %zmm0, %zmm1, %zmm0 {%k1}
+; AVX512F-NEXT:    # kill: def $xmm0 killed $xmm0 killed $zmm0
 ; AVX512F-NEXT:    vzeroupper
 ; AVX512F-NEXT:    retq
 ;
@@ -428,8 +428,7 @@ define half @test_v2f16(<2 x half> %a0) nounwind {
 ; AVX512VL-NEXT:    vcvtph2ps %xmm0, %xmm2
 ; AVX512VL-NEXT:    vcvtph2ps %xmm1, %xmm3
 ; AVX512VL-NEXT:    vcmpltss %xmm3, %xmm2, %k1
-; AVX512VL-NEXT:    vmovdqu16 %xmm0, %xmm1 {%k1}
-; AVX512VL-NEXT:    vmovdqa %xmm1, %xmm0
+; AVX512VL-NEXT:    vpblendmw %xmm0, %xmm1, %xmm0 {%k1}
 ; AVX512VL-NEXT:    retq
 ;
 ; AVX512FP16-LABEL: test_v2f16:

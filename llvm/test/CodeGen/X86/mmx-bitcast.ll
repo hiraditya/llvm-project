@@ -60,9 +60,9 @@ define void @t4(<1 x i64> %A, <1 x i64> %B) {
 ; CHECK:       ## %bb.0: ## %entry
 ; CHECK-NEXT:    movq %rsi, %mm0
 ; CHECK-NEXT:    movq %rdi, %mm1
-; CHECK-NEXT:    paddusw %mm0, %mm1
+; CHECK-NEXT:    paddusw %mm1, %mm0
 ; CHECK-NEXT:    movq _R@GOTPCREL(%rip), %rax
-; CHECK-NEXT:    movq %mm1, (%rax)
+; CHECK-NEXT:    movq %mm0, (%rax)
 ; CHECK-NEXT:    emms
 ; CHECK-NEXT:    retq
 entry:

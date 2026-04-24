@@ -14,15 +14,17 @@ define <16 x i8> @elt0_v16i8(i8 %x) {
 ; X86-SSE2-LABEL: elt0_v16i8:
 ; X86-SSE2:       # %bb.0:
 ; X86-SSE2-NEXT:    movzbl {{[0-9]+}}(%esp), %eax
-; X86-SSE2-NEXT:    movd %eax, %xmm0
-; X86-SSE2-NEXT:    por {{\.?LCPI[0-9]+_[0-9]+}}, %xmm0
+; X86-SSE2-NEXT:    movd %eax, %xmm1
+; X86-SSE2-NEXT:    movdqa {{.*#+}} xmm0 = [0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15]
+; X86-SSE2-NEXT:    por %xmm1, %xmm0
 ; X86-SSE2-NEXT:    retl
 ;
 ; X64-SSE2-LABEL: elt0_v16i8:
 ; X64-SSE2:       # %bb.0:
 ; X64-SSE2-NEXT:    movzbl %dil, %eax
-; X64-SSE2-NEXT:    movd %eax, %xmm0
-; X64-SSE2-NEXT:    por {{\.?LCPI[0-9]+_[0-9]+}}(%rip), %xmm0
+; X64-SSE2-NEXT:    movd %eax, %xmm1
+; X64-SSE2-NEXT:    movdqa {{.*#+}} xmm0 = [0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15]
+; X64-SSE2-NEXT:    por %xmm1, %xmm0
 ; X64-SSE2-NEXT:    retq
 ;
 ; X86-SSE4-LABEL: elt0_v16i8:

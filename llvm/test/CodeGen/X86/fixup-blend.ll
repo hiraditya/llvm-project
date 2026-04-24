@@ -60,17 +60,21 @@ define <2 x double> @test_v2f64_blend_movsd_optsize(<2 x double> %a0, <2 x doubl
 }
 
 define <2 x double> @test_v2f64_blend_movsd_load(ptr %p0, <2 x double> %a1, <2 x double> %a2) {
-; SSE2-LABEL: test_v2f64_blend_movsd_load:
-; SSE2:       # %bb.0:
-; SSE2-NEXT:    shufpd {{.*#+}} xmm0 = xmm0[0],mem[1]
-; SSE2-NEXT:    addpd %xmm1, %xmm0
-; SSE2-NEXT:    retq
+; SSE-MOV-LABEL: test_v2f64_blend_movsd_load:
+; SSE-MOV:       # %bb.0:
+; SSE-MOV-NEXT:    movapd (%rdi), %xmm2
+; SSE-MOV-NEXT:    movsd {{.*#+}} xmm2 = xmm0[0],xmm2[1]
+; SSE-MOV-NEXT:    addpd %xmm1, %xmm2
+; SSE-MOV-NEXT:    movapd %xmm2, %xmm0
+; SSE-MOV-NEXT:    retq
 ;
-; SSE4-LABEL: test_v2f64_blend_movsd_load:
-; SSE4:       # %bb.0:
-; SSE4-NEXT:    blendpd {{.*#+}} xmm0 = xmm0[0],mem[1]
-; SSE4-NEXT:    addpd %xmm1, %xmm0
-; SSE4-NEXT:    retq
+; SSE4-BLEND-LABEL: test_v2f64_blend_movsd_load:
+; SSE4-BLEND:       # %bb.0:
+; SSE4-BLEND-NEXT:    movapd (%rdi), %xmm2
+; SSE4-BLEND-NEXT:    blendpd {{.*#+}} xmm2 = xmm0[0],xmm2[1]
+; SSE4-BLEND-NEXT:    addpd %xmm1, %xmm2
+; SSE4-BLEND-NEXT:    movapd %xmm2, %xmm0
+; SSE4-BLEND-NEXT:    retq
 ;
 ; AVX-LABEL: test_v2f64_blend_movsd_load:
 ; AVX:       # %bb.0:
@@ -92,8 +96,10 @@ define <2 x double> @test_v2f64_blend_movsd_load_commute(<2 x double> %a0, ptr %
 ;
 ; SSE4-LABEL: test_v2f64_blend_movsd_load_commute:
 ; SSE4:       # %bb.0:
-; SSE4-NEXT:    blendpd {{.*#+}} xmm0 = mem[0],xmm0[1]
-; SSE4-NEXT:    addpd %xmm1, %xmm0
+; SSE4-NEXT:    movapd (%rdi), %xmm2
+; SSE4-NEXT:    blendpd {{.*#+}} xmm2 = xmm2[0],xmm0[1]
+; SSE4-NEXT:    addpd %xmm1, %xmm2
+; SSE4-NEXT:    movapd %xmm2, %xmm0
 ; SSE4-NEXT:    retq
 ;
 ; AVX-LABEL: test_v2f64_blend_movsd_load_commute:
@@ -108,19 +114,21 @@ define <2 x double> @test_v2f64_blend_movsd_load_commute(<2 x double> %a0, ptr %
 }
 
 define <2 x double> @test_v2f64_blend_movsd_zero(<2 x double> %a0, <2 x double> %a1, <2 x double> %a2) {
-; SSE-MOV-LABEL: test_v2f64_blend_movsd_zero:
-; SSE-MOV:       # %bb.0:
-; SSE-MOV-NEXT:    xorpd %xmm1, %xmm1
-; SSE-MOV-NEXT:    movsd {{.*#+}} xmm0 = xmm1[0],xmm0[1]
-; SSE-MOV-NEXT:    addpd %xmm2, %xmm0
-; SSE-MOV-NEXT:    retq
+; SSE2-LABEL: test_v2f64_blend_movsd_zero:
+; SSE2:       # %bb.0:
+; SSE2-NEXT:    xorpd %xmm1, %xmm1
+; SSE2-NEXT:    shufpd {{.*#+}} xmm1 = xmm1[0],xmm0[1]
+; SSE2-NEXT:    addpd %xmm2, %xmm1
+; SSE2-NEXT:    movapd %xmm1, %xmm0
+; SSE2-NEXT:    retq
 ;
-; SSE4-BLEND-LABEL: test_v2f64_blend_movsd_zero:
-; SSE4-BLEND:       # %bb.0:
-; SSE4-BLEND-NEXT:    xorpd %xmm1, %xmm1
-; SSE4-BLEND-NEXT:    blendpd {{.*#+}} xmm0 = xmm1[0],xmm0[1]
-; SSE4-BLEND-NEXT:    addpd %xmm2, %xmm0
-; SSE4-BLEND-NEXT:    retq
+; SSE4-LABEL: test_v2f64_blend_movsd_zero:
+; SSE4:       # %bb.0:
+; SSE4-NEXT:    xorpd %xmm1, %xmm1
+; SSE4-NEXT:    blendpd {{.*#+}} xmm1 = xmm1[0],xmm0[1]
+; SSE4-NEXT:    addpd %xmm2, %xmm1
+; SSE4-NEXT:    movapd %xmm1, %xmm0
+; SSE4-NEXT:    retq
 ;
 ; AVX-BLEND-LABEL: test_v2f64_blend_movsd_zero:
 ; AVX-BLEND:       # %bb.0:
@@ -153,8 +161,9 @@ define <2 x i64> @test_v2i64_blend_movsd(<2 x i64> %a0, <2 x i64> %a1, <2 x i64>
 ;
 ; SSE4-LABEL: test_v2i64_blend_movsd:
 ; SSE4:       # %bb.0:
-; SSE4-NEXT:    pblendw {{.*#+}} xmm0 = xmm1[0,1,2,3],xmm0[4,5,6,7]
-; SSE4-NEXT:    paddq %xmm2, %xmm0
+; SSE4-NEXT:    pblendw {{.*#+}} xmm1 = xmm1[0,1,2,3],xmm0[4,5,6,7]
+; SSE4-NEXT:    paddq %xmm2, %xmm1
+; SSE4-NEXT:    movdqa %xmm1, %xmm0
 ; SSE4-NEXT:    retq
 ;
 ; AVX1-LABEL: test_v2i64_blend_movsd:
@@ -182,8 +191,9 @@ define <2 x i64> @test_v2i64_blend_movsd_optsize(<2 x i64> %a0, <2 x i64> %a1, <
 ;
 ; SSE4-LABEL: test_v2i64_blend_movsd_optsize:
 ; SSE4:       # %bb.0:
-; SSE4-NEXT:    pblendw {{.*#+}} xmm0 = xmm1[0,1,2,3],xmm0[4,5,6,7]
-; SSE4-NEXT:    paddq %xmm2, %xmm0
+; SSE4-NEXT:    pblendw {{.*#+}} xmm1 = xmm1[0,1,2,3],xmm0[4,5,6,7]
+; SSE4-NEXT:    paddq %xmm2, %xmm1
+; SSE4-NEXT:    movdqa %xmm1, %xmm0
 ; SSE4-NEXT:    retq
 ;
 ; AVX1-LABEL: test_v2i64_blend_movsd_optsize:
@@ -205,14 +215,18 @@ define <2 x i64> @test_v2i64_blend_movsd_optsize(<2 x i64> %a0, <2 x i64> %a1, <
 define <2 x i64> @test_v2i64_blend_movsd_load(ptr %p0, <2 x i64> %a1, <2 x i64> %a2) {
 ; SSE2-LABEL: test_v2i64_blend_movsd_load:
 ; SSE2:       # %bb.0:
-; SSE2-NEXT:    shufpd {{.*#+}} xmm0 = xmm0[0],mem[1]
-; SSE2-NEXT:    paddq %xmm1, %xmm0
+; SSE2-NEXT:    movapd (%rdi), %xmm2
+; SSE2-NEXT:    movsd {{.*#+}} xmm2 = xmm0[0],xmm2[1]
+; SSE2-NEXT:    paddq %xmm1, %xmm2
+; SSE2-NEXT:    movdqa %xmm2, %xmm0
 ; SSE2-NEXT:    retq
 ;
 ; SSE4-LABEL: test_v2i64_blend_movsd_load:
 ; SSE4:       # %bb.0:
-; SSE4-NEXT:    pblendw {{.*#+}} xmm0 = xmm0[0,1,2,3],mem[4,5,6,7]
-; SSE4-NEXT:    paddq %xmm1, %xmm0
+; SSE4-NEXT:    movdqa (%rdi), %xmm2
+; SSE4-NEXT:    pblendw {{.*#+}} xmm2 = xmm0[0,1,2,3],xmm2[4,5,6,7]
+; SSE4-NEXT:    paddq %xmm1, %xmm2
+; SSE4-NEXT:    movdqa %xmm2, %xmm0
 ; SSE4-NEXT:    retq
 ;
 ; AVX1-LABEL: test_v2i64_blend_movsd_load:
@@ -241,8 +255,10 @@ define <2 x i64> @test_v2i64_blend_movsd_load_commute(<2 x i64> %a0, ptr %p1, <2
 ;
 ; SSE4-LABEL: test_v2i64_blend_movsd_load_commute:
 ; SSE4:       # %bb.0:
-; SSE4-NEXT:    pblendw {{.*#+}} xmm0 = mem[0,1,2,3],xmm0[4,5,6,7]
-; SSE4-NEXT:    paddq %xmm1, %xmm0
+; SSE4-NEXT:    movdqa (%rdi), %xmm2
+; SSE4-NEXT:    pblendw {{.*#+}} xmm2 = xmm2[0,1,2,3],xmm0[4,5,6,7]
+; SSE4-NEXT:    paddq %xmm1, %xmm2
+; SSE4-NEXT:    movdqa %xmm2, %xmm0
 ; SSE4-NEXT:    retq
 ;
 ; AVX1-LABEL: test_v2i64_blend_movsd_load_commute:
@@ -274,8 +290,9 @@ define <2 x i64> @test_v2i64_blend_movsd_zero(<2 x i64> %a0, <2 x i64> %a1, <2 x
 ; SSE4-LABEL: test_v2i64_blend_movsd_zero:
 ; SSE4:       # %bb.0:
 ; SSE4-NEXT:    pxor %xmm1, %xmm1
-; SSE4-NEXT:    pblendw {{.*#+}} xmm0 = xmm1[0,1,2,3],xmm0[4,5,6,7]
-; SSE4-NEXT:    paddq %xmm2, %xmm0
+; SSE4-NEXT:    pblendw {{.*#+}} xmm1 = xmm1[0,1,2,3],xmm0[4,5,6,7]
+; SSE4-NEXT:    paddq %xmm2, %xmm1
+; SSE4-NEXT:    movdqa %xmm1, %xmm0
 ; SSE4-NEXT:    retq
 ;
 ; AVX1-LABEL: test_v2i64_blend_movsd_zero:
@@ -393,19 +410,21 @@ define <4 x float> @test_v4f32_blend_movsd_optsize(<4 x float> %a0, <4 x float> 
 }
 
 define <4 x float> @test_v4f32_blend_movss_load(ptr %p0, <4 x float> %a1, <4 x float> %a2) {
-; SSE2-LABEL: test_v4f32_blend_movss_load:
-; SSE2:       # %bb.0:
-; SSE2-NEXT:    movaps (%rdi), %xmm2
-; SSE2-NEXT:    movss {{.*#+}} xmm2 = xmm0[0],xmm2[1,2,3]
-; SSE2-NEXT:    addps %xmm1, %xmm2
-; SSE2-NEXT:    movaps %xmm2, %xmm0
-; SSE2-NEXT:    retq
+; SSE-MOV-LABEL: test_v4f32_blend_movss_load:
+; SSE-MOV:       # %bb.0:
+; SSE-MOV-NEXT:    movaps (%rdi), %xmm2
+; SSE-MOV-NEXT:    movss {{.*#+}} xmm2 = xmm0[0],xmm2[1,2,3]
+; SSE-MOV-NEXT:    addps %xmm1, %xmm2
+; SSE-MOV-NEXT:    movaps %xmm2, %xmm0
+; SSE-MOV-NEXT:    retq
 ;
-; SSE4-LABEL: test_v4f32_blend_movss_load:
-; SSE4:       # %bb.0:
-; SSE4-NEXT:    blendps {{.*#+}} xmm0 = xmm0[0],mem[1,2,3]
-; SSE4-NEXT:    addps %xmm1, %xmm0
-; SSE4-NEXT:    retq
+; SSE4-BLEND-LABEL: test_v4f32_blend_movss_load:
+; SSE4-BLEND:       # %bb.0:
+; SSE4-BLEND-NEXT:    movaps (%rdi), %xmm2
+; SSE4-BLEND-NEXT:    blendps {{.*#+}} xmm2 = xmm0[0],xmm2[1,2,3]
+; SSE4-BLEND-NEXT:    addps %xmm1, %xmm2
+; SSE4-BLEND-NEXT:    movaps %xmm2, %xmm0
+; SSE4-BLEND-NEXT:    retq
 ;
 ; AVX-LABEL: test_v4f32_blend_movss_load:
 ; AVX:       # %bb.0:
@@ -428,8 +447,10 @@ define <4 x float> @test_v4f32_blend_movss_load_commute(<4 x float> %a0, ptr %p1
 ;
 ; SSE4-LABEL: test_v4f32_blend_movss_load_commute:
 ; SSE4:       # %bb.0:
-; SSE4-NEXT:    blendps {{.*#+}} xmm0 = mem[0],xmm0[1,2,3]
-; SSE4-NEXT:    addps %xmm1, %xmm0
+; SSE4-NEXT:    movaps (%rdi), %xmm2
+; SSE4-NEXT:    blendps {{.*#+}} xmm2 = xmm2[0],xmm0[1,2,3]
+; SSE4-NEXT:    addps %xmm1, %xmm2
+; SSE4-NEXT:    movaps %xmm2, %xmm0
 ; SSE4-NEXT:    retq
 ;
 ; AVX-LABEL: test_v4f32_blend_movss_load_commute:
@@ -446,15 +467,27 @@ define <4 x float> @test_v4f32_blend_movss_load_commute(<4 x float> %a0, ptr %p1
 define <4 x float> @test_v4f32_blend_movsd_load(ptr %p0, <4 x float> %a1, <4 x float> %a2) {
 ; SSE2-LABEL: test_v4f32_blend_movsd_load:
 ; SSE2:       # %bb.0:
-; SSE2-NEXT:    shufpd {{.*#+}} xmm0 = xmm0[0],mem[1]
-; SSE2-NEXT:    addps %xmm1, %xmm0
+; SSE2-NEXT:    movapd (%rdi), %xmm2
+; SSE2-NEXT:    movsd {{.*#+}} xmm2 = xmm0[0],xmm2[1]
+; SSE2-NEXT:    addps %xmm1, %xmm2
+; SSE2-NEXT:    movaps %xmm2, %xmm0
 ; SSE2-NEXT:    retq
 ;
-; SSE4-LABEL: test_v4f32_blend_movsd_load:
-; SSE4:       # %bb.0:
-; SSE4-NEXT:    blendps {{.*#+}} xmm0 = xmm0[0,1],mem[2,3]
-; SSE4-NEXT:    addps %xmm1, %xmm0
-; SSE4-NEXT:    retq
+; SSE4-BLEND-LABEL: test_v4f32_blend_movsd_load:
+; SSE4-BLEND:       # %bb.0:
+; SSE4-BLEND-NEXT:    movaps (%rdi), %xmm2
+; SSE4-BLEND-NEXT:    blendps {{.*#+}} xmm2 = xmm0[0,1],xmm2[2,3]
+; SSE4-BLEND-NEXT:    addps %xmm1, %xmm2
+; SSE4-BLEND-NEXT:    movaps %xmm2, %xmm0
+; SSE4-BLEND-NEXT:    retq
+;
+; SSE4-MOV-LABEL: test_v4f32_blend_movsd_load:
+; SSE4-MOV:       # %bb.0:
+; SSE4-MOV-NEXT:    movaps (%rdi), %xmm2
+; SSE4-MOV-NEXT:    movsd {{.*#+}} xmm2 = xmm0[0],xmm2[1]
+; SSE4-MOV-NEXT:    addps %xmm1, %xmm2
+; SSE4-MOV-NEXT:    movaps %xmm2, %xmm0
+; SSE4-MOV-NEXT:    retq
 ;
 ; AVX-LABEL: test_v4f32_blend_movsd_load:
 ; AVX:       # %bb.0:
@@ -476,8 +509,10 @@ define <4 x float> @test_v4f32_blend_movsd_load_commute(<4 x float> %a0, ptr %p1
 ;
 ; SSE4-LABEL: test_v4f32_blend_movsd_load_commute:
 ; SSE4:       # %bb.0:
-; SSE4-NEXT:    blendps {{.*#+}} xmm0 = mem[0,1],xmm0[2,3]
-; SSE4-NEXT:    addps %xmm1, %xmm0
+; SSE4-NEXT:    movaps (%rdi), %xmm2
+; SSE4-NEXT:    blendps {{.*#+}} xmm2 = xmm2[0,1],xmm0[2,3]
+; SSE4-NEXT:    addps %xmm1, %xmm2
+; SSE4-NEXT:    movaps %xmm2, %xmm0
 ; SSE4-NEXT:    retq
 ;
 ; AVX-LABEL: test_v4f32_blend_movsd_load_commute:
@@ -492,19 +527,20 @@ define <4 x float> @test_v4f32_blend_movsd_load_commute(<4 x float> %a0, ptr %p1
 }
 
 define <4 x float> @test_v4f32_blend_movss_zero(<4 x float> %a0, <4 x float> %a1, <4 x float> %a2) {
-; SSE-MOV-LABEL: test_v4f32_blend_movss_zero:
-; SSE-MOV:       # %bb.0:
-; SSE-MOV-NEXT:    xorps %xmm1, %xmm1
-; SSE-MOV-NEXT:    movss {{.*#+}} xmm0 = xmm1[0],xmm0[1,2,3]
-; SSE-MOV-NEXT:    addps %xmm2, %xmm0
-; SSE-MOV-NEXT:    retq
+; SSE2-LABEL: test_v4f32_blend_movss_zero:
+; SSE2:       # %bb.0:
+; SSE2-NEXT:    xorps %xmm1, %xmm1
+; SSE2-NEXT:    movss {{.*#+}} xmm0 = xmm1[0],xmm0[1,2,3]
+; SSE2-NEXT:    addps %xmm2, %xmm0
+; SSE2-NEXT:    retq
 ;
-; SSE4-BLEND-LABEL: test_v4f32_blend_movss_zero:
-; SSE4-BLEND:       # %bb.0:
-; SSE4-BLEND-NEXT:    xorps %xmm1, %xmm1
-; SSE4-BLEND-NEXT:    blendps {{.*#+}} xmm0 = xmm1[0],xmm0[1,2,3]
-; SSE4-BLEND-NEXT:    addps %xmm2, %xmm0
-; SSE4-BLEND-NEXT:    retq
+; SSE4-LABEL: test_v4f32_blend_movss_zero:
+; SSE4:       # %bb.0:
+; SSE4-NEXT:    xorps %xmm1, %xmm1
+; SSE4-NEXT:    blendps {{.*#+}} xmm1 = xmm1[0],xmm0[1,2,3]
+; SSE4-NEXT:    addps %xmm2, %xmm1
+; SSE4-NEXT:    movaps %xmm1, %xmm0
+; SSE4-NEXT:    retq
 ;
 ; AVX-BLEND-LABEL: test_v4f32_blend_movss_zero:
 ; AVX-BLEND:       # %bb.0:
@@ -527,24 +563,19 @@ define <4 x float> @test_v4f32_blend_movss_zero(<4 x float> %a0, <4 x float> %a1
 define <4 x float> @test_v4f32_blend_movsd_zero(<4 x float> %a0, <4 x float> %a1, <4 x float> %a2) {
 ; SSE2-LABEL: test_v4f32_blend_movsd_zero:
 ; SSE2:       # %bb.0:
-; SSE2-NEXT:    xorpd %xmm1, %xmm1
-; SSE2-NEXT:    movsd {{.*#+}} xmm0 = xmm1[0],xmm0[1]
-; SSE2-NEXT:    addps %xmm2, %xmm0
+; SSE2-NEXT:    xorps %xmm1, %xmm1
+; SSE2-NEXT:    shufps {{.*#+}} xmm1 = xmm1[0,1],xmm0[2,3]
+; SSE2-NEXT:    addps %xmm2, %xmm1
+; SSE2-NEXT:    movaps %xmm1, %xmm0
 ; SSE2-NEXT:    retq
 ;
-; SSE4-BLEND-LABEL: test_v4f32_blend_movsd_zero:
-; SSE4-BLEND:       # %bb.0:
-; SSE4-BLEND-NEXT:    xorps %xmm1, %xmm1
-; SSE4-BLEND-NEXT:    blendps {{.*#+}} xmm0 = xmm1[0,1],xmm0[2,3]
-; SSE4-BLEND-NEXT:    addps %xmm2, %xmm0
-; SSE4-BLEND-NEXT:    retq
-;
-; SSE4-MOV-LABEL: test_v4f32_blend_movsd_zero:
-; SSE4-MOV:       # %bb.0:
-; SSE4-MOV-NEXT:    xorps %xmm1, %xmm1
-; SSE4-MOV-NEXT:    movsd {{.*#+}} xmm0 = xmm1[0],xmm0[1]
-; SSE4-MOV-NEXT:    addps %xmm2, %xmm0
-; SSE4-MOV-NEXT:    retq
+; SSE4-LABEL: test_v4f32_blend_movsd_zero:
+; SSE4:       # %bb.0:
+; SSE4-NEXT:    xorps %xmm1, %xmm1
+; SSE4-NEXT:    blendps {{.*#+}} xmm1 = xmm1[0,1],xmm0[2,3]
+; SSE4-NEXT:    addps %xmm2, %xmm1
+; SSE4-NEXT:    movaps %xmm1, %xmm0
+; SSE4-NEXT:    retq
 ;
 ; AVX-BLEND-LABEL: test_v4f32_blend_movsd_zero:
 ; AVX-BLEND:       # %bb.0:
@@ -606,8 +637,9 @@ define <4 x i32> @test_v4i32_blend_movsd(<4 x i32> %a0, <4 x i32> %a1, <4 x i32>
 ;
 ; SSE4-LABEL: test_v4i32_blend_movsd:
 ; SSE4:       # %bb.0:
-; SSE4-NEXT:    pblendw {{.*#+}} xmm0 = xmm1[0,1,2,3],xmm0[4,5,6,7]
-; SSE4-NEXT:    paddd %xmm2, %xmm0
+; SSE4-NEXT:    pblendw {{.*#+}} xmm1 = xmm1[0,1,2,3],xmm0[4,5,6,7]
+; SSE4-NEXT:    paddd %xmm2, %xmm1
+; SSE4-NEXT:    movdqa %xmm1, %xmm0
 ; SSE4-NEXT:    retq
 ;
 ; AVX1-LABEL: test_v4i32_blend_movsd:
@@ -664,8 +696,9 @@ define <4 x i32> @test_v4i32_blend_movsd_optsize(<4 x i32> %a0, <4 x i32> %a1, <
 ;
 ; SSE4-LABEL: test_v4i32_blend_movsd_optsize:
 ; SSE4:       # %bb.0:
-; SSE4-NEXT:    pblendw {{.*#+}} xmm0 = xmm1[0,1,2,3],xmm0[4,5,6,7]
-; SSE4-NEXT:    paddd %xmm2, %xmm0
+; SSE4-NEXT:    pblendw {{.*#+}} xmm1 = xmm1[0,1,2,3],xmm0[4,5,6,7]
+; SSE4-NEXT:    paddd %xmm2, %xmm1
+; SSE4-NEXT:    movdqa %xmm1, %xmm0
 ; SSE4-NEXT:    retq
 ;
 ; AVX1-LABEL: test_v4i32_blend_movsd_optsize:
@@ -695,8 +728,10 @@ define <4 x i32> @test_v4i32_blend_movss_load(ptr %p0, <4 x i32> %a1, <4 x i32> 
 ;
 ; SSE4-LABEL: test_v4i32_blend_movss_load:
 ; SSE4:       # %bb.0:
-; SSE4-NEXT:    pblendw {{.*#+}} xmm0 = xmm0[0,1],mem[2,3,4,5,6,7]
-; SSE4-NEXT:    paddd %xmm1, %xmm0
+; SSE4-NEXT:    movdqa (%rdi), %xmm2
+; SSE4-NEXT:    pblendw {{.*#+}} xmm2 = xmm0[0,1],xmm2[2,3,4,5,6,7]
+; SSE4-NEXT:    paddd %xmm1, %xmm2
+; SSE4-NEXT:    movdqa %xmm2, %xmm0
 ; SSE4-NEXT:    retq
 ;
 ; AVX1-LABEL: test_v4i32_blend_movss_load:
@@ -726,8 +761,10 @@ define <4 x i32> @test_v4i32_blend_movss_load_commute(<4 x i32> %a0, ptr %p1, <4
 ;
 ; SSE4-LABEL: test_v4i32_blend_movss_load_commute:
 ; SSE4:       # %bb.0:
-; SSE4-NEXT:    pblendw {{.*#+}} xmm0 = mem[0,1],xmm0[2,3,4,5,6,7]
-; SSE4-NEXT:    paddd %xmm1, %xmm0
+; SSE4-NEXT:    movdqa (%rdi), %xmm2
+; SSE4-NEXT:    pblendw {{.*#+}} xmm2 = xmm2[0,1],xmm0[2,3,4,5,6,7]
+; SSE4-NEXT:    paddd %xmm1, %xmm2
+; SSE4-NEXT:    movdqa %xmm2, %xmm0
 ; SSE4-NEXT:    retq
 ;
 ; AVX1-LABEL: test_v4i32_blend_movss_load_commute:
@@ -750,14 +787,18 @@ define <4 x i32> @test_v4i32_blend_movss_load_commute(<4 x i32> %a0, ptr %p1, <4
 define <4 x i32> @test_v4i32_blend_movsd_load(ptr %p0, <4 x i32> %a1, <4 x i32> %a2) {
 ; SSE2-LABEL: test_v4i32_blend_movsd_load:
 ; SSE2:       # %bb.0:
-; SSE2-NEXT:    shufpd {{.*#+}} xmm0 = xmm0[0],mem[1]
-; SSE2-NEXT:    paddd %xmm1, %xmm0
+; SSE2-NEXT:    movapd (%rdi), %xmm2
+; SSE2-NEXT:    movsd {{.*#+}} xmm2 = xmm0[0],xmm2[1]
+; SSE2-NEXT:    paddd %xmm1, %xmm2
+; SSE2-NEXT:    movdqa %xmm2, %xmm0
 ; SSE2-NEXT:    retq
 ;
 ; SSE4-LABEL: test_v4i32_blend_movsd_load:
 ; SSE4:       # %bb.0:
-; SSE4-NEXT:    pblendw {{.*#+}} xmm0 = xmm0[0,1,2,3],mem[4,5,6,7]
-; SSE4-NEXT:    paddd %xmm1, %xmm0
+; SSE4-NEXT:    movdqa (%rdi), %xmm2
+; SSE4-NEXT:    pblendw {{.*#+}} xmm2 = xmm0[0,1,2,3],xmm2[4,5,6,7]
+; SSE4-NEXT:    paddd %xmm1, %xmm2
+; SSE4-NEXT:    movdqa %xmm2, %xmm0
 ; SSE4-NEXT:    retq
 ;
 ; AVX1-LABEL: test_v4i32_blend_movsd_load:
@@ -786,8 +827,10 @@ define <4 x i32> @test_v4i32_blend_movsd_load_commute(<4 x i32> %a0, ptr %p1, <4
 ;
 ; SSE4-LABEL: test_v4i32_blend_movsd_load_commute:
 ; SSE4:       # %bb.0:
-; SSE4-NEXT:    pblendw {{.*#+}} xmm0 = mem[0,1,2,3],xmm0[4,5,6,7]
-; SSE4-NEXT:    paddd %xmm1, %xmm0
+; SSE4-NEXT:    movdqa (%rdi), %xmm2
+; SSE4-NEXT:    pblendw {{.*#+}} xmm2 = xmm2[0,1,2,3],xmm0[4,5,6,7]
+; SSE4-NEXT:    paddd %xmm1, %xmm2
+; SSE4-NEXT:    movdqa %xmm2, %xmm0
 ; SSE4-NEXT:    retq
 ;
 ; AVX1-LABEL: test_v4i32_blend_movsd_load_commute:
@@ -810,15 +853,18 @@ define <4 x i32> @test_v4i32_blend_movsd_load_commute(<4 x i32> %a0, ptr %p1, <4
 define <4 x i32> @test_v4i32_blend_movss_zero(<4 x i32> %a0, <4 x i32> %a1, <4 x i32> %a2) {
 ; SSE2-LABEL: test_v4i32_blend_movss_zero:
 ; SSE2:       # %bb.0:
-; SSE2-NEXT:    pand {{\.?LCPI[0-9]+_[0-9]+}}(%rip), %xmm0
-; SSE2-NEXT:    paddd %xmm2, %xmm0
+; SSE2-NEXT:    movdqa {{.*#+}} xmm1 = [0,4294967295,4294967295,4294967295]
+; SSE2-NEXT:    pand %xmm0, %xmm1
+; SSE2-NEXT:    paddd %xmm2, %xmm1
+; SSE2-NEXT:    movdqa %xmm1, %xmm0
 ; SSE2-NEXT:    retq
 ;
 ; SSE4-LABEL: test_v4i32_blend_movss_zero:
 ; SSE4:       # %bb.0:
 ; SSE4-NEXT:    pxor %xmm1, %xmm1
-; SSE4-NEXT:    pblendw {{.*#+}} xmm0 = xmm1[0,1],xmm0[2,3,4,5,6,7]
-; SSE4-NEXT:    paddd %xmm2, %xmm0
+; SSE4-NEXT:    pblendw {{.*#+}} xmm1 = xmm1[0,1],xmm0[2,3,4,5,6,7]
+; SSE4-NEXT:    paddd %xmm2, %xmm1
+; SSE4-NEXT:    movdqa %xmm1, %xmm0
 ; SSE4-NEXT:    retq
 ;
 ; AVX1-LABEL: test_v4i32_blend_movss_zero:
@@ -851,8 +897,9 @@ define <4 x i32> @test_v4i32_blend_movsd_zero(<4 x i32> %a0, <4 x i32> %a1, <4 x
 ; SSE4-LABEL: test_v4i32_blend_movsd_zero:
 ; SSE4:       # %bb.0:
 ; SSE4-NEXT:    pxor %xmm1, %xmm1
-; SSE4-NEXT:    pblendw {{.*#+}} xmm0 = xmm1[0,1,2,3],xmm0[4,5,6,7]
-; SSE4-NEXT:    paddd %xmm2, %xmm0
+; SSE4-NEXT:    pblendw {{.*#+}} xmm1 = xmm1[0,1,2,3],xmm0[4,5,6,7]
+; SSE4-NEXT:    paddd %xmm2, %xmm1
+; SSE4-NEXT:    movdqa %xmm1, %xmm0
 ; SSE4-NEXT:    retq
 ;
 ; AVX1-LABEL: test_v4i32_blend_movsd_zero:

@@ -372,8 +372,10 @@ define i64 @btr63() nounwind {
 ; X86-NEXT:  # %bb.2: # %atomicrmw.end
 ; X86-NEXT:    addl $1, %edi
 ; X86-NEXT:    adcl $0, %esi
-; X86-NEXT:    andl %edi, %eax
-; X86-NEXT:    andl %esi, %edx
+; X86-NEXT:    andl %eax, %edi
+; X86-NEXT:    andl %edx, %esi
+; X86-NEXT:    movl %edi, %eax
+; X86-NEXT:    movl %esi, %edx
 ; X86-NEXT:    popl %esi
 ; X86-NEXT:    popl %edi
 ; X86-NEXT:    popl %ebx
@@ -576,7 +578,7 @@ define i32 @split_hoist_and(i32 %0) nounwind {
 ; X86-NEXT:    xorl %eax, %eax
 ; X86-NEXT:    lock btsl $3, v32
 ; X86-NEXT:    setb %al
-; X86-NEXT:    shll $3, %eax
+; X86-NEXT:    leal (,%eax,8), %eax
 ; X86-NEXT:    testl %ecx, %ecx
 ; X86-NEXT:    retl
 ;
@@ -585,7 +587,7 @@ define i32 @split_hoist_and(i32 %0) nounwind {
 ; X64-NEXT:    xorl %eax, %eax
 ; X64-NEXT:    lock btsl $3, v32(%rip)
 ; X64-NEXT:    setb %al
-; X64-NEXT:    shll $3, %eax
+; X64-NEXT:    leal (,%rax,8), %eax
 ; X64-NEXT:    retq
   %2 = atomicrmw or ptr @v32, i32 8 monotonic, align 4
   %3 = tail call i32 @llvm.ctlz.i32(i32 %0, i1 false)

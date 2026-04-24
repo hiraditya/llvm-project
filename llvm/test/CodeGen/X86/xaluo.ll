@@ -241,10 +241,10 @@ define zeroext i1 @saddoi64imm3(i64 %v1, ptr %res) {
 ;
 ; FAST-LABEL: saddoi64imm3:
 ; FAST:       ## %bb.0:
-; FAST-NEXT:    movabsq $-21474836489, %rcx ## imm = 0xFFFFFFFAFFFFFFF7
-; FAST-NEXT:    addq %rdi, %rcx
+; FAST-NEXT:    movabsq $-21474836489, %rax ## imm = 0xFFFFFFFAFFFFFFF7
+; FAST-NEXT:    addq %rax, %rdi
 ; FAST-NEXT:    seto %al
-; FAST-NEXT:    movq %rcx, (%rsi)
+; FAST-NEXT:    movq %rdi, (%rsi)
 ; FAST-NEXT:    andb $1, %al
 ; FAST-NEXT:    retq
   %t = call {i64, i1} @llvm.sadd.with.overflow.i64(i64 %v1, i64 -21474836489)
@@ -286,10 +286,10 @@ define zeroext i1 @saddoi64imm5(i64 %v1, ptr %res) {
 ;
 ; FAST-LABEL: saddoi64imm5:
 ; FAST:       ## %bb.0:
-; FAST-NEXT:    movl $2147483648, %ecx ## imm = 0x80000000
-; FAST-NEXT:    addq %rdi, %rcx
+; FAST-NEXT:    movl $2147483648, %eax ## imm = 0x80000000
+; FAST-NEXT:    addq %rax, %rdi
 ; FAST-NEXT:    seto %al
-; FAST-NEXT:    movq %rcx, (%rsi)
+; FAST-NEXT:    movq %rdi, (%rsi)
 ; FAST-NEXT:    andb $1, %al
 ; FAST-NEXT:    retq
   %t = call {i64, i1} @llvm.sadd.with.overflow.i64(i64 %v1, i64 2147483648)
@@ -936,9 +936,10 @@ continue:
 define {i64, i1} @saddoovf(i64 %a, i64 %b) {
 ; CHECK-LABEL: saddoovf:
 ; CHECK:       ## %bb.0:
+; CHECK-NEXT:    movq %rsi, %rax
 ; CHECK-NEXT:    sarq $17, %rdi
-; CHECK-NEXT:    shrq $31, %rsi
-; CHECK-NEXT:    leaq (%rsi,%rdi), %rax
+; CHECK-NEXT:    shrq $31, %rax
+; CHECK-NEXT:    addq %rdi, %rax
 ; CHECK-NEXT:    xorl %edx, %edx
 ; CHECK-NEXT:    retq
   %1 = ashr i64 %a, 17

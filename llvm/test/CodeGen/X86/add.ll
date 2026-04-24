@@ -11,7 +11,7 @@ declare {i32, i1} @llvm.uadd.with.overflow.i32(i32, i32)
 define i32 @test1(i32 inreg %a) nounwind {
 ; X86-LABEL: test1:
 ; X86:       # %bb.0: # %entry
-; X86-NEXT:    subl $-128, %eax
+; X86-NEXT:    addl $128, %eax
 ; X86-NEXT:    retl
 ;
 ; X64-LINUX-LABEL: test1:
@@ -35,19 +35,19 @@ define i32 @test1b(ptr %p) nounwind {
 ; X86:       # %bb.0: # %entry
 ; X86-NEXT:    movl {{[0-9]+}}(%esp), %eax
 ; X86-NEXT:    movl (%eax), %eax
-; X86-NEXT:    subl $-128, %eax
+; X86-NEXT:    addl $128, %eax
 ; X86-NEXT:    retl
 ;
 ; X64-LINUX-LABEL: test1b:
 ; X64-LINUX:       # %bb.0: # %entry
 ; X64-LINUX-NEXT:    movl (%rdi), %eax
-; X64-LINUX-NEXT:    subl $-128, %eax
+; X64-LINUX-NEXT:    addl $128, %eax
 ; X64-LINUX-NEXT:    retq
 ;
 ; X64-WIN32-LABEL: test1b:
 ; X64-WIN32:       # %bb.0: # %entry
 ; X64-WIN32-NEXT:    movl (%rcx), %eax
-; X64-WIN32-NEXT:    subl $-128, %eax
+; X64-WIN32-NEXT:    addl $128, %eax
 ; X64-WIN32-NEXT:    retq
 entry:
   %a = load i32, ptr %p
@@ -101,23 +101,24 @@ entry:
 define i64 @test3b(ptr %p) nounwind {
 ; X86-LABEL: test3b:
 ; X86:       # %bb.0: # %entry
-; X86-NEXT:    movl {{[0-9]+}}(%esp), %ecx
-; X86-NEXT:    movl 4(%ecx), %edx
-; X86-NEXT:    movl $128, %eax
-; X86-NEXT:    addl (%ecx), %eax
+; X86-NEXT:    movl {{[0-9]+}}(%esp), %eax
+; X86-NEXT:    movl 4(%eax), %edx
+; X86-NEXT:    movl $128, %ecx
+; X86-NEXT:    movl (%eax), %eax
+; X86-NEXT:    addl %ecx, %eax
 ; X86-NEXT:    adcl $0, %edx
 ; X86-NEXT:    retl
 ;
 ; X64-LINUX-LABEL: test3b:
 ; X64-LINUX:       # %bb.0: # %entry
 ; X64-LINUX-NEXT:    movq (%rdi), %rax
-; X64-LINUX-NEXT:    subq $-128, %rax
+; X64-LINUX-NEXT:    addq $128, %rax
 ; X64-LINUX-NEXT:    retq
 ;
 ; X64-WIN32-LABEL: test3b:
 ; X64-WIN32:       # %bb.0: # %entry
 ; X64-WIN32-NEXT:    movq (%rcx), %rax
-; X64-WIN32-NEXT:    subq $-128, %rax
+; X64-WIN32-NEXT:    addq $128, %rax
 ; X64-WIN32-NEXT:    retq
 entry:
   %a = load i64, ptr %p
@@ -129,7 +130,8 @@ define i1 @test4(i32 %v1, i32 %v2, ptr %X) nounwind {
 ; X86-LABEL: test4:
 ; X86:       # %bb.0: # %entry
 ; X86-NEXT:    movl {{[0-9]+}}(%esp), %eax
-; X86-NEXT:    addl {{[0-9]+}}(%esp), %eax
+; X86-NEXT:    movl {{[0-9]+}}(%esp), %ecx
+; X86-NEXT:    addl %eax, %ecx
 ; X86-NEXT:    jo .LBB5_2
 ; X86-NEXT:  # %bb.1: # %normal
 ; X86-NEXT:    movl {{[0-9]+}}(%esp), %eax
@@ -175,7 +177,8 @@ define i1 @test5(i32 %v1, i32 %v2, ptr %X) nounwind {
 ; X86-LABEL: test5:
 ; X86:       # %bb.0: # %entry
 ; X86-NEXT:    movl {{[0-9]+}}(%esp), %eax
-; X86-NEXT:    addl {{[0-9]+}}(%esp), %eax
+; X86-NEXT:    movl {{[0-9]+}}(%esp), %ecx
+; X86-NEXT:    addl %eax, %ecx
 ; X86-NEXT:    jb .LBB6_2
 ; X86-NEXT:  # %bb.1: # %normal
 ; X86-NEXT:    movl {{[0-9]+}}(%esp), %eax
@@ -221,8 +224,9 @@ define i64 @test6(i64 %A, i32 %B) nounwind {
 ; X86-LABEL: test6:
 ; X86:       # %bb.0: # %entry
 ; X86-NEXT:    movl {{[0-9]+}}(%esp), %eax
+; X86-NEXT:    movl {{[0-9]+}}(%esp), %ecx
 ; X86-NEXT:    movl {{[0-9]+}}(%esp), %edx
-; X86-NEXT:    addl {{[0-9]+}}(%esp), %edx
+; X86-NEXT:    addl %ecx, %edx
 ; X86-NEXT:    retl
 ;
 ; X64-LINUX-LABEL: test6:
@@ -248,8 +252,9 @@ entry:
 define {i32, i1} @test7(i32 %v1, i32 %v2) nounwind {
 ; X86-LABEL: test7:
 ; X86:       # %bb.0: # %entry
+; X86-NEXT:    movl {{[0-9]+}}(%esp), %ecx
 ; X86-NEXT:    movl {{[0-9]+}}(%esp), %eax
-; X86-NEXT:    addl {{[0-9]+}}(%esp), %eax
+; X86-NEXT:    addl %ecx, %eax
 ; X86-NEXT:    setb %dl
 ; X86-NEXT:    retl
 ;
@@ -275,11 +280,15 @@ entry:
 define {i64, i1} @test8(i64 %left, i64 %right) nounwind {
 ; X86-LABEL: test8:
 ; X86:       # %bb.0: # %entry
+; X86-NEXT:    pushl %esi
+; X86-NEXT:    movl {{[0-9]+}}(%esp), %ecx
+; X86-NEXT:    movl {{[0-9]+}}(%esp), %esi
 ; X86-NEXT:    movl {{[0-9]+}}(%esp), %eax
+; X86-NEXT:    addl %ecx, %eax
 ; X86-NEXT:    movl {{[0-9]+}}(%esp), %edx
-; X86-NEXT:    addl {{[0-9]+}}(%esp), %eax
-; X86-NEXT:    adcl {{[0-9]+}}(%esp), %edx
+; X86-NEXT:    adcl %esi, %edx
 ; X86-NEXT:    setb %cl
+; X86-NEXT:    popl %esi
 ; X86-NEXT:    retl
 ;
 ; X64-LINUX-LABEL: test8:
@@ -603,8 +612,9 @@ define void @add_i64_128_flag(i64 %x) {
 ; X86-LABEL: add_i64_128_flag:
 ; X86:       # %bb.0: # %entry
 ; X86-NEXT:    movl {{[0-9]+}}(%esp), %ecx
-; X86-NEXT:    movl $128, %eax
-; X86-NEXT:    addl {{[0-9]+}}(%esp), %eax
+; X86-NEXT:    movl $128, %edx
+; X86-NEXT:    movl {{[0-9]+}}(%esp), %eax
+; X86-NEXT:    addl %edx, %eax
 ; X86-NEXT:    adcl $0, %ecx
 ; X86-NEXT:    movl %eax, %edx
 ; X86-NEXT:    orl %ecx, %edx
@@ -651,8 +661,9 @@ define void @add_i64_2147483648_flag(i64 %x) {
 ; X86-LABEL: add_i64_2147483648_flag:
 ; X86:       # %bb.0: # %entry
 ; X86-NEXT:    movl {{[0-9]+}}(%esp), %ecx
-; X86-NEXT:    movl $-2147483648, %eax # imm = 0x80000000
-; X86-NEXT:    addl {{[0-9]+}}(%esp), %eax
+; X86-NEXT:    movl $-2147483648, %edx # imm = 0x80000000
+; X86-NEXT:    movl {{[0-9]+}}(%esp), %eax
+; X86-NEXT:    addl %edx, %eax
 ; X86-NEXT:    adcl $0, %ecx
 ; X86-NEXT:    movl %eax, %edx
 ; X86-NEXT:    orl %ecx, %edx

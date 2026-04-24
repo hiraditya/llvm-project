@@ -5,7 +5,9 @@
 define double @foo(double %x) {
 ; CHECK-LABEL: foo:
 ; CHECK:       # %bb.0:
-; CHECK-NEXT:    mulsd {{\.?LCPI[0-9]+_[0-9]+}}(%rip), %xmm0
+; CHECK-NEXT:    movsd {{.*#+}} xmm1 = [5.0E-1,0.0E+0]
+; CHECK-NEXT:    mulsd %xmm0, %xmm1
+; CHECK-NEXT:    movapd %xmm1, %xmm0
 ; CHECK-NEXT:    retq
         %y = fmul double %x, 5.000000e-01
         ret double %y

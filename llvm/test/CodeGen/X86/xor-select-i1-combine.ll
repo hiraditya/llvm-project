@@ -10,8 +10,8 @@ define dso_local i32 @main(i8 %small) {
 ; CHECK-NEXT:    testb $1, %dil
 ; CHECK-NEXT:    movl $m, %eax
 ; CHECK-NEXT:    movl $n, %ecx
-; CHECK-NEXT:    cmoveq %rax, %rcx
-; CHECK-NEXT:    movl (%rcx), %eax
+; CHECK-NEXT:    cmovneq %rcx, %rax
+; CHECK-NEXT:    movl (%rax), %eax
 ; CHECK-NEXT:    retq
 entry:
   %0 = and i8 %small, 1
@@ -28,8 +28,8 @@ define dso_local i32 @main2(i8 %small) {
 ; CHECK-NEXT:    movl $m, %eax
 ; CHECK-NEXT:    movl $n, %ecx
 ; CHECK-NEXT:    testb $1, %dil
-; CHECK-NEXT:    cmovneq %rax, %rcx
-; CHECK-NEXT:    movl (%rcx), %eax
+; CHECK-NEXT:    cmoveq %rcx, %rax
+; CHECK-NEXT:    movl (%rax), %eax
 ; CHECK-NEXT:    retq
 entry:
   %0 = and i8 %small, 1

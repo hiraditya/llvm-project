@@ -27,13 +27,12 @@ define void @PR24199(i32 %a0) {
 ; CHECK-NEXT:    # implicit-def: $rdi
 ; CHECK-NEXT:    callq foo@PLT
 ; CHECK-NEXT:    movss {{.*#+}} xmm0 = mem[0],zero,zero,zero
-; CHECK-NEXT:    movss {{[-0-9]+}}(%r{{[sb]}}p), %xmm2 # 4-byte Reload
-; CHECK-NEXT:    # xmm2 = mem[0],zero,zero,zero
-; CHECK-NEXT:    mulss %xmm0, %xmm2
 ; CHECK-NEXT:    movss {{.*#+}} xmm1 = [1.0E+0,0.0E+0,0.0E+0,0.0E+0]
-; CHECK-NEXT:    addss %xmm1, %xmm0
-; CHECK-NEXT:    addss %xmm2, %xmm0
-; CHECK-NEXT:    movss %xmm0, (%rax)
+; CHECK-NEXT:    movaps %xmm1, %xmm2
+; CHECK-NEXT:    addss %xmm0, %xmm2
+; CHECK-NEXT:    mulss {{[-0-9]+}}(%r{{[sb]}}p), %xmm0 # 4-byte Folded Reload
+; CHECK-NEXT:    addss %xmm0, %xmm2
+; CHECK-NEXT:    movss %xmm2, (%rax)
 ; CHECK-NEXT:    testl %ebx, %ebx
 ; CHECK-NEXT:    jne .LBB0_5
 ; CHECK-NEXT:  # %bb.4: # %if.end

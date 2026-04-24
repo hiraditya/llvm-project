@@ -9,8 +9,9 @@
 define <4 x float> @mask_ucvt_4i32_4f32(<4 x i32> %a) {
 ; X86-SSE-LABEL: mask_ucvt_4i32_4f32:
 ; X86-SSE:       # %bb.0:
-; X86-SSE-NEXT:    andps {{\.?LCPI[0-9]+_[0-9]+}}, %xmm0
-; X86-SSE-NEXT:    cvtdq2ps %xmm0, %xmm0
+; X86-SSE-NEXT:    movaps {{.*#+}} xmm1 = [127,255,4095,65595]
+; X86-SSE-NEXT:    andps %xmm0, %xmm1
+; X86-SSE-NEXT:    cvtdq2ps %xmm1, %xmm0
 ; X86-SSE-NEXT:    retl
 ;
 ; X86-AVX-LABEL: mask_ucvt_4i32_4f32:
@@ -21,8 +22,9 @@ define <4 x float> @mask_ucvt_4i32_4f32(<4 x i32> %a) {
 ;
 ; X64-SSE-LABEL: mask_ucvt_4i32_4f32:
 ; X64-SSE:       # %bb.0:
-; X64-SSE-NEXT:    andps {{\.?LCPI[0-9]+_[0-9]+}}(%rip), %xmm0
-; X64-SSE-NEXT:    cvtdq2ps %xmm0, %xmm0
+; X64-SSE-NEXT:    movaps {{.*#+}} xmm1 = [127,255,4095,65595]
+; X64-SSE-NEXT:    andps %xmm0, %xmm1
+; X64-SSE-NEXT:    cvtdq2ps %xmm1, %xmm0
 ; X64-SSE-NEXT:    retq
 ;
 ; X64-AVX-LABEL: mask_ucvt_4i32_4f32:
@@ -38,11 +40,11 @@ define <4 x float> @mask_ucvt_4i32_4f32(<4 x i32> %a) {
 define <4 x double> @mask_ucvt_4i32_4f64(<4 x i32> %a) {
 ; X86-SSE-LABEL: mask_ucvt_4i32_4f64:
 ; X86-SSE:       # %bb.0:
-; X86-SSE-NEXT:    pand {{\.?LCPI[0-9]+_[0-9]+}}, %xmm0
-; X86-SSE-NEXT:    cvtdq2pd %xmm0, %xmm2
-; X86-SSE-NEXT:    pshufd {{.*#+}} xmm0 = xmm0[2,3,2,3]
-; X86-SSE-NEXT:    cvtdq2pd %xmm0, %xmm1
-; X86-SSE-NEXT:    movaps %xmm2, %xmm0
+; X86-SSE-NEXT:    movdqa {{.*#+}} xmm1 = [127,255,4095,65595]
+; X86-SSE-NEXT:    pand %xmm0, %xmm1
+; X86-SSE-NEXT:    cvtdq2pd %xmm1, %xmm0
+; X86-SSE-NEXT:    pshufd {{.*#+}} xmm1 = xmm1[2,3,2,3]
+; X86-SSE-NEXT:    cvtdq2pd %xmm1, %xmm1
 ; X86-SSE-NEXT:    retl
 ;
 ; X86-AVX-LABEL: mask_ucvt_4i32_4f64:
@@ -53,11 +55,11 @@ define <4 x double> @mask_ucvt_4i32_4f64(<4 x i32> %a) {
 ;
 ; X64-SSE-LABEL: mask_ucvt_4i32_4f64:
 ; X64-SSE:       # %bb.0:
-; X64-SSE-NEXT:    pand {{\.?LCPI[0-9]+_[0-9]+}}(%rip), %xmm0
-; X64-SSE-NEXT:    cvtdq2pd %xmm0, %xmm2
-; X64-SSE-NEXT:    pshufd {{.*#+}} xmm0 = xmm0[2,3,2,3]
-; X64-SSE-NEXT:    cvtdq2pd %xmm0, %xmm1
-; X64-SSE-NEXT:    movaps %xmm2, %xmm0
+; X64-SSE-NEXT:    movdqa {{.*#+}} xmm1 = [127,255,4095,65595]
+; X64-SSE-NEXT:    pand %xmm0, %xmm1
+; X64-SSE-NEXT:    cvtdq2pd %xmm1, %xmm0
+; X64-SSE-NEXT:    pshufd {{.*#+}} xmm1 = xmm1[2,3,2,3]
+; X64-SSE-NEXT:    cvtdq2pd %xmm1, %xmm1
 ; X64-SSE-NEXT:    retq
 ;
 ; X64-AVX-LABEL: mask_ucvt_4i32_4f64:
@@ -79,8 +81,9 @@ define <4 x float> @lshr_truncate_mask_ucvt_4i64_4f32(ptr%p0) {
 ; X86-SSE-NEXT:    movups 16(%eax), %xmm1
 ; X86-SSE-NEXT:    shufps {{.*#+}} xmm0 = xmm0[0,2],xmm1[0,2]
 ; X86-SSE-NEXT:    psrld $16, %xmm0
-; X86-SSE-NEXT:    cvtdq2ps %xmm0, %xmm0
-; X86-SSE-NEXT:    mulps {{\.?LCPI[0-9]+_[0-9]+}}, %xmm0
+; X86-SSE-NEXT:    cvtdq2ps %xmm0, %xmm1
+; X86-SSE-NEXT:    movaps {{.*#+}} xmm0 = [1.52590219E-5,1.52590219E-5,1.52590219E-5,1.52590219E-5]
+; X86-SSE-NEXT:    mulps %xmm1, %xmm0
 ; X86-SSE-NEXT:    retl
 ;
 ; X86-AVX-LABEL: lshr_truncate_mask_ucvt_4i64_4f32:
@@ -99,8 +102,9 @@ define <4 x float> @lshr_truncate_mask_ucvt_4i64_4f32(ptr%p0) {
 ; X64-SSE-NEXT:    movups 16(%rdi), %xmm1
 ; X64-SSE-NEXT:    shufps {{.*#+}} xmm0 = xmm0[0,2],xmm1[0,2]
 ; X64-SSE-NEXT:    psrld $16, %xmm0
-; X64-SSE-NEXT:    cvtdq2ps %xmm0, %xmm0
-; X64-SSE-NEXT:    mulps {{\.?LCPI[0-9]+_[0-9]+}}(%rip), %xmm0
+; X64-SSE-NEXT:    cvtdq2ps %xmm0, %xmm1
+; X64-SSE-NEXT:    movaps {{.*#+}} xmm0 = [1.52590219E-5,1.52590219E-5,1.52590219E-5,1.52590219E-5]
+; X64-SSE-NEXT:    mulps %xmm1, %xmm0
 ; X64-SSE-NEXT:    retq
 ;
 ; X64-AVX-LABEL: lshr_truncate_mask_ucvt_4i64_4f32:

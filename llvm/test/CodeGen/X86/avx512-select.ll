@@ -67,8 +67,8 @@ define float @select02(float %a, float %b, float %c, float %eps) {
 ; X86-NEXT:    vucomiss {{[0-9]+}}(%esp), %xmm0
 ; X86-NEXT:    leal {{[0-9]+}}(%esp), %eax
 ; X86-NEXT:    leal {{[0-9]+}}(%esp), %ecx
-; X86-NEXT:    cmovael %eax, %ecx
-; X86-NEXT:    flds (%ecx)
+; X86-NEXT:    cmovbl %ecx, %eax
+; X86-NEXT:    flds (%eax)
 ; X86-NEXT:    retl
 ;
 ; X64-LABEL: select02:
@@ -89,8 +89,8 @@ define double @select03(double %a, double %b, double %c, double %eps) {
 ; X86-NEXT:    vucomisd {{[0-9]+}}(%esp), %xmm0
 ; X86-NEXT:    leal {{[0-9]+}}(%esp), %eax
 ; X86-NEXT:    leal {{[0-9]+}}(%esp), %ecx
-; X86-NEXT:    cmovael %eax, %ecx
-; X86-NEXT:    fldl (%ecx)
+; X86-NEXT:    cmovbl %ecx, %eax
+; X86-NEXT:    fldl (%eax)
 ; X86-NEXT:    retl
 ;
 ; X64-LABEL: select03:
@@ -131,14 +131,15 @@ define <16 x double> @select04(<16 x double> %a, <16 x double> %b) {
 define i8 @select05(i8 %a.0, i8 %m) {
 ; X86-LABEL: select05:
 ; X86:       # %bb.0:
+; X86-NEXT:    movzbl {{[0-9]+}}(%esp), %ecx
 ; X86-NEXT:    movzbl {{[0-9]+}}(%esp), %eax
-; X86-NEXT:    orb {{[0-9]+}}(%esp), %al
+; X86-NEXT:    orb %cl, %al
 ; X86-NEXT:    retl
 ;
 ; X64-LABEL: select05:
 ; X64:       # %bb.0:
-; X64-NEXT:    movl %edi, %eax
-; X64-NEXT:    orl %esi, %eax
+; X64-NEXT:    movl %esi, %eax
+; X64-NEXT:    orl %edi, %eax
 ; X64-NEXT:    # kill: def $al killed $al killed $eax
 ; X64-NEXT:    retq
   %mask = bitcast i8 %m to <8 x i1>
@@ -206,14 +207,15 @@ define i8 @select05_mem(ptr %a.0, ptr %m) {
 define i8 @select06(i8 %a.0, i8 %m) {
 ; X86-LABEL: select06:
 ; X86:       # %bb.0:
+; X86-NEXT:    movzbl {{[0-9]+}}(%esp), %ecx
 ; X86-NEXT:    movzbl {{[0-9]+}}(%esp), %eax
-; X86-NEXT:    andb {{[0-9]+}}(%esp), %al
+; X86-NEXT:    andb %cl, %al
 ; X86-NEXT:    retl
 ;
 ; X64-LABEL: select06:
 ; X64:       # %bb.0:
-; X64-NEXT:    movl %edi, %eax
-; X64-NEXT:    andl %esi, %eax
+; X64-NEXT:    movl %esi, %eax
+; X64-NEXT:    andl %edi, %eax
 ; X64-NEXT:    # kill: def $al killed $al killed $eax
 ; X64-NEXT:    retq
   %mask = bitcast i8 %m to <8 x i1>
@@ -360,8 +362,8 @@ define double @pr30561_f64(double %b, double %a, i1 %c) {
 ; X86-NEXT:    testb $1, {{[0-9]+}}(%esp)
 ; X86-NEXT:    leal {{[0-9]+}}(%esp), %eax
 ; X86-NEXT:    leal {{[0-9]+}}(%esp), %ecx
-; X86-NEXT:    cmovnel %eax, %ecx
-; X86-NEXT:    fldl (%ecx)
+; X86-NEXT:    cmovel %ecx, %eax
+; X86-NEXT:    fldl (%eax)
 ; X86-NEXT:    retl
 ;
 ; X64-AVX512F-LABEL: pr30561_f64:
@@ -385,8 +387,8 @@ define float @pr30561_f32(float %b, float %a, i1 %c) {
 ; X86-NEXT:    testb $1, {{[0-9]+}}(%esp)
 ; X86-NEXT:    leal {{[0-9]+}}(%esp), %eax
 ; X86-NEXT:    leal {{[0-9]+}}(%esp), %ecx
-; X86-NEXT:    cmovnel %eax, %ecx
-; X86-NEXT:    flds (%ecx)
+; X86-NEXT:    cmovel %ecx, %eax
+; X86-NEXT:    flds (%eax)
 ; X86-NEXT:    retl
 ;
 ; X64-AVX512F-LABEL: pr30561_f32:

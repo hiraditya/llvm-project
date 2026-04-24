@@ -11,11 +11,12 @@ define i128 @fshl_i128(i128 %a0, i128 %a1, i128 %a2) nounwind {
 ; CHECK:       # %bb.0:
 ; CHECK-NEXT:    testb $64, %r8b
 ; CHECK-NEXT:    cmovneq %rdi, %rsi
-; CHECK-NEXT:    cmoveq %rcx, %rdx
 ; CHECK-NEXT:    cmovneq %rcx, %rdi
+; CHECK-NEXT:    movq %rcx, %r9
+; CHECK-NEXT:    cmovneq %rdx, %r9
 ; CHECK-NEXT:    movq %rdi, %rax
 ; CHECK-NEXT:    movl %r8d, %ecx
-; CHECK-NEXT:    shldq %cl, %rdx, %rax
+; CHECK-NEXT:    shldq %cl, %r9, %rax
 ; CHECK-NEXT:    shldq %cl, %rdi, %rsi
 ; CHECK-NEXT:    movq %rsi, %rdx
 ; CHECK-NEXT:    retq
@@ -24,31 +25,18 @@ define i128 @fshl_i128(i128 %a0, i128 %a1, i128 %a2) nounwind {
 }
 
 define i128 @fshr_i128(i128 %a0, i128 %a1, i128 %a2) nounwind {
-; SSE-LABEL: fshr_i128:
-; SSE:       # %bb.0:
-; SSE-NEXT:    testb $64, %r8b
-; SSE-NEXT:    cmoveq %rdi, %rsi
-; SSE-NEXT:    cmoveq %rcx, %rdi
-; SSE-NEXT:    movq %rdx, %rax
-; SSE-NEXT:    cmovneq %rcx, %rax
-; SSE-NEXT:    movl %r8d, %ecx
-; SSE-NEXT:    shrdq %cl, %rdi, %rax
-; SSE-NEXT:    shrdq %cl, %rsi, %rdi
-; SSE-NEXT:    movq %rdi, %rdx
-; SSE-NEXT:    retq
-;
-; AVX-LABEL: fshr_i128:
-; AVX:       # %bb.0:
-; AVX-NEXT:    movq %rdx, %rax
-; AVX-NEXT:    testb $64, %r8b
-; AVX-NEXT:    cmoveq %rdi, %rsi
-; AVX-NEXT:    cmoveq %rcx, %rdi
-; AVX-NEXT:    cmovneq %rcx, %rax
-; AVX-NEXT:    movl %r8d, %ecx
-; AVX-NEXT:    shrdq %cl, %rdi, %rax
-; AVX-NEXT:    shrdq %cl, %rsi, %rdi
-; AVX-NEXT:    movq %rdi, %rdx
-; AVX-NEXT:    retq
+; CHECK-LABEL: fshr_i128:
+; CHECK:       # %bb.0:
+; CHECK-NEXT:    movq %rcx, %rax
+; CHECK-NEXT:    testb $64, %r8b
+; CHECK-NEXT:    cmoveq %rdi, %rsi
+; CHECK-NEXT:    cmoveq %rcx, %rdi
+; CHECK-NEXT:    cmoveq %rdx, %rax
+; CHECK-NEXT:    movl %r8d, %ecx
+; CHECK-NEXT:    shrdq %cl, %rdi, %rax
+; CHECK-NEXT:    shrdq %cl, %rsi, %rdi
+; CHECK-NEXT:    movq %rdi, %rdx
+; CHECK-NEXT:    retq
   %r = call i128 @llvm.fshr.i128(i128 %a0, i128 %a1, i128 %a2)
   ret i128 %r
 }
@@ -132,12 +120,13 @@ define i128 @fshr_i128_load(ptr %p0, ptr %p1, i128 %a2) nounwind {
 ; CHECK:       # %bb.0:
 ; CHECK-NEXT:    movq %rdx, %rcx
 ; CHECK-NEXT:    movq (%rdi), %rdx
-; CHECK-NEXT:    movq 8(%rsi), %rax
+; CHECK-NEXT:    movq 8(%rsi), %r8
 ; CHECK-NEXT:    testb $64, %cl
 ; CHECK-NEXT:    movq 8(%rdi), %rdi
 ; CHECK-NEXT:    cmoveq %rdx, %rdi
-; CHECK-NEXT:    cmoveq %rax, %rdx
-; CHECK-NEXT:    cmoveq (%rsi), %rax
+; CHECK-NEXT:    cmoveq %r8, %rdx
+; CHECK-NEXT:    movq (%rsi), %rax
+; CHECK-NEXT:    cmovneq %r8, %rax
 ; CHECK-NEXT:    shrdq %cl, %rdx, %rax
 ; CHECK-NEXT:    # kill: def $cl killed $cl killed $rcx
 ; CHECK-NEXT:    shrdq %cl, %rdi, %rdx

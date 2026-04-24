@@ -177,8 +177,7 @@ define <16 x half> @test_fmaximum_v16f16_nans(<16 x half> %x, <16 x half> %y) {
 ; CHECK:       # %bb.0:
 ; CHECK-NEXT:    vmaxph %ymm1, %ymm0, %ymm1
 ; CHECK-NEXT:    vcmpunordph %ymm0, %ymm0, %k1
-; CHECK-NEXT:    vmovdqu16 %ymm0, %ymm1 {%k1}
-; CHECK-NEXT:    vmovdqa %ymm1, %ymm0
+; CHECK-NEXT:    vpblendmw %ymm0, %ymm1, %ymm0 {%k1}
 ; CHECK-NEXT:    retq
   %r = call nsz <16 x half> @llvm.maximum.v16f16(<16 x half> %x, <16 x half> %y)
   ret <16 x half> %r
@@ -187,9 +186,10 @@ define <16 x half> @test_fmaximum_v16f16_nans(<16 x half> %x, <16 x half> %y) {
 define <32 x half> @test_fminimum_v32f16_szero(<32 x half> %x, <32 x half> %y) {
 ; CHECK-LABEL: test_fminimum_v32f16_szero:
 ; CHECK:       # %bb.0:
-; CHECK-NEXT:    vminph %zmm1, %zmm0, %zmm1
-; CHECK-NEXT:    vpbroadcastw {{.*#+}} zmm2 = [-0.0E+0,-0.0E+0,-0.0E+0,-0.0E+0,-0.0E+0,-0.0E+0,-0.0E+0,-0.0E+0,-0.0E+0,-0.0E+0,-0.0E+0,-0.0E+0,-0.0E+0,-0.0E+0,-0.0E+0,-0.0E+0,-0.0E+0,-0.0E+0,-0.0E+0,-0.0E+0,-0.0E+0,-0.0E+0,-0.0E+0,-0.0E+0,-0.0E+0,-0.0E+0,-0.0E+0,-0.0E+0,-0.0E+0,-0.0E+0,-0.0E+0,-0.0E+0]
-; CHECK-NEXT:    vpternlogq {{.*#+}} zmm0 = (zmm0 & zmm2) | zmm1
+; CHECK-NEXT:    vminph %zmm1, %zmm0, %zmm2
+; CHECK-NEXT:    vpbroadcastw {{.*#+}} zmm1 = [-0.0E+0,-0.0E+0,-0.0E+0,-0.0E+0,-0.0E+0,-0.0E+0,-0.0E+0,-0.0E+0,-0.0E+0,-0.0E+0,-0.0E+0,-0.0E+0,-0.0E+0,-0.0E+0,-0.0E+0,-0.0E+0,-0.0E+0,-0.0E+0,-0.0E+0,-0.0E+0,-0.0E+0,-0.0E+0,-0.0E+0,-0.0E+0,-0.0E+0,-0.0E+0,-0.0E+0,-0.0E+0,-0.0E+0,-0.0E+0,-0.0E+0,-0.0E+0]
+; CHECK-NEXT:    vpternlogq {{.*#+}} zmm1 = (zmm1 & zmm0) | zmm2
+; CHECK-NEXT:    vmovdqa64 %zmm1, %zmm0
 ; CHECK-NEXT:    retq
   %r = call nnan <32 x half> @llvm.minimum.v32f16(<32 x half> %x, <32 x half> %y)
   ret <32 x half> %r
@@ -198,12 +198,11 @@ define <32 x half> @test_fminimum_v32f16_szero(<32 x half> %x, <32 x half> %y) {
 define <32 x half> @test_fmaximum_v32f16_nans_szero(<32 x half> %x, <32 x half> %y) {
 ; CHECK-LABEL: test_fmaximum_v32f16_nans_szero:
 ; CHECK:       # %bb.0:
-; CHECK-NEXT:    vmaxph %zmm1, %zmm0, %zmm2
-; CHECK-NEXT:    vpbroadcastw {{.*#+}} zmm1 = [NaN,NaN,NaN,NaN,NaN,NaN,NaN,NaN,NaN,NaN,NaN,NaN,NaN,NaN,NaN,NaN,NaN,NaN,NaN,NaN,NaN,NaN,NaN,NaN,NaN,NaN,NaN,NaN,NaN,NaN,NaN,NaN]
-; CHECK-NEXT:    vpternlogq {{.*#+}} zmm1 = zmm2 & (zmm1 | zmm0)
+; CHECK-NEXT:    vmaxph %zmm1, %zmm0, %zmm1
+; CHECK-NEXT:    vpbroadcastw {{.*#+}} zmm2 = [NaN,NaN,NaN,NaN,NaN,NaN,NaN,NaN,NaN,NaN,NaN,NaN,NaN,NaN,NaN,NaN,NaN,NaN,NaN,NaN,NaN,NaN,NaN,NaN,NaN,NaN,NaN,NaN,NaN,NaN,NaN,NaN]
+; CHECK-NEXT:    vpternlogq {{.*#+}} zmm2 = zmm1 & (zmm2 | zmm0)
 ; CHECK-NEXT:    vcmpunordph %zmm0, %zmm0, %k1
-; CHECK-NEXT:    vmovdqu16 %zmm0, %zmm1 {%k1}
-; CHECK-NEXT:    vmovdqa64 %zmm1, %zmm0
+; CHECK-NEXT:    vpblendmw %zmm0, %zmm2, %zmm0 {%k1}
 ; CHECK-NEXT:    retq
   %r = call <32 x half> @llvm.maximum.v32f16(<32 x half> %x, <32 x half> %y)
   ret <32 x half> %r

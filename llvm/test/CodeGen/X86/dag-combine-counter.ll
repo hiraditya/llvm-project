@@ -16,7 +16,7 @@ define i32 @test2(i32 %x) {
 ; CHECK:       # %bb.0:
 ; CHECK-NEXT:    # kill: def $edi killed $edi def $rdi
 ; CHECK-NEXT:    leal 1(%rdi), %eax
-; CHECK-NEXT:    subl $1, %eax
+; CHECK-NEXT:    decl %eax
 ; CHECK-NEXT:    retq
   %y = add i32 %x, 1
   %z = sub i32 %y, 1

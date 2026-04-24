@@ -65,7 +65,9 @@ define i8 @sub_nsw_only(i8 %x) nounwind {
 define <4 x i8> @sub_nuw_mask_vec_splat(<4 x i8> %x) nounwind {
 ; X86-LABEL: sub_nuw_mask_vec_splat:
 ; X86:       # %bb.0:
-; X86-NEXT:    xorps {{\.?LCPI[0-9]+_[0-9]+}}(%rip), %xmm0
+; X86-NEXT:    movaps {{.*#+}} xmm1 = [15,15,15,15,u,u,u,u,u,u,u,u,u,u,u,u]
+; X86-NEXT:    xorps %xmm0, %xmm1
+; X86-NEXT:    movaps %xmm1, %xmm0
 ; X86-NEXT:    retq
   %r = sub nuw <4 x i8> <i8 15, i8 15, i8 15, i8 15>, %x
   ret <4 x i8> %r

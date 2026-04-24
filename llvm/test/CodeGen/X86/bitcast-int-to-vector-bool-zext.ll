@@ -176,21 +176,23 @@ define <16 x i8> @ext_i16_16i8(i16 %a0) {
 ; SSE2-NEXT:    movd %edi, %xmm0
 ; SSE2-NEXT:    punpcklbw {{.*#+}} xmm0 = xmm0[0,0,1,1,2,2,3,3,4,4,5,5,6,6,7,7]
 ; SSE2-NEXT:    pshuflw {{.*#+}} xmm0 = xmm0[0,0,1,1,4,5,6,7]
-; SSE2-NEXT:    pshufd {{.*#+}} xmm0 = xmm0[0,0,1,1]
-; SSE2-NEXT:    movdqa {{.*#+}} xmm1 = [1,2,4,8,16,32,64,128,1,2,4,8,16,32,64,128]
+; SSE2-NEXT:    pshufd {{.*#+}} xmm1 = xmm0[0,0,1,1]
+; SSE2-NEXT:    movdqa {{.*#+}} xmm0 = [1,2,4,8,16,32,64,128,1,2,4,8,16,32,64,128]
+; SSE2-NEXT:    pand %xmm0, %xmm1
+; SSE2-NEXT:    pcmpeqb %xmm0, %xmm1
+; SSE2-NEXT:    movdqa {{.*#+}} xmm0 = [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1]
 ; SSE2-NEXT:    pand %xmm1, %xmm0
-; SSE2-NEXT:    pcmpeqb %xmm1, %xmm0
-; SSE2-NEXT:    pand {{\.?LCPI[0-9]+_[0-9]+}}(%rip), %xmm0
 ; SSE2-NEXT:    retq
 ;
 ; SSSE3-LABEL: ext_i16_16i8:
 ; SSSE3:       # %bb.0:
-; SSSE3-NEXT:    movd %edi, %xmm0
-; SSSE3-NEXT:    pshufb {{.*#+}} xmm0 = xmm0[0,0,0,0,0,0,0,0,1,1,1,1,1,1,1,1]
-; SSSE3-NEXT:    movdqa {{.*#+}} xmm1 = [1,2,4,8,16,32,64,128,1,2,4,8,16,32,64,128]
+; SSSE3-NEXT:    movd %edi, %xmm1
+; SSSE3-NEXT:    pshufb {{.*#+}} xmm1 = xmm1[0,0,0,0,0,0,0,0,1,1,1,1,1,1,1,1]
+; SSSE3-NEXT:    movdqa {{.*#+}} xmm0 = [1,2,4,8,16,32,64,128,1,2,4,8,16,32,64,128]
+; SSSE3-NEXT:    pand %xmm0, %xmm1
+; SSSE3-NEXT:    pcmpeqb %xmm0, %xmm1
+; SSSE3-NEXT:    movdqa {{.*#+}} xmm0 = [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1]
 ; SSSE3-NEXT:    pand %xmm1, %xmm0
-; SSSE3-NEXT:    pcmpeqb %xmm1, %xmm0
-; SSSE3-NEXT:    pand {{\.?LCPI[0-9]+_[0-9]+}}(%rip), %xmm0
 ; SSSE3-NEXT:    retq
 ;
 ; AVX1-LABEL: ext_i16_16i8:

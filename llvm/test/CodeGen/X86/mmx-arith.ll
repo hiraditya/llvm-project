@@ -15,9 +15,11 @@ define void @test0(ptr %A, ptr %B) nounwind {
 ; X86-NEXT:    paddb %xmm0, %xmm1
 ; X86-NEXT:    movdq2q %xmm1, %mm0
 ; X86-NEXT:    movq %xmm1, (%eax)
-; X86-NEXT:    paddsb (%ecx), %mm0
-; X86-NEXT:    movq %mm0, (%eax)
-; X86-NEXT:    paddusb (%ecx), %mm0
+; X86-NEXT:    movq (%ecx), %mm1
+; X86-NEXT:    paddsb %mm0, %mm1
+; X86-NEXT:    movq %mm1, (%eax)
+; X86-NEXT:    movq (%ecx), %mm0
+; X86-NEXT:    paddusb %mm1, %mm0
 ; X86-NEXT:    movq2dq %mm0, %xmm0
 ; X86-NEXT:    movq %mm0, (%eax)
 ; X86-NEXT:    movq {{.*#+}} xmm1 = mem[0],zero
@@ -33,18 +35,19 @@ define void @test0(ptr %A, ptr %B) nounwind {
 ; X86-NEXT:    punpcklbw {{.*#+}} xmm0 = xmm0[0,0,1,1,2,2,3,3,4,4,5,5,6,6,7,7]
 ; X86-NEXT:    punpcklbw {{.*#+}} xmm1 = xmm1[0,0,1,1,2,2,3,3,4,4,5,5,6,6,7,7]
 ; X86-NEXT:    pmullw %xmm0, %xmm1
-; X86-NEXT:    pand {{\.?LCPI[0-9]+_[0-9]+}}, %xmm1
-; X86-NEXT:    packuswb %xmm1, %xmm1
-; X86-NEXT:    movq %xmm1, (%eax)
-; X86-NEXT:    movq {{.*#+}} xmm0 = mem[0],zero
+; X86-NEXT:    movdqa {{.*#+}} xmm0 = [255,255,255,255,255,255,255,255]
 ; X86-NEXT:    pand %xmm1, %xmm0
+; X86-NEXT:    packuswb %xmm0, %xmm0
 ; X86-NEXT:    movq %xmm0, (%eax)
 ; X86-NEXT:    movq {{.*#+}} xmm1 = mem[0],zero
-; X86-NEXT:    por %xmm0, %xmm1
+; X86-NEXT:    pand %xmm0, %xmm1
 ; X86-NEXT:    movq %xmm1, (%eax)
 ; X86-NEXT:    movq {{.*#+}} xmm0 = mem[0],zero
-; X86-NEXT:    pxor %xmm1, %xmm0
+; X86-NEXT:    por %xmm1, %xmm0
 ; X86-NEXT:    movq %xmm0, (%eax)
+; X86-NEXT:    movq {{.*#+}} xmm1 = mem[0],zero
+; X86-NEXT:    pxor %xmm0, %xmm1
+; X86-NEXT:    movq %xmm1, (%eax)
 ; X86-NEXT:    emms
 ; X86-NEXT:    retl
 ;
@@ -55,9 +58,11 @@ define void @test0(ptr %A, ptr %B) nounwind {
 ; X64-NEXT:    paddb %xmm0, %xmm1
 ; X64-NEXT:    movdq2q %xmm1, %mm0
 ; X64-NEXT:    movq %xmm1, (%rdi)
-; X64-NEXT:    paddsb (%rsi), %mm0
-; X64-NEXT:    movq %mm0, (%rdi)
-; X64-NEXT:    paddusb (%rsi), %mm0
+; X64-NEXT:    movq (%rsi), %mm1
+; X64-NEXT:    paddsb %mm0, %mm1
+; X64-NEXT:    movq %mm1, (%rdi)
+; X64-NEXT:    movq (%rsi), %mm0
+; X64-NEXT:    paddusb %mm1, %mm0
 ; X64-NEXT:    movq2dq %mm0, %xmm0
 ; X64-NEXT:    movq %mm0, (%rdi)
 ; X64-NEXT:    movq {{.*#+}} xmm1 = mem[0],zero
@@ -73,18 +78,19 @@ define void @test0(ptr %A, ptr %B) nounwind {
 ; X64-NEXT:    punpcklbw {{.*#+}} xmm0 = xmm0[0,0,1,1,2,2,3,3,4,4,5,5,6,6,7,7]
 ; X64-NEXT:    punpcklbw {{.*#+}} xmm1 = xmm1[0,0,1,1,2,2,3,3,4,4,5,5,6,6,7,7]
 ; X64-NEXT:    pmullw %xmm0, %xmm1
-; X64-NEXT:    pand {{\.?LCPI[0-9]+_[0-9]+}}(%rip), %xmm1
-; X64-NEXT:    packuswb %xmm1, %xmm1
-; X64-NEXT:    movq %xmm1, (%rdi)
-; X64-NEXT:    movq {{.*#+}} xmm0 = mem[0],zero
+; X64-NEXT:    movdqa {{.*#+}} xmm0 = [255,255,255,255,255,255,255,255]
 ; X64-NEXT:    pand %xmm1, %xmm0
+; X64-NEXT:    packuswb %xmm0, %xmm0
 ; X64-NEXT:    movq %xmm0, (%rdi)
 ; X64-NEXT:    movq {{.*#+}} xmm1 = mem[0],zero
-; X64-NEXT:    por %xmm0, %xmm1
+; X64-NEXT:    pand %xmm0, %xmm1
 ; X64-NEXT:    movq %xmm1, (%rdi)
 ; X64-NEXT:    movq {{.*#+}} xmm0 = mem[0],zero
-; X64-NEXT:    pxor %xmm1, %xmm0
+; X64-NEXT:    por %xmm1, %xmm0
 ; X64-NEXT:    movq %xmm0, (%rdi)
+; X64-NEXT:    movq {{.*#+}} xmm1 = mem[0],zero
+; X64-NEXT:    pxor %xmm0, %xmm1
+; X64-NEXT:    movq %xmm1, (%rdi)
 ; X64-NEXT:    emms
 ; X64-NEXT:    retq
 entry:
@@ -152,8 +158,8 @@ define void @test1(ptr %A, ptr %B) nounwind {
 ; X86-NEXT:    pshufd {{.*#+}} xmm2 = xmm0[1,1,3,3]
 ; X86-NEXT:    pmuludq %xmm1, %xmm0
 ; X86-NEXT:    shufps {{.*#+}} xmm1 = xmm1[1,1,1,1]
-; X86-NEXT:    pmuludq %xmm1, %xmm2
-; X86-NEXT:    pshufd {{.*#+}} xmm1 = xmm2[0,2,2,3]
+; X86-NEXT:    pmuludq %xmm2, %xmm1
+; X86-NEXT:    pshufd {{.*#+}} xmm1 = xmm1[0,2,2,3]
 ; X86-NEXT:    pshufd {{.*#+}} xmm0 = xmm0[0,2,2,3]
 ; X86-NEXT:    punpckldq {{.*#+}} xmm0 = xmm0[0],xmm1[0],xmm0[1],xmm1[1]
 ; X86-NEXT:    movq %xmm0, (%eax)
@@ -241,9 +247,10 @@ define void @test2(ptr %A, ptr %B) nounwind {
 ; X86:       # %bb.0: # %entry
 ; X86-NEXT:    pushl %ebp
 ; X86-NEXT:    movl %esp, %ebp
+; X86-NEXT:    pushl %edi
 ; X86-NEXT:    pushl %esi
 ; X86-NEXT:    andl $-8, %esp
-; X86-NEXT:    subl $16, %esp
+; X86-NEXT:    subl $8, %esp
 ; X86-NEXT:    movl 12(%ebp), %ecx
 ; X86-NEXT:    movl 8(%ebp), %eax
 ; X86-NEXT:    movq {{.*#+}} xmm0 = mem[0],zero
@@ -251,9 +258,11 @@ define void @test2(ptr %A, ptr %B) nounwind {
 ; X86-NEXT:    paddw %xmm0, %xmm1
 ; X86-NEXT:    movdq2q %xmm1, %mm0
 ; X86-NEXT:    movq %xmm1, (%eax)
-; X86-NEXT:    paddsw (%ecx), %mm0
-; X86-NEXT:    movq %mm0, (%eax)
-; X86-NEXT:    paddusw (%ecx), %mm0
+; X86-NEXT:    movq (%ecx), %mm1
+; X86-NEXT:    paddsw %mm0, %mm1
+; X86-NEXT:    movq %mm1, (%eax)
+; X86-NEXT:    movq (%ecx), %mm0
+; X86-NEXT:    paddusw %mm1, %mm0
 ; X86-NEXT:    movq2dq %mm0, %xmm0
 ; X86-NEXT:    movq %mm0, (%eax)
 ; X86-NEXT:    movq {{.*#+}} xmm1 = mem[0],zero
@@ -269,17 +278,21 @@ define void @test2(ptr %A, ptr %B) nounwind {
 ; X86-NEXT:    pmullw %xmm0, %xmm1
 ; X86-NEXT:    movdq2q %xmm1, %mm0
 ; X86-NEXT:    movq %xmm1, (%eax)
-; X86-NEXT:    pmulhw (%ecx), %mm0
-; X86-NEXT:    movq %mm0, (%eax)
-; X86-NEXT:    pmaddwd (%ecx), %mm0
+; X86-NEXT:    movq (%ecx), %mm1
+; X86-NEXT:    pmulhw %mm0, %mm1
+; X86-NEXT:    movq %mm1, (%eax)
+; X86-NEXT:    movq (%ecx), %mm0
+; X86-NEXT:    pmaddwd %mm1, %mm0
 ; X86-NEXT:    movq %mm0, (%esp)
 ; X86-NEXT:    movl (%esp), %edx
 ; X86-NEXT:    movl {{[0-9]+}}(%esp), %esi
 ; X86-NEXT:    movq %mm0, (%eax)
-; X86-NEXT:    andl 4(%ecx), %esi
-; X86-NEXT:    movd %esi, %xmm0
-; X86-NEXT:    andl (%ecx), %edx
-; X86-NEXT:    movd %edx, %xmm1
+; X86-NEXT:    movl 4(%ecx), %edi
+; X86-NEXT:    andl %esi, %edi
+; X86-NEXT:    movd %edi, %xmm0
+; X86-NEXT:    movl (%ecx), %esi
+; X86-NEXT:    andl %edx, %esi
+; X86-NEXT:    movd %esi, %xmm1
 ; X86-NEXT:    punpckldq {{.*#+}} xmm1 = xmm1[0],xmm0[0],xmm1[1],xmm0[1]
 ; X86-NEXT:    movq %xmm1, (%eax)
 ; X86-NEXT:    movq {{.*#+}} xmm0 = mem[0],zero
@@ -289,8 +302,9 @@ define void @test2(ptr %A, ptr %B) nounwind {
 ; X86-NEXT:    pxor %xmm0, %xmm1
 ; X86-NEXT:    movq %xmm1, (%eax)
 ; X86-NEXT:    emms
-; X86-NEXT:    leal -4(%ebp), %esp
+; X86-NEXT:    leal -8(%ebp), %esp
 ; X86-NEXT:    popl %esi
+; X86-NEXT:    popl %edi
 ; X86-NEXT:    popl %ebp
 ; X86-NEXT:    retl
 ;
@@ -301,9 +315,11 @@ define void @test2(ptr %A, ptr %B) nounwind {
 ; X64-NEXT:    paddw %xmm0, %xmm1
 ; X64-NEXT:    movdq2q %xmm1, %mm0
 ; X64-NEXT:    movq %xmm1, (%rdi)
-; X64-NEXT:    paddsw (%rsi), %mm0
-; X64-NEXT:    movq %mm0, (%rdi)
-; X64-NEXT:    paddusw (%rsi), %mm0
+; X64-NEXT:    movq (%rsi), %mm1
+; X64-NEXT:    paddsw %mm0, %mm1
+; X64-NEXT:    movq %mm1, (%rdi)
+; X64-NEXT:    movq (%rsi), %mm0
+; X64-NEXT:    paddusw %mm1, %mm0
 ; X64-NEXT:    movq2dq %mm0, %xmm0
 ; X64-NEXT:    movq %mm0, (%rdi)
 ; X64-NEXT:    movq {{.*#+}} xmm1 = mem[0],zero
@@ -319,20 +335,23 @@ define void @test2(ptr %A, ptr %B) nounwind {
 ; X64-NEXT:    pmullw %xmm0, %xmm1
 ; X64-NEXT:    movdq2q %xmm1, %mm0
 ; X64-NEXT:    movq %xmm1, (%rdi)
-; X64-NEXT:    pmulhw (%rsi), %mm0
-; X64-NEXT:    movq %mm0, (%rdi)
-; X64-NEXT:    pmaddwd (%rsi), %mm0
+; X64-NEXT:    movq (%rsi), %mm1
+; X64-NEXT:    pmulhw %mm0, %mm1
+; X64-NEXT:    movq %mm1, (%rdi)
+; X64-NEXT:    movq (%rsi), %mm0
+; X64-NEXT:    pmaddwd %mm1, %mm0
 ; X64-NEXT:    movq %mm0, %rax
 ; X64-NEXT:    movq %mm0, (%rdi)
-; X64-NEXT:    andq (%rsi), %rax
-; X64-NEXT:    movq %rax, %xmm0
-; X64-NEXT:    movq %rax, (%rdi)
+; X64-NEXT:    movq (%rsi), %rcx
+; X64-NEXT:    andq %rax, %rcx
+; X64-NEXT:    movq %rcx, %xmm0
+; X64-NEXT:    movq %rcx, (%rdi)
 ; X64-NEXT:    movq {{.*#+}} xmm1 = mem[0],zero
-; X64-NEXT:    por %xmm0, %xmm1
-; X64-NEXT:    movq %xmm1, (%rdi)
-; X64-NEXT:    movq {{.*#+}} xmm0 = mem[0],zero
-; X64-NEXT:    pxor %xmm1, %xmm0
+; X64-NEXT:    por %xmm1, %xmm0
 ; X64-NEXT:    movq %xmm0, (%rdi)
+; X64-NEXT:    movq {{.*#+}} xmm1 = mem[0],zero
+; X64-NEXT:    pxor %xmm0, %xmm1
+; X64-NEXT:    movq %xmm1, (%rdi)
 ; X64-NEXT:    emms
 ; X64-NEXT:    retq
 entry:
@@ -402,9 +421,9 @@ define <1 x i64> @test3(ptr %a, ptr %b, i32 %count) nounwind {
 ; X86-NEXT:    pushl %ebx
 ; X86-NEXT:    pushl %edi
 ; X86-NEXT:    pushl %esi
-; X86-NEXT:    movl {{[0-9]+}}(%esp), %ecx
+; X86-NEXT:    movl {{[0-9]+}}(%esp), %edi
 ; X86-NEXT:    xorl %eax, %eax
-; X86-NEXT:    testl %ecx, %ecx
+; X86-NEXT:    testl %edi, %edi
 ; X86-NEXT:    je .LBB3_1
 ; X86-NEXT:  # %bb.2: # %bb26.preheader
 ; X86-NEXT:    xorl %ebx, %ebx
@@ -412,18 +431,19 @@ define <1 x i64> @test3(ptr %a, ptr %b, i32 %count) nounwind {
 ; X86-NEXT:    .p2align 4
 ; X86-NEXT:  .LBB3_3: # %bb26
 ; X86-NEXT:    # =>This Inner Loop Header: Depth=1
-; X86-NEXT:    movl {{[0-9]+}}(%esp), %edi
-; X86-NEXT:    movl (%edi,%ebx,8), %ebp
-; X86-NEXT:    movl %ecx, %esi
-; X86-NEXT:    movl 4(%edi,%ebx,8), %ecx
-; X86-NEXT:    movl {{[0-9]+}}(%esp), %edi
-; X86-NEXT:    addl (%edi,%ebx,8), %ebp
-; X86-NEXT:    adcl 4(%edi,%ebx,8), %ecx
-; X86-NEXT:    addl %ebp, %eax
-; X86-NEXT:    adcl %ecx, %edx
-; X86-NEXT:    movl %esi, %ecx
+; X86-NEXT:    movl {{[0-9]+}}(%esp), %esi
+; X86-NEXT:    movl (%esi,%ebx,8), %ebp
+; X86-NEXT:    movl 4(%esi,%ebx,8), %ecx
+; X86-NEXT:    movl {{[0-9]+}}(%esp), %esi
+; X86-NEXT:    movl (%esi,%ebx,8), %esi
+; X86-NEXT:    addl %ebp, %esi
+; X86-NEXT:    movl {{[0-9]+}}(%esp), %ebp
+; X86-NEXT:    movl 4(%ebp,%ebx,8), %ebp
+; X86-NEXT:    adcl %ecx, %ebp
+; X86-NEXT:    addl %esi, %eax
+; X86-NEXT:    adcl %ebp, %edx
 ; X86-NEXT:    incl %ebx
-; X86-NEXT:    cmpl %esi, %ebx
+; X86-NEXT:    cmpl %edi, %ebx
 ; X86-NEXT:    jb .LBB3_3
 ; X86-NEXT:    jmp .LBB3_4
 ; X86-NEXT:  .LBB3_1:
@@ -446,8 +466,9 @@ define <1 x i64> @test3(ptr %a, ptr %b, i32 %count) nounwind {
 ; X64-NEXT:    # =>This Inner Loop Header: Depth=1
 ; X64-NEXT:    movslq %ecx, %rcx
 ; X64-NEXT:    movq (%rdi,%rcx,8), %r8
-; X64-NEXT:    addq (%rsi,%rcx,8), %r8
-; X64-NEXT:    addq %r8, %rax
+; X64-NEXT:    movq (%rsi,%rcx,8), %r9
+; X64-NEXT:    addq %r8, %r9
+; X64-NEXT:    addq %r9, %rax
 ; X64-NEXT:    incl %ecx
 ; X64-NEXT:    cmpl %edx, %ecx
 ; X64-NEXT:    jb .LBB3_1
@@ -547,10 +568,12 @@ define void @ti64(double %a, double %b) nounwind {
 ; X86:       # %bb.0: # %entry
 ; X86-NEXT:    movl {{[0-9]+}}(%esp), %eax
 ; X86-NEXT:    movl {{[0-9]+}}(%esp), %ecx
-; X86-NEXT:    addl {{[0-9]+}}(%esp), %eax
-; X86-NEXT:    adcl {{[0-9]+}}(%esp), %ecx
-; X86-NEXT:    movl %eax, 0
-; X86-NEXT:    movl %ecx, 4
+; X86-NEXT:    movl {{[0-9]+}}(%esp), %edx
+; X86-NEXT:    addl %eax, %edx
+; X86-NEXT:    movl {{[0-9]+}}(%esp), %eax
+; X86-NEXT:    adcl %ecx, %eax
+; X86-NEXT:    movl %edx, 0
+; X86-NEXT:    movl %eax, 4
 ; X86-NEXT:    retl
 ;
 ; X64-LABEL: ti64:
@@ -573,8 +596,9 @@ define void @ti8a(double %a, double %b) nounwind {
 ; X86-LABEL: ti8a:
 ; X86:       # %bb.0: # %entry
 ; X86-NEXT:    movq {{[0-9]+}}(%esp), %mm0
-; X86-NEXT:    paddb {{[0-9]+}}(%esp), %mm0
-; X86-NEXT:    movq %mm0, 0
+; X86-NEXT:    movq {{[0-9]+}}(%esp), %mm1
+; X86-NEXT:    paddb %mm0, %mm1
+; X86-NEXT:    movq %mm1, 0
 ; X86-NEXT:    retl
 ;
 ; X64-LABEL: ti8a:
@@ -596,8 +620,9 @@ define void @ti16a(double %a, double %b) nounwind {
 ; X86-LABEL: ti16a:
 ; X86:       # %bb.0: # %entry
 ; X86-NEXT:    movq {{[0-9]+}}(%esp), %mm0
-; X86-NEXT:    paddw {{[0-9]+}}(%esp), %mm0
-; X86-NEXT:    movq %mm0, 0
+; X86-NEXT:    movq {{[0-9]+}}(%esp), %mm1
+; X86-NEXT:    paddw %mm0, %mm1
+; X86-NEXT:    movq %mm1, 0
 ; X86-NEXT:    retl
 ;
 ; X64-LABEL: ti16a:
@@ -619,8 +644,9 @@ define void @ti32a(double %a, double %b) nounwind {
 ; X86-LABEL: ti32a:
 ; X86:       # %bb.0: # %entry
 ; X86-NEXT:    movq {{[0-9]+}}(%esp), %mm0
-; X86-NEXT:    paddd {{[0-9]+}}(%esp), %mm0
-; X86-NEXT:    movq %mm0, 0
+; X86-NEXT:    movq {{[0-9]+}}(%esp), %mm1
+; X86-NEXT:    paddd %mm0, %mm1
+; X86-NEXT:    movq %mm1, 0
 ; X86-NEXT:    retl
 ;
 ; X64-LABEL: ti32a:
@@ -642,8 +668,9 @@ define void @ti64a(double %a, double %b) nounwind {
 ; X86-LABEL: ti64a:
 ; X86:       # %bb.0: # %entry
 ; X86-NEXT:    movq {{[0-9]+}}(%esp), %mm0
-; X86-NEXT:    paddq {{[0-9]+}}(%esp), %mm0
-; X86-NEXT:    movq %mm0, 0
+; X86-NEXT:    movq {{[0-9]+}}(%esp), %mm1
+; X86-NEXT:    paddq %mm0, %mm1
+; X86-NEXT:    movq %mm1, 0
 ; X86-NEXT:    retl
 ;
 ; X64-LABEL: ti64a:

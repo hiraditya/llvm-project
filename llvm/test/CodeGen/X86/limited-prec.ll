@@ -26,8 +26,9 @@ define float @f1(float %x) nounwind noinline {
 ; precision6-NEXT:    fadds {{\.?LCPI[0-9]+_[0-9]+}}
 ; precision6-NEXT:    fstps {{[0-9]+}}(%esp)
 ; precision6-NEXT:    shll $23, %eax
-; precision6-NEXT:    addl {{[0-9]+}}(%esp), %eax
-; precision6-NEXT:    movl %eax, {{[0-9]+}}(%esp)
+; precision6-NEXT:    movl {{[0-9]+}}(%esp), %ecx
+; precision6-NEXT:    addl %eax, %ecx
+; precision6-NEXT:    movl %ecx, {{[0-9]+}}(%esp)
 ; precision6-NEXT:    flds {{[0-9]+}}(%esp)
 ; precision6-NEXT:    addl $20, %esp
 ; precision6-NEXT:    retl
@@ -56,8 +57,9 @@ define float @f1(float %x) nounwind noinline {
 ; precision12-NEXT:    fadds {{\.?LCPI[0-9]+_[0-9]+}}
 ; precision12-NEXT:    fstps {{[0-9]+}}(%esp)
 ; precision12-NEXT:    shll $23, %eax
-; precision12-NEXT:    addl {{[0-9]+}}(%esp), %eax
-; precision12-NEXT:    movl %eax, {{[0-9]+}}(%esp)
+; precision12-NEXT:    movl {{[0-9]+}}(%esp), %ecx
+; precision12-NEXT:    addl %eax, %ecx
+; precision12-NEXT:    movl %ecx, {{[0-9]+}}(%esp)
 ; precision12-NEXT:    flds {{[0-9]+}}(%esp)
 ; precision12-NEXT:    addl $20, %esp
 ; precision12-NEXT:    retl
@@ -93,8 +95,9 @@ define float @f1(float %x) nounwind noinline {
 ; precision18-NEXT:    faddp %st, %st(1)
 ; precision18-NEXT:    fstps {{[0-9]+}}(%esp)
 ; precision18-NEXT:    shll $23, %eax
-; precision18-NEXT:    addl {{[0-9]+}}(%esp), %eax
-; precision18-NEXT:    movl %eax, {{[0-9]+}}(%esp)
+; precision18-NEXT:    movl {{[0-9]+}}(%esp), %ecx
+; precision18-NEXT:    addl %eax, %ecx
+; precision18-NEXT:    movl %ecx, {{[0-9]+}}(%esp)
 ; precision18-NEXT:    flds {{[0-9]+}}(%esp)
 ; precision18-NEXT:    addl $20, %esp
 ; precision18-NEXT:    retl
@@ -128,8 +131,9 @@ define float @f2(float %x) nounwind noinline {
 ; precision6-NEXT:    fadds {{\.?LCPI[0-9]+_[0-9]+}}
 ; precision6-NEXT:    fstps {{[0-9]+}}(%esp)
 ; precision6-NEXT:    shll $23, %eax
-; precision6-NEXT:    addl {{[0-9]+}}(%esp), %eax
-; precision6-NEXT:    movl %eax, {{[0-9]+}}(%esp)
+; precision6-NEXT:    movl {{[0-9]+}}(%esp), %ecx
+; precision6-NEXT:    addl %eax, %ecx
+; precision6-NEXT:    movl %ecx, {{[0-9]+}}(%esp)
 ; precision6-NEXT:    flds {{[0-9]+}}(%esp)
 ; precision6-NEXT:    addl $20, %esp
 ; precision6-NEXT:    retl
@@ -157,8 +161,9 @@ define float @f2(float %x) nounwind noinline {
 ; precision12-NEXT:    fadds {{\.?LCPI[0-9]+_[0-9]+}}
 ; precision12-NEXT:    fstps {{[0-9]+}}(%esp)
 ; precision12-NEXT:    shll $23, %eax
-; precision12-NEXT:    addl {{[0-9]+}}(%esp), %eax
-; precision12-NEXT:    movl %eax, {{[0-9]+}}(%esp)
+; precision12-NEXT:    movl {{[0-9]+}}(%esp), %ecx
+; precision12-NEXT:    addl %eax, %ecx
+; precision12-NEXT:    movl %ecx, {{[0-9]+}}(%esp)
 ; precision12-NEXT:    flds {{[0-9]+}}(%esp)
 ; precision12-NEXT:    addl $20, %esp
 ; precision12-NEXT:    retl
@@ -193,8 +198,9 @@ define float @f2(float %x) nounwind noinline {
 ; precision18-NEXT:    faddp %st, %st(1)
 ; precision18-NEXT:    fstps {{[0-9]+}}(%esp)
 ; precision18-NEXT:    shll $23, %eax
-; precision18-NEXT:    addl {{[0-9]+}}(%esp), %eax
-; precision18-NEXT:    movl %eax, {{[0-9]+}}(%esp)
+; precision18-NEXT:    movl {{[0-9]+}}(%esp), %ecx
+; precision18-NEXT:    addl %eax, %ecx
+; precision18-NEXT:    movl %ecx, {{[0-9]+}}(%esp)
 ; precision18-NEXT:    flds {{[0-9]+}}(%esp)
 ; precision18-NEXT:    addl $20, %esp
 ; precision18-NEXT:    retl
@@ -229,8 +235,9 @@ define float @f3(float %x) nounwind noinline {
 ; precision6-NEXT:    fadds {{\.?LCPI[0-9]+_[0-9]+}}
 ; precision6-NEXT:    fstps {{[0-9]+}}(%esp)
 ; precision6-NEXT:    shll $23, %eax
-; precision6-NEXT:    addl {{[0-9]+}}(%esp), %eax
-; precision6-NEXT:    movl %eax, {{[0-9]+}}(%esp)
+; precision6-NEXT:    movl {{[0-9]+}}(%esp), %ecx
+; precision6-NEXT:    addl %eax, %ecx
+; precision6-NEXT:    movl %ecx, {{[0-9]+}}(%esp)
 ; precision6-NEXT:    flds {{[0-9]+}}(%esp)
 ; precision6-NEXT:    addl $20, %esp
 ; precision6-NEXT:    retl
@@ -259,8 +266,9 @@ define float @f3(float %x) nounwind noinline {
 ; precision12-NEXT:    fadds {{\.?LCPI[0-9]+_[0-9]+}}
 ; precision12-NEXT:    fstps {{[0-9]+}}(%esp)
 ; precision12-NEXT:    shll $23, %eax
-; precision12-NEXT:    addl {{[0-9]+}}(%esp), %eax
-; precision12-NEXT:    movl %eax, {{[0-9]+}}(%esp)
+; precision12-NEXT:    movl {{[0-9]+}}(%esp), %ecx
+; precision12-NEXT:    addl %eax, %ecx
+; precision12-NEXT:    movl %ecx, {{[0-9]+}}(%esp)
 ; precision12-NEXT:    flds {{[0-9]+}}(%esp)
 ; precision12-NEXT:    addl $20, %esp
 ; precision12-NEXT:    retl
@@ -296,8 +304,9 @@ define float @f3(float %x) nounwind noinline {
 ; precision18-NEXT:    faddp %st, %st(1)
 ; precision18-NEXT:    fstps {{[0-9]+}}(%esp)
 ; precision18-NEXT:    shll $23, %eax
-; precision18-NEXT:    addl {{[0-9]+}}(%esp), %eax
-; precision18-NEXT:    movl %eax, {{[0-9]+}}(%esp)
+; precision18-NEXT:    movl {{[0-9]+}}(%esp), %ecx
+; precision18-NEXT:    addl %eax, %ecx
+; precision18-NEXT:    movl %ecx, {{[0-9]+}}(%esp)
 ; precision18-NEXT:    flds {{[0-9]+}}(%esp)
 ; precision18-NEXT:    addl $20, %esp
 ; precision18-NEXT:    retl
@@ -316,7 +325,7 @@ define float @f4(float %x) nounwind noinline {
 ; precision6-NEXT:    movl {{[0-9]+}}(%esp), %eax
 ; precision6-NEXT:    movl %eax, %ecx
 ; precision6-NEXT:    andl $8388607, %ecx # imm = 0x7FFFFF
-; precision6-NEXT:    orl $1065353216, %ecx # imm = 0x3F800000
+; precision6-NEXT:    addl $1065353216, %ecx # imm = 0x3F800000
 ; precision6-NEXT:    movl %ecx, (%esp)
 ; precision6-NEXT:    andl $2139095040, %eax # imm = 0x7F800000
 ; precision6-NEXT:    shrl $23, %eax
@@ -340,7 +349,7 @@ define float @f4(float %x) nounwind noinline {
 ; precision12-NEXT:    movl {{[0-9]+}}(%esp), %eax
 ; precision12-NEXT:    movl %eax, %ecx
 ; precision12-NEXT:    andl $8388607, %ecx # imm = 0x7FFFFF
-; precision12-NEXT:    orl $1065353216, %ecx # imm = 0x3F800000
+; precision12-NEXT:    addl $1065353216, %ecx # imm = 0x3F800000
 ; precision12-NEXT:    movl %ecx, (%esp)
 ; precision12-NEXT:    andl $2139095040, %eax # imm = 0x7F800000
 ; precision12-NEXT:    shrl $23, %eax
@@ -368,7 +377,7 @@ define float @f4(float %x) nounwind noinline {
 ; precision18-NEXT:    movl {{[0-9]+}}(%esp), %eax
 ; precision18-NEXT:    movl %eax, %ecx
 ; precision18-NEXT:    andl $8388607, %ecx # imm = 0x7FFFFF
-; precision18-NEXT:    orl $1065353216, %ecx # imm = 0x3F800000
+; precision18-NEXT:    addl $1065353216, %ecx # imm = 0x3F800000
 ; precision18-NEXT:    movl %ecx, (%esp)
 ; precision18-NEXT:    andl $2139095040, %eax # imm = 0x7F800000
 ; precision18-NEXT:    shrl $23, %eax
@@ -408,7 +417,7 @@ define float @f5(float %x) nounwind noinline {
 ; precision6-NEXT:    movl {{[0-9]+}}(%esp), %eax
 ; precision6-NEXT:    movl %eax, %ecx
 ; precision6-NEXT:    andl $8388607, %ecx # imm = 0x7FFFFF
-; precision6-NEXT:    orl $1065353216, %ecx # imm = 0x3F800000
+; precision6-NEXT:    addl $1065353216, %ecx # imm = 0x3F800000
 ; precision6-NEXT:    movl %ecx, (%esp)
 ; precision6-NEXT:    andl $2139095040, %eax # imm = 0x7F800000
 ; precision6-NEXT:    shrl $23, %eax
@@ -430,7 +439,7 @@ define float @f5(float %x) nounwind noinline {
 ; precision12-NEXT:    movl {{[0-9]+}}(%esp), %eax
 ; precision12-NEXT:    movl %eax, %ecx
 ; precision12-NEXT:    andl $8388607, %ecx # imm = 0x7FFFFF
-; precision12-NEXT:    orl $1065353216, %ecx # imm = 0x3F800000
+; precision12-NEXT:    addl $1065353216, %ecx # imm = 0x3F800000
 ; precision12-NEXT:    movl %ecx, (%esp)
 ; precision12-NEXT:    andl $2139095040, %eax # imm = 0x7F800000
 ; precision12-NEXT:    shrl $23, %eax
@@ -456,7 +465,7 @@ define float @f5(float %x) nounwind noinline {
 ; precision18-NEXT:    movl {{[0-9]+}}(%esp), %eax
 ; precision18-NEXT:    movl %eax, %ecx
 ; precision18-NEXT:    andl $8388607, %ecx # imm = 0x7FFFFF
-; precision18-NEXT:    orl $1065353216, %ecx # imm = 0x3F800000
+; precision18-NEXT:    addl $1065353216, %ecx # imm = 0x3F800000
 ; precision18-NEXT:    movl %ecx, (%esp)
 ; precision18-NEXT:    andl $2139095040, %eax # imm = 0x7F800000
 ; precision18-NEXT:    shrl $23, %eax
@@ -494,7 +503,7 @@ define float @f6(float %x) nounwind noinline {
 ; precision6-NEXT:    movl {{[0-9]+}}(%esp), %eax
 ; precision6-NEXT:    movl %eax, %ecx
 ; precision6-NEXT:    andl $8388607, %ecx # imm = 0x7FFFFF
-; precision6-NEXT:    orl $1065353216, %ecx # imm = 0x3F800000
+; precision6-NEXT:    addl $1065353216, %ecx # imm = 0x3F800000
 ; precision6-NEXT:    movl %ecx, (%esp)
 ; precision6-NEXT:    andl $2139095040, %eax # imm = 0x7F800000
 ; precision6-NEXT:    shrl $23, %eax
@@ -518,7 +527,7 @@ define float @f6(float %x) nounwind noinline {
 ; precision12-NEXT:    movl {{[0-9]+}}(%esp), %eax
 ; precision12-NEXT:    movl %eax, %ecx
 ; precision12-NEXT:    andl $8388607, %ecx # imm = 0x7FFFFF
-; precision12-NEXT:    orl $1065353216, %ecx # imm = 0x3F800000
+; precision12-NEXT:    addl $1065353216, %ecx # imm = 0x3F800000
 ; precision12-NEXT:    movl %ecx, (%esp)
 ; precision12-NEXT:    andl $2139095040, %eax # imm = 0x7F800000
 ; precision12-NEXT:    shrl $23, %eax
@@ -544,7 +553,7 @@ define float @f6(float %x) nounwind noinline {
 ; precision18-NEXT:    movl {{[0-9]+}}(%esp), %eax
 ; precision18-NEXT:    movl %eax, %ecx
 ; precision18-NEXT:    andl $8388607, %ecx # imm = 0x7FFFFF
-; precision18-NEXT:    orl $1065353216, %ecx # imm = 0x3F800000
+; precision18-NEXT:    addl $1065353216, %ecx # imm = 0x3F800000
 ; precision18-NEXT:    movl %ecx, (%esp)
 ; precision18-NEXT:    andl $2139095040, %eax # imm = 0x7F800000
 ; precision18-NEXT:    shrl $23, %eax

@@ -192,21 +192,21 @@ define i32 @PR40483_sub3(ptr, i32) nounwind {
 ; X86-LABEL: PR40483_sub3:
 ; X86:       # %bb.0:
 ; X86-NEXT:    pushl %esi
-; X86-NEXT:    movl {{[0-9]+}}(%esp), %eax
-; X86-NEXT:    movl (%eax), %edx
+; X86-NEXT:    movl {{[0-9]+}}(%esp), %ecx
+; X86-NEXT:    movl (%ecx), %edx
 ; X86-NEXT:    movl {{[0-9]+}}(%esp), %esi
-; X86-NEXT:    movl %edx, %ecx
-; X86-NEXT:    subl %esi, %ecx
+; X86-NEXT:    movl %edx, %eax
+; X86-NEXT:    subl %esi, %eax
 ; X86-NEXT:    subl %esi, %edx
-; X86-NEXT:    movl %edx, (%eax)
+; X86-NEXT:    movl %edx, (%ecx)
 ; X86-NEXT:    jae .LBB5_1
 ; X86-NEXT:  # %bb.2:
 ; X86-NEXT:    xorl %eax, %eax
 ; X86-NEXT:    popl %esi
 ; X86-NEXT:    retl
 ; X86-NEXT:  .LBB5_1:
-; X86-NEXT:    movl %ecx, %eax
-; X86-NEXT:    negl %eax
+; X86-NEXT:    movl %eax, %ecx
+; X86-NEXT:    negl %ecx
 ; X86-NEXT:    orl %ecx, %eax
 ; X86-NEXT:    popl %esi
 ; X86-NEXT:    retl
@@ -214,15 +214,15 @@ define i32 @PR40483_sub3(ptr, i32) nounwind {
 ; X64-LABEL: PR40483_sub3:
 ; X64:       # %bb.0:
 ; X64-NEXT:    movl (%rdi), %ecx
-; X64-NEXT:    movl %ecx, %eax
-; X64-NEXT:    subl %esi, %eax
-; X64-NEXT:    movl %eax, %edx
-; X64-NEXT:    negl %edx
-; X64-NEXT:    orl %eax, %edx
-; X64-NEXT:    xorl %eax, %eax
+; X64-NEXT:    movl %ecx, %edx
+; X64-NEXT:    subl %esi, %edx
+; X64-NEXT:    movl %edx, %eax
+; X64-NEXT:    negl %eax
+; X64-NEXT:    orl %edx, %eax
+; X64-NEXT:    xorl %edx, %edx
 ; X64-NEXT:    subl %esi, %ecx
 ; X64-NEXT:    movl %ecx, (%rdi)
-; X64-NEXT:    cmovael %edx, %eax
+; X64-NEXT:    cmovbl %edx, %eax
 ; X64-NEXT:    retq
   %3 = load i32, ptr %0, align 8
   %4 = tail call { i8, i32 } @llvm.x86.subborrow.32(i8 0, i32 %3, i32 %1)
@@ -252,11 +252,11 @@ define i32 @PR40483_sub4(ptr, i32) nounwind {
 ;
 ; X64-LABEL: PR40483_sub4:
 ; X64:       # %bb.0:
-; X64-NEXT:    movl (%rdi), %eax
-; X64-NEXT:    xorl %ecx, %ecx
-; X64-NEXT:    subl %esi, %eax
-; X64-NEXT:    movl %eax, (%rdi)
-; X64-NEXT:    cmovael %ecx, %eax
+; X64-NEXT:    movl (%rdi), %ecx
+; X64-NEXT:    xorl %eax, %eax
+; X64-NEXT:    subl %esi, %ecx
+; X64-NEXT:    movl %ecx, (%rdi)
+; X64-NEXT:    cmovbl %ecx, %eax
 ; X64-NEXT:    retq
   %3 = load i32, ptr %0, align 8
   %4 = tail call { i8, i32 } @llvm.x86.subborrow.32(i8 0, i32 %3, i32 %1)
@@ -314,12 +314,12 @@ define i32 @PR40483_sub6(ptr, i32) nounwind {
 ;
 ; X64-LABEL: PR40483_sub6:
 ; X64:       # %bb.0:
-; X64-NEXT:    movl (%rdi), %eax
-; X64-NEXT:    xorl %ecx, %ecx
-; X64-NEXT:    subl %esi, %eax
-; X64-NEXT:    movl %eax, (%rdi)
-; X64-NEXT:    leal (%rax,%rax), %eax
-; X64-NEXT:    cmovael %ecx, %eax
+; X64-NEXT:    movl (%rdi), %ecx
+; X64-NEXT:    xorl %eax, %eax
+; X64-NEXT:    subl %esi, %ecx
+; X64-NEXT:    movl %ecx, (%rdi)
+; X64-NEXT:    leal (%rcx,%rcx), %ecx
+; X64-NEXT:    cmovbl %ecx, %eax
 ; X64-NEXT:    retq
   %3 = load i32, ptr %0, align 8
   %4 = tail call { i8, i32 } @llvm.x86.subborrow.32(i8 0, i32 %3, i32 %1)

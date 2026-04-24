@@ -9,11 +9,13 @@ define void @constant_expressions() {
 ; CHECK-NEXT:    movl $-289477644, %edx # imm = 0xEEBEEBF4
 ; CHECK-NEXT:    movl (%edx), %edx
 ; CHECK-NEXT:    movl $-289477648, %esi # imm = 0xEEBEEBF0
-; CHECK-NEXT:    addl (%esi), %ecx
-; CHECK-NEXT:    movl $-289477636, %esi # imm = 0xEEBEEBFC
-; CHECK-NEXT:    addl (%esi), %edx
-; CHECK-NEXT:    addl %ecx, %edx
-; CHECK-NEXT:    movl %edx, (%eax)
+; CHECK-NEXT:    movl (%esi), %esi
+; CHECK-NEXT:    addl %ecx, %esi
+; CHECK-NEXT:    movl $-289477636, %ecx # imm = 0xEEBEEBFC
+; CHECK-NEXT:    movl (%ecx), %ecx
+; CHECK-NEXT:    addl %edx, %ecx
+; CHECK-NEXT:    addl %esi, %ecx
+; CHECK-NEXT:    movl %ecx, (%eax)
 ; CHECK-NEXT:    retq
 entry:
   %0 = load i32, ptr inttoptr (i32 add (i32 -289477652, i32 0) to ptr)
@@ -36,11 +38,13 @@ define void @constant_expressions2() {
 ; CHECK-NEXT:    movl $-289477644, %edx # imm = 0xEEBEEBF4
 ; CHECK-NEXT:    movl (%edx), %edx
 ; CHECK-NEXT:    movl $-289477648, %esi # imm = 0xEEBEEBF0
-; CHECK-NEXT:    addl (%esi), %ecx
-; CHECK-NEXT:    movl $-289477640, %esi # imm = 0xEEBEEBF8
-; CHECK-NEXT:    addl (%esi), %edx
-; CHECK-NEXT:    addl %ecx, %edx
-; CHECK-NEXT:    movl %edx, (%eax)
+; CHECK-NEXT:    movl (%esi), %esi
+; CHECK-NEXT:    addl %ecx, %esi
+; CHECK-NEXT:    movl $-289477640, %ecx # imm = 0xEEBEEBF8
+; CHECK-NEXT:    movl (%ecx), %ecx
+; CHECK-NEXT:    addl %edx, %ecx
+; CHECK-NEXT:    addl %esi, %ecx
+; CHECK-NEXT:    movl %ecx, (%eax)
 ; CHECK-NEXT:    retq
 entry:
   %0 = load i32, ptr inttoptr (i32 -289477652 to ptr)

@@ -158,9 +158,10 @@ define void @PR42833() {
 ; SSE2-NEXT:    movl b(%rip), %eax
 ; SSE2-NEXT:    movdqa c+144(%rip), %xmm2
 ; SSE2-NEXT:    movdqa c+128(%rip), %xmm0
-; SSE2-NEXT:    addl c+128(%rip), %eax
-; SSE2-NEXT:    movd %eax, %xmm1
-; SSE2-NEXT:    movd %eax, %xmm3
+; SSE2-NEXT:    movl c+128(%rip), %ecx
+; SSE2-NEXT:    addl %eax, %ecx
+; SSE2-NEXT:    movd %ecx, %xmm1
+; SSE2-NEXT:    movd %ecx, %xmm3
 ; SSE2-NEXT:    paddd %xmm0, %xmm3
 ; SSE2-NEXT:    movdqa d+144(%rip), %xmm4
 ; SSE2-NEXT:    psubd %xmm2, %xmm4
@@ -191,10 +192,11 @@ define void @PR42833() {
 ;
 ; SSE42-LABEL: PR42833:
 ; SSE42:       # %bb.0:
-; SSE42-NEXT:    movl b(%rip), %eax
+; SSE42-NEXT:    movl b(%rip), %ecx
 ; SSE42-NEXT:    movdqa c+144(%rip), %xmm1
 ; SSE42-NEXT:    movdqa c+128(%rip), %xmm0
-; SSE42-NEXT:    addl c+128(%rip), %eax
+; SSE42-NEXT:    movl c+128(%rip), %eax
+; SSE42-NEXT:    addl %ecx, %eax
 ; SSE42-NEXT:    movd %eax, %xmm2
 ; SSE42-NEXT:    paddd %xmm0, %xmm2
 ; SSE42-NEXT:    movdqa d+144(%rip), %xmm3
@@ -202,9 +204,9 @@ define void @PR42833() {
 ; SSE42-NEXT:    paddd %xmm1, %xmm1
 ; SSE42-NEXT:    movdqa %xmm0, %xmm4
 ; SSE42-NEXT:    paddd %xmm4, %xmm4
-; SSE42-NEXT:    pblendw {{.*#+}} xmm4 = xmm2[0,1],xmm4[2,3,4,5,6,7]
+; SSE42-NEXT:    pblendw {{.*#+}} xmm2 = xmm2[0,1],xmm4[2,3,4,5,6,7]
 ; SSE42-NEXT:    movdqa %xmm1, c+144(%rip)
-; SSE42-NEXT:    movdqa %xmm4, c+128(%rip)
+; SSE42-NEXT:    movdqa %xmm2, c+128(%rip)
 ; SSE42-NEXT:    movdqa c+160(%rip), %xmm1
 ; SSE42-NEXT:    movdqa c+176(%rip), %xmm2
 ; SSE42-NEXT:    movdqa d+160(%rip), %xmm4
@@ -227,8 +229,9 @@ define void @PR42833() {
 ; AVX1-LABEL: PR42833:
 ; AVX1:       # %bb.0:
 ; AVX1-NEXT:    movl b(%rip), %eax
-; AVX1-NEXT:    addl c+128(%rip), %eax
-; AVX1-NEXT:    vmovd %eax, %xmm0
+; AVX1-NEXT:    movl c+128(%rip), %ecx
+; AVX1-NEXT:    addl %eax, %ecx
+; AVX1-NEXT:    vmovd %ecx, %xmm0
 ; AVX1-NEXT:    vmovdqa c+128(%rip), %xmm1
 ; AVX1-NEXT:    vpaddd %xmm0, %xmm1, %xmm0
 ; AVX1-NEXT:    vpaddd %xmm1, %xmm1, %xmm2
@@ -239,7 +242,7 @@ define void @PR42833() {
 ; AVX1-NEXT:    vmovdqa d+144(%rip), %xmm2
 ; AVX1-NEXT:    vpsubd c+144(%rip), %xmm2, %xmm2
 ; AVX1-NEXT:    vmovups %ymm0, c+128(%rip)
-; AVX1-NEXT:    vpinsrd $0, %eax, %xmm1, %xmm0
+; AVX1-NEXT:    vpinsrd $0, %ecx, %xmm1, %xmm0
 ; AVX1-NEXT:    vmovdqa d+128(%rip), %xmm1
 ; AVX1-NEXT:    vpsubd %xmm0, %xmm1, %xmm0
 ; AVX1-NEXT:    vmovdqa d+176(%rip), %xmm1
@@ -263,8 +266,9 @@ define void @PR42833() {
 ; AVX2:       # %bb.0:
 ; AVX2-NEXT:    vmovdqu c+128(%rip), %ymm0
 ; AVX2-NEXT:    vmovd %xmm0, %eax
-; AVX2-NEXT:    addl b(%rip), %eax
-; AVX2-NEXT:    vmovd %eax, %xmm1
+; AVX2-NEXT:    movl b(%rip), %ecx
+; AVX2-NEXT:    addl %eax, %ecx
+; AVX2-NEXT:    vmovd %ecx, %xmm1
 ; AVX2-NEXT:    vpaddd %ymm1, %ymm0, %ymm2
 ; AVX2-NEXT:    vpaddd %ymm0, %ymm0, %ymm3
 ; AVX2-NEXT:    vpblendd {{.*#+}} ymm2 = ymm2[0],ymm3[1,2,3,4,5,6,7]
@@ -287,8 +291,9 @@ define void @PR42833() {
 ; AVX512-NEXT:    vmovdqu c+128(%rip), %ymm0
 ; AVX512-NEXT:    vmovdqu64 c+128(%rip), %zmm1
 ; AVX512-NEXT:    vmovd %xmm0, %eax
-; AVX512-NEXT:    addl b(%rip), %eax
-; AVX512-NEXT:    vmovd %eax, %xmm2
+; AVX512-NEXT:    movl b(%rip), %ecx
+; AVX512-NEXT:    addl %eax, %ecx
+; AVX512-NEXT:    vmovd %ecx, %xmm2
 ; AVX512-NEXT:    vpaddd %ymm2, %ymm0, %ymm2
 ; AVX512-NEXT:    vpaddd %ymm0, %ymm0, %ymm0
 ; AVX512-NEXT:    vpblendd {{.*#+}} ymm0 = ymm2[0],ymm0[1,2,3,4,5,6,7]
@@ -296,7 +301,7 @@ define void @PR42833() {
 ; AVX512-NEXT:    vmovdqu %ymm0, c+128(%rip)
 ; AVX512-NEXT:    vmovdqu c+160(%rip), %ymm0
 ; AVX512-NEXT:    vmovdqu64 d+128(%rip), %zmm3
-; AVX512-NEXT:    vpinsrd $0, %eax, %xmm2, %xmm2
+; AVX512-NEXT:    vpinsrd $0, %ecx, %xmm2, %xmm2
 ; AVX512-NEXT:    vinserti32x4 $0, %xmm2, %zmm1, %zmm1
 ; AVX512-NEXT:    vinserti64x4 $1, %ymm0, %zmm1, %zmm1
 ; AVX512-NEXT:    vpsubd %zmm1, %zmm3, %zmm1
@@ -309,8 +314,9 @@ define void @PR42833() {
 ; XOP-LABEL: PR42833:
 ; XOP:       # %bb.0:
 ; XOP-NEXT:    movl b(%rip), %eax
-; XOP-NEXT:    addl c+128(%rip), %eax
-; XOP-NEXT:    vmovd %eax, %xmm0
+; XOP-NEXT:    movl c+128(%rip), %ecx
+; XOP-NEXT:    addl %eax, %ecx
+; XOP-NEXT:    vmovd %ecx, %xmm0
 ; XOP-NEXT:    vmovdqa c+128(%rip), %xmm1
 ; XOP-NEXT:    vpaddd %xmm0, %xmm1, %xmm0
 ; XOP-NEXT:    vpaddd %xmm1, %xmm1, %xmm2
@@ -321,7 +327,7 @@ define void @PR42833() {
 ; XOP-NEXT:    vmovdqa d+144(%rip), %xmm2
 ; XOP-NEXT:    vpsubd c+144(%rip), %xmm2, %xmm2
 ; XOP-NEXT:    vmovups %ymm0, c+128(%rip)
-; XOP-NEXT:    vpinsrd $0, %eax, %xmm1, %xmm0
+; XOP-NEXT:    vpinsrd $0, %ecx, %xmm1, %xmm0
 ; XOP-NEXT:    vmovdqa d+128(%rip), %xmm1
 ; XOP-NEXT:    vpsubd %xmm0, %xmm1, %xmm0
 ; XOP-NEXT:    vmovdqa d+176(%rip), %xmm1

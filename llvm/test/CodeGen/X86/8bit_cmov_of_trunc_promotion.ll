@@ -11,10 +11,11 @@
 define i8 @t0(i32 %a1_wide_orig, i32 %a2_wide_orig, i32 %inc) nounwind {
 ; I386-NOCMOV-LABEL: t0:
 ; I386-NOCMOV:       # %bb.0:
-; I386-NOCMOV-NEXT:    movl {{[0-9]+}}(%esp), %ecx
+; I386-NOCMOV-NEXT:    movl {{[0-9]+}}(%esp), %edx
 ; I386-NOCMOV-NEXT:    movl {{[0-9]+}}(%esp), %eax
-; I386-NOCMOV-NEXT:    addl %ecx, %eax
-; I386-NOCMOV-NEXT:    addl {{[0-9]+}}(%esp), %ecx
+; I386-NOCMOV-NEXT:    addl %edx, %eax
+; I386-NOCMOV-NEXT:    movl {{[0-9]+}}(%esp), %ecx
+; I386-NOCMOV-NEXT:    addl %edx, %ecx
 ; I386-NOCMOV-NEXT:    cmpb %cl, %al
 ; I386-NOCMOV-NEXT:    jg .LBB0_2
 ; I386-NOCMOV-NEXT:  # %bb.1:
@@ -25,10 +26,11 @@ define i8 @t0(i32 %a1_wide_orig, i32 %a2_wide_orig, i32 %inc) nounwind {
 ;
 ; I386-CMOV-LABEL: t0:
 ; I386-CMOV:       # %bb.0:
-; I386-CMOV-NEXT:    movl {{[0-9]+}}(%esp), %eax
+; I386-CMOV-NEXT:    movl {{[0-9]+}}(%esp), %edx
 ; I386-CMOV-NEXT:    movl {{[0-9]+}}(%esp), %ecx
-; I386-CMOV-NEXT:    addl %eax, %ecx
-; I386-CMOV-NEXT:    addl {{[0-9]+}}(%esp), %eax
+; I386-CMOV-NEXT:    addl %edx, %ecx
+; I386-CMOV-NEXT:    movl {{[0-9]+}}(%esp), %eax
+; I386-CMOV-NEXT:    addl %edx, %eax
 ; I386-CMOV-NEXT:    cmpb %al, %cl
 ; I386-CMOV-NEXT:    cmovgl %ecx, %eax
 ; I386-CMOV-NEXT:    # kill: def $al killed $al killed $eax
@@ -36,10 +38,11 @@ define i8 @t0(i32 %a1_wide_orig, i32 %a2_wide_orig, i32 %inc) nounwind {
 ;
 ; I686-NOCMOV-LABEL: t0:
 ; I686-NOCMOV:       # %bb.0:
-; I686-NOCMOV-NEXT:    movl {{[0-9]+}}(%esp), %ecx
+; I686-NOCMOV-NEXT:    movl {{[0-9]+}}(%esp), %edx
 ; I686-NOCMOV-NEXT:    movl {{[0-9]+}}(%esp), %eax
-; I686-NOCMOV-NEXT:    addl %ecx, %eax
-; I686-NOCMOV-NEXT:    addl {{[0-9]+}}(%esp), %ecx
+; I686-NOCMOV-NEXT:    addl %edx, %eax
+; I686-NOCMOV-NEXT:    movl {{[0-9]+}}(%esp), %ecx
+; I686-NOCMOV-NEXT:    addl %edx, %ecx
 ; I686-NOCMOV-NEXT:    cmpb %cl, %al
 ; I686-NOCMOV-NEXT:    jg .LBB0_2
 ; I686-NOCMOV-NEXT:  # %bb.1:
@@ -50,10 +53,11 @@ define i8 @t0(i32 %a1_wide_orig, i32 %a2_wide_orig, i32 %inc) nounwind {
 ;
 ; I686-CMOV-LABEL: t0:
 ; I686-CMOV:       # %bb.0:
-; I686-CMOV-NEXT:    movl {{[0-9]+}}(%esp), %eax
+; I686-CMOV-NEXT:    movl {{[0-9]+}}(%esp), %edx
 ; I686-CMOV-NEXT:    movl {{[0-9]+}}(%esp), %ecx
-; I686-CMOV-NEXT:    addl %eax, %ecx
-; I686-CMOV-NEXT:    addl {{[0-9]+}}(%esp), %eax
+; I686-CMOV-NEXT:    addl %edx, %ecx
+; I686-CMOV-NEXT:    movl {{[0-9]+}}(%esp), %eax
+; I686-CMOV-NEXT:    addl %edx, %eax
 ; I686-CMOV-NEXT:    cmpb %al, %cl
 ; I686-CMOV-NEXT:    cmovgl %ecx, %eax
 ; I686-CMOV-NEXT:    # kill: def $al killed $al killed $eax
@@ -84,10 +88,11 @@ define i8 @t0(i32 %a1_wide_orig, i32 %a2_wide_orig, i32 %inc) nounwind {
 define i8 @neg_only_one_truncation(i32 %a1_wide_orig, i8 %a2_orig, i32 %inc) nounwind {
 ; I386-NOCMOV-LABEL: neg_only_one_truncation:
 ; I386-NOCMOV:       # %bb.0:
-; I386-NOCMOV-NEXT:    movl {{[0-9]+}}(%esp), %ecx
+; I386-NOCMOV-NEXT:    movl {{[0-9]+}}(%esp), %edx
 ; I386-NOCMOV-NEXT:    movl {{[0-9]+}}(%esp), %eax
-; I386-NOCMOV-NEXT:    addl %ecx, %eax
-; I386-NOCMOV-NEXT:    addb {{[0-9]+}}(%esp), %cl
+; I386-NOCMOV-NEXT:    addl %edx, %eax
+; I386-NOCMOV-NEXT:    movzbl {{[0-9]+}}(%esp), %ecx
+; I386-NOCMOV-NEXT:    addb %dl, %cl
 ; I386-NOCMOV-NEXT:    cmpb %cl, %al
 ; I386-NOCMOV-NEXT:    jg .LBB1_2
 ; I386-NOCMOV-NEXT:  # %bb.1:
@@ -101,19 +106,21 @@ define i8 @neg_only_one_truncation(i32 %a1_wide_orig, i8 %a2_orig, i32 %inc) nou
 ; I386-CMOV-NEXT:    movl {{[0-9]+}}(%esp), %eax
 ; I386-CMOV-NEXT:    movl {{[0-9]+}}(%esp), %ecx
 ; I386-CMOV-NEXT:    addl %eax, %ecx
-; I386-CMOV-NEXT:    addb {{[0-9]+}}(%esp), %al
-; I386-CMOV-NEXT:    cmpb %al, %cl
-; I386-CMOV-NEXT:    movzbl %al, %eax
+; I386-CMOV-NEXT:    movzbl {{[0-9]+}}(%esp), %edx
+; I386-CMOV-NEXT:    addb %al, %dl
+; I386-CMOV-NEXT:    cmpb %dl, %cl
+; I386-CMOV-NEXT:    movzbl %dl, %eax
 ; I386-CMOV-NEXT:    cmovgl %ecx, %eax
 ; I386-CMOV-NEXT:    # kill: def $al killed $al killed $eax
 ; I386-CMOV-NEXT:    retl
 ;
 ; I686-NOCMOV-LABEL: neg_only_one_truncation:
 ; I686-NOCMOV:       # %bb.0:
-; I686-NOCMOV-NEXT:    movl {{[0-9]+}}(%esp), %ecx
+; I686-NOCMOV-NEXT:    movl {{[0-9]+}}(%esp), %edx
 ; I686-NOCMOV-NEXT:    movl {{[0-9]+}}(%esp), %eax
-; I686-NOCMOV-NEXT:    addl %ecx, %eax
-; I686-NOCMOV-NEXT:    addb {{[0-9]+}}(%esp), %cl
+; I686-NOCMOV-NEXT:    addl %edx, %eax
+; I686-NOCMOV-NEXT:    movzbl {{[0-9]+}}(%esp), %ecx
+; I686-NOCMOV-NEXT:    addb %dl, %cl
 ; I686-NOCMOV-NEXT:    cmpb %cl, %al
 ; I686-NOCMOV-NEXT:    jg .LBB1_2
 ; I686-NOCMOV-NEXT:  # %bb.1:
@@ -127,9 +134,10 @@ define i8 @neg_only_one_truncation(i32 %a1_wide_orig, i8 %a2_orig, i32 %inc) nou
 ; I686-CMOV-NEXT:    movl {{[0-9]+}}(%esp), %eax
 ; I686-CMOV-NEXT:    movl {{[0-9]+}}(%esp), %ecx
 ; I686-CMOV-NEXT:    addl %eax, %ecx
-; I686-CMOV-NEXT:    addb {{[0-9]+}}(%esp), %al
-; I686-CMOV-NEXT:    cmpb %al, %cl
-; I686-CMOV-NEXT:    movzbl %al, %eax
+; I686-CMOV-NEXT:    movzbl {{[0-9]+}}(%esp), %edx
+; I686-CMOV-NEXT:    addb %al, %dl
+; I686-CMOV-NEXT:    cmpb %dl, %cl
+; I686-CMOV-NEXT:    movzbl %dl, %eax
 ; I686-CMOV-NEXT:    cmovgl %ecx, %eax
 ; I686-CMOV-NEXT:    # kill: def $al killed $al killed $eax
 ; I686-CMOV-NEXT:    retl
@@ -137,11 +145,12 @@ define i8 @neg_only_one_truncation(i32 %a1_wide_orig, i8 %a2_orig, i32 %inc) nou
 ; X86_64-LABEL: neg_only_one_truncation:
 ; X86_64:       # %bb.0:
 ; X86_64-NEXT:    # kill: def $edx killed $edx def $rdx
+; X86_64-NEXT:    # kill: def $esi killed $esi def $rsi
 ; X86_64-NEXT:    # kill: def $edi killed $edi def $rdi
 ; X86_64-NEXT:    leal (%rdi,%rdx), %ecx
-; X86_64-NEXT:    addb %sil, %dl
-; X86_64-NEXT:    cmpb %dl, %cl
-; X86_64-NEXT:    movzbl %dl, %eax
+; X86_64-NEXT:    leal (%rdx,%rsi), %eax
+; X86_64-NEXT:    cmpb %al, %cl
+; X86_64-NEXT:    movzbl %al, %eax
 ; X86_64-NEXT:    cmovgl %ecx, %eax
 ; X86_64-NEXT:    # kill: def $al killed $al killed $eax
 ; X86_64-NEXT:    retq
@@ -159,10 +168,11 @@ define i8 @neg_only_one_truncation(i32 %a1_wide_orig, i8 %a2_orig, i32 %inc) nou
 define i8 @neg_type_mismatch(i32 %a1_wide_orig, i16 %a2_wide_orig, i32 %inc) nounwind {
 ; I386-NOCMOV-LABEL: neg_type_mismatch:
 ; I386-NOCMOV:       # %bb.0:
-; I386-NOCMOV-NEXT:    movl {{[0-9]+}}(%esp), %ecx
+; I386-NOCMOV-NEXT:    movl {{[0-9]+}}(%esp), %edx
 ; I386-NOCMOV-NEXT:    movl {{[0-9]+}}(%esp), %eax
-; I386-NOCMOV-NEXT:    addl %ecx, %eax
-; I386-NOCMOV-NEXT:    addw {{[0-9]+}}(%esp), %cx
+; I386-NOCMOV-NEXT:    addl %edx, %eax
+; I386-NOCMOV-NEXT:    movzwl {{[0-9]+}}(%esp), %ecx
+; I386-NOCMOV-NEXT:    addw %dx, %cx
 ; I386-NOCMOV-NEXT:    cmpb %cl, %al
 ; I386-NOCMOV-NEXT:    jg .LBB2_2
 ; I386-NOCMOV-NEXT:  # %bb.1:
@@ -173,10 +183,11 @@ define i8 @neg_type_mismatch(i32 %a1_wide_orig, i16 %a2_wide_orig, i32 %inc) nou
 ;
 ; I386-CMOV-LABEL: neg_type_mismatch:
 ; I386-CMOV:       # %bb.0:
-; I386-CMOV-NEXT:    movl {{[0-9]+}}(%esp), %eax
+; I386-CMOV-NEXT:    movl {{[0-9]+}}(%esp), %edx
 ; I386-CMOV-NEXT:    movl {{[0-9]+}}(%esp), %ecx
-; I386-CMOV-NEXT:    addl %eax, %ecx
-; I386-CMOV-NEXT:    addw {{[0-9]+}}(%esp), %ax
+; I386-CMOV-NEXT:    addl %edx, %ecx
+; I386-CMOV-NEXT:    movzwl {{[0-9]+}}(%esp), %eax
+; I386-CMOV-NEXT:    addw %dx, %ax
 ; I386-CMOV-NEXT:    cmpb %al, %cl
 ; I386-CMOV-NEXT:    cmovgl %ecx, %eax
 ; I386-CMOV-NEXT:    # kill: def $al killed $al killed $eax
@@ -184,10 +195,11 @@ define i8 @neg_type_mismatch(i32 %a1_wide_orig, i16 %a2_wide_orig, i32 %inc) nou
 ;
 ; I686-NOCMOV-LABEL: neg_type_mismatch:
 ; I686-NOCMOV:       # %bb.0:
-; I686-NOCMOV-NEXT:    movl {{[0-9]+}}(%esp), %ecx
+; I686-NOCMOV-NEXT:    movl {{[0-9]+}}(%esp), %edx
 ; I686-NOCMOV-NEXT:    movl {{[0-9]+}}(%esp), %eax
-; I686-NOCMOV-NEXT:    addl %ecx, %eax
-; I686-NOCMOV-NEXT:    addw {{[0-9]+}}(%esp), %cx
+; I686-NOCMOV-NEXT:    addl %edx, %eax
+; I686-NOCMOV-NEXT:    movzwl {{[0-9]+}}(%esp), %ecx
+; I686-NOCMOV-NEXT:    addw %dx, %cx
 ; I686-NOCMOV-NEXT:    cmpb %cl, %al
 ; I686-NOCMOV-NEXT:    jg .LBB2_2
 ; I686-NOCMOV-NEXT:  # %bb.1:
@@ -198,10 +210,11 @@ define i8 @neg_type_mismatch(i32 %a1_wide_orig, i16 %a2_wide_orig, i32 %inc) nou
 ;
 ; I686-CMOV-LABEL: neg_type_mismatch:
 ; I686-CMOV:       # %bb.0:
-; I686-CMOV-NEXT:    movl {{[0-9]+}}(%esp), %eax
+; I686-CMOV-NEXT:    movl {{[0-9]+}}(%esp), %edx
 ; I686-CMOV-NEXT:    movl {{[0-9]+}}(%esp), %ecx
-; I686-CMOV-NEXT:    addl %eax, %ecx
-; I686-CMOV-NEXT:    addw {{[0-9]+}}(%esp), %ax
+; I686-CMOV-NEXT:    addl %edx, %ecx
+; I686-CMOV-NEXT:    movzwl {{[0-9]+}}(%esp), %eax
+; I686-CMOV-NEXT:    addw %dx, %ax
 ; I686-CMOV-NEXT:    cmpb %al, %cl
 ; I686-CMOV-NEXT:    cmovgl %ecx, %eax
 ; I686-CMOV-NEXT:    # kill: def $al killed $al killed $eax
@@ -234,8 +247,9 @@ define i8 @negative_CopyFromReg(i32 %a1_wide, i32 %a2_wide_orig, i32 %inc) nounw
 ; I386-NOCMOV-LABEL: negative_CopyFromReg:
 ; I386-NOCMOV:       # %bb.0:
 ; I386-NOCMOV-NEXT:    movzbl {{[0-9]+}}(%esp), %eax
+; I386-NOCMOV-NEXT:    movl {{[0-9]+}}(%esp), %edx
 ; I386-NOCMOV-NEXT:    movl {{[0-9]+}}(%esp), %ecx
-; I386-NOCMOV-NEXT:    addl {{[0-9]+}}(%esp), %ecx
+; I386-NOCMOV-NEXT:    addl %edx, %ecx
 ; I386-NOCMOV-NEXT:    cmpb %cl, %al
 ; I386-NOCMOV-NEXT:    jg .LBB3_2
 ; I386-NOCMOV-NEXT:  # %bb.1:
@@ -246,8 +260,9 @@ define i8 @negative_CopyFromReg(i32 %a1_wide, i32 %a2_wide_orig, i32 %inc) nounw
 ; I386-CMOV-LABEL: negative_CopyFromReg:
 ; I386-CMOV:       # %bb.0:
 ; I386-CMOV-NEXT:    movl {{[0-9]+}}(%esp), %ecx
+; I386-CMOV-NEXT:    movl {{[0-9]+}}(%esp), %edx
 ; I386-CMOV-NEXT:    movl {{[0-9]+}}(%esp), %eax
-; I386-CMOV-NEXT:    addl {{[0-9]+}}(%esp), %eax
+; I386-CMOV-NEXT:    addl %edx, %eax
 ; I386-CMOV-NEXT:    cmpb %al, %cl
 ; I386-CMOV-NEXT:    cmovgl %ecx, %eax
 ; I386-CMOV-NEXT:    # kill: def $al killed $al killed $eax
@@ -256,8 +271,9 @@ define i8 @negative_CopyFromReg(i32 %a1_wide, i32 %a2_wide_orig, i32 %inc) nounw
 ; I686-NOCMOV-LABEL: negative_CopyFromReg:
 ; I686-NOCMOV:       # %bb.0:
 ; I686-NOCMOV-NEXT:    movzbl {{[0-9]+}}(%esp), %eax
+; I686-NOCMOV-NEXT:    movl {{[0-9]+}}(%esp), %edx
 ; I686-NOCMOV-NEXT:    movl {{[0-9]+}}(%esp), %ecx
-; I686-NOCMOV-NEXT:    addl {{[0-9]+}}(%esp), %ecx
+; I686-NOCMOV-NEXT:    addl %edx, %ecx
 ; I686-NOCMOV-NEXT:    cmpb %cl, %al
 ; I686-NOCMOV-NEXT:    jg .LBB3_2
 ; I686-NOCMOV-NEXT:  # %bb.1:
@@ -268,8 +284,9 @@ define i8 @negative_CopyFromReg(i32 %a1_wide, i32 %a2_wide_orig, i32 %inc) nounw
 ; I686-CMOV-LABEL: negative_CopyFromReg:
 ; I686-CMOV:       # %bb.0:
 ; I686-CMOV-NEXT:    movl {{[0-9]+}}(%esp), %ecx
+; I686-CMOV-NEXT:    movl {{[0-9]+}}(%esp), %edx
 ; I686-CMOV-NEXT:    movl {{[0-9]+}}(%esp), %eax
-; I686-CMOV-NEXT:    addl {{[0-9]+}}(%esp), %eax
+; I686-CMOV-NEXT:    addl %edx, %eax
 ; I686-CMOV-NEXT:    cmpb %al, %cl
 ; I686-CMOV-NEXT:    cmovgl %ecx, %eax
 ; I686-CMOV-NEXT:    # kill: def $al killed $al killed $eax

@@ -74,8 +74,8 @@ define void @test_dec_and(ptr nocapture %0, ptr readnone %1) {
 ; CHECK-NEXT:    notb %al
 ; CHECK-NEXT:    testq %rsi, %rsi
 ; CHECK-NEXT:    sete %cl
-; CHECK-NEXT:    orb %al, %cl
-; CHECK-NEXT:    testb $1, %cl
+; CHECK-NEXT:    orb %cl, %al
+; CHECK-NEXT:    testb $1, %al
 ; CHECK-NEXT:    je func2 # TAILCALL
 ; CHECK-NEXT:  # %bb.1:
 ; CHECK-NEXT:    retq

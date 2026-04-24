@@ -6,8 +6,9 @@ define i32 @test1(i32 %x, i32 %n, i32 %w, ptr %vp) nounwind readnone {
 ; CHECK-LABEL: test1:
 ; CHECK:       # %bb.0: # %entry
 ; CHECK-NEXT:    btl %esi, %edi
-; CHECK-NEXT:    movl $12, %eax
-; CHECK-NEXT:    cmovael (%rcx), %eax
+; CHECK-NEXT:    movl $12, %edx
+; CHECK-NEXT:    movl (%rcx), %eax
+; CHECK-NEXT:    cmovbl %edx, %eax
 ; CHECK-NEXT:    retq
 entry:
 	%0 = lshr i32 %x, %n
@@ -22,8 +23,9 @@ define i32 @test2(i32 %x, i32 %n, i32 %w, ptr %vp) nounwind readnone {
 ; CHECK-LABEL: test2:
 ; CHECK:       # %bb.0: # %entry
 ; CHECK-NEXT:    btl %esi, %edi
-; CHECK-NEXT:    movl $12, %eax
-; CHECK-NEXT:    cmovbl (%rcx), %eax
+; CHECK-NEXT:    movl $12, %edx
+; CHECK-NEXT:    movl (%rcx), %eax
+; CHECK-NEXT:    cmovael %edx, %eax
 ; CHECK-NEXT:    retq
 entry:
 	%0 = lshr i32 %x, %n
@@ -46,7 +48,8 @@ define void @test3(i64 %a, i64 %b, i1 %p) nounwind {
 ; CHECK:       # %bb.0:
 ; CHECK-NEXT:    pushq %rax
 ; CHECK-NEXT:    testb $1, %dl
-; CHECK-NEXT:    cmovel %esi, %edi
+; CHECK-NEXT:    cmovnel %edi, %esi
+; CHECK-NEXT:    movq %rsi, %rdi
 ; CHECK-NEXT:    callq bar@PLT
 ; CHECK-NEXT:    popq %rax
 ; CHECK-NEXT:    retq
@@ -189,9 +192,9 @@ entry:
 define i8 @test7(i1 inreg %c, i8 inreg %a, i8 inreg %b) nounwind {
 ; CHECK-LABEL: test7:
 ; CHECK:       # %bb.0:
-; CHECK-NEXT:    movl %esi, %eax
+; CHECK-NEXT:    movl %edx, %eax
 ; CHECK-NEXT:    testb $1, %dil
-; CHECK-NEXT:    cmovel %edx, %eax
+; CHECK-NEXT:    cmovnel %esi, %eax
 ; CHECK-NEXT:    # kill: def $al killed $al killed $eax
 ; CHECK-NEXT:    retq
   %d = select i1 %c, i8 %a, i8 %b
@@ -201,9 +204,9 @@ define i8 @test7(i1 inreg %c, i8 inreg %a, i8 inreg %b) nounwind {
 define i64 @test8(i64 %0, i64 %1, i64 %2) {
 ; CHECK-LABEL: test8:
 ; CHECK:       # %bb.0:
-; CHECK-NEXT:    movq %rsi, %rax
+; CHECK-NEXT:    movq %rdx, %rax
 ; CHECK-NEXT:    cmpq $-2147483648, %rdi # imm = 0x80000000
-; CHECK-NEXT:    cmovlq %rdx, %rax
+; CHECK-NEXT:    cmovgeq %rsi, %rax
 ; CHECK-NEXT:    retq
   %4 = icmp sgt i64 %0, -2147483649
   %5 = select i1 %4, i64 %1, i64 %2
@@ -214,9 +217,10 @@ define i32 @smin(i32 %x) {
 ; CHECK-LABEL: smin:
 ; CHECK:       # %bb.0:
 ; CHECK-NEXT:    testl %edi, %edi
-; CHECK-NEXT:    notl %edi
-; CHECK-NEXT:    movl $-1, %eax
-; CHECK-NEXT:    cmovnsl %edi, %eax
+; CHECK-NEXT:    movl %edi, %eax
+; CHECK-NEXT:    notl %eax
+; CHECK-NEXT:    movl $-1, %ecx
+; CHECK-NEXT:    cmovsl %ecx, %eax
 ; CHECK-NEXT:    retq
   %not_x = xor i32 %x, -1
   %1 = icmp slt i32 %not_x, -1

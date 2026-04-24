@@ -8,8 +8,8 @@
 define void @bar(i64 %x, i64 %y, ptr %z) nounwind readnone {
 ; CHECK-LABEL: bar:
 ; CHECK:       # %bb.0: # %entry
-; CHECK-NEXT:    addl %esi, %edi
-; CHECK-NEXT:    movq %rdi, (%rdx)
+; CHECK-NEXT:    leal (%rdi,%rsi), %eax
+; CHECK-NEXT:    movq %rax, (%rdx)
 ; CHECK-NEXT:    retq
 entry:
 	%t0 = add i64 %x, %y
@@ -20,9 +20,10 @@ entry:
 define void @easy(i32 %x, i32 %y, ptr %z) nounwind readnone {
 ; CHECK-LABEL: easy:
 ; CHECK:       # %bb.0: # %entry
+; CHECK-NEXT:    # kill: def $esi killed $esi def $rsi
 ; CHECK-NEXT:    # kill: def $edi killed $edi def $rdi
-; CHECK-NEXT:    addl %esi, %edi
-; CHECK-NEXT:    movq %rdi, (%rdx)
+; CHECK-NEXT:    leal (%rdi,%rsi), %eax
+; CHECK-NEXT:    movq %rax, (%rdx)
 ; CHECK-NEXT:    retq
 entry:
 	%t0 = add i32 %x, %y
@@ -34,9 +35,10 @@ entry:
 define void @cola(ptr%x, i64 %y, ptr %z, i64 %u) nounwind readnone {
 ; CHECK-LABEL: cola:
 ; CHECK:       # %bb.0: # %entry
-; CHECK-NEXT:    addl (%rdi), %esi
-; CHECK-NEXT:    xorq %rcx, %rsi
-; CHECK-NEXT:    movq %rsi, (%rdx)
+; CHECK-NEXT:    movl (%rdi), %eax
+; CHECK-NEXT:    addl %esi, %eax
+; CHECK-NEXT:    xorq %rcx, %rax
+; CHECK-NEXT:    movq %rax, (%rdx)
 ; CHECK-NEXT:    retq
 entry:
         %p = load i64, ptr %x
@@ -49,8 +51,9 @@ entry:
 define void @yaks(ptr%x, i64 %y, ptr %z, i64 %u) nounwind readnone {
 ; CHECK-LABEL: yaks:
 ; CHECK:       # %bb.0: # %entry
-; CHECK-NEXT:    addl (%rdi), %esi
-; CHECK-NEXT:    xorl %esi, %ecx
+; CHECK-NEXT:    movl (%rdi), %eax
+; CHECK-NEXT:    addl %esi, %eax
+; CHECK-NEXT:    xorl %eax, %ecx
 ; CHECK-NEXT:    movq %rcx, (%rdx)
 ; CHECK-NEXT:    retq
 entry:
@@ -65,8 +68,9 @@ define void @foo(ptr%x, ptr%y, ptr %z) nounwind readnone {
 ; CHECK-LABEL: foo:
 ; CHECK:       # %bb.0: # %entry
 ; CHECK-NEXT:    movl (%rdi), %eax
-; CHECK-NEXT:    addl (%rsi), %eax
-; CHECK-NEXT:    movq %rax, (%rdx)
+; CHECK-NEXT:    movl (%rsi), %ecx
+; CHECK-NEXT:    addl %eax, %ecx
+; CHECK-NEXT:    movq %rcx, (%rdx)
 ; CHECK-NEXT:    retq
 entry:
         %a = load i64, ptr %x
@@ -79,9 +83,9 @@ entry:
 define void @avo(i64 %x, ptr %z, i64 %u) nounwind readnone {
 ; CHECK-LABEL: avo:
 ; CHECK:       # %bb.0: # %entry
-; CHECK-NEXT:    addl $734847, %edi # imm = 0xB367F
-; CHECK-NEXT:    xorq %rdx, %rdi
-; CHECK-NEXT:    movq %rdi, (%rsi)
+; CHECK-NEXT:    leal 734847(%rdi), %eax
+; CHECK-NEXT:    xorq %rdx, %rax
+; CHECK-NEXT:    movq %rax, (%rsi)
 ; CHECK-NEXT:    retq
 entry:
 	%t0 = add i64 %x, 734847
@@ -93,8 +97,8 @@ entry:
 define void @phe(i64 %x, ptr %z, i64 %u) nounwind readnone {
 ; CHECK-LABEL: phe:
 ; CHECK:       # %bb.0: # %entry
-; CHECK-NEXT:    addl $734847, %edi # imm = 0xB367F
-; CHECK-NEXT:    xorl %edi, %edx
+; CHECK-NEXT:    leal 734847(%rdi), %eax
+; CHECK-NEXT:    xorl %eax, %edx
 ; CHECK-NEXT:    movq %rdx, (%rsi)
 ; CHECK-NEXT:    retq
 entry:
@@ -107,8 +111,8 @@ entry:
 define void @oze(i64 %y, ptr %z) nounwind readnone {
 ; CHECK-LABEL: oze:
 ; CHECK:       # %bb.0: # %entry
-; CHECK-NEXT:    incl %edi
-; CHECK-NEXT:    movq %rdi, (%rsi)
+; CHECK-NEXT:    leal 1(%rdi), %eax
+; CHECK-NEXT:    movq %rax, (%rsi)
 ; CHECK-NEXT:    retq
 entry:
 	%t0 = add i64 %y, 1
@@ -205,8 +209,8 @@ entry:
 define void @soze(i64 %y, ptr %z) nounwind readnone {
 ; CHECK-LABEL: soze:
 ; CHECK:       # %bb.0: # %entry
-; CHECK-NEXT:    decl %edi
-; CHECK-NEXT:    movq %rdi, (%rsi)
+; CHECK-NEXT:    leal -1(%rdi), %eax
+; CHECK-NEXT:    movq %rax, (%rsi)
 ; CHECK-NEXT:    retq
 entry:
 	%t0 = sub i64 %y, 1

@@ -54,7 +54,8 @@ define <2 x i64> @test5(<2 x i64> %A, <2 x i64> %B) nounwind {
 ; CHECK:       ## %bb.0:
 ; CHECK-NEXT:    pcmpeqd %xmm1, %xmm0
 ; CHECK-NEXT:    pshufd {{.*#+}} xmm1 = xmm0[1,0,3,2]
-; CHECK-NEXT:    pand %xmm1, %xmm0
+; CHECK-NEXT:    pand %xmm0, %xmm1
+; CHECK-NEXT:    movdqa %xmm1, %xmm0
 ; CHECK-NEXT:    retl
 	%C = icmp eq <2 x i64> %A, %B
 	%D = sext <2 x i1> %C to <2 x i64>
@@ -66,8 +67,8 @@ define <2 x i64> @test6(<2 x i64> %A, <2 x i64> %B) nounwind {
 ; CHECK:       ## %bb.0:
 ; CHECK-NEXT:    pcmpeqd %xmm1, %xmm0
 ; CHECK-NEXT:    pshufd {{.*#+}} xmm1 = xmm0[1,0,3,2]
-; CHECK-NEXT:    pand %xmm1, %xmm0
-; CHECK-NEXT:    pcmpeqd %xmm1, %xmm1
+; CHECK-NEXT:    pand %xmm0, %xmm1
+; CHECK-NEXT:    pcmpeqd %xmm0, %xmm0
 ; CHECK-NEXT:    pxor %xmm1, %xmm0
 ; CHECK-NEXT:    retl
 	%C = icmp ne <2 x i64> %A, %B
@@ -85,10 +86,10 @@ define <2 x i64> @test7(<2 x i64> %A, <2 x i64> %B) nounwind {
 ; CHECK-NEXT:    pcmpgtd %xmm1, %xmm2
 ; CHECK-NEXT:    pshufd {{.*#+}} xmm3 = xmm2[0,0,2,2]
 ; CHECK-NEXT:    pcmpeqd %xmm1, %xmm0
-; CHECK-NEXT:    pshufd {{.*#+}} xmm1 = xmm0[1,1,3,3]
-; CHECK-NEXT:    pand %xmm3, %xmm1
+; CHECK-NEXT:    pshufd {{.*#+}} xmm0 = xmm0[1,1,3,3]
+; CHECK-NEXT:    pand %xmm0, %xmm3
 ; CHECK-NEXT:    pshufd {{.*#+}} xmm0 = xmm2[1,1,3,3]
-; CHECK-NEXT:    por %xmm1, %xmm0
+; CHECK-NEXT:    por %xmm3, %xmm0
 ; CHECK-NEXT:    retl
 	%C = icmp sgt <2 x i64> %A, %B
 	%D = sext <2 x i1> %C to <2 x i64>
@@ -105,10 +106,10 @@ define <2 x i64> @test8(<2 x i64> %A, <2 x i64> %B) nounwind {
 ; CHECK-NEXT:    pcmpgtd %xmm0, %xmm2
 ; CHECK-NEXT:    pshufd {{.*#+}} xmm3 = xmm2[0,0,2,2]
 ; CHECK-NEXT:    pcmpeqd %xmm0, %xmm1
-; CHECK-NEXT:    pshufd {{.*#+}} xmm1 = xmm1[1,1,3,3]
-; CHECK-NEXT:    pand %xmm3, %xmm1
+; CHECK-NEXT:    pshufd {{.*#+}} xmm0 = xmm1[1,1,3,3]
+; CHECK-NEXT:    pand %xmm0, %xmm3
 ; CHECK-NEXT:    pshufd {{.*#+}} xmm0 = xmm2[1,1,3,3]
-; CHECK-NEXT:    por %xmm1, %xmm0
+; CHECK-NEXT:    por %xmm3, %xmm0
 ; CHECK-NEXT:    retl
 	%C = icmp slt <2 x i64> %A, %B
 	%D = sext <2 x i1> %C to <2 x i64>
@@ -126,9 +127,9 @@ define <2 x i64> @test9(<2 x i64> %A, <2 x i64> %B) nounwind {
 ; CHECK-NEXT:    pshufd {{.*#+}} xmm3 = xmm2[0,0,2,2]
 ; CHECK-NEXT:    pcmpeqd %xmm0, %xmm1
 ; CHECK-NEXT:    pshufd {{.*#+}} xmm0 = xmm1[1,1,3,3]
-; CHECK-NEXT:    pand %xmm3, %xmm0
+; CHECK-NEXT:    pand %xmm0, %xmm3
 ; CHECK-NEXT:    pshufd {{.*#+}} xmm1 = xmm2[1,1,3,3]
-; CHECK-NEXT:    por %xmm0, %xmm1
+; CHECK-NEXT:    por %xmm3, %xmm1
 ; CHECK-NEXT:    pcmpeqd %xmm0, %xmm0
 ; CHECK-NEXT:    pxor %xmm1, %xmm0
 ; CHECK-NEXT:    retl
@@ -148,9 +149,9 @@ define <2 x i64> @test10(<2 x i64> %A, <2 x i64> %B) nounwind {
 ; CHECK-NEXT:    pshufd {{.*#+}} xmm3 = xmm2[0,0,2,2]
 ; CHECK-NEXT:    pcmpeqd %xmm1, %xmm0
 ; CHECK-NEXT:    pshufd {{.*#+}} xmm0 = xmm0[1,1,3,3]
-; CHECK-NEXT:    pand %xmm3, %xmm0
+; CHECK-NEXT:    pand %xmm0, %xmm3
 ; CHECK-NEXT:    pshufd {{.*#+}} xmm1 = xmm2[1,1,3,3]
-; CHECK-NEXT:    por %xmm0, %xmm1
+; CHECK-NEXT:    por %xmm3, %xmm1
 ; CHECK-NEXT:    pcmpeqd %xmm0, %xmm0
 ; CHECK-NEXT:    pxor %xmm1, %xmm0
 ; CHECK-NEXT:    retl
@@ -169,10 +170,10 @@ define <2 x i64> @test11(<2 x i64> %A, <2 x i64> %B) nounwind {
 ; CHECK-NEXT:    pcmpgtd %xmm1, %xmm2
 ; CHECK-NEXT:    pshufd {{.*#+}} xmm3 = xmm2[0,0,2,2]
 ; CHECK-NEXT:    pcmpeqd %xmm1, %xmm0
-; CHECK-NEXT:    pshufd {{.*#+}} xmm1 = xmm0[1,1,3,3]
-; CHECK-NEXT:    pand %xmm3, %xmm1
+; CHECK-NEXT:    pshufd {{.*#+}} xmm0 = xmm0[1,1,3,3]
+; CHECK-NEXT:    pand %xmm0, %xmm3
 ; CHECK-NEXT:    pshufd {{.*#+}} xmm0 = xmm2[1,1,3,3]
-; CHECK-NEXT:    por %xmm1, %xmm0
+; CHECK-NEXT:    por %xmm3, %xmm0
 ; CHECK-NEXT:    retl
 	%C = icmp ugt <2 x i64> %A, %B
 	%D = sext <2 x i1> %C to <2 x i64>
@@ -189,10 +190,10 @@ define <2 x i64> @test12(<2 x i64> %A, <2 x i64> %B) nounwind {
 ; CHECK-NEXT:    pcmpgtd %xmm0, %xmm2
 ; CHECK-NEXT:    pshufd {{.*#+}} xmm3 = xmm2[0,0,2,2]
 ; CHECK-NEXT:    pcmpeqd %xmm0, %xmm1
-; CHECK-NEXT:    pshufd {{.*#+}} xmm1 = xmm1[1,1,3,3]
-; CHECK-NEXT:    pand %xmm3, %xmm1
+; CHECK-NEXT:    pshufd {{.*#+}} xmm0 = xmm1[1,1,3,3]
+; CHECK-NEXT:    pand %xmm0, %xmm3
 ; CHECK-NEXT:    pshufd {{.*#+}} xmm0 = xmm2[1,1,3,3]
-; CHECK-NEXT:    por %xmm1, %xmm0
+; CHECK-NEXT:    por %xmm3, %xmm0
 ; CHECK-NEXT:    retl
 	%C = icmp ult <2 x i64> %A, %B
 	%D = sext <2 x i1> %C to <2 x i64>
@@ -210,9 +211,9 @@ define <2 x i64> @test13(<2 x i64> %A, <2 x i64> %B) nounwind {
 ; CHECK-NEXT:    pshufd {{.*#+}} xmm3 = xmm2[0,0,2,2]
 ; CHECK-NEXT:    pcmpeqd %xmm0, %xmm1
 ; CHECK-NEXT:    pshufd {{.*#+}} xmm0 = xmm1[1,1,3,3]
-; CHECK-NEXT:    pand %xmm3, %xmm0
+; CHECK-NEXT:    pand %xmm0, %xmm3
 ; CHECK-NEXT:    pshufd {{.*#+}} xmm1 = xmm2[1,1,3,3]
-; CHECK-NEXT:    por %xmm0, %xmm1
+; CHECK-NEXT:    por %xmm3, %xmm1
 ; CHECK-NEXT:    pcmpeqd %xmm0, %xmm0
 ; CHECK-NEXT:    pxor %xmm1, %xmm0
 ; CHECK-NEXT:    retl
@@ -232,9 +233,9 @@ define <2 x i64> @test14(<2 x i64> %A, <2 x i64> %B) nounwind {
 ; CHECK-NEXT:    pshufd {{.*#+}} xmm3 = xmm2[0,0,2,2]
 ; CHECK-NEXT:    pcmpeqd %xmm1, %xmm0
 ; CHECK-NEXT:    pshufd {{.*#+}} xmm0 = xmm0[1,1,3,3]
-; CHECK-NEXT:    pand %xmm3, %xmm0
+; CHECK-NEXT:    pand %xmm0, %xmm3
 ; CHECK-NEXT:    pshufd {{.*#+}} xmm1 = xmm2[1,1,3,3]
-; CHECK-NEXT:    por %xmm0, %xmm1
+; CHECK-NEXT:    por %xmm3, %xmm1
 ; CHECK-NEXT:    pcmpeqd %xmm0, %xmm0
 ; CHECK-NEXT:    pxor %xmm1, %xmm0
 ; CHECK-NEXT:    retl

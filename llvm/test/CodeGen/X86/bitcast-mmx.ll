@@ -68,8 +68,9 @@ define i64 @t2(i64 %x, i32 %n, i32 %w) nounwind {
 ; X86-NEXT:    movd 20(%ebp), %mm0
 ; X86-NEXT:    movd 16(%ebp), %mm1
 ; X86-NEXT:    psllq %mm1, %mm0
-; X86-NEXT:    por 8(%ebp), %mm0
-; X86-NEXT:    movq %mm0, (%esp)
+; X86-NEXT:    movq 8(%ebp), %mm1
+; X86-NEXT:    por %mm0, %mm1
+; X86-NEXT:    movq %mm1, (%esp)
 ; X86-NEXT:    movl (%esp), %eax
 ; X86-NEXT:    movl {{[0-9]+}}(%esp), %edx
 ; X86-NEXT:    movl %ebp, %esp
@@ -82,8 +83,8 @@ define i64 @t2(i64 %x, i32 %n, i32 %w) nounwind {
 ; X64-NEXT:    movd %esi, %mm1
 ; X64-NEXT:    psllq %mm1, %mm0
 ; X64-NEXT:    movq %rdi, %mm1
-; X64-NEXT:    por %mm0, %mm1
-; X64-NEXT:    movq %mm1, %rax
+; X64-NEXT:    por %mm1, %mm0
+; X64-NEXT:    movq %mm0, %rax
 ; X64-NEXT:    retq
 entry:
   %0 = insertelement <2 x i32> undef, i32 %w, i32 0

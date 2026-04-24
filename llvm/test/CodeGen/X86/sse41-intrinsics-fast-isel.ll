@@ -28,7 +28,8 @@ define <2 x i64> @test_mm_blend_epi16(<2 x i64> %a0, <2 x i64> %a1) {
 define <2 x double> @test_mm_blend_pd(<2 x double> %a0, <2 x double> %a1) {
 ; SSE-LABEL: test_mm_blend_pd:
 ; SSE:       # %bb.0:
-; SSE-NEXT:    blendps {{.*#+}} xmm0 = xmm0[0,1],xmm1[2,3]
+; SSE-NEXT:    movsd {{.*#+}} xmm1 = xmm0[0],xmm1[1]
+; SSE-NEXT:    movaps %xmm1, %xmm0
 ; SSE-NEXT:    ret{{[l|q]}}
 ;
 ; AVX-LABEL: test_mm_blend_pd:

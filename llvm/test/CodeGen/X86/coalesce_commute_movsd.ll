@@ -9,12 +9,14 @@
 define <2 x double> @insert_f64(double %a0, <2 x double> %a1) {
 ; SSE2-LABEL: insert_f64:
 ; SSE2:       # %bb.0:
-; SSE2-NEXT:    shufps {{.*#+}} xmm0 = xmm0[0,1],xmm1[2,3]
+; SSE2-NEXT:    movsd {{.*#+}} xmm1 = xmm0[0],xmm1[1]
+; SSE2-NEXT:    movapd %xmm1, %xmm0
 ; SSE2-NEXT:    retq
 ;
 ; SSE41-LABEL: insert_f64:
 ; SSE41:       # %bb.0:
-; SSE41-NEXT:    blendps {{.*#+}} xmm0 = xmm0[0,1],xmm1[2,3]
+; SSE41-NEXT:    movsd {{.*#+}} xmm1 = xmm0[0],xmm1[1]
+; SSE41-NEXT:    movaps %xmm1, %xmm0
 ; SSE41-NEXT:    retq
 ;
 ; AVX-LABEL: insert_f64:
@@ -39,7 +41,8 @@ define <4 x float> @insert_f32(float %a0, <4 x float> %a1) {
 ;
 ; SSE41-LABEL: insert_f32:
 ; SSE41:       # %bb.0:
-; SSE41-NEXT:    blendps {{.*#+}} xmm0 = xmm0[0],xmm1[1,2,3]
+; SSE41-NEXT:    movss {{.*#+}} xmm1 = xmm0[0],xmm1[1,2,3]
+; SSE41-NEXT:    movaps %xmm1, %xmm0
 ; SSE41-NEXT:    retq
 ;
 ; AVX-LABEL: insert_f32:

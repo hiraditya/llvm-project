@@ -43,12 +43,14 @@ define <16 x i8> @combine_vpshufb_as_movq(<16 x i8> %a0) {
 define <2 x double> @combine_pshufb_as_movsd(<2 x double> %a0, <2 x double> %a1) {
 ; SSSE3-LABEL: combine_pshufb_as_movsd:
 ; SSSE3:       # %bb.0:
-; SSSE3-NEXT:    shufps {{.*#+}} xmm0 = xmm0[0,1],xmm1[2,3]
+; SSSE3-NEXT:    movsd {{.*#+}} xmm1 = xmm0[0],xmm1[1]
+; SSSE3-NEXT:    movapd %xmm1, %xmm0
 ; SSSE3-NEXT:    retq
 ;
 ; SSE41-LABEL: combine_pshufb_as_movsd:
 ; SSE41:       # %bb.0:
-; SSE41-NEXT:    blendps {{.*#+}} xmm0 = xmm0[0,1],xmm1[2,3]
+; SSE41-NEXT:    movsd {{.*#+}} xmm1 = xmm0[0],xmm1[1]
+; SSE41-NEXT:    movaps %xmm1, %xmm0
 ; SSE41-NEXT:    retq
 ;
 ; AVX-LABEL: combine_pshufb_as_movsd:
@@ -116,18 +118,12 @@ define <2 x double> @combine_pshufb_as_vzmovl_64(<2 x double> %a0) {
 }
 
 define <4 x float> @combine_pshufb_as_vzmovl_32(<4 x float> %a0) {
-; SSSE3-LABEL: combine_pshufb_as_vzmovl_32:
-; SSSE3:       # %bb.0:
-; SSSE3-NEXT:    xorps %xmm1, %xmm1
-; SSSE3-NEXT:    movss {{.*#+}} xmm1 = xmm0[0],xmm1[1,2,3]
-; SSSE3-NEXT:    movaps %xmm1, %xmm0
-; SSSE3-NEXT:    retq
-;
-; SSE41-LABEL: combine_pshufb_as_vzmovl_32:
-; SSE41:       # %bb.0:
-; SSE41-NEXT:    xorps %xmm1, %xmm1
-; SSE41-NEXT:    blendps {{.*#+}} xmm0 = xmm0[0],xmm1[1,2,3]
-; SSE41-NEXT:    retq
+; SSE-LABEL: combine_pshufb_as_vzmovl_32:
+; SSE:       # %bb.0:
+; SSE-NEXT:    xorps %xmm1, %xmm1
+; SSE-NEXT:    movss {{.*#+}} xmm1 = xmm0[0],xmm1[1,2,3]
+; SSE-NEXT:    movaps %xmm1, %xmm0
+; SSE-NEXT:    retq
 ;
 ; AVX-LABEL: combine_pshufb_as_vzmovl_32:
 ; AVX:       # %bb.0:
@@ -239,13 +235,16 @@ define <16 x i8> @combine_pshufb_psrldq(<16 x i8> %a0) {
 define <16 x i8> @combine_and_pshufb(<16 x i8> %a0) {
 ; SSSE3-LABEL: combine_and_pshufb:
 ; SSSE3:       # %bb.0:
-; SSSE3-NEXT:    andps {{\.?LCPI[0-9]+_[0-9]+}}(%rip), %xmm0
+; SSSE3-NEXT:    movaps {{.*#+}} xmm1 = [0,0,0,0,65535,0,0,0]
+; SSSE3-NEXT:    andps %xmm0, %xmm1
+; SSSE3-NEXT:    movaps %xmm1, %xmm0
 ; SSSE3-NEXT:    retq
 ;
 ; SSE41-LABEL: combine_and_pshufb:
 ; SSE41:       # %bb.0:
 ; SSE41-NEXT:    pxor %xmm1, %xmm1
-; SSE41-NEXT:    pblendw {{.*#+}} xmm0 = xmm1[0,1,2,3],xmm0[4],xmm1[5,6,7]
+; SSE41-NEXT:    pblendw {{.*#+}} xmm1 = xmm1[0,1,2,3],xmm0[4],xmm1[5,6,7]
+; SSE41-NEXT:    movdqa %xmm1, %xmm0
 ; SSE41-NEXT:    retq
 ;
 ; AVX-LABEL: combine_and_pshufb:
@@ -261,13 +260,16 @@ define <16 x i8> @combine_and_pshufb(<16 x i8> %a0) {
 define <16 x i8> @combine_pshufb_and(<16 x i8> %a0) {
 ; SSSE3-LABEL: combine_pshufb_and:
 ; SSSE3:       # %bb.0:
-; SSSE3-NEXT:    andps {{\.?LCPI[0-9]+_[0-9]+}}(%rip), %xmm0
+; SSSE3-NEXT:    movaps {{.*#+}} xmm1 = [0,0,0,0,65535,0,0,0]
+; SSSE3-NEXT:    andps %xmm0, %xmm1
+; SSSE3-NEXT:    movaps %xmm1, %xmm0
 ; SSSE3-NEXT:    retq
 ;
 ; SSE41-LABEL: combine_pshufb_and:
 ; SSE41:       # %bb.0:
 ; SSE41-NEXT:    pxor %xmm1, %xmm1
-; SSE41-NEXT:    pblendw {{.*#+}} xmm0 = xmm1[0,1,2,3],xmm0[4],xmm1[5,6,7]
+; SSE41-NEXT:    pblendw {{.*#+}} xmm1 = xmm1[0,1,2,3],xmm0[4],xmm1[5,6,7]
+; SSE41-NEXT:    movdqa %xmm1, %xmm0
 ; SSE41-NEXT:    retq
 ;
 ; AVX-LABEL: combine_pshufb_and:
@@ -676,7 +678,8 @@ declare <16 x i8> @llvm.x86.sse2.packuswb.128(<8 x i16>, <8 x i16>) nounwind rea
 define <16 x i8> @combine_pshufb_pshufb_or_as_blend(<16 x i8> %a0, <16 x i8> %a1) {
 ; SSSE3-LABEL: combine_pshufb_pshufb_or_as_blend:
 ; SSSE3:       # %bb.0:
-; SSSE3-NEXT:    shufps {{.*#+}} xmm0 = xmm0[0,1],xmm1[2,3]
+; SSSE3-NEXT:    movsd {{.*#+}} xmm1 = xmm0[0],xmm1[1]
+; SSSE3-NEXT:    movapd %xmm1, %xmm0
 ; SSSE3-NEXT:    retq
 ;
 ; SSE41-LABEL: combine_pshufb_pshufb_or_as_blend:
@@ -777,19 +780,24 @@ define <16 x i8> @combine_lshr_pshufb(<4 x i32> %a0) {
 define <16 x i8> @combine_shl_pshufb(<4 x i32> %a0) {
 ; SSSE3-LABEL: combine_shl_pshufb:
 ; SSSE3:       # %bb.0:
-; SSSE3-NEXT:    pshufd {{.*#+}} xmm1 = xmm0[1,1,3,3]
-; SSSE3-NEXT:    pmuludq {{\.?LCPI[0-9]+_[0-9]+}}(%rip), %xmm0 # [1,256,65536,65536]
-; SSSE3-NEXT:    pshufd {{.*#+}} xmm0 = xmm0[0,2,2,3]
-; SSSE3-NEXT:    pmuludq {{\.?LCPI[0-9]+_[0-9]+}}(%rip), %xmm1 # [256,256,65536,65536]
+; SSSE3-NEXT:    movdqa {{.*#+}} xmm1 = [1,256,65536,65536]
+; SSSE3-NEXT:    pmuludq %xmm0, %xmm1
 ; SSSE3-NEXT:    pshufd {{.*#+}} xmm1 = xmm1[0,2,2,3]
-; SSSE3-NEXT:    punpckldq {{.*#+}} xmm0 = xmm0[0],xmm1[0],xmm0[1],xmm1[1]
-; SSSE3-NEXT:    pshufb {{.*#+}} xmm0 = xmm0[1,2,3,0,5,6,7,4,9,10,11,8,12,13,14,15]
+; SSSE3-NEXT:    pshufd {{.*#+}} xmm0 = xmm0[1,1,3,3]
+; SSSE3-NEXT:    movdqa {{.*#+}} xmm2 = [256,256,65536,65536]
+; SSSE3-NEXT:    pmuludq %xmm0, %xmm2
+; SSSE3-NEXT:    pshufd {{.*#+}} xmm0 = xmm2[0,2,2,3]
+; SSSE3-NEXT:    punpckldq {{.*#+}} xmm1 = xmm1[0],xmm0[0],xmm1[1],xmm0[1]
+; SSSE3-NEXT:    pshufb {{.*#+}} xmm1 = xmm1[1,2,3,0,5,6,7,4,9,10,11,8,12,13,14,15]
+; SSSE3-NEXT:    movdqa %xmm1, %xmm0
 ; SSSE3-NEXT:    retq
 ;
 ; SSE41-LABEL: combine_shl_pshufb:
 ; SSE41:       # %bb.0:
-; SSE41-NEXT:    pmulld {{\.?LCPI[0-9]+_[0-9]+}}(%rip), %xmm0 # [1,256,65536,65536]
-; SSE41-NEXT:    pshufb {{.*#+}} xmm0 = xmm0[1,2,3,0,5,6,7,4,9,10,11,8,12,13,14,15]
+; SSE41-NEXT:    movdqa {{.*#+}} xmm1 = [1,256,65536,65536]
+; SSE41-NEXT:    pmulld %xmm0, %xmm1
+; SSE41-NEXT:    pshufb {{.*#+}} xmm1 = xmm1[1,2,3,0,5,6,7,4,9,10,11,8,12,13,14,15]
+; SSE41-NEXT:    movdqa %xmm1, %xmm0
 ; SSE41-NEXT:    retq
 ;
 ; AVX1-LABEL: combine_shl_pshufb:

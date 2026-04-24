@@ -943,8 +943,8 @@ define <8 x half> @stack_fold_sqrtph_mask(<8 x half> %a0, ptr %passthru, i8 %mas
 ; CHECK-NEXT:    #APP
 ; CHECK-NEXT:    nop
 ; CHECK-NEXT:    #NO_APP
-; CHECK-NEXT:    vmovaps (%rdi), %xmm1
 ; CHECK-NEXT:    kmovd %esi, %k1
+; CHECK-NEXT:    vmovaps (%rdi), %xmm1
 ; CHECK-NEXT:    vsqrtph {{[-0-9]+}}(%r{{[sb]}}p), %xmm1 {%k1} # 16-byte Folded Reload
 ; CHECK-NEXT:    vmovaps %xmm1, %xmm0
 ; CHECK-NEXT:    retq
@@ -997,8 +997,8 @@ define <16 x half> @stack_fold_sqrtph_mask_ymm(<16 x half> %a0, ptr %passthru, i
 ; CHECK-NEXT:    #APP
 ; CHECK-NEXT:    nop
 ; CHECK-NEXT:    #NO_APP
-; CHECK-NEXT:    vmovaps (%rdi), %ymm1
 ; CHECK-NEXT:    kmovd %esi, %k1
+; CHECK-NEXT:    vmovaps (%rdi), %ymm1
 ; CHECK-NEXT:    vsqrtph {{[-0-9]+}}(%r{{[sb]}}p), %ymm1 {%k1} # 32-byte Folded Reload
 ; CHECK-NEXT:    vmovaps %ymm1, %ymm0
 ; CHECK-NEXT:    retq

@@ -366,7 +366,10 @@ define void @add() strictfp {
 ; X64-NOF16C-NEXT:    movq b@GOTPCREL(%rip), %rax
 ; X64-NOF16C-NEXT:    pinsrw $0, (%rax), %xmm0
 ; X64-NOF16C-NEXT:    callq __extendhfsf2@PLT
-; X64-NOF16C-NEXT:    addss {{[-0-9]+}}(%r{{[sb]}}p), %xmm0 # 4-byte Folded Reload
+; X64-NOF16C-NEXT:    movss {{[-0-9]+}}(%r{{[sb]}}p), %xmm1 # 4-byte Reload
+; X64-NOF16C-NEXT:    # xmm1 = mem[0],zero,zero,zero
+; X64-NOF16C-NEXT:    addss %xmm0, %xmm1
+; X64-NOF16C-NEXT:    movaps %xmm1, %xmm0
 ; X64-NOF16C-NEXT:    callq __truncsfhf2@PLT
 ; X64-NOF16C-NEXT:    pextrw $0, %xmm0, %eax
 ; X64-NOF16C-NEXT:    movq c@GOTPCREL(%rip), %rcx

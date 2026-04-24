@@ -14,9 +14,10 @@ define dso_local void @k(i32 %l) {
 ; CHECK-LABEL: k:
 ; CHECK:       # %bb.0:
 ; CHECK-NEXT:    movl e(%rip), %eax
-; CHECK-NEXT:    orl f(%rip), %eax
-; CHECK-NEXT:    shrl $24, %eax
-; CHECK-NEXT:    movb %al, f+3(%rip)
+; CHECK-NEXT:    movl f(%rip), %ecx
+; CHECK-NEXT:    orl %eax, %ecx
+; CHECK-NEXT:    shrl $24, %ecx
+; CHECK-NEXT:    movb %cl, f+3(%rip)
 ; CHECK-NEXT:    retq
   %load = load i32, ptr @c, align 4
   %load6 = load i32, ptr @f, align 4

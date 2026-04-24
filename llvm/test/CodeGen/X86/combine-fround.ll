@@ -14,10 +14,11 @@ define <4 x double> @concat_round_v4f64_v2f64(<2 x double> %a0, <2 x double> %a1
 ; SSE-NEXT:    orpd %xmm4, %xmm3
 ; SSE-NEXT:    addpd %xmm0, %xmm3
 ; SSE-NEXT:    roundpd $11, %xmm3, %xmm0
-; SSE-NEXT:    andpd %xmm1, %xmm2
-; SSE-NEXT:    orpd %xmm4, %xmm2
-; SSE-NEXT:    addpd %xmm1, %xmm2
-; SSE-NEXT:    roundpd $11, %xmm2, %xmm1
+; SSE-NEXT:    movapd %xmm1, %xmm3
+; SSE-NEXT:    andpd %xmm2, %xmm3
+; SSE-NEXT:    orpd %xmm4, %xmm3
+; SSE-NEXT:    addpd %xmm1, %xmm3
+; SSE-NEXT:    roundpd $11, %xmm3, %xmm1
 ; SSE-NEXT:    retq
 ;
 ; AVX1-LABEL: concat_round_v4f64_v2f64:
@@ -45,9 +46,10 @@ define <4 x double> @concat_round_v4f64_v2f64(<2 x double> %a0, <2 x double> %a1
 ; AVX512-LABEL: concat_round_v4f64_v2f64:
 ; AVX512:       # %bb.0:
 ; AVX512-NEXT:    # kill: def $xmm0 killed $xmm0 def $ymm0
-; AVX512-NEXT:    vpbroadcastq {{.*#+}} ymm2 = [4.9999999999999994E-1,4.9999999999999994E-1,4.9999999999999994E-1,4.9999999999999994E-1]
 ; AVX512-NEXT:    vinserti128 $1, %xmm1, %ymm0, %ymm0
-; AVX512-NEXT:    vpternlogq {{.*#+}} ymm2 = ymm2 | (ymm0 & m64bcst)
+; AVX512-NEXT:    vpbroadcastq {{.*#+}} ymm1 = [4.9999999999999994E-1,4.9999999999999994E-1,4.9999999999999994E-1,4.9999999999999994E-1]
+; AVX512-NEXT:    vpbroadcastq {{.*#+}} ymm2 = [-0.0E+0,-0.0E+0,-0.0E+0,-0.0E+0]
+; AVX512-NEXT:    vpternlogq {{.*#+}} ymm2 = (ymm2 & ymm0) | ymm1
 ; AVX512-NEXT:    vaddpd %ymm2, %ymm0, %ymm0
 ; AVX512-NEXT:    vroundpd $11, %ymm0, %ymm0
 ; AVX512-NEXT:    retq
@@ -67,10 +69,11 @@ define <8 x float> @concat_round_v8f32_v4f32(<4 x float> %a0, <4 x float> %a1) {
 ; SSE-NEXT:    orps %xmm4, %xmm3
 ; SSE-NEXT:    addps %xmm0, %xmm3
 ; SSE-NEXT:    roundps $11, %xmm3, %xmm0
-; SSE-NEXT:    andps %xmm1, %xmm2
-; SSE-NEXT:    orps %xmm4, %xmm2
-; SSE-NEXT:    addps %xmm1, %xmm2
-; SSE-NEXT:    roundps $11, %xmm2, %xmm1
+; SSE-NEXT:    movaps %xmm1, %xmm3
+; SSE-NEXT:    andps %xmm2, %xmm3
+; SSE-NEXT:    orps %xmm4, %xmm3
+; SSE-NEXT:    addps %xmm1, %xmm3
+; SSE-NEXT:    roundps $11, %xmm3, %xmm1
 ; SSE-NEXT:    retq
 ;
 ; AVX1-LABEL: concat_round_v8f32_v4f32:
@@ -98,9 +101,10 @@ define <8 x float> @concat_round_v8f32_v4f32(<4 x float> %a0, <4 x float> %a1) {
 ; AVX512-LABEL: concat_round_v8f32_v4f32:
 ; AVX512:       # %bb.0:
 ; AVX512-NEXT:    # kill: def $xmm0 killed $xmm0 def $ymm0
-; AVX512-NEXT:    vpbroadcastd {{.*#+}} ymm2 = [4.9999997E-1,4.9999997E-1,4.9999997E-1,4.9999997E-1,4.9999997E-1,4.9999997E-1,4.9999997E-1,4.9999997E-1]
 ; AVX512-NEXT:    vinserti128 $1, %xmm1, %ymm0, %ymm0
-; AVX512-NEXT:    vpternlogd {{.*#+}} ymm2 = ymm2 | (ymm0 & m32bcst)
+; AVX512-NEXT:    vpbroadcastd {{.*#+}} ymm1 = [4.9999997E-1,4.9999997E-1,4.9999997E-1,4.9999997E-1,4.9999997E-1,4.9999997E-1,4.9999997E-1,4.9999997E-1]
+; AVX512-NEXT:    vpbroadcastd {{.*#+}} ymm2 = [-0.0E+0,-0.0E+0,-0.0E+0,-0.0E+0,-0.0E+0,-0.0E+0,-0.0E+0,-0.0E+0]
+; AVX512-NEXT:    vpternlogd {{.*#+}} ymm2 = (ymm2 & ymm0) | ymm1
 ; AVX512-NEXT:    vaddps %ymm2, %ymm0, %ymm0
 ; AVX512-NEXT:    vroundps $11, %ymm0, %ymm0
 ; AVX512-NEXT:    retq
@@ -130,10 +134,11 @@ define <8 x double> @concat_round_v8f64_v2f64(<2 x double> %a0, <2 x double> %a1
 ; SSE-NEXT:    orpd %xmm6, %xmm5
 ; SSE-NEXT:    addpd %xmm2, %xmm5
 ; SSE-NEXT:    roundpd $11, %xmm5, %xmm2
-; SSE-NEXT:    andpd %xmm3, %xmm4
-; SSE-NEXT:    orpd %xmm6, %xmm4
-; SSE-NEXT:    addpd %xmm3, %xmm4
-; SSE-NEXT:    roundpd $11, %xmm4, %xmm3
+; SSE-NEXT:    movapd %xmm3, %xmm5
+; SSE-NEXT:    andpd %xmm4, %xmm5
+; SSE-NEXT:    orpd %xmm6, %xmm5
+; SSE-NEXT:    addpd %xmm3, %xmm5
+; SSE-NEXT:    roundpd $11, %xmm5, %xmm3
 ; SSE-NEXT:    retq
 ;
 ; AVX1-LABEL: concat_round_v8f64_v2f64:
@@ -178,10 +183,11 @@ define <8 x double> @concat_round_v8f64_v2f64(<2 x double> %a0, <2 x double> %a1
 ; AVX512-NEXT:    # kill: def $xmm0 killed $xmm0 def $ymm0
 ; AVX512-NEXT:    vinserti128 $1, %xmm3, %ymm2, %ymm2
 ; AVX512-NEXT:    vinserti128 $1, %xmm1, %ymm0, %ymm0
-; AVX512-NEXT:    vpbroadcastq {{.*#+}} zmm1 = [4.9999999999999994E-1,4.9999999999999994E-1,4.9999999999999994E-1,4.9999999999999994E-1,4.9999999999999994E-1,4.9999999999999994E-1,4.9999999999999994E-1,4.9999999999999994E-1]
 ; AVX512-NEXT:    vinserti64x4 $1, %ymm2, %zmm0, %zmm0
-; AVX512-NEXT:    vpternlogq {{.*#+}} zmm1 = zmm1 | (zmm0 & m64bcst)
-; AVX512-NEXT:    vaddpd %zmm1, %zmm0, %zmm0
+; AVX512-NEXT:    vpbroadcastq {{.*#+}} zmm1 = [4.9999999999999994E-1,4.9999999999999994E-1,4.9999999999999994E-1,4.9999999999999994E-1,4.9999999999999994E-1,4.9999999999999994E-1,4.9999999999999994E-1,4.9999999999999994E-1]
+; AVX512-NEXT:    vpbroadcastq {{.*#+}} zmm2 = [-0.0E+0,-0.0E+0,-0.0E+0,-0.0E+0,-0.0E+0,-0.0E+0,-0.0E+0,-0.0E+0]
+; AVX512-NEXT:    vpternlogq {{.*#+}} zmm2 = (zmm2 & zmm0) | zmm1
+; AVX512-NEXT:    vaddpd %zmm2, %zmm0, %zmm0
 ; AVX512-NEXT:    vrndscalepd $11, %zmm0, %zmm0
 ; AVX512-NEXT:    retq
   %v0 = call <2 x double> @llvm.round.v2f64(<2 x double> %a0)
@@ -214,10 +220,11 @@ define <16 x float> @concat_round_v16f32_v4f32(<4 x float> %a0, <4 x float> %a1,
 ; SSE-NEXT:    orps %xmm6, %xmm5
 ; SSE-NEXT:    addps %xmm2, %xmm5
 ; SSE-NEXT:    roundps $11, %xmm5, %xmm2
-; SSE-NEXT:    andps %xmm3, %xmm4
-; SSE-NEXT:    orps %xmm6, %xmm4
-; SSE-NEXT:    addps %xmm3, %xmm4
-; SSE-NEXT:    roundps $11, %xmm4, %xmm3
+; SSE-NEXT:    movaps %xmm3, %xmm5
+; SSE-NEXT:    andps %xmm4, %xmm5
+; SSE-NEXT:    orps %xmm6, %xmm5
+; SSE-NEXT:    addps %xmm3, %xmm5
+; SSE-NEXT:    roundps $11, %xmm5, %xmm3
 ; SSE-NEXT:    retq
 ;
 ; AVX1-LABEL: concat_round_v16f32_v4f32:
@@ -262,10 +269,11 @@ define <16 x float> @concat_round_v16f32_v4f32(<4 x float> %a0, <4 x float> %a1,
 ; AVX512-NEXT:    # kill: def $xmm0 killed $xmm0 def $ymm0
 ; AVX512-NEXT:    vinserti128 $1, %xmm3, %ymm2, %ymm2
 ; AVX512-NEXT:    vinserti128 $1, %xmm1, %ymm0, %ymm0
-; AVX512-NEXT:    vpbroadcastd {{.*#+}} zmm1 = [4.9999997E-1,4.9999997E-1,4.9999997E-1,4.9999997E-1,4.9999997E-1,4.9999997E-1,4.9999997E-1,4.9999997E-1,4.9999997E-1,4.9999997E-1,4.9999997E-1,4.9999997E-1,4.9999997E-1,4.9999997E-1,4.9999997E-1,4.9999997E-1]
 ; AVX512-NEXT:    vinserti64x4 $1, %ymm2, %zmm0, %zmm0
-; AVX512-NEXT:    vpternlogd {{.*#+}} zmm1 = zmm1 | (zmm0 & m32bcst)
-; AVX512-NEXT:    vaddps %zmm1, %zmm0, %zmm0
+; AVX512-NEXT:    vpbroadcastd {{.*#+}} zmm1 = [4.9999997E-1,4.9999997E-1,4.9999997E-1,4.9999997E-1,4.9999997E-1,4.9999997E-1,4.9999997E-1,4.9999997E-1,4.9999997E-1,4.9999997E-1,4.9999997E-1,4.9999997E-1,4.9999997E-1,4.9999997E-1,4.9999997E-1,4.9999997E-1]
+; AVX512-NEXT:    vpbroadcastd {{.*#+}} zmm2 = [-0.0E+0,-0.0E+0,-0.0E+0,-0.0E+0,-0.0E+0,-0.0E+0,-0.0E+0,-0.0E+0,-0.0E+0,-0.0E+0,-0.0E+0,-0.0E+0,-0.0E+0,-0.0E+0,-0.0E+0,-0.0E+0]
+; AVX512-NEXT:    vpternlogd {{.*#+}} zmm2 = (zmm2 & zmm0) | zmm1
+; AVX512-NEXT:    vaddps %zmm2, %zmm0, %zmm0
 ; AVX512-NEXT:    vrndscaleps $11, %zmm0, %zmm0
 ; AVX512-NEXT:    retq
   %v0 = call <4 x float> @llvm.round.v4f32(<4 x float> %a0)
@@ -298,10 +306,11 @@ define <8 x double> @concat_round_v8f64_v4f64(<4 x double> %a0, <4 x double> %a1
 ; SSE-NEXT:    orpd %xmm6, %xmm5
 ; SSE-NEXT:    addpd %xmm2, %xmm5
 ; SSE-NEXT:    roundpd $11, %xmm5, %xmm2
-; SSE-NEXT:    andpd %xmm3, %xmm4
-; SSE-NEXT:    orpd %xmm6, %xmm4
-; SSE-NEXT:    addpd %xmm3, %xmm4
-; SSE-NEXT:    roundpd $11, %xmm4, %xmm3
+; SSE-NEXT:    movapd %xmm3, %xmm5
+; SSE-NEXT:    andpd %xmm4, %xmm5
+; SSE-NEXT:    orpd %xmm6, %xmm5
+; SSE-NEXT:    addpd %xmm3, %xmm5
+; SSE-NEXT:    roundpd $11, %xmm5, %xmm3
 ; SSE-NEXT:    retq
 ;
 ; AVX1-LABEL: concat_round_v8f64_v4f64:
@@ -335,9 +344,10 @@ define <8 x double> @concat_round_v8f64_v4f64(<4 x double> %a0, <4 x double> %a1
 ; AVX512-LABEL: concat_round_v8f64_v4f64:
 ; AVX512:       # %bb.0:
 ; AVX512-NEXT:    # kill: def $ymm0 killed $ymm0 def $zmm0
-; AVX512-NEXT:    vpbroadcastq {{.*#+}} zmm2 = [4.9999999999999994E-1,4.9999999999999994E-1,4.9999999999999994E-1,4.9999999999999994E-1,4.9999999999999994E-1,4.9999999999999994E-1,4.9999999999999994E-1,4.9999999999999994E-1]
 ; AVX512-NEXT:    vinserti64x4 $1, %ymm1, %zmm0, %zmm0
-; AVX512-NEXT:    vpternlogq {{.*#+}} zmm2 = zmm2 | (zmm0 & m64bcst)
+; AVX512-NEXT:    vpbroadcastq {{.*#+}} zmm1 = [4.9999999999999994E-1,4.9999999999999994E-1,4.9999999999999994E-1,4.9999999999999994E-1,4.9999999999999994E-1,4.9999999999999994E-1,4.9999999999999994E-1,4.9999999999999994E-1]
+; AVX512-NEXT:    vpbroadcastq {{.*#+}} zmm2 = [-0.0E+0,-0.0E+0,-0.0E+0,-0.0E+0,-0.0E+0,-0.0E+0,-0.0E+0,-0.0E+0]
+; AVX512-NEXT:    vpternlogq {{.*#+}} zmm2 = (zmm2 & zmm0) | zmm1
 ; AVX512-NEXT:    vaddpd %zmm2, %zmm0, %zmm0
 ; AVX512-NEXT:    vrndscalepd $11, %zmm0, %zmm0
 ; AVX512-NEXT:    retq
@@ -367,10 +377,11 @@ define <16 x float> @concat_round_v16f32_v8f32(<8 x float> %a0, <8 x float> %a1)
 ; SSE-NEXT:    orps %xmm6, %xmm5
 ; SSE-NEXT:    addps %xmm2, %xmm5
 ; SSE-NEXT:    roundps $11, %xmm5, %xmm2
-; SSE-NEXT:    andps %xmm3, %xmm4
-; SSE-NEXT:    orps %xmm6, %xmm4
-; SSE-NEXT:    addps %xmm3, %xmm4
-; SSE-NEXT:    roundps $11, %xmm4, %xmm3
+; SSE-NEXT:    movaps %xmm3, %xmm5
+; SSE-NEXT:    andps %xmm4, %xmm5
+; SSE-NEXT:    orps %xmm6, %xmm5
+; SSE-NEXT:    addps %xmm3, %xmm5
+; SSE-NEXT:    roundps $11, %xmm5, %xmm3
 ; SSE-NEXT:    retq
 ;
 ; AVX1-LABEL: concat_round_v16f32_v8f32:
@@ -404,9 +415,10 @@ define <16 x float> @concat_round_v16f32_v8f32(<8 x float> %a0, <8 x float> %a1)
 ; AVX512-LABEL: concat_round_v16f32_v8f32:
 ; AVX512:       # %bb.0:
 ; AVX512-NEXT:    # kill: def $ymm0 killed $ymm0 def $zmm0
-; AVX512-NEXT:    vpbroadcastd {{.*#+}} zmm2 = [4.9999997E-1,4.9999997E-1,4.9999997E-1,4.9999997E-1,4.9999997E-1,4.9999997E-1,4.9999997E-1,4.9999997E-1,4.9999997E-1,4.9999997E-1,4.9999997E-1,4.9999997E-1,4.9999997E-1,4.9999997E-1,4.9999997E-1,4.9999997E-1]
 ; AVX512-NEXT:    vinserti64x4 $1, %ymm1, %zmm0, %zmm0
-; AVX512-NEXT:    vpternlogd {{.*#+}} zmm2 = zmm2 | (zmm0 & m32bcst)
+; AVX512-NEXT:    vpbroadcastd {{.*#+}} zmm1 = [4.9999997E-1,4.9999997E-1,4.9999997E-1,4.9999997E-1,4.9999997E-1,4.9999997E-1,4.9999997E-1,4.9999997E-1,4.9999997E-1,4.9999997E-1,4.9999997E-1,4.9999997E-1,4.9999997E-1,4.9999997E-1,4.9999997E-1,4.9999997E-1]
+; AVX512-NEXT:    vpbroadcastd {{.*#+}} zmm2 = [-0.0E+0,-0.0E+0,-0.0E+0,-0.0E+0,-0.0E+0,-0.0E+0,-0.0E+0,-0.0E+0,-0.0E+0,-0.0E+0,-0.0E+0,-0.0E+0,-0.0E+0,-0.0E+0,-0.0E+0,-0.0E+0]
+; AVX512-NEXT:    vpternlogd {{.*#+}} zmm2 = (zmm2 & zmm0) | zmm1
 ; AVX512-NEXT:    vaddps %zmm2, %zmm0, %zmm0
 ; AVX512-NEXT:    vrndscaleps $11, %zmm0, %zmm0
 ; AVX512-NEXT:    retq

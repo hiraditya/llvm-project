@@ -85,24 +85,27 @@ define dso_local ptr @f4() {
 ; X86-NEXT:    calll .L3$pb
 ; X86-NEXT:    .cfi_adjust_cfa_offset 4
 ; X86-NEXT:  .L3$pb:
-; X86-NEXT:    popl %ecx
+; X86-NEXT:    popl %eax
 ; X86-NEXT:    .cfi_adjust_cfa_offset -4
 ; X86-NEXT:  .Ltmp1:
-; X86-NEXT:    addl $_GLOBAL_OFFSET_TABLE_+(.Ltmp1-.L3$pb), %ecx
-; X86-NEXT:    movl %gs:0, %eax
-; X86-NEXT:    addl i2@GOTNTPOFF(%ecx), %eax
+; X86-NEXT:    addl $_GLOBAL_OFFSET_TABLE_+(.Ltmp1-.L3$pb), %eax
+; X86-NEXT:    movl %gs:0, %ecx
+; X86-NEXT:    movl i2@GOTNTPOFF(%eax), %eax
+; X86-NEXT:    addl %ecx, %eax
 ; X86-NEXT:    retl
 ;
 ; X32-LABEL: f4:
 ; X32:       # %bb.0: # %entry
-; X32-NEXT:    movl %fs:0, %eax
-; X32-NEXT:    addl i2@GOTTPOFF(%rip), %eax
+; X32-NEXT:    movl %fs:0, %ecx
+; X32-NEXT:    movl i2@GOTTPOFF(%rip), %eax
+; X32-NEXT:    addl %ecx, %eax
 ; X32-NEXT:    retq
 ;
 ; X64-LABEL: f4:
 ; X64:       # %bb.0: # %entry
-; X64-NEXT:    movq %fs:0, %rax
-; X64-NEXT:    addq i2@GOTTPOFF(%rip), %rax
+; X64-NEXT:    movq %fs:0, %rcx
+; X64-NEXT:    movq i2@GOTTPOFF(%rip), %rax
+; X64-NEXT:    addq %rcx, %rax
 ; X64-NEXT:    retq
 entry:
 	ret ptr @i2

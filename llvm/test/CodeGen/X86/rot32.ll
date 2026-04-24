@@ -189,15 +189,15 @@ entry:
 define i32 @xbar(i32 %x, i32 %y, i32 %z) nounwind readnone {
 ; CHECK32-LABEL: xbar:
 ; CHECK32:       # %bb.0: # %entry
-; CHECK32-NEXT:    movl {{[0-9]+}}(%esp), %ecx
 ; CHECK32-NEXT:    movl {{[0-9]+}}(%esp), %eax
-; CHECK32-NEXT:    shldl $7, %ecx, %eax
+; CHECK32-NEXT:    movl {{[0-9]+}}(%esp), %ecx
+; CHECK32-NEXT:    shrdl $25, %ecx, %eax
 ; CHECK32-NEXT:    retl
 ;
 ; CHECK64-LABEL: xbar:
 ; CHECK64:       # %bb.0: # %entry
-; CHECK64-NEXT:    movl %edi, %eax
-; CHECK64-NEXT:    shrdl $25, %esi, %eax
+; CHECK64-NEXT:    movl %esi, %eax
+; CHECK64-NEXT:    shldl $7, %edi, %eax
 ; CHECK64-NEXT:    retq
 entry:
 	%0 = shl i32 %y, 7
@@ -295,9 +295,9 @@ entry:
 define i32 @xbu(i32 %x, i32 %y, i32 %z) nounwind readnone {
 ; CHECK32-LABEL: xbu:
 ; CHECK32:       # %bb.0: # %entry
-; CHECK32-NEXT:    movl {{[0-9]+}}(%esp), %ecx
 ; CHECK32-NEXT:    movl {{[0-9]+}}(%esp), %eax
-; CHECK32-NEXT:    shldl $25, %ecx, %eax
+; CHECK32-NEXT:    movl {{[0-9]+}}(%esp), %ecx
+; CHECK32-NEXT:    shrdl $7, %ecx, %eax
 ; CHECK32-NEXT:    retl
 ;
 ; CHECK64-LABEL: xbu:

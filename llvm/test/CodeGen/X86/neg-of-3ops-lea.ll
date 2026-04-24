@@ -9,17 +9,20 @@
 define i32 @t0(i32 %a, i32 %b) {
 ; X86-LABEL: t0:
 ; X86:       # %bb.0:
+; X86-NEXT:    movl {{[0-9]+}}(%esp), %eax
 ; X86-NEXT:    movl {{[0-9]+}}(%esp), %ecx
-; X86-NEXT:    addl {{[0-9]+}}(%esp), %ecx
+; X86-NEXT:    addl %eax, %ecx
 ; X86-NEXT:    movl $32, %eax
 ; X86-NEXT:    subl %ecx, %eax
 ; X86-NEXT:    retl
 ;
 ; X64-LABEL: t0:
 ; X64:       # %bb.0:
-; X64-NEXT:    addl %esi, %edi
+; X64-NEXT:    # kill: def $esi killed $esi def $rsi
+; X64-NEXT:    # kill: def $edi killed $edi def $rdi
 ; X64-NEXT:    movl $32, %eax
 ; X64-NEXT:    subl %edi, %eax
+; X64-NEXT:    subl %esi, %eax
 ; X64-NEXT:    retq
   %t0 = sub i32 32, %a
   %r = sub i32 %t0, %b
@@ -28,17 +31,20 @@ define i32 @t0(i32 %a, i32 %b) {
 define i32 @t1(i32 %a, i32 %b) {
 ; X86-LABEL: t1:
 ; X86:       # %bb.0:
+; X86-NEXT:    movl {{[0-9]+}}(%esp), %eax
 ; X86-NEXT:    movl {{[0-9]+}}(%esp), %ecx
-; X86-NEXT:    addl {{[0-9]+}}(%esp), %ecx
+; X86-NEXT:    addl %eax, %ecx
 ; X86-NEXT:    movl $32, %eax
 ; X86-NEXT:    subl %ecx, %eax
 ; X86-NEXT:    retl
 ;
 ; X64-LABEL: t1:
 ; X64:       # %bb.0:
-; X64-NEXT:    addl %esi, %edi
+; X64-NEXT:    # kill: def $esi killed $esi def $rsi
+; X64-NEXT:    # kill: def $edi killed $edi def $rdi
 ; X64-NEXT:    movl $32, %eax
 ; X64-NEXT:    subl %edi, %eax
+; X64-NEXT:    subl %esi, %eax
 ; X64-NEXT:    retq
   %t0 = add i32 %a, %b
   %r = sub i32 32, %t0
@@ -47,17 +53,20 @@ define i32 @t1(i32 %a, i32 %b) {
 define i32 @t2(i32 %a, i32 %b) {
 ; X86-LABEL: t2:
 ; X86:       # %bb.0:
+; X86-NEXT:    movl {{[0-9]+}}(%esp), %eax
 ; X86-NEXT:    movl {{[0-9]+}}(%esp), %ecx
-; X86-NEXT:    addl {{[0-9]+}}(%esp), %ecx
+; X86-NEXT:    addl %eax, %ecx
 ; X86-NEXT:    movl $32, %eax
 ; X86-NEXT:    subl %ecx, %eax
 ; X86-NEXT:    retl
 ;
 ; X64-LABEL: t2:
 ; X64:       # %bb.0:
-; X64-NEXT:    addl %esi, %edi
+; X64-NEXT:    # kill: def $esi killed $esi def $rsi
+; X64-NEXT:    # kill: def $edi killed $edi def $rdi
 ; X64-NEXT:    movl $32, %eax
 ; X64-NEXT:    subl %edi, %eax
+; X64-NEXT:    subl %esi, %eax
 ; X64-NEXT:    retq
   %t0 = add i32 %a, %b
   %t1 = sub i32 0, %t0
@@ -67,17 +76,20 @@ define i32 @t2(i32 %a, i32 %b) {
 define i32 @t3(i32 %a, i32 %b) {
 ; X86-LABEL: t3:
 ; X86:       # %bb.0:
+; X86-NEXT:    movl {{[0-9]+}}(%esp), %eax
 ; X86-NEXT:    movl {{[0-9]+}}(%esp), %ecx
-; X86-NEXT:    addl {{[0-9]+}}(%esp), %ecx
+; X86-NEXT:    addl %eax, %ecx
 ; X86-NEXT:    movl $32, %eax
 ; X86-NEXT:    subl %ecx, %eax
 ; X86-NEXT:    retl
 ;
 ; X64-LABEL: t3:
 ; X64:       # %bb.0:
-; X64-NEXT:    addl %esi, %edi
+; X64-NEXT:    # kill: def $esi killed $esi def $rsi
+; X64-NEXT:    # kill: def $edi killed $edi def $rdi
 ; X64-NEXT:    movl $32, %eax
 ; X64-NEXT:    subl %edi, %eax
+; X64-NEXT:    subl %esi, %eax
 ; X64-NEXT:    retq
   %t0 = add i32 %a, %b
   %t1 = sub i32 %t0, 32

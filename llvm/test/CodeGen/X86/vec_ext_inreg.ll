@@ -85,7 +85,9 @@ define <8 x i32> @d(<8 x i32> %a) nounwind {
 define <3 x i32> @e(<3 x i32> %a) nounwind {
 ; SSE-LABEL: e:
 ; SSE:       # %bb.0:
-; SSE-NEXT:    andps {{\.?LCPI[0-9]+_[0-9]+}}(%rip), %xmm0
+; SSE-NEXT:    movaps {{.*#+}} xmm1 = [65535,0,65535,0,65535,0,0,0]
+; SSE-NEXT:    andps %xmm0, %xmm1
+; SSE-NEXT:    movaps %xmm1, %xmm0
 ; SSE-NEXT:    retq
 ;
 ; AVX-LABEL: e:

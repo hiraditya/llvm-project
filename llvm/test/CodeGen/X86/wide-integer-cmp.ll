@@ -6,9 +6,11 @@ define i32 @branch_eq(i64 %a, i64 %b) {
 ; CHECK:       # %bb.0: # %entry
 ; CHECK-NEXT:    movl {{[0-9]+}}(%esp), %eax
 ; CHECK-NEXT:    movl {{[0-9]+}}(%esp), %ecx
-; CHECK-NEXT:    xorl {{[0-9]+}}(%esp), %ecx
-; CHECK-NEXT:    xorl {{[0-9]+}}(%esp), %eax
-; CHECK-NEXT:    orl %ecx, %eax
+; CHECK-NEXT:    movl {{[0-9]+}}(%esp), %edx
+; CHECK-NEXT:    xorl %ecx, %edx
+; CHECK-NEXT:    movl {{[0-9]+}}(%esp), %ecx
+; CHECK-NEXT:    xorl %eax, %ecx
+; CHECK-NEXT:    orl %ecx, %edx
 ; CHECK-NEXT:    jne .LBB0_2
 ; CHECK-NEXT:  # %bb.1: # %bb1
 ; CHECK-NEXT:    movl $1, %eax

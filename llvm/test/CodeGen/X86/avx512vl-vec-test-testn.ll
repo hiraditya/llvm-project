@@ -303,9 +303,9 @@ define zeroext i8 @TEST_mm256_mask_test_epi32_mask(i8 %__U, <4 x i64> %__A, <4 x
 ; AVX512VL-X86-LABEL: TEST_mm256_mask_test_epi32_mask:
 ; AVX512VL-X86:       # %bb.0: # %entry
 ; AVX512VL-X86-NEXT:    vptestmd %ymm0, %ymm1, %k0
-; AVX512VL-X86-NEXT:    kmovw %k0, %eax
-; AVX512VL-X86-NEXT:    andb {{[0-9]+}}(%esp), %al
-; AVX512VL-X86-NEXT:    # kill: def $al killed $al killed $eax
+; AVX512VL-X86-NEXT:    kmovw %k0, %ecx
+; AVX512VL-X86-NEXT:    movzbl {{[0-9]+}}(%esp), %eax
+; AVX512VL-X86-NEXT:    andb %cl, %al
 ; AVX512VL-X86-NEXT:    vzeroupper
 ; AVX512VL-X86-NEXT:    retl
 ;
@@ -325,9 +325,9 @@ define zeroext i8 @TEST_mm256_mask_test_epi32_mask(i8 %__U, <4 x i64> %__A, <4 x
 ; AVX512F-X86-NEXT:    # kill: def $ymm1 killed $ymm1 def $zmm1
 ; AVX512F-X86-NEXT:    # kill: def $ymm0 killed $ymm0 def $zmm0
 ; AVX512F-X86-NEXT:    vptestmd %zmm0, %zmm1, %k0
-; AVX512F-X86-NEXT:    kmovw %k0, %eax
-; AVX512F-X86-NEXT:    andb {{[0-9]+}}(%esp), %al
-; AVX512F-X86-NEXT:    # kill: def $al killed $al killed $eax
+; AVX512F-X86-NEXT:    kmovw %k0, %ecx
+; AVX512F-X86-NEXT:    movzbl {{[0-9]+}}(%esp), %eax
+; AVX512F-X86-NEXT:    andb %cl, %al
 ; AVX512F-X86-NEXT:    vzeroupper
 ; AVX512F-X86-NEXT:    retl
 entry:
@@ -639,9 +639,9 @@ define zeroext i8 @TEST_mm256_mask_testn_epi32_mask(i8 %__U, <4 x i64> %__A, <4 
 ; AVX512VL-X86-LABEL: TEST_mm256_mask_testn_epi32_mask:
 ; AVX512VL-X86:       # %bb.0: # %entry
 ; AVX512VL-X86-NEXT:    vptestnmd %ymm0, %ymm1, %k0
-; AVX512VL-X86-NEXT:    kmovw %k0, %eax
-; AVX512VL-X86-NEXT:    andb {{[0-9]+}}(%esp), %al
-; AVX512VL-X86-NEXT:    # kill: def $al killed $al killed $eax
+; AVX512VL-X86-NEXT:    kmovw %k0, %ecx
+; AVX512VL-X86-NEXT:    movzbl {{[0-9]+}}(%esp), %eax
+; AVX512VL-X86-NEXT:    andb %cl, %al
 ; AVX512VL-X86-NEXT:    vzeroupper
 ; AVX512VL-X86-NEXT:    retl
 ;
@@ -661,9 +661,9 @@ define zeroext i8 @TEST_mm256_mask_testn_epi32_mask(i8 %__U, <4 x i64> %__A, <4 
 ; AVX512F-X86-NEXT:    # kill: def $ymm1 killed $ymm1 def $zmm1
 ; AVX512F-X86-NEXT:    # kill: def $ymm0 killed $ymm0 def $zmm0
 ; AVX512F-X86-NEXT:    vptestnmd %zmm0, %zmm1, %k0
-; AVX512F-X86-NEXT:    kmovw %k0, %eax
-; AVX512F-X86-NEXT:    andb {{[0-9]+}}(%esp), %al
-; AVX512F-X86-NEXT:    # kill: def $al killed $al killed $eax
+; AVX512F-X86-NEXT:    kmovw %k0, %ecx
+; AVX512F-X86-NEXT:    movzbl {{[0-9]+}}(%esp), %eax
+; AVX512F-X86-NEXT:    andb %cl, %al
 ; AVX512F-X86-NEXT:    vzeroupper
 ; AVX512F-X86-NEXT:    retl
 entry:

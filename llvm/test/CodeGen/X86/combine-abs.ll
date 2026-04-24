@@ -57,7 +57,8 @@ define <8 x i16> @combine_v8i16_abs_abs(<8 x i16> %a) {
 ; SSE2:       # %bb.0:
 ; SSE2-NEXT:    pxor %xmm1, %xmm1
 ; SSE2-NEXT:    psubw %xmm0, %xmm1
-; SSE2-NEXT:    pmaxsw %xmm1, %xmm0
+; SSE2-NEXT:    pmaxsw %xmm0, %xmm1
+; SSE2-NEXT:    movdqa %xmm1, %xmm0
 ; SSE2-NEXT:    retq
 ;
 ; SSE42-LABEL: combine_v8i16_abs_abs:
@@ -82,9 +83,11 @@ define <32 x i8> @combine_v32i8_abs_abs(<32 x i8> %a) {
 ; SSE2-NEXT:    pxor %xmm2, %xmm2
 ; SSE2-NEXT:    pxor %xmm3, %xmm3
 ; SSE2-NEXT:    psubb %xmm0, %xmm3
-; SSE2-NEXT:    pminub %xmm3, %xmm0
+; SSE2-NEXT:    pminub %xmm0, %xmm3
 ; SSE2-NEXT:    psubb %xmm1, %xmm2
-; SSE2-NEXT:    pminub %xmm2, %xmm1
+; SSE2-NEXT:    pminub %xmm1, %xmm2
+; SSE2-NEXT:    movdqa %xmm3, %xmm0
+; SSE2-NEXT:    movdqa %xmm2, %xmm1
 ; SSE2-NEXT:    retq
 ;
 ; SSE42-LABEL: combine_v32i8_abs_abs:
@@ -161,7 +164,9 @@ define <4 x i64> @combine_v4i64_abs_abs(<4 x i64> %a) {
 define <16 x i8> @combine_v16i8_abs_constant(<16 x i8> %a) {
 ; SSE-LABEL: combine_v16i8_abs_constant:
 ; SSE:       # %bb.0:
-; SSE-NEXT:    andps {{\.?LCPI[0-9]+_[0-9]+}}(%rip), %xmm0
+; SSE-NEXT:    movaps {{.*#+}} xmm1 = [15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15]
+; SSE-NEXT:    andps %xmm0, %xmm1
+; SSE-NEXT:    movaps %xmm1, %xmm0
 ; SSE-NEXT:    retq
 ;
 ; AVX2-LABEL: combine_v16i8_abs_constant:

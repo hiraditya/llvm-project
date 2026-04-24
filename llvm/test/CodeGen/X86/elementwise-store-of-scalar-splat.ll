@@ -636,9 +636,10 @@ define void @vec256_i128(ptr %in.elt.ptr, ptr %out.vec.ptr) nounwind {
 ; SSE-LABEL: vec256_i128:
 ; SSE:       # %bb.0:
 ; SSE-NEXT:    pcmpeqd %xmm0, %xmm0
-; SSE-NEXT:    pxor (%rdi), %xmm0
-; SSE-NEXT:    movdqa %xmm0, (%rsi)
-; SSE-NEXT:    movdqa %xmm0, 16(%rsi)
+; SSE-NEXT:    movdqa (%rdi), %xmm1
+; SSE-NEXT:    pxor %xmm0, %xmm1
+; SSE-NEXT:    movdqa %xmm1, (%rsi)
+; SSE-NEXT:    movdqa %xmm1, 16(%rsi)
 ; SSE-NEXT:    retq
 ;
 ; AVX-LABEL: vec256_i128:
@@ -1075,10 +1076,11 @@ define void @vec384_i128(ptr %in.elt.ptr, ptr %out.vec.ptr) nounwind {
 ; SSE-LABEL: vec384_i128:
 ; SSE:       # %bb.0:
 ; SSE-NEXT:    pcmpeqd %xmm0, %xmm0
-; SSE-NEXT:    pxor (%rdi), %xmm0
-; SSE-NEXT:    movdqa %xmm0, (%rsi)
-; SSE-NEXT:    movdqa %xmm0, 16(%rsi)
-; SSE-NEXT:    movdqa %xmm0, 32(%rsi)
+; SSE-NEXT:    movdqa (%rdi), %xmm1
+; SSE-NEXT:    pxor %xmm0, %xmm1
+; SSE-NEXT:    movdqa %xmm1, (%rsi)
+; SSE-NEXT:    movdqa %xmm1, 16(%rsi)
+; SSE-NEXT:    movdqa %xmm1, 32(%rsi)
 ; SSE-NEXT:    retq
 ;
 ; AVX-LABEL: vec384_i128:
@@ -1629,11 +1631,12 @@ define void @vec512_i128(ptr %in.elt.ptr, ptr %out.vec.ptr) nounwind {
 ; SSE-LABEL: vec512_i128:
 ; SSE:       # %bb.0:
 ; SSE-NEXT:    pcmpeqd %xmm0, %xmm0
-; SSE-NEXT:    pxor (%rdi), %xmm0
-; SSE-NEXT:    movdqa %xmm0, (%rsi)
-; SSE-NEXT:    movdqa %xmm0, 16(%rsi)
-; SSE-NEXT:    movdqa %xmm0, 32(%rsi)
-; SSE-NEXT:    movdqa %xmm0, 48(%rsi)
+; SSE-NEXT:    movdqa (%rdi), %xmm1
+; SSE-NEXT:    pxor %xmm0, %xmm1
+; SSE-NEXT:    movdqa %xmm1, (%rsi)
+; SSE-NEXT:    movdqa %xmm1, 16(%rsi)
+; SSE-NEXT:    movdqa %xmm1, 32(%rsi)
+; SSE-NEXT:    movdqa %xmm1, 48(%rsi)
 ; SSE-NEXT:    retq
 ;
 ; AVX1-LABEL: vec512_i128:
@@ -1703,11 +1706,12 @@ define void @vec512_i256(ptr %in.elt.ptr, ptr %out.vec.ptr) nounwind {
 ; SSE-NEXT:    pcmpeqd %xmm0, %xmm0
 ; SSE-NEXT:    movdqa (%rdi), %xmm1
 ; SSE-NEXT:    pxor %xmm0, %xmm1
-; SSE-NEXT:    pxor 16(%rdi), %xmm0
-; SSE-NEXT:    movdqa %xmm0, 16(%rsi)
+; SSE-NEXT:    movdqa 16(%rdi), %xmm2
+; SSE-NEXT:    pxor %xmm0, %xmm2
+; SSE-NEXT:    movdqa %xmm2, 16(%rsi)
 ; SSE-NEXT:    movdqa %xmm1, (%rsi)
 ; SSE-NEXT:    movdqa %xmm1, 32(%rsi)
-; SSE-NEXT:    movdqa %xmm0, 48(%rsi)
+; SSE-NEXT:    movdqa %xmm2, 48(%rsi)
 ; SSE-NEXT:    retq
 ;
 ; AVX1-LABEL: vec512_i256:

@@ -4,17 +4,19 @@
 define float @f32_tune_nhm(float %f) #0 {
 ; CHECK-LABEL: f32_tune_nhm:
 ; CHECK:       # %bb.0:
-; CHECK-NEXT:    rsqrtss %xmm0, %xmm1
-; CHECK-NEXT:    movaps %xmm0, %xmm2
-; CHECK-NEXT:    mulss %xmm1, %xmm2
+; CHECK-NEXT:    rsqrtss %xmm0, %xmm2
+; CHECK-NEXT:    movaps {{.*#+}} xmm1 = [NaN,NaN,NaN,NaN]
+; CHECK-NEXT:    andps %xmm0, %xmm1
+; CHECK-NEXT:    mulss %xmm2, %xmm0
 ; CHECK-NEXT:    movss {{.*#+}} xmm3 = [-5.0E-1,0.0E+0,0.0E+0,0.0E+0]
-; CHECK-NEXT:    mulss %xmm2, %xmm3
-; CHECK-NEXT:    mulss %xmm1, %xmm2
-; CHECK-NEXT:    addss {{\.?LCPI[0-9]+_[0-9]+}}(%rip), %xmm2
+; CHECK-NEXT:    mulss %xmm0, %xmm3
+; CHECK-NEXT:    mulss %xmm2, %xmm0
+; CHECK-NEXT:    movss {{.*#+}} xmm2 = [-3.0E+0,0.0E+0,0.0E+0,0.0E+0]
+; CHECK-NEXT:    addss %xmm0, %xmm2
 ; CHECK-NEXT:    mulss %xmm3, %xmm2
-; CHECK-NEXT:    andps {{\.?LCPI[0-9]+_[0-9]+}}(%rip), %xmm0
-; CHECK-NEXT:    cmpltss {{\.?LCPI[0-9]+_[0-9]+}}(%rip), %xmm0
-; CHECK-NEXT:    andnps %xmm2, %xmm0
+; CHECK-NEXT:    cmpltss {{\.?LCPI[0-9]+_[0-9]+}}(%rip), %xmm1
+; CHECK-NEXT:    andnps %xmm2, %xmm1
+; CHECK-NEXT:    movaps %xmm1, %xmm0
 ; CHECK-NEXT:    retq
   %call = tail call fast float @llvm.sqrt.f32(float %f)
   ret float %call
@@ -41,17 +43,19 @@ define float @f32_tune_generic(float %f) #2 {
 define float @f32_tune_x86_64(float %f) #3 {
 ; CHECK-LABEL: f32_tune_x86_64:
 ; CHECK:       # %bb.0:
-; CHECK-NEXT:    rsqrtss %xmm0, %xmm1
-; CHECK-NEXT:    movaps %xmm0, %xmm2
-; CHECK-NEXT:    mulss %xmm1, %xmm2
+; CHECK-NEXT:    rsqrtss %xmm0, %xmm2
+; CHECK-NEXT:    movaps {{.*#+}} xmm1 = [NaN,NaN,NaN,NaN]
+; CHECK-NEXT:    andps %xmm0, %xmm1
+; CHECK-NEXT:    mulss %xmm2, %xmm0
 ; CHECK-NEXT:    movss {{.*#+}} xmm3 = [-5.0E-1,0.0E+0,0.0E+0,0.0E+0]
-; CHECK-NEXT:    mulss %xmm2, %xmm3
-; CHECK-NEXT:    mulss %xmm1, %xmm2
-; CHECK-NEXT:    addss {{\.?LCPI[0-9]+_[0-9]+}}(%rip), %xmm2
+; CHECK-NEXT:    mulss %xmm0, %xmm3
+; CHECK-NEXT:    mulss %xmm2, %xmm0
+; CHECK-NEXT:    movss {{.*#+}} xmm2 = [-3.0E+0,0.0E+0,0.0E+0,0.0E+0]
+; CHECK-NEXT:    addss %xmm0, %xmm2
 ; CHECK-NEXT:    mulss %xmm3, %xmm2
-; CHECK-NEXT:    andps {{\.?LCPI[0-9]+_[0-9]+}}(%rip), %xmm0
-; CHECK-NEXT:    cmpltss {{\.?LCPI[0-9]+_[0-9]+}}(%rip), %xmm0
-; CHECK-NEXT:    andnps %xmm2, %xmm0
+; CHECK-NEXT:    cmpltss {{\.?LCPI[0-9]+_[0-9]+}}(%rip), %xmm1
+; CHECK-NEXT:    andnps %xmm2, %xmm1
+; CHECK-NEXT:    movaps %xmm1, %xmm0
 ; CHECK-NEXT:    retq
   %call = tail call fast float @llvm.sqrt.f32(float %f)
   ret float %call

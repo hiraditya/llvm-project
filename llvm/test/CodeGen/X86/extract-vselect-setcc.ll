@@ -12,8 +12,9 @@ define void @PR117684(i1 %cond, <8 x float> %vec, ptr %ptr1, ptr %ptr2) #0 {
 ; CHECK-NEXT:    vmulss {{\.?LCPI[0-9]+_[0-9]+}}(%rip), %xmm0, %xmm2
 ; CHECK-NEXT:    vbroadcastss %xmm2, %ymm2
 ; CHECK-NEXT:    testb $1, %dil
-; CHECK-NEXT:    cmoveq %rdx, %rsi
-; CHECK-NEXT:    vmovups %ymm2, (%rsi)
+; CHECK-NEXT:    movq %rdx, %rax
+; CHECK-NEXT:    cmovneq %rsi, %rax
+; CHECK-NEXT:    vmovups %ymm2, (%rax)
 ; CHECK-NEXT:    vmulss %xmm1, %xmm0, %xmm0
 ; CHECK-NEXT:    vbroadcastss %xmm0, %ymm0
 ; CHECK-NEXT:    vmovups %ymm0, (%rdx)

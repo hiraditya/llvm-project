@@ -60,8 +60,9 @@ define i8 @test_lwpins32_rri(i32 %a0, i32 %a1) nounwind {
 ;
 ; X64-LABEL: test_lwpins32_rri:
 ; X64:       # %bb.0:
-; X64-NEXT:    addl %esi, %esi
-; X64-NEXT:    lwpins $-1985229329, %esi, %edi # imm = 0x89ABCDEF
+; X64-NEXT:    # kill: def $esi killed $esi def $rsi
+; X64-NEXT:    leal (%rsi,%rsi), %eax
+; X64-NEXT:    lwpins $-1985229329, %eax, %edi # imm = 0x89ABCDEF
 ; X64-NEXT:    setb %al
 ; X64-NEXT:    retq
   %1 = add i32 %a1, %a1
@@ -107,8 +108,9 @@ define void @test_lwpval32_rri(i32 %a0, i32 %a1) nounwind {
 ;
 ; X64-LABEL: test_lwpval32_rri:
 ; X64:       # %bb.0:
-; X64-NEXT:    addl %esi, %esi
-; X64-NEXT:    lwpval $-19088744, %esi, %edi # imm = 0xFEDCBA98
+; X64-NEXT:    # kill: def $esi killed $esi def $rsi
+; X64-NEXT:    leal (%rsi,%rsi), %eax
+; X64-NEXT:    lwpval $-19088744, %eax, %edi # imm = 0xFEDCBA98
 ; X64-NEXT:    retq
   %1 = add i32 %a1, %a1
   tail call void @llvm.x86.lwpval32(i32 %a0, i32 %1, i32 4275878552)

@@ -214,17 +214,20 @@ define i32 @sink_sub_of_const_to_sub2(i32 %a, i32 %b) {
 define i32 @sink_sub_from_const_to_sub(i32 %a, i32 %b) {
 ; X32-LABEL: sink_sub_from_const_to_sub:
 ; X32:       # %bb.0:
+; X32-NEXT:    movl {{[0-9]+}}(%esp), %eax
 ; X32-NEXT:    movl {{[0-9]+}}(%esp), %ecx
-; X32-NEXT:    addl {{[0-9]+}}(%esp), %ecx
+; X32-NEXT:    addl %eax, %ecx
 ; X32-NEXT:    movl $32, %eax
 ; X32-NEXT:    subl %ecx, %eax
 ; X32-NEXT:    retl
 ;
 ; X64-LABEL: sink_sub_from_const_to_sub:
 ; X64:       # %bb.0:
-; X64-NEXT:    addl %esi, %edi
+; X64-NEXT:    # kill: def $esi killed $esi def $rsi
+; X64-NEXT:    # kill: def $edi killed $edi def $rdi
 ; X64-NEXT:    movl $32, %eax
 ; X64-NEXT:    subl %edi, %eax
+; X64-NEXT:    subl %esi, %eax
 ; X64-NEXT:    retq
   %t0 = sub i32 32, %a
   %r = sub i32 %t0, %b
@@ -258,33 +261,25 @@ define i32 @sink_sub_from_const_to_sub2(i32 %a, i32 %b) {
 ; Outer 'add' is commutative - 2 variants.
 
 define <4 x i32> @vec_sink_add_of_const_to_add0(<4 x i32> %a, <4 x i32> %b) {
-; X32-LABEL: vec_sink_add_of_const_to_add0:
-; X32:       # %bb.0:
-; X32-NEXT:    paddd %xmm1, %xmm0
-; X32-NEXT:    paddd {{\.?LCPI[0-9]+_[0-9]+}}, %xmm0
-; X32-NEXT:    retl
-;
-; X64-LABEL: vec_sink_add_of_const_to_add0:
-; X64:       # %bb.0:
-; X64-NEXT:    paddd %xmm1, %xmm0
-; X64-NEXT:    paddd {{\.?LCPI[0-9]+_[0-9]+}}(%rip), %xmm0
-; X64-NEXT:    retq
+; ALL-LABEL: vec_sink_add_of_const_to_add0:
+; ALL:       # %bb.0:
+; ALL-NEXT:    paddd %xmm1, %xmm0
+; ALL-NEXT:    movdqa {{.*#+}} xmm1 = [42,24,u,46]
+; ALL-NEXT:    paddd %xmm0, %xmm1
+; ALL-NEXT:    movdqa %xmm1, %xmm0
+; ALL-NEXT:    ret{{[l|q]}}
   %t0 = add <4 x i32> %a, <i32 42, i32 24, i32 undef, i32 46> ; constant always on RHS
   %r = add <4 x i32> %t0, %b
   ret <4 x i32> %r
 }
 define <4 x i32> @vec_sink_add_of_const_to_add1(<4 x i32> %a, <4 x i32> %b) {
-; X32-LABEL: vec_sink_add_of_const_to_add1:
-; X32:       # %bb.0:
-; X32-NEXT:    paddd %xmm1, %xmm0
-; X32-NEXT:    paddd {{\.?LCPI[0-9]+_[0-9]+}}, %xmm0
-; X32-NEXT:    retl
-;
-; X64-LABEL: vec_sink_add_of_const_to_add1:
-; X64:       # %bb.0:
-; X64-NEXT:    paddd %xmm1, %xmm0
-; X64-NEXT:    paddd {{\.?LCPI[0-9]+_[0-9]+}}(%rip), %xmm0
-; X64-NEXT:    retq
+; ALL-LABEL: vec_sink_add_of_const_to_add1:
+; ALL:       # %bb.0:
+; ALL-NEXT:    paddd %xmm1, %xmm0
+; ALL-NEXT:    movdqa {{.*#+}} xmm1 = [42,24,u,46]
+; ALL-NEXT:    paddd %xmm0, %xmm1
+; ALL-NEXT:    movdqa %xmm1, %xmm0
+; ALL-NEXT:    ret{{[l|q]}}
   %t0 = add <4 x i32> %a, <i32 42, i32 24, i32 undef, i32 46> ; constant always on RHS
   %r = add <4 x i32> %b, %t0
   ret <4 x i32> %r
@@ -330,37 +325,23 @@ define <4 x i32> @vec_sink_sub_of_const_to_add1(<4 x i32> %a, <4 x i32> %b) {
 ; Outer 'add' is commutative - 2 variants.
 
 define <4 x i32> @vec_sink_sub_from_const_to_add0(<4 x i32> %a, <4 x i32> %b) {
-; X32-LABEL: vec_sink_sub_from_const_to_add0:
-; X32:       # %bb.0:
-; X32-NEXT:    psubd %xmm0, %xmm1
-; X32-NEXT:    paddd {{\.?LCPI[0-9]+_[0-9]+}}, %xmm1
-; X32-NEXT:    movdqa %xmm1, %xmm0
-; X32-NEXT:    retl
-;
-; X64-LABEL: vec_sink_sub_from_const_to_add0:
-; X64:       # %bb.0:
-; X64-NEXT:    psubd %xmm0, %xmm1
-; X64-NEXT:    paddd {{\.?LCPI[0-9]+_[0-9]+}}(%rip), %xmm1
-; X64-NEXT:    movdqa %xmm1, %xmm0
-; X64-NEXT:    retq
+; ALL-LABEL: vec_sink_sub_from_const_to_add0:
+; ALL:       # %bb.0:
+; ALL-NEXT:    psubd %xmm0, %xmm1
+; ALL-NEXT:    movdqa {{.*#+}} xmm0 = [42,24,u,46]
+; ALL-NEXT:    paddd %xmm1, %xmm0
+; ALL-NEXT:    ret{{[l|q]}}
   %t0 = sub <4 x i32> <i32 42, i32 24, i32 undef, i32 46>, %a
   %r = add <4 x i32> %t0, %b
   ret <4 x i32> %r
 }
 define <4 x i32> @vec_sink_sub_from_const_to_add1(<4 x i32> %a, <4 x i32> %b) {
-; X32-LABEL: vec_sink_sub_from_const_to_add1:
-; X32:       # %bb.0:
-; X32-NEXT:    psubd %xmm0, %xmm1
-; X32-NEXT:    paddd {{\.?LCPI[0-9]+_[0-9]+}}, %xmm1
-; X32-NEXT:    movdqa %xmm1, %xmm0
-; X32-NEXT:    retl
-;
-; X64-LABEL: vec_sink_sub_from_const_to_add1:
-; X64:       # %bb.0:
-; X64-NEXT:    psubd %xmm0, %xmm1
-; X64-NEXT:    paddd {{\.?LCPI[0-9]+_[0-9]+}}(%rip), %xmm1
-; X64-NEXT:    movdqa %xmm1, %xmm0
-; X64-NEXT:    retq
+; ALL-LABEL: vec_sink_sub_from_const_to_add1:
+; ALL:       # %bb.0:
+; ALL-NEXT:    psubd %xmm0, %xmm1
+; ALL-NEXT:    movdqa {{.*#+}} xmm0 = [42,24,u,46]
+; ALL-NEXT:    paddd %xmm1, %xmm0
+; ALL-NEXT:    ret{{[l|q]}}
   %t0 = sub <4 x i32> <i32 42, i32 24, i32 undef, i32 46>, %a
   %r = add <4 x i32> %b, %t0
   ret <4 x i32> %r
@@ -370,17 +351,13 @@ define <4 x i32> @vec_sink_sub_from_const_to_add1(<4 x i32> %a, <4 x i32> %b) {
 ; sub %y, (add %x, C)
 
 define <4 x i32> @vec_sink_add_of_const_to_sub(<4 x i32> %a, <4 x i32> %b) {
-; X32-LABEL: vec_sink_add_of_const_to_sub:
-; X32:       # %bb.0:
-; X32-NEXT:    psubd %xmm1, %xmm0
-; X32-NEXT:    paddd {{\.?LCPI[0-9]+_[0-9]+}}, %xmm0
-; X32-NEXT:    retl
-;
-; X64-LABEL: vec_sink_add_of_const_to_sub:
-; X64:       # %bb.0:
-; X64-NEXT:    psubd %xmm1, %xmm0
-; X64-NEXT:    paddd {{\.?LCPI[0-9]+_[0-9]+}}(%rip), %xmm0
-; X64-NEXT:    retq
+; ALL-LABEL: vec_sink_add_of_const_to_sub:
+; ALL:       # %bb.0:
+; ALL-NEXT:    psubd %xmm1, %xmm0
+; ALL-NEXT:    movdqa {{.*#+}} xmm1 = [42,24,u,46]
+; ALL-NEXT:    paddd %xmm0, %xmm1
+; ALL-NEXT:    movdqa %xmm1, %xmm0
+; ALL-NEXT:    ret{{[l|q]}}
   %t0 = add <4 x i32> %a, <i32 42, i32 24, i32 undef, i32 46> ; constant always on RHS
   %r = sub <4 x i32> %t0, %b
   ret <4 x i32> %r
@@ -424,19 +401,12 @@ define <4 x i32> @vec_sink_sub_of_const_to_sub(<4 x i32> %a, <4 x i32> %b) {
   ret <4 x i32> %r
 }
 define <4 x i32> @vec_sink_sub_of_const_to_sub2(<4 x i32> %a, <4 x i32> %b) {
-; X32-LABEL: vec_sink_sub_of_const_to_sub2:
-; X32:       # %bb.0:
-; X32-NEXT:    psubd %xmm0, %xmm1
-; X32-NEXT:    paddd {{\.?LCPI[0-9]+_[0-9]+}}, %xmm1
-; X32-NEXT:    movdqa %xmm1, %xmm0
-; X32-NEXT:    retl
-;
-; X64-LABEL: vec_sink_sub_of_const_to_sub2:
-; X64:       # %bb.0:
-; X64-NEXT:    psubd %xmm0, %xmm1
-; X64-NEXT:    paddd {{\.?LCPI[0-9]+_[0-9]+}}(%rip), %xmm1
-; X64-NEXT:    movdqa %xmm1, %xmm0
-; X64-NEXT:    retq
+; ALL-LABEL: vec_sink_sub_of_const_to_sub2:
+; ALL:       # %bb.0:
+; ALL-NEXT:    psubd %xmm0, %xmm1
+; ALL-NEXT:    movdqa {{.*#+}} xmm0 = [42,24,u,46]
+; ALL-NEXT:    paddd %xmm1, %xmm0
+; ALL-NEXT:    ret{{[l|q]}}
   %t0 = sub <4 x i32> %a, <i32 42, i32 24, i32 undef, i32 46>
   %r = sub <4 x i32> %b, %t0
   ret <4 x i32> %r

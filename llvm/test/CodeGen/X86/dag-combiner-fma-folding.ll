@@ -14,8 +14,10 @@ define double @fma_folding(double %x) {
 define double @fma_no_folding(double %x) {
 ; CHECK-LABEL: fma_no_folding:
 ; CHECK:       # %bb.0:
-; CHECK-NEXT:    vxorpd %xmm1, %xmm1, %xmm1
-; CHECK-NEXT:    vfmadd213sd {{.*#+}} xmm0 = (xmm1 * xmm0) + mem
+; CHECK-NEXT:    vxorpd %xmm2, %xmm2, %xmm2
+; CHECK-NEXT:    vmovsd {{.*#+}} xmm1 = [-0.0E+0,0.0E+0]
+; CHECK-NEXT:    vfmadd231sd {{.*#+}} xmm1 = (xmm0 * xmm2) + xmm1
+; CHECK-NEXT:    vmovapd %xmm1, %xmm0
 ; CHECK-NEXT:    retq
   %fused = call contract nnan ninf double @llvm.fma.f64(double %x, double 0.0, double -0.0)
   ret double %fused
@@ -24,8 +26,10 @@ define double @fma_no_folding(double %x) {
 define double @fma_no_fold_potential_nan(double %x) {
 ; CHECK-LABEL: fma_no_fold_potential_nan:
 ; CHECK:       # %bb.0:
-; CHECK-NEXT:    vxorpd %xmm1, %xmm1, %xmm1
-; CHECK-NEXT:    vfmadd213sd {{.*#+}} xmm0 = (xmm1 * xmm0) + mem
+; CHECK-NEXT:    vxorpd %xmm2, %xmm2, %xmm2
+; CHECK-NEXT:    vmovsd {{.*#+}} xmm1 = [1.0E+0,0.0E+0]
+; CHECK-NEXT:    vfmadd231sd {{.*#+}} xmm1 = (xmm0 * xmm2) + xmm1
+; CHECK-NEXT:    vmovapd %xmm1, %xmm0
 ; CHECK-NEXT:    retq
  %fused = call contract double @llvm.fma.f64(double %x, double 0.0, double 1.0)
  ret double %fused

@@ -33,9 +33,8 @@ define i32 @udiv_by_7(i32 %x) nounwind {
 ; X86-NEXT:    mull %edx
 ; X86-NEXT:    subl %edx, %ecx
 ; X86-NEXT:    shrl %ecx
-; X86-NEXT:    addl %edx, %ecx
-; X86-NEXT:    shrl $2, %ecx
-; X86-NEXT:    movl %ecx, %eax
+; X86-NEXT:    leal (%ecx,%edx), %eax
+; X86-NEXT:    shrl $2, %eax
 ; X86-NEXT:    retl
   %div = udiv i32 %x, 7
   ret i32 %div
@@ -62,14 +61,13 @@ define i32 @udiv_by_19(i32 %x) nounwind {
 ; X86-LABEL: udiv_by_19:
 ; X86:       # %bb.0:
 ; X86-NEXT:    movl {{[0-9]+}}(%esp), %ecx
-; X86-NEXT:    movl ${{-?[0-9]+}}, %edx # imm = 0xAF286BCB
+; X86-NEXT:    movl $-1356305461, %edx # imm = 0xAF286BCB
 ; X86-NEXT:    movl %ecx, %eax
 ; X86-NEXT:    mull %edx
 ; X86-NEXT:    subl %edx, %ecx
 ; X86-NEXT:    shrl %ecx
-; X86-NEXT:    addl %edx, %ecx
-; X86-NEXT:    shrl $4, %ecx
-; X86-NEXT:    movl %ecx, %eax
+; X86-NEXT:    leal (%ecx,%edx), %eax
+; X86-NEXT:    shrl $4, %eax
 ; X86-NEXT:    retl
   %div = udiv i32 %x, 19
   ret i32 %div
@@ -96,14 +94,13 @@ define i32 @udiv_by_21(i32 %x) nounwind {
 ; X86-LABEL: udiv_by_21:
 ; X86:       # %bb.0:
 ; X86-NEXT:    movl {{[0-9]+}}(%esp), %ecx
-; X86-NEXT:    movl ${{-?[0-9]+}}, %edx # imm = 0x86186187
+; X86-NEXT:    movl $-2045222521, %edx # imm = 0x86186187
 ; X86-NEXT:    movl %ecx, %eax
 ; X86-NEXT:    mull %edx
 ; X86-NEXT:    subl %edx, %ecx
 ; X86-NEXT:    shrl %ecx
-; X86-NEXT:    addl %edx, %ecx
-; X86-NEXT:    shrl $4, %ecx
-; X86-NEXT:    movl %ecx, %eax
+; X86-NEXT:    leal (%ecx,%edx), %eax
+; X86-NEXT:    shrl $4, %eax
 ; X86-NEXT:    retl
   %div = udiv i32 %x, 21
   ret i32 %div
@@ -131,7 +128,7 @@ define i32 @udiv_by_3(i32 %x) nounwind {
 ;
 ; X86-LABEL: udiv_by_3:
 ; X86:       # %bb.0:
-; X86-NEXT:    movl ${{-?[0-9]+}}, %eax # imm = 0xAAAAAAAB
+; X86-NEXT:    movl $-1431655765, %eax # imm = 0xAAAAAAAB
 ; X86-NEXT:    mull {{[0-9]+}}(%esp)
 ; X86-NEXT:    movl %edx, %eax
 ; X86-NEXT:    shrl %eax

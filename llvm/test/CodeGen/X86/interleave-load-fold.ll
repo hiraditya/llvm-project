@@ -6,7 +6,7 @@ define <16 x i8> @interleave_masked_select(ptr %mask, ptr %src) nounwind {
 ; X64:       # %bb.0:
 ; X64-NEXT:    kmovw (%rdi), %k1
 ; X64-NEXT:    vpbroadcastd {{.*#+}} xmm0 = [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1]
-; X64-NEXT:    vmovdqu8 (%rsi), %xmm0 {%k1}
+; X64-NEXT:    vpblendmb (%rsi), %xmm0, %xmm0 {%k1}
 ; X64-NEXT:    vpxor %xmm1, %xmm1, %xmm1
 ; X64-NEXT:    vpunpcklbw {{.*#+}} xmm0 {%k1} {z} = xmm1[0],xmm0[0],xmm1[1],xmm0[1],xmm1[2],xmm0[2],xmm1[3],xmm0[3],xmm1[4],xmm0[4],xmm1[5],xmm0[5],xmm1[6],xmm0[6],xmm1[7],xmm0[7]
 ; X64-NEXT:    retq

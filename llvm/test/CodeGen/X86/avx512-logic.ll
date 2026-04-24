@@ -856,7 +856,8 @@ entry:
 define <16 x i32> @ternlog_and_andn(<16 x i32> %x, <16 x i32> %y, <16 x i32> %z) {
 ; ALL-LABEL: ternlog_and_andn:
 ; ALL:       ## %bb.0:
-; ALL-NEXT:    vpternlogd {{.*#+}} zmm0 = zmm2 & zmm1 & ~zmm0
+; ALL-NEXT:    vpternlogd {{.*#+}} zmm2 = zmm2 & zmm1 & ~zmm0
+; ALL-NEXT:    vmovdqa64 %zmm2, %zmm0
 ; ALL-NEXT:    retq
   %a = xor <16 x i32> %x, <i32 -1, i32 -1, i32 -1, i32 -1, i32 -1, i32 -1, i32 -1, i32 -1, i32 -1, i32 -1, i32 -1, i32 -1, i32 -1, i32 -1, i32 -1, i32 -1>
   %b = and <16 x i32> %y, %a
@@ -867,7 +868,8 @@ define <16 x i32> @ternlog_and_andn(<16 x i32> %x, <16 x i32> %y, <16 x i32> %z)
 define <16 x i32> @ternlog_or_andn(<16 x i32> %x, <16 x i32> %y, <16 x i32> %z) {
 ; ALL-LABEL: ternlog_or_andn:
 ; ALL:       ## %bb.0:
-; ALL-NEXT:    vpternlogd {{.*#+}} zmm0 = (zmm1 & ~zmm0) | zmm2
+; ALL-NEXT:    vpternlogd {{.*#+}} zmm2 = zmm2 | (zmm1 & ~zmm0)
+; ALL-NEXT:    vmovdqa64 %zmm2, %zmm0
 ; ALL-NEXT:    retq
   %a = xor <16 x i32> %x, <i32 -1, i32 -1, i32 -1, i32 -1, i32 -1, i32 -1, i32 -1, i32 -1, i32 -1, i32 -1, i32 -1, i32 -1, i32 -1, i32 -1, i32 -1, i32 -1>
   %b = and <16 x i32> %y, %a
@@ -878,7 +880,8 @@ define <16 x i32> @ternlog_or_andn(<16 x i32> %x, <16 x i32> %y, <16 x i32> %z) 
 define <16 x i32> @ternlog_xor_andn(<16 x i32> %x, <16 x i32> %y, <16 x i32> %z) {
 ; ALL-LABEL: ternlog_xor_andn:
 ; ALL:       ## %bb.0:
-; ALL-NEXT:    vpternlogd {{.*#+}} zmm0 = zmm2 ^ (zmm1 & ~zmm0)
+; ALL-NEXT:    vpternlogd {{.*#+}} zmm2 = zmm2 ^ (zmm1 & ~zmm0)
+; ALL-NEXT:    vmovdqa64 %zmm2, %zmm0
 ; ALL-NEXT:    retq
   %a = xor <16 x i32> %x, <i32 -1, i32 -1, i32 -1, i32 -1, i32 -1, i32 -1, i32 -1, i32 -1, i32 -1, i32 -1, i32 -1, i32 -1, i32 -1, i32 -1, i32 -1, i32 -1>
   %b = and <16 x i32> %y, %a
@@ -887,20 +890,38 @@ define <16 x i32> @ternlog_xor_andn(<16 x i32> %x, <16 x i32> %y, <16 x i32> %z)
 }
 
 define <16 x i32> @ternlog_or_and_mask(<16 x i32> %x, <16 x i32> %y) {
-; ALL-LABEL: ternlog_or_and_mask:
-; ALL:       ## %bb.0:
-; ALL-NEXT:    vpternlogd {{.*#+}} zmm0 = (zmm0 & m32bcst) | zmm1
-; ALL-NEXT:    retq
+; KNL-LABEL: ternlog_or_and_mask:
+; KNL:       ## %bb.0:
+; KNL-NEXT:    vmovdqa64 {{.*#+}} zmm2 = [255,0,0,0,255,0,0,0,255,0,0,0,255,0,0,0,255,0,0,0,255,0,0,0,255,0,0,0,255,0,0,0,255,0,0,0,255,0,0,0,255,0,0,0,255,0,0,0,255,0,0,0,255,0,0,0,255,0,0,0,255,0,0,0]
+; KNL-NEXT:    vpternlogd {{.*#+}} zmm2 = (zmm2 & zmm0) | zmm1
+; KNL-NEXT:    vmovdqa64 %zmm2, %zmm0
+; KNL-NEXT:    retq
+;
+; SKX-LABEL: ternlog_or_and_mask:
+; SKX:       ## %bb.0:
+; SKX-NEXT:    vpbroadcastd {{.*#+}} zmm2 = [255,0,0,0,255,0,0,0,255,0,0,0,255,0,0,0,255,0,0,0,255,0,0,0,255,0,0,0,255,0,0,0,255,0,0,0,255,0,0,0,255,0,0,0,255,0,0,0,255,0,0,0,255,0,0,0,255,0,0,0,255,0,0,0]
+; SKX-NEXT:    vpternlogd {{.*#+}} zmm2 = (zmm2 & zmm0) | zmm1
+; SKX-NEXT:    vmovdqa64 %zmm2, %zmm0
+; SKX-NEXT:    retq
   %a = and <16 x i32> %x, <i32 255, i32 255, i32 255, i32 255, i32 255, i32 255, i32 255, i32 255, i32 255, i32 255, i32 255, i32 255, i32 255, i32 255, i32 255, i32 255>
   %b = or <16 x i32> %a, %y
   ret <16 x i32> %b
 }
 
 define <8 x i64> @ternlog_xor_and_mask(<8 x i64> %x, <8 x i64> %y) {
-; ALL-LABEL: ternlog_xor_and_mask:
-; ALL:       ## %bb.0:
-; ALL-NEXT:    vpternlogq {{.*#+}} zmm0 = zmm1 ^ (zmm0 & m64bcst)
-; ALL-NEXT:    retq
+; KNL-LABEL: ternlog_xor_and_mask:
+; KNL:       ## %bb.0:
+; KNL-NEXT:    vmovdqa64 {{.*#+}} zmm2 = [4294967295,0,4294967295,0,4294967295,0,4294967295,0,4294967295,0,4294967295,0,4294967295,0,4294967295,0]
+; KNL-NEXT:    vpternlogq {{.*#+}} zmm2 = zmm1 ^ (zmm2 & zmm0)
+; KNL-NEXT:    vmovdqa64 %zmm2, %zmm0
+; KNL-NEXT:    retq
+;
+; SKX-LABEL: ternlog_xor_and_mask:
+; SKX:       ## %bb.0:
+; SKX-NEXT:    vpbroadcastq {{.*#+}} zmm2 = [4294967295,0,4294967295,0,4294967295,0,4294967295,0,4294967295,0,4294967295,0,4294967295,0,4294967295,0]
+; SKX-NEXT:    vpternlogq {{.*#+}} zmm2 = zmm1 ^ (zmm2 & zmm0)
+; SKX-NEXT:    vmovdqa64 %zmm2, %zmm0
+; SKX-NEXT:    retq
   %a = and <8 x i64> %x, <i64 4294967295, i64 4294967295, i64 4294967295, i64 4294967295, i64 4294967295, i64 4294967295, i64 4294967295, i64 4294967295>
   %b = xor <8 x i64> %a, %y
   ret <8 x i64> %b
@@ -909,9 +930,9 @@ define <8 x i64> @ternlog_xor_and_mask(<8 x i64> %x, <8 x i64> %y) {
 define <16 x i32> @ternlog_maskz_or_and_mask(<16 x i32> %x, <16 x i32> %y, <16 x i32> %mask) {
 ; ALL-LABEL: ternlog_maskz_or_and_mask:
 ; ALL:       ## %bb.0:
-; ALL-NEXT:    vpandd {{\.?LCPI[0-9]+_[0-9]+}}(%rip){1to16}, %zmm0, %zmm3
-; ALL-NEXT:    vpsrad $31, %zmm2, %zmm0
-; ALL-NEXT:    vpternlogd {{.*#+}} zmm0 = zmm0 & (zmm3 | zmm1)
+; ALL-NEXT:    vpandd {{\.?LCPI[0-9]+_[0-9]+}}(%rip){1to16}, %zmm0, %zmm0
+; ALL-NEXT:    vpsrad $31, %zmm2, %zmm2
+; ALL-NEXT:    vpternlogd {{.*#+}} zmm0 = zmm2 & (zmm0 | zmm1)
 ; ALL-NEXT:    retq
   %m = icmp slt <16 x i32> %mask, zeroinitializer
   %a = and <16 x i32> %x, <i32 255, i32 255, i32 255, i32 255, i32 255, i32 255, i32 255, i32 255, i32 255, i32 255, i32 255, i32 255, i32 255, i32 255, i32 255, i32 255>
@@ -923,9 +944,9 @@ define <16 x i32> @ternlog_maskz_or_and_mask(<16 x i32> %x, <16 x i32> %y, <16 x
 define <8 x i64> @ternlog_maskz_xor_and_mask(<8 x i64> %x, <8 x i64> %y, <8 x i64> %mask) {
 ; ALL-LABEL: ternlog_maskz_xor_and_mask:
 ; ALL:       ## %bb.0:
-; ALL-NEXT:    vpandq {{\.?LCPI[0-9]+_[0-9]+}}(%rip){1to8}, %zmm0, %zmm3
-; ALL-NEXT:    vpsraq $63, %zmm2, %zmm0
-; ALL-NEXT:    vpternlogq {{.*#+}} zmm0 = zmm0 & (zmm3 ^ zmm1)
+; ALL-NEXT:    vpandq {{\.?LCPI[0-9]+_[0-9]+}}(%rip){1to8}, %zmm0, %zmm0
+; ALL-NEXT:    vpsraq $63, %zmm2, %zmm2
+; ALL-NEXT:    vpternlogq {{.*#+}} zmm0 = zmm2 & (zmm0 ^ zmm1)
 ; ALL-NEXT:    retq
   %m = icmp slt <8 x i64> %mask, zeroinitializer
   %a = and <8 x i64> %x, <i64 4294967295, i64 4294967295, i64 4294967295, i64 4294967295, i64 4294967295, i64 4294967295, i64 4294967295, i64 4294967295>

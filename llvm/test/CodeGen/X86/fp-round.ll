@@ -24,10 +24,10 @@ define half @round_f16(half %h) {
 ; SSE41-NEXT:    callq __extendhfsf2@PLT
 ; SSE41-NEXT:    movaps {{.*#+}} xmm1 = [-0.0E+0,-0.0E+0,-0.0E+0,-0.0E+0]
 ; SSE41-NEXT:    andps %xmm0, %xmm1
-; SSE41-NEXT:    orps {{\.?LCPI[0-9]+_[0-9]+}}(%rip), %xmm1
-; SSE41-NEXT:    addss %xmm0, %xmm1
-; SSE41-NEXT:    xorps %xmm0, %xmm0
-; SSE41-NEXT:    roundss $11, %xmm1, %xmm0
+; SSE41-NEXT:    movaps {{.*#+}} xmm2 = [4.9999997E-1,4.9999997E-1,4.9999997E-1,4.9999997E-1]
+; SSE41-NEXT:    orps %xmm1, %xmm2
+; SSE41-NEXT:    addss %xmm2, %xmm0
+; SSE41-NEXT:    roundss $11, %xmm0, %xmm0
 ; SSE41-NEXT:    callq __truncsfhf2@PLT
 ; SSE41-NEXT:    popq %rax
 ; SSE41-NEXT:    .cfi_def_cfa_offset 8
@@ -52,8 +52,9 @@ define half @round_f16(half %h) {
 ; AVX512F:       # %bb.0: # %entry
 ; AVX512F-NEXT:    vcvtph2ps %xmm0, %xmm0
 ; AVX512F-NEXT:    vpbroadcastd {{.*#+}} xmm1 = [4.9999997E-1,4.9999997E-1,4.9999997E-1,4.9999997E-1]
-; AVX512F-NEXT:    vpternlogd {{.*#+}} xmm1 = xmm1 | (xmm0 & m32bcst)
-; AVX512F-NEXT:    vaddss %xmm1, %xmm0, %xmm0
+; AVX512F-NEXT:    vpbroadcastd {{.*#+}} xmm2 = [-0.0E+0,-0.0E+0,-0.0E+0,-0.0E+0]
+; AVX512F-NEXT:    vpternlogd {{.*#+}} xmm2 = (xmm2 & xmm0) | xmm1
+; AVX512F-NEXT:    vaddss %xmm2, %xmm0, %xmm0
 ; AVX512F-NEXT:    vroundss $11, %xmm0, %xmm0, %xmm0
 ; AVX512F-NEXT:    vcvtps2ph $4, %xmm0, %xmm0
 ; AVX512F-NEXT:    retq
@@ -62,8 +63,8 @@ define half @round_f16(half %h) {
 ; AVX512FP16:       ## %bb.0: ## %entry
 ; AVX512FP16-NEXT:    vpbroadcastw {{.*#+}} xmm1 = [-0.0E+0,-0.0E+0,-0.0E+0,-0.0E+0,-0.0E+0,-0.0E+0,-0.0E+0,-0.0E+0]
 ; AVX512FP16-NEXT:    vpbroadcastw {{.*#+}} xmm2 = [4.9976E-1,4.9976E-1,4.9976E-1,4.9976E-1,4.9976E-1,4.9976E-1,4.9976E-1,4.9976E-1]
-; AVX512FP16-NEXT:    vpternlogq {{.*#+}} xmm2 = xmm2 | (xmm0 & xmm1)
-; AVX512FP16-NEXT:    vaddsh %xmm2, %xmm0, %xmm0
+; AVX512FP16-NEXT:    vpternlogq {{.*#+}} xmm1 = (xmm1 & xmm0) | xmm2
+; AVX512FP16-NEXT:    vaddsh %xmm1, %xmm0, %xmm0
 ; AVX512FP16-NEXT:    vrndscalesh $11, %xmm0, %xmm0, %xmm0
 ; AVX512FP16-NEXT:    retq
 entry:
@@ -80,10 +81,10 @@ define float @round_f32(float %x) {
 ; SSE41:       # %bb.0:
 ; SSE41-NEXT:    movaps {{.*#+}} xmm1 = [-0.0E+0,-0.0E+0,-0.0E+0,-0.0E+0]
 ; SSE41-NEXT:    andps %xmm0, %xmm1
-; SSE41-NEXT:    orps {{\.?LCPI[0-9]+_[0-9]+}}(%rip), %xmm1
-; SSE41-NEXT:    addss %xmm0, %xmm1
-; SSE41-NEXT:    xorps %xmm0, %xmm0
-; SSE41-NEXT:    roundss $11, %xmm1, %xmm0
+; SSE41-NEXT:    movaps {{.*#+}} xmm2 = [4.9999997E-1,4.9999997E-1,4.9999997E-1,4.9999997E-1]
+; SSE41-NEXT:    orps %xmm1, %xmm2
+; SSE41-NEXT:    addss %xmm2, %xmm0
+; SSE41-NEXT:    roundss $11, %xmm0, %xmm0
 ; SSE41-NEXT:    retq
 ;
 ; AVX1-LABEL: round_f32:
@@ -98,16 +99,18 @@ define float @round_f32(float %x) {
 ; AVX512F-LABEL: round_f32:
 ; AVX512F:       # %bb.0:
 ; AVX512F-NEXT:    vpbroadcastd {{.*#+}} xmm1 = [4.9999997E-1,4.9999997E-1,4.9999997E-1,4.9999997E-1]
-; AVX512F-NEXT:    vpternlogd {{.*#+}} xmm1 = xmm1 | (xmm0 & m32bcst)
-; AVX512F-NEXT:    vaddss %xmm1, %xmm0, %xmm0
+; AVX512F-NEXT:    vpbroadcastd {{.*#+}} xmm2 = [-0.0E+0,-0.0E+0,-0.0E+0,-0.0E+0]
+; AVX512F-NEXT:    vpternlogd {{.*#+}} xmm2 = (xmm2 & xmm0) | xmm1
+; AVX512F-NEXT:    vaddss %xmm2, %xmm0, %xmm0
 ; AVX512F-NEXT:    vroundss $11, %xmm0, %xmm0, %xmm0
 ; AVX512F-NEXT:    retq
 ;
 ; AVX512FP16-LABEL: round_f32:
 ; AVX512FP16:       ## %bb.0:
 ; AVX512FP16-NEXT:    vpbroadcastd {{.*#+}} xmm1 = [4.9999997E-1,4.9999997E-1,4.9999997E-1,4.9999997E-1]
-; AVX512FP16-NEXT:    vpternlogd {{.*#+}} xmm1 = xmm1 | (xmm0 & m32bcst)
-; AVX512FP16-NEXT:    vaddss %xmm1, %xmm0, %xmm0
+; AVX512FP16-NEXT:    vpbroadcastd {{.*#+}} xmm2 = [-0.0E+0,-0.0E+0,-0.0E+0,-0.0E+0]
+; AVX512FP16-NEXT:    vpternlogd {{.*#+}} xmm2 = (xmm2 & xmm0) | xmm1
+; AVX512FP16-NEXT:    vaddss %xmm2, %xmm0, %xmm0
 ; AVX512FP16-NEXT:    vroundss $11, %xmm0, %xmm0, %xmm0
 ; AVX512FP16-NEXT:    retq
   %a = call float @llvm.round.f32(float %x)
@@ -123,10 +126,10 @@ define double @round_f64(double %x) {
 ; SSE41:       # %bb.0:
 ; SSE41-NEXT:    movapd {{.*#+}} xmm1 = [-0.0E+0,-0.0E+0]
 ; SSE41-NEXT:    andpd %xmm0, %xmm1
-; SSE41-NEXT:    orpd {{\.?LCPI[0-9]+_[0-9]+}}(%rip), %xmm1
-; SSE41-NEXT:    addsd %xmm0, %xmm1
-; SSE41-NEXT:    xorps %xmm0, %xmm0
-; SSE41-NEXT:    roundsd $11, %xmm1, %xmm0
+; SSE41-NEXT:    movapd {{.*#+}} xmm2 = [4.9999999999999994E-1,4.9999999999999994E-1]
+; SSE41-NEXT:    orpd %xmm1, %xmm2
+; SSE41-NEXT:    addsd %xmm2, %xmm0
+; SSE41-NEXT:    roundsd $11, %xmm0, %xmm0
 ; SSE41-NEXT:    retq
 ;
 ; AVX1-LABEL: round_f64:
@@ -142,16 +145,18 @@ define double @round_f64(double %x) {
 ; AVX512F-LABEL: round_f64:
 ; AVX512F:       # %bb.0:
 ; AVX512F-NEXT:    vpbroadcastq {{.*#+}} xmm1 = [4.9999999999999994E-1,4.9999999999999994E-1]
-; AVX512F-NEXT:    vpternlogq {{.*#+}} xmm1 = xmm1 | (xmm0 & m64bcst)
-; AVX512F-NEXT:    vaddsd %xmm1, %xmm0, %xmm0
+; AVX512F-NEXT:    vpbroadcastq {{.*#+}} xmm2 = [-0.0E+0,-0.0E+0]
+; AVX512F-NEXT:    vpternlogq {{.*#+}} xmm2 = (xmm2 & xmm0) | xmm1
+; AVX512F-NEXT:    vaddsd %xmm2, %xmm0, %xmm0
 ; AVX512F-NEXT:    vroundsd $11, %xmm0, %xmm0, %xmm0
 ; AVX512F-NEXT:    retq
 ;
 ; AVX512FP16-LABEL: round_f64:
 ; AVX512FP16:       ## %bb.0:
 ; AVX512FP16-NEXT:    vpbroadcastq {{.*#+}} xmm1 = [4.9999999999999994E-1,4.9999999999999994E-1]
-; AVX512FP16-NEXT:    vpternlogq {{.*#+}} xmm1 = xmm1 | (xmm0 & m64bcst)
-; AVX512FP16-NEXT:    vaddsd %xmm1, %xmm0, %xmm0
+; AVX512FP16-NEXT:    vpbroadcastq {{.*#+}} xmm2 = [-0.0E+0,-0.0E+0]
+; AVX512FP16-NEXT:    vpternlogq {{.*#+}} xmm2 = (xmm2 & xmm0) | xmm1
+; AVX512FP16-NEXT:    vaddsd %xmm2, %xmm0, %xmm0
 ; AVX512FP16-NEXT:    vroundsd $11, %xmm0, %xmm0, %xmm0
 ; AVX512FP16-NEXT:    retq
   %a = call double @llvm.round.f64(double %x)
@@ -192,9 +197,10 @@ define <4 x float> @round_v4f32(<4 x float> %x) {
 ; SSE41:       # %bb.0:
 ; SSE41-NEXT:    movaps {{.*#+}} xmm1 = [-0.0E+0,-0.0E+0,-0.0E+0,-0.0E+0]
 ; SSE41-NEXT:    andps %xmm0, %xmm1
-; SSE41-NEXT:    orps {{\.?LCPI[0-9]+_[0-9]+}}(%rip), %xmm1
-; SSE41-NEXT:    addps %xmm0, %xmm1
-; SSE41-NEXT:    roundps $11, %xmm1, %xmm0
+; SSE41-NEXT:    movaps {{.*#+}} xmm2 = [4.9999997E-1,4.9999997E-1,4.9999997E-1,4.9999997E-1]
+; SSE41-NEXT:    orps %xmm1, %xmm2
+; SSE41-NEXT:    addps %xmm0, %xmm2
+; SSE41-NEXT:    roundps $11, %xmm2, %xmm0
 ; SSE41-NEXT:    retq
 ;
 ; AVX1-LABEL: round_v4f32:
@@ -208,16 +214,18 @@ define <4 x float> @round_v4f32(<4 x float> %x) {
 ; AVX512F-LABEL: round_v4f32:
 ; AVX512F:       # %bb.0:
 ; AVX512F-NEXT:    vpbroadcastd {{.*#+}} xmm1 = [4.9999997E-1,4.9999997E-1,4.9999997E-1,4.9999997E-1]
-; AVX512F-NEXT:    vpternlogd {{.*#+}} xmm1 = xmm1 | (xmm0 & m32bcst)
-; AVX512F-NEXT:    vaddps %xmm1, %xmm0, %xmm0
+; AVX512F-NEXT:    vpbroadcastd {{.*#+}} xmm2 = [-0.0E+0,-0.0E+0,-0.0E+0,-0.0E+0]
+; AVX512F-NEXT:    vpternlogd {{.*#+}} xmm2 = (xmm2 & xmm0) | xmm1
+; AVX512F-NEXT:    vaddps %xmm2, %xmm0, %xmm0
 ; AVX512F-NEXT:    vroundps $11, %xmm0, %xmm0
 ; AVX512F-NEXT:    retq
 ;
 ; AVX512FP16-LABEL: round_v4f32:
 ; AVX512FP16:       ## %bb.0:
 ; AVX512FP16-NEXT:    vpbroadcastd {{.*#+}} xmm1 = [4.9999997E-1,4.9999997E-1,4.9999997E-1,4.9999997E-1]
-; AVX512FP16-NEXT:    vpternlogd {{.*#+}} xmm1 = xmm1 | (xmm0 & m32bcst)
-; AVX512FP16-NEXT:    vaddps %xmm1, %xmm0, %xmm0
+; AVX512FP16-NEXT:    vpbroadcastd {{.*#+}} xmm2 = [-0.0E+0,-0.0E+0,-0.0E+0,-0.0E+0]
+; AVX512FP16-NEXT:    vpternlogd {{.*#+}} xmm2 = (xmm2 & xmm0) | xmm1
+; AVX512FP16-NEXT:    vaddps %xmm2, %xmm0, %xmm0
 ; AVX512FP16-NEXT:    vroundps $11, %xmm0, %xmm0
 ; AVX512FP16-NEXT:    retq
   %a = call <4 x float> @llvm.round.v4f32(<4 x float> %x)
@@ -246,9 +254,10 @@ define <2 x double> @round_v2f64(<2 x double> %x) {
 ; SSE41:       # %bb.0:
 ; SSE41-NEXT:    movapd {{.*#+}} xmm1 = [-0.0E+0,-0.0E+0]
 ; SSE41-NEXT:    andpd %xmm0, %xmm1
-; SSE41-NEXT:    orpd {{\.?LCPI[0-9]+_[0-9]+}}(%rip), %xmm1
-; SSE41-NEXT:    addpd %xmm0, %xmm1
-; SSE41-NEXT:    roundpd $11, %xmm1, %xmm0
+; SSE41-NEXT:    movapd {{.*#+}} xmm2 = [4.9999999999999994E-1,4.9999999999999994E-1]
+; SSE41-NEXT:    orpd %xmm1, %xmm2
+; SSE41-NEXT:    addpd %xmm0, %xmm2
+; SSE41-NEXT:    roundpd $11, %xmm2, %xmm0
 ; SSE41-NEXT:    retq
 ;
 ; AVX1-LABEL: round_v2f64:
@@ -262,16 +271,18 @@ define <2 x double> @round_v2f64(<2 x double> %x) {
 ; AVX512F-LABEL: round_v2f64:
 ; AVX512F:       # %bb.0:
 ; AVX512F-NEXT:    vpbroadcastq {{.*#+}} xmm1 = [4.9999999999999994E-1,4.9999999999999994E-1]
-; AVX512F-NEXT:    vpternlogq {{.*#+}} xmm1 = xmm1 | (xmm0 & m64bcst)
-; AVX512F-NEXT:    vaddpd %xmm1, %xmm0, %xmm0
+; AVX512F-NEXT:    vpbroadcastq {{.*#+}} xmm2 = [-0.0E+0,-0.0E+0]
+; AVX512F-NEXT:    vpternlogq {{.*#+}} xmm2 = (xmm2 & xmm0) | xmm1
+; AVX512F-NEXT:    vaddpd %xmm2, %xmm0, %xmm0
 ; AVX512F-NEXT:    vroundpd $11, %xmm0, %xmm0
 ; AVX512F-NEXT:    retq
 ;
 ; AVX512FP16-LABEL: round_v2f64:
 ; AVX512FP16:       ## %bb.0:
 ; AVX512FP16-NEXT:    vpbroadcastq {{.*#+}} xmm1 = [4.9999999999999994E-1,4.9999999999999994E-1]
-; AVX512FP16-NEXT:    vpternlogq {{.*#+}} xmm1 = xmm1 | (xmm0 & m64bcst)
-; AVX512FP16-NEXT:    vaddpd %xmm1, %xmm0, %xmm0
+; AVX512FP16-NEXT:    vpbroadcastq {{.*#+}} xmm2 = [-0.0E+0,-0.0E+0]
+; AVX512FP16-NEXT:    vpternlogq {{.*#+}} xmm2 = (xmm2 & xmm0) | xmm1
+; AVX512FP16-NEXT:    vaddpd %xmm2, %xmm0, %xmm0
 ; AVX512FP16-NEXT:    vroundpd $11, %xmm0, %xmm0
 ; AVX512FP16-NEXT:    retq
   %a = call <2 x double> @llvm.round.v2f64(<2 x double> %x)
@@ -339,10 +350,11 @@ define <8 x float> @round_v8f32(<8 x float> %x) {
 ; SSE41-NEXT:    orps %xmm4, %xmm3
 ; SSE41-NEXT:    addps %xmm0, %xmm3
 ; SSE41-NEXT:    roundps $11, %xmm3, %xmm0
-; SSE41-NEXT:    andps %xmm1, %xmm2
-; SSE41-NEXT:    orps %xmm4, %xmm2
-; SSE41-NEXT:    addps %xmm1, %xmm2
-; SSE41-NEXT:    roundps $11, %xmm2, %xmm1
+; SSE41-NEXT:    movaps %xmm1, %xmm3
+; SSE41-NEXT:    andps %xmm2, %xmm3
+; SSE41-NEXT:    orps %xmm4, %xmm3
+; SSE41-NEXT:    addps %xmm1, %xmm3
+; SSE41-NEXT:    roundps $11, %xmm3, %xmm1
 ; SSE41-NEXT:    retq
 ;
 ; AVX1-LABEL: round_v8f32:
@@ -356,16 +368,18 @@ define <8 x float> @round_v8f32(<8 x float> %x) {
 ; AVX512F-LABEL: round_v8f32:
 ; AVX512F:       # %bb.0:
 ; AVX512F-NEXT:    vpbroadcastd {{.*#+}} ymm1 = [4.9999997E-1,4.9999997E-1,4.9999997E-1,4.9999997E-1,4.9999997E-1,4.9999997E-1,4.9999997E-1,4.9999997E-1]
-; AVX512F-NEXT:    vpternlogd {{.*#+}} ymm1 = ymm1 | (ymm0 & m32bcst)
-; AVX512F-NEXT:    vaddps %ymm1, %ymm0, %ymm0
+; AVX512F-NEXT:    vpbroadcastd {{.*#+}} ymm2 = [-0.0E+0,-0.0E+0,-0.0E+0,-0.0E+0,-0.0E+0,-0.0E+0,-0.0E+0,-0.0E+0]
+; AVX512F-NEXT:    vpternlogd {{.*#+}} ymm2 = (ymm2 & ymm0) | ymm1
+; AVX512F-NEXT:    vaddps %ymm2, %ymm0, %ymm0
 ; AVX512F-NEXT:    vroundps $11, %ymm0, %ymm0
 ; AVX512F-NEXT:    retq
 ;
 ; AVX512FP16-LABEL: round_v8f32:
 ; AVX512FP16:       ## %bb.0:
 ; AVX512FP16-NEXT:    vpbroadcastd {{.*#+}} ymm1 = [4.9999997E-1,4.9999997E-1,4.9999997E-1,4.9999997E-1,4.9999997E-1,4.9999997E-1,4.9999997E-1,4.9999997E-1]
-; AVX512FP16-NEXT:    vpternlogd {{.*#+}} ymm1 = ymm1 | (ymm0 & m32bcst)
-; AVX512FP16-NEXT:    vaddps %ymm1, %ymm0, %ymm0
+; AVX512FP16-NEXT:    vpbroadcastd {{.*#+}} ymm2 = [-0.0E+0,-0.0E+0,-0.0E+0,-0.0E+0,-0.0E+0,-0.0E+0,-0.0E+0,-0.0E+0]
+; AVX512FP16-NEXT:    vpternlogd {{.*#+}} ymm2 = (ymm2 & ymm0) | ymm1
+; AVX512FP16-NEXT:    vaddps %ymm2, %ymm0, %ymm0
 ; AVX512FP16-NEXT:    vroundps $11, %ymm0, %ymm0
 ; AVX512FP16-NEXT:    retq
   %a = call <8 x float> @llvm.round.v8f32(<8 x float> %x)
@@ -409,10 +423,11 @@ define <4 x double> @round_v4f64(<4 x double> %x) {
 ; SSE41-NEXT:    orpd %xmm4, %xmm3
 ; SSE41-NEXT:    addpd %xmm0, %xmm3
 ; SSE41-NEXT:    roundpd $11, %xmm3, %xmm0
-; SSE41-NEXT:    andpd %xmm1, %xmm2
-; SSE41-NEXT:    orpd %xmm4, %xmm2
-; SSE41-NEXT:    addpd %xmm1, %xmm2
-; SSE41-NEXT:    roundpd $11, %xmm2, %xmm1
+; SSE41-NEXT:    movapd %xmm1, %xmm3
+; SSE41-NEXT:    andpd %xmm2, %xmm3
+; SSE41-NEXT:    orpd %xmm4, %xmm3
+; SSE41-NEXT:    addpd %xmm1, %xmm3
+; SSE41-NEXT:    roundpd $11, %xmm3, %xmm1
 ; SSE41-NEXT:    retq
 ;
 ; AVX1-LABEL: round_v4f64:
@@ -426,16 +441,18 @@ define <4 x double> @round_v4f64(<4 x double> %x) {
 ; AVX512F-LABEL: round_v4f64:
 ; AVX512F:       # %bb.0:
 ; AVX512F-NEXT:    vpbroadcastq {{.*#+}} ymm1 = [4.9999999999999994E-1,4.9999999999999994E-1,4.9999999999999994E-1,4.9999999999999994E-1]
-; AVX512F-NEXT:    vpternlogq {{.*#+}} ymm1 = ymm1 | (ymm0 & m64bcst)
-; AVX512F-NEXT:    vaddpd %ymm1, %ymm0, %ymm0
+; AVX512F-NEXT:    vpbroadcastq {{.*#+}} ymm2 = [-0.0E+0,-0.0E+0,-0.0E+0,-0.0E+0]
+; AVX512F-NEXT:    vpternlogq {{.*#+}} ymm2 = (ymm2 & ymm0) | ymm1
+; AVX512F-NEXT:    vaddpd %ymm2, %ymm0, %ymm0
 ; AVX512F-NEXT:    vroundpd $11, %ymm0, %ymm0
 ; AVX512F-NEXT:    retq
 ;
 ; AVX512FP16-LABEL: round_v4f64:
 ; AVX512FP16:       ## %bb.0:
 ; AVX512FP16-NEXT:    vpbroadcastq {{.*#+}} ymm1 = [4.9999999999999994E-1,4.9999999999999994E-1,4.9999999999999994E-1,4.9999999999999994E-1]
-; AVX512FP16-NEXT:    vpternlogq {{.*#+}} ymm1 = ymm1 | (ymm0 & m64bcst)
-; AVX512FP16-NEXT:    vaddpd %ymm1, %ymm0, %ymm0
+; AVX512FP16-NEXT:    vpbroadcastq {{.*#+}} ymm2 = [-0.0E+0,-0.0E+0,-0.0E+0,-0.0E+0]
+; AVX512FP16-NEXT:    vpternlogq {{.*#+}} ymm2 = (ymm2 & ymm0) | ymm1
+; AVX512FP16-NEXT:    vaddpd %ymm2, %ymm0, %ymm0
 ; AVX512FP16-NEXT:    vroundpd $11, %ymm0, %ymm0
 ; AVX512FP16-NEXT:    retq
   %a = call <4 x double> @llvm.round.v4f64(<4 x double> %x)
@@ -559,10 +576,11 @@ define <16 x float> @round_v16f32(<16 x float> %x) {
 ; SSE41-NEXT:    orps %xmm6, %xmm5
 ; SSE41-NEXT:    addps %xmm2, %xmm5
 ; SSE41-NEXT:    roundps $11, %xmm5, %xmm2
-; SSE41-NEXT:    andps %xmm3, %xmm4
-; SSE41-NEXT:    orps %xmm6, %xmm4
-; SSE41-NEXT:    addps %xmm3, %xmm4
-; SSE41-NEXT:    roundps $11, %xmm4, %xmm3
+; SSE41-NEXT:    movaps %xmm3, %xmm5
+; SSE41-NEXT:    andps %xmm4, %xmm5
+; SSE41-NEXT:    orps %xmm6, %xmm5
+; SSE41-NEXT:    addps %xmm3, %xmm5
+; SSE41-NEXT:    roundps $11, %xmm5, %xmm3
 ; SSE41-NEXT:    retq
 ;
 ; AVX1-LABEL: round_v16f32:
@@ -582,16 +600,18 @@ define <16 x float> @round_v16f32(<16 x float> %x) {
 ; AVX512F-LABEL: round_v16f32:
 ; AVX512F:       # %bb.0:
 ; AVX512F-NEXT:    vpbroadcastd {{.*#+}} zmm1 = [4.9999997E-1,4.9999997E-1,4.9999997E-1,4.9999997E-1,4.9999997E-1,4.9999997E-1,4.9999997E-1,4.9999997E-1,4.9999997E-1,4.9999997E-1,4.9999997E-1,4.9999997E-1,4.9999997E-1,4.9999997E-1,4.9999997E-1,4.9999997E-1]
-; AVX512F-NEXT:    vpternlogd {{.*#+}} zmm1 = zmm1 | (zmm0 & m32bcst)
-; AVX512F-NEXT:    vaddps %zmm1, %zmm0, %zmm0
+; AVX512F-NEXT:    vpbroadcastd {{.*#+}} zmm2 = [-0.0E+0,-0.0E+0,-0.0E+0,-0.0E+0,-0.0E+0,-0.0E+0,-0.0E+0,-0.0E+0,-0.0E+0,-0.0E+0,-0.0E+0,-0.0E+0,-0.0E+0,-0.0E+0,-0.0E+0,-0.0E+0]
+; AVX512F-NEXT:    vpternlogd {{.*#+}} zmm2 = (zmm2 & zmm0) | zmm1
+; AVX512F-NEXT:    vaddps %zmm2, %zmm0, %zmm0
 ; AVX512F-NEXT:    vrndscaleps $11, %zmm0, %zmm0
 ; AVX512F-NEXT:    retq
 ;
 ; AVX512FP16-LABEL: round_v16f32:
 ; AVX512FP16:       ## %bb.0:
 ; AVX512FP16-NEXT:    vpbroadcastd {{.*#+}} zmm1 = [4.9999997E-1,4.9999997E-1,4.9999997E-1,4.9999997E-1,4.9999997E-1,4.9999997E-1,4.9999997E-1,4.9999997E-1,4.9999997E-1,4.9999997E-1,4.9999997E-1,4.9999997E-1,4.9999997E-1,4.9999997E-1,4.9999997E-1,4.9999997E-1]
-; AVX512FP16-NEXT:    vpternlogd {{.*#+}} zmm1 = zmm1 | (zmm0 & m32bcst)
-; AVX512FP16-NEXT:    vaddps %zmm1, %zmm0, %zmm0
+; AVX512FP16-NEXT:    vpbroadcastd {{.*#+}} zmm2 = [-0.0E+0,-0.0E+0,-0.0E+0,-0.0E+0,-0.0E+0,-0.0E+0,-0.0E+0,-0.0E+0,-0.0E+0,-0.0E+0,-0.0E+0,-0.0E+0,-0.0E+0,-0.0E+0,-0.0E+0,-0.0E+0]
+; AVX512FP16-NEXT:    vpternlogd {{.*#+}} zmm2 = (zmm2 & zmm0) | zmm1
+; AVX512FP16-NEXT:    vaddps %zmm2, %zmm0, %zmm0
 ; AVX512FP16-NEXT:    vrndscaleps $11, %zmm0, %zmm0
 ; AVX512FP16-NEXT:    retq
   %a = call <16 x float> @llvm.round.v16f32(<16 x float> %x)
@@ -667,10 +687,11 @@ define <8 x double> @round_v8f64(<8 x double> %x) {
 ; SSE41-NEXT:    orpd %xmm6, %xmm5
 ; SSE41-NEXT:    addpd %xmm2, %xmm5
 ; SSE41-NEXT:    roundpd $11, %xmm5, %xmm2
-; SSE41-NEXT:    andpd %xmm3, %xmm4
-; SSE41-NEXT:    orpd %xmm6, %xmm4
-; SSE41-NEXT:    addpd %xmm3, %xmm4
-; SSE41-NEXT:    roundpd $11, %xmm4, %xmm3
+; SSE41-NEXT:    movapd %xmm3, %xmm5
+; SSE41-NEXT:    andpd %xmm4, %xmm5
+; SSE41-NEXT:    orpd %xmm6, %xmm5
+; SSE41-NEXT:    addpd %xmm3, %xmm5
+; SSE41-NEXT:    roundpd $11, %xmm5, %xmm3
 ; SSE41-NEXT:    retq
 ;
 ; AVX1-LABEL: round_v8f64:
@@ -690,16 +711,18 @@ define <8 x double> @round_v8f64(<8 x double> %x) {
 ; AVX512F-LABEL: round_v8f64:
 ; AVX512F:       # %bb.0:
 ; AVX512F-NEXT:    vpbroadcastq {{.*#+}} zmm1 = [4.9999999999999994E-1,4.9999999999999994E-1,4.9999999999999994E-1,4.9999999999999994E-1,4.9999999999999994E-1,4.9999999999999994E-1,4.9999999999999994E-1,4.9999999999999994E-1]
-; AVX512F-NEXT:    vpternlogq {{.*#+}} zmm1 = zmm1 | (zmm0 & m64bcst)
-; AVX512F-NEXT:    vaddpd %zmm1, %zmm0, %zmm0
+; AVX512F-NEXT:    vpbroadcastq {{.*#+}} zmm2 = [-0.0E+0,-0.0E+0,-0.0E+0,-0.0E+0,-0.0E+0,-0.0E+0,-0.0E+0,-0.0E+0]
+; AVX512F-NEXT:    vpternlogq {{.*#+}} zmm2 = (zmm2 & zmm0) | zmm1
+; AVX512F-NEXT:    vaddpd %zmm2, %zmm0, %zmm0
 ; AVX512F-NEXT:    vrndscalepd $11, %zmm0, %zmm0
 ; AVX512F-NEXT:    retq
 ;
 ; AVX512FP16-LABEL: round_v8f64:
 ; AVX512FP16:       ## %bb.0:
 ; AVX512FP16-NEXT:    vpbroadcastq {{.*#+}} zmm1 = [4.9999999999999994E-1,4.9999999999999994E-1,4.9999999999999994E-1,4.9999999999999994E-1,4.9999999999999994E-1,4.9999999999999994E-1,4.9999999999999994E-1,4.9999999999999994E-1]
-; AVX512FP16-NEXT:    vpternlogq {{.*#+}} zmm1 = zmm1 | (zmm0 & m64bcst)
-; AVX512FP16-NEXT:    vaddpd %zmm1, %zmm0, %zmm0
+; AVX512FP16-NEXT:    vpbroadcastq {{.*#+}} zmm2 = [-0.0E+0,-0.0E+0,-0.0E+0,-0.0E+0,-0.0E+0,-0.0E+0,-0.0E+0,-0.0E+0]
+; AVX512FP16-NEXT:    vpternlogq {{.*#+}} zmm2 = (zmm2 & zmm0) | zmm1
+; AVX512FP16-NEXT:    vaddpd %zmm2, %zmm0, %zmm0
 ; AVX512FP16-NEXT:    vrndscalepd $11, %zmm0, %zmm0
 ; AVX512FP16-NEXT:    retq
   %a = call <8 x double> @llvm.round.v8f64(<8 x double> %x)

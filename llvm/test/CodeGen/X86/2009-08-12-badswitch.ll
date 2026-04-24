@@ -34,14 +34,14 @@ define internal fastcc i32 @foo(i64 %bar) nounwind ssp {
 ; CHECK-LABEL: foo:
 ; CHECK:       ## %bb.0: ## %entry
 ; CHECK-NEXT:    pushq %rax
-; CHECK-NEXT:    addq $-2, %rdi
-; CHECK-NEXT:    cmpq $25, %rdi
+; CHECK-NEXT:    leaq -2(%rdi), %rax
+; CHECK-NEXT:    cmpq $25, %rax
 ; CHECK-NEXT:    ja LBB0_2
 ; CHECK-NEXT:  ## %bb.1: ## %bb49
-; CHECK-NEXT:    leaq LJTI0_0(%rip), %rax
-; CHECK-NEXT:    movslq (%rax,%rdi,4), %rcx
-; CHECK-NEXT:    addq %rax, %rcx
-; CHECK-NEXT:    jmpq *%rcx
+; CHECK-NEXT:    leaq LJTI0_0(%rip), %rcx
+; CHECK-NEXT:    movslq (%rcx,%rax,4), %rax
+; CHECK-NEXT:    addq %rcx, %rax
+; CHECK-NEXT:    jmpq *%rax
 ; CHECK-NEXT:  LBB0_3: ## %RRETURN_6
 ; CHECK-NEXT:    callq _f2
 ; CHECK-NEXT:    jmp LBB0_28

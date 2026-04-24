@@ -6,6 +6,7 @@
 define void @update(ptr %dst_i, ptr %src_i, i32 %n) nounwind {
 ; WIDE-LABEL: update:
 ; WIDE:       # %bb.0: # %entry
+; WIDE-NEXT:    pushl %esi
 ; WIDE-NEXT:    subl $12, %esp
 ; WIDE-NEXT:    movl $0, (%esp)
 ; WIDE-NEXT:    pcmpeqd %xmm0, %xmm0
@@ -24,8 +25,9 @@ define void @update(ptr %dst_i, ptr %src_i, i32 %n) nounwind {
 ; WIDE-NEXT:    movl {{[0-9]+}}(%esp), %ecx
 ; WIDE-NEXT:    addl %edx, %ecx
 ; WIDE-NEXT:    movl %ecx, {{[0-9]+}}(%esp)
-; WIDE-NEXT:    addl {{[0-9]+}}(%esp), %edx
-; WIDE-NEXT:    movl %edx, {{[0-9]+}}(%esp)
+; WIDE-NEXT:    movl {{[0-9]+}}(%esp), %esi
+; WIDE-NEXT:    addl %edx, %esi
+; WIDE-NEXT:    movl %esi, {{[0-9]+}}(%esp)
 ; WIDE-NEXT:    movq {{.*#+}} xmm3 = mem[0],zero
 ; WIDE-NEXT:    psubb %xmm0, %xmm3
 ; WIDE-NEXT:    psrlw $2, %xmm3
@@ -37,6 +39,7 @@ define void @update(ptr %dst_i, ptr %src_i, i32 %n) nounwind {
 ; WIDE-NEXT:    jmp .LBB0_1
 ; WIDE-NEXT:  .LBB0_3: # %afterfor
 ; WIDE-NEXT:    addl $12, %esp
+; WIDE-NEXT:    popl %esi
 ; WIDE-NEXT:    retl
 entry:
 	%dst_i.addr = alloca ptr

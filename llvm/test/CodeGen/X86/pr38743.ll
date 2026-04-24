@@ -20,8 +20,8 @@ define void @pr38743(i32 %a0) #1 align 2 {
 ; CHECK-LABEL: pr38743:
 ; CHECK:       # %bb.0: # %bb
 ; CHECK-NEXT:    # kill: def $edi killed $edi def $rdi
-; CHECK-NEXT:    decl %edi
-; CHECK-NEXT:    jmpq *.LJTI0_0(,%rdi,8)
+; CHECK-NEXT:    leal -1(%rdi), %eax
+; CHECK-NEXT:    jmpq *.LJTI0_0(,%rax,8)
 ; CHECK-NEXT:  .LBB0_2: # %bb5
 ; CHECK-NEXT:    movzwl .str.17+8(%rip), %eax
 ; CHECK-NEXT:    movw %ax, -{{[0-9]+}}(%rsp)

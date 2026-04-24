@@ -58,29 +58,28 @@ define i32 @not_rev16(i32 %a) {
 define i32 @extra_maskop_uses2(i32 %a) {
 ; X86-LABEL: extra_maskop_uses2:
 ; X86:       # %bb.0:
-; X86-NEXT:    movl {{[0-9]+}}(%esp), %eax
-; X86-NEXT:    movl %eax, %ecx
-; X86-NEXT:    shll $8, %ecx
-; X86-NEXT:    shrl $8, %eax
-; X86-NEXT:    andl $-16711936, %ecx # imm = 0xFF00FF00
-; X86-NEXT:    andl $16711935, %eax # imm = 0xFF00FF
-; X86-NEXT:    leal (%eax,%ecx), %edx
+; X86-NEXT:    movl {{[0-9]+}}(%esp), %ecx
+; X86-NEXT:    movl %ecx, %edx
+; X86-NEXT:    shll $8, %edx
+; X86-NEXT:    shrl $8, %ecx
+; X86-NEXT:    andl $-16711936, %edx # imm = 0xFF00FF00
+; X86-NEXT:    andl $16711935, %ecx # imm = 0xFF00FF
+; X86-NEXT:    leal (%ecx,%edx), %eax
+; X86-NEXT:    imull %edx, %ecx
 ; X86-NEXT:    imull %ecx, %eax
-; X86-NEXT:    imull %edx, %eax
 ; X86-NEXT:    retl
 ;
 ; X64-LABEL: extra_maskop_uses2:
 ; X64:       # %bb.0:
 ; X64-NEXT:    # kill: def $edi killed $edi def $rdi
-; X64-NEXT:    movl %edi, %eax
-; X64-NEXT:    shll $8, %eax
+; X64-NEXT:    movl %edi, %ecx
+; X64-NEXT:    shll $8, %ecx
 ; X64-NEXT:    shrl $8, %edi
-; X64-NEXT:    andl $-16711936, %eax # imm = 0xFF00FF00
+; X64-NEXT:    andl $-16711936, %ecx # imm = 0xFF00FF00
 ; X64-NEXT:    andl $16711935, %edi # imm = 0xFF00FF
-; X64-NEXT:    leal (%rdi,%rax), %ecx
+; X64-NEXT:    leal (%rdi,%rcx), %eax
+; X64-NEXT:    imull %ecx, %edi
 ; X64-NEXT:    imull %edi, %eax
-; X64-NEXT:    imull %ecx, %eax
-; X64-NEXT:    # kill: def $eax killed $eax killed $rax
 ; X64-NEXT:    retq
   %l8 = shl i32 %a, 8
   %r8 = lshr i32 %a, 8
@@ -129,11 +128,12 @@ define i32 @different_shift_amount(i32 %a) {
 ; X64-LABEL: different_shift_amount:
 ; X64:       # %bb.0:
 ; X64-NEXT:    movl %edi, %eax
-; X64-NEXT:    shll $9, %eax
-; X64-NEXT:    shrl $8, %edi
-; X64-NEXT:    andl $-16712192, %eax # imm = 0xFF00FE00
-; X64-NEXT:    andl $16711935, %edi # imm = 0xFF00FF
-; X64-NEXT:    orl %edi, %eax
+; X64-NEXT:    movl %edi, %ecx
+; X64-NEXT:    shll $9, %ecx
+; X64-NEXT:    shrl $8, %eax
+; X64-NEXT:    andl $-16712192, %ecx # imm = 0xFF00FE00
+; X64-NEXT:    andl $16711935, %eax # imm = 0xFF00FF
+; X64-NEXT:    orl %ecx, %eax
 ; X64-NEXT:    retq
   %l8 = shl i32 %a, 9
   %r8 = lshr i32 %a, 8
@@ -180,11 +180,12 @@ define i32 @different_op(i32 %a) {
 ; X64-LABEL: different_op:
 ; X64:       # %bb.0:
 ; X64-NEXT:    movl %edi, %eax
-; X64-NEXT:    shll $8, %eax
-; X64-NEXT:    shrl $8, %edi
-; X64-NEXT:    addl $16711936, %eax # imm = 0xFF0100
-; X64-NEXT:    andl $16711935, %edi # imm = 0xFF00FF
-; X64-NEXT:    orl %edi, %eax
+; X64-NEXT:    movl %edi, %ecx
+; X64-NEXT:    shll $8, %ecx
+; X64-NEXT:    shrl $8, %eax
+; X64-NEXT:    addl $16711936, %ecx # imm = 0xFF0100
+; X64-NEXT:    andl $16711935, %eax # imm = 0xFF00FF
+; X64-NEXT:    orl %ecx, %eax
 ; X64-NEXT:    retq
   %l8 = shl i32 %a, 8
   %r8 = lshr i32 %a, 8
@@ -208,13 +209,12 @@ define i32 @different_vars(i32 %a, i32 %b) {
 ;
 ; X64-LABEL: different_vars:
 ; X64:       # %bb.0:
-; X64-NEXT:    # kill: def $esi killed $esi def $rsi
-; X64-NEXT:    # kill: def $edi killed $edi def $rdi
+; X64-NEXT:    movl %esi, %eax
 ; X64-NEXT:    shll $8, %edi
-; X64-NEXT:    shrl $8, %esi
+; X64-NEXT:    shrl $8, %eax
 ; X64-NEXT:    andl $-16711936, %edi # imm = 0xFF00FF00
-; X64-NEXT:    andl $16711935, %esi # imm = 0xFF00FF
-; X64-NEXT:    leal (%rsi,%rdi), %eax
+; X64-NEXT:    andl $16711935, %eax # imm = 0xFF00FF
+; X64-NEXT:    orl %edi, %eax
 ; X64-NEXT:    retq
   %l8 = shl i32 %a, 8
   %r8 = lshr i32 %b, 8

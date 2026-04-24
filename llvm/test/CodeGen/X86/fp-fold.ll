@@ -5,7 +5,8 @@ define float @fadd_zero_strict(float %x) {
 ; CHECK-LABEL: fadd_zero_strict:
 ; CHECK:       # %bb.0:
 ; CHECK-NEXT:    xorps %xmm1, %xmm1
-; CHECK-NEXT:    addss %xmm1, %xmm0
+; CHECK-NEXT:    addss %xmm0, %xmm1
+; CHECK-NEXT:    movaps %xmm1, %xmm0
 ; CHECK-NEXT:    retq
   %r = fadd float %x, 0.0
   ret float %r
@@ -32,7 +33,9 @@ define float @fadd_produce_zero(float %x) {
 define float @fadd_reassociate(float %x) {
 ; CHECK-LABEL: fadd_reassociate:
 ; CHECK:       # %bb.0:
-; CHECK-NEXT:    addss {{\.?LCPI[0-9]+_[0-9]+}}(%rip), %xmm0
+; CHECK-NEXT:    movss {{.*#+}} xmm1 = [2.0E+1,0.0E+0,0.0E+0,0.0E+0]
+; CHECK-NEXT:    addss %xmm0, %xmm1
+; CHECK-NEXT:    movaps %xmm1, %xmm0
 ; CHECK-NEXT:    retq
   %sum = fadd float %x, 8.0
   %r = fadd reassoc nsz float %sum, 12.0
@@ -86,7 +89,9 @@ define float @fsub_neg_x_y(float %x, float %y) {
 define float @fsub_neg_y(float %x, float %y) {
 ; CHECK-LABEL: fsub_neg_y:
 ; CHECK:       # %bb.0:
-; CHECK-NEXT:    mulss {{\.?LCPI[0-9]+_[0-9]+}}(%rip), %xmm0
+; CHECK-NEXT:    movss {{.*#+}} xmm1 = [-5.0E+0,0.0E+0,0.0E+0,0.0E+0]
+; CHECK-NEXT:    mulss %xmm0, %xmm1
+; CHECK-NEXT:    movaps %xmm1, %xmm0
 ; CHECK-NEXT:    retq
   %mul = fmul float %x, 5.0
   %add = fadd float %mul, %y
@@ -97,7 +102,9 @@ define float @fsub_neg_y(float %x, float %y) {
 define <4 x float> @fsub_neg_y_vector(<4 x float> %x, <4 x float> %y) {
 ; CHECK-LABEL: fsub_neg_y_vector:
 ; CHECK:       # %bb.0:
-; CHECK-NEXT:    mulps {{\.?LCPI[0-9]+_[0-9]+}}(%rip), %xmm0
+; CHECK-NEXT:    movaps {{.*#+}} xmm1 = [-5.0E+0,-5.0E+0,-5.0E+0,-5.0E+0]
+; CHECK-NEXT:    mulps %xmm0, %xmm1
+; CHECK-NEXT:    movaps %xmm1, %xmm0
 ; CHECK-NEXT:    retq
   %mul = fmul <4 x float> %x, <float 5.0, float 5.0, float 5.0, float 5.0>
   %add = fadd <4 x float> %mul, %y
@@ -108,7 +115,9 @@ define <4 x float> @fsub_neg_y_vector(<4 x float> %x, <4 x float> %y) {
 define <4 x float> @fsub_neg_y_vector_nonuniform(<4 x float> %x, <4 x float> %y) {
 ; CHECK-LABEL: fsub_neg_y_vector_nonuniform:
 ; CHECK:       # %bb.0:
-; CHECK-NEXT:    mulps {{\.?LCPI[0-9]+_[0-9]+}}(%rip), %xmm0
+; CHECK-NEXT:    movaps {{.*#+}} xmm1 = [-5.0E+0,-6.0E+0,-7.0E+0,-8.0E+0]
+; CHECK-NEXT:    mulps %xmm0, %xmm1
+; CHECK-NEXT:    movaps %xmm1, %xmm0
 ; CHECK-NEXT:    retq
   %mul = fmul <4 x float> %x, <float 5.0, float 6.0, float 7.0, float 8.0>
   %add = fadd <4 x float> %mul, %y
@@ -119,7 +128,9 @@ define <4 x float> @fsub_neg_y_vector_nonuniform(<4 x float> %x, <4 x float> %y)
 define float @fsub_neg_y_commute(float %x, float %y) {
 ; CHECK-LABEL: fsub_neg_y_commute:
 ; CHECK:       # %bb.0:
-; CHECK-NEXT:    mulss {{\.?LCPI[0-9]+_[0-9]+}}(%rip), %xmm0
+; CHECK-NEXT:    movss {{.*#+}} xmm1 = [-5.0E+0,0.0E+0,0.0E+0,0.0E+0]
+; CHECK-NEXT:    mulss %xmm0, %xmm1
+; CHECK-NEXT:    movaps %xmm1, %xmm0
 ; CHECK-NEXT:    retq
   %mul = fmul float %x, 5.0
   %add = fadd float %y, %mul
@@ -130,7 +141,9 @@ define float @fsub_neg_y_commute(float %x, float %y) {
 define <4 x float> @fsub_neg_y_commute_vector(<4 x float> %x, <4 x float> %y) {
 ; CHECK-LABEL: fsub_neg_y_commute_vector:
 ; CHECK:       # %bb.0:
-; CHECK-NEXT:    mulps {{\.?LCPI[0-9]+_[0-9]+}}(%rip), %xmm0
+; CHECK-NEXT:    movaps {{.*#+}} xmm1 = [-5.0E+0,-5.0E+0,-5.0E+0,-5.0E+0]
+; CHECK-NEXT:    mulps %xmm0, %xmm1
+; CHECK-NEXT:    movaps %xmm1, %xmm0
 ; CHECK-NEXT:    retq
   %mul = fmul <4 x float> %x, <float 5.0, float 5.0, float 5.0, float 5.0>
   %add = fadd <4 x float> %y, %mul
@@ -143,7 +156,9 @@ define <4 x float> @fsub_neg_y_commute_vector(<4 x float> %x, <4 x float> %y) {
 define float @fsub_fadd_common_op_fneg(float %x, float %y) {
 ; CHECK-LABEL: fsub_fadd_common_op_fneg:
 ; CHECK:       # %bb.0:
-; CHECK-NEXT:    xorps {{\.?LCPI[0-9]+_[0-9]+}}(%rip), %xmm0
+; CHECK-NEXT:    movaps {{.*#+}} xmm1 = [-0.0E+0,-0.0E+0,-0.0E+0,-0.0E+0]
+; CHECK-NEXT:    xorps %xmm0, %xmm1
+; CHECK-NEXT:    movaps %xmm1, %xmm0
 ; CHECK-NEXT:    retq
   %a = fadd float %x, %y
   %r = fsub reassoc nsz float %y, %a
@@ -155,7 +170,9 @@ define float @fsub_fadd_common_op_fneg(float %x, float %y) {
 define <4 x float> @fsub_fadd_common_op_fneg_vec(<4 x float> %x, <4 x float> %y) {
 ; CHECK-LABEL: fsub_fadd_common_op_fneg_vec:
 ; CHECK:       # %bb.0:
-; CHECK-NEXT:    xorps {{\.?LCPI[0-9]+_[0-9]+}}(%rip), %xmm0
+; CHECK-NEXT:    movaps {{.*#+}} xmm1 = [-0.0E+0,-0.0E+0,-0.0E+0,-0.0E+0]
+; CHECK-NEXT:    xorps %xmm0, %xmm1
+; CHECK-NEXT:    movaps %xmm1, %xmm0
 ; CHECK-NEXT:    retq
   %a = fadd <4 x float> %x, %y
   %r = fsub nsz reassoc <4 x float> %y, %a
@@ -168,7 +185,9 @@ define <4 x float> @fsub_fadd_common_op_fneg_vec(<4 x float> %x, <4 x float> %y)
 define float @fsub_fadd_common_op_fneg_commute(float %x, float %y) {
 ; CHECK-LABEL: fsub_fadd_common_op_fneg_commute:
 ; CHECK:       # %bb.0:
-; CHECK-NEXT:    xorps {{\.?LCPI[0-9]+_[0-9]+}}(%rip), %xmm0
+; CHECK-NEXT:    movaps {{.*#+}} xmm1 = [-0.0E+0,-0.0E+0,-0.0E+0,-0.0E+0]
+; CHECK-NEXT:    xorps %xmm0, %xmm1
+; CHECK-NEXT:    movaps %xmm1, %xmm0
 ; CHECK-NEXT:    retq
   %a = fadd float %y, %x
   %r = fsub reassoc nsz float %y, %a
@@ -180,7 +199,9 @@ define float @fsub_fadd_common_op_fneg_commute(float %x, float %y) {
 define <4 x float> @fsub_fadd_common_op_fneg_commute_vec(<4 x float> %x, <4 x float> %y) {
 ; CHECK-LABEL: fsub_fadd_common_op_fneg_commute_vec:
 ; CHECK:       # %bb.0:
-; CHECK-NEXT:    xorps {{\.?LCPI[0-9]+_[0-9]+}}(%rip), %xmm0
+; CHECK-NEXT:    movaps {{.*#+}} xmm1 = [-0.0E+0,-0.0E+0,-0.0E+0,-0.0E+0]
+; CHECK-NEXT:    xorps %xmm0, %xmm1
+; CHECK-NEXT:    movaps %xmm1, %xmm0
 ; CHECK-NEXT:    retq
   %a = fadd <4 x float> %y, %x
   %r = fsub reassoc nsz <4 x float> %y, %a
@@ -191,7 +212,8 @@ define float @fsub_negzero_strict(float %x) {
 ; CHECK-LABEL: fsub_negzero_strict:
 ; CHECK:       # %bb.0:
 ; CHECK-NEXT:    xorps %xmm1, %xmm1
-; CHECK-NEXT:    addss %xmm1, %xmm0
+; CHECK-NEXT:    addss %xmm0, %xmm1
+; CHECK-NEXT:    movaps %xmm1, %xmm0
 ; CHECK-NEXT:    retq
   %r = fsub float %x, -0.0
   ret float %r
@@ -209,7 +231,8 @@ define <4 x float> @fsub_negzero_strict_vector(<4 x float> %x) {
 ; CHECK-LABEL: fsub_negzero_strict_vector:
 ; CHECK:       # %bb.0:
 ; CHECK-NEXT:    xorps %xmm1, %xmm1
-; CHECK-NEXT:    addps %xmm1, %xmm0
+; CHECK-NEXT:    addps %xmm0, %xmm1
+; CHECK-NEXT:    movaps %xmm1, %xmm0
 ; CHECK-NEXT:    retq
   %r = fsub <4 x float> %x, <float -0.0, float -0.0, float -0.0, float -0.0>
   ret <4 x float> %r
@@ -234,7 +257,9 @@ define float @fsub_zero_nsz_1(float %x) {
 define float @fsub_zero_nsz_2(float %x) {
 ; CHECK-LABEL: fsub_zero_nsz_2:
 ; CHECK:       # %bb.0:
-; CHECK-NEXT:    xorps {{\.?LCPI[0-9]+_[0-9]+}}(%rip), %xmm0
+; CHECK-NEXT:    movaps {{.*#+}} xmm1 = [-0.0E+0,-0.0E+0,-0.0E+0,-0.0E+0]
+; CHECK-NEXT:    xorps %xmm0, %xmm1
+; CHECK-NEXT:    movaps %xmm1, %xmm0
 ; CHECK-NEXT:    retq
   %r = fsub nsz float 0.0, %x
   ret float %r
@@ -260,7 +285,9 @@ define float @fmul_one(float %x) {
 define float @fmul_x_const_const(float %x) {
 ; CHECK-LABEL: fmul_x_const_const:
 ; CHECK:       # %bb.0:
-; CHECK-NEXT:    mulss {{\.?LCPI[0-9]+_[0-9]+}}(%rip), %xmm0
+; CHECK-NEXT:    movss {{.*#+}} xmm1 = [3.6E+1,0.0E+0,0.0E+0,0.0E+0]
+; CHECK-NEXT:    mulss %xmm0, %xmm1
+; CHECK-NEXT:    movaps %xmm1, %xmm0
 ; CHECK-NEXT:    retq
   %mul = fmul reassoc float %x, 9.0
   %r = fmul reassoc float %mul, 4.0

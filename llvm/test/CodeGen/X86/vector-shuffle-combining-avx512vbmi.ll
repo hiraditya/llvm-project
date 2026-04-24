@@ -83,7 +83,8 @@ define <16 x i8> @combine_vpermt2var_vpermi2var_16i8_as_vperm2(<16 x i8> %x0, <1
 ; CHECK-LABEL: combine_vpermt2var_vpermi2var_16i8_as_vperm2:
 ; CHECK:       # %bb.0:
 ; CHECK-NEXT:    vmovdqa {{.*#+}} xmm2 = [0,31,2,2,4,29,6,27,8,25,10,23,12,21,14,19]
-; CHECK-NEXT:    vpermt2b %xmm1, %xmm2, %xmm0
+; CHECK-NEXT:    vpermi2b %xmm1, %xmm0, %xmm2
+; CHECK-NEXT:    vmovdqa %xmm2, %xmm0
 ; CHECK-NEXT:    ret{{[l|q]}}
   %res0 = call <16 x i8> @llvm.x86.avx512.mask.vpermi2var.qi.128(<16 x i8> %x0, <16 x i8> <i8 0, i8 31, i8 2, i8 29, i8 4, i8 27, i8 6, i8 25, i8 8, i8 23, i8 10, i8 21, i8 12, i8 19, i8 14, i8 17>, <16 x i8> %x1, i16 -1)
   %res1 = call <16 x i8> @llvm.x86.avx512.maskz.vpermt2var.qi.128(<16 x i8> <i8 0, i8 17, i8 2, i8 18, i8 4, i8 19, i8 6, i8 21, i8 8, i8 23, i8 10, i8 25, i8 12, i8 27, i8 14, i8 29>, <16 x i8> %res0, <16 x i8> %res0, i16 -1)
@@ -94,7 +95,8 @@ define <32 x i8> @combine_vpermi2var_32i8_as_vperm2(<32 x i8> %x0, <32 x i8> %x1
 ; CHECK:       # %bb.0:
 ; CHECK-NEXT:    vbroadcasti128 {{.*#+}} ymm2 = [0,32,1,23,2,22,3,21,4,22,5,21,6,20,7,19,0,32,1,23,2,22,3,21,4,22,5,21,6,20,7,19]
 ; CHECK-NEXT:    # ymm2 = mem[0,1,0,1]
-; CHECK-NEXT:    vpermt2b %ymm1, %ymm2, %ymm0
+; CHECK-NEXT:    vpermi2b %ymm1, %ymm0, %ymm2
+; CHECK-NEXT:    vmovdqa %ymm2, %ymm0
 ; CHECK-NEXT:    ret{{[l|q]}}
   %res0 = shufflevector <32 x i8> %x0, <32 x i8> %x1, <32 x i32> <i32 0, i32 32, i32 1, i32 33, i32 2, i32 34, i32 3, i32 35, i32 4, i32 36, i32 5, i32 37, i32 6, i32 38, i32 7, i32 39, i32 16, i32 48, i32 17, i32 49, i32 18, i32 50, i32 19, i32 51, i32 20, i32 52, i32 21, i32 53, i32 22, i32 54, i32 23, i32 55>
   %res1 = call <32 x i8> @llvm.x86.avx512.mask.vpermi2var.qi.256(<32 x i8> %res0, <32 x i8> <i8 0, i8 32, i8 2, i8 30, i8 4, i8 28, i8 6, i8 26, i8 8, i8 28, i8 10, i8 26, i8 12, i8 24, i8 14, i8 22, i8 0, i8 32, i8 2, i8 30, i8 4, i8 28, i8 6, i8 26, i8 8, i8 28, i8 10, i8 26, i8 12, i8 24, i8 14, i8 22>, <32 x i8> %x1, i32 -1)
@@ -104,7 +106,8 @@ define <64 x i8> @combine_vpermi2var_64i8_as_vperm2(<64 x i8> %x0, <64 x i8> %x1
 ; CHECK-LABEL: combine_vpermi2var_64i8_as_vperm2:
 ; CHECK:       # %bb.0:
 ; CHECK-NEXT:    vmovdqa64 {{.*#+}} zmm2 = [0,80,1,70,2,54,3,49,4,36,5,23,6,18,7,5,0,90,1,100,2,110,3,120,4,22,5,21,6,20,7,19,0,32,1,23,2,22,3,21,4,22,5,21,6,20,7,19,0,32,1,23,2,22,3,21,4,22,5,21,6,20,7,19]
-; CHECK-NEXT:    vpermt2b %zmm1, %zmm2, %zmm0
+; CHECK-NEXT:    vpermi2b %zmm1, %zmm0, %zmm2
+; CHECK-NEXT:    vmovdqa64 %zmm2, %zmm0
 ; CHECK-NEXT:    ret{{[l|q]}}
   %res0 = shufflevector <64 x i8> %x0, <64 x i8> %x1, <64 x i32> <i32 0, i32 64, i32 1, i32 65, i32 2, i32 66, i32 3, i32 67, i32 4, i32 68, i32 5, i32 69, i32 6, i32 70, i32 7, i32 71, i32 16, i32 80, i32 17, i32 81, i32 18, i32 82, i32 19, i32 83, i32 20, i32 84, i32 21, i32 85, i32 22, i32 86, i32 23, i32 87, i32 32, i32 96, i32 33, i32 97, i32 34, i32 98, i32 35, i32 99, i32 36, i32 100, i32 37, i32 101, i32 38, i32 102, i32 39, i32 103, i32 48, i32 112, i32 49, i32 113, i32 50, i32 114, i32 51, i32 115, i32 52, i32 116, i32 53, i32 117, i32 54, i32 118, i32 55, i32 119>
   %res1 = call <64 x i8> @llvm.x86.avx512.mask.vpermi2var.qi.512(<64 x i8> %res0, <64 x i8> <i8 0, i8 80, i8 2, i8 70, i8 4, i8 60, i8 6, i8 50, i8 8, i8 40, i8 10, i8 30, i8 12, i8 20, i8 14, i8 10, i8 0, i8 90, i8 2, i8 100, i8 4, i8 110, i8 6, i8 120, i8 8, i8 28, i8 10, i8 26, i8 12, i8 24, i8 14, i8 22, i8 0, i8 32, i8 2, i8 30, i8 4, i8 28, i8 6, i8 26, i8 8, i8 28, i8 10, i8 26, i8 12, i8 24, i8 14, i8 22, i8 0, i8 32, i8 2, i8 30, i8 4, i8 28, i8 6, i8 26, i8 8, i8 28, i8 10, i8 26, i8 12, i8 24, i8 14, i8 22>, <64 x i8> %x1, i64 -1)
@@ -176,14 +179,16 @@ define <64 x i8> @combine_vpermi2var_constant_v64i8_with_mask(<64 x i8> %a0) {
 ; X86:       # %bb.0:
 ; X86-NEXT:    vmovdqa64 {{.*#+}} zmm1 = [0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58,59,60,61,62,63]
 ; X86-NEXT:    vpmovb2m %zmm0, %k1
-; X86-NEXT:    vpermi2b {{\.?LCPI[0-9]+_[0-9]+}}, %zmm1, %zmm0 {%k1} {z}
+; X86-NEXT:    vpermt2b {{\.?LCPI[0-9]+_[0-9]+}}, %zmm0, %zmm1 {%k1} {z}
+; X86-NEXT:    vmovdqa64 %zmm1, %zmm0
 ; X86-NEXT:    retl
 ;
 ; X64-LABEL: combine_vpermi2var_constant_v64i8_with_mask:
 ; X64:       # %bb.0:
 ; X64-NEXT:    vmovdqa64 {{.*#+}} zmm1 = [0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58,59,60,61,62,63]
 ; X64-NEXT:    vpmovb2m %zmm0, %k1
-; X64-NEXT:    vpermi2b {{\.?LCPI[0-9]+_[0-9]+}}(%rip), %zmm1, %zmm0 {%k1} {z}
+; X64-NEXT:    vpermt2b {{\.?LCPI[0-9]+_[0-9]+}}(%rip), %zmm0, %zmm1 {%k1} {z}
+; X64-NEXT:    vmovdqa64 %zmm1, %zmm0
 ; X64-NEXT:    retq
   %perm = tail call <64 x i8> @llvm.x86.avx512.vpermi2var.qi.512(<64 x i8> <i8 0, i8 1, i8 2, i8 3, i8 4, i8 5, i8 6, i8 7, i8 8, i8 9, i8 10, i8 11, i8 12, i8 13, i8 14, i8 15, i8 16, i8 17, i8 18, i8 19, i8 20, i8 21, i8 22, i8 23, i8 24, i8 25, i8 26, i8 27, i8 28, i8 29, i8 30, i8 31, i8 32, i8 33, i8 34, i8 35, i8 36, i8 37, i8 38, i8 39, i8 40, i8 41, i8 42, i8 43, i8 44, i8 45, i8 46, i8 47, i8 48, i8 49, i8 50, i8 51, i8 52, i8 53, i8 54, i8 55, i8 56, i8 57, i8 58, i8 59, i8 60, i8 61, i8 62, i8 63>, <64 x i8> %a0, <64 x i8> <i8 64, i8 65, i8 66, i8 67, i8 68, i8 69, i8 70, i8 71, i8 72, i8 73, i8 74, i8 75, i8 76, i8 77, i8 78, i8 79, i8 80, i8 81, i8 82, i8 83, i8 84, i8 85, i8 86, i8 87, i8 88, i8 89, i8 90, i8 91, i8 92, i8 93, i8 94, i8 95, i8 96, i8 97, i8 98, i8 99, i8 100, i8 101, i8 102, i8 103, i8 104, i8 105, i8 106, i8 107, i8 108, i8 109, i8 110, i8 111, i8 112, i8 113, i8 114, i8 115, i8 116, i8 117, i8 118, i8 119, i8 120, i8 121, i8 122, i8 123, i8 124, i8 125, i8 126, i8 127>)
   %cmp = icmp slt <64 x i8> %a0, zeroinitializer
@@ -196,7 +201,8 @@ define <64 x i8> @combine_vpermi2var_constant_v64i8_with_mask_commute(<64 x i8> 
 ; X86-NEXT:    vmovdqa64 {{.*#+}} zmm1 = [0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58,59,60,61,62,63]
 ; X86-NEXT:    vpmovb2m %zmm0, %k0
 ; X86-NEXT:    knotq %k0, %k1
-; X86-NEXT:    vpermi2b {{\.?LCPI[0-9]+_[0-9]+}}, %zmm1, %zmm0 {%k1} {z}
+; X86-NEXT:    vpermt2b {{\.?LCPI[0-9]+_[0-9]+}}, %zmm0, %zmm1 {%k1} {z}
+; X86-NEXT:    vmovdqa64 %zmm1, %zmm0
 ; X86-NEXT:    retl
 ;
 ; X64-LABEL: combine_vpermi2var_constant_v64i8_with_mask_commute:
@@ -204,7 +210,8 @@ define <64 x i8> @combine_vpermi2var_constant_v64i8_with_mask_commute(<64 x i8> 
 ; X64-NEXT:    vmovdqa64 {{.*#+}} zmm1 = [0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58,59,60,61,62,63]
 ; X64-NEXT:    vpmovb2m %zmm0, %k0
 ; X64-NEXT:    knotq %k0, %k1
-; X64-NEXT:    vpermi2b {{\.?LCPI[0-9]+_[0-9]+}}(%rip), %zmm1, %zmm0 {%k1} {z}
+; X64-NEXT:    vpermt2b {{\.?LCPI[0-9]+_[0-9]+}}(%rip), %zmm0, %zmm1 {%k1} {z}
+; X64-NEXT:    vmovdqa64 %zmm1, %zmm0
 ; X64-NEXT:    retq
   %perm = tail call <64 x i8> @llvm.x86.avx512.vpermi2var.qi.512(<64 x i8> <i8 0, i8 1, i8 2, i8 3, i8 4, i8 5, i8 6, i8 7, i8 8, i8 9, i8 10, i8 11, i8 12, i8 13, i8 14, i8 15, i8 16, i8 17, i8 18, i8 19, i8 20, i8 21, i8 22, i8 23, i8 24, i8 25, i8 26, i8 27, i8 28, i8 29, i8 30, i8 31, i8 32, i8 33, i8 34, i8 35, i8 36, i8 37, i8 38, i8 39, i8 40, i8 41, i8 42, i8 43, i8 44, i8 45, i8 46, i8 47, i8 48, i8 49, i8 50, i8 51, i8 52, i8 53, i8 54, i8 55, i8 56, i8 57, i8 58, i8 59, i8 60, i8 61, i8 62, i8 63>, <64 x i8> %a0, <64 x i8> <i8 64, i8 65, i8 66, i8 67, i8 68, i8 69, i8 70, i8 71, i8 72, i8 73, i8 74, i8 75, i8 76, i8 77, i8 78, i8 79, i8 80, i8 81, i8 82, i8 83, i8 84, i8 85, i8 86, i8 87, i8 88, i8 89, i8 90, i8 91, i8 92, i8 93, i8 94, i8 95, i8 96, i8 97, i8 98, i8 99, i8 100, i8 101, i8 102, i8 103, i8 104, i8 105, i8 106, i8 107, i8 108, i8 109, i8 110, i8 111, i8 112, i8 113, i8 114, i8 115, i8 116, i8 117, i8 118, i8 119, i8 120, i8 121, i8 122, i8 123, i8 124, i8 125, i8 126, i8 127>)
   %cmp = icmp slt <64 x i8> %a0, zeroinitializer

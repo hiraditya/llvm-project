@@ -23,7 +23,7 @@ define <64 x i8> @test3(ptr %addr, <64 x i8> %old, <64 x i8> %mask1) {
 ; CHECK-LABEL: test3:
 ; CHECK:       ## %bb.0:
 ; CHECK-NEXT:    vptestmb %zmm1, %zmm1, %k1
-; CHECK-NEXT:    vmovdqu8 (%rdi), %zmm0 {%k1}
+; CHECK-NEXT:    vpblendmb (%rdi), %zmm0, %zmm0 {%k1}
 ; CHECK-NEXT:    retq
   %mask = icmp ne <64 x i8> %mask1, zeroinitializer
   %r = load <64 x i8>, ptr %addr, align 1
@@ -65,7 +65,7 @@ define <32 x i16> @test7(ptr %addr, <32 x i16> %old, <32 x i16> %mask1) {
 ; CHECK-LABEL: test7:
 ; CHECK:       ## %bb.0:
 ; CHECK-NEXT:    vptestmw %zmm1, %zmm1, %k1
-; CHECK-NEXT:    vmovdqu16 (%rdi), %zmm0 {%k1}
+; CHECK-NEXT:    vpblendmw (%rdi), %zmm0, %zmm0 {%k1}
 ; CHECK-NEXT:    retq
   %mask = icmp ne <32 x i16> %mask1, zeroinitializer
   %r = load <32 x i16>, ptr %addr, align 1

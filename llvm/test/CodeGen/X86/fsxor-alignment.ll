@@ -15,8 +15,9 @@ define void @foo(ptr %p, ptr %q, float %s, float %y) nounwind {
 ; CHECK-NEXT:    movl {{[0-9]+}}(%esp), %esi
 ; CHECK-NEXT:    xorl %edx, %esi
 ; CHECK-NEXT:    movl %esi, (%ecx)
-; CHECK-NEXT:    xorl {{[0-9]+}}(%esp), %edx
-; CHECK-NEXT:    movl %edx, (%eax)
+; CHECK-NEXT:    movl {{[0-9]+}}(%esp), %ecx
+; CHECK-NEXT:    xorl %edx, %ecx
+; CHECK-NEXT:    movl %ecx, (%eax)
 ; CHECK-NEXT:    popl %esi
 ; CHECK-NEXT:    retl
   %ss = fsub float -0.0, %s

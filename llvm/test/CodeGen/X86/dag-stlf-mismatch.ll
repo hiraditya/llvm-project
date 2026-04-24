@@ -9,7 +9,8 @@ define float @test_stlf_integer(ptr %p, float %v) {
 ; X64:       # %bb.0:
 ; X64-NEXT:    movl $0, (%rdi)
 ; X64-NEXT:    xorps %xmm1, %xmm1
-; X64-NEXT:    mulss %xmm1, %xmm0
+; X64-NEXT:    mulss %xmm0, %xmm1
+; X64-NEXT:    movaps %xmm1, %xmm0
 ; X64-NEXT:    retq
 ;
 ; AVX512-LABEL: test_stlf_integer:
@@ -29,7 +30,9 @@ define float @test_stlf_vector(ptr %p, float %v) {
 ; X64:       # %bb.0:
 ; X64-NEXT:    xorps %xmm1, %xmm1
 ; X64-NEXT:    movups %xmm1, (%rdi)
-; X64-NEXT:    mulss (%rdi), %xmm0
+; X64-NEXT:    movss {{.*#+}} xmm1 = mem[0],zero,zero,zero
+; X64-NEXT:    mulss %xmm0, %xmm1
+; X64-NEXT:    movaps %xmm1, %xmm0
 ; X64-NEXT:    retq
 ;
 ; AVX512-LABEL: test_stlf_vector:
@@ -49,7 +52,9 @@ define float @test_stlf_bitcast(ptr %p, float %v) {
 ; X64:       # %bb.0:
 ; X64-NEXT:    xorps %xmm1, %xmm1
 ; X64-NEXT:    movups %xmm1, (%rdi)
-; X64-NEXT:    mulss (%rdi), %xmm0
+; X64-NEXT:    movss {{.*#+}} xmm1 = mem[0],zero,zero,zero
+; X64-NEXT:    mulss %xmm0, %xmm1
+; X64-NEXT:    movaps %xmm1, %xmm0
 ; X64-NEXT:    retq
 ;
 ; AVX512-LABEL: test_stlf_bitcast:
@@ -94,7 +99,8 @@ define float @test_stlf_variable(ptr %p, i32 %val, float %v) {
 ; X64:       # %bb.0:
 ; X64-NEXT:    movd %esi, %xmm1
 ; X64-NEXT:    movl %esi, (%rdi)
-; X64-NEXT:    mulss %xmm1, %xmm0
+; X64-NEXT:    mulss %xmm0, %xmm1
+; X64-NEXT:    movaps %xmm1, %xmm0
 ; X64-NEXT:    retq
 ;
 ; AVX512-LABEL: test_stlf_variable:

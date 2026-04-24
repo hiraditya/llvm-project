@@ -105,11 +105,10 @@ define <4 x i32> @combine_vec_uadd_not(<4 x i32> %a0, <4 x i32> %a1) {
 define i32 @combine_uadd_no_overflow(i32 %a0, i32 %a1, i32 %a2) {
 ; CHECK-LABEL: combine_uadd_no_overflow:
 ; CHECK:       # %bb.0:
-; CHECK-NEXT:    # kill: def $edx killed $edx def $rdx
-; CHECK-NEXT:    # kill: def $esi killed $esi def $rsi
+; CHECK-NEXT:    movl %edx, %eax
 ; CHECK-NEXT:    shrl $16, %esi
-; CHECK-NEXT:    shrl $16, %edx
-; CHECK-NEXT:    leal (%rdx,%rsi), %eax
+; CHECK-NEXT:    shrl $16, %eax
+; CHECK-NEXT:    addl %esi, %eax
 ; CHECK-NEXT:    retq
   %1 = lshr i32 %a1, 16
   %2 = lshr i32 %a2, 16

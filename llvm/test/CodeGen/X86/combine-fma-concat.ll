@@ -17,16 +17,16 @@ define <4 x double> @concat_fmadd_v4f64_v2f64_constants(<2 x double> %a0, <2 x d
 ; AVX2:       # %bb.0:
 ; AVX2-NEXT:    # kill: def $xmm0 killed $xmm0 def $ymm0
 ; AVX2-NEXT:    vinsertf128 $1, %xmm1, %ymm0, %ymm1
-; AVX2-NEXT:    vbroadcastsd {{.*#+}} ymm2 = [1.0E+0,1.0E+0,1.0E+0,1.0E+0]
-; AVX2-NEXT:    vbroadcastsd {{.*#+}} ymm0 = [2.0E+0,2.0E+0,2.0E+0,2.0E+0]
-; AVX2-NEXT:    vfmadd213pd {{.*#+}} ymm0 = (ymm1 * ymm0) + ymm2
+; AVX2-NEXT:    vbroadcastsd {{.*#+}} ymm0 = [1.0E+0,1.0E+0,1.0E+0,1.0E+0]
+; AVX2-NEXT:    vbroadcastsd {{.*#+}} ymm2 = [2.0E+0,2.0E+0,2.0E+0,2.0E+0]
+; AVX2-NEXT:    vfmadd231pd {{.*#+}} ymm0 = (ymm2 * ymm1) + ymm0
 ; AVX2-NEXT:    retq
 ;
 ; AVX512-LABEL: concat_fmadd_v4f64_v2f64_constants:
 ; AVX512:       # %bb.0:
 ; AVX512-NEXT:    # kill: def $xmm0 killed $xmm0 def $ymm0
-; AVX512-NEXT:    vinsertf128 $1, %xmm1, %ymm0, %ymm1
-; AVX512-NEXT:    vbroadcastsd {{.*#+}} ymm0 = [2.0E+0,2.0E+0,2.0E+0,2.0E+0]
+; AVX512-NEXT:    vinsertf128 $1, %xmm1, %ymm0, %ymm0
+; AVX512-NEXT:    vbroadcastsd {{.*#+}} ymm1 = [2.0E+0,2.0E+0,2.0E+0,2.0E+0]
 ; AVX512-NEXT:    vfmadd213pd {{.*#+}} ymm0 = (ymm1 * ymm0) + mem
 ; AVX512-NEXT:    retq
   %v0 = call <2 x double> @llvm.fma.v2f64(<2 x double> %a0, <2 x double> splat (double 2.0), <2 x double> splat (double 1.0))
@@ -55,16 +55,16 @@ define <8 x float> @concat_fmadd_v8f32_v4f32_constant_sitofp(<4 x float> %a0, <4
 ; AVX2-NEXT:    vinsertf128 $1, %xmm3, %ymm2, %ymm0
 ; AVX2-NEXT:    vcvtdq2ps %ymm0, %ymm2
 ; AVX2-NEXT:    vbroadcastss {{.*#+}} ymm0 = [1.0E+0,1.0E+0,1.0E+0,1.0E+0,1.0E+0,1.0E+0,1.0E+0,1.0E+0]
-; AVX2-NEXT:    vfmadd231ps {{.*#+}} ymm0 = (ymm1 * ymm2) + ymm0
+; AVX2-NEXT:    vfmadd231ps {{.*#+}} ymm0 = (ymm2 * ymm1) + ymm0
 ; AVX2-NEXT:    retq
 ;
 ; AVX512-LABEL: concat_fmadd_v8f32_v4f32_constant_sitofp:
 ; AVX512:       # %bb.0:
 ; AVX512-NEXT:    # kill: def $xmm2 killed $xmm2 def $ymm2
 ; AVX512-NEXT:    # kill: def $xmm0 killed $xmm0 def $ymm0
-; AVX512-NEXT:    vinsertf128 $1, %xmm1, %ymm0, %ymm1
-; AVX512-NEXT:    vinsertf128 $1, %xmm3, %ymm2, %ymm0
-; AVX512-NEXT:    vcvtdq2ps %ymm0, %ymm0
+; AVX512-NEXT:    vinsertf128 $1, %xmm1, %ymm0, %ymm0
+; AVX512-NEXT:    vinsertf128 $1, %xmm3, %ymm2, %ymm1
+; AVX512-NEXT:    vcvtdq2ps %ymm1, %ymm1
 ; AVX512-NEXT:    vfmadd213ps {{.*#+}} ymm0 = (ymm1 * ymm0) + mem
 ; AVX512-NEXT:    retq
   %i0 = sitofp <4 x i32> %b0 to <4 x float>
@@ -107,8 +107,8 @@ define <8 x double> @concat_fnmadd_v8f64_v2f64_constants(<2 x double> %a0, <2 x 
 ; AVX512-NEXT:    # kill: def $xmm0 killed $xmm0 def $ymm0
 ; AVX512-NEXT:    vinsertf128 $1, %xmm3, %ymm2, %ymm2
 ; AVX512-NEXT:    vinsertf128 $1, %xmm1, %ymm0, %ymm0
-; AVX512-NEXT:    vinsertf64x4 $1, %ymm2, %zmm0, %zmm1
-; AVX512-NEXT:    vbroadcastsd {{.*#+}} zmm0 = [-4.0E+0,-4.0E+0,-4.0E+0,-4.0E+0,-4.0E+0,-4.0E+0,-4.0E+0,-4.0E+0]
+; AVX512-NEXT:    vinsertf64x4 $1, %ymm2, %zmm0, %zmm0
+; AVX512-NEXT:    vbroadcastsd {{.*#+}} zmm1 = [-4.0E+0,-4.0E+0,-4.0E+0,-4.0E+0,-4.0E+0,-4.0E+0,-4.0E+0,-4.0E+0]
 ; AVX512-NEXT:    vfnmadd213pd {{.*#+}} zmm0 = -(zmm1 * zmm0) + mem
 ; AVX512-NEXT:    retq
   %n0 = fneg <2 x double> %a0
@@ -155,8 +155,9 @@ define <16 x float> @concat_fma_self_v16f32_v4f32(<4 x float> %a0, <4 x float> %
 ; AVX512-NEXT:    # kill: def $xmm0 killed $xmm0 def $ymm0
 ; AVX512-NEXT:    vinsertf128 $1, %xmm3, %ymm2, %ymm2
 ; AVX512-NEXT:    vinsertf128 $1, %xmm1, %ymm0, %ymm0
-; AVX512-NEXT:    vinsertf64x4 $1, %ymm2, %zmm0, %zmm0
-; AVX512-NEXT:    vfmadd213ps {{.*#+}} zmm0 = (zmm0 * zmm0) + mem
+; AVX512-NEXT:    vinsertf64x4 $1, %ymm2, %zmm0, %zmm1
+; AVX512-NEXT:    vbroadcastss {{.*#+}} zmm0 = [-0.0E+0,-0.0E+0,-0.0E+0,-0.0E+0,-0.0E+0,-0.0E+0,-0.0E+0,-0.0E+0,-0.0E+0,-0.0E+0,-0.0E+0,-0.0E+0,-0.0E+0,-0.0E+0,-0.0E+0,-0.0E+0]
+; AVX512-NEXT:    vfmadd231ps {{.*#+}} zmm0 = (zmm1 * zmm1) + zmm0
 ; AVX512-NEXT:    retq
   %v0 = call <4 x float> @llvm.fma.v4f32(<4 x float> %a0, <4 x float> %a0, <4 x float> splat (float -0.0))
   %v1 = call <4 x float> @llvm.fma.v4f32(<4 x float> %a1, <4 x float> %a1, <4 x float> splat (float -0.0))
@@ -180,8 +181,11 @@ define <16 x float> @concat_fmsub_v16f32_v8f32_constant_split(<8 x float> %a0, <
 ; AVX2-LABEL: concat_fmsub_v16f32_v8f32_constant_split:
 ; AVX2:       # %bb.0:
 ; AVX2-NEXT:    vbroadcastss {{.*#+}} ymm4 = [-8.0E+0,-8.0E+0,-8.0E+0,-8.0E+0,-8.0E+0,-8.0E+0,-8.0E+0,-8.0E+0]
-; AVX2-NEXT:    vfmsub213ps {{.*#+}} ymm0 = (ymm4 * ymm0) - ymm2
-; AVX2-NEXT:    vfmsub213ps {{.*#+}} ymm1 = (ymm4 * ymm1) - ymm3
+; AVX2-NEXT:    vmovaps %ymm4, %ymm5
+; AVX2-NEXT:    vfmsub213ps {{.*#+}} ymm5 = (ymm0 * ymm5) - ymm2
+; AVX2-NEXT:    vfmsub213ps {{.*#+}} ymm4 = (ymm1 * ymm4) - ymm3
+; AVX2-NEXT:    vmovaps %ymm5, %ymm0
+; AVX2-NEXT:    vmovaps %ymm4, %ymm1
 ; AVX2-NEXT:    retq
 ;
 ; AVX512-LABEL: concat_fmsub_v16f32_v8f32_constant_split:
@@ -212,27 +216,17 @@ define <8 x float> @concat_fma_v8f32_v4f32_constant_repeatedop(<4 x float> %a0, 
 ; FMA4-NEXT:    vfmaddps {{.*#+}} ymm0 = (ymm0 * ymm1) + mem
 ; FMA4-NEXT:    retq
 ;
-; AVX2-LABEL: concat_fma_v8f32_v4f32_constant_repeatedop:
-; AVX2:       # %bb.0:
-; AVX2-NEXT:    # kill: def $xmm2 killed $xmm2 def $ymm2
-; AVX2-NEXT:    # kill: def $xmm0 killed $xmm0 def $ymm0
-; AVX2-NEXT:    vinsertf128 $1, %xmm1, %ymm0, %ymm1
-; AVX2-NEXT:    vinsertf128 $1, %xmm3, %ymm2, %ymm0
-; AVX2-NEXT:    vbroadcastss {{.*#+}} ymm2 = [1.0E+0,1.0E+0,1.0E+0,1.0E+0,1.0E+0,1.0E+0,1.0E+0,1.0E+0]
-; AVX2-NEXT:    vfmadd231ps {{.*#+}} ymm2 = (ymm1 * ymm0) + ymm2
-; AVX2-NEXT:    vbroadcastss {{.*#+}} ymm0 = [2.0E+0,2.0E+0,2.0E+0,2.0E+0,2.0E+0,2.0E+0,2.0E+0,2.0E+0]
-; AVX2-NEXT:    vfmadd231ps {{.*#+}} ymm0 = (ymm1 * ymm2) + ymm0
-; AVX2-NEXT:    retq
-;
-; AVX512-LABEL: concat_fma_v8f32_v4f32_constant_repeatedop:
-; AVX512:       # %bb.0:
-; AVX512-NEXT:    # kill: def $xmm2 killed $xmm2 def $ymm2
-; AVX512-NEXT:    # kill: def $xmm0 killed $xmm0 def $ymm0
-; AVX512-NEXT:    vinsertf128 $1, %xmm1, %ymm0, %ymm1
-; AVX512-NEXT:    vinsertf128 $1, %xmm3, %ymm2, %ymm0
-; AVX512-NEXT:    vfmadd213ps {{.*#+}} ymm0 = (ymm1 * ymm0) + mem
-; AVX512-NEXT:    vfmadd213ps {{.*#+}} ymm0 = (ymm1 * ymm0) + mem
-; AVX512-NEXT:    retq
+; FMA3-LABEL: concat_fma_v8f32_v4f32_constant_repeatedop:
+; FMA3:       # %bb.0:
+; FMA3-NEXT:    # kill: def $xmm2 killed $xmm2 def $ymm2
+; FMA3-NEXT:    # kill: def $xmm0 killed $xmm0 def $ymm0
+; FMA3-NEXT:    vinsertf128 $1, %xmm1, %ymm0, %ymm1
+; FMA3-NEXT:    vinsertf128 $1, %xmm3, %ymm2, %ymm0
+; FMA3-NEXT:    vbroadcastss {{.*#+}} ymm2 = [1.0E+0,1.0E+0,1.0E+0,1.0E+0,1.0E+0,1.0E+0,1.0E+0,1.0E+0]
+; FMA3-NEXT:    vfmadd231ps {{.*#+}} ymm2 = (ymm1 * ymm0) + ymm2
+; FMA3-NEXT:    vbroadcastss {{.*#+}} ymm0 = [2.0E+0,2.0E+0,2.0E+0,2.0E+0,2.0E+0,2.0E+0,2.0E+0,2.0E+0]
+; FMA3-NEXT:    vfmadd231ps {{.*#+}} ymm0 = (ymm1 * ymm2) + ymm0
+; FMA3-NEXT:    retq
   %l0 = call <4 x float> @llvm.fma.v4f32(<4 x float> %a0, <4 x float> %a2, <4 x float> splat (float 1.000000e+00))
   %h0 = call <4 x float> @llvm.fma.v4f32(<4 x float> %a1, <4 x float> %a3, <4 x float> splat (float 1.000000e+00))
   %l1 = call <4 x float> @llvm.fma.v4f32(<4 x float> %a0, <4 x float> %l0, <4 x float> splat (float 2.000000e+00))
@@ -253,11 +247,15 @@ define <8 x double> @concat_fma_fmsub_v8f64_v4f64_constant_repeatedop_commute(<4
 ;
 ; AVX2-LABEL: concat_fma_fmsub_v8f64_v4f64_constant_repeatedop_commute:
 ; AVX2:       # %bb.0:
-; AVX2-NEXT:    vbroadcastsd {{.*#+}} ymm4 = [-2.0E+0,-2.0E+0,-2.0E+0,-2.0E+0]
-; AVX2-NEXT:    vfmadd213pd {{.*#+}} ymm2 = (ymm0 * ymm2) + ymm4
-; AVX2-NEXT:    vfmadd213pd {{.*#+}} ymm3 = (ymm1 * ymm3) + ymm4
-; AVX2-NEXT:    vfmsub213pd {{.*#+}} ymm0 = (ymm2 * ymm0) - ymm4
-; AVX2-NEXT:    vfmsub213pd {{.*#+}} ymm1 = (ymm3 * ymm1) - ymm4
+; AVX2-NEXT:    vbroadcastsd {{.*#+}} ymm5 = [-2.0E+0,-2.0E+0,-2.0E+0,-2.0E+0]
+; AVX2-NEXT:    vmovapd %ymm0, %ymm4
+; AVX2-NEXT:    vfmadd213pd {{.*#+}} ymm4 = (ymm2 * ymm4) + ymm5
+; AVX2-NEXT:    vmovapd %ymm1, %ymm2
+; AVX2-NEXT:    vfmadd213pd {{.*#+}} ymm2 = (ymm3 * ymm2) + ymm5
+; AVX2-NEXT:    vfmsub213pd {{.*#+}} ymm4 = (ymm0 * ymm4) - ymm5
+; AVX2-NEXT:    vfmsub213pd {{.*#+}} ymm2 = (ymm1 * ymm2) - ymm5
+; AVX2-NEXT:    vmovapd %ymm4, %ymm0
+; AVX2-NEXT:    vmovapd %ymm2, %ymm1
 ; AVX2-NEXT:    retq
 ;
 ; AVX512-LABEL: concat_fma_fmsub_v8f64_v4f64_constant_repeatedop_commute:
@@ -335,10 +333,10 @@ define <8 x float> @concat_fmadd_v8f32_v4f32(<4 x float> %a0, <4 x float> %a1, <
 ;
 ; FMA3-LABEL: concat_fmadd_v8f32_v4f32:
 ; FMA3:       # %bb.0:
-; FMA3-NEXT:    # kill: def $xmm0 killed $xmm0 def $ymm0
-; FMA3-NEXT:    vfmadd213ps {{.*#+}} xmm0 = (xmm2 * xmm0) + xmm4
-; FMA3-NEXT:    vfmadd213ps {{.*#+}} xmm1 = (xmm3 * xmm1) + xmm5
-; FMA3-NEXT:    vinsertf128 $1, %xmm1, %ymm0, %ymm0
+; FMA3-NEXT:    # kill: def $xmm2 killed $xmm2 def $ymm2
+; FMA3-NEXT:    vfmadd213ps {{.*#+}} xmm2 = (xmm0 * xmm2) + xmm4
+; FMA3-NEXT:    vfmadd213ps {{.*#+}} xmm3 = (xmm1 * xmm3) + xmm5
+; FMA3-NEXT:    vinsertf128 $1, %xmm3, %ymm2, %ymm0
 ; FMA3-NEXT:    retq
   %v0 = call <4 x float> @llvm.fma.v4f32(<4 x float> %a0, <4 x float> %b0, <4 x float> %c0)
   %v1 = call <4 x float> @llvm.fma.v4f32(<4 x float> %a1, <4 x float> %b1, <4 x float> %c1)

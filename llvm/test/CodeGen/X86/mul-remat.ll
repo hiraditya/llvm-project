@@ -5,8 +5,9 @@
 define i32 @test(i32 %a, i32 %b) {
 ; CHECK-LABEL: test:
 ; CHECK:       # %bb.0: # %entry
+; CHECK-NEXT:    movl {{[0-9]+}}(%esp), %ecx
 ; CHECK-NEXT:    movl {{[0-9]+}}(%esp), %eax
-; CHECK-NEXT:    imull {{[0-9]+}}(%esp), %eax
+; CHECK-NEXT:    imull %ecx, %eax
 ; CHECK-NEXT:    retl
 entry:
 	%tmp3 = mul i32 %b, %a

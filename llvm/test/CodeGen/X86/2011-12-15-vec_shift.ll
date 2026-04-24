@@ -13,10 +13,10 @@ define <16 x i8> @shift(<16 x i8> %a, <16 x i8> %b) nounwind {
 ; CHECK-W-SSE4-LABEL: shift:
 ; CHECK-W-SSE4:       ## %bb.0:
 ; CHECK-W-SSE4-NEXT:    movdqa %xmm0, %xmm2
-; CHECK-W-SSE4-NEXT:    movdqa %xmm0, %xmm3
-; CHECK-W-SSE4-NEXT:    psllw $4, %xmm3
-; CHECK-W-SSE4-NEXT:    pand {{\.?LCPI[0-9]+_[0-9]+}}(%rip), %xmm3
 ; CHECK-W-SSE4-NEXT:    psllw $5, %xmm1
+; CHECK-W-SSE4-NEXT:    psllw $4, %xmm0
+; CHECK-W-SSE4-NEXT:    movdqa {{.*#+}} xmm3 = [240,240,240,240,240,240,240,240,240,240,240,240,240,240,240,240]
+; CHECK-W-SSE4-NEXT:    pand %xmm0, %xmm3
 ; CHECK-W-SSE4-NEXT:    movdqa %xmm1, %xmm0
 ; CHECK-W-SSE4-NEXT:    pblendvb %xmm0, %xmm3, %xmm2
 ; CHECK-W-SSE4-NEXT:    movdqa %xmm2, %xmm3
@@ -43,24 +43,25 @@ define <16 x i8> @shift(<16 x i8> %a, <16 x i8> %b) nounwind {
 ; CHECK-WO-SSE4-NEXT:    pandn %xmm0, %xmm4
 ; CHECK-WO-SSE4-NEXT:    psllw $4, %xmm0
 ; CHECK-WO-SSE4-NEXT:    pand %xmm3, %xmm0
-; CHECK-WO-SSE4-NEXT:    pand {{\.?LCPI[0-9]+_[0-9]+}}(%rip), %xmm0
-; CHECK-WO-SSE4-NEXT:    por %xmm4, %xmm0
+; CHECK-WO-SSE4-NEXT:    movdqa {{.*#+}} xmm3 = [240,240,240,240,240,240,240,240,240,240,240,240,240,240,240,240]
+; CHECK-WO-SSE4-NEXT:    pand %xmm0, %xmm3
+; CHECK-WO-SSE4-NEXT:    por %xmm3, %xmm4
 ; CHECK-WO-SSE4-NEXT:    paddb %xmm1, %xmm1
-; CHECK-WO-SSE4-NEXT:    pxor %xmm3, %xmm3
-; CHECK-WO-SSE4-NEXT:    pcmpgtb %xmm1, %xmm3
-; CHECK-WO-SSE4-NEXT:    movdqa %xmm3, %xmm4
-; CHECK-WO-SSE4-NEXT:    pandn %xmm0, %xmm4
-; CHECK-WO-SSE4-NEXT:    paddb %xmm0, %xmm0
-; CHECK-WO-SSE4-NEXT:    paddb %xmm0, %xmm0
-; CHECK-WO-SSE4-NEXT:    pand %xmm3, %xmm0
-; CHECK-WO-SSE4-NEXT:    por %xmm4, %xmm0
+; CHECK-WO-SSE4-NEXT:    pxor %xmm0, %xmm0
+; CHECK-WO-SSE4-NEXT:    pcmpgtb %xmm1, %xmm0
+; CHECK-WO-SSE4-NEXT:    movdqa %xmm0, %xmm3
+; CHECK-WO-SSE4-NEXT:    pandn %xmm4, %xmm3
+; CHECK-WO-SSE4-NEXT:    paddb %xmm4, %xmm4
+; CHECK-WO-SSE4-NEXT:    paddb %xmm4, %xmm4
+; CHECK-WO-SSE4-NEXT:    pand %xmm0, %xmm4
+; CHECK-WO-SSE4-NEXT:    por %xmm4, %xmm3
 ; CHECK-WO-SSE4-NEXT:    paddb %xmm1, %xmm1
 ; CHECK-WO-SSE4-NEXT:    pcmpgtb %xmm1, %xmm2
-; CHECK-WO-SSE4-NEXT:    movdqa %xmm2, %xmm1
-; CHECK-WO-SSE4-NEXT:    pandn %xmm0, %xmm1
-; CHECK-WO-SSE4-NEXT:    paddb %xmm0, %xmm0
-; CHECK-WO-SSE4-NEXT:    pand %xmm2, %xmm0
-; CHECK-WO-SSE4-NEXT:    por %xmm1, %xmm0
+; CHECK-WO-SSE4-NEXT:    movdqa %xmm2, %xmm0
+; CHECK-WO-SSE4-NEXT:    pandn %xmm3, %xmm0
+; CHECK-WO-SSE4-NEXT:    paddb %xmm3, %xmm3
+; CHECK-WO-SSE4-NEXT:    pand %xmm2, %xmm3
+; CHECK-WO-SSE4-NEXT:    por %xmm3, %xmm0
 ; CHECK-WO-SSE4-NEXT:    retq
   %1 = shl <16 x i8> %a, %b
   ret <16 x i8> %1

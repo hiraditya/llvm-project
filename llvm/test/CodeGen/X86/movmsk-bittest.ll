@@ -35,18 +35,18 @@ define i32 @movmsk_eq_v2i64_0(<2 x i64> %v, i32 %a, i32 %b) {
 define i32 @movmsk_slt_v2i64_1(<2 x i64> %v, i32 %a, i32 %b) {
 ; SSE-LABEL: movmsk_slt_v2i64_1:
 ; SSE:       # %bb.0:
-; SSE-NEXT:    movl %edi, %eax
+; SSE-NEXT:    movl %esi, %eax
 ; SSE-NEXT:    movmskpd %xmm0, %ecx
 ; SSE-NEXT:    testb $2, %cl
-; SSE-NEXT:    cmovel %esi, %eax
+; SSE-NEXT:    cmovnel %edi, %eax
 ; SSE-NEXT:    retq
 ;
 ; AVX-LABEL: movmsk_slt_v2i64_1:
 ; AVX:       # %bb.0:
-; AVX-NEXT:    movl %edi, %eax
+; AVX-NEXT:    movl %esi, %eax
 ; AVX-NEXT:    vmovmskpd %xmm0, %ecx
 ; AVX-NEXT:    testb $2, %cl
-; AVX-NEXT:    cmovel %esi, %eax
+; AVX-NEXT:    cmovnel %edi, %eax
 ; AVX-NEXT:    retq
   %cmp = icmp slt <2 x i64> %v, zeroinitializer
   %msk = bitcast <2 x i1> %cmp to i2
@@ -58,18 +58,18 @@ define i32 @movmsk_slt_v2i64_1(<2 x i64> %v, i32 %a, i32 %b) {
 define i32 @movmsk_sgt_v2i64_1(<2 x i64> %v, i32 %a, i32 %b) {
 ; SSE-LABEL: movmsk_sgt_v2i64_1:
 ; SSE:       # %bb.0:
-; SSE-NEXT:    movl %edi, %eax
+; SSE-NEXT:    movl %esi, %eax
 ; SSE-NEXT:    movmskpd %xmm0, %ecx
 ; SSE-NEXT:    testb $2, %cl
-; SSE-NEXT:    cmovnel %esi, %eax
+; SSE-NEXT:    cmovel %edi, %eax
 ; SSE-NEXT:    retq
 ;
 ; AVX-LABEL: movmsk_sgt_v2i64_1:
 ; AVX:       # %bb.0:
-; AVX-NEXT:    movl %edi, %eax
+; AVX-NEXT:    movl %esi, %eax
 ; AVX-NEXT:    vmovmskpd %xmm0, %ecx
 ; AVX-NEXT:    testb $2, %cl
-; AVX-NEXT:    cmovnel %esi, %eax
+; AVX-NEXT:    cmovel %edi, %eax
 ; AVX-NEXT:    retq
   %cmp = icmp slt <2 x i64> %v, zeroinitializer
   %msk = bitcast <2 x i1> %cmp to i2
@@ -105,18 +105,18 @@ define i32 @movmsk_eq_v4i32_0(<4 x i32> %v, i32 %a, i32 %b) {
 define i32 @movmsk_slt_v4i32_3(<4 x i32> %v, i32 %a, i32 %b) {
 ; SSE-LABEL: movmsk_slt_v4i32_3:
 ; SSE:       # %bb.0:
-; SSE-NEXT:    movl %edi, %eax
+; SSE-NEXT:    movl %esi, %eax
 ; SSE-NEXT:    movmskps %xmm0, %ecx
 ; SSE-NEXT:    testb $8, %cl
-; SSE-NEXT:    cmovel %esi, %eax
+; SSE-NEXT:    cmovnel %edi, %eax
 ; SSE-NEXT:    retq
 ;
 ; AVX-LABEL: movmsk_slt_v4i32_3:
 ; AVX:       # %bb.0:
-; AVX-NEXT:    movl %edi, %eax
+; AVX-NEXT:    movl %esi, %eax
 ; AVX-NEXT:    vmovmskps %xmm0, %ecx
 ; AVX-NEXT:    testb $8, %cl
-; AVX-NEXT:    cmovel %esi, %eax
+; AVX-NEXT:    cmovnel %edi, %eax
 ; AVX-NEXT:    retq
   %cmp = icmp slt <4 x i32> %v, zeroinitializer
   %msk = bitcast <4 x i1> %cmp to i4
@@ -128,18 +128,18 @@ define i32 @movmsk_slt_v4i32_3(<4 x i32> %v, i32 %a, i32 %b) {
 define i32 @movmsk_sgt_v4i32_3(<4 x i32> %v, i32 %a, i32 %b) {
 ; SSE-LABEL: movmsk_sgt_v4i32_3:
 ; SSE:       # %bb.0:
-; SSE-NEXT:    movl %edi, %eax
+; SSE-NEXT:    movl %esi, %eax
 ; SSE-NEXT:    movmskps %xmm0, %ecx
 ; SSE-NEXT:    testb $8, %cl
-; SSE-NEXT:    cmovnel %esi, %eax
+; SSE-NEXT:    cmovel %edi, %eax
 ; SSE-NEXT:    retq
 ;
 ; AVX-LABEL: movmsk_sgt_v4i32_3:
 ; AVX:       # %bb.0:
-; AVX-NEXT:    movl %edi, %eax
+; AVX-NEXT:    movl %esi, %eax
 ; AVX-NEXT:    vmovmskps %xmm0, %ecx
 ; AVX-NEXT:    testb $8, %cl
-; AVX-NEXT:    cmovnel %esi, %eax
+; AVX-NEXT:    cmovel %edi, %eax
 ; AVX-NEXT:    retq
   %cmp = icmp slt <4 x i32> %v, zeroinitializer
   %msk = bitcast <4 x i1> %cmp to i4
@@ -175,18 +175,18 @@ define i32 @movmsk_eq_v16i8_0(<16 x i8> %v, i32 %a, i32 %b) {
 define i32 @movmsk_slt_v16i8_15(<16 x i8> %v, i32 %a, i32 %b) {
 ; SSE-LABEL: movmsk_slt_v16i8_15:
 ; SSE:       # %bb.0:
-; SSE-NEXT:    movl %edi, %eax
+; SSE-NEXT:    movl %esi, %eax
 ; SSE-NEXT:    pmovmskb %xmm0, %ecx
 ; SSE-NEXT:    testw %cx, %cx
-; SSE-NEXT:    cmovnsl %esi, %eax
+; SSE-NEXT:    cmovsl %edi, %eax
 ; SSE-NEXT:    retq
 ;
 ; AVX-LABEL: movmsk_slt_v16i8_15:
 ; AVX:       # %bb.0:
-; AVX-NEXT:    movl %edi, %eax
+; AVX-NEXT:    movl %esi, %eax
 ; AVX-NEXT:    vpmovmskb %xmm0, %ecx
 ; AVX-NEXT:    testw %cx, %cx
-; AVX-NEXT:    cmovnsl %esi, %eax
+; AVX-NEXT:    cmovsl %edi, %eax
 ; AVX-NEXT:    retq
   %cmp = icmp slt <16 x i8> %v, zeroinitializer
   %msk = bitcast <16 x i1> %cmp to i16
@@ -198,18 +198,18 @@ define i32 @movmsk_slt_v16i8_15(<16 x i8> %v, i32 %a, i32 %b) {
 define i32 @movmsk_sgt_v16i8_15(<16 x i8> %v, i32 %a, i32 %b) {
 ; SSE-LABEL: movmsk_sgt_v16i8_15:
 ; SSE:       # %bb.0:
-; SSE-NEXT:    movl %edi, %eax
+; SSE-NEXT:    movl %esi, %eax
 ; SSE-NEXT:    pmovmskb %xmm0, %ecx
 ; SSE-NEXT:    testw %cx, %cx
-; SSE-NEXT:    cmovsl %esi, %eax
+; SSE-NEXT:    cmovnsl %edi, %eax
 ; SSE-NEXT:    retq
 ;
 ; AVX-LABEL: movmsk_sgt_v16i8_15:
 ; AVX:       # %bb.0:
-; AVX-NEXT:    movl %edi, %eax
+; AVX-NEXT:    movl %esi, %eax
 ; AVX-NEXT:    vpmovmskb %xmm0, %ecx
 ; AVX-NEXT:    testw %cx, %cx
-; AVX-NEXT:    cmovsl %esi, %eax
+; AVX-NEXT:    cmovnsl %edi, %eax
 ; AVX-NEXT:    retq
   %cmp = icmp slt <16 x i8> %v, zeroinitializer
   %msk = bitcast <16 x i1> %cmp to i16
@@ -247,18 +247,18 @@ define i32 @movmsk_eq_v4i64_0(<4 x i64> %v, i32 %a, i32 %b) {
 define i32 @movmsk_slt_v4i64_3(<4 x i64> %v, i32 %a, i32 %b) {
 ; SSE-LABEL: movmsk_slt_v4i64_3:
 ; SSE:       # %bb.0:
-; SSE-NEXT:    movl %edi, %eax
+; SSE-NEXT:    movl %esi, %eax
 ; SSE-NEXT:    movmskps %xmm1, %ecx
 ; SSE-NEXT:    testb $8, %cl
-; SSE-NEXT:    cmovel %esi, %eax
+; SSE-NEXT:    cmovnel %edi, %eax
 ; SSE-NEXT:    retq
 ;
 ; AVX-LABEL: movmsk_slt_v4i64_3:
 ; AVX:       # %bb.0:
-; AVX-NEXT:    movl %edi, %eax
+; AVX-NEXT:    movl %esi, %eax
 ; AVX-NEXT:    vmovmskpd %ymm0, %ecx
 ; AVX-NEXT:    testb $8, %cl
-; AVX-NEXT:    cmovel %esi, %eax
+; AVX-NEXT:    cmovnel %edi, %eax
 ; AVX-NEXT:    vzeroupper
 ; AVX-NEXT:    retq
   %cmp = icmp slt <4 x i64> %v, zeroinitializer
@@ -271,18 +271,18 @@ define i32 @movmsk_slt_v4i64_3(<4 x i64> %v, i32 %a, i32 %b) {
 define i32 @movmsk_sgt_v4i64_3(<4 x i64> %v, i32 %a, i32 %b) {
 ; SSE-LABEL: movmsk_sgt_v4i64_3:
 ; SSE:       # %bb.0:
-; SSE-NEXT:    movl %edi, %eax
+; SSE-NEXT:    movl %esi, %eax
 ; SSE-NEXT:    movmskps %xmm1, %ecx
 ; SSE-NEXT:    testb $8, %cl
-; SSE-NEXT:    cmovnel %esi, %eax
+; SSE-NEXT:    cmovel %edi, %eax
 ; SSE-NEXT:    retq
 ;
 ; AVX-LABEL: movmsk_sgt_v4i64_3:
 ; AVX:       # %bb.0:
-; AVX-NEXT:    movl %edi, %eax
+; AVX-NEXT:    movl %esi, %eax
 ; AVX-NEXT:    vmovmskpd %ymm0, %ecx
 ; AVX-NEXT:    testb $8, %cl
-; AVX-NEXT:    cmovnel %esi, %eax
+; AVX-NEXT:    cmovel %edi, %eax
 ; AVX-NEXT:    vzeroupper
 ; AVX-NEXT:    retq
   %cmp = icmp slt <4 x i64> %v, zeroinitializer
@@ -349,20 +349,20 @@ define i32 @movmsk_eq_v8i32_3(<8 x i32> %v, i32 %a, i32 %b) {
 define i32 @movmsk_slt_v8i32_7(<8 x i32> %v, i32 %a, i32 %b) {
 ; SSE-LABEL: movmsk_slt_v8i32_7:
 ; SSE:       # %bb.0:
-; SSE-NEXT:    movl %edi, %eax
+; SSE-NEXT:    movl %esi, %eax
 ; SSE-NEXT:    packssdw %xmm1, %xmm0
 ; SSE-NEXT:    packsswb %xmm0, %xmm0
 ; SSE-NEXT:    pmovmskb %xmm0, %ecx
 ; SSE-NEXT:    testb %cl, %cl
-; SSE-NEXT:    cmovnsl %esi, %eax
+; SSE-NEXT:    cmovsl %edi, %eax
 ; SSE-NEXT:    retq
 ;
 ; AVX-LABEL: movmsk_slt_v8i32_7:
 ; AVX:       # %bb.0:
-; AVX-NEXT:    movl %edi, %eax
+; AVX-NEXT:    movl %esi, %eax
 ; AVX-NEXT:    vmovmskps %ymm0, %ecx
 ; AVX-NEXT:    testb %cl, %cl
-; AVX-NEXT:    cmovnsl %esi, %eax
+; AVX-NEXT:    cmovsl %edi, %eax
 ; AVX-NEXT:    vzeroupper
 ; AVX-NEXT:    retq
   %cmp = icmp slt <8 x i32> %v, zeroinitializer
@@ -375,20 +375,20 @@ define i32 @movmsk_slt_v8i32_7(<8 x i32> %v, i32 %a, i32 %b) {
 define i32 @movmsk_sgt_v8i32_7(<8 x i32> %v, i32 %a, i32 %b) {
 ; SSE-LABEL: movmsk_sgt_v8i32_7:
 ; SSE:       # %bb.0:
-; SSE-NEXT:    movl %edi, %eax
+; SSE-NEXT:    movl %esi, %eax
 ; SSE-NEXT:    packssdw %xmm1, %xmm0
 ; SSE-NEXT:    packsswb %xmm0, %xmm0
 ; SSE-NEXT:    pmovmskb %xmm0, %ecx
 ; SSE-NEXT:    testb %cl, %cl
-; SSE-NEXT:    cmovsl %esi, %eax
+; SSE-NEXT:    cmovnsl %edi, %eax
 ; SSE-NEXT:    retq
 ;
 ; AVX-LABEL: movmsk_sgt_v8i32_7:
 ; AVX:       # %bb.0:
-; AVX-NEXT:    movl %edi, %eax
+; AVX-NEXT:    movl %esi, %eax
 ; AVX-NEXT:    vmovmskps %ymm0, %ecx
 ; AVX-NEXT:    testb %cl, %cl
-; AVX-NEXT:    cmovsl %esi, %eax
+; AVX-NEXT:    cmovnsl %edi, %eax
 ; AVX-NEXT:    vzeroupper
 ; AVX-NEXT:    retq
   %cmp = icmp slt <8 x i32> %v, zeroinitializer
@@ -472,37 +472,37 @@ define i32 @movmsk_eq_v32i8_30(<32 x i8> %v, i32 %a, i32 %b) {
 define i32 @movmsk_slt_v32i8_31(<32 x i8> %v, i32 %a, i32 %b) {
 ; SSE-LABEL: movmsk_slt_v32i8_31:
 ; SSE:       # %bb.0:
-; SSE-NEXT:    movl %edi, %eax
+; SSE-NEXT:    movl %esi, %eax
 ; SSE-NEXT:    pmovmskb %xmm1, %ecx
 ; SSE-NEXT:    testl $32768, %ecx # imm = 0x8000
-; SSE-NEXT:    cmovel %esi, %eax
+; SSE-NEXT:    cmovnel %edi, %eax
 ; SSE-NEXT:    retq
 ;
 ; AVX1-LABEL: movmsk_slt_v32i8_31:
 ; AVX1:       # %bb.0:
-; AVX1-NEXT:    movl %edi, %eax
+; AVX1-NEXT:    movl %esi, %eax
 ; AVX1-NEXT:    vextractf128 $1, %ymm0, %xmm0
 ; AVX1-NEXT:    vpmovmskb %xmm0, %ecx
 ; AVX1-NEXT:    testl $32768, %ecx # imm = 0x8000
-; AVX1-NEXT:    cmovel %esi, %eax
+; AVX1-NEXT:    cmovnel %edi, %eax
 ; AVX1-NEXT:    vzeroupper
 ; AVX1-NEXT:    retq
 ;
 ; AVX2-LABEL: movmsk_slt_v32i8_31:
 ; AVX2:       # %bb.0:
-; AVX2-NEXT:    movl %edi, %eax
+; AVX2-NEXT:    movl %esi, %eax
 ; AVX2-NEXT:    vpmovmskb %ymm0, %ecx
 ; AVX2-NEXT:    testl %ecx, %ecx
-; AVX2-NEXT:    cmovnsl %esi, %eax
+; AVX2-NEXT:    cmovsl %edi, %eax
 ; AVX2-NEXT:    vzeroupper
 ; AVX2-NEXT:    retq
 ;
 ; AVX512-LABEL: movmsk_slt_v32i8_31:
 ; AVX512:       # %bb.0:
-; AVX512-NEXT:    movl %edi, %eax
+; AVX512-NEXT:    movl %esi, %eax
 ; AVX512-NEXT:    vpmovmskb %ymm0, %ecx
 ; AVX512-NEXT:    testl %ecx, %ecx
-; AVX512-NEXT:    cmovnsl %esi, %eax
+; AVX512-NEXT:    cmovsl %edi, %eax
 ; AVX512-NEXT:    vzeroupper
 ; AVX512-NEXT:    retq
   %cmp = icmp slt <32 x i8> %v, zeroinitializer
@@ -515,37 +515,37 @@ define i32 @movmsk_slt_v32i8_31(<32 x i8> %v, i32 %a, i32 %b) {
 define i32 @movmsk_sgt_v32i8_31(<32 x i8> %v, i32 %a, i32 %b) {
 ; SSE-LABEL: movmsk_sgt_v32i8_31:
 ; SSE:       # %bb.0:
-; SSE-NEXT:    movl %edi, %eax
+; SSE-NEXT:    movl %esi, %eax
 ; SSE-NEXT:    pmovmskb %xmm1, %ecx
 ; SSE-NEXT:    testl $32768, %ecx # imm = 0x8000
-; SSE-NEXT:    cmovnel %esi, %eax
+; SSE-NEXT:    cmovel %edi, %eax
 ; SSE-NEXT:    retq
 ;
 ; AVX1-LABEL: movmsk_sgt_v32i8_31:
 ; AVX1:       # %bb.0:
-; AVX1-NEXT:    movl %edi, %eax
+; AVX1-NEXT:    movl %esi, %eax
 ; AVX1-NEXT:    vextractf128 $1, %ymm0, %xmm0
 ; AVX1-NEXT:    vpmovmskb %xmm0, %ecx
 ; AVX1-NEXT:    testl $32768, %ecx # imm = 0x8000
-; AVX1-NEXT:    cmovnel %esi, %eax
+; AVX1-NEXT:    cmovel %edi, %eax
 ; AVX1-NEXT:    vzeroupper
 ; AVX1-NEXT:    retq
 ;
 ; AVX2-LABEL: movmsk_sgt_v32i8_31:
 ; AVX2:       # %bb.0:
-; AVX2-NEXT:    movl %edi, %eax
+; AVX2-NEXT:    movl %esi, %eax
 ; AVX2-NEXT:    vpmovmskb %ymm0, %ecx
 ; AVX2-NEXT:    testl %ecx, %ecx
-; AVX2-NEXT:    cmovsl %esi, %eax
+; AVX2-NEXT:    cmovnsl %edi, %eax
 ; AVX2-NEXT:    vzeroupper
 ; AVX2-NEXT:    retq
 ;
 ; AVX512-LABEL: movmsk_sgt_v32i8_31:
 ; AVX512:       # %bb.0:
-; AVX512-NEXT:    movl %edi, %eax
+; AVX512-NEXT:    movl %esi, %eax
 ; AVX512-NEXT:    vpmovmskb %ymm0, %ecx
 ; AVX512-NEXT:    testl %ecx, %ecx
-; AVX512-NEXT:    cmovsl %esi, %eax
+; AVX512-NEXT:    cmovnsl %edi, %eax
 ; AVX512-NEXT:    vzeroupper
 ; AVX512-NEXT:    retq
   %cmp = icmp slt <32 x i8> %v, zeroinitializer

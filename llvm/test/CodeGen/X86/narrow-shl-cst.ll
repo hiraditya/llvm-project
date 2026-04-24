@@ -138,8 +138,9 @@ define i64 @test11(i64 %x) nounwind {
 define i32 @test12(i32 %x, ptr %y) nounwind {
 ; CHECK-LABEL: test12:
 ; CHECK:       # %bb.0:
-; CHECK-NEXT:    addl %edi, %edi
-; CHECK-NEXT:    movzbl %dil, %eax
+; CHECK-NEXT:    # kill: def $edi killed $edi def $rdi
+; CHECK-NEXT:    leal (%rdi,%rdi), %eax
+; CHECK-NEXT:    movzbl %al, %eax
 ; CHECK-NEXT:    movl %eax, (%rsi)
 ; CHECK-NEXT:    retq
   %and = shl i32 %x, 1
@@ -151,8 +152,8 @@ define i32 @test12(i32 %x, ptr %y) nounwind {
 define i64 @test13(i64 %x, ptr %y) nounwind {
 ; CHECK-LABEL: test13:
 ; CHECK:       # %bb.0:
-; CHECK-NEXT:    addl %edi, %edi
-; CHECK-NEXT:    movzbl %dil, %eax
+; CHECK-NEXT:    leal (%rdi,%rdi), %eax
+; CHECK-NEXT:    movzbl %al, %eax
 ; CHECK-NEXT:    movq %rax, (%rsi)
 ; CHECK-NEXT:    retq
   %and = shl i64 %x, 1

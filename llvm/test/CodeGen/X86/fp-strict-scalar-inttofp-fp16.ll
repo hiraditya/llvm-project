@@ -357,10 +357,10 @@ define half @uitofp_i64tof16(i64 %x) #0 {
 ; SSE2-NEXT:    shrq %rax
 ; SSE2-NEXT:    movl %edi, %ecx
 ; SSE2-NEXT:    andl $1, %ecx
-; SSE2-NEXT:    orq %rax, %rcx
+; SSE2-NEXT:    orq %rcx, %rax
 ; SSE2-NEXT:    testq %rdi, %rdi
-; SSE2-NEXT:    cmovnsq %rdi, %rcx
-; SSE2-NEXT:    cvtsi2ss %rcx, %xmm1
+; SSE2-NEXT:    cmovnsq %rdi, %rax
+; SSE2-NEXT:    cvtsi2ss %rax, %xmm1
 ; SSE2-NEXT:    movaps %xmm1, %xmm0
 ; SSE2-NEXT:    addss %xmm1, %xmm0
 ; SSE2-NEXT:    js .LBB9_2
@@ -378,10 +378,10 @@ define half @uitofp_i64tof16(i64 %x) #0 {
 ; F16C-NEXT:    shrq %rax
 ; F16C-NEXT:    movl %edi, %ecx
 ; F16C-NEXT:    andl $1, %ecx
-; F16C-NEXT:    orq %rax, %rcx
+; F16C-NEXT:    orq %rcx, %rax
 ; F16C-NEXT:    testq %rdi, %rdi
-; F16C-NEXT:    cmovnsq %rdi, %rcx
-; F16C-NEXT:    vcvtsi2ss %rcx, %xmm15, %xmm0
+; F16C-NEXT:    cmovnsq %rdi, %rax
+; F16C-NEXT:    vcvtsi2ss %rax, %xmm15, %xmm0
 ; F16C-NEXT:    jns .LBB9_2
 ; F16C-NEXT:  # %bb.1:
 ; F16C-NEXT:    vaddss %xmm0, %xmm0, %xmm0

@@ -9,15 +9,14 @@
 define i1 @test(i1 %cmp1, i32 %x) {
 ; CHECK-LABEL: test:
 ; CHECK:       # %bb.0: # %entry
-; CHECK-NEXT:    movq g_2@GOTPCREL(%rip), %rcx
-; CHECK-NEXT:    xorl %eax, %eax
-; CHECK-NEXT:    cmpq %rcx, g_1@GOTPCREL(%rip)
-; CHECK-NEXT:    setne %al
-; CHECK-NEXT:    cmpl %eax, %esi
-; CHECK-NEXT:    setb %cl
+; CHECK-NEXT:    movq g_2@GOTPCREL(%rip), %rax
+; CHECK-NEXT:    xorl %ecx, %ecx
+; CHECK-NEXT:    cmpq %rax, g_1@GOTPCREL(%rip)
+; CHECK-NEXT:    setne %cl
+; CHECK-NEXT:    cmpl %ecx, %esi
+; CHECK-NEXT:    setb %al
 ; CHECK-NEXT:    orb %cl, %al
 ; CHECK-NEXT:    andb %dil, %al
-; CHECK-NEXT:    # kill: def $al killed $al killed $eax
 ; CHECK-NEXT:    retq
 entry:
   %cmp2 = icmp ne ptr @g_1, @g_2

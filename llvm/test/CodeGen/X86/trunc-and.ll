@@ -33,11 +33,10 @@ declare <2 x double> @llvm.fabs.v2f64(<2 x double>)
 define dso_local i32 @d() {
 ; CHECK-LABEL: d:
 ; CHECK:       # %bb.0:
-; CHECK-NEXT:    movzbl b+8(%rip), %ecx
-; CHECK-NEXT:    andl $7, %ecx
-; CHECK-NEXT:    movl $d, %eax
+; CHECK-NEXT:    movzbl b+8(%rip), %eax
+; CHECK-NEXT:    andl $7, %eax
+; CHECK-NEXT:    movl $d, %ecx
 ; CHECK-NEXT:    addl %ecx, %eax
-; CHECK-NEXT:    # kill: def $eax killed $eax killed $rax
 ; CHECK-NEXT:    retq
   %bf.load = load i72, ptr @b, align 4
   %bf.lshr = lshr i72 %bf.load, 64

@@ -14,24 +14,24 @@ define void @foo(i32 %N) nounwind {
 ; CHECK-NEXT:  # %bb.4: # %return
 ; CHECK-NEXT:    retq
 ; CHECK-NEXT:  .LBB0_1: # %bb.preheader
-; CHECK-NEXT:    pushq %rbp
+; CHECK-NEXT:    pushq %r14
 ; CHECK-NEXT:    pushq %rbx
 ; CHECK-NEXT:    pushq %rax
 ; CHECK-NEXT:    movl %edi, %ebx
-; CHECK-NEXT:    xorl %ebp, %ebp
+; CHECK-NEXT:    xorl %r14d, %r14d
 ; CHECK-NEXT:    .p2align 4
 ; CHECK-NEXT:  .LBB0_2: # %bb
 ; CHECK-NEXT:    # =>This Inner Loop Header: Depth=1
 ; CHECK-NEXT:    xorps %xmm0, %xmm0
-; CHECK-NEXT:    cvtsi2sd %ebp, %xmm0
+; CHECK-NEXT:    cvtsi2sd %r14d, %xmm0
 ; CHECK-NEXT:    callq bar@PLT
-; CHECK-NEXT:    decl %ebp
-; CHECK-NEXT:    cmpl %ebp, %ebx
+; CHECK-NEXT:    decl %r14d
+; CHECK-NEXT:    cmpl %r14d, %ebx
 ; CHECK-NEXT:    jne .LBB0_2
 ; CHECK-NEXT:  # %bb.3:
 ; CHECK-NEXT:    addq $8, %rsp
 ; CHECK-NEXT:    popq %rbx
-; CHECK-NEXT:    popq %rbp
+; CHECK-NEXT:    popq %r14
 ; CHECK-NEXT:    retq
 entry:
   %0 = icmp slt i32 %N, 0                         ; <i1> [#uses=1]

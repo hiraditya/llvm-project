@@ -33,10 +33,10 @@ define i32 @test_minsize(i32 %X) optsize minsize nounwind readnone {
 ; X64-NEXT:    idivl %ecx
 ; X64-NEXT:    testl %edx, %edx
 ; X64-NEXT:    pushq $42
-; X64-NEXT:    popq %rcx
-; X64-NEXT:    pushq $-10
 ; X64-NEXT:    popq %rax
-; X64-NEXT:    cmovel %ecx, %eax
+; X64-NEXT:    pushq $-10
+; X64-NEXT:    popq %rcx
+; X64-NEXT:    cmovnel %ecx, %eax
 ; X64-NEXT:    retq
   %rem = srem i32 %X, 5
   %cmp = icmp eq i32 %rem, 0
@@ -62,9 +62,9 @@ define i32 @test_optsize(i32 %X) optsize nounwind readnone {
 ; X64-NEXT:    imull $-858993459, %edi, %eax # imm = 0xCCCCCCCD
 ; X64-NEXT:    addl $429496729, %eax # imm = 0x19999999
 ; X64-NEXT:    cmpl $858993459, %eax # imm = 0x33333333
-; X64-NEXT:    movl $42, %ecx
-; X64-NEXT:    movl $-10, %eax
-; X64-NEXT:    cmovbl %ecx, %eax
+; X64-NEXT:    movl $42, %eax
+; X64-NEXT:    movl $-10, %ecx
+; X64-NEXT:    cmovael %ecx, %eax
 ; X64-NEXT:    retq
   %rem = srem i32 %X, 5
   %cmp = icmp eq i32 %rem, 0
