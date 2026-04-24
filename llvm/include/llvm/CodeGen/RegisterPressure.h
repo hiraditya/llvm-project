@@ -462,6 +462,9 @@ public:
   RegisterPressure &getPressure() { return P; }
   const RegisterPressure &getPressure() const { return P; }
 
+  /// Get the current set of live registers.
+  const LiveRegSet &getLiveRegs() const { return LiveRegs; }
+
   /// Get the register set pressure at the current position, which may be less
   /// than the pressure across the traversed region.
   const std::vector<unsigned> &getRegSetPressureAtPos() const {
