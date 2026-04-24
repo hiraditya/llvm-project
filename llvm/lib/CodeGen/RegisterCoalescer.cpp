@@ -1472,12 +1472,11 @@ bool RegisterCoalescer::reMaterializeDef(const CoalescerPair &CP,
       assert(MO.isImplicit());
       if (MO.getReg().isPhysical()) {
         assert(MO.isImplicit() && MO.getReg().isPhysical() &&
-               (MO.isDead() ||
-                (DefSubIdx &&
-                 ((TRI->getSubReg(MO.getReg(), DefSubIdx) ==
-                   MCRegister((unsigned)NewMI.getOperand(0).getReg())) ||
-                  TRI->isSubRegisterEq(NewMI.getOperand(0).getReg(),
-                                       MO.getReg())))));
+               (!DefSubIdx ||
+                ((TRI->getSubReg(MO.getReg(), DefSubIdx) ==
+                  MCRegister((unsigned)NewMI.getOperand(0).getReg())) ||
+                 TRI->isSubRegisterEq(NewMI.getOperand(0).getReg(),
+                                      MO.getReg()))));
         NewMIImplDefs.push_back({i, MO.getReg()});
       } else {
         assert(MO.getReg() == NewMI.getOperand(0).getReg());
