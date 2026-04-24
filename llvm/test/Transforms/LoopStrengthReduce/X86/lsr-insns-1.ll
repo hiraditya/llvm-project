@@ -69,8 +69,9 @@ define void @foo(ptr nocapture readonly %x, ptr nocapture readonly %y, ptr nocap
 ; CHECK-NEXT:  .LBB0_1: # %for.body
 ; CHECK-NEXT:    # =>This Inner Loop Header: Depth=1
 ; CHECK-NEXT:    movl 4096(%rsi,%rax), %ecx
-; CHECK-NEXT:    addl 4096(%rdi,%rax), %ecx
-; CHECK-NEXT:    movl %ecx, 4096(%rdx,%rax)
+; CHECK-NEXT:    movl 4096(%rdi,%rax), %r8d
+; CHECK-NEXT:    addl %ecx, %r8d
+; CHECK-NEXT:    movl %r8d, 4096(%rdx,%rax)
 ; CHECK-NEXT:    addq $4, %rax
 ; CHECK-NEXT:    jne .LBB0_1
 ; CHECK-NEXT:  # %bb.2: # %for.cond.cleanup

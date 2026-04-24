@@ -16,20 +16,24 @@
 define i32 @simple(ptr %a, ptr %b, i32 %x) nounwind {
 ; X64-LABEL: simple:
 ; X64:       # %bb.0: # %entry
-; X64-NEXT:    movslq %edx, %rcx
-; X64-NEXT:    shlq $2, %rcx
+; X64-NEXT:    movslq %edx, %rax
+; X64-NEXT:    leaq (,%rax,4), %rcx
 ; X64-NEXT:    xorl %eax, %eax
 ; X64-NEXT:    leaq (%rcx,%rcx), %rdx
 ; X64-NEXT:    .p2align 4
 ; X64-NEXT:  .LBB0_1: # %loop
 ; X64-NEXT:    # =>This Inner Loop Header: Depth=1
-; X64-NEXT:    addl (%rdi), %eax
-; X64-NEXT:    addl (%rdi,%rcx), %eax
-; X64-NEXT:    addq %rcx, %rdi
-; X64-NEXT:    addl (%rcx,%rdi), %eax
-; X64-NEXT:    addq %rcx, %rdi
-; X64-NEXT:    addl (%rcx,%rdi), %eax
-; X64-NEXT:    addq %rdx, %rdi
+; X64-NEXT:    leaq (%rdi,%rcx), %r8
+; X64-NEXT:    leaq (%r8,%rcx), %r9
+; X64-NEXT:    movl (%rdi), %r10d
+; X64-NEXT:    addl %eax, %r10d
+; X64-NEXT:    movl (%rdi,%rcx), %eax
+; X64-NEXT:    addl %r10d, %eax
+; X64-NEXT:    movl (%rcx,%r8), %edi
+; X64-NEXT:    addl %eax, %edi
+; X64-NEXT:    movl (%rcx,%r9), %eax
+; X64-NEXT:    addl %edi, %eax
+; X64-NEXT:    leaq (%r9,%rdx), %rdi
 ; X64-NEXT:    cmpq %rsi, %rdi
 ; X64-NEXT:    jne .LBB0_1
 ; X64-NEXT:  # %bb.2: # %exit
@@ -37,29 +41,37 @@ define i32 @simple(ptr %a, ptr %b, i32 %x) nounwind {
 ;
 ; X32-LABEL: simple:
 ; X32:       # %bb.0: # %entry
+; X32-NEXT:    pushl %ebp
+; X32-NEXT:    pushl %ebx
 ; X32-NEXT:    pushl %edi
 ; X32-NEXT:    pushl %esi
 ; X32-NEXT:    movl {{[0-9]+}}(%esp), %ecx
 ; X32-NEXT:    movl {{[0-9]+}}(%esp), %edi
-; X32-NEXT:    movl {{[0-9]+}}(%esp), %edx
-; X32-NEXT:    shll $2, %edx
+; X32-NEXT:    movl {{[0-9]+}}(%esp), %eax
+; X32-NEXT:    leal (,%eax,4), %edx
 ; X32-NEXT:    xorl %eax, %eax
 ; X32-NEXT:    leal (%edx,%edx), %esi
 ; X32-NEXT:    .p2align 4
 ; X32-NEXT:  .LBB0_1: # %loop
 ; X32-NEXT:    # =>This Inner Loop Header: Depth=1
-; X32-NEXT:    addl (%edi), %eax
-; X32-NEXT:    addl (%edi,%edx), %eax
-; X32-NEXT:    addl %edx, %edi
-; X32-NEXT:    addl (%edx,%edi), %eax
-; X32-NEXT:    addl %edx, %edi
-; X32-NEXT:    addl (%edx,%edi), %eax
-; X32-NEXT:    addl %esi, %edi
+; X32-NEXT:    movl (%edi), %ebx
+; X32-NEXT:    addl %eax, %ebx
+; X32-NEXT:    leal (%edi,%edx), %eax
+; X32-NEXT:    movl (%edi,%edx), %edi
+; X32-NEXT:    addl %ebx, %edi
+; X32-NEXT:    leal (%eax,%edx), %ebx
+; X32-NEXT:    movl (%edx,%eax), %ebp
+; X32-NEXT:    addl %edi, %ebp
+; X32-NEXT:    movl (%edx,%ebx), %eax
+; X32-NEXT:    addl %ebp, %eax
+; X32-NEXT:    leal (%ebx,%esi), %edi
 ; X32-NEXT:    cmpl %ecx, %edi
 ; X32-NEXT:    jne .LBB0_1
 ; X32-NEXT:  # %bb.2: # %exit
 ; X32-NEXT:    popl %esi
 ; X32-NEXT:    popl %edi
+; X32-NEXT:    popl %ebx
+; X32-NEXT:    popl %ebp
 ; X32-NEXT:    retl
 entry:
   br label %loop
@@ -100,10 +112,14 @@ define i32 @user(ptr %a, ptr %b, i32 %x) nounwind {
 ; X64-NEXT:    .p2align 4
 ; X64-NEXT:  .LBB1_1: # %loop
 ; X64-NEXT:    # =>This Inner Loop Header: Depth=1
-; X64-NEXT:    addl (%rdi), %eax
-; X64-NEXT:    addl (%rdi,%rcx,4), %eax
-; X64-NEXT:    addl (%rdi,%rcx,8), %eax
-; X64-NEXT:    addl (%rdi,%r8), %eax
+; X64-NEXT:    movl (%rdi), %r9d
+; X64-NEXT:    addl %eax, %r9d
+; X64-NEXT:    movl (%rdi,%rcx,4), %eax
+; X64-NEXT:    addl %r9d, %eax
+; X64-NEXT:    movl (%rdi,%rcx,8), %r9d
+; X64-NEXT:    addl %eax, %r9d
+; X64-NEXT:    movl (%rdi,%r8), %eax
+; X64-NEXT:    addl %r9d, %eax
 ; X64-NEXT:    movl %eax, (%rdi)
 ; X64-NEXT:    addq %rdx, %rdi
 ; X64-NEXT:    cmpq %rsi, %rdi
@@ -113,6 +129,7 @@ define i32 @user(ptr %a, ptr %b, i32 %x) nounwind {
 ;
 ; X32-LABEL: user:
 ; X32:       # %bb.0: # %entry
+; X32-NEXT:    pushl %ebp
 ; X32-NEXT:    pushl %ebx
 ; X32-NEXT:    pushl %edi
 ; X32-NEXT:    pushl %esi
@@ -127,10 +144,14 @@ define i32 @user(ptr %a, ptr %b, i32 %x) nounwind {
 ; X32-NEXT:    .p2align 4
 ; X32-NEXT:  .LBB1_1: # %loop
 ; X32-NEXT:    # =>This Inner Loop Header: Depth=1
-; X32-NEXT:    addl (%esi), %eax
-; X32-NEXT:    addl (%esi,%ecx,4), %eax
-; X32-NEXT:    addl (%esi,%ecx,8), %eax
-; X32-NEXT:    addl (%esi,%ebx), %eax
+; X32-NEXT:    movl (%esi), %ebp
+; X32-NEXT:    addl %eax, %ebp
+; X32-NEXT:    movl (%esi,%ecx,4), %eax
+; X32-NEXT:    addl %ebp, %eax
+; X32-NEXT:    movl (%esi,%ecx,8), %ebp
+; X32-NEXT:    addl %eax, %ebp
+; X32-NEXT:    movl (%esi,%ebx), %eax
+; X32-NEXT:    addl %ebp, %eax
 ; X32-NEXT:    movl %eax, (%esi)
 ; X32-NEXT:    addl %edi, %esi
 ; X32-NEXT:    cmpl %edx, %esi
@@ -139,6 +160,7 @@ define i32 @user(ptr %a, ptr %b, i32 %x) nounwind {
 ; X32-NEXT:    popl %esi
 ; X32-NEXT:    popl %edi
 ; X32-NEXT:    popl %ebx
+; X32-NEXT:    popl %ebp
 ; X32-NEXT:    retl
 entry:
   br label %loop
@@ -183,27 +205,32 @@ define void @extrastride(ptr nocapture %main, i32 %main_stride, ptr nocapture %r
 ; X64-NEXT:    testl %r9d, %r9d
 ; X64-NEXT:    je .LBB2_4
 ; X64-NEXT:  # %bb.1: # %for.body.lr.ph
+; X64-NEXT:    pushq %rbp
 ; X64-NEXT:    pushq %rbx
 ; X64-NEXT:    leal (%rsi,%rsi), %r10d
 ; X64-NEXT:    leal (%rsi,%rsi,2), %r11d
-; X64-NEXT:    addl %esi, %ecx
-; X64-NEXT:    leal (,%rsi,4), %eax
-; X64-NEXT:    leal (%rcx,%rsi,4), %ebx
-; X64-NEXT:    cltq
+; X64-NEXT:    leal (%rcx,%rsi), %eax
+; X64-NEXT:    leal (,%rsi,4), %ecx
+; X64-NEXT:    leal (%rax,%rsi,4), %ebx
+; X64-NEXT:    movslq %ecx, %rax
 ; X64-NEXT:    movslq %r11d, %rcx
 ; X64-NEXT:    movslq %r10d, %r10
 ; X64-NEXT:    movslq %esi, %rsi
 ; X64-NEXT:    movslq %r8d, %r8
-; X64-NEXT:    shlq $2, %r8
+; X64-NEXT:    leaq (,%r8,4), %r8
 ; X64-NEXT:    movslq %ebx, %r11
 ; X64-NEXT:    .p2align 4
 ; X64-NEXT:  .LBB2_2: # %for.body
 ; X64-NEXT:    # =>This Inner Loop Header: Depth=1
 ; X64-NEXT:    movl (%rdi,%rsi), %ebx
-; X64-NEXT:    addl (%rdi), %ebx
-; X64-NEXT:    addl (%rdi,%r10), %ebx
-; X64-NEXT:    addl (%rdi,%rcx), %ebx
-; X64-NEXT:    addl (%rdi,%rax), %ebx
+; X64-NEXT:    movl (%rdi), %ebp
+; X64-NEXT:    addl %ebx, %ebp
+; X64-NEXT:    movl (%rdi,%r10), %ebx
+; X64-NEXT:    addl %ebp, %ebx
+; X64-NEXT:    movl (%rdi,%rcx), %ebp
+; X64-NEXT:    addl %ebx, %ebp
+; X64-NEXT:    movl (%rdi,%rax), %ebx
+; X64-NEXT:    addl %ebp, %ebx
 ; X64-NEXT:    movl %ebx, (%rdx)
 ; X64-NEXT:    addq %r11, %rdi
 ; X64-NEXT:    addq %r8, %rdx
@@ -211,6 +238,7 @@ define void @extrastride(ptr nocapture %main, i32 %main_stride, ptr nocapture %r
 ; X64-NEXT:    jne .LBB2_2
 ; X64-NEXT:  # %bb.3:
 ; X64-NEXT:    popq %rbx
+; X64-NEXT:    popq %rbp
 ; X64-NEXT:  .LBB2_4: # %for.end
 ; X64-NEXT:    retq
 ;
@@ -220,36 +248,43 @@ define void @extrastride(ptr nocapture %main, i32 %main_stride, ptr nocapture %r
 ; X32-NEXT:    pushl %ebx
 ; X32-NEXT:    pushl %edi
 ; X32-NEXT:    pushl %esi
+; X32-NEXT:    pushl %eax
 ; X32-NEXT:    movl {{[0-9]+}}(%esp), %eax
 ; X32-NEXT:    testl %eax, %eax
 ; X32-NEXT:    je .LBB2_3
 ; X32-NEXT:  # %bb.1: # %for.body.lr.ph
+; X32-NEXT:    movl {{[0-9]+}}(%esp), %edi
 ; X32-NEXT:    movl {{[0-9]+}}(%esp), %ecx
 ; X32-NEXT:    movl {{[0-9]+}}(%esp), %edx
-; X32-NEXT:    movl {{[0-9]+}}(%esp), %esi
 ; X32-NEXT:    movl {{[0-9]+}}(%esp), %ebx
-; X32-NEXT:    movl {{[0-9]+}}(%esp), %edi
-; X32-NEXT:    addl %esi, %edi
-; X32-NEXT:    shll $2, %ecx
+; X32-NEXT:    movl {{[0-9]+}}(%esp), %esi
+; X32-NEXT:    addl %edx, %esi
+; X32-NEXT:    leal (,%edi,4), %edi
+; X32-NEXT:    movl %edi, (%esp) # 4-byte Spill
 ; X32-NEXT:    .p2align 4
 ; X32-NEXT:  .LBB2_2: # %for.body
 ; X32-NEXT:    # =>This Inner Loop Header: Depth=1
-; X32-NEXT:    movl %ebx, %ebp
-; X32-NEXT:    movl (%ebx,%esi), %ebx
-; X32-NEXT:    addl (%ebp), %ebx
-; X32-NEXT:    addl %esi, %ebp
-; X32-NEXT:    addl (%esi,%ebp), %ebx
-; X32-NEXT:    addl %esi, %ebp
-; X32-NEXT:    addl (%esi,%ebp), %ebx
-; X32-NEXT:    addl %esi, %ebp
-; X32-NEXT:    addl (%esi,%ebp), %ebx
-; X32-NEXT:    movl %ebx, (%edx)
-; X32-NEXT:    leal (%ebp,%esi), %ebx
+; X32-NEXT:    leal (%ebx,%edx), %ebp
+; X32-NEXT:    movl (%ebx,%edx), %edi
+; X32-NEXT:    movl (%ebx), %ebx
 ; X32-NEXT:    addl %edi, %ebx
-; X32-NEXT:    addl %ecx, %edx
+; X32-NEXT:    leal (%ebp,%edx), %edi
+; X32-NEXT:    movl (%edx,%ebp), %ebp
+; X32-NEXT:    addl %ebx, %ebp
+; X32-NEXT:    leal (%edi,%edx), %ebx
+; X32-NEXT:    movl (%edx,%edi), %edi
+; X32-NEXT:    addl %ebp, %edi
+; X32-NEXT:    movl (%edx,%ebx), %ebp
+; X32-NEXT:    addl %edi, %ebp
+; X32-NEXT:    movl %ebp, (%ecx)
+; X32-NEXT:    leal (%ebx,%edx), %edi
+; X32-NEXT:    leal (%edi,%esi), %ebx
+; X32-NEXT:    movl (%esp), %edi # 4-byte Reload
+; X32-NEXT:    addl %edi, %ecx
 ; X32-NEXT:    decl %eax
 ; X32-NEXT:    jne .LBB2_2
 ; X32-NEXT:  .LBB2_3: # %for.end
+; X32-NEXT:    addl $4, %esp
 ; X32-NEXT:    popl %esi
 ; X32-NEXT:    popl %edi
 ; X32-NEXT:    popl %ebx
@@ -311,20 +346,20 @@ define void @foldedidx(ptr nocapture %a, ptr nocapture %b, ptr nocapture %c) nou
 ; X64-NEXT:    # =>This Inner Loop Header: Depth=1
 ; X64-NEXT:    movzbl -3(%rdi,%rax), %ecx
 ; X64-NEXT:    movzbl -3(%rsi,%rax), %r8d
-; X64-NEXT:    addl %ecx, %r8d
-; X64-NEXT:    movb %r8b, -3(%rdx,%rax)
+; X64-NEXT:    addl %r8d, %ecx
+; X64-NEXT:    movb %cl, -3(%rdx,%rax)
 ; X64-NEXT:    movzbl -2(%rdi,%rax), %ecx
 ; X64-NEXT:    movzbl -2(%rsi,%rax), %r8d
-; X64-NEXT:    addl %ecx, %r8d
-; X64-NEXT:    movb %r8b, -2(%rdx,%rax)
+; X64-NEXT:    addl %r8d, %ecx
+; X64-NEXT:    movb %cl, -2(%rdx,%rax)
 ; X64-NEXT:    movzbl -1(%rdi,%rax), %ecx
 ; X64-NEXT:    movzbl -1(%rsi,%rax), %r8d
-; X64-NEXT:    addl %ecx, %r8d
-; X64-NEXT:    movb %r8b, -1(%rdx,%rax)
+; X64-NEXT:    addl %r8d, %ecx
+; X64-NEXT:    movb %cl, -1(%rdx,%rax)
 ; X64-NEXT:    movzbl (%rdi,%rax), %ecx
 ; X64-NEXT:    movzbl (%rsi,%rax), %r8d
-; X64-NEXT:    addl %ecx, %r8d
-; X64-NEXT:    movb %r8b, (%rdx,%rax)
+; X64-NEXT:    addl %r8d, %ecx
+; X64-NEXT:    movb %cl, (%rdx,%rax)
 ; X64-NEXT:    addq $4, %rax
 ; X64-NEXT:    cmpl $403, %eax # imm = 0x193
 ; X64-NEXT:    jne .LBB3_1
@@ -343,20 +378,20 @@ define void @foldedidx(ptr nocapture %a, ptr nocapture %b, ptr nocapture %c) nou
 ; X32-NEXT:    .p2align 4
 ; X32-NEXT:  .LBB3_1: # %for.body
 ; X32-NEXT:    # =>This Inner Loop Header: Depth=1
-; X32-NEXT:    movzbl -3(%esi,%eax), %edi
-; X32-NEXT:    movzbl -3(%edx,%eax), %ebx
+; X32-NEXT:    movzbl -3(%esi,%eax), %ebx
+; X32-NEXT:    movzbl -3(%edx,%eax), %edi
 ; X32-NEXT:    addl %edi, %ebx
 ; X32-NEXT:    movb %bl, -3(%ecx,%eax)
-; X32-NEXT:    movzbl -2(%esi,%eax), %edi
-; X32-NEXT:    movzbl -2(%edx,%eax), %ebx
+; X32-NEXT:    movzbl -2(%esi,%eax), %ebx
+; X32-NEXT:    movzbl -2(%edx,%eax), %edi
 ; X32-NEXT:    addl %edi, %ebx
 ; X32-NEXT:    movb %bl, -2(%ecx,%eax)
-; X32-NEXT:    movzbl -1(%esi,%eax), %edi
-; X32-NEXT:    movzbl -1(%edx,%eax), %ebx
+; X32-NEXT:    movzbl -1(%esi,%eax), %ebx
+; X32-NEXT:    movzbl -1(%edx,%eax), %edi
 ; X32-NEXT:    addl %edi, %ebx
 ; X32-NEXT:    movb %bl, -1(%ecx,%eax)
-; X32-NEXT:    movzbl (%esi,%eax), %edi
-; X32-NEXT:    movzbl (%edx,%eax), %ebx
+; X32-NEXT:    movzbl (%esi,%eax), %ebx
+; X32-NEXT:    movzbl (%edx,%eax), %edi
 ; X32-NEXT:    addl %edi, %ebx
 ; X32-NEXT:    movb %bl, (%ecx,%eax)
 ; X32-NEXT:    addl $4, %eax
@@ -500,21 +535,22 @@ exit:
 define void @testCmpZero(ptr %src, ptr %dst, i32 %srcidx, i32 %dstidx, i32 %len) nounwind ssp {
 ; X64-LABEL: testCmpZero:
 ; X64:       # %bb.0: # %entry
+; X64-NEXT:    # kill: def $r8d killed $r8d def $r8
+; X64-NEXT:    movslq %edx, %r9
+; X64-NEXT:    leaq (%rdi,%r9), %rax
+; X64-NEXT:    movslq %ecx, %rcx
+; X64-NEXT:    addq %rsi, %rcx
+; X64-NEXT:    leal (%r9,%r8), %edx
 ; X64-NEXT:    movslq %edx, %rdx
-; X64-NEXT:    addq %rdx, %rdi
-; X64-NEXT:    movslq %ecx, %rax
-; X64-NEXT:    addq %rsi, %rax
-; X64-NEXT:    addl %edx, %r8d
-; X64-NEXT:    movslq %r8d, %rcx
-; X64-NEXT:    subq %rdx, %rcx
-; X64-NEXT:    xorl %edx, %edx
+; X64-NEXT:    subq %r9, %rdx
+; X64-NEXT:    xorl %esi, %esi
 ; X64-NEXT:    .p2align 4
 ; X64-NEXT:  .LBB5_1: # %for.body82.us
 ; X64-NEXT:    # =>This Inner Loop Header: Depth=1
-; X64-NEXT:    movzbl (%rax,%rdx,4), %esi
-; X64-NEXT:    movb %sil, (%rdi,%rdx)
-; X64-NEXT:    incq %rdx
-; X64-NEXT:    cmpq %rdx, %rcx
+; X64-NEXT:    movzbl (%rcx,%rsi,4), %edi
+; X64-NEXT:    movb %dil, (%rax,%rsi)
+; X64-NEXT:    incq %rsi
+; X64-NEXT:    cmpq %rsi, %rdx
 ; X64-NEXT:    jne .LBB5_1
 ; X64-NEXT:  # %bb.2: # %return
 ; X64-NEXT:    retq
@@ -524,10 +560,12 @@ define void @testCmpZero(ptr %src, ptr %dst, i32 %srcidx, i32 %dstidx, i32 %len)
 ; X32-NEXT:    pushl %ebx
 ; X32-NEXT:    pushl %esi
 ; X32-NEXT:    movl {{[0-9]+}}(%esp), %eax
-; X32-NEXT:    movl {{[0-9]+}}(%esp), %ecx
-; X32-NEXT:    addl {{[0-9]+}}(%esp), %ecx
+; X32-NEXT:    movl {{[0-9]+}}(%esp), %esi
 ; X32-NEXT:    movl {{[0-9]+}}(%esp), %edx
-; X32-NEXT:    addl {{[0-9]+}}(%esp), %edx
+; X32-NEXT:    movl {{[0-9]+}}(%esp), %ecx
+; X32-NEXT:    addl %edx, %ecx
+; X32-NEXT:    movl {{[0-9]+}}(%esp), %edx
+; X32-NEXT:    addl %esi, %edx
 ; X32-NEXT:    xorl %esi, %esi
 ; X32-NEXT:    .p2align 4
 ; X32-NEXT:  .LBB5_1: # %for.body82.us
