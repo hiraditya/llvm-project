@@ -236,7 +236,6 @@ body: |
   doTest<LiveIntervalsWrapperPass>(MIRString, T, ShouldPass);
 }
 
-
 } // End of anonymous namespace.
 
 char TestPass::ID = 0;

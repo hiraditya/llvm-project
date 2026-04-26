@@ -109,13 +109,11 @@ struct MachineVerifier {
       : PASS(pass), OS(OS ? *OS : nulls()), Banner(b),
         ReportedErrs(AbortOnError) {}
 
-  MachineVerifier(const char *b,
-                  LiveIntervals *LiveInts, LiveStacks *LiveStks,
+  MachineVerifier(const char *b, LiveIntervals *LiveInts, LiveStacks *LiveStks,
                   SlotIndexes *Indexes, raw_ostream *OS,
                   bool AbortOnError = true)
-      : OS(OS ? *OS : nulls()), Banner(b),
-        LiveInts(LiveInts), LiveStks(LiveStks), Indexes(Indexes),
-        ReportedErrs(AbortOnError) {}
+      : OS(OS ? *OS : nulls()), Banner(b), LiveInts(LiveInts),
+        LiveStks(LiveStks), Indexes(Indexes), ReportedErrs(AbortOnError) {}
 
   /// \returns true if no problems were found.
   bool verify(const MachineFunction &MF);
@@ -3012,7 +3010,6 @@ void MachineVerifier::checkLiveness(const MachineOperand *MO, unsigned MONum) {
   if (MO->readsReg()) {
     if (MO->isKill())
       addRegWithSubRegs(regsKilled, Reg);
-
 
     // Check LiveInts liveness and kill.
     if (LiveInts && !LiveInts->isNotInMIMap(*MI)) {

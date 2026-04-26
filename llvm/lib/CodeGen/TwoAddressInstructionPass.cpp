@@ -35,7 +35,6 @@
 #include "llvm/Analysis/AliasAnalysis.h"
 #include "llvm/CodeGen/LiveInterval.h"
 #include "llvm/CodeGen/LiveIntervals.h"
-#include "llvm/CodeGen/SparseLiveVariables.h"
 #include "llvm/CodeGen/MachineBasicBlock.h"
 #include "llvm/CodeGen/MachineDominators.h"
 #include "llvm/CodeGen/MachineFunction.h"
@@ -47,6 +46,7 @@
 #include "llvm/CodeGen/MachineRegisterInfo.h"
 #include "llvm/CodeGen/Passes.h"
 #include "llvm/CodeGen/SlotIndexes.h"
+#include "llvm/CodeGen/SparseLiveVariables.h"
 #include "llvm/CodeGen/TargetInstrInfo.h"
 #include "llvm/CodeGen/TargetOpcodes.h"
 #include "llvm/CodeGen/TargetRegisterInfo.h"
@@ -1087,7 +1087,6 @@ bool TwoAddressInstructionImpl::rescheduleMIBelowKill(
   if (LIS) {
     LIS->handleMove(*MI);
   } else {
-
   }
 
   LLVM_DEBUG(dbgs() << "\trescheduled below kill: " << *KillMI);
@@ -1266,7 +1265,6 @@ bool TwoAddressInstructionImpl::rescheduleKillAboveMI(
   if (LIS) {
     LIS->handleMove(*KillMI);
   } else {
-
   }
 
   LLVM_DEBUG(dbgs() << "\trescheduled kill: " << *KillMI);
@@ -2075,8 +2073,6 @@ void TwoAddressInstructionImpl::eliminateRegSequence(
       MBBI = CopyMI;
     }
     DefEmitted = true;
-
-
 
     LLVM_DEBUG(dbgs() << "Inserted: " << *CopyMI);
   }

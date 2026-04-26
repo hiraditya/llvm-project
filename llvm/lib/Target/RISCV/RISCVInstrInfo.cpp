@@ -4914,7 +4914,6 @@ MachineInstr *RISCVInstrInfo::convertToThreeAddress(MachineInstr &MI,
   }
   MIB.copyImplicitOps(MI);
 
-
   if (LIS) {
     SlotIndex Idx = LIS->ReplaceMachineInstrInMaps(MI, *MIB);
 

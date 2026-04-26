@@ -198,14 +198,12 @@ class MachineSinking {
 
 public:
   MachineSinking(bool EnableSinkAndFold, MachineDominatorTree *DT,
-                 MachinePostDominatorTree *PDT,
-                 MachineLoopInfo *MLI, SlotIndexes *SI, LiveIntervals *LIS,
-                 MachineCycleInfo *CI, ProfileSummaryInfo *PSI,
-                 MachineBlockFrequencyInfo *MBFI,
+                 MachinePostDominatorTree *PDT, MachineLoopInfo *MLI,
+                 SlotIndexes *SI, LiveIntervals *LIS, MachineCycleInfo *CI,
+                 ProfileSummaryInfo *PSI, MachineBlockFrequencyInfo *MBFI,
                  const MachineBranchProbabilityInfo *MBPI, AliasAnalysis *AA)
       : DT(DT), PDT(PDT), CI(CI), PSI(PSI), MBFI(MBFI), MBPI(MBPI), AA(AA),
-        LIS(LIS), SI(SI), MLI(MLI),
-        EnableSinkAndFold(EnableSinkAndFold) {}
+        LIS(LIS), SI(SI), MLI(MLI), EnableSinkAndFold(EnableSinkAndFold) {}
 
   bool run(MachineFunction &MF);
 
@@ -777,8 +775,8 @@ MachineSinkingPass::run(MachineFunction &MF,
   auto *LIS = MFAM.getCachedResult<LiveIntervalsAnalysis>(MF);
   auto *SI = MFAM.getCachedResult<SlotIndexesAnalysis>(MF);
   auto *MLI = MFAM.getCachedResult<MachineLoopAnalysis>(MF);
-  MachineSinking Impl(EnableSinkAndFold, DT, PDT, MLI, SI, LIS, CI, PSI,
-                      MBFI, MBPI, AA);
+  MachineSinking Impl(EnableSinkAndFold, DT, PDT, MLI, SI, LIS, CI, PSI, MBFI,
+                      MBPI, AA);
   bool Changed = Impl.run(MF);
   if (!Changed)
     return PreservedAnalyses::all();
@@ -824,8 +822,8 @@ bool MachineSinkingLegacy::runOnMachineFunction(MachineFunction &MF) {
   auto *MLIWrapper = getAnalysisIfAvailable<MachineLoopInfoWrapperPass>();
   auto *MLI = MLIWrapper ? &MLIWrapper->getLI() : nullptr;
 
-  MachineSinking Impl(EnableSinkAndFold, DT, PDT, MLI, SI, LIS, CI, PSI,
-                      MBFI, MBPI, AA);
+  MachineSinking Impl(EnableSinkAndFold, DT, PDT, MLI, SI, LIS, CI, PSI, MBFI,
+                      MBPI, AA);
   return Impl.run(MF);
 }
 
@@ -855,8 +853,8 @@ bool MachineSinking::run(MachineFunction &MF) {
     MachineDomTreeUpdater MDTU(DT, PDT,
                                MachineDomTreeUpdater::UpdateStrategy::Lazy);
     for (const auto &Pair : ToSplit) {
-      auto NewSucc = Pair.first->SplitCriticalEdge(
-          Pair.second, {LIS, SI, MLI}, nullptr, &MDTU);
+      auto NewSucc = Pair.first->SplitCriticalEdge(Pair.second, {LIS, SI, MLI},
+                                                   nullptr, &MDTU);
       if (NewSucc != nullptr) {
         LLVM_DEBUG(dbgs() << " *** Splitting critical edge: "
                           << printMBBReference(*Pair.first) << " -- "

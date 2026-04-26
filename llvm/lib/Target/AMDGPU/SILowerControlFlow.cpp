@@ -132,10 +132,9 @@ private:
 
 public:
   SILowerControlFlow(const GCNSubtarget *ST, LiveIntervals *LIS,
-                     MachineDominatorTree *MDT,
-                     MachinePostDominatorTree *PDT)
-      : LIS(LIS), MDT(MDT), PDT(PDT),
-        LMC(AMDGPU::LaneMaskConstants::get(*ST)) {}
+                     MachineDominatorTree *MDT, MachinePostDominatorTree *PDT)
+      : LIS(LIS), MDT(MDT), PDT(PDT), LMC(AMDGPU::LaneMaskConstants::get(*ST)) {
+  }
   bool run(MachineFunction &MF);
 };
 

@@ -141,7 +141,6 @@ private:
                               Register Dst);
 
 public:
-
   void getAnalysisUsage(AnalysisUsage &AU) const override {
     AU.addRequired<MachineDominatorTreeWrapperPass>();
     AU.addRequired<MachinePostDominatorTreeWrapperPass>();
@@ -519,7 +518,7 @@ bool PPCMIPeephole::simplifyCode() {
       if (ToErase) {
         LLVM_DEBUG(dbgs() << "Deleting instruction: ");
         LLVM_DEBUG(ToErase->dump());
-              ToErase->eraseFromParent();
+        ToErase->eraseFromParent();
         ToErase = nullptr;
       }
       // If a conditional trap instruction got optimized to an
@@ -1374,7 +1373,7 @@ bool PPCMIPeephole::simplifyCode() {
     // If the last instruction was marked for elimination,
     // remove it now.
     if (ToErase) {
-          ToErase->eraseFromParent();
+      ToErase->eraseFromParent();
       ToErase = nullptr;
     }
     // Reset TrapOpt to false at the end of the basic block.

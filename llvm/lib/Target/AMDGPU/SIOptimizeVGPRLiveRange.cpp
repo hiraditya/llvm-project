@@ -97,8 +97,7 @@ private:
   MachineRegisterInfo *MRI = nullptr;
 
 public:
-  SIOptimizeVGPRLiveRange(MachineDominatorTree *MDT,
-                          MachineLoopInfo *Loops)
+  SIOptimizeVGPRLiveRange(MachineDominatorTree *MDT, MachineLoopInfo *Loops)
       : MDT(MDT), Loops(Loops) {}
   bool run(MachineFunction &MF);
 

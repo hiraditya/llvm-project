@@ -1194,7 +1194,6 @@ bool X86InstrInfo::classifyLEAReg(MachineInstr &MI, const MachineOperand &Src,
     // Which is obviously going to be dead after we're done with it.
     isKill = true;
 
-
     if (LIS) {
       SlotIndex CopyIdx = LIS->InsertMachineInstrInMaps(*Copy);
       SlotIndex Idx = LIS->getInstructionIndex(MI);
@@ -1331,7 +1330,6 @@ MachineInstr *X86InstrInfo::convertToThreeAddressWithLEA(unsigned MIOpc,
       BuildMI(MBB, MBBI, MI.getDebugLoc(), get(TargetOpcode::COPY))
           .addReg(Dest, RegState::Define | getDeadRegState(IsDead))
           .addReg(OutRegLEA, RegState::Kill, SubReg);
-
 
   if (LIS) {
     LIS->InsertMachineInstrInMaps(*ImpDef);
@@ -1529,7 +1527,7 @@ MachineInstr *X86InstrInfo::convertToThreeAddress(MachineInstr &MI,
     [[fallthrough]];
   CASE_NF(DEC16r)
   CASE_NF(INC16r)
-    return convertToThreeAddressWithLEA(MIOpc, MI, LIS, Is8BitOp);
+  return convertToThreeAddressWithLEA(MIOpc, MI, LIS, Is8BitOp);
   CASE_NF(ADD64rr)
   CASE_NF(ADD32rr)
   case X86::ADD64rr_DB:
@@ -1572,7 +1570,6 @@ MachineInstr *X86InstrInfo::convertToThreeAddress(MachineInstr &MI,
     NewMI =
         addRegReg(MIB, SrcReg, isKill, SrcSubReg, SrcReg2, isKill2, SrcSubReg2);
 
-
     NumRegOperands = 3;
     break;
   }
@@ -1583,7 +1580,7 @@ MachineInstr *X86InstrInfo::convertToThreeAddress(MachineInstr &MI,
   CASE_NF(ADD16rr)
   case X86::ADD16rr_DB:
     return convertToThreeAddressWithLEA(MIOpc, MI, LIS, Is8BitOp);
-  CASE_NF(ADD64ri32)
+    CASE_NF(ADD64ri32)
   case X86::ADD64ri32_DB:
     assert(MI.getNumOperands() >= 3 && "Unknown add instruction!");
     NewMI = addOffset(
@@ -1619,8 +1616,8 @@ MachineInstr *X86InstrInfo::convertToThreeAddress(MachineInstr &MI,
   CASE_NF(ADD16ri)
   case X86::ADD16ri_DB:
     return convertToThreeAddressWithLEA(MIOpc, MI, LIS, Is8BitOp);
-  CASE_NF(SUB8ri)
-  CASE_NF(SUB16ri)
+    CASE_NF(SUB8ri)
+    CASE_NF(SUB16ri)
     /// FIXME: Support these similar to ADD8ri/ADD16ri*.
     return nullptr;
   CASE_NF(SUB32ri) {
@@ -1988,8 +1985,6 @@ MachineInstr *X86InstrInfo::convertToThreeAddress(MachineInstr &MI,
 
   if (!NewMI)
     return nullptr;
-
-
 
   MachineBasicBlock &MBB = *MI.getParent();
   MBB.insert(MI.getIterator(), NewMI); // Insert the new inst

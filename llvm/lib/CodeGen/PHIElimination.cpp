@@ -20,7 +20,6 @@
 #include "llvm/Analysis/LoopInfo.h"
 #include "llvm/CodeGen/LiveInterval.h"
 #include "llvm/CodeGen/LiveIntervals.h"
-#include "llvm/CodeGen/SparseLiveVariables.h"
 #include "llvm/CodeGen/MachineBasicBlock.h"
 #include "llvm/CodeGen/MachineBlockFrequencyInfo.h"
 #include "llvm/CodeGen/MachineBranchProbabilityInfo.h"
@@ -35,6 +34,7 @@
 #include "llvm/CodeGen/MachinePostDominators.h"
 #include "llvm/CodeGen/MachineRegisterInfo.h"
 #include "llvm/CodeGen/SlotIndexes.h"
+#include "llvm/CodeGen/SparseLiveVariables.h"
 #include "llvm/CodeGen/TargetInstrInfo.h"
 #include "llvm/CodeGen/TargetOpcodes.h"
 #include "llvm/CodeGen/TargetRegisterInfo.h"
@@ -96,8 +96,7 @@ class PHIEliminationImpl {
 
   /// Split critical edges where necessary for good coalescer performance.
   bool SplitPHIEdges(MachineFunction &MF, MachineBasicBlock &MBB,
-                     MachineLoopInfo *MLI,
-                     MachineDomTreeUpdater &MDTU);
+                     MachineLoopInfo *MLI, MachineDomTreeUpdater &MDTU);
 
   // These functions are temporary abstractions around LiveVariables and
   // LiveIntervals, so they can go away when LiveVariables does.
@@ -229,8 +228,7 @@ bool PHIEliminationImpl::run(MachineFunction &MF) {
   // Split critical edges to help the coalescer.
   if (!DisableEdgeSplitting && LIS) {
     for (auto &MBB : MF)
-      Changed |=
-          SplitPHIEdges(MF, MBB, MLI, MDTU);
+      Changed |= SplitPHIEdges(MF, MBB, MLI, MDTU);
   }
 
   // This pass takes the function out of SSA form.
@@ -503,7 +501,6 @@ void PHIEliminationImpl::LowerPHINode(MachineBasicBlock &MBB,
              "Expected a single use from UnspillableTerminator");
       SrcRegDef->getOperand(0).setReg(IncomingReg);
 
-
       continue;
     }
 
@@ -626,9 +623,10 @@ void PHIEliminationImpl::analyzePHINodes(const MachineFunction &MF) {
   }
 }
 
-bool PHIEliminationImpl::SplitPHIEdges(
-    MachineFunction &MF, MachineBasicBlock &MBB, MachineLoopInfo *MLI,
-    MachineDomTreeUpdater &MDTU) {
+bool PHIEliminationImpl::SplitPHIEdges(MachineFunction &MF,
+                                       MachineBasicBlock &MBB,
+                                       MachineLoopInfo *MLI,
+                                       MachineDomTreeUpdater &MDTU) {
   if (MBB.empty() || !MBB.front().isPHI() || MBB.isEHPad())
     return false; // Quick exit for basic blocks without PHIs.
 
