@@ -48,8 +48,10 @@ define i64 @test_sext_i32(i32 %val) {
 define i64 @test_zext_i8_to_i64(i8 %x, i8 %y) {
 ; X64-LABEL: test_zext_i8_to_i64:
 ; X64:       # %bb.0:
-; X64-NEXT:    addb %dil, %sil
-; X64-NEXT:    movzbl %sil, %eax
+; X64-NEXT:    # kill: def $edi killed $edi def $rdi
+; X64-NEXT:    # kill: def $esi killed $esi def $rsi
+; X64-NEXT:    leal (%rdi,%rsi), %eax
+; X64-NEXT:    movzbl %al, %eax
 ; X64-NEXT:    retq
   %a = add i8 %x, %y
   %b = zext i8 %a to i64
@@ -59,8 +61,10 @@ define i64 @test_zext_i8_to_i64(i8 %x, i8 %y) {
 define i64 @test_zext_i16_to_i64(i16 %x, i16 %y) {
 ; X64-LABEL: test_zext_i16_to_i64:
 ; X64:       # %bb.0:
-; X64-NEXT:    addw %di, %si
-; X64-NEXT:    movzwl %si, %eax
+; X64-NEXT:    # kill: def $edi killed $edi def $rdi
+; X64-NEXT:    # kill: def $esi killed $esi def $rsi
+; X64-NEXT:    leal (%rdi,%rsi), %eax
+; X64-NEXT:    movzwl %ax, %eax
 ; X64-NEXT:    retq
   %a = add i16 %x, %y
   %b = zext i16 %a to i64
@@ -70,8 +74,10 @@ define i64 @test_zext_i16_to_i64(i16 %x, i16 %y) {
 define i64 @test_zext_i32_to_i64(i32 %x, i32 %y) {
 ; X64-LABEL: test_zext_i32_to_i64:
 ; X64:       # %bb.0:
-; X64-NEXT:    addl %edi, %esi
-; X64-NEXT:    movl %esi, %eax
+; X64-NEXT:    # kill: def $edi killed $edi def $rdi
+; X64-NEXT:    # kill: def $esi killed $esi def $rsi
+; X64-NEXT:    leal (%rdi,%rsi), %eax
+; X64-NEXT:    movl %eax, %eax
 ; X64-NEXT:    retq
   %a = add i32 %x, %y
   %b = zext i32 %a to i64

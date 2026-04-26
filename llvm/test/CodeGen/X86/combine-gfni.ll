@@ -10,9 +10,10 @@ define <16 x i8> @gf2p8affineqb_freeze(<16 x i8> %a0, <16 x i8> %a1, <16 x i8> %
 ; SSE-NEXT:    pcmpgtb %xmm2, %xmm3
 ; SSE-NEXT:    gf2p8affineqb $11, %xmm1, %xmm1
 ; SSE-NEXT:    pand %xmm3, %xmm1
-; SSE-NEXT:    pandn %xmm0, %xmm3
-; SSE-NEXT:    por %xmm1, %xmm3
-; SSE-NEXT:    movdqa %xmm3, %xmm0
+; SSE-NEXT:    movdqa %xmm3, %xmm2
+; SSE-NEXT:    pandn %xmm0, %xmm2
+; SSE-NEXT:    por %xmm1, %xmm2
+; SSE-NEXT:    movdqa %xmm2, %xmm0
 ; SSE-NEXT:    retq
 ;
 ; AVX-LABEL: gf2p8affineqb_freeze:
@@ -40,9 +41,10 @@ define <16 x i8> @gf2p8affineinvqb_freeze(<16 x i8> %a0, <16 x i8> %a1, <16 x i8
 ; SSE-NEXT:    pcmpgtb %xmm2, %xmm3
 ; SSE-NEXT:    gf2p8affineinvqb $11, %xmm1, %xmm1
 ; SSE-NEXT:    pand %xmm3, %xmm1
-; SSE-NEXT:    pandn %xmm0, %xmm3
-; SSE-NEXT:    por %xmm1, %xmm3
-; SSE-NEXT:    movdqa %xmm3, %xmm0
+; SSE-NEXT:    movdqa %xmm3, %xmm2
+; SSE-NEXT:    pandn %xmm0, %xmm2
+; SSE-NEXT:    por %xmm1, %xmm2
+; SSE-NEXT:    movdqa %xmm2, %xmm0
 ; SSE-NEXT:    retq
 ;
 ; AVX-LABEL: gf2p8affineinvqb_freeze:
@@ -70,9 +72,10 @@ define <16 x i8> @gf2p8mulb_freeze(<16 x i8> %a0, <16 x i8> %a1, <16 x i8> %a2) 
 ; SSE-NEXT:    pcmpgtb %xmm2, %xmm3
 ; SSE-NEXT:    gf2p8mulb %xmm1, %xmm1
 ; SSE-NEXT:    pand %xmm3, %xmm1
-; SSE-NEXT:    pandn %xmm0, %xmm3
-; SSE-NEXT:    por %xmm1, %xmm3
-; SSE-NEXT:    movdqa %xmm3, %xmm0
+; SSE-NEXT:    movdqa %xmm3, %xmm2
+; SSE-NEXT:    pandn %xmm0, %xmm2
+; SSE-NEXT:    por %xmm1, %xmm2
+; SSE-NEXT:    movdqa %xmm2, %xmm0
 ; SSE-NEXT:    retq
 ;
 ; AVX-LABEL: gf2p8mulb_freeze:

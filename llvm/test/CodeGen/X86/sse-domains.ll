@@ -15,16 +15,16 @@ target triple = "x86_64-apple-macosx10.7"
 define void @f(ptr nocapture %p, i32 %n) nounwind uwtable ssp {
 ; CHECK-LABEL: f:
 ; CHECK:       ## %bb.0: ## %entry
-; CHECK-NEXT:    addq $16, %rdi
+; CHECK-NEXT:    leaq 16(%rdi), %rax
 ; CHECK-NEXT:    pxor %xmm1, %xmm1
 ; CHECK-NEXT:    movdqa {{.*#+}} xmm0 = [127,127,127,127]
 ; CHECK-NEXT:    .p2align 4
 ; CHECK-NEXT:  LBB0_1: ## %while.body
 ; CHECK-NEXT:    ## =>This Inner Loop Header: Depth=1
 ; CHECK-NEXT:    pand %xmm0, %xmm1
-; CHECK-NEXT:    movdqa %xmm1, -16(%rdi)
-; CHECK-NEXT:    movdqa (%rdi), %xmm1
-; CHECK-NEXT:    addq $16, %rdi
+; CHECK-NEXT:    movdqa %xmm1, -16(%rax)
+; CHECK-NEXT:    movdqa (%rax), %xmm1
+; CHECK-NEXT:    addq $16, %rax
 ; CHECK-NEXT:    paddd %xmm1, %xmm1
 ; CHECK-NEXT:    decl %esi
 ; CHECK-NEXT:    jne LBB0_1

@@ -13,8 +13,9 @@ define <2 x i64> @test3(i64 %arg) nounwind {
 ; X86-LABEL: test3:
 ; X86:       # %bb.0:
 ; X86-NEXT:    movl $1234567, %eax # imm = 0x12D687
-; X86-NEXT:    andl {{[0-9]+}}(%esp), %eax
-; X86-NEXT:    movd %eax, %xmm0
+; X86-NEXT:    movl {{[0-9]+}}(%esp), %ecx
+; X86-NEXT:    andl %eax, %ecx
+; X86-NEXT:    movd %ecx, %xmm0
 ; X86-NEXT:    retl
 ;
 ; X64-LABEL: test3:
@@ -31,8 +32,9 @@ define <2 x i64> @test2(i64 %arg) nounwind {
 ; X86-LABEL: test2:
 ; X86:       # %bb.0:
 ; X86-NEXT:    movl $1234567, %eax # imm = 0x12D687
-; X86-NEXT:    andl {{[0-9]+}}(%esp), %eax
-; X86-NEXT:    movd %eax, %xmm0
+; X86-NEXT:    movl {{[0-9]+}}(%esp), %ecx
+; X86-NEXT:    andl %eax, %ecx
+; X86-NEXT:    movd %ecx, %xmm0
 ; X86-NEXT:    retl
 ;
 ; X64-LABEL: test2:

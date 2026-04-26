@@ -57,11 +57,13 @@ define double @olt_inverse(double %x, double %y)  {
 define double @oge(double %x, double %y)  {
 ; SSE2-LABEL: oge:
 ; SSE2:       # %bb.0:
-; SSE2-NEXT:    movapd %xmm1, %xmm2
-; SSE2-NEXT:    cmplesd %xmm0, %xmm2
-; SSE2-NEXT:    andpd %xmm2, %xmm0
-; SSE2-NEXT:    andnpd %xmm1, %xmm2
-; SSE2-NEXT:    orpd %xmm2, %xmm0
+; SSE2-NEXT:    movapd %xmm1, %xmm3
+; SSE2-NEXT:    cmplesd %xmm0, %xmm3
+; SSE2-NEXT:    movapd %xmm3, %xmm2
+; SSE2-NEXT:    andpd %xmm0, %xmm2
+; SSE2-NEXT:    andnpd %xmm1, %xmm3
+; SSE2-NEXT:    orpd %xmm3, %xmm2
+; SSE2-NEXT:    movapd %xmm2, %xmm0
 ; SSE2-NEXT:    retq
 ;
 ; SSE42-LABEL: oge:
@@ -80,11 +82,13 @@ define double @oge(double %x, double %y)  {
 define double @ole(double %x, double %y)  {
 ; SSE2-LABEL: ole:
 ; SSE2:       # %bb.0:
-; SSE2-NEXT:    movapd %xmm0, %xmm2
-; SSE2-NEXT:    cmplesd %xmm1, %xmm2
-; SSE2-NEXT:    andpd %xmm2, %xmm0
-; SSE2-NEXT:    andnpd %xmm1, %xmm2
-; SSE2-NEXT:    orpd %xmm2, %xmm0
+; SSE2-NEXT:    movapd %xmm0, %xmm3
+; SSE2-NEXT:    cmplesd %xmm1, %xmm3
+; SSE2-NEXT:    movapd %xmm3, %xmm2
+; SSE2-NEXT:    andpd %xmm0, %xmm2
+; SSE2-NEXT:    andnpd %xmm1, %xmm3
+; SSE2-NEXT:    orpd %xmm3, %xmm2
+; SSE2-NEXT:    movapd %xmm2, %xmm0
 ; SSE2-NEXT:    retq
 ;
 ; SSE42-LABEL: ole:
@@ -102,11 +106,12 @@ define double @ole(double %x, double %y)  {
 define double @oge_inverse(double %x, double %y)  {
 ; SSE2-LABEL: oge_inverse:
 ; SSE2:       # %bb.0:
-; SSE2-NEXT:    movapd %xmm1, %xmm2
-; SSE2-NEXT:    cmplesd %xmm0, %xmm2
-; SSE2-NEXT:    andpd %xmm2, %xmm1
-; SSE2-NEXT:    andnpd %xmm0, %xmm2
-; SSE2-NEXT:    orpd %xmm1, %xmm2
+; SSE2-NEXT:    movapd %xmm1, %xmm3
+; SSE2-NEXT:    cmplesd %xmm0, %xmm3
+; SSE2-NEXT:    movapd %xmm3, %xmm2
+; SSE2-NEXT:    andpd %xmm1, %xmm2
+; SSE2-NEXT:    andnpd %xmm0, %xmm3
+; SSE2-NEXT:    orpd %xmm3, %xmm2
 ; SSE2-NEXT:    movapd %xmm2, %xmm0
 ; SSE2-NEXT:    retq
 ;
@@ -126,11 +131,12 @@ define double @oge_inverse(double %x, double %y)  {
 define double @ole_inverse(double %x, double %y)  {
 ; SSE2-LABEL: ole_inverse:
 ; SSE2:       # %bb.0:
-; SSE2-NEXT:    movapd %xmm0, %xmm2
-; SSE2-NEXT:    cmplesd %xmm1, %xmm2
-; SSE2-NEXT:    andpd %xmm2, %xmm1
-; SSE2-NEXT:    andnpd %xmm0, %xmm2
-; SSE2-NEXT:    orpd %xmm1, %xmm2
+; SSE2-NEXT:    movapd %xmm0, %xmm3
+; SSE2-NEXT:    cmplesd %xmm1, %xmm3
+; SSE2-NEXT:    movapd %xmm3, %xmm2
+; SSE2-NEXT:    andpd %xmm1, %xmm2
+; SSE2-NEXT:    andnpd %xmm0, %xmm3
+; SSE2-NEXT:    orpd %xmm3, %xmm2
 ; SSE2-NEXT:    movapd %xmm2, %xmm0
 ; SSE2-NEXT:    retq
 ;
@@ -197,7 +203,8 @@ define double @oge_x(double %x)  {
 ; CHECK:       # %bb.0:
 ; CHECK-NEXT:    xorpd %xmm1, %xmm1
 ; CHECK-NEXT:    cmplesd %xmm0, %xmm1
-; CHECK-NEXT:    andpd %xmm1, %xmm0
+; CHECK-NEXT:    andpd %xmm0, %xmm1
+; CHECK-NEXT:    movapd %xmm1, %xmm0
 ; CHECK-NEXT:    retq
   %c = fcmp oge double %x, 0.000000e+00
   %d = select i1 %c, double %x, double 0.000000e+00
@@ -207,10 +214,11 @@ define double @oge_x(double %x)  {
 define double @ole_x(double %x)  {
 ; CHECK-LABEL: ole_x:
 ; CHECK:       # %bb.0:
-; CHECK-NEXT:    xorpd %xmm1, %xmm1
-; CHECK-NEXT:    movapd %xmm0, %xmm2
-; CHECK-NEXT:    cmplesd %xmm1, %xmm2
-; CHECK-NEXT:    andpd %xmm2, %xmm0
+; CHECK-NEXT:    xorpd %xmm2, %xmm2
+; CHECK-NEXT:    movapd %xmm0, %xmm1
+; CHECK-NEXT:    cmplesd %xmm2, %xmm1
+; CHECK-NEXT:    andpd %xmm0, %xmm1
+; CHECK-NEXT:    movapd %xmm1, %xmm0
 ; CHECK-NEXT:    retq
   %c = fcmp ole double %x, 0.000000e+00
   %d = select i1 %c, double %x, double 0.000000e+00
@@ -247,11 +255,13 @@ define double @ole_inverse_x(double %x)  {
 define double @ugt(double %x, double %y)  {
 ; SSE2-LABEL: ugt:
 ; SSE2:       # %bb.0:
-; SSE2-NEXT:    movapd %xmm0, %xmm2
-; SSE2-NEXT:    cmpnlesd %xmm1, %xmm2
-; SSE2-NEXT:    andpd %xmm2, %xmm0
-; SSE2-NEXT:    andnpd %xmm1, %xmm2
-; SSE2-NEXT:    orpd %xmm2, %xmm0
+; SSE2-NEXT:    movapd %xmm0, %xmm3
+; SSE2-NEXT:    cmpnlesd %xmm1, %xmm3
+; SSE2-NEXT:    movapd %xmm3, %xmm2
+; SSE2-NEXT:    andpd %xmm0, %xmm2
+; SSE2-NEXT:    andnpd %xmm1, %xmm3
+; SSE2-NEXT:    orpd %xmm3, %xmm2
+; SSE2-NEXT:    movapd %xmm2, %xmm0
 ; SSE2-NEXT:    retq
 ;
 ; SSE42-LABEL: ugt:
@@ -269,11 +279,13 @@ define double @ugt(double %x, double %y)  {
 define double @ult(double %x, double %y)  {
 ; SSE2-LABEL: ult:
 ; SSE2:       # %bb.0:
-; SSE2-NEXT:    movapd %xmm1, %xmm2
-; SSE2-NEXT:    cmpnlesd %xmm0, %xmm2
-; SSE2-NEXT:    andpd %xmm2, %xmm0
-; SSE2-NEXT:    andnpd %xmm1, %xmm2
-; SSE2-NEXT:    orpd %xmm2, %xmm0
+; SSE2-NEXT:    movapd %xmm1, %xmm3
+; SSE2-NEXT:    cmpnlesd %xmm0, %xmm3
+; SSE2-NEXT:    movapd %xmm3, %xmm2
+; SSE2-NEXT:    andpd %xmm0, %xmm2
+; SSE2-NEXT:    andnpd %xmm1, %xmm3
+; SSE2-NEXT:    orpd %xmm3, %xmm2
+; SSE2-NEXT:    movapd %xmm2, %xmm0
 ; SSE2-NEXT:    retq
 ;
 ; SSE42-LABEL: ult:
@@ -292,11 +304,12 @@ define double @ult(double %x, double %y)  {
 define double @ugt_inverse(double %x, double %y)  {
 ; SSE2-LABEL: ugt_inverse:
 ; SSE2:       # %bb.0:
-; SSE2-NEXT:    movapd %xmm0, %xmm2
-; SSE2-NEXT:    cmpnlesd %xmm1, %xmm2
-; SSE2-NEXT:    andpd %xmm2, %xmm1
-; SSE2-NEXT:    andnpd %xmm0, %xmm2
-; SSE2-NEXT:    orpd %xmm1, %xmm2
+; SSE2-NEXT:    movapd %xmm0, %xmm3
+; SSE2-NEXT:    cmpnlesd %xmm1, %xmm3
+; SSE2-NEXT:    movapd %xmm3, %xmm2
+; SSE2-NEXT:    andpd %xmm1, %xmm2
+; SSE2-NEXT:    andnpd %xmm0, %xmm3
+; SSE2-NEXT:    orpd %xmm3, %xmm2
 ; SSE2-NEXT:    movapd %xmm2, %xmm0
 ; SSE2-NEXT:    retq
 ;
@@ -315,11 +328,12 @@ define double @ugt_inverse(double %x, double %y)  {
 define double @ult_inverse(double %x, double %y)  {
 ; SSE2-LABEL: ult_inverse:
 ; SSE2:       # %bb.0:
-; SSE2-NEXT:    movapd %xmm1, %xmm2
-; SSE2-NEXT:    cmpnlesd %xmm0, %xmm2
-; SSE2-NEXT:    andpd %xmm2, %xmm1
-; SSE2-NEXT:    andnpd %xmm0, %xmm2
-; SSE2-NEXT:    orpd %xmm1, %xmm2
+; SSE2-NEXT:    movapd %xmm1, %xmm3
+; SSE2-NEXT:    cmpnlesd %xmm0, %xmm3
+; SSE2-NEXT:    movapd %xmm3, %xmm2
+; SSE2-NEXT:    andpd %xmm1, %xmm2
+; SSE2-NEXT:    andnpd %xmm0, %xmm3
+; SSE2-NEXT:    orpd %xmm3, %xmm2
 ; SSE2-NEXT:    movapd %xmm2, %xmm0
 ; SSE2-NEXT:    retq
 ;
@@ -381,10 +395,11 @@ define double @ule_inverse(double %x, double %y)  {
 define double @ugt_x(double %x)  {
 ; CHECK-LABEL: ugt_x:
 ; CHECK:       # %bb.0:
-; CHECK-NEXT:    xorpd %xmm1, %xmm1
-; CHECK-NEXT:    movapd %xmm0, %xmm2
-; CHECK-NEXT:    cmpnlesd %xmm1, %xmm2
-; CHECK-NEXT:    andpd %xmm2, %xmm0
+; CHECK-NEXT:    xorpd %xmm2, %xmm2
+; CHECK-NEXT:    movapd %xmm0, %xmm1
+; CHECK-NEXT:    cmpnlesd %xmm2, %xmm1
+; CHECK-NEXT:    andpd %xmm0, %xmm1
+; CHECK-NEXT:    movapd %xmm1, %xmm0
 ; CHECK-NEXT:    retq
   %c = fcmp ugt double %x, 0.000000e+00
   %d = select i1 %c, double %x, double 0.000000e+00
@@ -396,7 +411,8 @@ define double @ult_x(double %x)  {
 ; CHECK:       # %bb.0:
 ; CHECK-NEXT:    xorpd %xmm1, %xmm1
 ; CHECK-NEXT:    cmpnlesd %xmm0, %xmm1
-; CHECK-NEXT:    andpd %xmm1, %xmm0
+; CHECK-NEXT:    andpd %xmm0, %xmm1
+; CHECK-NEXT:    movapd %xmm1, %xmm0
 ; CHECK-NEXT:    retq
   %c = fcmp ult double %x, 0.000000e+00
   %d = select i1 %c, double %x, double 0.000000e+00
@@ -523,12 +539,14 @@ define double @olt_inverse_y(double %x)  {
 define double @oge_y(double %x)  {
 ; SSE2-LABEL: oge_y:
 ; SSE2:       # %bb.0:
-; SSE2-NEXT:    movsd {{.*#+}} xmm1 = [-0.0E+0,0.0E+0]
-; SSE2-NEXT:    movapd %xmm1, %xmm2
-; SSE2-NEXT:    cmplesd %xmm0, %xmm2
-; SSE2-NEXT:    andpd %xmm2, %xmm0
-; SSE2-NEXT:    andnpd %xmm1, %xmm2
-; SSE2-NEXT:    orpd %xmm2, %xmm0
+; SSE2-NEXT:    movsd {{.*#+}} xmm2 = [-0.0E+0,0.0E+0]
+; SSE2-NEXT:    movapd %xmm2, %xmm3
+; SSE2-NEXT:    cmplesd %xmm0, %xmm3
+; SSE2-NEXT:    movapd %xmm3, %xmm1
+; SSE2-NEXT:    andpd %xmm0, %xmm1
+; SSE2-NEXT:    andnpd %xmm2, %xmm3
+; SSE2-NEXT:    orpd %xmm3, %xmm1
+; SSE2-NEXT:    movapd %xmm1, %xmm0
 ; SSE2-NEXT:    retq
 ;
 ; SSE42-LABEL: oge_y:
@@ -548,12 +566,14 @@ define double @oge_y(double %x)  {
 define double @ole_y(double %x)  {
 ; SSE2-LABEL: ole_y:
 ; SSE2:       # %bb.0:
-; SSE2-NEXT:    movsd {{.*#+}} xmm1 = [-0.0E+0,0.0E+0]
-; SSE2-NEXT:    movapd %xmm0, %xmm2
-; SSE2-NEXT:    cmplesd %xmm1, %xmm2
-; SSE2-NEXT:    andpd %xmm2, %xmm0
-; SSE2-NEXT:    andnpd %xmm1, %xmm2
-; SSE2-NEXT:    orpd %xmm2, %xmm0
+; SSE2-NEXT:    movsd {{.*#+}} xmm2 = [-0.0E+0,0.0E+0]
+; SSE2-NEXT:    movapd %xmm0, %xmm3
+; SSE2-NEXT:    cmplesd %xmm2, %xmm3
+; SSE2-NEXT:    movapd %xmm3, %xmm1
+; SSE2-NEXT:    andpd %xmm0, %xmm1
+; SSE2-NEXT:    andnpd %xmm2, %xmm3
+; SSE2-NEXT:    orpd %xmm3, %xmm1
+; SSE2-NEXT:    movapd %xmm1, %xmm0
 ; SSE2-NEXT:    retq
 ;
 ; SSE42-LABEL: ole_y:
@@ -573,11 +593,12 @@ define double @oge_inverse_y(double %x)  {
 ; SSE2-LABEL: oge_inverse_y:
 ; SSE2:       # %bb.0:
 ; SSE2-NEXT:    movsd {{.*#+}} xmm2 = [-0.0E+0,0.0E+0]
-; SSE2-NEXT:    movapd %xmm2, %xmm1
-; SSE2-NEXT:    cmplesd %xmm0, %xmm1
-; SSE2-NEXT:    andpd %xmm1, %xmm2
-; SSE2-NEXT:    andnpd %xmm0, %xmm1
-; SSE2-NEXT:    orpd %xmm2, %xmm1
+; SSE2-NEXT:    movapd %xmm2, %xmm3
+; SSE2-NEXT:    cmplesd %xmm0, %xmm3
+; SSE2-NEXT:    movapd %xmm3, %xmm1
+; SSE2-NEXT:    andpd %xmm2, %xmm1
+; SSE2-NEXT:    andnpd %xmm0, %xmm3
+; SSE2-NEXT:    orpd %xmm3, %xmm1
 ; SSE2-NEXT:    movapd %xmm1, %xmm0
 ; SSE2-NEXT:    retq
 ;
@@ -598,11 +619,12 @@ define double @ole_inverse_y(double %x)  {
 ; SSE2-LABEL: ole_inverse_y:
 ; SSE2:       # %bb.0:
 ; SSE2-NEXT:    movsd {{.*#+}} xmm2 = [-0.0E+0,0.0E+0]
-; SSE2-NEXT:    movapd %xmm0, %xmm1
-; SSE2-NEXT:    cmplesd %xmm2, %xmm1
-; SSE2-NEXT:    andpd %xmm1, %xmm2
-; SSE2-NEXT:    andnpd %xmm0, %xmm1
-; SSE2-NEXT:    orpd %xmm2, %xmm1
+; SSE2-NEXT:    movapd %xmm0, %xmm3
+; SSE2-NEXT:    cmplesd %xmm2, %xmm3
+; SSE2-NEXT:    movapd %xmm3, %xmm1
+; SSE2-NEXT:    andpd %xmm2, %xmm1
+; SSE2-NEXT:    andnpd %xmm0, %xmm3
+; SSE2-NEXT:    orpd %xmm3, %xmm1
 ; SSE2-NEXT:    movapd %xmm1, %xmm0
 ; SSE2-NEXT:    retq
 ;
@@ -621,12 +643,14 @@ define double @ole_inverse_y(double %x)  {
 define double @ugt_y(double %x)  {
 ; SSE2-LABEL: ugt_y:
 ; SSE2:       # %bb.0:
-; SSE2-NEXT:    movsd {{.*#+}} xmm1 = [-0.0E+0,0.0E+0]
-; SSE2-NEXT:    movapd %xmm0, %xmm2
-; SSE2-NEXT:    cmpnlesd %xmm1, %xmm2
-; SSE2-NEXT:    andpd %xmm2, %xmm0
-; SSE2-NEXT:    andnpd %xmm1, %xmm2
-; SSE2-NEXT:    orpd %xmm2, %xmm0
+; SSE2-NEXT:    movsd {{.*#+}} xmm2 = [-0.0E+0,0.0E+0]
+; SSE2-NEXT:    movapd %xmm0, %xmm3
+; SSE2-NEXT:    cmpnlesd %xmm2, %xmm3
+; SSE2-NEXT:    movapd %xmm3, %xmm1
+; SSE2-NEXT:    andpd %xmm0, %xmm1
+; SSE2-NEXT:    andnpd %xmm2, %xmm3
+; SSE2-NEXT:    orpd %xmm3, %xmm1
+; SSE2-NEXT:    movapd %xmm1, %xmm0
 ; SSE2-NEXT:    retq
 ;
 ; SSE42-LABEL: ugt_y:
@@ -645,12 +669,14 @@ define double @ugt_y(double %x)  {
 define double @ult_y(double %x)  {
 ; SSE2-LABEL: ult_y:
 ; SSE2:       # %bb.0:
-; SSE2-NEXT:    movsd {{.*#+}} xmm1 = [-0.0E+0,0.0E+0]
-; SSE2-NEXT:    movapd %xmm1, %xmm2
-; SSE2-NEXT:    cmpnlesd %xmm0, %xmm2
-; SSE2-NEXT:    andpd %xmm2, %xmm0
-; SSE2-NEXT:    andnpd %xmm1, %xmm2
-; SSE2-NEXT:    orpd %xmm2, %xmm0
+; SSE2-NEXT:    movsd {{.*#+}} xmm2 = [-0.0E+0,0.0E+0]
+; SSE2-NEXT:    movapd %xmm2, %xmm3
+; SSE2-NEXT:    cmpnlesd %xmm0, %xmm3
+; SSE2-NEXT:    movapd %xmm3, %xmm1
+; SSE2-NEXT:    andpd %xmm0, %xmm1
+; SSE2-NEXT:    andnpd %xmm2, %xmm3
+; SSE2-NEXT:    orpd %xmm3, %xmm1
+; SSE2-NEXT:    movapd %xmm1, %xmm0
 ; SSE2-NEXT:    retq
 ;
 ; SSE42-LABEL: ult_y:
@@ -671,11 +697,12 @@ define double @ugt_inverse_y(double %x)  {
 ; SSE2-LABEL: ugt_inverse_y:
 ; SSE2:       # %bb.0:
 ; SSE2-NEXT:    movsd {{.*#+}} xmm2 = [-0.0E+0,0.0E+0]
-; SSE2-NEXT:    movapd %xmm0, %xmm1
-; SSE2-NEXT:    cmpnlesd %xmm2, %xmm1
-; SSE2-NEXT:    andpd %xmm1, %xmm2
-; SSE2-NEXT:    andnpd %xmm0, %xmm1
-; SSE2-NEXT:    orpd %xmm2, %xmm1
+; SSE2-NEXT:    movapd %xmm0, %xmm3
+; SSE2-NEXT:    cmpnlesd %xmm2, %xmm3
+; SSE2-NEXT:    movapd %xmm3, %xmm1
+; SSE2-NEXT:    andpd %xmm2, %xmm1
+; SSE2-NEXT:    andnpd %xmm0, %xmm3
+; SSE2-NEXT:    orpd %xmm3, %xmm1
 ; SSE2-NEXT:    movapd %xmm1, %xmm0
 ; SSE2-NEXT:    retq
 ;
@@ -695,11 +722,12 @@ define double @ult_inverse_y(double %x)  {
 ; SSE2-LABEL: ult_inverse_y:
 ; SSE2:       # %bb.0:
 ; SSE2-NEXT:    movsd {{.*#+}} xmm2 = [-0.0E+0,0.0E+0]
-; SSE2-NEXT:    movapd %xmm2, %xmm1
-; SSE2-NEXT:    cmpnlesd %xmm0, %xmm1
-; SSE2-NEXT:    andpd %xmm1, %xmm2
-; SSE2-NEXT:    andnpd %xmm0, %xmm1
-; SSE2-NEXT:    orpd %xmm2, %xmm1
+; SSE2-NEXT:    movapd %xmm2, %xmm3
+; SSE2-NEXT:    cmpnlesd %xmm0, %xmm3
+; SSE2-NEXT:    movapd %xmm3, %xmm1
+; SSE2-NEXT:    andpd %xmm2, %xmm1
+; SSE2-NEXT:    andnpd %xmm0, %xmm3
+; SSE2-NEXT:    orpd %xmm3, %xmm1
 ; SSE2-NEXT:    movapd %xmm1, %xmm0
 ; SSE2-NEXT:    retq
 ;
@@ -857,7 +885,8 @@ define <2 x double> @test_maxpd(<2 x double> %x, <2 x double> %y)  {
 ; SSE2-NEXT:    cmplepd %xmm0, %xmm2
 ; SSE2-NEXT:    andpd %xmm2, %xmm0
 ; SSE2-NEXT:    andnpd %xmm1, %xmm2
-; SSE2-NEXT:    orpd %xmm2, %xmm0
+; SSE2-NEXT:    orpd %xmm0, %xmm2
+; SSE2-NEXT:    movapd %xmm2, %xmm0
 ; SSE2-NEXT:    retq
 ;
 ; SSE42-LABEL: test_maxpd:
@@ -880,7 +909,8 @@ define <2 x double> @test_minpd(<2 x double> %x, <2 x double> %y)  {
 ; SSE2-NEXT:    cmplepd %xmm1, %xmm2
 ; SSE2-NEXT:    andpd %xmm2, %xmm0
 ; SSE2-NEXT:    andnpd %xmm1, %xmm2
-; SSE2-NEXT:    orpd %xmm2, %xmm0
+; SSE2-NEXT:    orpd %xmm0, %xmm2
+; SSE2-NEXT:    movapd %xmm2, %xmm0
 ; SSE2-NEXT:    retq
 ;
 ; SSE42-LABEL: test_minpd:
@@ -902,7 +932,8 @@ define <4 x float> @test_maxps(<4 x float> %x, <4 x float> %y)  {
 ; SSE2-NEXT:    cmpleps %xmm0, %xmm2
 ; SSE2-NEXT:    andps %xmm2, %xmm0
 ; SSE2-NEXT:    andnps %xmm1, %xmm2
-; SSE2-NEXT:    orps %xmm2, %xmm0
+; SSE2-NEXT:    orps %xmm0, %xmm2
+; SSE2-NEXT:    movaps %xmm2, %xmm0
 ; SSE2-NEXT:    retq
 ;
 ; SSE42-LABEL: test_maxps:
@@ -925,7 +956,8 @@ define <4 x float> @test_minps(<4 x float> %x, <4 x float> %y)  {
 ; SSE2-NEXT:    cmpleps %xmm1, %xmm2
 ; SSE2-NEXT:    andps %xmm2, %xmm0
 ; SSE2-NEXT:    andnps %xmm1, %xmm2
-; SSE2-NEXT:    orps %xmm2, %xmm0
+; SSE2-NEXT:    orps %xmm0, %xmm2
+; SSE2-NEXT:    movaps %xmm2, %xmm0
 ; SSE2-NEXT:    retq
 ;
 ; SSE42-LABEL: test_minps:
@@ -947,7 +979,8 @@ define <2 x float> @test_maxps_illegal_v2f32(<2 x float> %x, <2 x float> %y)  {
 ; SSE2-NEXT:    cmpleps %xmm0, %xmm2
 ; SSE2-NEXT:    andps %xmm2, %xmm0
 ; SSE2-NEXT:    andnps %xmm1, %xmm2
-; SSE2-NEXT:    orps %xmm2, %xmm0
+; SSE2-NEXT:    orps %xmm0, %xmm2
+; SSE2-NEXT:    movaps %xmm2, %xmm0
 ; SSE2-NEXT:    retq
 ;
 ; SSE42-LABEL: test_maxps_illegal_v2f32:
@@ -970,7 +1003,8 @@ define <2 x float> @test_minps_illegal_v2f32(<2 x float> %x, <2 x float> %y)  {
 ; SSE2-NEXT:    cmpleps %xmm1, %xmm2
 ; SSE2-NEXT:    andps %xmm2, %xmm0
 ; SSE2-NEXT:    andnps %xmm1, %xmm2
-; SSE2-NEXT:    orps %xmm2, %xmm0
+; SSE2-NEXT:    orps %xmm0, %xmm2
+; SSE2-NEXT:    movaps %xmm2, %xmm0
 ; SSE2-NEXT:    retq
 ;
 ; SSE42-LABEL: test_minps_illegal_v2f32:
@@ -992,7 +1026,8 @@ define <3 x float> @test_maxps_illegal_v3f32(<3 x float> %x, <3 x float> %y)  {
 ; SSE2-NEXT:    cmpleps %xmm0, %xmm2
 ; SSE2-NEXT:    andps %xmm2, %xmm0
 ; SSE2-NEXT:    andnps %xmm1, %xmm2
-; SSE2-NEXT:    orps %xmm2, %xmm0
+; SSE2-NEXT:    orps %xmm0, %xmm2
+; SSE2-NEXT:    movaps %xmm2, %xmm0
 ; SSE2-NEXT:    retq
 ;
 ; SSE42-LABEL: test_maxps_illegal_v3f32:
@@ -1015,7 +1050,8 @@ define <3 x float> @test_minps_illegal_v3f32(<3 x float> %x, <3 x float> %y)  {
 ; SSE2-NEXT:    cmpleps %xmm1, %xmm2
 ; SSE2-NEXT:    andps %xmm2, %xmm0
 ; SSE2-NEXT:    andnps %xmm1, %xmm2
-; SSE2-NEXT:    orps %xmm2, %xmm0
+; SSE2-NEXT:    orps %xmm0, %xmm2
+; SSE2-NEXT:    movaps %xmm2, %xmm0
 ; SSE2-NEXT:    retq
 ;
 ; SSE42-LABEL: test_minps_illegal_v3f32:

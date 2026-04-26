@@ -11,13 +11,14 @@ define void @func(<4 x float> %vx) {
 ; CHECK:       # %bb.0: # %entry
 ; CHECK-NEXT:    pushq %rax
 ; CHECK-NEXT:    .cfi_def_cfa_offset 16
-; CHECK-NEXT:    pand {{\.?LCPI[0-9]+_[0-9]+}}(%rip), %xmm0
-; CHECK-NEXT:    movd %xmm0, %eax
+; CHECK-NEXT:    movdqa {{.*#+}} xmm1 = [8727373547504,8727373547504]
+; CHECK-NEXT:    pand %xmm0, %xmm1
+; CHECK-NEXT:    movd %xmm1, %eax
 ; CHECK-NEXT:    leaq stuff(%rax), %rdi
-; CHECK-NEXT:    pextrd $1, %xmm0, %r9d
+; CHECK-NEXT:    pextrd $1, %xmm1, %r9d
 ; CHECK-NEXT:    leaq stuff(%r9), %rsi
-; CHECK-NEXT:    pextrd $2, %xmm0, %ecx
-; CHECK-NEXT:    pextrd $3, %xmm0, %r8d
+; CHECK-NEXT:    pextrd $2, %xmm1, %ecx
+; CHECK-NEXT:    pextrd $3, %xmm1, %r8d
 ; CHECK-NEXT:    leaq stuff(%rcx), %rdx
 ; CHECK-NEXT:    leaq stuff(%r8), %rcx
 ; CHECK-NEXT:    leaq stuff+8(%rax), %r8

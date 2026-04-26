@@ -6,20 +6,19 @@
 define i64 @foo(i64 %data1, i64 %data2, i64 %data3) {
 ; CHECK-LABEL: foo:
 ; CHECK:       # %bb.0: # %entry
-; CHECK-NEXT:    movq %rdx, %rax
 ; CHECK-NEXT:    shrq $32, %rdi
 ; CHECK-NEXT:    je .LBB0_2
 ; CHECK-NEXT:  # %bb.1:
-; CHECK-NEXT:    incq %rax
+; CHECK-NEXT:    leaq 1(%rdx), %rax
 ; CHECK-NEXT:    retq
 ; CHECK-NEXT:  .LBB0_2: # %L_val2
 ; CHECK-NEXT:    shrq $32, %rsi
 ; CHECK-NEXT:    je .LBB0_4
 ; CHECK-NEXT:  # %bb.3:
-; CHECK-NEXT:    addq $2, %rax
+; CHECK-NEXT:    leaq 2(%rdx), %rax
 ; CHECK-NEXT:    retq
 ; CHECK-NEXT:  .LBB0_4: # %L_val3
-; CHECK-NEXT:    addq $3, %rax
+; CHECK-NEXT:    leaq 3(%rdx), %rax
 ; CHECK-NEXT:    retq
 entry:
   %val1 = add i64 %data3, 1

@@ -25,13 +25,13 @@ define i64 @early_ioremap_pmd(i64 %addr) {
 ; CHECK-EMPTY:
 ; CHECK-NEXT:    #NO_APP
 ; CHECK-NEXT:    movabsq $9223372036854771712, %rdx # imm = 0x7FFFFFFFFFFFF000
-; CHECK-NEXT:    andq %rax, %rdx
-; CHECK-NEXT:    movzbl pgdir_shift(%rip), %eax
 ; CHECK-NEXT:    movq page_offset_base(%rip), %rcx
-; CHECK-NEXT:    shrxq %rax, %rdi, %rax
-; CHECK-NEXT:    addq %rcx, %rdx
-; CHECK-NEXT:    andl $511, %eax # imm = 0x1FF
-; CHECK-NEXT:    leaq (%rdx,%rax,8), %rax
+; CHECK-NEXT:    andq %rax, %rdx
+; CHECK-NEXT:    leaq (%rdx,%rcx), %rax
+; CHECK-NEXT:    movzbl pgdir_shift(%rip), %edx
+; CHECK-NEXT:    shrxq %rdx, %rdi, %rdx
+; CHECK-NEXT:    andl $511, %edx # imm = 0x1FF
+; CHECK-NEXT:    leaq (%rax,%rdx,8), %rax
 ; CHECK-NEXT:    #APP
 ; CHECK-NEXT:  .Ltmp0:
 ; CHECK-NEXT:    jmp .Ltmp1

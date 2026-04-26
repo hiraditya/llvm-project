@@ -184,9 +184,9 @@ define i32 @imp_null_check_add_result(ptr %x, i32 %p) {
 ; CHECK-LABEL: imp_null_check_add_result:
 ; CHECK:       ## %bb.0: ## %entry
 ; CHECK-NEXT:  Ltmp5:
-; CHECK-NEXT:    addl (%rdi), %esi ## on-fault: LBB7_1
+; CHECK-NEXT:    movl (%rdi), %eax ## on-fault: LBB7_1
 ; CHECK-NEXT:  ## %bb.2: ## %not_null
-; CHECK-NEXT:    movl %esi, %eax
+; CHECK-NEXT:    addl %esi, %eax
 ; CHECK-NEXT:    retq
 ; CHECK-NEXT:  LBB7_1: ## %is_null
 ; CHECK-NEXT:    movl $42, %eax
@@ -234,9 +234,9 @@ define i32 @imp_null_check_mul_result(ptr %x, i32 %p) {
 ; CHECK-LABEL: imp_null_check_mul_result:
 ; CHECK:       ## %bb.0: ## %entry
 ; CHECK-NEXT:  Ltmp7:
-; CHECK-NEXT:    imull (%rdi), %esi ## on-fault: LBB9_1
+; CHECK-NEXT:    movl (%rdi), %eax ## on-fault: LBB9_1
 ; CHECK-NEXT:  ## %bb.2: ## %not_null
-; CHECK-NEXT:    movl %esi, %eax
+; CHECK-NEXT:    imull %esi, %eax
 ; CHECK-NEXT:    retq
 ; CHECK-NEXT:  LBB9_1: ## %is_null
 ; CHECK-NEXT:    movl $42, %eax
@@ -405,10 +405,10 @@ define i32 @imp_null_check_gep_load_with_use_dep(ptr %x, i32 %a) {
 ; CHECK:       ## %bb.0: ## %entry
 ; CHECK-NEXT:    ## kill: def $esi killed $esi def $rsi
 ; CHECK-NEXT:  Ltmp13:
-; CHECK-NEXT:    movl (%rdi), %eax ## on-fault: LBB15_1
+; CHECK-NEXT:    movl (%rdi), %ecx ## on-fault: LBB15_1
 ; CHECK-NEXT:  ## %bb.2: ## %not_null
-; CHECK-NEXT:    addl %edi, %esi
-; CHECK-NEXT:    leal 4(%rax,%rsi), %eax
+; CHECK-NEXT:    leal (%rdi,%rsi), %eax
+; CHECK-NEXT:    leal 4(%rcx,%rax), %eax
 ; CHECK-NEXT:    retq
 ; CHECK-NEXT:  LBB15_1: ## %is_null
 ; CHECK-NEXT:    movl $42, %eax

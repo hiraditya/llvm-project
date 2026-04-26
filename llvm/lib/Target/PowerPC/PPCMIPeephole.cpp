@@ -34,7 +34,6 @@
 #include "PPCMachineFunctionInfo.h"
 #include "PPCTargetMachine.h"
 #include "llvm/ADT/Statistic.h"
-#include "llvm/CodeGen/LiveVariables.h"
 #include "llvm/CodeGen/MachineBlockFrequencyInfo.h"
 #include "llvm/CodeGen/MachineDominators.h"
 #include "llvm/CodeGen/MachineFrameInfo.h"
@@ -111,7 +110,6 @@ struct PPCMIPeephole : public MachineFunctionPass {
   const PPCInstrInfo *TII;
   MachineFunction *MF;
   MachineRegisterInfo *MRI;
-  LiveVariables *LV;
 
   PPCMIPeephole() : MachineFunctionPass(ID) {}
 
@@ -137,27 +135,16 @@ private:
   void UpdateTOCSaves(std::map<MachineInstr *, bool> &TOCSaves,
                       MachineInstr *MI);
 
-  // A number of transformations will eliminate the definition of a register
-  // as all of its uses will be removed. However, this leaves a register
-  // without a definition for LiveVariables. Such transformations should
-  // use this function to provide a dummy definition of the register that
-  // will simply be removed by DCE.
-  void addDummyDef(MachineBasicBlock &MBB, MachineInstr *At, Register Reg) {
-    BuildMI(MBB, At, At->getDebugLoc(), TII->get(PPC::IMPLICIT_DEF), Reg);
-  }
   void addRegToUpdateWithLine(Register Reg, int Line);
   void convertUnprimedAccPHIs(const PPCInstrInfo *TII, MachineRegisterInfo *MRI,
                               SmallVectorImpl<MachineInstr *> &PHIs,
                               Register Dst);
 
 public:
-
   void getAnalysisUsage(AnalysisUsage &AU) const override {
-    AU.addRequired<LiveVariablesWrapperPass>();
     AU.addRequired<MachineDominatorTreeWrapperPass>();
     AU.addRequired<MachinePostDominatorTreeWrapperPass>();
     AU.addRequired<MachineBlockFrequencyInfoWrapperPass>();
-    AU.addPreserved<LiveVariablesWrapperPass>();
     AU.addPreserved<MachineDominatorTreeWrapperPass>();
     AU.addPreserved<MachinePostDominatorTreeWrapperPass>();
     AU.addPreserved<MachineBlockFrequencyInfoWrapperPass>();
@@ -200,7 +187,6 @@ void PPCMIPeephole::initialize(MachineFunction &MFParm) {
   MDT = &getAnalysis<MachineDominatorTreeWrapperPass>().getDomTree();
   MPDT = &getAnalysis<MachinePostDominatorTreeWrapperPass>().getPostDomTree();
   MBFI = &getAnalysis<MachineBlockFrequencyInfoWrapperPass>().getMBFI();
-  LV = &getAnalysis<LiveVariablesWrapperPass>().getLV();
   EntryFreq = MBFI->getEntryFreq();
   TII = MF->getSubtarget<PPCSubtarget>().getInstrInfo();
   RegsToUpdate.clear();
@@ -532,7 +518,6 @@ bool PPCMIPeephole::simplifyCode() {
       if (ToErase) {
         LLVM_DEBUG(dbgs() << "Deleting instruction: ");
         LLVM_DEBUG(ToErase->dump());
-        recomputeLVForDyingInstr();
         ToErase->eraseFromParent();
         ToErase = nullptr;
       }
@@ -1090,7 +1075,7 @@ bool PPCMIPeephole::simplifyCode() {
           // chain used to deduce sign extension to eliminate the 'extsw' will
           // need to be promoted to 64-bit pseudo instructions when the 'extsw'
           // is eliminated.
-          TII->promoteInstr32To64ForElimEXTSW(NarrowReg, MRI, 0, LV);
+          TII->promoteInstr32To64ForElimEXTSW(NarrowReg, MRI, 0);
 
           LLVM_DEBUG(dbgs() << "Removing redundant sign-extension\n");
           Register TmpReg =
@@ -1388,7 +1373,6 @@ bool PPCMIPeephole::simplifyCode() {
     // If the last instruction was marked for elimination,
     // remove it now.
     if (ToErase) {
-      recomputeLVForDyingInstr();
       ToErase->eraseFromParent();
       ToErase = nullptr;
     }
@@ -2076,7 +2060,6 @@ INITIALIZE_PASS_BEGIN(PPCMIPeephole, DEBUG_TYPE,
 INITIALIZE_PASS_DEPENDENCY(MachineBlockFrequencyInfoWrapperPass)
 INITIALIZE_PASS_DEPENDENCY(MachineDominatorTreeWrapperPass)
 INITIALIZE_PASS_DEPENDENCY(MachinePostDominatorTreeWrapperPass)
-INITIALIZE_PASS_DEPENDENCY(LiveVariablesWrapperPass)
 INITIALIZE_PASS_END(PPCMIPeephole, DEBUG_TYPE,
                     "PowerPC MI Peephole Optimization", false, false)
 

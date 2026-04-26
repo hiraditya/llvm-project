@@ -133,8 +133,8 @@ define float @t6(ptr%a0) {
 ; X86-SSE2-NEXT:    movss {{.*#+}} xmm2 = [1.0E+0,0.0E+0,0.0E+0,0.0E+0]
 ; X86-SSE2-NEXT:    andps %xmm1, %xmm2
 ; X86-SSE2-NEXT:    andnps %xmm0, %xmm1
-; X86-SSE2-NEXT:    orps %xmm2, %xmm1
-; X86-SSE2-NEXT:    movss %xmm1, (%esp)
+; X86-SSE2-NEXT:    orps %xmm1, %xmm2
+; X86-SSE2-NEXT:    movss %xmm2, (%esp)
 ; X86-SSE2-NEXT:    flds (%esp)
 ; X86-SSE2-NEXT:    popl %eax
 ; X86-SSE2-NEXT:    .cfi_def_cfa_offset 4
@@ -143,11 +143,11 @@ define float @t6(ptr%a0) {
 ; X64-SSSE3-LABEL: t6:
 ; X64-SSSE3:       # %bb.0:
 ; X64-SSSE3-NEXT:    movshdup {{.*#+}} xmm1 = mem[1,1,3,3]
-; X64-SSSE3-NEXT:    xorps %xmm0, %xmm0
-; X64-SSSE3-NEXT:    cmpeqss %xmm1, %xmm0
-; X64-SSSE3-NEXT:    movss {{.*#+}} xmm2 = [1.0E+0,0.0E+0,0.0E+0,0.0E+0]
-; X64-SSSE3-NEXT:    andps %xmm0, %xmm2
-; X64-SSSE3-NEXT:    andnps %xmm1, %xmm0
+; X64-SSSE3-NEXT:    xorps %xmm2, %xmm2
+; X64-SSSE3-NEXT:    cmpeqss %xmm1, %xmm2
+; X64-SSSE3-NEXT:    movss {{.*#+}} xmm0 = [1.0E+0,0.0E+0,0.0E+0,0.0E+0]
+; X64-SSSE3-NEXT:    andps %xmm2, %xmm0
+; X64-SSSE3-NEXT:    andnps %xmm1, %xmm2
 ; X64-SSSE3-NEXT:    orps %xmm2, %xmm0
 ; X64-SSSE3-NEXT:    retq
 ;
@@ -186,8 +186,8 @@ define void @PR43971(ptr%a0, ptr%a1) {
 ; X86-SSE2-NEXT:    movss {{.*#+}} xmm2 = mem[0],zero,zero,zero
 ; X86-SSE2-NEXT:    andps %xmm1, %xmm2
 ; X86-SSE2-NEXT:    andnps %xmm0, %xmm1
-; X86-SSE2-NEXT:    orps %xmm2, %xmm1
-; X86-SSE2-NEXT:    movss %xmm1, (%eax)
+; X86-SSE2-NEXT:    orps %xmm1, %xmm2
+; X86-SSE2-NEXT:    movss %xmm2, (%eax)
 ; X86-SSE2-NEXT:    retl
 ;
 ; X64-SSSE3-LABEL: PR43971:
@@ -198,8 +198,8 @@ define void @PR43971(ptr%a0, ptr%a1) {
 ; X64-SSSE3-NEXT:    movss {{.*#+}} xmm2 = mem[0],zero,zero,zero
 ; X64-SSSE3-NEXT:    andps %xmm1, %xmm2
 ; X64-SSSE3-NEXT:    andnps %xmm0, %xmm1
-; X64-SSSE3-NEXT:    orps %xmm2, %xmm1
-; X64-SSSE3-NEXT:    movss %xmm1, (%rsi)
+; X64-SSSE3-NEXT:    orps %xmm1, %xmm2
+; X64-SSSE3-NEXT:    movss %xmm2, (%rsi)
 ; X64-SSSE3-NEXT:    retq
 ;
 ; X64-AVX-LABEL: PR43971:
@@ -233,8 +233,8 @@ define float @PR43971_1(ptr%a0) nounwind {
 ; X86-SSE2-NEXT:    movss {{.*#+}} xmm2 = [1.0E+0,0.0E+0,0.0E+0,0.0E+0]
 ; X86-SSE2-NEXT:    andps %xmm1, %xmm2
 ; X86-SSE2-NEXT:    andnps %xmm0, %xmm1
-; X86-SSE2-NEXT:    orps %xmm2, %xmm1
-; X86-SSE2-NEXT:    movss %xmm1, (%esp)
+; X86-SSE2-NEXT:    orps %xmm1, %xmm2
+; X86-SSE2-NEXT:    movss %xmm2, (%esp)
 ; X86-SSE2-NEXT:    flds (%esp)
 ; X86-SSE2-NEXT:    popl %eax
 ; X86-SSE2-NEXT:    retl
@@ -242,11 +242,11 @@ define float @PR43971_1(ptr%a0) nounwind {
 ; X64-SSSE3-LABEL: PR43971_1:
 ; X64-SSSE3:       # %bb.0: # %entry
 ; X64-SSSE3-NEXT:    movshdup {{.*#+}} xmm1 = mem[1,1,3,3]
-; X64-SSSE3-NEXT:    xorps %xmm0, %xmm0
-; X64-SSSE3-NEXT:    cmpeqss %xmm1, %xmm0
-; X64-SSSE3-NEXT:    movss {{.*#+}} xmm2 = [1.0E+0,0.0E+0,0.0E+0,0.0E+0]
-; X64-SSSE3-NEXT:    andps %xmm0, %xmm2
-; X64-SSSE3-NEXT:    andnps %xmm1, %xmm0
+; X64-SSSE3-NEXT:    xorps %xmm2, %xmm2
+; X64-SSSE3-NEXT:    cmpeqss %xmm1, %xmm2
+; X64-SSSE3-NEXT:    movss {{.*#+}} xmm0 = [1.0E+0,0.0E+0,0.0E+0,0.0E+0]
+; X64-SSSE3-NEXT:    andps %xmm2, %xmm0
+; X64-SSSE3-NEXT:    andnps %xmm1, %xmm2
 ; X64-SSSE3-NEXT:    orps %xmm2, %xmm0
 ; X64-SSSE3-NEXT:    retq
 ;
@@ -277,14 +277,20 @@ entry:
 define i32 @PR85419(ptr %p0) {
 ; X86-SSE2-LABEL: PR85419:
 ; X86-SSE2:       # %bb.0:
+; X86-SSE2-NEXT:    pushl %esi
+; X86-SSE2-NEXT:    .cfi_def_cfa_offset 8
+; X86-SSE2-NEXT:    .cfi_offset %esi, -8
 ; X86-SSE2-NEXT:    movl {{[0-9]+}}(%esp), %ecx
 ; X86-SSE2-NEXT:    movl (%ecx), %edx
 ; X86-SSE2-NEXT:    xorl %eax, %eax
-; X86-SSE2-NEXT:    orl 4(%ecx), %edx
+; X86-SSE2-NEXT:    movl 4(%ecx), %esi
+; X86-SSE2-NEXT:    orl %edx, %esi
 ; X86-SSE2-NEXT:    je .LBB8_2
 ; X86-SSE2-NEXT:  # %bb.1:
 ; X86-SSE2-NEXT:    movl 8(%ecx), %eax
 ; X86-SSE2-NEXT:  .LBB8_2:
+; X86-SSE2-NEXT:    popl %esi
+; X86-SSE2-NEXT:    .cfi_def_cfa_offset 4
 ; X86-SSE2-NEXT:    retl
 ;
 ; X64-LABEL: PR85419:
@@ -484,6 +490,7 @@ define i32 @main() nounwind {
 ; X64-SSSE3-NEXT:    movl %ecx, %eax
 ; X64-SSSE3-NEXT:    xorl %edx, %edx
 ; X64-SSSE3-NEXT:    divl %edi
+; X64-SSSE3-NEXT:    # kill: def $eax killed $eax def $rax
 ; X64-SSSE3-NEXT:    addl %esi, %eax
 ; X64-SSSE3-NEXT:    movq %rbp, %rsp
 ; X64-SSSE3-NEXT:    popq %rbp
@@ -511,6 +518,7 @@ define i32 @main() nounwind {
 ; X64-AVX-NEXT:    movl %ecx, %eax
 ; X64-AVX-NEXT:    xorl %edx, %edx
 ; X64-AVX-NEXT:    divl %edi
+; X64-AVX-NEXT:    # kill: def $eax killed $eax def $rax
 ; X64-AVX-NEXT:    addl %esi, %eax
 ; X64-AVX-NEXT:    movq %rbp, %rsp
 ; X64-AVX-NEXT:    popq %rbp

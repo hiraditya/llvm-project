@@ -252,7 +252,9 @@ define <16 x i8> @cmpeq_zext_v16i8(<16 x i8> %a, <16 x i8> %b) {
 ; SSE-LABEL: cmpeq_zext_v16i8:
 ; SSE:       # %bb.0:
 ; SSE-NEXT:    pcmpeqb %xmm1, %xmm0
-; SSE-NEXT:    pand {{\.?LCPI[0-9]+_[0-9]+}}(%rip), %xmm0
+; SSE-NEXT:    movdqa {{.*#+}} xmm1 = [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1]
+; SSE-NEXT:    pand %xmm0, %xmm1
+; SSE-NEXT:    movdqa %xmm1, %xmm0
 ; SSE-NEXT:    retq
 ;
 ; AVX1-LABEL: cmpeq_zext_v16i8:
@@ -334,13 +336,15 @@ define <4 x i64> @cmpeq_zext_v4i64(<4 x i64> %a, <4 x i64> %b) {
 ; SSE2:       # %bb.0:
 ; SSE2-NEXT:    pcmpeqd %xmm2, %xmm0
 ; SSE2-NEXT:    pshufd {{.*#+}} xmm2 = xmm0[1,0,3,2]
-; SSE2-NEXT:    pand %xmm2, %xmm0
-; SSE2-NEXT:    movdqa {{.*#+}} xmm2 = [1,1]
-; SSE2-NEXT:    pand %xmm2, %xmm0
+; SSE2-NEXT:    pand %xmm0, %xmm2
+; SSE2-NEXT:    movdqa {{.*#+}} xmm0 = [1,1]
+; SSE2-NEXT:    pand %xmm0, %xmm2
 ; SSE2-NEXT:    pcmpeqd %xmm3, %xmm1
 ; SSE2-NEXT:    pshufd {{.*#+}} xmm3 = xmm1[1,0,3,2]
-; SSE2-NEXT:    pand %xmm3, %xmm1
-; SSE2-NEXT:    pand %xmm2, %xmm1
+; SSE2-NEXT:    pand %xmm1, %xmm3
+; SSE2-NEXT:    pand %xmm0, %xmm3
+; SSE2-NEXT:    movdqa %xmm2, %xmm0
+; SSE2-NEXT:    movdqa %xmm3, %xmm1
 ; SSE2-NEXT:    retq
 ;
 ; SSE42-LABEL: cmpeq_zext_v4i64:
@@ -475,11 +479,12 @@ define <2 x i64> @cmpgt_zext_v2i64(<2 x i64> %a, <2 x i64> %b) {
 ; SSE2-NEXT:    pcmpgtd %xmm1, %xmm2
 ; SSE2-NEXT:    pshufd {{.*#+}} xmm3 = xmm2[0,0,2,2]
 ; SSE2-NEXT:    pcmpeqd %xmm1, %xmm0
-; SSE2-NEXT:    pshufd {{.*#+}} xmm1 = xmm0[1,1,3,3]
-; SSE2-NEXT:    pand %xmm3, %xmm1
-; SSE2-NEXT:    pshufd {{.*#+}} xmm0 = xmm2[1,1,3,3]
-; SSE2-NEXT:    por %xmm1, %xmm0
-; SSE2-NEXT:    pand {{\.?LCPI[0-9]+_[0-9]+}}(%rip), %xmm0
+; SSE2-NEXT:    pshufd {{.*#+}} xmm0 = xmm0[1,1,3,3]
+; SSE2-NEXT:    pand %xmm0, %xmm3
+; SSE2-NEXT:    pshufd {{.*#+}} xmm1 = xmm2[1,1,3,3]
+; SSE2-NEXT:    por %xmm3, %xmm1
+; SSE2-NEXT:    movdqa {{.*#+}} xmm0 = [1,1]
+; SSE2-NEXT:    pand %xmm1, %xmm0
 ; SSE2-NEXT:    retq
 ;
 ; SSE42-LABEL: cmpgt_zext_v2i64:
@@ -513,11 +518,12 @@ define <8 x i32> @cmpne_knownzeros_zext_v8i16_v8i32(<8 x i16> %x) {
 ;
 ; SSE42-LABEL: cmpne_knownzeros_zext_v8i16_v8i32:
 ; SSE42:       # %bb.0:
+; SSE42-NEXT:    psrlw $15, %xmm0
+; SSE42-NEXT:    pxor %xmm3, %xmm3
+; SSE42-NEXT:    pmovzxwd {{.*#+}} xmm2 = xmm0[0],zero,xmm0[1],zero,xmm0[2],zero,xmm0[3],zero
 ; SSE42-NEXT:    movdqa %xmm0, %xmm1
-; SSE42-NEXT:    psrlw $15, %xmm1
-; SSE42-NEXT:    pxor %xmm2, %xmm2
-; SSE42-NEXT:    pmovzxwd {{.*#+}} xmm0 = xmm1[0],zero,xmm1[1],zero,xmm1[2],zero,xmm1[3],zero
-; SSE42-NEXT:    punpckhwd {{.*#+}} xmm1 = xmm1[4],xmm2[4],xmm1[5],xmm2[5],xmm1[6],xmm2[6],xmm1[7],xmm2[7]
+; SSE42-NEXT:    punpckhwd {{.*#+}} xmm1 = xmm1[4],xmm3[4],xmm1[5],xmm3[5],xmm1[6],xmm3[6],xmm1[7],xmm3[7]
+; SSE42-NEXT:    movdqa %xmm2, %xmm0
 ; SSE42-NEXT:    retq
 ;
 ; AVX1-LABEL: cmpne_knownzeros_zext_v8i16_v8i32:
@@ -1152,17 +1158,20 @@ define <32 x i8> @is_positive_mask_v32i8(<32 x i8> %x, <32 x i8> %y) {
 define <2 x i64> @ispositive_mask_load_v2i64(<2 x i64> %x, ptr %p) {
 ; SSE2-LABEL: ispositive_mask_load_v2i64:
 ; SSE2:       # %bb.0:
-; SSE2-NEXT:    pshufd {{.*#+}} xmm0 = xmm0[1,1,3,3]
-; SSE2-NEXT:    pcmpeqd %xmm1, %xmm1
-; SSE2-NEXT:    pcmpgtd %xmm1, %xmm0
-; SSE2-NEXT:    pand (%rdi), %xmm0
+; SSE2-NEXT:    pshufd {{.*#+}} xmm1 = xmm0[1,1,3,3]
+; SSE2-NEXT:    pcmpeqd %xmm0, %xmm0
+; SSE2-NEXT:    pcmpgtd %xmm0, %xmm1
+; SSE2-NEXT:    movdqa (%rdi), %xmm0
+; SSE2-NEXT:    pand %xmm1, %xmm0
 ; SSE2-NEXT:    retq
 ;
 ; SSE42-LABEL: ispositive_mask_load_v2i64:
 ; SSE42:       # %bb.0:
 ; SSE42-NEXT:    pcmpeqd %xmm1, %xmm1
 ; SSE42-NEXT:    pcmpgtq %xmm1, %xmm0
-; SSE42-NEXT:    pand (%rdi), %xmm0
+; SSE42-NEXT:    movdqa (%rdi), %xmm1
+; SSE42-NEXT:    pand %xmm0, %xmm1
+; SSE42-NEXT:    movdqa %xmm1, %xmm0
 ; SSE42-NEXT:    retq
 ;
 ; AVX1-LABEL: ispositive_mask_load_v2i64:
@@ -1234,7 +1243,9 @@ define <16 x i8> @is_positive_mask_load_v16i8(<16 x i8> %x, ptr %p) {
 ; SSE:       # %bb.0:
 ; SSE-NEXT:    pcmpeqd %xmm1, %xmm1
 ; SSE-NEXT:    pcmpgtb %xmm1, %xmm0
-; SSE-NEXT:    pand (%rdi), %xmm0
+; SSE-NEXT:    movdqa (%rdi), %xmm1
+; SSE-NEXT:    pand %xmm0, %xmm1
+; SSE-NEXT:    movdqa %xmm1, %xmm0
 ; SSE-NEXT:    retq
 ;
 ; AVX-LABEL: is_positive_mask_load_v16i8:
@@ -1253,13 +1264,15 @@ define <16 x i8> @is_positive_mask_load_v16i8(<16 x i8> %x, ptr %p) {
 define <4 x i64> @is_positive_mask_load_v4i64(<4 x i64> %x, ptr %p) {
 ; SSE2-LABEL: is_positive_mask_load_v4i64:
 ; SSE2:       # %bb.0:
-; SSE2-NEXT:    pshufd {{.*#+}} xmm1 = xmm1[1,1,3,3]
-; SSE2-NEXT:    pcmpeqd %xmm2, %xmm2
-; SSE2-NEXT:    pcmpgtd %xmm2, %xmm1
-; SSE2-NEXT:    pshufd {{.*#+}} xmm0 = xmm0[1,1,3,3]
-; SSE2-NEXT:    pcmpgtd %xmm2, %xmm0
-; SSE2-NEXT:    pand (%rdi), %xmm0
-; SSE2-NEXT:    pand 16(%rdi), %xmm1
+; SSE2-NEXT:    pshufd {{.*#+}} xmm2 = xmm1[1,1,3,3]
+; SSE2-NEXT:    pcmpeqd %xmm1, %xmm1
+; SSE2-NEXT:    pcmpgtd %xmm1, %xmm2
+; SSE2-NEXT:    pshufd {{.*#+}} xmm3 = xmm0[1,1,3,3]
+; SSE2-NEXT:    pcmpgtd %xmm1, %xmm3
+; SSE2-NEXT:    movdqa (%rdi), %xmm0
+; SSE2-NEXT:    pand %xmm3, %xmm0
+; SSE2-NEXT:    movdqa 16(%rdi), %xmm1
+; SSE2-NEXT:    pand %xmm2, %xmm1
 ; SSE2-NEXT:    retq
 ;
 ; SSE42-LABEL: is_positive_mask_load_v4i64:
@@ -1267,8 +1280,12 @@ define <4 x i64> @is_positive_mask_load_v4i64(<4 x i64> %x, ptr %p) {
 ; SSE42-NEXT:    pcmpeqd %xmm2, %xmm2
 ; SSE42-NEXT:    pcmpgtq %xmm2, %xmm1
 ; SSE42-NEXT:    pcmpgtq %xmm2, %xmm0
-; SSE42-NEXT:    pand (%rdi), %xmm0
-; SSE42-NEXT:    pand 16(%rdi), %xmm1
+; SSE42-NEXT:    movdqa (%rdi), %xmm2
+; SSE42-NEXT:    pand %xmm0, %xmm2
+; SSE42-NEXT:    movdqa 16(%rdi), %xmm3
+; SSE42-NEXT:    pand %xmm1, %xmm3
+; SSE42-NEXT:    movdqa %xmm2, %xmm0
+; SSE42-NEXT:    movdqa %xmm3, %xmm1
 ; SSE42-NEXT:    retq
 ;
 ; AVX1-LABEL: is_positive_mask_load_v4i64:
@@ -1380,8 +1397,12 @@ define <32 x i8> @is_positive_mask_load_v32i8(<32 x i8> %x, ptr %p) {
 ; SSE-NEXT:    pcmpeqd %xmm2, %xmm2
 ; SSE-NEXT:    pcmpgtb %xmm2, %xmm1
 ; SSE-NEXT:    pcmpgtb %xmm2, %xmm0
-; SSE-NEXT:    pand (%rdi), %xmm0
-; SSE-NEXT:    pand 16(%rdi), %xmm1
+; SSE-NEXT:    movdqa (%rdi), %xmm2
+; SSE-NEXT:    pand %xmm0, %xmm2
+; SSE-NEXT:    movdqa 16(%rdi), %xmm3
+; SSE-NEXT:    pand %xmm1, %xmm3
+; SSE-NEXT:    movdqa %xmm2, %xmm0
+; SSE-NEXT:    movdqa %xmm3, %xmm1
 ; SSE-NEXT:    retq
 ;
 ; AVX1-LABEL: is_positive_mask_load_v32i8:
@@ -1846,8 +1867,8 @@ define <32 x i1> @is_positive_mask_v32i8_v32i1(<32 x i8> %x, <32 x i1> %y) {
 ; SSE2-NEXT:    shll $16, %ecx
 ; SSE2-NEXT:    psllw $7, %xmm0
 ; SSE2-NEXT:    pmovmskb %xmm0, %edx
-; SSE2-NEXT:    orl %ecx, %edx
-; SSE2-NEXT:    movl %edx, (%rdi)
+; SSE2-NEXT:    orl %edx, %ecx
+; SSE2-NEXT:    movl %ecx, (%rdi)
 ; SSE2-NEXT:    retq
 ;
 ; SSE42-LABEL: is_positive_mask_v32i8_v32i1:

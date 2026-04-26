@@ -5,7 +5,7 @@
 define i32 @test_01(ptr %p, i64 %len, i32 %x) {
 ; CHECK-LABEL: test_01:
 ; CHECK:       # %bb.0: # %entry
-; CHECK-NEXT:    addq $-4, %rdi
+; CHECK-NEXT:    leaq -4(%rdi), %rax
 ; CHECK-NEXT:    .p2align 4
 ; CHECK-NEXT:  .LBB0_1: # %loop
 ; CHECK-NEXT:    # =>This Inner Loop Header: Depth=1
@@ -13,8 +13,8 @@ define i32 @test_01(ptr %p, i64 %len, i32 %x) {
 ; CHECK-NEXT:    jb .LBB0_4
 ; CHECK-NEXT:  # %bb.2: # %backedge
 ; CHECK-NEXT:    # in Loop: Header=BB0_1 Depth=1
-; CHECK-NEXT:    cmpl %edx, (%rdi)
-; CHECK-NEXT:    leaq 4(%rdi), %rdi
+; CHECK-NEXT:    cmpl %edx, (%rax)
+; CHECK-NEXT:    leaq 4(%rax), %rax
 ; CHECK-NEXT:    jne .LBB0_1
 ; CHECK-NEXT:  # %bb.3: # %failure
 ; CHECK-NEXT:  .LBB0_4: # %exit
@@ -47,7 +47,7 @@ failure:                                          ; preds = %backedge
 define i32 @test_02(ptr %p, i64 %len, i32 %x) {
 ; CHECK-LABEL: test_02:
 ; CHECK:       # %bb.0: # %entry
-; CHECK-NEXT:    addq $-4, %rdi
+; CHECK-NEXT:    leaq -4(%rdi), %rax
 ; CHECK-NEXT:    .p2align 4
 ; CHECK-NEXT:  .LBB1_1: # %loop
 ; CHECK-NEXT:    # =>This Inner Loop Header: Depth=1
@@ -55,8 +55,8 @@ define i32 @test_02(ptr %p, i64 %len, i32 %x) {
 ; CHECK-NEXT:    jb .LBB1_4
 ; CHECK-NEXT:  # %bb.2: # %backedge
 ; CHECK-NEXT:    # in Loop: Header=BB1_1 Depth=1
-; CHECK-NEXT:    cmpl %edx, (%rdi)
-; CHECK-NEXT:    leaq 4(%rdi), %rdi
+; CHECK-NEXT:    cmpl %edx, (%rax)
+; CHECK-NEXT:    leaq 4(%rax), %rax
 ; CHECK-NEXT:    jne .LBB1_1
 ; CHECK-NEXT:  # %bb.3: # %failure
 ; CHECK-NEXT:  .LBB1_4: # %exit
@@ -89,7 +89,7 @@ failure:                                          ; preds = %backedge
 define i32 @test_02_nopoison(ptr %p, i64 %len, i32 %x) {
 ; CHECK-LABEL: test_02_nopoison:
 ; CHECK:       # %bb.0: # %entry
-; CHECK-NEXT:    addq $-4, %rdi
+; CHECK-NEXT:    leaq -4(%rdi), %rax
 ; CHECK-NEXT:    .p2align 4
 ; CHECK-NEXT:  .LBB2_1: # %loop
 ; CHECK-NEXT:    # =>This Inner Loop Header: Depth=1
@@ -97,8 +97,8 @@ define i32 @test_02_nopoison(ptr %p, i64 %len, i32 %x) {
 ; CHECK-NEXT:    jb .LBB2_4
 ; CHECK-NEXT:  # %bb.2: # %backedge
 ; CHECK-NEXT:    # in Loop: Header=BB2_1 Depth=1
-; CHECK-NEXT:    cmpl %edx, (%rdi)
-; CHECK-NEXT:    leaq 4(%rdi), %rdi
+; CHECK-NEXT:    cmpl %edx, (%rax)
+; CHECK-NEXT:    leaq 4(%rax), %rax
 ; CHECK-NEXT:    jne .LBB2_1
 ; CHECK-NEXT:  # %bb.3: # %failure
 ; CHECK-NEXT:  .LBB2_4: # %exit
@@ -133,7 +133,7 @@ failure:                                          ; preds = %backedge
 define i32 @test_03(ptr %p, i64 %len, i32 %x) {
 ; CHECK-LABEL: test_03:
 ; CHECK:       # %bb.0: # %entry
-; CHECK-NEXT:    addq $-4, %rdi
+; CHECK-NEXT:    leaq -4(%rdi), %rax
 ; CHECK-NEXT:    .p2align 4
 ; CHECK-NEXT:  .LBB3_1: # %loop
 ; CHECK-NEXT:    # =>This Inner Loop Header: Depth=1
@@ -141,8 +141,8 @@ define i32 @test_03(ptr %p, i64 %len, i32 %x) {
 ; CHECK-NEXT:    jb .LBB3_4
 ; CHECK-NEXT:  # %bb.2: # %backedge
 ; CHECK-NEXT:    # in Loop: Header=BB3_1 Depth=1
-; CHECK-NEXT:    cmpl %edx, (%rdi)
-; CHECK-NEXT:    leaq 4(%rdi), %rdi
+; CHECK-NEXT:    cmpl %edx, (%rax)
+; CHECK-NEXT:    leaq 4(%rax), %rax
 ; CHECK-NEXT:    jne .LBB3_1
 ; CHECK-NEXT:  # %bb.3: # %failure
 ; CHECK-NEXT:  .LBB3_4: # %exit
@@ -175,7 +175,7 @@ failure:                                          ; preds = %backedge
 define i32 @test_03_nopoison(ptr %p, i64 %len, i32 %x) {
 ; CHECK-LABEL: test_03_nopoison:
 ; CHECK:       # %bb.0: # %entry
-; CHECK-NEXT:    addq $-4, %rdi
+; CHECK-NEXT:    leaq -4(%rdi), %rax
 ; CHECK-NEXT:    .p2align 4
 ; CHECK-NEXT:  .LBB4_1: # %loop
 ; CHECK-NEXT:    # =>This Inner Loop Header: Depth=1
@@ -183,8 +183,8 @@ define i32 @test_03_nopoison(ptr %p, i64 %len, i32 %x) {
 ; CHECK-NEXT:    jb .LBB4_4
 ; CHECK-NEXT:  # %bb.2: # %backedge
 ; CHECK-NEXT:    # in Loop: Header=BB4_1 Depth=1
-; CHECK-NEXT:    cmpl %edx, (%rdi)
-; CHECK-NEXT:    leaq 4(%rdi), %rdi
+; CHECK-NEXT:    cmpl %edx, (%rax)
+; CHECK-NEXT:    leaq 4(%rax), %rax
 ; CHECK-NEXT:    jne .LBB4_1
 ; CHECK-NEXT:  # %bb.3: # %failure
 ; CHECK-NEXT:  .LBB4_4: # %exit

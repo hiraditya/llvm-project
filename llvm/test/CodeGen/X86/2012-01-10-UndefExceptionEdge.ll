@@ -123,7 +123,9 @@ define void @f(ptr nocapture %arg, ptr nocapture %arg1, ptr nocapture %arg2, ptr
 ; CHECK-NEXT:    jne LBB0_21
 ; CHECK-NEXT:  LBB0_22: ## %bb67
 ; CHECK-NEXT:    ## in Loop: Header=BB0_8 Depth=1
-; CHECK-NEXT:    decl {{[-0-9]+}}(%e{{[sb]}}p) ## 4-byte Folded Spill
+; CHECK-NEXT:    movl {{[-0-9]+}}(%e{{[sb]}}p), %eax ## 4-byte Reload
+; CHECK-NEXT:    decl %eax
+; CHECK-NEXT:    movl %eax, {{[-0-9]+}}(%e{{[sb]}}p) ## 4-byte Spill
 ; CHECK-NEXT:    jmp LBB0_8
 ; CHECK-NEXT:  LBB0_18: ## %bb43
 ; CHECK-NEXT:  Ltmp5: ## EH_LABEL

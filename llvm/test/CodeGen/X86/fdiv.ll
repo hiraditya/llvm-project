@@ -5,7 +5,9 @@ define double @exact(double %x) {
 ; Exact division by a constant converted to multiplication.
 ; CHECK-LABEL: exact:
 ; CHECK:       # %bb.0:
-; CHECK-NEXT:    mulsd {{\.?LCPI[0-9]+_[0-9]+}}(%rip), %xmm0
+; CHECK-NEXT:    movsd {{.*#+}} xmm1 = [5.0E-1,0.0E+0]
+; CHECK-NEXT:    mulsd %xmm0, %xmm1
+; CHECK-NEXT:    movapd %xmm1, %xmm0
 ; CHECK-NEXT:    retq
   %div = fdiv double %x, 2.0
   ret double %div
@@ -15,7 +17,9 @@ define double @inexact(double %x) {
 ; Inexact division by a constant converted to multiplication.
 ; CHECK-LABEL: inexact:
 ; CHECK:       # %bb.0:
-; CHECK-NEXT:    mulsd {{\.?LCPI[0-9]+_[0-9]+}}(%rip), %xmm0
+; CHECK-NEXT:    movsd {{.*#+}} xmm1 = [4.6566128752457969E-10,0.0E+0]
+; CHECK-NEXT:    mulsd %xmm0, %xmm1
+; CHECK-NEXT:    movapd %xmm1, %xmm0
 ; CHECK-NEXT:    retq
   %div = fdiv arcp double %x, 0x41DFFFFFFFC00000
   ret double %div

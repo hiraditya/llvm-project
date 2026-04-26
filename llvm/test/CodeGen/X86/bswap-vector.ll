@@ -14,7 +14,8 @@ define <8 x i16> @test1(<8 x i16> %v) {
 ; CHECK-NOSSSE3-NEXT:    movdqa %xmm0, %xmm1
 ; CHECK-NOSSSE3-NEXT:    psrlw $8, %xmm1
 ; CHECK-NOSSSE3-NEXT:    psllw $8, %xmm0
-; CHECK-NOSSSE3-NEXT:    por %xmm1, %xmm0
+; CHECK-NOSSSE3-NEXT:    por %xmm0, %xmm1
+; CHECK-NOSSSE3-NEXT:    movdqa %xmm1, %xmm0
 ; CHECK-NOSSSE3-NEXT:    ret{{[l|q]}}
 ;
 ; CHECK-SSSE3-LABEL: test1:
@@ -130,11 +131,13 @@ define <16 x i16> @test4(<16 x i16> %v) {
 ; CHECK-NOSSSE3-NEXT:    movdqa %xmm0, %xmm2
 ; CHECK-NOSSSE3-NEXT:    psrlw $8, %xmm2
 ; CHECK-NOSSSE3-NEXT:    psllw $8, %xmm0
-; CHECK-NOSSSE3-NEXT:    por %xmm2, %xmm0
-; CHECK-NOSSSE3-NEXT:    movdqa %xmm1, %xmm2
-; CHECK-NOSSSE3-NEXT:    psrlw $8, %xmm2
+; CHECK-NOSSSE3-NEXT:    por %xmm0, %xmm2
+; CHECK-NOSSSE3-NEXT:    movdqa %xmm1, %xmm3
+; CHECK-NOSSSE3-NEXT:    psrlw $8, %xmm3
 ; CHECK-NOSSSE3-NEXT:    psllw $8, %xmm1
-; CHECK-NOSSSE3-NEXT:    por %xmm2, %xmm1
+; CHECK-NOSSSE3-NEXT:    por %xmm1, %xmm3
+; CHECK-NOSSSE3-NEXT:    movdqa %xmm2, %xmm0
+; CHECK-NOSSSE3-NEXT:    movdqa %xmm3, %xmm1
 ; CHECK-NOSSSE3-NEXT:    ret{{[l|q]}}
 ;
 ; CHECK-SSSE3-LABEL: test4:
@@ -241,7 +244,8 @@ define <4 x i16> @test7(<4 x i16> %v) {
 ; CHECK-NOSSSE3-NEXT:    movdqa %xmm0, %xmm1
 ; CHECK-NOSSSE3-NEXT:    psrlw $8, %xmm1
 ; CHECK-NOSSSE3-NEXT:    psllw $8, %xmm0
-; CHECK-NOSSSE3-NEXT:    por %xmm1, %xmm0
+; CHECK-NOSSSE3-NEXT:    por %xmm0, %xmm1
+; CHECK-NOSSSE3-NEXT:    movdqa %xmm1, %xmm0
 ; CHECK-NOSSSE3-NEXT:    ret{{[l|q]}}
 ;
 ; CHECK-SSSE3-LABEL: test7:

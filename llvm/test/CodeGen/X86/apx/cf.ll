@@ -57,9 +57,9 @@ entry:
 define i64 @reduced_data_dependency(i64 %a, i64 %b, ptr %c) {
 ; CHECK-LABEL: reduced_data_dependency:
 ; CHECK:       # %bb.0: # %entry
-; CHECK-NEXT:    movq %rdi, %rcx
-; CHECK-NEXT:    subq %rsi, %rcx
-; CHECK-NEXT:    cfcmovnsq (%rdx), %rdi, %rax
+; CHECK-NEXT:    movq %rdi, %rax
+; CHECK-NEXT:    subq %rsi, %rax
+; CHECK-NEXT:    cfcmovnsq (%rdx), %rdi, %rcx
 ; CHECK-NEXT:    addq %rcx, %rax
 ; CHECK-NEXT:    retq
 entry:
@@ -145,7 +145,7 @@ define void @load_add_store(i32 %a, i32 %b, ptr %p) {
 ; CHECK:       # %bb.0: # %entry
 ; CHECK-NEXT:    cmpl %esi, %edi
 ; CHECK-NEXT:    cfcmovnew (%rdx), %ax
-; CHECK-NEXT:    {nf} incl %eax
+; CHECK-NEXT:    leal 1(%rax), %eax
 ; CHECK-NEXT:    cfcmovnew %ax, (%rdx)
 ; CHECK-NEXT:    retq
 entry:
@@ -253,7 +253,7 @@ define i64 @redundant_test(i64 %num, ptr %p1, i64 %in) {
 ; CHECK:       # %bb.0:
 ; CHECK-NEXT:    testl $-32, %edi
 ; CHECK-NEXT:    cfcmoveq (%rsi), %rax
-; CHECK-NEXT:    {nf} addq %rdx, %rax
+; CHECK-NEXT:    leaq (%rax,%rdx), %rax
 ; CHECK-NEXT:    cmovneq %rdi, %rax
 ; CHECK-NEXT:    retq
   %and = and i64 %num, 4294967264

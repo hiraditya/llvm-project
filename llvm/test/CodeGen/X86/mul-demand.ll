@@ -20,8 +20,8 @@ define <2 x i64> @muladd_demand_commute(<2 x i64> %x, <2 x i64> %y) {
 ; CHECK:       # %bb.0:
 ; CHECK-NEXT:    psllq $6, %xmm0
 ; CHECK-NEXT:    psubq %xmm0, %xmm1
-; CHECK-NEXT:    pand {{\.?LCPI[0-9]+_[0-9]+}}(%rip), %xmm1
-; CHECK-NEXT:    movdqa %xmm1, %xmm0
+; CHECK-NEXT:    movdqa {{.*#+}} xmm0 = [131071,131071]
+; CHECK-NEXT:    pand %xmm1, %xmm0
 ; CHECK-NEXT:    retq
   %m = mul <2 x i64> %x, <i64 131008, i64 131008>
   %a = add <2 x i64> %y, %m

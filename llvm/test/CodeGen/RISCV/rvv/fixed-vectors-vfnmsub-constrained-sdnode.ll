@@ -11,7 +11,8 @@ define <2 x half> @vfnmsub_vv_v2f16(<2 x half> %va, <2 x half> %vb, <2 x half> %
 ; CHECK-LABEL: vfnmsub_vv_v2f16:
 ; CHECK:       # %bb.0:
 ; CHECK-NEXT:    vsetivli zero, 2, e16, mf4, ta, ma
-; CHECK-NEXT:    vfnmsub.vv v8, v10, v9
+; CHECK-NEXT:    vfnmsub.vv v10, v8, v9
+; CHECK-NEXT:    vmv1r.v v8, v10
 ; CHECK-NEXT:    ret
   %neg = fneg <2 x half> %va
   %vd = call <2 x half> @llvm.experimental.constrained.fma.v2f16(<2 x half> %neg, <2 x half> %vc, <2 x half> %vb, metadata !"round.dynamic", metadata !"fpexcept.strict")
@@ -59,7 +60,8 @@ define <8 x half> @vfnmsub_vv_v8f16(<8 x half> %va, <8 x half> %vb, <8 x half> %
 ; CHECK-LABEL: vfnmsub_vv_v8f16:
 ; CHECK:       # %bb.0:
 ; CHECK-NEXT:    vsetivli zero, 8, e16, m1, ta, ma
-; CHECK-NEXT:    vfnmsac.vv v8, v10, v9
+; CHECK-NEXT:    vfnmsub.vv v10, v9, v8
+; CHECK-NEXT:    vmv.v.v v8, v10
 ; CHECK-NEXT:    ret
   %neg = fneg <8 x half> %vb
   %vd = call <8 x half> @llvm.experimental.constrained.fma.v8f16(<8 x half> %neg, <8 x half> %vc, <8 x half> %va, metadata !"round.dynamic", metadata !"fpexcept.strict")
@@ -70,7 +72,8 @@ define <8 x half> @vfnmsub_vf_v8f16(<8 x half> %va, <8 x half> %vb, half %c) str
 ; CHECK-LABEL: vfnmsub_vf_v8f16:
 ; CHECK:       # %bb.0:
 ; CHECK-NEXT:    vsetivli zero, 8, e16, m1, ta, ma
-; CHECK-NEXT:    vfnmsac.vf v8, fa0, v9
+; CHECK-NEXT:    vfnmsub.vf v9, fa0, v8
+; CHECK-NEXT:    vmv.v.v v8, v9
 ; CHECK-NEXT:    ret
   %head = insertelement <8 x half> poison, half %c, i32 0
   %splat = shufflevector <8 x half> %head, <8 x half> poison, <8 x i32> zeroinitializer
@@ -120,7 +123,8 @@ define <32 x half> @vfnmsub_vf_v32f16(<32 x half> %va, <32 x half> %vb, half %c)
 ; CHECK:       # %bb.0:
 ; CHECK-NEXT:    li a0, 32
 ; CHECK-NEXT:    vsetvli zero, a0, e16, m4, ta, ma
-; CHECK-NEXT:    vfnmsac.vf v8, fa0, v12
+; CHECK-NEXT:    vfnmsub.vf v12, fa0, v8
+; CHECK-NEXT:    vmv.v.v v8, v12
 ; CHECK-NEXT:    ret
   %head = insertelement <32 x half> poison, half %c, i32 0
   %splat = shufflevector <32 x half> %head, <32 x half> poison, <32 x i32> zeroinitializer
@@ -133,7 +137,8 @@ define <2 x float> @vfnmsub_vv_v2f32(<2 x float> %va, <2 x float> %vb, <2 x floa
 ; CHECK-LABEL: vfnmsub_vv_v2f32:
 ; CHECK:       # %bb.0:
 ; CHECK-NEXT:    vsetivli zero, 2, e32, mf2, ta, ma
-; CHECK-NEXT:    vfnmsub.vv v8, v10, v9
+; CHECK-NEXT:    vfnmsub.vv v10, v8, v9
+; CHECK-NEXT:    vmv1r.v v8, v10
 ; CHECK-NEXT:    ret
   %neg = fneg <2 x float> %vc
   %vd = call <2 x float> @llvm.experimental.constrained.fma.v2f32(<2 x float> %va, <2 x float> %neg, <2 x float> %vb, metadata !"round.dynamic", metadata !"fpexcept.strict")
@@ -181,7 +186,8 @@ define <8 x float> @vfnmsub_vv_v8f32(<8 x float> %va, <8 x float> %vb, <8 x floa
 ; CHECK-LABEL: vfnmsub_vv_v8f32:
 ; CHECK:       # %bb.0:
 ; CHECK-NEXT:    vsetivli zero, 8, e32, m2, ta, ma
-; CHECK-NEXT:    vfnmsac.vv v8, v12, v10
+; CHECK-NEXT:    vfnmsub.vv v12, v10, v8
+; CHECK-NEXT:    vmv.v.v v8, v12
 ; CHECK-NEXT:    ret
   %neg = fneg <8 x float> %vc
   %vd = call <8 x float> @llvm.experimental.constrained.fma.v8f32(<8 x float> %vb, <8 x float> %neg, <8 x float> %va, metadata !"round.dynamic", metadata !"fpexcept.strict")
@@ -192,7 +198,8 @@ define <8 x float> @vfnmsub_vf_v8f32(<8 x float> %va, <8 x float> %vb, float %c)
 ; CHECK-LABEL: vfnmsub_vf_v8f32:
 ; CHECK:       # %bb.0:
 ; CHECK-NEXT:    vsetivli zero, 8, e32, m2, ta, ma
-; CHECK-NEXT:    vfnmsac.vf v8, fa0, v10
+; CHECK-NEXT:    vfnmsub.vf v10, fa0, v8
+; CHECK-NEXT:    vmv.v.v v8, v10
 ; CHECK-NEXT:    ret
   %head = insertelement <8 x float> poison, float %c, i32 0
   %splat = shufflevector <8 x float> %head, <8 x float> poison, <8 x i32> zeroinitializer
@@ -229,7 +236,8 @@ define <2 x double> @vfnmsub_vv_v2f64(<2 x double> %va, <2 x double> %vb, <2 x d
 ; CHECK-LABEL: vfnmsub_vv_v2f64:
 ; CHECK:       # %bb.0:
 ; CHECK-NEXT:    vsetivli zero, 2, e64, m1, ta, ma
-; CHECK-NEXT:    vfnmsub.vv v8, v10, v9
+; CHECK-NEXT:    vfnmsub.vv v10, v8, v9
+; CHECK-NEXT:    vmv.v.v v8, v10
 ; CHECK-NEXT:    ret
   %neg = fneg <2 x double> %va
   %vd = call <2 x double> @llvm.experimental.constrained.fma.v2f64(<2 x double> %neg, <2 x double> %vc, <2 x double> %vb, metadata !"round.dynamic", metadata !"fpexcept.strict")
@@ -277,7 +285,8 @@ define <8 x double> @vfnmsub_vv_v8f64(<8 x double> %va, <8 x double> %vb, <8 x d
 ; CHECK-LABEL: vfnmsub_vv_v8f64:
 ; CHECK:       # %bb.0:
 ; CHECK-NEXT:    vsetivli zero, 8, e64, m4, ta, ma
-; CHECK-NEXT:    vfnmsac.vv v8, v16, v12
+; CHECK-NEXT:    vfnmsub.vv v16, v12, v8
+; CHECK-NEXT:    vmv.v.v v8, v16
 ; CHECK-NEXT:    ret
   %neg = fneg <8 x double> %vb
   %vd = call <8 x double> @llvm.experimental.constrained.fma.v8f64(<8 x double> %neg, <8 x double> %vc, <8 x double> %va, metadata !"round.dynamic", metadata !"fpexcept.strict")
@@ -288,7 +297,8 @@ define <8 x double> @vfnmsub_vf_v8f64(<8 x double> %va, <8 x double> %vb, double
 ; CHECK-LABEL: vfnmsub_vf_v8f64:
 ; CHECK:       # %bb.0:
 ; CHECK-NEXT:    vsetivli zero, 8, e64, m4, ta, ma
-; CHECK-NEXT:    vfnmsac.vf v8, fa0, v12
+; CHECK-NEXT:    vfnmsub.vf v12, fa0, v8
+; CHECK-NEXT:    vmv.v.v v8, v12
 ; CHECK-NEXT:    ret
   %head = insertelement <8 x double> poison, double %c, i32 0
   %splat = shufflevector <8 x double> %head, <8 x double> poison, <8 x i32> zeroinitializer

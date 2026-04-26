@@ -91,24 +91,24 @@ define signext i32 @foo(i32 signext %a, ptr %b) nounwind {
 ; RV32IXQCI-NEXT:    lw a3, 0(a1)
 ; RV32IXQCI-NEXT:    lw a4, 0(a1)
 ; RV32IXQCI-NEXT:    lw a5, 0(a1)
-; RV32IXQCI-NEXT:    qc.mvne a0, a0, a2, a2
-; RV32IXQCI-NEXT:    qc.mveq a0, a0, a3, a3
+; RV32IXQCI-NEXT:    qc.mveq a2, a0, a2, a0
+; RV32IXQCI-NEXT:    qc.mvne a3, a2, a3, a2
+; RV32IXQCI-NEXT:    lw a0, 0(a1)
+; RV32IXQCI-NEXT:    qc.mvltu a4, a4, a3, a3
 ; RV32IXQCI-NEXT:    lw a2, 0(a1)
-; RV32IXQCI-NEXT:    qc.mvgeu a0, a4, a0, a4
+; RV32IXQCI-NEXT:    qc.mvgeu a5, a4, a5, a4
 ; RV32IXQCI-NEXT:    lw a3, 0(a1)
-; RV32IXQCI-NEXT:    qc.mvltu a0, a0, a5, a5
+; RV32IXQCI-NEXT:    qc.mvltu a0, a5, a0, a5
 ; RV32IXQCI-NEXT:    lw a4, 0(a1)
-; RV32IXQCI-NEXT:    qc.mvgeu a0, a0, a2, a2
+; RV32IXQCI-NEXT:    qc.mvgeu a2, a2, a0, a0
+; RV32IXQCI-NEXT:    lw a5, 0(a1)
+; RV32IXQCI-NEXT:    qc.mvlt a3, a3, a2, a2
+; RV32IXQCI-NEXT:    lw a0, 0(a1)
+; RV32IXQCI-NEXT:    qc.mvge a4, a3, a4, a3
 ; RV32IXQCI-NEXT:    lw a2, 0(a1)
-; RV32IXQCI-NEXT:    qc.mvltu a0, a3, a0, a3
+; RV32IXQCI-NEXT:    qc.mvlt a5, a4, a5, a4
 ; RV32IXQCI-NEXT:    lw a3, 0(a1)
-; RV32IXQCI-NEXT:    qc.mvge a0, a4, a0, a4
-; RV32IXQCI-NEXT:    lw a4, 0(a1)
-; RV32IXQCI-NEXT:    qc.mvlt a0, a0, a2, a2
-; RV32IXQCI-NEXT:    lw a2, 0(a1)
-; RV32IXQCI-NEXT:    qc.mvge a0, a0, a3, a3
-; RV32IXQCI-NEXT:    lw a3, 0(a1)
-; RV32IXQCI-NEXT:    qc.mvlt a0, a4, a0, a4
+; RV32IXQCI-NEXT:    qc.mvge a0, a0, a5, a5
 ; RV32IXQCI-NEXT:    lw a4, 0(a1)
 ; RV32IXQCI-NEXT:    lw a1, 0(a1)
 ; RV32IXQCI-NEXT:    blez a2, .LBB0_2
@@ -416,8 +416,8 @@ define i32 @select_sge_int16min(i32 signext %x, i32 signext %y, i32 signext %z) 
 ; RV32IXQCI:       # %bb.0:
 ; RV32IXQCI-NEXT:    lui a3, 1048560
 ; RV32IXQCI-NEXT:    addi a3, a3, -1
-; RV32IXQCI-NEXT:    qc.mvge a1, a3, a0, a2
-; RV32IXQCI-NEXT:    mv a0, a1
+; RV32IXQCI-NEXT:    qc.mvlt a2, a3, a0, a1
+; RV32IXQCI-NEXT:    mv a0, a2
 ; RV32IXQCI-NEXT:    ret
 ;
 ; RV64I-LABEL: select_sge_int16min:
@@ -466,14 +466,15 @@ define i64 @select_sge_int32min(i64 %x, i64 %y, i64 %z) {
 ;
 ; RV32IXQCI-LABEL: select_sge_int32min:
 ; RV32IXQCI:       # %bb.0:
-; RV32IXQCI-NEXT:    srli a6, a0, 31
-; RV32IXQCI-NEXT:    srli a0, a1, 31
-; RV32IXQCI-NEXT:    xori a0, a0, 1
-; RV32IXQCI-NEXT:    qc.mveqi a0, a1, -1, a6
-; RV32IXQCI-NEXT:    qc.mveqi a2, a0, 0, a4
-; RV32IXQCI-NEXT:    qc.mveqi a3, a0, 0, a5
-; RV32IXQCI-NEXT:    mv a0, a2
-; RV32IXQCI-NEXT:    mv a1, a3
+; RV32IXQCI-NEXT:    mv a6, a5
+; RV32IXQCI-NEXT:    srli a0, a0, 31
+; RV32IXQCI-NEXT:    srli a5, a1, 31
+; RV32IXQCI-NEXT:    xori a5, a5, 1
+; RV32IXQCI-NEXT:    qc.mvnei a0, a1, -1, a5
+; RV32IXQCI-NEXT:    qc.mvnei a4, a0, 0, a2
+; RV32IXQCI-NEXT:    qc.mvnei a6, a0, 0, a3
+; RV32IXQCI-NEXT:    mv a0, a4
+; RV32IXQCI-NEXT:    mv a1, a6
 ; RV32IXQCI-NEXT:    ret
 ;
 ; RV64I-LABEL: select_sge_int32min:

@@ -27,8 +27,8 @@ define { i16, i16 } @test_reduce_v16i16_with_umin(<16 x i16> %x, <16 x i16> %y) 
 ; SSE41-NEXT:    pcmpeqw %xmm4, %xmm0
 ; SSE41-NEXT:    pxor %xmm5, %xmm0
 ; SSE41-NEXT:    por %xmm2, %xmm0
-; SSE41-NEXT:    pminuw %xmm1, %xmm0
-; SSE41-NEXT:    phminposuw %xmm0, %xmm0
+; SSE41-NEXT:    pminuw %xmm0, %xmm1
+; SSE41-NEXT:    phminposuw %xmm1, %xmm0
 ; SSE41-NEXT:    movd %xmm0, %edx
 ; SSE41-NEXT:    # kill: def $ax killed $ax killed $eax
 ; SSE41-NEXT:    # kill: def $dx killed $dx killed $edx
@@ -92,8 +92,8 @@ define { i16, i16 } @test_reduce_v16i16_with_add(<16 x i16> %x, <16 x i16> %y) {
 ; SSE41-SLOW-NEXT:    pcmpeqw %xmm4, %xmm0
 ; SSE41-SLOW-NEXT:    pxor %xmm5, %xmm0
 ; SSE41-SLOW-NEXT:    por %xmm2, %xmm0
-; SSE41-SLOW-NEXT:    pminuw %xmm1, %xmm0
-; SSE41-SLOW-NEXT:    phminposuw %xmm0, %xmm0
+; SSE41-SLOW-NEXT:    pminuw %xmm0, %xmm1
+; SSE41-SLOW-NEXT:    phminposuw %xmm1, %xmm0
 ; SSE41-SLOW-NEXT:    movd %xmm0, %edx
 ; SSE41-SLOW-NEXT:    # kill: def $ax killed $ax killed $eax
 ; SSE41-SLOW-NEXT:    # kill: def $dx killed $dx killed $edx
@@ -123,8 +123,8 @@ define { i16, i16 } @test_reduce_v16i16_with_add(<16 x i16> %x, <16 x i16> %y) {
 ; SSE41-FAST-NEXT:    pcmpeqw %xmm4, %xmm0
 ; SSE41-FAST-NEXT:    pxor %xmm5, %xmm0
 ; SSE41-FAST-NEXT:    por %xmm2, %xmm0
-; SSE41-FAST-NEXT:    pminuw %xmm1, %xmm0
-; SSE41-FAST-NEXT:    phminposuw %xmm0, %xmm0
+; SSE41-FAST-NEXT:    pminuw %xmm0, %xmm1
+; SSE41-FAST-NEXT:    phminposuw %xmm1, %xmm0
 ; SSE41-FAST-NEXT:    movd %xmm0, %edx
 ; SSE41-FAST-NEXT:    # kill: def $ax killed $ax killed $eax
 ; SSE41-FAST-NEXT:    # kill: def $dx killed $dx killed $edx

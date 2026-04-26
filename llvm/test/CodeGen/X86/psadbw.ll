@@ -55,8 +55,9 @@ define <2 x i64> @combine_psadbw_cmp_knownbits(<16 x i8> %a0) nounwind {
 ;
 ; X64-SSE-LABEL: combine_psadbw_cmp_knownbits:
 ; X64-SSE:       # %bb.0:
-; X64-SSE-NEXT:    pand {{\.?LCPI[0-9]+_[0-9]+}}(%rip), %xmm0
-; X64-SSE-NEXT:    pxor %xmm1, %xmm1
+; X64-SSE-NEXT:    movdqa {{.*#+}} xmm1 = [3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3]
+; X64-SSE-NEXT:    pand %xmm0, %xmm1
+; X64-SSE-NEXT:    pxor %xmm0, %xmm0
 ; X64-SSE-NEXT:    psadbw %xmm1, %xmm0
 ; X64-SSE-NEXT:    pcmpgtd {{\.?LCPI[0-9]+_[0-9]+}}(%rip), %xmm0
 ; X64-SSE-NEXT:    retq
@@ -77,23 +78,15 @@ define <2 x i64> @combine_psadbw_cmp_knownbits(<16 x i8> %a0) nounwind {
 
 ; No need to scalarize the sitofp as the PSADBW results are smaller than i32.
 define <2 x double> @combine_psadbw_sitofp_knownbits(<16 x i8> %a0) nounwind {
-; X86-SSE-LABEL: combine_psadbw_sitofp_knownbits:
-; X86-SSE:       # %bb.0:
-; X86-SSE-NEXT:    pand {{\.?LCPI[0-9]+_[0-9]+}}, %xmm0
-; X86-SSE-NEXT:    pxor %xmm1, %xmm1
-; X86-SSE-NEXT:    psadbw %xmm0, %xmm1
-; X86-SSE-NEXT:    pshufd {{.*#+}} xmm0 = xmm1[0,2,2,3]
-; X86-SSE-NEXT:    cvtdq2pd %xmm0, %xmm0
-; X86-SSE-NEXT:    retl
-;
-; X64-SSE-LABEL: combine_psadbw_sitofp_knownbits:
-; X64-SSE:       # %bb.0:
-; X64-SSE-NEXT:    pand {{\.?LCPI[0-9]+_[0-9]+}}(%rip), %xmm0
-; X64-SSE-NEXT:    pxor %xmm1, %xmm1
-; X64-SSE-NEXT:    psadbw %xmm0, %xmm1
-; X64-SSE-NEXT:    pshufd {{.*#+}} xmm0 = xmm1[0,2,2,3]
-; X64-SSE-NEXT:    cvtdq2pd %xmm0, %xmm0
-; X64-SSE-NEXT:    retq
+; SSE-LABEL: combine_psadbw_sitofp_knownbits:
+; SSE:       # %bb.0:
+; SSE-NEXT:    movdqa {{.*#+}} xmm1 = [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1]
+; SSE-NEXT:    pand %xmm0, %xmm1
+; SSE-NEXT:    pxor %xmm0, %xmm0
+; SSE-NEXT:    psadbw %xmm1, %xmm0
+; SSE-NEXT:    pshufd {{.*#+}} xmm0 = xmm0[0,2,2,3]
+; SSE-NEXT:    cvtdq2pd %xmm0, %xmm0
+; SSE-NEXT:    ret{{[l|q]}}
 ;
 ; AVX2-LABEL: combine_psadbw_sitofp_knownbits:
 ; AVX2:       # %bb.0:
@@ -111,23 +104,15 @@ define <2 x double> @combine_psadbw_sitofp_knownbits(<16 x i8> %a0) nounwind {
 
 ; Convert from uitofp to sitofp as the PSADBW results are zero-extended.
 define <2 x double> @combine_psadbw_uitofp_knownbits(<16 x i8> %a0) nounwind {
-; X86-SSE-LABEL: combine_psadbw_uitofp_knownbits:
-; X86-SSE:       # %bb.0:
-; X86-SSE-NEXT:    pand {{\.?LCPI[0-9]+_[0-9]+}}, %xmm0
-; X86-SSE-NEXT:    pxor %xmm1, %xmm1
-; X86-SSE-NEXT:    psadbw %xmm0, %xmm1
-; X86-SSE-NEXT:    pshufd {{.*#+}} xmm0 = xmm1[0,2,2,3]
-; X86-SSE-NEXT:    cvtdq2pd %xmm0, %xmm0
-; X86-SSE-NEXT:    retl
-;
-; X64-SSE-LABEL: combine_psadbw_uitofp_knownbits:
-; X64-SSE:       # %bb.0:
-; X64-SSE-NEXT:    pand {{\.?LCPI[0-9]+_[0-9]+}}(%rip), %xmm0
-; X64-SSE-NEXT:    pxor %xmm1, %xmm1
-; X64-SSE-NEXT:    psadbw %xmm0, %xmm1
-; X64-SSE-NEXT:    pshufd {{.*#+}} xmm0 = xmm1[0,2,2,3]
-; X64-SSE-NEXT:    cvtdq2pd %xmm0, %xmm0
-; X64-SSE-NEXT:    retq
+; SSE-LABEL: combine_psadbw_uitofp_knownbits:
+; SSE:       # %bb.0:
+; SSE-NEXT:    movdqa {{.*#+}} xmm1 = [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1]
+; SSE-NEXT:    pand %xmm0, %xmm1
+; SSE-NEXT:    pxor %xmm0, %xmm0
+; SSE-NEXT:    psadbw %xmm1, %xmm0
+; SSE-NEXT:    pshufd {{.*#+}} xmm0 = xmm0[0,2,2,3]
+; SSE-NEXT:    cvtdq2pd %xmm0, %xmm0
+; SSE-NEXT:    ret{{[l|q]}}
 ;
 ; AVX2-LABEL: combine_psadbw_uitofp_knownbits:
 ; AVX2:       # %bb.0:

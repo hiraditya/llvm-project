@@ -12,8 +12,9 @@
 define i8 @scalar_i8(i8 %x, i8 %y) nounwind {
 ; X86-LABEL: scalar_i8:
 ; X86:       # %bb.0:
+; X86-NEXT:    movzbl {{[0-9]+}}(%esp), %ecx
 ; X86-NEXT:    movzbl {{[0-9]+}}(%esp), %eax
-; X86-NEXT:    addb {{[0-9]+}}(%esp), %al
+; X86-NEXT:    addb %cl, %al
 ; X86-NEXT:    incb %al
 ; X86-NEXT:    retl
 ;
@@ -22,7 +23,7 @@ define i8 @scalar_i8(i8 %x, i8 %y) nounwind {
 ; X64-NEXT:    # kill: def $esi killed $esi def $rsi
 ; X64-NEXT:    # kill: def $edi killed $edi def $rdi
 ; X64-NEXT:    leal (%rsi,%rdi), %eax
-; X64-NEXT:    incb %al
+; X64-NEXT:    incl %eax
 ; X64-NEXT:    # kill: def $al killed $al killed $eax
 ; X64-NEXT:    retq
   %t0 = xor i8 %x, -1
@@ -34,8 +35,9 @@ define i16 @scalar_i16(i16 %x, i16 %y) nounwind {
 ; X86-LABEL: scalar_i16:
 ; X86:       # %bb.0:
 ; X86-NEXT:    movzwl {{[0-9]+}}(%esp), %eax
-; X86-NEXT:    addw {{[0-9]+}}(%esp), %ax
-; X86-NEXT:    incl %eax
+; X86-NEXT:    movzwl {{[0-9]+}}(%esp), %ecx
+; X86-NEXT:    addw %ax, %cx
+; X86-NEXT:    leal 1(%ecx), %eax
 ; X86-NEXT:    # kill: def $ax killed $ax killed $eax
 ; X86-NEXT:    retl
 ;
@@ -81,12 +83,16 @@ define i32 @scalar_i32(i32 %x, i32 %y) nounwind {
 define i64 @scalar_i64(i64 %x, i64 %y) nounwind {
 ; X86-LABEL: scalar_i64:
 ; X86:       # %bb.0:
+; X86-NEXT:    pushl %esi
+; X86-NEXT:    movl {{[0-9]+}}(%esp), %ecx
+; X86-NEXT:    movl {{[0-9]+}}(%esp), %esi
 ; X86-NEXT:    movl {{[0-9]+}}(%esp), %eax
+; X86-NEXT:    addl %ecx, %eax
 ; X86-NEXT:    movl {{[0-9]+}}(%esp), %edx
-; X86-NEXT:    addl {{[0-9]+}}(%esp), %eax
-; X86-NEXT:    adcl {{[0-9]+}}(%esp), %edx
+; X86-NEXT:    adcl %esi, %edx
 ; X86-NEXT:    addl $1, %eax
 ; X86-NEXT:    adcl $0, %edx
+; X86-NEXT:    popl %esi
 ; X86-NEXT:    retl
 ;
 ; X64-LABEL: scalar_i64:
@@ -101,9 +107,10 @@ define i64 @scalar_i64(i64 %x, i64 %y) nounwind {
 define <16 x i8> @vector_i128_i8(<16 x i8> %x, <16 x i8> %y) nounwind {
 ; ALL-LABEL: vector_i128_i8:
 ; ALL:       # %bb.0:
-; ALL-NEXT:    paddb %xmm1, %xmm0
-; ALL-NEXT:    pcmpeqd %xmm1, %xmm1
-; ALL-NEXT:    psubb %xmm1, %xmm0
+; ALL-NEXT:    paddb %xmm0, %xmm1
+; ALL-NEXT:    pcmpeqd %xmm0, %xmm0
+; ALL-NEXT:    psubb %xmm0, %xmm1
+; ALL-NEXT:    movdqa %xmm1, %xmm0
 ; ALL-NEXT:    ret{{[l|q]}}
   %t0 = xor <16 x i8> %x, <i8 -1, i8 -1, i8 -1, i8 -1, i8 -1, i8 -1, i8 -1, i8 -1, i8 -1, i8 -1, i8 -1, i8 -1, i8 -1, i8 -1, i8 -1, i8 -1>
   %t1 = sub <16 x i8> %y, %t0
@@ -113,9 +120,10 @@ define <16 x i8> @vector_i128_i8(<16 x i8> %x, <16 x i8> %y) nounwind {
 define <8 x i16> @vector_i128_i16(<8 x i16> %x, <8 x i16> %y) nounwind {
 ; ALL-LABEL: vector_i128_i16:
 ; ALL:       # %bb.0:
-; ALL-NEXT:    paddw %xmm1, %xmm0
-; ALL-NEXT:    pcmpeqd %xmm1, %xmm1
-; ALL-NEXT:    psubw %xmm1, %xmm0
+; ALL-NEXT:    paddw %xmm0, %xmm1
+; ALL-NEXT:    pcmpeqd %xmm0, %xmm0
+; ALL-NEXT:    psubw %xmm0, %xmm1
+; ALL-NEXT:    movdqa %xmm1, %xmm0
 ; ALL-NEXT:    ret{{[l|q]}}
   %t0 = xor <8 x i16> %x, <i16 -1, i16 -1, i16 -1, i16 -1, i16 -1, i16 -1, i16 -1, i16 -1>
   %t1 = sub <8 x i16> %y, %t0
@@ -125,9 +133,10 @@ define <8 x i16> @vector_i128_i16(<8 x i16> %x, <8 x i16> %y) nounwind {
 define <4 x i32> @vector_i128_i32(<4 x i32> %x, <4 x i32> %y) nounwind {
 ; ALL-LABEL: vector_i128_i32:
 ; ALL:       # %bb.0:
-; ALL-NEXT:    paddd %xmm1, %xmm0
-; ALL-NEXT:    pcmpeqd %xmm1, %xmm1
-; ALL-NEXT:    psubd %xmm1, %xmm0
+; ALL-NEXT:    paddd %xmm0, %xmm1
+; ALL-NEXT:    pcmpeqd %xmm0, %xmm0
+; ALL-NEXT:    psubd %xmm0, %xmm1
+; ALL-NEXT:    movdqa %xmm1, %xmm0
 ; ALL-NEXT:    ret{{[l|q]}}
   %t0 = xor <4 x i32> %x, <i32 -1, i32 -1, i32 -1, i32 -1>
   %t1 = sub <4 x i32> %y, %t0
@@ -137,9 +146,10 @@ define <4 x i32> @vector_i128_i32(<4 x i32> %x, <4 x i32> %y) nounwind {
 define <2 x i64> @vector_i128_i64(<2 x i64> %x, <2 x i64> %y) nounwind {
 ; ALL-LABEL: vector_i128_i64:
 ; ALL:       # %bb.0:
-; ALL-NEXT:    paddq %xmm1, %xmm0
-; ALL-NEXT:    pcmpeqd %xmm1, %xmm1
-; ALL-NEXT:    psubq %xmm1, %xmm0
+; ALL-NEXT:    paddq %xmm0, %xmm1
+; ALL-NEXT:    pcmpeqd %xmm0, %xmm0
+; ALL-NEXT:    psubq %xmm0, %xmm1
+; ALL-NEXT:    movdqa %xmm1, %xmm0
 ; ALL-NEXT:    ret{{[l|q]}}
   %t0 = xor <2 x i64> %x, <i64 -1, i64 -1>
   %t1 = sub <2 x i64> %y, %t0

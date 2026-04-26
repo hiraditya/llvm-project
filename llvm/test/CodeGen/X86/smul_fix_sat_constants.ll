@@ -14,9 +14,9 @@ define i64 @func() nounwind {
 ; X64:       # %bb.0:
 ; X64-NEXT:    movl $2, %eax
 ; X64-NEXT:    negq %rax
-; X64-NEXT:    movabsq $9223372036854775807, %rax # imm = 0x7FFFFFFFFFFFFFFF
-; X64-NEXT:    movl $1, %ecx
-; X64-NEXT:    cmovgeq %rax, %rcx
+; X64-NEXT:    movabsq $9223372036854775807, %rcx # imm = 0x7FFFFFFFFFFFFFFF
+; X64-NEXT:    movl $1, %eax
+; X64-NEXT:    cmovlq %rax, %rcx
 ; X64-NEXT:    movq $-2, %rax
 ; X64-NEXT:    negq %rax
 ; X64-NEXT:    movabsq $-9223372036854775808, %rax # imm = 0x8000000000000000
@@ -43,9 +43,9 @@ define i64 @func3() nounwind {
 ; X64:       # %bb.0:
 ; X64-NEXT:    movl $2, %eax
 ; X64-NEXT:    negq %rax
-; X64-NEXT:    movabsq $9223372036854775807, %rax # imm = 0x7FFFFFFFFFFFFFFF
-; X64-NEXT:    movabsq $4611686018427387903, %rcx # imm = 0x3FFFFFFFFFFFFFFF
-; X64-NEXT:    cmovgeq %rax, %rcx
+; X64-NEXT:    movabsq $9223372036854775807, %rcx # imm = 0x7FFFFFFFFFFFFFFF
+; X64-NEXT:    movabsq $4611686018427387903, %rax # imm = 0x3FFFFFFFFFFFFFFF
+; X64-NEXT:    cmovlq %rax, %rcx
 ; X64-NEXT:    movq $-2, %rax
 ; X64-NEXT:    negq %rax
 ; X64-NEXT:    movabsq $-9223372036854775808, %rax # imm = 0x8000000000000000
@@ -60,9 +60,9 @@ define i64 @func4() nounwind {
 ; X64:       # %bb.0:
 ; X64-NEXT:    movl $2147483647, %eax # imm = 0x7FFFFFFF
 ; X64-NEXT:    negq %rax
-; X64-NEXT:    movabsq $9223372036854775807, %rax # imm = 0x7FFFFFFFFFFFFFFF
-; X64-NEXT:    movl $4294967295, %ecx # imm = 0xFFFFFFFF
-; X64-NEXT:    cmovgq %rax, %rcx
+; X64-NEXT:    movabsq $9223372036854775807, %rcx # imm = 0x7FFFFFFFFFFFFFFF
+; X64-NEXT:    movl $4294967295, %eax # imm = 0xFFFFFFFF
+; X64-NEXT:    cmovleq %rax, %rcx
 ; X64-NEXT:    movq $-2147483648, %rax # imm = 0x80000000
 ; X64-NEXT:    negq %rax
 ; X64-NEXT:    movabsq $-9223372036854775808, %rax # imm = 0x8000000000000000
@@ -77,9 +77,9 @@ define i64 @func5() nounwind {
 ; X64:       # %bb.0:
 ; X64-NEXT:    movabsq $4611686018427387903, %rax # imm = 0x3FFFFFFFFFFFFFFF
 ; X64-NEXT:    negq %rax
-; X64-NEXT:    movabsq $9223372036854775807, %rax # imm = 0x7FFFFFFFFFFFFFFF
-; X64-NEXT:    movl $1, %ecx
-; X64-NEXT:    cmovgq %rax, %rcx
+; X64-NEXT:    movabsq $9223372036854775807, %rcx # imm = 0x7FFFFFFFFFFFFFFF
+; X64-NEXT:    movl $1, %eax
+; X64-NEXT:    cmovleq %rax, %rcx
 ; X64-NEXT:    movabsq $-4611686018427387904, %rax # imm = 0xC000000000000000
 ; X64-NEXT:    negq %rax
 ; X64-NEXT:    movabsq $-9223372036854775808, %rax # imm = 0x8000000000000000

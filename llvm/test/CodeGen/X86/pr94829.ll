@@ -9,7 +9,7 @@ define i64 @test(i64 %x, i64 %y, i64 %a, i64 %b) {
 ; CHECK-NEXT:  # %bb.1: # %entry
 ; CHECK-NEXT:    movq %rcx, %rax
 ; CHECK-NEXT:    leaq -1(%rdi), %rcx
-; CHECK-NEXT:    andq %rdi, %rcx
+; CHECK-NEXT:    andq %rcx, %rdi
 ; CHECK-NEXT:    jne .LBB0_2
 ; CHECK-NEXT:  # %bb.3: # %if.end
 ; CHECK-NEXT:    retq

@@ -11,8 +11,9 @@ define zeroext i1 @bigger(ptr nocapture readonly %c, ptr nocapture readonly %e, 
 ; CHECK-NEXT:    movl %eax, %ecx
 ; CHECK-NEXT:    shll %cl, %r8d
 ; CHECK-NEXT:    movzbl (%rsi,%rdx), %eax
-; CHECK-NEXT:    xorb (%rdi,%rdx), %al
-; CHECK-NEXT:    movzbl %al, %eax
+; CHECK-NEXT:    movzbl (%rdi,%rdx), %ecx
+; CHECK-NEXT:    xorb %al, %cl
+; CHECK-NEXT:    movzbl %cl, %eax
 ; CHECK-NEXT:    andl %r8d, %eax
 ; CHECK-NEXT:    testb $-1, %al
 ; CHECK-NEXT:    sete %al

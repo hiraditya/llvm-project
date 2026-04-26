@@ -56,8 +56,9 @@ define i32 @ctpop_shifted_mask2(i32 %x) nounwind readnone {
 ; X86-POPCOUNT-LABEL: ctpop_shifted_mask2:
 ; X86-POPCOUNT:       # %bb.0:
 ; X86-POPCOUNT-NEXT:    movl $1572864, %eax # imm = 0x180000
-; X86-POPCOUNT-NEXT:    andl {{[0-9]+}}(%esp), %eax
-; X86-POPCOUNT-NEXT:    popcntl %eax, %eax
+; X86-POPCOUNT-NEXT:    movl {{[0-9]+}}(%esp), %ecx
+; X86-POPCOUNT-NEXT:    andl %eax, %ecx
+; X86-POPCOUNT-NEXT:    popcntl %ecx, %eax
 ; X86-POPCOUNT-NEXT:    retl
 ;
 ; X64-POPCOUNT-LABEL: ctpop_shifted_mask2:
@@ -68,8 +69,9 @@ define i32 @ctpop_shifted_mask2(i32 %x) nounwind readnone {
 ;
 ; X86-NO-POPCOUNT-LABEL: ctpop_shifted_mask2:
 ; X86-NO-POPCOUNT:       # %bb.0:
-; X86-NO-POPCOUNT-NEXT:    movl $1572864, %eax # imm = 0x180000
-; X86-NO-POPCOUNT-NEXT:    andl {{[0-9]+}}(%esp), %eax
+; X86-NO-POPCOUNT-NEXT:    movl $1572864, %ecx # imm = 0x180000
+; X86-NO-POPCOUNT-NEXT:    movl {{[0-9]+}}(%esp), %eax
+; X86-NO-POPCOUNT-NEXT:    andl %ecx, %eax
 ; X86-NO-POPCOUNT-NEXT:    movl %eax, %ecx
 ; X86-NO-POPCOUNT-NEXT:    shrl $20, %ecx
 ; X86-NO-POPCOUNT-NEXT:    shrl $19, %eax
@@ -106,9 +108,9 @@ define i32 @ctpop_mask3(i32 %x) nounwind readnone {
 ;
 ; X86-NO-POPCOUNT-LABEL: ctpop_mask3:
 ; X86-NO-POPCOUNT:       # %bb.0:
-; X86-NO-POPCOUNT-NEXT:    movl {{[0-9]+}}(%esp), %ecx
-; X86-NO-POPCOUNT-NEXT:    andl $5, %ecx
-; X86-NO-POPCOUNT-NEXT:    addl %ecx, %ecx
+; X86-NO-POPCOUNT-NEXT:    movl {{[0-9]+}}(%esp), %eax
+; X86-NO-POPCOUNT-NEXT:    andl $5, %eax
+; X86-NO-POPCOUNT-NEXT:    leal (%eax,%eax), %ecx
 ; X86-NO-POPCOUNT-NEXT:    movl $59796, %eax # imm = 0xE994
 ; X86-NO-POPCOUNT-NEXT:    # kill: def $cl killed $cl killed $ecx
 ; X86-NO-POPCOUNT-NEXT:    shrl %cl, %eax
@@ -217,8 +219,9 @@ define i32 @ctpop_shifted_mask4(i32 %x) nounwind readnone {
 ; X86-POPCOUNT-LABEL: ctpop_shifted_mask4:
 ; X86-POPCOUNT:       # %bb.0:
 ; X86-POPCOUNT-NEXT:    movl $7680, %eax # imm = 0x1E00
-; X86-POPCOUNT-NEXT:    andl {{[0-9]+}}(%esp), %eax
-; X86-POPCOUNT-NEXT:    popcntl %eax, %eax
+; X86-POPCOUNT-NEXT:    movl {{[0-9]+}}(%esp), %ecx
+; X86-POPCOUNT-NEXT:    andl %eax, %ecx
+; X86-POPCOUNT-NEXT:    popcntl %ecx, %eax
 ; X86-POPCOUNT-NEXT:    retl
 ;
 ; X64-POPCOUNT-LABEL: ctpop_shifted_mask4:
@@ -300,8 +303,9 @@ define i32 @ctpop_shifted_mask5(i32 %x) nounwind readnone {
 ; X86-POPCOUNT-LABEL: ctpop_shifted_mask5:
 ; X86-POPCOUNT:       # %bb.0:
 ; X86-POPCOUNT-NEXT:    movl $11776, %eax # imm = 0x2E00
-; X86-POPCOUNT-NEXT:    andl {{[0-9]+}}(%esp), %eax
-; X86-POPCOUNT-NEXT:    popcntl %eax, %eax
+; X86-POPCOUNT-NEXT:    movl {{[0-9]+}}(%esp), %ecx
+; X86-POPCOUNT-NEXT:    andl %eax, %ecx
+; X86-POPCOUNT-NEXT:    popcntl %ecx, %eax
 ; X86-POPCOUNT-NEXT:    retl
 ;
 ; X64-POPCOUNT-LABEL: ctpop_shifted_mask5:
@@ -380,8 +384,9 @@ define i64 @ctpop_shifted_mask6(i64 %x) nounwind readnone {
 ; X86-POPCOUNT-LABEL: ctpop_shifted_mask6:
 ; X86-POPCOUNT:       # %bb.0:
 ; X86-POPCOUNT-NEXT:    movl $26112, %eax # imm = 0x6600
-; X86-POPCOUNT-NEXT:    andl {{[0-9]+}}(%esp), %eax
-; X86-POPCOUNT-NEXT:    popcntl %eax, %eax
+; X86-POPCOUNT-NEXT:    movl {{[0-9]+}}(%esp), %ecx
+; X86-POPCOUNT-NEXT:    andl %eax, %ecx
+; X86-POPCOUNT-NEXT:    popcntl %ecx, %eax
 ; X86-POPCOUNT-NEXT:    xorl %edx, %edx
 ; X86-POPCOUNT-NEXT:    retl
 ;
@@ -466,8 +471,9 @@ define i32 @ctpop_shift_mask7(i32 %x) nounwind readnone {
 ; X86-POPCOUNT-LABEL: ctpop_shift_mask7:
 ; X86-POPCOUNT:       # %bb.0:
 ; X86-POPCOUNT-NEXT:    movl $1040384, %eax # imm = 0xFE000
-; X86-POPCOUNT-NEXT:    andl {{[0-9]+}}(%esp), %eax
-; X86-POPCOUNT-NEXT:    popcntl %eax, %eax
+; X86-POPCOUNT-NEXT:    movl {{[0-9]+}}(%esp), %ecx
+; X86-POPCOUNT-NEXT:    andl %eax, %ecx
+; X86-POPCOUNT-NEXT:    popcntl %ecx, %eax
 ; X86-POPCOUNT-NEXT:    retl
 ;
 ; X64-POPCOUNT-LABEL: ctpop_shift_mask7:
@@ -640,8 +646,9 @@ define i64 @ctpop_shifted_mask16(i64 %x) nounwind readnone {
 ; X86-POPCOUNT-LABEL: ctpop_shifted_mask16:
 ; X86-POPCOUNT:       # %bb.0:
 ; X86-POPCOUNT-NEXT:    movl $524280, %eax # imm = 0x7FFF8
-; X86-POPCOUNT-NEXT:    andl {{[0-9]+}}(%esp), %eax
-; X86-POPCOUNT-NEXT:    popcntl %eax, %eax
+; X86-POPCOUNT-NEXT:    movl {{[0-9]+}}(%esp), %ecx
+; X86-POPCOUNT-NEXT:    andl %eax, %ecx
+; X86-POPCOUNT-NEXT:    popcntl %ecx, %eax
 ; X86-POPCOUNT-NEXT:    xorl %edx, %edx
 ; X86-POPCOUNT-NEXT:    retl
 ;

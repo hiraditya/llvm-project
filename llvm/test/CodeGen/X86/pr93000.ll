@@ -4,19 +4,19 @@
 define void @PR93000(ptr %a0, ptr %a1, ptr %a2, <32 x i16> %a3) {
 ; CHECK-LABEL: PR93000:
 ; CHECK:       # %bb.0: # %Entry
-; CHECK-NEXT:    movl (%rdi), %eax
-; CHECK-NEXT:    addq $4, %rdi
+; CHECK-NEXT:    movl (%rdi), %ecx
+; CHECK-NEXT:    leaq 4(%rdi), %rax
 ; CHECK-NEXT:    .p2align 4
 ; CHECK-NEXT:  .LBB0_1: # %Loop
 ; CHECK-NEXT:    # =>This Inner Loop Header: Depth=1
-; CHECK-NEXT:    kmovd %eax, %k1
+; CHECK-NEXT:    kmovd %ecx, %k1
 ; CHECK-NEXT:    knotd %k1, %k2
 ; CHECK-NEXT:    vpblendmw (%rsi), %zmm0, %zmm1 {%k1}
-; CHECK-NEXT:    vmovdqu16 (%rdx), %zmm1 {%k2}
+; CHECK-NEXT:    vpblendmw (%rdx), %zmm1, %zmm1 {%k2}
 ; CHECK-NEXT:    vmovdqu64 %zmm1, (%rsi)
-; CHECK-NEXT:    movl (%rdi), %eax
-; CHECK-NEXT:    addq $4, %rdi
-; CHECK-NEXT:    testl %eax, %eax
+; CHECK-NEXT:    movl (%rax), %ecx
+; CHECK-NEXT:    addq $4, %rax
+; CHECK-NEXT:    testl %ecx, %ecx
 ; CHECK-NEXT:    jne .LBB0_1
 ; CHECK-NEXT:  # %bb.2: # %Then
 ; CHECK-NEXT:    vzeroupper

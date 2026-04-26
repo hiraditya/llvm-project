@@ -16,8 +16,8 @@ define void @test() {
 ; CHECK-NEXT:    shll %cl, %edx
 ; CHECK-NEXT:    xorb $16, %cl
 ; CHECK-NEXT:    shrl %cl, %eax
-; CHECK-NEXT:    orl %edx, %eax
-; CHECK-NEXT:    movl %eax, C
+; CHECK-NEXT:    orl %eax, %edx
+; CHECK-NEXT:    movl %edx, C
 ; CHECK-NEXT:    retl
 	%tmp = load ptr, ptr @A		; <ptr> [#uses=1]
 	%tmp1 = getelementptr i16, ptr %tmp, i32 1		; <ptr> [#uses=1]

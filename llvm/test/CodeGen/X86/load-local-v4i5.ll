@@ -6,27 +6,27 @@
 define void @_start() {
 ; CHECK-LABEL: _start:
 ; CHECK:       # %bb.0: # %Entry
-; CHECK-NEXT:    movl __unnamed_1(%rip), %eax
-; CHECK-NEXT:    movl %eax, -12(%rsp)
-; CHECK-NEXT:    movzbl -9(%rsp), %ecx
-; CHECK-NEXT:    movzbl -10(%rsp), %edx
-; CHECK-NEXT:    movzbl -11(%rsp), %esi
-; CHECK-NEXT:    movzbl %cl, %edi
-; CHECK-NEXT:    shrb %cl
-; CHECK-NEXT:    movb %cl, -2(%rsp)
-; CHECK-NEXT:    andl $31, %eax
-; CHECK-NEXT:    andl $31, %esi
-; CHECK-NEXT:    shll $5, %esi
-; CHECK-NEXT:    orl %eax, %esi
+; CHECK-NEXT:    movl __unnamed_1(%rip), %ecx
+; CHECK-NEXT:    movl %ecx, -12(%rsp)
+; CHECK-NEXT:    movzbl -9(%rsp), %edx
+; CHECK-NEXT:    movzbl -10(%rsp), %eax
+; CHECK-NEXT:    movzbl %dl, %esi
+; CHECK-NEXT:    shrb %dl
+; CHECK-NEXT:    movb %dl, -2(%rsp)
+; CHECK-NEXT:    movzbl -11(%rsp), %edx
+; CHECK-NEXT:    andl $31, %ecx
 ; CHECK-NEXT:    andl $31, %edx
-; CHECK-NEXT:    shll $10, %edx
-; CHECK-NEXT:    orl %esi, %edx
-; CHECK-NEXT:    movl %edi, %eax
-; CHECK-NEXT:    shll $15, %eax
+; CHECK-NEXT:    shll $5, %edx
+; CHECK-NEXT:    orl %ecx, %edx
+; CHECK-NEXT:    andl $31, %eax
+; CHECK-NEXT:    shll $10, %eax
 ; CHECK-NEXT:    orl %edx, %eax
-; CHECK-NEXT:    movw %ax, -4(%rsp)
-; CHECK-NEXT:    movb %dil, -5(%rsp)
-; CHECK-NEXT:    cmpb $31, %dil
+; CHECK-NEXT:    movl %esi, %ecx
+; CHECK-NEXT:    shll $15, %ecx
+; CHECK-NEXT:    orl %eax, %ecx
+; CHECK-NEXT:    movw %cx, -4(%rsp)
+; CHECK-NEXT:    movb %sil, -5(%rsp)
+; CHECK-NEXT:    cmpb $31, %sil
 ; CHECK-NEXT:    je .LBB0_2
 ; CHECK-NEXT:  # %bb.1: # %Then
 ; CHECK-NEXT:    int3

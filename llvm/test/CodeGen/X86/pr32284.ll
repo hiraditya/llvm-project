@@ -514,8 +514,8 @@ define void @f2() {
 ; X64-NEXT:    testl %eax, %eax
 ; X64-NEXT:    sete %cl
 ; X64-NEXT:    xorl %edx, %edx
-; X64-NEXT:    xorl %eax, %ecx
-; X64-NEXT:    movw %cx, -{{[0-9]+}}(%rsp)
+; X64-NEXT:    xorl %ecx, %eax
+; X64-NEXT:    movw %ax, -{{[0-9]+}}(%rsp)
 ; X64-NEXT:    sete %dl
 ; X64-NEXT:    movw %dx, (%rax)
 ; X64-NEXT:    retq
@@ -556,15 +556,15 @@ define void @f2() {
 ; X86:       # %bb.0: # %entry
 ; X86-NEXT:    subl $2, %esp
 ; X86-NEXT:    .cfi_def_cfa_offset 6
-; X86-NEXT:    movzbl var_7, %edx
+; X86-NEXT:    movzbl var_7, %ecx
+; X86-NEXT:    xorl %edx, %edx
+; X86-NEXT:    testl %ecx, %ecx
+; X86-NEXT:    sete %dl
 ; X86-NEXT:    xorl %eax, %eax
-; X86-NEXT:    testl %edx, %edx
+; X86-NEXT:    xorl %edx, %ecx
+; X86-NEXT:    movw %cx, (%esp)
 ; X86-NEXT:    sete %al
-; X86-NEXT:    xorl %ecx, %ecx
-; X86-NEXT:    xorl %edx, %eax
-; X86-NEXT:    movw %ax, (%esp)
-; X86-NEXT:    sete %cl
-; X86-NEXT:    movw %cx, (%eax)
+; X86-NEXT:    movw %ax, (%eax)
 ; X86-NEXT:    addl $2, %esp
 ; X86-NEXT:    .cfi_def_cfa_offset 4
 ; X86-NEXT:    retl
@@ -630,8 +630,8 @@ define void @f2() {
 ; X64-SETZUCC-NEXT:    movzbl var_7(%rip), %eax
 ; X64-SETZUCC-NEXT:    testl %eax, %eax
 ; X64-SETZUCC-NEXT:    setzue %cl
-; X64-SETZUCC-NEXT:    xorl %eax, %ecx
-; X64-SETZUCC-NEXT:    movw %cx, -{{[0-9]+}}(%rsp)
+; X64-SETZUCC-NEXT:    xorl %ecx, %eax
+; X64-SETZUCC-NEXT:    movw %ax, -{{[0-9]+}}(%rsp)
 ; X64-SETZUCC-NEXT:    setzue %al
 ; X64-SETZUCC-NEXT:    movw %ax, (%rax)
 ; X64-SETZUCC-NEXT:    retq
@@ -641,8 +641,8 @@ define void @f2() {
 ; X64-NO-SETZUCC-NEXT:    movzbl var_7(%rip), %eax
 ; X64-NO-SETZUCC-NEXT:    testl %eax, %eax
 ; X64-NO-SETZUCC-NEXT:    setzue %cl
-; X64-NO-SETZUCC-NEXT:    xorl %eax, %ecx
-; X64-NO-SETZUCC-NEXT:    movw %cx, -{{[0-9]+}}(%rsp)
+; X64-NO-SETZUCC-NEXT:    xorl %ecx, %eax
+; X64-NO-SETZUCC-NEXT:    movw %ax, -{{[0-9]+}}(%rsp)
 ; X64-NO-SETZUCC-NEXT:    setzue %al
 ; X64-NO-SETZUCC-NEXT:    movw %ax, (%rax)
 ; X64-NO-SETZUCC-NEXT:    retq
@@ -722,9 +722,9 @@ define void @f3() #0 {
 ; X64-NEXT:    sete %cl
 ; X64-NEXT:    movl var_16(%rip), %edx
 ; X64-NEXT:    xorl %eax, %edx
-; X64-NEXT:    andl %edx, %ecx
-; X64-NEXT:    orl %eax, %ecx
-; X64-NEXT:    movq %rcx, -{{[0-9]+}}(%rsp)
+; X64-NEXT:    andl %ecx, %edx
+; X64-NEXT:    orl %eax, %edx
+; X64-NEXT:    movq %rdx, -{{[0-9]+}}(%rsp)
 ; X64-NEXT:    movl %eax, var_46(%rip)
 ; X64-NEXT:    retq
 ;
@@ -867,9 +867,9 @@ define void @f3() #0 {
 ; X64-SETZUCC-NEXT:    setzue %cl
 ; X64-SETZUCC-NEXT:    movl var_16(%rip), %edx
 ; X64-SETZUCC-NEXT:    xorl %eax, %edx
-; X64-SETZUCC-NEXT:    andl %edx, %ecx
-; X64-SETZUCC-NEXT:    orl %eax, %ecx
-; X64-SETZUCC-NEXT:    movq %rcx, -{{[0-9]+}}(%rsp)
+; X64-SETZUCC-NEXT:    andl %ecx, %edx
+; X64-SETZUCC-NEXT:    orl %eax, %edx
+; X64-SETZUCC-NEXT:    movq %rdx, -{{[0-9]+}}(%rsp)
 ; X64-SETZUCC-NEXT:    movl %eax, var_46(%rip)
 ; X64-SETZUCC-NEXT:    retq
 ;
@@ -881,9 +881,9 @@ define void @f3() #0 {
 ; X64-NO-SETZUCC-NEXT:    setzue %cl
 ; X64-NO-SETZUCC-NEXT:    movl var_16(%rip), %edx
 ; X64-NO-SETZUCC-NEXT:    xorl %eax, %edx
-; X64-NO-SETZUCC-NEXT:    andl %edx, %ecx
-; X64-NO-SETZUCC-NEXT:    orl %eax, %ecx
-; X64-NO-SETZUCC-NEXT:    movq %rcx, -{{[0-9]+}}(%rsp)
+; X64-NO-SETZUCC-NEXT:    andl %ecx, %edx
+; X64-NO-SETZUCC-NEXT:    orl %eax, %edx
+; X64-NO-SETZUCC-NEXT:    movq %rdx, -{{[0-9]+}}(%rsp)
 ; X64-NO-SETZUCC-NEXT:    movl %eax, var_46(%rip)
 ; X64-NO-SETZUCC-NEXT:    retq
 entry:

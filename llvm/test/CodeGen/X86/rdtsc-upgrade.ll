@@ -21,8 +21,9 @@ define i64 @test_builtin_rdtscp(ptr %A) {
 ; X64:       # %bb.0:
 ; X64-NEXT:    rdtscp
 ; X64-NEXT:    shlq $32, %rdx
-; X64-NEXT:    orq %rdx, %rax
+; X64-NEXT:    orq %rax, %rdx
 ; X64-NEXT:    movl %ecx, (%rdi)
+; X64-NEXT:    movq %rdx, %rax
 ; X64-NEXT:    retq
   %1 = tail call i64 @llvm.x86.rdtscp(ptr %A)
   ret i64 %1

@@ -12,7 +12,7 @@ define i16 @test_shl_i4(i16 %v, i16 %a, i16 %b) {
 ; X64:       # %bb.0:
 ; X64-NEXT:    # kill: def $esi killed $esi def $rsi
 ; X64-NEXT:    # kill: def $edx killed $edx def $rdx
-; X64-NEXT:    leal (%rdx,%rsi), %ecx
+; X64-NEXT:    leal (%rsi,%rdx), %ecx
 ; X64-NEXT:    andb $15, %cl
 ; X64-NEXT:    # kill: def $cl killed $cl killed $ecx
 ; X64-NEXT:    shlb %cl, %dil

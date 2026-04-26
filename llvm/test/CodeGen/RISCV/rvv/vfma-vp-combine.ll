@@ -9,7 +9,8 @@ define <vscale x 1 x double> @test1(<vscale x 1 x double> %a, <vscale x 1 x doub
 ; CHECK-LABEL: test1:
 ; CHECK:       # %bb.0:
 ; CHECK-NEXT:    vsetvli a0, zero, e64, m1, ta, ma
-; CHECK-NEXT:    vfmadd.vv v8, v9, v10
+; CHECK-NEXT:    vfmadd.vv v9, v8, v10
+; CHECK-NEXT:    vmv.v.v v8, v9
 ; CHECK-NEXT:    ret
   %nega = call <vscale x 1 x double> @llvm.vp.fneg.nxv1f64(<vscale x 1 x double> %a, <vscale x 1 x i1> %m, i32 %evl)
   %negb = call <vscale x 1 x double> @llvm.vp.fneg.nxv1f64(<vscale x 1 x double> %b, <vscale x 1 x i1> %m, i32 %evl)

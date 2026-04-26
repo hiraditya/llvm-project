@@ -351,11 +351,12 @@ define <8 x double> @ulto8f64(<8 x i64> %a) {
 ; NODQ-LABEL: ulto8f64:
 ; NODQ:       # %bb.0:
 ; NODQ-NEXT:    vpbroadcastq {{.*#+}} zmm1 = [4841369599423283200,4841369599423283200,4841369599423283200,4841369599423283200,4841369599423283200,4841369599423283200,4841369599423283200,4841369599423283200]
-; NODQ-NEXT:    vpternlogq {{.*#+}} zmm1 = zmm1 | (zmm0 & m64bcst)
+; NODQ-NEXT:    vpbroadcastq {{.*#+}} zmm2 = [4294967295,4294967295,4294967295,4294967295,4294967295,4294967295,4294967295,4294967295]
+; NODQ-NEXT:    vpternlogq {{.*#+}} zmm2 = (zmm2 & zmm0) | zmm1
 ; NODQ-NEXT:    vpsrlq $32, %zmm0, %zmm0
 ; NODQ-NEXT:    vporq {{\.?LCPI[0-9]+_[0-9]+}}(%rip){1to8}, %zmm0, %zmm0
 ; NODQ-NEXT:    vsubpd {{\.?LCPI[0-9]+_[0-9]+}}(%rip){1to8}, %zmm0, %zmm0
-; NODQ-NEXT:    vaddpd %zmm0, %zmm1, %zmm0
+; NODQ-NEXT:    vaddpd %zmm0, %zmm2, %zmm0
 ; NODQ-NEXT:    retq
 ;
 ; VLDQ-LABEL: ulto8f64:

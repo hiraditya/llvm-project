@@ -38,18 +38,19 @@ define i32 @fn(i32 %a0, i32 %a1) {
 ; X64-NEXT:    sete %cl
 ; X64-NEXT:    setne %al
 ; X64-NEXT:    cmpl $1, %esi
-; X64-NEXT:    sete %dl
+; X64-NEXT:    sete %sil
 ; X64-NEXT:    negl %eax
-; X64-NEXT:    addb %cl, %cl
-; X64-NEXT:    movl %eax, %esi
-; X64-NEXT:    shll %cl, %esi
-; X64-NEXT:    addb %dl, %dl
-; X64-NEXT:    movl %edx, %ecx
+; X64-NEXT:    addl %ecx, %ecx
+; X64-NEXT:    movl %eax, %edx
+; X64-NEXT:    # kill: def $cl killed $cl killed $ecx
+; X64-NEXT:    shll %cl, %edx
+; X64-NEXT:    leal (%rsi,%rsi), %ecx
+; X64-NEXT:    # kill: def $cl killed $cl killed $ecx
 ; X64-NEXT:    shll %cl, %eax
 ; X64-NEXT:    .p2align 4
 ; X64-NEXT:  .LBB0_1: # %bb1
 ; X64-NEXT:    # =>This Inner Loop Header: Depth=1
-; X64-NEXT:    testl %esi, %esi
+; X64-NEXT:    testl %edx, %edx
 ; X64-NEXT:    je .LBB0_1
 ; X64-NEXT:  # %bb.2: # %bb2
 ; X64-NEXT:    retq

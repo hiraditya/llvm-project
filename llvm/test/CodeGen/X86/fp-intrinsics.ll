@@ -133,8 +133,9 @@ define double @f3(double %a, double %b) #0 {
 ; X86-SSE-NEXT:    movsd {{.*#+}} xmm0 = [-0.0E+0,0.0E+0]
 ; X86-SSE-NEXT:    movapd %xmm0, %xmm1
 ; X86-SSE-NEXT:    subsd {{[0-9]+}}(%esp), %xmm1
-; X86-SSE-NEXT:    mulsd {{[0-9]+}}(%esp), %xmm1
-; X86-SSE-NEXT:    subsd %xmm1, %xmm0
+; X86-SSE-NEXT:    movsd {{.*#+}} xmm2 = mem[0],zero
+; X86-SSE-NEXT:    mulsd %xmm1, %xmm2
+; X86-SSE-NEXT:    subsd %xmm2, %xmm0
 ; X86-SSE-NEXT:    movsd %xmm0, (%esp)
 ; X86-SSE-NEXT:    fldl (%esp)
 ; X86-SSE-NEXT:    wait
@@ -209,7 +210,8 @@ define double @f4(i32 %n, double %a) #0 {
 ; X86-SSE-NEXT:    cmpl $0, {{[0-9]+}}(%esp)
 ; X86-SSE-NEXT:    jle .LBB3_2
 ; X86-SSE-NEXT:  # %bb.1: # %if.then
-; X86-SSE-NEXT:    addsd {{\.?LCPI[0-9]+_[0-9]+}}, %xmm0
+; X86-SSE-NEXT:    movsd {{.*#+}} xmm1 = [1.0E+0,0.0E+0]
+; X86-SSE-NEXT:    addsd %xmm1, %xmm0
 ; X86-SSE-NEXT:  .LBB3_2: # %if.end
 ; X86-SSE-NEXT:    movsd %xmm0, (%esp)
 ; X86-SSE-NEXT:    fldl (%esp)
@@ -223,7 +225,8 @@ define double @f4(i32 %n, double %a) #0 {
 ; SSE-NEXT:    testl %edi, %edi
 ; SSE-NEXT:    jle .LBB3_2
 ; SSE-NEXT:  # %bb.1: # %if.then
-; SSE-NEXT:    addsd {{\.?LCPI[0-9]+_[0-9]+}}(%rip), %xmm0
+; SSE-NEXT:    movsd {{.*#+}} xmm1 = [1.0E+0,0.0E+0]
+; SSE-NEXT:    addsd %xmm1, %xmm0
 ; SSE-NEXT:  .LBB3_2: # %if.end
 ; SSE-NEXT:    retq
 ;
@@ -1309,10 +1312,10 @@ define i32 @f20u(double %x) #0 {
 ; X86-SSE-NEXT:    movapd %xmm2, %xmm1
 ; X86-SSE-NEXT:  .LBB24_2: # %entry
 ; X86-SSE-NEXT:    setbe %al
-; X86-SSE-NEXT:    movzbl %al, %ecx
-; X86-SSE-NEXT:    shll $31, %ecx
+; X86-SSE-NEXT:    movzbl %al, %eax
+; X86-SSE-NEXT:    shll $31, %eax
 ; X86-SSE-NEXT:    subsd %xmm1, %xmm0
-; X86-SSE-NEXT:    cvttsd2si %xmm0, %eax
+; X86-SSE-NEXT:    cvttsd2si %xmm0, %ecx
 ; X86-SSE-NEXT:    xorl %ecx, %eax
 ; X86-SSE-NEXT:    retl
 ;
@@ -1350,24 +1353,25 @@ define i64 @f20u64(double %x) #0 {
 ; X87-NEXT:    fldl {{[0-9]+}}(%esp)
 ; X87-NEXT:    flds {{\.?LCPI[0-9]+_[0-9]+}}
 ; X87-NEXT:    wait
-; X87-NEXT:    xorl %edx, %edx
+; X87-NEXT:    xorl %eax, %eax
 ; X87-NEXT:    fcomi %st(1), %st
 ; X87-NEXT:    wait
-; X87-NEXT:    setbe %dl
+; X87-NEXT:    setbe %al
 ; X87-NEXT:    fldz
 ; X87-NEXT:    fcmovbe %st(1), %st
 ; X87-NEXT:    fstp %st(1)
 ; X87-NEXT:    fsubrp %st, %st(1)
 ; X87-NEXT:    wait
 ; X87-NEXT:    fnstcw {{[0-9]+}}(%esp)
-; X87-NEXT:    movzwl {{[0-9]+}}(%esp), %eax
-; X87-NEXT:    orl $3072, %eax # imm = 0xC00
-; X87-NEXT:    movw %ax, {{[0-9]+}}(%esp)
+; X87-NEXT:    movzwl {{[0-9]+}}(%esp), %ecx
+; X87-NEXT:    orl $3072, %ecx # imm = 0xC00
+; X87-NEXT:    movw %cx, {{[0-9]+}}(%esp)
 ; X87-NEXT:    fldcw {{[0-9]+}}(%esp)
 ; X87-NEXT:    fistpll {{[0-9]+}}(%esp)
 ; X87-NEXT:    fldcw {{[0-9]+}}(%esp)
-; X87-NEXT:    shll $31, %edx
-; X87-NEXT:    xorl {{[0-9]+}}(%esp), %edx
+; X87-NEXT:    shll $31, %eax
+; X87-NEXT:    movl {{[0-9]+}}(%esp), %edx
+; X87-NEXT:    xorl %eax, %edx
 ; X87-NEXT:    movl {{[0-9]+}}(%esp), %eax
 ; X87-NEXT:    addl $20, %esp
 ; X87-NEXT:    .cfi_def_cfa_offset 4
@@ -1396,9 +1400,10 @@ define i64 @f20u64(double %x) #0 {
 ; X86-SSE-NEXT:    fldcw {{[0-9]+}}(%esp)
 ; X86-SSE-NEXT:    fistpll {{[0-9]+}}(%esp)
 ; X86-SSE-NEXT:    fldcw {{[0-9]+}}(%esp)
-; X86-SSE-NEXT:    movzbl %al, %edx
-; X86-SSE-NEXT:    shll $31, %edx
-; X86-SSE-NEXT:    xorl {{[0-9]+}}(%esp), %edx
+; X86-SSE-NEXT:    movzbl %al, %eax
+; X86-SSE-NEXT:    shll $31, %eax
+; X86-SSE-NEXT:    movl {{[0-9]+}}(%esp), %edx
+; X86-SSE-NEXT:    xorl %eax, %edx
 ; X86-SSE-NEXT:    movl {{[0-9]+}}(%esp), %eax
 ; X86-SSE-NEXT:    addl $20, %esp
 ; X86-SSE-NEXT:    .cfi_def_cfa_offset 4
@@ -2499,10 +2504,10 @@ define double @uifdl(i64 %x) #0 {
 ; SSE-NEXT:    shrq %rax
 ; SSE-NEXT:    movl %edi, %ecx
 ; SSE-NEXT:    andl $1, %ecx
-; SSE-NEXT:    orq %rax, %rcx
+; SSE-NEXT:    orq %rcx, %rax
 ; SSE-NEXT:    testq %rdi, %rdi
-; SSE-NEXT:    cmovnsq %rdi, %rcx
-; SSE-NEXT:    cvtsi2sd %rcx, %xmm0
+; SSE-NEXT:    cmovnsq %rdi, %rax
+; SSE-NEXT:    cvtsi2sd %rax, %xmm0
 ; SSE-NEXT:    jns .LBB48_2
 ; SSE-NEXT:  # %bb.1:
 ; SSE-NEXT:    addsd %xmm0, %xmm0
@@ -2515,10 +2520,10 @@ define double @uifdl(i64 %x) #0 {
 ; AVX1-NEXT:    shrq %rax
 ; AVX1-NEXT:    movl %edi, %ecx
 ; AVX1-NEXT:    andl $1, %ecx
-; AVX1-NEXT:    orq %rax, %rcx
+; AVX1-NEXT:    orq %rcx, %rax
 ; AVX1-NEXT:    testq %rdi, %rdi
-; AVX1-NEXT:    cmovnsq %rdi, %rcx
-; AVX1-NEXT:    vcvtsi2sd %rcx, %xmm15, %xmm0
+; AVX1-NEXT:    cmovnsq %rdi, %rax
+; AVX1-NEXT:    vcvtsi2sd %rax, %xmm15, %xmm0
 ; AVX1-NEXT:    jns .LBB48_2
 ; AVX1-NEXT:  # %bb.1:
 ; AVX1-NEXT:    vaddsd %xmm0, %xmm0, %xmm0
@@ -2721,10 +2726,10 @@ define float @uiffl(i64 %x) #0 {
 ; SSE-NEXT:    shrq %rax
 ; SSE-NEXT:    movl %edi, %ecx
 ; SSE-NEXT:    andl $1, %ecx
-; SSE-NEXT:    orq %rax, %rcx
+; SSE-NEXT:    orq %rcx, %rax
 ; SSE-NEXT:    testq %rdi, %rdi
-; SSE-NEXT:    cmovnsq %rdi, %rcx
-; SSE-NEXT:    cvtsi2ss %rcx, %xmm0
+; SSE-NEXT:    cmovnsq %rdi, %rax
+; SSE-NEXT:    cvtsi2ss %rax, %xmm0
 ; SSE-NEXT:    jns .LBB52_2
 ; SSE-NEXT:  # %bb.1:
 ; SSE-NEXT:    addss %xmm0, %xmm0
@@ -2737,10 +2742,10 @@ define float @uiffl(i64 %x) #0 {
 ; AVX1-NEXT:    shrq %rax
 ; AVX1-NEXT:    movl %edi, %ecx
 ; AVX1-NEXT:    andl $1, %ecx
-; AVX1-NEXT:    orq %rax, %rcx
+; AVX1-NEXT:    orq %rcx, %rax
 ; AVX1-NEXT:    testq %rdi, %rdi
-; AVX1-NEXT:    cmovnsq %rdi, %rcx
-; AVX1-NEXT:    vcvtsi2ss %rcx, %xmm15, %xmm0
+; AVX1-NEXT:    cmovnsq %rdi, %rax
+; AVX1-NEXT:    vcvtsi2ss %rax, %xmm15, %xmm0
 ; AVX1-NEXT:    jns .LBB52_2
 ; AVX1-NEXT:  # %bb.1:
 ; AVX1-NEXT:    vaddss %xmm0, %xmm0, %xmm0

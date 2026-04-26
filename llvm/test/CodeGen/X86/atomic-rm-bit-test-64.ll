@@ -59,11 +59,12 @@ define i64 @atomic_shl1_neq_xor_64_gpr_val(ptr %v, i64 %c) nounwind {
 ; CHECK-NEXT:    lock cmpxchgq %rsi, (%rdi)
 ; CHECK-NEXT:    jne .LBB2_1
 ; CHECK-NEXT:  # %bb.2: # %atomicrmw.end
-; CHECK-NEXT:    incb %cl
+; CHECK-NEXT:    incl %ecx
 ; CHECK-NEXT:    movl $1, %edx
-; CHECK-NEXT:    # kill: def $cl killed $cl killed $rcx
+; CHECK-NEXT:    # kill: def $cl killed $cl killed $ecx
 ; CHECK-NEXT:    shlq %cl, %rdx
-; CHECK-NEXT:    andq %rdx, %rax
+; CHECK-NEXT:    andq %rax, %rdx
+; CHECK-NEXT:    movq %rdx, %rax
 ; CHECK-NEXT:    retq
 entry:
   %shl = shl nuw i64 1, %c
@@ -251,7 +252,7 @@ define i64 @atomic_shl1_neq_xor_64_gpr_valz(ptr %v, i64 %c) nounwind {
 ; CHECK-NEXT:    lock cmpxchgq %rsi, (%rdi)
 ; CHECK-NEXT:    jne .LBB10_1
 ; CHECK-NEXT:  # %bb.2: # %atomicrmw.end
-; CHECK-NEXT:    incb %cl
+; CHECK-NEXT:    incl %ecx
 ; CHECK-NEXT:    movzbl %cl, %edx
 ; CHECK-NEXT:    xorl %ecx, %ecx
 ; CHECK-NEXT:    btq %rdx, %rax
@@ -493,7 +494,7 @@ define i64 @atomic_shl1_neq_xor_64_gpr_valnz(ptr %v, i64 %c) nounwind {
 ; CHECK-NEXT:    lock cmpxchgq %rsi, (%rdi)
 ; CHECK-NEXT:    jne .LBB18_1
 ; CHECK-NEXT:  # %bb.2: # %atomicrmw.end
-; CHECK-NEXT:    incb %cl
+; CHECK-NEXT:    incl %ecx
 ; CHECK-NEXT:    movzbl %cl, %edx
 ; CHECK-NEXT:    xorl %ecx, %ecx
 ; CHECK-NEXT:    btq %rdx, %rax
@@ -719,11 +720,12 @@ define i64 @atomic_shl1_neq_and_64_gpr_val(ptr %v, i64 %c) nounwind {
 ; CHECK-NEXT:    lock cmpxchgq %rsi, (%rdi)
 ; CHECK-NEXT:    jne .LBB26_1
 ; CHECK-NEXT:  # %bb.2: # %atomicrmw.end
-; CHECK-NEXT:    incb %cl
+; CHECK-NEXT:    incl %ecx
 ; CHECK-NEXT:    movl $1, %edx
-; CHECK-NEXT:    # kill: def $cl killed $cl killed $rcx
+; CHECK-NEXT:    # kill: def $cl killed $cl killed $ecx
 ; CHECK-NEXT:    shlq %cl, %rdx
-; CHECK-NEXT:    andq %rdx, %rax
+; CHECK-NEXT:    andq %rax, %rdx
+; CHECK-NEXT:    movq %rdx, %rax
 ; CHECK-NEXT:    retq
 entry:
   %shl = shl nuw i64 1, %c
@@ -923,7 +925,7 @@ define i64 @atomic_shl1_neq_and_64_gpr_valnz(ptr %v, i64 %c) nounwind {
 ; CHECK-NEXT:    lock cmpxchgq %rsi, (%rdi)
 ; CHECK-NEXT:    jne .LBB34_1
 ; CHECK-NEXT:  # %bb.2: # %atomicrmw.end
-; CHECK-NEXT:    incb %cl
+; CHECK-NEXT:    incl %ecx
 ; CHECK-NEXT:    movzbl %cl, %edx
 ; CHECK-NEXT:    xorl %ecx, %ecx
 ; CHECK-NEXT:    btq %rdx, %rax

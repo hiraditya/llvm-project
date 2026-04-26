@@ -6,8 +6,9 @@ target triple = "i386-apple-darwin9.5"
 define i32 @test(i32 %a, i32 %L, i32 %P) nounwind {
 ; CHECK-LABEL: test:
 ; CHECK:       ## %bb.0: ## %entry
+; CHECK-NEXT:    movl {{[0-9]+}}(%esp), %ecx
 ; CHECK-NEXT:    movl {{[0-9]+}}(%esp), %eax
-; CHECK-NEXT:    addl {{[0-9]+}}(%esp), %eax
+; CHECK-NEXT:    addl %ecx, %eax
 ; CHECK-NEXT:    retl
 entry:
         %0 = add i32 %a, %L
@@ -21,8 +22,9 @@ return:		; preds = %bb3
 define i32 @test2(i32 %a, i32 %L, i32 %P) nounwind {
 ; CHECK-LABEL: test2:
 ; CHECK:       ## %bb.0: ## %entry
+; CHECK-NEXT:    movl {{[0-9]+}}(%esp), %ecx
 ; CHECK-NEXT:    movl {{[0-9]+}}(%esp), %eax
-; CHECK-NEXT:    addl {{[0-9]+}}(%esp), %eax
+; CHECK-NEXT:    addl %ecx, %eax
 ; CHECK-NEXT:    retl
 entry:
         %0 = add i32 %L, %a

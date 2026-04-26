@@ -11,7 +11,9 @@
 define <4 x i32> @commute_cmpps_eq(ptr %a0, <4 x float> %a1) {
 ; SSE-LABEL: commute_cmpps_eq:
 ; SSE:       # %bb.0:
-; SSE-NEXT:    cmpeqps (%rdi), %xmm0
+; SSE-NEXT:    movaps (%rdi), %xmm1
+; SSE-NEXT:    cmpeqps %xmm0, %xmm1
+; SSE-NEXT:    movaps %xmm1, %xmm0
 ; SSE-NEXT:    retq
 ;
 ; AVX-LABEL: commute_cmpps_eq:
@@ -32,7 +34,9 @@ define <4 x i32> @commute_cmpps_eq(ptr %a0, <4 x float> %a1) {
 define <4 x i32> @commute_cmpps_ne(ptr %a0, <4 x float> %a1) {
 ; SSE-LABEL: commute_cmpps_ne:
 ; SSE:       # %bb.0:
-; SSE-NEXT:    cmpneqps (%rdi), %xmm0
+; SSE-NEXT:    movaps (%rdi), %xmm1
+; SSE-NEXT:    cmpneqps %xmm0, %xmm1
+; SSE-NEXT:    movaps %xmm1, %xmm0
 ; SSE-NEXT:    retq
 ;
 ; AVX-LABEL: commute_cmpps_ne:
@@ -53,7 +57,9 @@ define <4 x i32> @commute_cmpps_ne(ptr %a0, <4 x float> %a1) {
 define <4 x i32> @commute_cmpps_ord(ptr %a0, <4 x float> %a1) {
 ; SSE-LABEL: commute_cmpps_ord:
 ; SSE:       # %bb.0:
-; SSE-NEXT:    cmpordps (%rdi), %xmm0
+; SSE-NEXT:    movaps (%rdi), %xmm1
+; SSE-NEXT:    cmpordps %xmm0, %xmm1
+; SSE-NEXT:    movaps %xmm1, %xmm0
 ; SSE-NEXT:    retq
 ;
 ; AVX-LABEL: commute_cmpps_ord:
@@ -74,7 +80,9 @@ define <4 x i32> @commute_cmpps_ord(ptr %a0, <4 x float> %a1) {
 define <4 x i32> @commute_cmpps_uno(ptr %a0, <4 x float> %a1) {
 ; SSE-LABEL: commute_cmpps_uno:
 ; SSE:       # %bb.0:
-; SSE-NEXT:    cmpunordps (%rdi), %xmm0
+; SSE-NEXT:    movaps (%rdi), %xmm1
+; SSE-NEXT:    cmpunordps %xmm0, %xmm1
+; SSE-NEXT:    movaps %xmm1, %xmm0
 ; SSE-NEXT:    retq
 ;
 ; AVX-LABEL: commute_cmpps_uno:
@@ -95,11 +103,12 @@ define <4 x i32> @commute_cmpps_uno(ptr %a0, <4 x float> %a1) {
 define <4 x i32> @commute_cmpps_ueq(ptr %a0, <4 x float> %a1) {
 ; SSE-LABEL: commute_cmpps_ueq:
 ; SSE:       # %bb.0:
-; SSE-NEXT:    movaps (%rdi), %xmm1
-; SSE-NEXT:    movaps %xmm1, %xmm2
-; SSE-NEXT:    cmpeqps %xmm0, %xmm2
-; SSE-NEXT:    cmpunordps %xmm1, %xmm0
-; SSE-NEXT:    orps %xmm2, %xmm0
+; SSE-NEXT:    movaps (%rdi), %xmm2
+; SSE-NEXT:    movaps %xmm2, %xmm1
+; SSE-NEXT:    cmpeqps %xmm0, %xmm1
+; SSE-NEXT:    cmpunordps %xmm0, %xmm2
+; SSE-NEXT:    orps %xmm2, %xmm1
+; SSE-NEXT:    movaps %xmm1, %xmm0
 ; SSE-NEXT:    retq
 ;
 ; AVX-LABEL: commute_cmpps_ueq:
@@ -120,11 +129,12 @@ define <4 x i32> @commute_cmpps_ueq(ptr %a0, <4 x float> %a1) {
 define <4 x i32> @commute_cmpps_one(ptr %a0, <4 x float> %a1) {
 ; SSE-LABEL: commute_cmpps_one:
 ; SSE:       # %bb.0:
-; SSE-NEXT:    movaps (%rdi), %xmm1
-; SSE-NEXT:    movaps %xmm1, %xmm2
-; SSE-NEXT:    cmpneqps %xmm0, %xmm2
-; SSE-NEXT:    cmpordps %xmm1, %xmm0
-; SSE-NEXT:    andps %xmm2, %xmm0
+; SSE-NEXT:    movaps (%rdi), %xmm2
+; SSE-NEXT:    movaps %xmm2, %xmm1
+; SSE-NEXT:    cmpneqps %xmm0, %xmm1
+; SSE-NEXT:    cmpordps %xmm0, %xmm2
+; SSE-NEXT:    andps %xmm2, %xmm1
+; SSE-NEXT:    movaps %xmm1, %xmm0
 ; SSE-NEXT:    retq
 ;
 ; AVX-LABEL: commute_cmpps_one:
@@ -195,8 +205,12 @@ define <4 x i32> @commute_cmpps_le(ptr %a0, <4 x float> %a1) {
 define <8 x i32> @commute_cmpps_eq_ymm(ptr %a0, <8 x float> %a1) {
 ; SSE-LABEL: commute_cmpps_eq_ymm:
 ; SSE:       # %bb.0:
-; SSE-NEXT:    cmpeqps (%rdi), %xmm0
-; SSE-NEXT:    cmpeqps 16(%rdi), %xmm1
+; SSE-NEXT:    movaps (%rdi), %xmm2
+; SSE-NEXT:    cmpeqps %xmm0, %xmm2
+; SSE-NEXT:    movaps 16(%rdi), %xmm3
+; SSE-NEXT:    cmpeqps %xmm1, %xmm3
+; SSE-NEXT:    movaps %xmm2, %xmm0
+; SSE-NEXT:    movaps %xmm3, %xmm1
 ; SSE-NEXT:    retq
 ;
 ; AVX-LABEL: commute_cmpps_eq_ymm:
@@ -217,8 +231,12 @@ define <8 x i32> @commute_cmpps_eq_ymm(ptr %a0, <8 x float> %a1) {
 define <8 x i32> @commute_cmpps_ne_ymm(ptr %a0, <8 x float> %a1) {
 ; SSE-LABEL: commute_cmpps_ne_ymm:
 ; SSE:       # %bb.0:
-; SSE-NEXT:    cmpneqps (%rdi), %xmm0
-; SSE-NEXT:    cmpneqps 16(%rdi), %xmm1
+; SSE-NEXT:    movaps (%rdi), %xmm2
+; SSE-NEXT:    cmpneqps %xmm0, %xmm2
+; SSE-NEXT:    movaps 16(%rdi), %xmm3
+; SSE-NEXT:    cmpneqps %xmm1, %xmm3
+; SSE-NEXT:    movaps %xmm2, %xmm0
+; SSE-NEXT:    movaps %xmm3, %xmm1
 ; SSE-NEXT:    retq
 ;
 ; AVX-LABEL: commute_cmpps_ne_ymm:
@@ -239,8 +257,12 @@ define <8 x i32> @commute_cmpps_ne_ymm(ptr %a0, <8 x float> %a1) {
 define <8 x i32> @commute_cmpps_ord_ymm(ptr %a0, <8 x float> %a1) {
 ; SSE-LABEL: commute_cmpps_ord_ymm:
 ; SSE:       # %bb.0:
-; SSE-NEXT:    cmpordps (%rdi), %xmm0
-; SSE-NEXT:    cmpordps 16(%rdi), %xmm1
+; SSE-NEXT:    movaps (%rdi), %xmm2
+; SSE-NEXT:    cmpordps %xmm0, %xmm2
+; SSE-NEXT:    movaps 16(%rdi), %xmm3
+; SSE-NEXT:    cmpordps %xmm1, %xmm3
+; SSE-NEXT:    movaps %xmm2, %xmm0
+; SSE-NEXT:    movaps %xmm3, %xmm1
 ; SSE-NEXT:    retq
 ;
 ; AVX-LABEL: commute_cmpps_ord_ymm:
@@ -261,8 +283,12 @@ define <8 x i32> @commute_cmpps_ord_ymm(ptr %a0, <8 x float> %a1) {
 define <8 x i32> @commute_cmpps_uno_ymm(ptr %a0, <8 x float> %a1) {
 ; SSE-LABEL: commute_cmpps_uno_ymm:
 ; SSE:       # %bb.0:
-; SSE-NEXT:    cmpunordps (%rdi), %xmm0
-; SSE-NEXT:    cmpunordps 16(%rdi), %xmm1
+; SSE-NEXT:    movaps (%rdi), %xmm2
+; SSE-NEXT:    cmpunordps %xmm0, %xmm2
+; SSE-NEXT:    movaps 16(%rdi), %xmm3
+; SSE-NEXT:    cmpunordps %xmm1, %xmm3
+; SSE-NEXT:    movaps %xmm2, %xmm0
+; SSE-NEXT:    movaps %xmm3, %xmm1
 ; SSE-NEXT:    retq
 ;
 ; AVX-LABEL: commute_cmpps_uno_ymm:
@@ -283,16 +309,18 @@ define <8 x i32> @commute_cmpps_uno_ymm(ptr %a0, <8 x float> %a1) {
 define <8 x i32> @commute_cmpps_ueq_ymm(ptr %a0, <8 x float> %a1) {
 ; SSE-LABEL: commute_cmpps_ueq_ymm:
 ; SSE:       # %bb.0:
-; SSE-NEXT:    movaps (%rdi), %xmm2
-; SSE-NEXT:    movaps 16(%rdi), %xmm3
-; SSE-NEXT:    movaps %xmm2, %xmm4
-; SSE-NEXT:    cmpeqps %xmm0, %xmm4
-; SSE-NEXT:    cmpunordps %xmm2, %xmm0
-; SSE-NEXT:    orps %xmm4, %xmm0
+; SSE-NEXT:    movaps (%rdi), %xmm3
+; SSE-NEXT:    movaps 16(%rdi), %xmm4
 ; SSE-NEXT:    movaps %xmm3, %xmm2
-; SSE-NEXT:    cmpeqps %xmm1, %xmm2
-; SSE-NEXT:    cmpunordps %xmm3, %xmm1
-; SSE-NEXT:    orps %xmm2, %xmm1
+; SSE-NEXT:    cmpeqps %xmm0, %xmm2
+; SSE-NEXT:    cmpunordps %xmm0, %xmm3
+; SSE-NEXT:    orps %xmm3, %xmm2
+; SSE-NEXT:    movaps %xmm4, %xmm3
+; SSE-NEXT:    cmpeqps %xmm1, %xmm3
+; SSE-NEXT:    cmpunordps %xmm1, %xmm4
+; SSE-NEXT:    orps %xmm4, %xmm3
+; SSE-NEXT:    movaps %xmm2, %xmm0
+; SSE-NEXT:    movaps %xmm3, %xmm1
 ; SSE-NEXT:    retq
 ;
 ; AVX-LABEL: commute_cmpps_ueq_ymm:
@@ -313,16 +341,18 @@ define <8 x i32> @commute_cmpps_ueq_ymm(ptr %a0, <8 x float> %a1) {
 define <8 x i32> @commute_cmpps_one_ymm(ptr %a0, <8 x float> %a1) {
 ; SSE-LABEL: commute_cmpps_one_ymm:
 ; SSE:       # %bb.0:
-; SSE-NEXT:    movaps (%rdi), %xmm2
-; SSE-NEXT:    movaps 16(%rdi), %xmm3
-; SSE-NEXT:    movaps %xmm2, %xmm4
-; SSE-NEXT:    cmpneqps %xmm0, %xmm4
-; SSE-NEXT:    cmpordps %xmm2, %xmm0
-; SSE-NEXT:    andps %xmm4, %xmm0
+; SSE-NEXT:    movaps (%rdi), %xmm3
+; SSE-NEXT:    movaps 16(%rdi), %xmm4
 ; SSE-NEXT:    movaps %xmm3, %xmm2
-; SSE-NEXT:    cmpneqps %xmm1, %xmm2
-; SSE-NEXT:    cmpordps %xmm3, %xmm1
-; SSE-NEXT:    andps %xmm2, %xmm1
+; SSE-NEXT:    cmpneqps %xmm0, %xmm2
+; SSE-NEXT:    cmpordps %xmm0, %xmm3
+; SSE-NEXT:    andps %xmm3, %xmm2
+; SSE-NEXT:    movaps %xmm4, %xmm3
+; SSE-NEXT:    cmpneqps %xmm1, %xmm3
+; SSE-NEXT:    cmpordps %xmm1, %xmm4
+; SSE-NEXT:    andps %xmm4, %xmm3
+; SSE-NEXT:    movaps %xmm2, %xmm0
+; SSE-NEXT:    movaps %xmm3, %xmm1
 ; SSE-NEXT:    retq
 ;
 ; AVX-LABEL: commute_cmpps_one_ymm:
@@ -404,7 +434,9 @@ define <8 x i32> @commute_cmpps_le_ymm(ptr %a0, <8 x float> %a1) {
 define <2 x i64> @commute_cmppd_eq(ptr %a0, <2 x double> %a1) {
 ; SSE-LABEL: commute_cmppd_eq:
 ; SSE:       # %bb.0:
-; SSE-NEXT:    cmpeqpd (%rdi), %xmm0
+; SSE-NEXT:    movapd (%rdi), %xmm1
+; SSE-NEXT:    cmpeqpd %xmm0, %xmm1
+; SSE-NEXT:    movapd %xmm1, %xmm0
 ; SSE-NEXT:    retq
 ;
 ; AVX-LABEL: commute_cmppd_eq:
@@ -425,7 +457,9 @@ define <2 x i64> @commute_cmppd_eq(ptr %a0, <2 x double> %a1) {
 define <2 x i64> @commute_cmppd_ne(ptr %a0, <2 x double> %a1) {
 ; SSE-LABEL: commute_cmppd_ne:
 ; SSE:       # %bb.0:
-; SSE-NEXT:    cmpneqpd (%rdi), %xmm0
+; SSE-NEXT:    movapd (%rdi), %xmm1
+; SSE-NEXT:    cmpneqpd %xmm0, %xmm1
+; SSE-NEXT:    movapd %xmm1, %xmm0
 ; SSE-NEXT:    retq
 ;
 ; AVX-LABEL: commute_cmppd_ne:
@@ -446,7 +480,9 @@ define <2 x i64> @commute_cmppd_ne(ptr %a0, <2 x double> %a1) {
 define <2 x i64> @commute_cmppd_ord(ptr %a0, <2 x double> %a1) {
 ; SSE-LABEL: commute_cmppd_ord:
 ; SSE:       # %bb.0:
-; SSE-NEXT:    cmpordpd (%rdi), %xmm0
+; SSE-NEXT:    movapd (%rdi), %xmm1
+; SSE-NEXT:    cmpordpd %xmm0, %xmm1
+; SSE-NEXT:    movapd %xmm1, %xmm0
 ; SSE-NEXT:    retq
 ;
 ; AVX-LABEL: commute_cmppd_ord:
@@ -467,11 +503,12 @@ define <2 x i64> @commute_cmppd_ord(ptr %a0, <2 x double> %a1) {
 define <2 x i64> @commute_cmppd_ueq(ptr %a0, <2 x double> %a1) {
 ; SSE-LABEL: commute_cmppd_ueq:
 ; SSE:       # %bb.0:
-; SSE-NEXT:    movapd (%rdi), %xmm1
-; SSE-NEXT:    movapd %xmm1, %xmm2
-; SSE-NEXT:    cmpeqpd %xmm0, %xmm2
-; SSE-NEXT:    cmpunordpd %xmm1, %xmm0
-; SSE-NEXT:    orpd %xmm2, %xmm0
+; SSE-NEXT:    movapd (%rdi), %xmm2
+; SSE-NEXT:    movapd %xmm2, %xmm1
+; SSE-NEXT:    cmpeqpd %xmm0, %xmm1
+; SSE-NEXT:    cmpunordpd %xmm0, %xmm2
+; SSE-NEXT:    orpd %xmm2, %xmm1
+; SSE-NEXT:    movapd %xmm1, %xmm0
 ; SSE-NEXT:    retq
 ;
 ; AVX-LABEL: commute_cmppd_ueq:
@@ -492,11 +529,12 @@ define <2 x i64> @commute_cmppd_ueq(ptr %a0, <2 x double> %a1) {
 define <2 x i64> @commute_cmppd_one(ptr %a0, <2 x double> %a1) {
 ; SSE-LABEL: commute_cmppd_one:
 ; SSE:       # %bb.0:
-; SSE-NEXT:    movapd (%rdi), %xmm1
-; SSE-NEXT:    movapd %xmm1, %xmm2
-; SSE-NEXT:    cmpneqpd %xmm0, %xmm2
-; SSE-NEXT:    cmpordpd %xmm1, %xmm0
-; SSE-NEXT:    andpd %xmm2, %xmm0
+; SSE-NEXT:    movapd (%rdi), %xmm2
+; SSE-NEXT:    movapd %xmm2, %xmm1
+; SSE-NEXT:    cmpneqpd %xmm0, %xmm1
+; SSE-NEXT:    cmpordpd %xmm0, %xmm2
+; SSE-NEXT:    andpd %xmm2, %xmm1
+; SSE-NEXT:    movapd %xmm1, %xmm0
 ; SSE-NEXT:    retq
 ;
 ; AVX-LABEL: commute_cmppd_one:
@@ -517,7 +555,9 @@ define <2 x i64> @commute_cmppd_one(ptr %a0, <2 x double> %a1) {
 define <2 x i64> @commute_cmppd_uno(ptr %a0, <2 x double> %a1) {
 ; SSE-LABEL: commute_cmppd_uno:
 ; SSE:       # %bb.0:
-; SSE-NEXT:    cmpunordpd (%rdi), %xmm0
+; SSE-NEXT:    movapd (%rdi), %xmm1
+; SSE-NEXT:    cmpunordpd %xmm0, %xmm1
+; SSE-NEXT:    movapd %xmm1, %xmm0
 ; SSE-NEXT:    retq
 ;
 ; AVX-LABEL: commute_cmppd_uno:
@@ -588,8 +628,12 @@ define <2 x i64> @commute_cmppd_le(ptr %a0, <2 x double> %a1) {
 define <4 x i64> @commute_cmppd_eq_ymmm(ptr %a0, <4 x double> %a1) {
 ; SSE-LABEL: commute_cmppd_eq_ymmm:
 ; SSE:       # %bb.0:
-; SSE-NEXT:    cmpeqpd (%rdi), %xmm0
-; SSE-NEXT:    cmpeqpd 16(%rdi), %xmm1
+; SSE-NEXT:    movapd (%rdi), %xmm2
+; SSE-NEXT:    cmpeqpd %xmm0, %xmm2
+; SSE-NEXT:    movapd 16(%rdi), %xmm3
+; SSE-NEXT:    cmpeqpd %xmm1, %xmm3
+; SSE-NEXT:    movapd %xmm2, %xmm0
+; SSE-NEXT:    movapd %xmm3, %xmm1
 ; SSE-NEXT:    retq
 ;
 ; AVX-LABEL: commute_cmppd_eq_ymmm:
@@ -610,8 +654,12 @@ define <4 x i64> @commute_cmppd_eq_ymmm(ptr %a0, <4 x double> %a1) {
 define <4 x i64> @commute_cmppd_ne_ymmm(ptr %a0, <4 x double> %a1) {
 ; SSE-LABEL: commute_cmppd_ne_ymmm:
 ; SSE:       # %bb.0:
-; SSE-NEXT:    cmpneqpd (%rdi), %xmm0
-; SSE-NEXT:    cmpneqpd 16(%rdi), %xmm1
+; SSE-NEXT:    movapd (%rdi), %xmm2
+; SSE-NEXT:    cmpneqpd %xmm0, %xmm2
+; SSE-NEXT:    movapd 16(%rdi), %xmm3
+; SSE-NEXT:    cmpneqpd %xmm1, %xmm3
+; SSE-NEXT:    movapd %xmm2, %xmm0
+; SSE-NEXT:    movapd %xmm3, %xmm1
 ; SSE-NEXT:    retq
 ;
 ; AVX-LABEL: commute_cmppd_ne_ymmm:
@@ -632,8 +680,12 @@ define <4 x i64> @commute_cmppd_ne_ymmm(ptr %a0, <4 x double> %a1) {
 define <4 x i64> @commute_cmppd_ord_ymmm(ptr %a0, <4 x double> %a1) {
 ; SSE-LABEL: commute_cmppd_ord_ymmm:
 ; SSE:       # %bb.0:
-; SSE-NEXT:    cmpordpd (%rdi), %xmm0
-; SSE-NEXT:    cmpordpd 16(%rdi), %xmm1
+; SSE-NEXT:    movapd (%rdi), %xmm2
+; SSE-NEXT:    cmpordpd %xmm0, %xmm2
+; SSE-NEXT:    movapd 16(%rdi), %xmm3
+; SSE-NEXT:    cmpordpd %xmm1, %xmm3
+; SSE-NEXT:    movapd %xmm2, %xmm0
+; SSE-NEXT:    movapd %xmm3, %xmm1
 ; SSE-NEXT:    retq
 ;
 ; AVX-LABEL: commute_cmppd_ord_ymmm:
@@ -654,8 +706,12 @@ define <4 x i64> @commute_cmppd_ord_ymmm(ptr %a0, <4 x double> %a1) {
 define <4 x i64> @commute_cmppd_uno_ymmm(ptr %a0, <4 x double> %a1) {
 ; SSE-LABEL: commute_cmppd_uno_ymmm:
 ; SSE:       # %bb.0:
-; SSE-NEXT:    cmpunordpd (%rdi), %xmm0
-; SSE-NEXT:    cmpunordpd 16(%rdi), %xmm1
+; SSE-NEXT:    movapd (%rdi), %xmm2
+; SSE-NEXT:    cmpunordpd %xmm0, %xmm2
+; SSE-NEXT:    movapd 16(%rdi), %xmm3
+; SSE-NEXT:    cmpunordpd %xmm1, %xmm3
+; SSE-NEXT:    movapd %xmm2, %xmm0
+; SSE-NEXT:    movapd %xmm3, %xmm1
 ; SSE-NEXT:    retq
 ;
 ; AVX-LABEL: commute_cmppd_uno_ymmm:
@@ -676,16 +732,18 @@ define <4 x i64> @commute_cmppd_uno_ymmm(ptr %a0, <4 x double> %a1) {
 define <4 x i64> @commute_cmppd_ueq_ymmm(ptr %a0, <4 x double> %a1) {
 ; SSE-LABEL: commute_cmppd_ueq_ymmm:
 ; SSE:       # %bb.0:
-; SSE-NEXT:    movapd (%rdi), %xmm2
-; SSE-NEXT:    movapd 16(%rdi), %xmm3
-; SSE-NEXT:    movapd %xmm2, %xmm4
-; SSE-NEXT:    cmpeqpd %xmm0, %xmm4
-; SSE-NEXT:    cmpunordpd %xmm2, %xmm0
-; SSE-NEXT:    orpd %xmm4, %xmm0
+; SSE-NEXT:    movapd (%rdi), %xmm3
+; SSE-NEXT:    movapd 16(%rdi), %xmm4
 ; SSE-NEXT:    movapd %xmm3, %xmm2
-; SSE-NEXT:    cmpeqpd %xmm1, %xmm2
-; SSE-NEXT:    cmpunordpd %xmm3, %xmm1
-; SSE-NEXT:    orpd %xmm2, %xmm1
+; SSE-NEXT:    cmpeqpd %xmm0, %xmm2
+; SSE-NEXT:    cmpunordpd %xmm0, %xmm3
+; SSE-NEXT:    orpd %xmm3, %xmm2
+; SSE-NEXT:    movapd %xmm4, %xmm3
+; SSE-NEXT:    cmpeqpd %xmm1, %xmm3
+; SSE-NEXT:    cmpunordpd %xmm1, %xmm4
+; SSE-NEXT:    orpd %xmm4, %xmm3
+; SSE-NEXT:    movapd %xmm2, %xmm0
+; SSE-NEXT:    movapd %xmm3, %xmm1
 ; SSE-NEXT:    retq
 ;
 ; AVX-LABEL: commute_cmppd_ueq_ymmm:
@@ -706,16 +764,18 @@ define <4 x i64> @commute_cmppd_ueq_ymmm(ptr %a0, <4 x double> %a1) {
 define <4 x i64> @commute_cmppd_one_ymmm(ptr %a0, <4 x double> %a1) {
 ; SSE-LABEL: commute_cmppd_one_ymmm:
 ; SSE:       # %bb.0:
-; SSE-NEXT:    movapd (%rdi), %xmm2
-; SSE-NEXT:    movapd 16(%rdi), %xmm3
-; SSE-NEXT:    movapd %xmm2, %xmm4
-; SSE-NEXT:    cmpneqpd %xmm0, %xmm4
-; SSE-NEXT:    cmpordpd %xmm2, %xmm0
-; SSE-NEXT:    andpd %xmm4, %xmm0
+; SSE-NEXT:    movapd (%rdi), %xmm3
+; SSE-NEXT:    movapd 16(%rdi), %xmm4
 ; SSE-NEXT:    movapd %xmm3, %xmm2
-; SSE-NEXT:    cmpneqpd %xmm1, %xmm2
-; SSE-NEXT:    cmpordpd %xmm3, %xmm1
-; SSE-NEXT:    andpd %xmm2, %xmm1
+; SSE-NEXT:    cmpneqpd %xmm0, %xmm2
+; SSE-NEXT:    cmpordpd %xmm0, %xmm3
+; SSE-NEXT:    andpd %xmm3, %xmm2
+; SSE-NEXT:    movapd %xmm4, %xmm3
+; SSE-NEXT:    cmpneqpd %xmm1, %xmm3
+; SSE-NEXT:    cmpordpd %xmm1, %xmm4
+; SSE-NEXT:    andpd %xmm4, %xmm3
+; SSE-NEXT:    movapd %xmm2, %xmm0
+; SSE-NEXT:    movapd %xmm3, %xmm1
 ; SSE-NEXT:    retq
 ;
 ; AVX-LABEL: commute_cmppd_one_ymmm:
@@ -792,10 +852,18 @@ define <4 x i64> @commute_cmppd_le_ymmm(ptr %a0, <4 x double> %a1) {
 define <16 x i32> @commute_cmpps_eq_zmm(ptr %a0, <16 x float> %a1) {
 ; SSE-LABEL: commute_cmpps_eq_zmm:
 ; SSE:       # %bb.0:
-; SSE-NEXT:    cmpeqps (%rdi), %xmm0
-; SSE-NEXT:    cmpeqps 16(%rdi), %xmm1
-; SSE-NEXT:    cmpeqps 32(%rdi), %xmm2
-; SSE-NEXT:    cmpeqps 48(%rdi), %xmm3
+; SSE-NEXT:    movaps (%rdi), %xmm4
+; SSE-NEXT:    cmpeqps %xmm0, %xmm4
+; SSE-NEXT:    movaps 16(%rdi), %xmm5
+; SSE-NEXT:    cmpeqps %xmm1, %xmm5
+; SSE-NEXT:    movaps 32(%rdi), %xmm6
+; SSE-NEXT:    cmpeqps %xmm2, %xmm6
+; SSE-NEXT:    movaps 48(%rdi), %xmm7
+; SSE-NEXT:    cmpeqps %xmm3, %xmm7
+; SSE-NEXT:    movaps %xmm4, %xmm0
+; SSE-NEXT:    movaps %xmm5, %xmm1
+; SSE-NEXT:    movaps %xmm6, %xmm2
+; SSE-NEXT:    movaps %xmm7, %xmm3
 ; SSE-NEXT:    retq
 ;
 ; AVX-LABEL: commute_cmpps_eq_zmm:
@@ -818,10 +886,18 @@ define <16 x i32> @commute_cmpps_eq_zmm(ptr %a0, <16 x float> %a1) {
 define <16 x i32> @commute_cmpps_ne_zmm(ptr %a0, <16 x float> %a1) {
 ; SSE-LABEL: commute_cmpps_ne_zmm:
 ; SSE:       # %bb.0:
-; SSE-NEXT:    cmpneqps (%rdi), %xmm0
-; SSE-NEXT:    cmpneqps 16(%rdi), %xmm1
-; SSE-NEXT:    cmpneqps 32(%rdi), %xmm2
-; SSE-NEXT:    cmpneqps 48(%rdi), %xmm3
+; SSE-NEXT:    movaps (%rdi), %xmm4
+; SSE-NEXT:    cmpneqps %xmm0, %xmm4
+; SSE-NEXT:    movaps 16(%rdi), %xmm5
+; SSE-NEXT:    cmpneqps %xmm1, %xmm5
+; SSE-NEXT:    movaps 32(%rdi), %xmm6
+; SSE-NEXT:    cmpneqps %xmm2, %xmm6
+; SSE-NEXT:    movaps 48(%rdi), %xmm7
+; SSE-NEXT:    cmpneqps %xmm3, %xmm7
+; SSE-NEXT:    movaps %xmm4, %xmm0
+; SSE-NEXT:    movaps %xmm5, %xmm1
+; SSE-NEXT:    movaps %xmm6, %xmm2
+; SSE-NEXT:    movaps %xmm7, %xmm3
 ; SSE-NEXT:    retq
 ;
 ; AVX-LABEL: commute_cmpps_ne_zmm:
@@ -844,10 +920,18 @@ define <16 x i32> @commute_cmpps_ne_zmm(ptr %a0, <16 x float> %a1) {
 define <16 x i32> @commute_cmpps_ord_zmm(ptr %a0, <16 x float> %a1) {
 ; SSE-LABEL: commute_cmpps_ord_zmm:
 ; SSE:       # %bb.0:
-; SSE-NEXT:    cmpordps (%rdi), %xmm0
-; SSE-NEXT:    cmpordps 16(%rdi), %xmm1
-; SSE-NEXT:    cmpordps 32(%rdi), %xmm2
-; SSE-NEXT:    cmpordps 48(%rdi), %xmm3
+; SSE-NEXT:    movaps (%rdi), %xmm4
+; SSE-NEXT:    cmpordps %xmm0, %xmm4
+; SSE-NEXT:    movaps 16(%rdi), %xmm5
+; SSE-NEXT:    cmpordps %xmm1, %xmm5
+; SSE-NEXT:    movaps 32(%rdi), %xmm6
+; SSE-NEXT:    cmpordps %xmm2, %xmm6
+; SSE-NEXT:    movaps 48(%rdi), %xmm7
+; SSE-NEXT:    cmpordps %xmm3, %xmm7
+; SSE-NEXT:    movaps %xmm4, %xmm0
+; SSE-NEXT:    movaps %xmm5, %xmm1
+; SSE-NEXT:    movaps %xmm6, %xmm2
+; SSE-NEXT:    movaps %xmm7, %xmm3
 ; SSE-NEXT:    retq
 ;
 ; AVX-LABEL: commute_cmpps_ord_zmm:
@@ -870,10 +954,18 @@ define <16 x i32> @commute_cmpps_ord_zmm(ptr %a0, <16 x float> %a1) {
 define <16 x i32> @commute_cmpps_uno_zmm(ptr %a0, <16 x float> %a1) {
 ; SSE-LABEL: commute_cmpps_uno_zmm:
 ; SSE:       # %bb.0:
-; SSE-NEXT:    cmpunordps (%rdi), %xmm0
-; SSE-NEXT:    cmpunordps 16(%rdi), %xmm1
-; SSE-NEXT:    cmpunordps 32(%rdi), %xmm2
-; SSE-NEXT:    cmpunordps 48(%rdi), %xmm3
+; SSE-NEXT:    movaps (%rdi), %xmm4
+; SSE-NEXT:    cmpunordps %xmm0, %xmm4
+; SSE-NEXT:    movaps 16(%rdi), %xmm5
+; SSE-NEXT:    cmpunordps %xmm1, %xmm5
+; SSE-NEXT:    movaps 32(%rdi), %xmm6
+; SSE-NEXT:    cmpunordps %xmm2, %xmm6
+; SSE-NEXT:    movaps 48(%rdi), %xmm7
+; SSE-NEXT:    cmpunordps %xmm3, %xmm7
+; SSE-NEXT:    movaps %xmm4, %xmm0
+; SSE-NEXT:    movaps %xmm5, %xmm1
+; SSE-NEXT:    movaps %xmm6, %xmm2
+; SSE-NEXT:    movaps %xmm7, %xmm3
 ; SSE-NEXT:    retq
 ;
 ; AVX-LABEL: commute_cmpps_uno_zmm:
@@ -896,26 +988,30 @@ define <16 x i32> @commute_cmpps_uno_zmm(ptr %a0, <16 x float> %a1) {
 define <16 x i32> @commute_cmpps_ueq_zmm(ptr %a0, <16 x float> %a1) {
 ; SSE-LABEL: commute_cmpps_ueq_zmm:
 ; SSE:       # %bb.0:
-; SSE-NEXT:    movaps (%rdi), %xmm4
-; SSE-NEXT:    movaps 16(%rdi), %xmm5
-; SSE-NEXT:    movaps 32(%rdi), %xmm6
-; SSE-NEXT:    movaps 48(%rdi), %xmm7
-; SSE-NEXT:    movaps %xmm4, %xmm8
-; SSE-NEXT:    cmpeqps %xmm0, %xmm8
-; SSE-NEXT:    cmpunordps %xmm4, %xmm0
-; SSE-NEXT:    orps %xmm8, %xmm0
+; SSE-NEXT:    movaps (%rdi), %xmm5
+; SSE-NEXT:    movaps 16(%rdi), %xmm6
+; SSE-NEXT:    movaps 32(%rdi), %xmm7
+; SSE-NEXT:    movaps 48(%rdi), %xmm8
 ; SSE-NEXT:    movaps %xmm5, %xmm4
-; SSE-NEXT:    cmpeqps %xmm1, %xmm4
-; SSE-NEXT:    cmpunordps %xmm5, %xmm1
-; SSE-NEXT:    orps %xmm4, %xmm1
-; SSE-NEXT:    movaps %xmm6, %xmm4
-; SSE-NEXT:    cmpeqps %xmm2, %xmm4
-; SSE-NEXT:    cmpunordps %xmm6, %xmm2
-; SSE-NEXT:    orps %xmm4, %xmm2
-; SSE-NEXT:    movaps %xmm7, %xmm4
-; SSE-NEXT:    cmpeqps %xmm3, %xmm4
-; SSE-NEXT:    cmpunordps %xmm7, %xmm3
-; SSE-NEXT:    orps %xmm4, %xmm3
+; SSE-NEXT:    cmpeqps %xmm0, %xmm4
+; SSE-NEXT:    cmpunordps %xmm0, %xmm5
+; SSE-NEXT:    orps %xmm5, %xmm4
+; SSE-NEXT:    movaps %xmm6, %xmm5
+; SSE-NEXT:    cmpeqps %xmm1, %xmm5
+; SSE-NEXT:    cmpunordps %xmm1, %xmm6
+; SSE-NEXT:    orps %xmm6, %xmm5
+; SSE-NEXT:    movaps %xmm7, %xmm6
+; SSE-NEXT:    cmpeqps %xmm2, %xmm6
+; SSE-NEXT:    cmpunordps %xmm2, %xmm7
+; SSE-NEXT:    orps %xmm7, %xmm6
+; SSE-NEXT:    movaps %xmm8, %xmm7
+; SSE-NEXT:    cmpeqps %xmm3, %xmm7
+; SSE-NEXT:    cmpunordps %xmm3, %xmm8
+; SSE-NEXT:    orps %xmm8, %xmm7
+; SSE-NEXT:    movaps %xmm4, %xmm0
+; SSE-NEXT:    movaps %xmm5, %xmm1
+; SSE-NEXT:    movaps %xmm6, %xmm2
+; SSE-NEXT:    movaps %xmm7, %xmm3
 ; SSE-NEXT:    retq
 ;
 ; AVX-LABEL: commute_cmpps_ueq_zmm:
@@ -938,26 +1034,30 @@ define <16 x i32> @commute_cmpps_ueq_zmm(ptr %a0, <16 x float> %a1) {
 define <16 x i32> @commute_cmpps_one_zmm(ptr %a0, <16 x float> %a1) {
 ; SSE-LABEL: commute_cmpps_one_zmm:
 ; SSE:       # %bb.0:
-; SSE-NEXT:    movaps (%rdi), %xmm4
-; SSE-NEXT:    movaps 16(%rdi), %xmm5
-; SSE-NEXT:    movaps 32(%rdi), %xmm6
-; SSE-NEXT:    movaps 48(%rdi), %xmm7
-; SSE-NEXT:    movaps %xmm4, %xmm8
-; SSE-NEXT:    cmpneqps %xmm0, %xmm8
-; SSE-NEXT:    cmpordps %xmm4, %xmm0
-; SSE-NEXT:    andps %xmm8, %xmm0
+; SSE-NEXT:    movaps (%rdi), %xmm5
+; SSE-NEXT:    movaps 16(%rdi), %xmm6
+; SSE-NEXT:    movaps 32(%rdi), %xmm7
+; SSE-NEXT:    movaps 48(%rdi), %xmm8
 ; SSE-NEXT:    movaps %xmm5, %xmm4
-; SSE-NEXT:    cmpneqps %xmm1, %xmm4
-; SSE-NEXT:    cmpordps %xmm5, %xmm1
-; SSE-NEXT:    andps %xmm4, %xmm1
-; SSE-NEXT:    movaps %xmm6, %xmm4
-; SSE-NEXT:    cmpneqps %xmm2, %xmm4
-; SSE-NEXT:    cmpordps %xmm6, %xmm2
-; SSE-NEXT:    andps %xmm4, %xmm2
-; SSE-NEXT:    movaps %xmm7, %xmm4
-; SSE-NEXT:    cmpneqps %xmm3, %xmm4
-; SSE-NEXT:    cmpordps %xmm7, %xmm3
-; SSE-NEXT:    andps %xmm4, %xmm3
+; SSE-NEXT:    cmpneqps %xmm0, %xmm4
+; SSE-NEXT:    cmpordps %xmm0, %xmm5
+; SSE-NEXT:    andps %xmm5, %xmm4
+; SSE-NEXT:    movaps %xmm6, %xmm5
+; SSE-NEXT:    cmpneqps %xmm1, %xmm5
+; SSE-NEXT:    cmpordps %xmm1, %xmm6
+; SSE-NEXT:    andps %xmm6, %xmm5
+; SSE-NEXT:    movaps %xmm7, %xmm6
+; SSE-NEXT:    cmpneqps %xmm2, %xmm6
+; SSE-NEXT:    cmpordps %xmm2, %xmm7
+; SSE-NEXT:    andps %xmm7, %xmm6
+; SSE-NEXT:    movaps %xmm8, %xmm7
+; SSE-NEXT:    cmpneqps %xmm3, %xmm7
+; SSE-NEXT:    cmpordps %xmm3, %xmm8
+; SSE-NEXT:    andps %xmm8, %xmm7
+; SSE-NEXT:    movaps %xmm4, %xmm0
+; SSE-NEXT:    movaps %xmm5, %xmm1
+; SSE-NEXT:    movaps %xmm6, %xmm2
+; SSE-NEXT:    movaps %xmm7, %xmm3
 ; SSE-NEXT:    retq
 ;
 ; AVX-LABEL: commute_cmpps_one_zmm:
@@ -1052,10 +1152,18 @@ define <16 x i32> @commute_cmpps_le_zmm(ptr %a0, <16 x float> %a1) {
 define <8 x i64> @commute_cmppd_eq_zmmm(ptr %a0, <8 x double> %a1) {
 ; SSE-LABEL: commute_cmppd_eq_zmmm:
 ; SSE:       # %bb.0:
-; SSE-NEXT:    cmpeqpd (%rdi), %xmm0
-; SSE-NEXT:    cmpeqpd 16(%rdi), %xmm1
-; SSE-NEXT:    cmpeqpd 32(%rdi), %xmm2
-; SSE-NEXT:    cmpeqpd 48(%rdi), %xmm3
+; SSE-NEXT:    movapd (%rdi), %xmm4
+; SSE-NEXT:    cmpeqpd %xmm0, %xmm4
+; SSE-NEXT:    movapd 16(%rdi), %xmm5
+; SSE-NEXT:    cmpeqpd %xmm1, %xmm5
+; SSE-NEXT:    movapd 32(%rdi), %xmm6
+; SSE-NEXT:    cmpeqpd %xmm2, %xmm6
+; SSE-NEXT:    movapd 48(%rdi), %xmm7
+; SSE-NEXT:    cmpeqpd %xmm3, %xmm7
+; SSE-NEXT:    movapd %xmm4, %xmm0
+; SSE-NEXT:    movapd %xmm5, %xmm1
+; SSE-NEXT:    movapd %xmm6, %xmm2
+; SSE-NEXT:    movapd %xmm7, %xmm3
 ; SSE-NEXT:    retq
 ;
 ; AVX-LABEL: commute_cmppd_eq_zmmm:
@@ -1078,10 +1186,18 @@ define <8 x i64> @commute_cmppd_eq_zmmm(ptr %a0, <8 x double> %a1) {
 define <8 x i64> @commute_cmppd_ne_zmmm(ptr %a0, <8 x double> %a1) {
 ; SSE-LABEL: commute_cmppd_ne_zmmm:
 ; SSE:       # %bb.0:
-; SSE-NEXT:    cmpneqpd (%rdi), %xmm0
-; SSE-NEXT:    cmpneqpd 16(%rdi), %xmm1
-; SSE-NEXT:    cmpneqpd 32(%rdi), %xmm2
-; SSE-NEXT:    cmpneqpd 48(%rdi), %xmm3
+; SSE-NEXT:    movapd (%rdi), %xmm4
+; SSE-NEXT:    cmpneqpd %xmm0, %xmm4
+; SSE-NEXT:    movapd 16(%rdi), %xmm5
+; SSE-NEXT:    cmpneqpd %xmm1, %xmm5
+; SSE-NEXT:    movapd 32(%rdi), %xmm6
+; SSE-NEXT:    cmpneqpd %xmm2, %xmm6
+; SSE-NEXT:    movapd 48(%rdi), %xmm7
+; SSE-NEXT:    cmpneqpd %xmm3, %xmm7
+; SSE-NEXT:    movapd %xmm4, %xmm0
+; SSE-NEXT:    movapd %xmm5, %xmm1
+; SSE-NEXT:    movapd %xmm6, %xmm2
+; SSE-NEXT:    movapd %xmm7, %xmm3
 ; SSE-NEXT:    retq
 ;
 ; AVX-LABEL: commute_cmppd_ne_zmmm:
@@ -1104,10 +1220,18 @@ define <8 x i64> @commute_cmppd_ne_zmmm(ptr %a0, <8 x double> %a1) {
 define <8 x i64> @commute_cmppd_ord_zmmm(ptr %a0, <8 x double> %a1) {
 ; SSE-LABEL: commute_cmppd_ord_zmmm:
 ; SSE:       # %bb.0:
-; SSE-NEXT:    cmpordpd (%rdi), %xmm0
-; SSE-NEXT:    cmpordpd 16(%rdi), %xmm1
-; SSE-NEXT:    cmpordpd 32(%rdi), %xmm2
-; SSE-NEXT:    cmpordpd 48(%rdi), %xmm3
+; SSE-NEXT:    movapd (%rdi), %xmm4
+; SSE-NEXT:    cmpordpd %xmm0, %xmm4
+; SSE-NEXT:    movapd 16(%rdi), %xmm5
+; SSE-NEXT:    cmpordpd %xmm1, %xmm5
+; SSE-NEXT:    movapd 32(%rdi), %xmm6
+; SSE-NEXT:    cmpordpd %xmm2, %xmm6
+; SSE-NEXT:    movapd 48(%rdi), %xmm7
+; SSE-NEXT:    cmpordpd %xmm3, %xmm7
+; SSE-NEXT:    movapd %xmm4, %xmm0
+; SSE-NEXT:    movapd %xmm5, %xmm1
+; SSE-NEXT:    movapd %xmm6, %xmm2
+; SSE-NEXT:    movapd %xmm7, %xmm3
 ; SSE-NEXT:    retq
 ;
 ; AVX-LABEL: commute_cmppd_ord_zmmm:
@@ -1130,10 +1254,18 @@ define <8 x i64> @commute_cmppd_ord_zmmm(ptr %a0, <8 x double> %a1) {
 define <8 x i64> @commute_cmppd_uno_zmmm(ptr %a0, <8 x double> %a1) {
 ; SSE-LABEL: commute_cmppd_uno_zmmm:
 ; SSE:       # %bb.0:
-; SSE-NEXT:    cmpunordpd (%rdi), %xmm0
-; SSE-NEXT:    cmpunordpd 16(%rdi), %xmm1
-; SSE-NEXT:    cmpunordpd 32(%rdi), %xmm2
-; SSE-NEXT:    cmpunordpd 48(%rdi), %xmm3
+; SSE-NEXT:    movapd (%rdi), %xmm4
+; SSE-NEXT:    cmpunordpd %xmm0, %xmm4
+; SSE-NEXT:    movapd 16(%rdi), %xmm5
+; SSE-NEXT:    cmpunordpd %xmm1, %xmm5
+; SSE-NEXT:    movapd 32(%rdi), %xmm6
+; SSE-NEXT:    cmpunordpd %xmm2, %xmm6
+; SSE-NEXT:    movapd 48(%rdi), %xmm7
+; SSE-NEXT:    cmpunordpd %xmm3, %xmm7
+; SSE-NEXT:    movapd %xmm4, %xmm0
+; SSE-NEXT:    movapd %xmm5, %xmm1
+; SSE-NEXT:    movapd %xmm6, %xmm2
+; SSE-NEXT:    movapd %xmm7, %xmm3
 ; SSE-NEXT:    retq
 ;
 ; AVX-LABEL: commute_cmppd_uno_zmmm:
@@ -1156,26 +1288,30 @@ define <8 x i64> @commute_cmppd_uno_zmmm(ptr %a0, <8 x double> %a1) {
 define <8 x i64> @commute_cmppd_ueq_zmmm(ptr %a0, <8 x double> %a1) {
 ; SSE-LABEL: commute_cmppd_ueq_zmmm:
 ; SSE:       # %bb.0:
-; SSE-NEXT:    movapd (%rdi), %xmm4
-; SSE-NEXT:    movapd 16(%rdi), %xmm5
-; SSE-NEXT:    movapd 32(%rdi), %xmm6
-; SSE-NEXT:    movapd 48(%rdi), %xmm7
-; SSE-NEXT:    movapd %xmm4, %xmm8
-; SSE-NEXT:    cmpeqpd %xmm0, %xmm8
-; SSE-NEXT:    cmpunordpd %xmm4, %xmm0
-; SSE-NEXT:    orpd %xmm8, %xmm0
+; SSE-NEXT:    movapd (%rdi), %xmm5
+; SSE-NEXT:    movapd 16(%rdi), %xmm6
+; SSE-NEXT:    movapd 32(%rdi), %xmm7
+; SSE-NEXT:    movapd 48(%rdi), %xmm8
 ; SSE-NEXT:    movapd %xmm5, %xmm4
-; SSE-NEXT:    cmpeqpd %xmm1, %xmm4
-; SSE-NEXT:    cmpunordpd %xmm5, %xmm1
-; SSE-NEXT:    orpd %xmm4, %xmm1
-; SSE-NEXT:    movapd %xmm6, %xmm4
-; SSE-NEXT:    cmpeqpd %xmm2, %xmm4
-; SSE-NEXT:    cmpunordpd %xmm6, %xmm2
-; SSE-NEXT:    orpd %xmm4, %xmm2
-; SSE-NEXT:    movapd %xmm7, %xmm4
-; SSE-NEXT:    cmpeqpd %xmm3, %xmm4
-; SSE-NEXT:    cmpunordpd %xmm7, %xmm3
-; SSE-NEXT:    orpd %xmm4, %xmm3
+; SSE-NEXT:    cmpeqpd %xmm0, %xmm4
+; SSE-NEXT:    cmpunordpd %xmm0, %xmm5
+; SSE-NEXT:    orpd %xmm5, %xmm4
+; SSE-NEXT:    movapd %xmm6, %xmm5
+; SSE-NEXT:    cmpeqpd %xmm1, %xmm5
+; SSE-NEXT:    cmpunordpd %xmm1, %xmm6
+; SSE-NEXT:    orpd %xmm6, %xmm5
+; SSE-NEXT:    movapd %xmm7, %xmm6
+; SSE-NEXT:    cmpeqpd %xmm2, %xmm6
+; SSE-NEXT:    cmpunordpd %xmm2, %xmm7
+; SSE-NEXT:    orpd %xmm7, %xmm6
+; SSE-NEXT:    movapd %xmm8, %xmm7
+; SSE-NEXT:    cmpeqpd %xmm3, %xmm7
+; SSE-NEXT:    cmpunordpd %xmm3, %xmm8
+; SSE-NEXT:    orpd %xmm8, %xmm7
+; SSE-NEXT:    movapd %xmm4, %xmm0
+; SSE-NEXT:    movapd %xmm5, %xmm1
+; SSE-NEXT:    movapd %xmm6, %xmm2
+; SSE-NEXT:    movapd %xmm7, %xmm3
 ; SSE-NEXT:    retq
 ;
 ; AVX-LABEL: commute_cmppd_ueq_zmmm:
@@ -1198,26 +1334,30 @@ define <8 x i64> @commute_cmppd_ueq_zmmm(ptr %a0, <8 x double> %a1) {
 define <8 x i64> @commute_cmppd_one_zmmm(ptr %a0, <8 x double> %a1) {
 ; SSE-LABEL: commute_cmppd_one_zmmm:
 ; SSE:       # %bb.0:
-; SSE-NEXT:    movapd (%rdi), %xmm4
-; SSE-NEXT:    movapd 16(%rdi), %xmm5
-; SSE-NEXT:    movapd 32(%rdi), %xmm6
-; SSE-NEXT:    movapd 48(%rdi), %xmm7
-; SSE-NEXT:    movapd %xmm4, %xmm8
-; SSE-NEXT:    cmpneqpd %xmm0, %xmm8
-; SSE-NEXT:    cmpordpd %xmm4, %xmm0
-; SSE-NEXT:    andpd %xmm8, %xmm0
+; SSE-NEXT:    movapd (%rdi), %xmm5
+; SSE-NEXT:    movapd 16(%rdi), %xmm6
+; SSE-NEXT:    movapd 32(%rdi), %xmm7
+; SSE-NEXT:    movapd 48(%rdi), %xmm8
 ; SSE-NEXT:    movapd %xmm5, %xmm4
-; SSE-NEXT:    cmpneqpd %xmm1, %xmm4
-; SSE-NEXT:    cmpordpd %xmm5, %xmm1
-; SSE-NEXT:    andpd %xmm4, %xmm1
-; SSE-NEXT:    movapd %xmm6, %xmm4
-; SSE-NEXT:    cmpneqpd %xmm2, %xmm4
-; SSE-NEXT:    cmpordpd %xmm6, %xmm2
-; SSE-NEXT:    andpd %xmm4, %xmm2
-; SSE-NEXT:    movapd %xmm7, %xmm4
-; SSE-NEXT:    cmpneqpd %xmm3, %xmm4
-; SSE-NEXT:    cmpordpd %xmm7, %xmm3
-; SSE-NEXT:    andpd %xmm4, %xmm3
+; SSE-NEXT:    cmpneqpd %xmm0, %xmm4
+; SSE-NEXT:    cmpordpd %xmm0, %xmm5
+; SSE-NEXT:    andpd %xmm5, %xmm4
+; SSE-NEXT:    movapd %xmm6, %xmm5
+; SSE-NEXT:    cmpneqpd %xmm1, %xmm5
+; SSE-NEXT:    cmpordpd %xmm1, %xmm6
+; SSE-NEXT:    andpd %xmm6, %xmm5
+; SSE-NEXT:    movapd %xmm7, %xmm6
+; SSE-NEXT:    cmpneqpd %xmm2, %xmm6
+; SSE-NEXT:    cmpordpd %xmm2, %xmm7
+; SSE-NEXT:    andpd %xmm7, %xmm6
+; SSE-NEXT:    movapd %xmm8, %xmm7
+; SSE-NEXT:    cmpneqpd %xmm3, %xmm7
+; SSE-NEXT:    cmpordpd %xmm3, %xmm8
+; SSE-NEXT:    andpd %xmm8, %xmm7
+; SSE-NEXT:    movapd %xmm4, %xmm0
+; SSE-NEXT:    movapd %xmm5, %xmm1
+; SSE-NEXT:    movapd %xmm6, %xmm2
+; SSE-NEXT:    movapd %xmm7, %xmm3
 ; SSE-NEXT:    retq
 ;
 ; AVX-LABEL: commute_cmppd_one_zmmm:

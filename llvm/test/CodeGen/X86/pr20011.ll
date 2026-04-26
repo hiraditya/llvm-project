@@ -12,18 +12,18 @@ define void @crash(i64 %x0, i64 %y0, ptr nocapture %dest) nounwind {
 ; X86-NEXT:    movzbl {{[0-9]+}}(%esp), %edx
 ; X86-NEXT:    shlb $2, %dl
 ; X86-NEXT:    andb $3, %cl
-; X86-NEXT:    orb %dl, %cl
-; X86-NEXT:    andb $15, %cl
-; X86-NEXT:    movb %cl, (%eax)
+; X86-NEXT:    orb %cl, %dl
+; X86-NEXT:    andb $15, %dl
+; X86-NEXT:    movb %dl, (%eax)
 ; X86-NEXT:    retl
 ;
 ; X64-LABEL: crash:
 ; X64:       # %bb.0:
-; X64-NEXT:    shlb $2, %sil
+; X64-NEXT:    leal (,%rsi,4), %eax
 ; X64-NEXT:    andb $3, %dil
-; X64-NEXT:    orb %sil, %dil
-; X64-NEXT:    andb $15, %dil
-; X64-NEXT:    movb %dil, (%rdx)
+; X64-NEXT:    orb %dil, %al
+; X64-NEXT:    andb $15, %al
+; X64-NEXT:    movb %al, (%rdx)
 ; X64-NEXT:    retq
   %x1 = trunc i64 %x0 to i2
   %y1 = trunc i64 %y0 to i2

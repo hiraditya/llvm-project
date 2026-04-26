@@ -7,8 +7,9 @@ define i32 @t(i32 %a, i32 %b) nounwind ssp {
 ; X86-LABEL: t:
 ; X86:       # %bb.0: # %entry
 ; X86-NEXT:    movzbl {{[0-9]+}}(%esp), %eax
-; X86-NEXT:    xorb {{[0-9]+}}(%esp), %al
-; X86-NEXT:    testb $64, %al
+; X86-NEXT:    movzbl {{[0-9]+}}(%esp), %ecx
+; X86-NEXT:    xorb %al, %cl
+; X86-NEXT:    testb $64, %cl
 ; X86-NEXT:    jne bar # TAILCALL
 ; X86-NEXT:  # %bb.1: # %bb
 ; X86-NEXT:    jmp foo # TAILCALL

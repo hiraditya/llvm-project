@@ -64,22 +64,23 @@ define i1 @issignaling_f(float %x) nounwind {
 ; X86-LABEL: issignaling_f:
 ; X86:       # %bb.0:
 ; X86-NEXT:    movl $2147483647, %eax # imm = 0x7FFFFFFF
-; X86-NEXT:    andl {{[0-9]+}}(%esp), %eax
-; X86-NEXT:    cmpl $2143289344, %eax # imm = 0x7FC00000
-; X86-NEXT:    setl %cl
-; X86-NEXT:    cmpl $2139095041, %eax # imm = 0x7F800001
-; X86-NEXT:    setge %al
+; X86-NEXT:    movl {{[0-9]+}}(%esp), %ecx
+; X86-NEXT:    andl %eax, %ecx
+; X86-NEXT:    cmpl $2143289344, %ecx # imm = 0x7FC00000
+; X86-NEXT:    setl %al
+; X86-NEXT:    cmpl $2139095041, %ecx # imm = 0x7F800001
+; X86-NEXT:    setge %cl
 ; X86-NEXT:    andb %cl, %al
 ; X86-NEXT:    retl
 ;
 ; X64-LABEL: issignaling_f:
 ; X64:       # %bb.0:
-; X64-NEXT:    movd %xmm0, %eax
-; X64-NEXT:    andl $2147483647, %eax # imm = 0x7FFFFFFF
-; X64-NEXT:    cmpl $2143289344, %eax # imm = 0x7FC00000
-; X64-NEXT:    setl %cl
-; X64-NEXT:    cmpl $2139095041, %eax # imm = 0x7F800001
-; X64-NEXT:    setge %al
+; X64-NEXT:    movd %xmm0, %ecx
+; X64-NEXT:    andl $2147483647, %ecx # imm = 0x7FFFFFFF
+; X64-NEXT:    cmpl $2143289344, %ecx # imm = 0x7FC00000
+; X64-NEXT:    setl %al
+; X64-NEXT:    cmpl $2139095041, %ecx # imm = 0x7F800001
+; X64-NEXT:    setge %cl
 ; X64-NEXT:    andb %cl, %al
 ; X64-NEXT:    retq
 ;
@@ -89,23 +90,24 @@ define i1 @issignaling_f(float %x) nounwind {
 ; X86-FASTISEL-NEXT:    flds {{[0-9]+}}(%esp)
 ; X86-FASTISEL-NEXT:    fstps (%esp)
 ; X86-FASTISEL-NEXT:    movl $2147483647, %eax # imm = 0x7FFFFFFF
-; X86-FASTISEL-NEXT:    andl (%esp), %eax
-; X86-FASTISEL-NEXT:    cmpl $2143289344, %eax # imm = 0x7FC00000
-; X86-FASTISEL-NEXT:    setl %cl
-; X86-FASTISEL-NEXT:    cmpl $2139095041, %eax # imm = 0x7F800001
-; X86-FASTISEL-NEXT:    setge %al
+; X86-FASTISEL-NEXT:    movl (%esp), %ecx
+; X86-FASTISEL-NEXT:    andl %eax, %ecx
+; X86-FASTISEL-NEXT:    cmpl $2143289344, %ecx # imm = 0x7FC00000
+; X86-FASTISEL-NEXT:    setl %al
+; X86-FASTISEL-NEXT:    cmpl $2139095041, %ecx # imm = 0x7F800001
+; X86-FASTISEL-NEXT:    setge %cl
 ; X86-FASTISEL-NEXT:    andb %cl, %al
 ; X86-FASTISEL-NEXT:    popl %ecx
 ; X86-FASTISEL-NEXT:    retl
 ;
 ; X64-GISEL-LABEL: issignaling_f:
 ; X64-GISEL:       # %bb.0:
-; X64-GISEL-NEXT:    movd %xmm0, %eax
-; X64-GISEL-NEXT:    andl $2147483647, %eax # imm = 0x7FFFFFFF
-; X64-GISEL-NEXT:    cmpl $2139095040, %eax # imm = 0x7F800000
-; X64-GISEL-NEXT:    seta %cl
-; X64-GISEL-NEXT:    cmpl $2143289344, %eax # imm = 0x7FC00000
-; X64-GISEL-NEXT:    setb %al
+; X64-GISEL-NEXT:    movd %xmm0, %ecx
+; X64-GISEL-NEXT:    andl $2147483647, %ecx # imm = 0x7FFFFFFF
+; X64-GISEL-NEXT:    cmpl $2139095040, %ecx # imm = 0x7F800000
+; X64-GISEL-NEXT:    seta %al
+; X64-GISEL-NEXT:    cmpl $2143289344, %ecx # imm = 0x7FC00000
+; X64-GISEL-NEXT:    setb %cl
 ; X64-GISEL-NEXT:    andb %cl, %al
 ; X64-GISEL-NEXT:    retq
    %a0 = tail call i1 @llvm.is.fpclass.f32(float %x, i32 1)  ; "snan"
@@ -116,8 +118,9 @@ define i1 @issignaling_f(float %x) nounwind {
 ; X86-LABEL: isquiet_f:
 ; X86:       # %bb.0: # %entry
 ; X86-NEXT:    movl $2147483647, %eax # imm = 0x7FFFFFFF
-; X86-NEXT:    andl {{[0-9]+}}(%esp), %eax
-; X86-NEXT:    cmpl $2143289344, %eax # imm = 0x7FC00000
+; X86-NEXT:    movl {{[0-9]+}}(%esp), %ecx
+; X86-NEXT:    andl %eax, %ecx
+; X86-NEXT:    cmpl $2143289344, %ecx # imm = 0x7FC00000
 ; X86-NEXT:    setge %al
 ; X86-NEXT:    retl
 ;
@@ -135,8 +138,9 @@ define i1 @issignaling_f(float %x) nounwind {
 ; X86-FASTISEL-NEXT:    flds {{[0-9]+}}(%esp)
 ; X86-FASTISEL-NEXT:    fstps (%esp)
 ; X86-FASTISEL-NEXT:    movl $2147483647, %eax # imm = 0x7FFFFFFF
-; X86-FASTISEL-NEXT:    andl (%esp), %eax
-; X86-FASTISEL-NEXT:    cmpl $2143289344, %eax # imm = 0x7FC00000
+; X86-FASTISEL-NEXT:    movl (%esp), %ecx
+; X86-FASTISEL-NEXT:    andl %eax, %ecx
+; X86-FASTISEL-NEXT:    cmpl $2143289344, %ecx # imm = 0x7FC00000
 ; X86-FASTISEL-NEXT:    setge %al
 ; X86-FASTISEL-NEXT:    popl %ecx
 ; X86-FASTISEL-NEXT:    retl
@@ -157,8 +161,9 @@ define i1 @not_isquiet_f(float %x) nounwind {
 ; X86-LABEL: not_isquiet_f:
 ; X86:       # %bb.0: # %entry
 ; X86-NEXT:    movl $2147483647, %eax # imm = 0x7FFFFFFF
-; X86-NEXT:    andl {{[0-9]+}}(%esp), %eax
-; X86-NEXT:    cmpl $2143289344, %eax # imm = 0x7FC00000
+; X86-NEXT:    movl {{[0-9]+}}(%esp), %ecx
+; X86-NEXT:    andl %eax, %ecx
+; X86-NEXT:    cmpl $2143289344, %ecx # imm = 0x7FC00000
 ; X86-NEXT:    setl %al
 ; X86-NEXT:    retl
 ;
@@ -176,25 +181,26 @@ define i1 @not_isquiet_f(float %x) nounwind {
 ; X86-FASTISEL-NEXT:    flds {{[0-9]+}}(%esp)
 ; X86-FASTISEL-NEXT:    fstps (%esp)
 ; X86-FASTISEL-NEXT:    movl $2147483647, %eax # imm = 0x7FFFFFFF
-; X86-FASTISEL-NEXT:    andl (%esp), %eax
-; X86-FASTISEL-NEXT:    cmpl $2143289344, %eax # imm = 0x7FC00000
+; X86-FASTISEL-NEXT:    movl (%esp), %ecx
+; X86-FASTISEL-NEXT:    andl %eax, %ecx
+; X86-FASTISEL-NEXT:    cmpl $2143289344, %ecx # imm = 0x7FC00000
 ; X86-FASTISEL-NEXT:    setl %al
 ; X86-FASTISEL-NEXT:    popl %ecx
 ; X86-FASTISEL-NEXT:    retl
 ;
 ; X64-GISEL-LABEL: not_isquiet_f:
 ; X64-GISEL:       # %bb.0: # %entry
-; X64-GISEL-NEXT:    movd %xmm0, %eax
-; X64-GISEL-NEXT:    andl $2147483647, %eax # imm = 0x7FFFFFFF
-; X64-GISEL-NEXT:    cmpl $2139095040, %eax # imm = 0x7F800000
-; X64-GISEL-NEXT:    setb %cl
-; X64-GISEL-NEXT:    sete %dl
-; X64-GISEL-NEXT:    orb %cl, %dl
-; X64-GISEL-NEXT:    cmpl $2139095040, %eax # imm = 0x7F800000
-; X64-GISEL-NEXT:    seta %cl
-; X64-GISEL-NEXT:    cmpl $2143289344, %eax # imm = 0x7FC00000
+; X64-GISEL-NEXT:    movd %xmm0, %ecx
+; X64-GISEL-NEXT:    andl $2147483647, %ecx # imm = 0x7FFFFFFF
+; X64-GISEL-NEXT:    cmpl $2139095040, %ecx # imm = 0x7F800000
 ; X64-GISEL-NEXT:    setb %al
-; X64-GISEL-NEXT:    andb %cl, %al
+; X64-GISEL-NEXT:    sete %dl
+; X64-GISEL-NEXT:    orb %dl, %al
+; X64-GISEL-NEXT:    cmpl $2139095040, %ecx # imm = 0x7F800000
+; X64-GISEL-NEXT:    seta %dl
+; X64-GISEL-NEXT:    cmpl $2143289344, %ecx # imm = 0x7FC00000
+; X64-GISEL-NEXT:    setb %cl
+; X64-GISEL-NEXT:    andb %cl, %dl
 ; X64-GISEL-NEXT:    orb %dl, %al
 ; X64-GISEL-NEXT:    retq
 entry:
@@ -206,8 +212,9 @@ define i1 @isinf_f(float %x) nounwind {
 ; X86-LABEL: isinf_f:
 ; X86:       # %bb.0: # %entry
 ; X86-NEXT:    movl $2147483647, %eax # imm = 0x7FFFFFFF
-; X86-NEXT:    andl {{[0-9]+}}(%esp), %eax
-; X86-NEXT:    cmpl $2139095040, %eax # imm = 0x7F800000
+; X86-NEXT:    movl {{[0-9]+}}(%esp), %ecx
+; X86-NEXT:    andl %eax, %ecx
+; X86-NEXT:    cmpl $2139095040, %ecx # imm = 0x7F800000
 ; X86-NEXT:    sete %al
 ; X86-NEXT:    retl
 ;
@@ -225,8 +232,9 @@ define i1 @isinf_f(float %x) nounwind {
 ; X86-FASTISEL-NEXT:    flds {{[0-9]+}}(%esp)
 ; X86-FASTISEL-NEXT:    fstps (%esp)
 ; X86-FASTISEL-NEXT:    movl $2147483647, %eax # imm = 0x7FFFFFFF
-; X86-FASTISEL-NEXT:    andl (%esp), %eax
-; X86-FASTISEL-NEXT:    cmpl $2139095040, %eax # imm = 0x7F800000
+; X86-FASTISEL-NEXT:    movl (%esp), %ecx
+; X86-FASTISEL-NEXT:    andl %eax, %ecx
+; X86-FASTISEL-NEXT:    cmpl $2139095040, %ecx # imm = 0x7F800000
 ; X86-FASTISEL-NEXT:    sete %al
 ; X86-FASTISEL-NEXT:    popl %ecx
 ; X86-FASTISEL-NEXT:    retl
@@ -247,8 +255,9 @@ define i1 @not_isinf_f(float %x) nounwind {
 ; X86-LABEL: not_isinf_f:
 ; X86:       # %bb.0: # %entry
 ; X86-NEXT:    movl $2147483647, %eax # imm = 0x7FFFFFFF
-; X86-NEXT:    andl {{[0-9]+}}(%esp), %eax
-; X86-NEXT:    cmpl $2139095040, %eax # imm = 0x7F800000
+; X86-NEXT:    movl {{[0-9]+}}(%esp), %ecx
+; X86-NEXT:    andl %eax, %ecx
+; X86-NEXT:    cmpl $2139095040, %ecx # imm = 0x7F800000
 ; X86-NEXT:    setne %al
 ; X86-NEXT:    retl
 ;
@@ -266,8 +275,9 @@ define i1 @not_isinf_f(float %x) nounwind {
 ; X86-FASTISEL-NEXT:    flds {{[0-9]+}}(%esp)
 ; X86-FASTISEL-NEXT:    fstps (%esp)
 ; X86-FASTISEL-NEXT:    movl $2147483647, %eax # imm = 0x7FFFFFFF
-; X86-FASTISEL-NEXT:    andl (%esp), %eax
-; X86-FASTISEL-NEXT:    cmpl $2139095040, %eax # imm = 0x7F800000
+; X86-FASTISEL-NEXT:    movl (%esp), %ecx
+; X86-FASTISEL-NEXT:    andl %eax, %ecx
+; X86-FASTISEL-NEXT:    cmpl $2139095040, %ecx # imm = 0x7F800000
 ; X86-FASTISEL-NEXT:    setne %al
 ; X86-FASTISEL-NEXT:    popl %ecx
 ; X86-FASTISEL-NEXT:    retl
@@ -277,8 +287,8 @@ define i1 @not_isinf_f(float %x) nounwind {
 ; X64-GISEL-NEXT:    movd %xmm0, %eax
 ; X64-GISEL-NEXT:    andl $2147483647, %eax # imm = 0x7FFFFFFF
 ; X64-GISEL-NEXT:    cmpl $2139095040, %eax # imm = 0x7F800000
-; X64-GISEL-NEXT:    setb %cl
-; X64-GISEL-NEXT:    seta %al
+; X64-GISEL-NEXT:    setb %al
+; X64-GISEL-NEXT:    seta %cl
 ; X64-GISEL-NEXT:    orb %cl, %al
 ; X64-GISEL-NEXT:    retq
 entry:
@@ -382,17 +392,17 @@ define i1 @not_is_minus_inf_f(float %x) nounwind {
 ;
 ; X64-GISEL-LABEL: not_is_minus_inf_f:
 ; X64-GISEL:       # %bb.0: # %entry
-; X64-GISEL-NEXT:    movd %xmm0, %eax
-; X64-GISEL-NEXT:    movl %eax, %ecx
-; X64-GISEL-NEXT:    andl $2147483647, %ecx # imm = 0x7FFFFFFF
+; X64-GISEL-NEXT:    movd %xmm0, %ecx
+; X64-GISEL-NEXT:    movl %ecx, %edx
+; X64-GISEL-NEXT:    andl $2147483647, %edx # imm = 0x7FFFFFFF
+; X64-GISEL-NEXT:    cmpl $2139095040, %edx # imm = 0x7F800000
+; X64-GISEL-NEXT:    setb %al
 ; X64-GISEL-NEXT:    cmpl $2139095040, %ecx # imm = 0x7F800000
-; X64-GISEL-NEXT:    setb %dl
-; X64-GISEL-NEXT:    cmpl $2139095040, %eax # imm = 0x7F800000
-; X64-GISEL-NEXT:    sete %sil
-; X64-GISEL-NEXT:    orb %dl, %sil
-; X64-GISEL-NEXT:    cmpl $2139095040, %ecx # imm = 0x7F800000
-; X64-GISEL-NEXT:    seta %al
-; X64-GISEL-NEXT:    orb %sil, %al
+; X64-GISEL-NEXT:    sete %cl
+; X64-GISEL-NEXT:    orb %cl, %al
+; X64-GISEL-NEXT:    cmpl $2139095040, %edx # imm = 0x7F800000
+; X64-GISEL-NEXT:    seta %cl
+; X64-GISEL-NEXT:    orb %cl, %al
 ; X64-GISEL-NEXT:    retq
 entry:
   %0 = tail call i1 @llvm.is.fpclass.f32(float %x, i32 1019)  ; ~"-inf"
@@ -474,8 +484,8 @@ define i1 @not_isfinite_f(float %x) nounwind {
 ; X64-GISEL-NEXT:    movd %xmm0, %eax
 ; X64-GISEL-NEXT:    andl $2147483647, %eax # imm = 0x7FFFFFFF
 ; X64-GISEL-NEXT:    cmpl $2139095040, %eax # imm = 0x7F800000
-; X64-GISEL-NEXT:    sete %cl
-; X64-GISEL-NEXT:    seta %al
+; X64-GISEL-NEXT:    sete %al
+; X64-GISEL-NEXT:    seta %cl
 ; X64-GISEL-NEXT:    orb %cl, %al
 ; X64-GISEL-NEXT:    retq
 entry:

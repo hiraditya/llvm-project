@@ -278,18 +278,19 @@ define i8 @ucmp_narrow_op(i62 %x, i62 %y) nounwind {
 ; X86:       # %bb.0:
 ; X86-NEXT:    pushl %edi
 ; X86-NEXT:    pushl %esi
-; X86-NEXT:    movl $1073741823, %ecx # imm = 0x3FFFFFFF
+; X86-NEXT:    movl $1073741823, %eax # imm = 0x3FFFFFFF
+; X86-NEXT:    movl {{[0-9]+}}(%esp), %ecx
+; X86-NEXT:    andl %eax, %ecx
 ; X86-NEXT:    movl {{[0-9]+}}(%esp), %edx
-; X86-NEXT:    andl %ecx, %edx
-; X86-NEXT:    andl {{[0-9]+}}(%esp), %ecx
+; X86-NEXT:    andl %eax, %edx
 ; X86-NEXT:    movl {{[0-9]+}}(%esp), %esi
 ; X86-NEXT:    movl {{[0-9]+}}(%esp), %edi
 ; X86-NEXT:    cmpl %esi, %edi
-; X86-NEXT:    movl %ecx, %eax
-; X86-NEXT:    sbbl %edx, %eax
+; X86-NEXT:    movl %edx, %eax
+; X86-NEXT:    sbbl %ecx, %eax
 ; X86-NEXT:    setb %al
 ; X86-NEXT:    cmpl %edi, %esi
-; X86-NEXT:    sbbl %ecx, %edx
+; X86-NEXT:    sbbl %edx, %ecx
 ; X86-NEXT:    sbbb $0, %al
 ; X86-NEXT:    popl %esi
 ; X86-NEXT:    popl %edi
@@ -366,26 +367,27 @@ define i8 @ucmp_wide_op(i109 %x, i109 %y) nounwind {
 ; X86-NEXT:    pushl %ebx
 ; X86-NEXT:    pushl %edi
 ; X86-NEXT:    pushl %esi
-; X86-NEXT:    movl $8191, %ecx # imm = 0x1FFF
-; X86-NEXT:    movl {{[0-9]+}}(%esp), %edx
-; X86-NEXT:    andl %ecx, %edx
-; X86-NEXT:    andl {{[0-9]+}}(%esp), %ecx
+; X86-NEXT:    movl $8191, %eax # imm = 0x1FFF
+; X86-NEXT:    movl {{[0-9]+}}(%esp), %ecx
+; X86-NEXT:    andl %eax, %ecx
+; X86-NEXT:    movl {{[0-9]+}}(%esp), %esi
+; X86-NEXT:    andl %eax, %esi
 ; X86-NEXT:    movl {{[0-9]+}}(%esp), %edi
 ; X86-NEXT:    movl {{[0-9]+}}(%esp), %ebp
 ; X86-NEXT:    movl {{[0-9]+}}(%esp), %eax
 ; X86-NEXT:    cmpl {{[0-9]+}}(%esp), %ebp
 ; X86-NEXT:    sbbl %edi, %eax
-; X86-NEXT:    movl {{[0-9]+}}(%esp), %esi
+; X86-NEXT:    movl {{[0-9]+}}(%esp), %edx
 ; X86-NEXT:    movl {{[0-9]+}}(%esp), %ebx
 ; X86-NEXT:    movl %ebx, %eax
-; X86-NEXT:    sbbl %esi, %eax
-; X86-NEXT:    movl %ecx, %eax
 ; X86-NEXT:    sbbl %edx, %eax
+; X86-NEXT:    movl %esi, %eax
+; X86-NEXT:    sbbl %ecx, %eax
 ; X86-NEXT:    setb %al
 ; X86-NEXT:    cmpl %ebp, {{[0-9]+}}(%esp)
 ; X86-NEXT:    sbbl {{[0-9]+}}(%esp), %edi
-; X86-NEXT:    sbbl %ebx, %esi
-; X86-NEXT:    sbbl %ecx, %edx
+; X86-NEXT:    sbbl %ebx, %edx
+; X86-NEXT:    sbbl %esi, %ecx
 ; X86-NEXT:    sbbb $0, %al
 ; X86-NEXT:    popl %esi
 ; X86-NEXT:    popl %edi
@@ -439,12 +441,14 @@ define <4 x i32> @ucmp_normal_vectors(<4 x i32> %x, <4 x i32> %y) nounwind {
 ;
 ; SSE2-LABEL: ucmp_normal_vectors:
 ; SSE2:       # %bb.0:
+; SSE2-NEXT:    movdqa %xmm0, %xmm3
+; SSE2-NEXT:    pmaxud %xmm1, %xmm3
+; SSE2-NEXT:    pcmpeqd %xmm0, %xmm3
 ; SSE2-NEXT:    movdqa %xmm0, %xmm2
-; SSE2-NEXT:    pmaxud %xmm1, %xmm2
+; SSE2-NEXT:    pminud %xmm1, %xmm2
 ; SSE2-NEXT:    pcmpeqd %xmm0, %xmm2
-; SSE2-NEXT:    pminud %xmm0, %xmm1
-; SSE2-NEXT:    pcmpeqd %xmm1, %xmm0
-; SSE2-NEXT:    psubd %xmm2, %xmm0
+; SSE2-NEXT:    psubd %xmm3, %xmm2
+; SSE2-NEXT:    movdqa %xmm2, %xmm0
 ; SSE2-NEXT:    retq
 ;
 ; AVX2-LABEL: ucmp_normal_vectors:
@@ -462,7 +466,7 @@ define <4 x i32> @ucmp_normal_vectors(<4 x i32> %x, <4 x i32> %y) nounwind {
 ; AVX512-NEXT:    vpcmpnleud %xmm1, %xmm0, %k2
 ; AVX512-NEXT:    vpbroadcastd {{.*#+}} xmm0 {%k2} {z} = [1,1,1,1]
 ; AVX512-NEXT:    vpcmpeqd %xmm1, %xmm1, %xmm1
-; AVX512-NEXT:    vmovdqa32 %xmm1, %xmm0 {%k1}
+; AVX512-NEXT:    vpblendmd %xmm1, %xmm0, %xmm0 {%k1}
 ; AVX512-NEXT:    retq
 ;
 ; X86-LABEL: ucmp_normal_vectors:
@@ -683,7 +687,7 @@ define <4 x i32> @ucmp_narrow_vec_op(<4 x i8> %x, <4 x i8> %y) nounwind {
 ; AVX512-NEXT:    vpcmpgtd %xmm1, %xmm0, %k2
 ; AVX512-NEXT:    vpbroadcastd {{.*#+}} xmm0 {%k2} {z} = [1,1,1,1]
 ; AVX512-NEXT:    vpcmpeqd %xmm1, %xmm1, %xmm1
-; AVX512-NEXT:    vmovdqa32 %xmm1, %xmm0 {%k1}
+; AVX512-NEXT:    vpblendmd %xmm1, %xmm0, %xmm0 {%k1}
 ; AVX512-NEXT:    retq
 ;
 ; X86-LABEL: ucmp_narrow_vec_op:
@@ -824,7 +828,7 @@ define <16 x i32> @ucmp_wide_vec_result(<16 x i8> %x, <16 x i8> %y) nounwind {
 ; AVX512-NEXT:    vpcmpnleub %xmm1, %xmm0, %k2
 ; AVX512-NEXT:    vpbroadcastd {{.*#+}} zmm0 {%k2} {z} = [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1]
 ; AVX512-NEXT:    vpternlogd {{.*#+}} zmm1 = -1
-; AVX512-NEXT:    vmovdqa32 %zmm1, %zmm0 {%k1}
+; AVX512-NEXT:    vpblendmd %zmm1, %zmm0, %zmm0 {%k1}
 ; AVX512-NEXT:    retq
 ;
 ; X86-LABEL: ucmp_wide_vec_result:
@@ -1351,7 +1355,7 @@ define <16 x i8> @ucmp_wide_vec_op(<16 x i32> %x, <16 x i32> %y) nounwind {
 ; AVX512-NEXT:    vpcmpnleud %zmm1, %zmm0, %k2
 ; AVX512-NEXT:    vmovdqu8 {{.*#+}} xmm0 {%k2} {z} = [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1]
 ; AVX512-NEXT:    vpcmpeqd %xmm1, %xmm1, %xmm1
-; AVX512-NEXT:    vmovdqu8 %xmm1, %xmm0 {%k1}
+; AVX512-NEXT:    vpblendmb %xmm1, %xmm0, %xmm0 {%k1}
 ; AVX512-NEXT:    vzeroupper
 ; AVX512-NEXT:    retq
 ;

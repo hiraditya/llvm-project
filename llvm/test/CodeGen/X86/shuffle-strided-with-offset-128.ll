@@ -156,8 +156,9 @@ define void @shuffle_v16i8_to_v4i8_2(ptr %L, ptr %S) nounwind {
 ; SSE2:       # %bb.0:
 ; SSE2-NEXT:    pshuflw {{.*#+}} xmm0 = mem[3,1,2,3,4,5,6,7]
 ; SSE2-NEXT:    pshufhw {{.*#+}} xmm0 = xmm0[0,1,2,3,7,5,6,7]
-; SSE2-NEXT:    pand {{\.?LCPI[0-9]+_[0-9]+}}(%rip), %xmm0
-; SSE2-NEXT:    pshufd {{.*#+}} xmm0 = xmm0[0,2,2,3]
+; SSE2-NEXT:    movdqa {{.*#+}} xmm1 = [255,255,255,255,255,255,255,255]
+; SSE2-NEXT:    pand %xmm0, %xmm1
+; SSE2-NEXT:    pshufd {{.*#+}} xmm0 = xmm1[0,2,2,3]
 ; SSE2-NEXT:    pshuflw {{.*#+}} xmm0 = xmm0[1,0,3,2,4,5,6,7]
 ; SSE2-NEXT:    packuswb %xmm0, %xmm0
 ; SSE2-NEXT:    movd %xmm0, (%rsi)
@@ -463,8 +464,9 @@ define void @shuffle_v16i8_to_v2i8_2(ptr %L, ptr %S) nounwind {
 ; SSE2-LABEL: shuffle_v16i8_to_v2i8_2:
 ; SSE2:       # %bb.0:
 ; SSE2-NEXT:    pshufd {{.*#+}} xmm0 = mem[0,2,2,3]
-; SSE2-NEXT:    pand {{\.?LCPI[0-9]+_[0-9]+}}(%rip), %xmm0
-; SSE2-NEXT:    pshuflw {{.*#+}} xmm0 = xmm0[1,3,2,3,4,5,6,7]
+; SSE2-NEXT:    movdqa {{.*#+}} xmm1 = [16711935,16711935,16711935,16711935]
+; SSE2-NEXT:    pand %xmm0, %xmm1
+; SSE2-NEXT:    pshuflw {{.*#+}} xmm0 = xmm1[1,3,2,3,4,5,6,7]
 ; SSE2-NEXT:    packuswb %xmm0, %xmm0
 ; SSE2-NEXT:    movd %xmm0, %eax
 ; SSE2-NEXT:    movw %ax, (%rsi)
@@ -541,8 +543,9 @@ define void @shuffle_v16i8_to_v2i8_4(ptr %L, ptr %S) nounwind {
 ; SSE2-LABEL: shuffle_v16i8_to_v2i8_4:
 ; SSE2:       # %bb.0:
 ; SSE2-NEXT:    pshufd {{.*#+}} xmm0 = mem[3,1,2,3]
-; SSE2-NEXT:    pand {{\.?LCPI[0-9]+_[0-9]+}}(%rip), %xmm0
-; SSE2-NEXT:    pshuflw {{.*#+}} xmm0 = xmm0[2,0,2,3,4,5,6,7]
+; SSE2-NEXT:    movdqa {{.*#+}} xmm1 = [16711935,16711935,16711935,16711935]
+; SSE2-NEXT:    pand %xmm0, %xmm1
+; SSE2-NEXT:    pshuflw {{.*#+}} xmm0 = xmm1[2,0,2,3,4,5,6,7]
 ; SSE2-NEXT:    packuswb %xmm0, %xmm0
 ; SSE2-NEXT:    movd %xmm0, %eax
 ; SSE2-NEXT:    movw %ax, (%rsi)
@@ -619,8 +622,9 @@ define void @shuffle_v16i8_to_v2i8_6(ptr %L, ptr %S) nounwind {
 ; SSE2-LABEL: shuffle_v16i8_to_v2i8_6:
 ; SSE2:       # %bb.0:
 ; SSE2-NEXT:    pshufd {{.*#+}} xmm0 = mem[3,1,2,3]
-; SSE2-NEXT:    pand {{\.?LCPI[0-9]+_[0-9]+}}(%rip), %xmm0
-; SSE2-NEXT:    pshuflw {{.*#+}} xmm0 = xmm0[3,1,2,3,4,5,6,7]
+; SSE2-NEXT:    movdqa {{.*#+}} xmm1 = [16711935,16711935,16711935,16711935]
+; SSE2-NEXT:    pand %xmm0, %xmm1
+; SSE2-NEXT:    pshuflw {{.*#+}} xmm0 = xmm1[3,1,2,3,4,5,6,7]
 ; SSE2-NEXT:    packuswb %xmm0, %xmm0
 ; SSE2-NEXT:    movd %xmm0, %eax
 ; SSE2-NEXT:    movw %ax, (%rsi)

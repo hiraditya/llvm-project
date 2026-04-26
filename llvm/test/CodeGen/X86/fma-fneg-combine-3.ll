@@ -25,7 +25,7 @@ define void @fnma(ptr %_0, ptr %a, ptr %b, ptr %c) {
 ; FMA3-NEXT:    vmovups (%rcx), %xmm2
 ; FMA3-NEXT:    vinsertf128 $1, %xmm2, %ymm1, %ymm3
 ; FMA3-NEXT:    vinsertf128 $1, %xmm1, %ymm2, %ymm1
-; FMA3-NEXT:    vfnmadd231ps {{.*#+}} ymm1 = -(ymm0 * ymm3) + ymm1
+; FMA3-NEXT:    vfnmadd231ps {{.*#+}} ymm1 = -(ymm3 * ymm0) + ymm1
 ; FMA3-NEXT:    vmovups %ymm1, (%rdi)
 ; FMA3-NEXT:    vzeroupper
 ; FMA3-NEXT:    retq
@@ -96,7 +96,7 @@ define void @fnma3(ptr %_0, ptr %a, ptr %b, ptr %c) {
 ; FMA3-NEXT:    vbroadcastf128 {{.*#+}} ymm2 = mem[0,1,0,1]
 ; FMA3-NEXT:    vinsertf128 $1, %xmm1, %ymm0, %ymm3
 ; FMA3-NEXT:    vinsertf128 $1, %xmm0, %ymm1, %ymm0
-; FMA3-NEXT:    vfnmadd231ps {{.*#+}} ymm0 = -(ymm2 * ymm3) + ymm0
+; FMA3-NEXT:    vfnmadd231ps {{.*#+}} ymm0 = -(ymm3 * ymm2) + ymm0
 ; FMA3-NEXT:    vmovups %ymm0, (%rdi)
 ; FMA3-NEXT:    vzeroupper
 ; FMA3-NEXT:    retq

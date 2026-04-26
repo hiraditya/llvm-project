@@ -69,8 +69,9 @@ define i1 @test3(ptr %P, ptr %Q) nounwind {
 ; CHECK:       # %bb.0: # %entry
 ; CHECK-NEXT:    movl {{[0-9]+}}(%esp), %eax
 ; CHECK-NEXT:    movl {{[0-9]+}}(%esp), %ecx
-; CHECK-NEXT:    movl (%eax), %eax
-; CHECK-NEXT:    xorl (%ecx), %eax
+; CHECK-NEXT:    movl (%eax), %edx
+; CHECK-NEXT:    movl (%ecx), %eax
+; CHECK-NEXT:    xorl %edx, %eax
 ; CHECK-NEXT:    testl $89947, %eax # imm = 0x15F5B
 ; CHECK-NEXT:    je .LBB2_2
 ; CHECK-NEXT:  # %bb.1:

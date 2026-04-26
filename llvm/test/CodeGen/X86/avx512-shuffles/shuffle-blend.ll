@@ -69,7 +69,8 @@ define <64 x i8> @addb_selectw_64xi8(<64 x i8> %t0, <64 x i8> %t1) {
 ; AVX512F-NEXT:    vpaddb %ymm1, %ymm0, %ymm3
 ; AVX512F-NEXT:    vinserti64x4 $1, %ymm2, %zmm3, %zmm2
 ; AVX512F-NEXT:    vpsubb %ymm1, %ymm0, %ymm0
-; AVX512F-NEXT:    vpternlogq {{.*#+}} zmm0 = zmm0 ^ (mem & (zmm0 ^ zmm2))
+; AVX512F-NEXT:    vpternlogq {{.*#+}} zmm2 = zmm0 ^ (mem & (zmm2 ^ zmm0))
+; AVX512F-NEXT:    vmovdqa64 %zmm2, %zmm0
 ; AVX512F-NEXT:    ret{{[l|q]}}
 ;
 ; X86-AVX512BW-LABEL: addb_selectw_64xi8:
@@ -147,8 +148,7 @@ define <32 x i16> @addw_selectd_32xi16(<32 x i16> %t0, <32 x i16> %t1) {
 ; AVX512F-NEXT:    vpsubw %ymm1, %ymm0, %ymm0
 ; AVX512F-NEXT:    movw $1, %ax
 ; AVX512F-NEXT:    kmovw %eax, %k1
-; AVX512F-NEXT:    vmovdqa32 %zmm0, %zmm2 {%k1}
-; AVX512F-NEXT:    vmovdqa64 %zmm2, %zmm0
+; AVX512F-NEXT:    vpblendmd %zmm0, %zmm2, %zmm0 {%k1}
 ; AVX512F-NEXT:    ret{{[l|q]}}
 ;
 ; AVX512BW-LABEL: addw_selectd_32xi16:

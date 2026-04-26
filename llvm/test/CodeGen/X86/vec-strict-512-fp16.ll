@@ -101,7 +101,8 @@ define <8 x half> @f12(<8 x double> %a) #0 {
 define <32 x half> @f13(<32 x half> %a, <32 x half> %b, <32 x half> %c) #0 {
 ; CHECK-LABEL: f13:
 ; CHECK:       # %bb.0:
-; CHECK-NEXT:    vfmadd213ph %zmm2, %zmm1, %zmm0
+; CHECK-NEXT:    vfmadd213ph %zmm2, %zmm0, %zmm1
+; CHECK-NEXT:    vmovaps %zmm1, %zmm0
 ; CHECK-NEXT:    ret{{[l|q]}}
   %res = call <32 x half> @llvm.experimental.constrained.fma.v32f16(<32 x half> %a, <32 x half> %b, <32 x half> %c,
                                                                     metadata !"round.dynamic",

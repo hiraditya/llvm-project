@@ -469,11 +469,17 @@ define i64 @load_fold_add1(ptr %p) {
 }
 
 define i64 @load_fold_add2(ptr %p, i64 %v2) {
-; CHECK-LABEL: load_fold_add2:
-; CHECK:       # %bb.0:
-; CHECK-NEXT:    movq %rsi, %rax
-; CHECK-NEXT:    addq (%rdi), %rax
-; CHECK-NEXT:    retq
+; CHECK-O0-LABEL: load_fold_add2:
+; CHECK-O0:       # %bb.0:
+; CHECK-O0-NEXT:    movq %rsi, %rax
+; CHECK-O0-NEXT:    addq (%rdi), %rax
+; CHECK-O0-NEXT:    retq
+;
+; CHECK-O3-LABEL: load_fold_add2:
+; CHECK-O3:       # %bb.0:
+; CHECK-O3-NEXT:    movq (%rdi), %rax
+; CHECK-O3-NEXT:    addq %rsi, %rax
+; CHECK-O3-NEXT:    retq
   %v = load atomic i64, ptr %p unordered, align 8
   %ret = add i64 %v, %v2
   ret i64 %ret
@@ -557,11 +563,17 @@ define i64 @load_fold_mul1(ptr %p) {
 }
 
 define i64 @load_fold_mul2(ptr %p, i64 %v2) {
-; CHECK-LABEL: load_fold_mul2:
-; CHECK:       # %bb.0:
-; CHECK-NEXT:    movq %rsi, %rax
-; CHECK-NEXT:    imulq (%rdi), %rax
-; CHECK-NEXT:    retq
+; CHECK-O0-LABEL: load_fold_mul2:
+; CHECK-O0:       # %bb.0:
+; CHECK-O0-NEXT:    movq %rsi, %rax
+; CHECK-O0-NEXT:    imulq (%rdi), %rax
+; CHECK-O0-NEXT:    retq
+;
+; CHECK-O3-LABEL: load_fold_mul2:
+; CHECK-O3:       # %bb.0:
+; CHECK-O3-NEXT:    movq (%rdi), %rax
+; CHECK-O3-NEXT:    imulq %rsi, %rax
+; CHECK-O3-NEXT:    retq
   %v = load atomic i64, ptr %p unordered, align 8
   %ret = mul i64 %v, %v2
   ret i64 %ret
@@ -605,8 +617,7 @@ define i64 @load_fold_sdiv1(ptr %p) {
 ; CHECK-O3-NEXT:    movq %rcx, %rax
 ; CHECK-O3-NEXT:    shrq $63, %rax
 ; CHECK-O3-NEXT:    sarq $3, %rcx
-; CHECK-O3-NEXT:    addq %rax, %rcx
-; CHECK-O3-NEXT:    movq %rcx, %rax
+; CHECK-O3-NEXT:    addq %rcx, %rax
 ; CHECK-O3-NEXT:    retq
   %v = load atomic i64, ptr %p unordered, align 8
   %ret = sdiv i64 %v, 15
@@ -780,10 +791,10 @@ define i64 @load_fold_srem1(ptr %p) {
 ; CHECK-O3-NEXT:    movabsq $-8608480567731124087, %rdx # imm = 0x8888888888888889
 ; CHECK-O3-NEXT:    movq %rcx, %rax
 ; CHECK-O3-NEXT:    imulq %rdx
-; CHECK-O3-NEXT:    addq %rcx, %rdx
-; CHECK-O3-NEXT:    movq %rdx, %rax
-; CHECK-O3-NEXT:    shrq $63, %rax
-; CHECK-O3-NEXT:    sarq $3, %rdx
+; CHECK-O3-NEXT:    leaq (%rdx,%rcx), %rax
+; CHECK-O3-NEXT:    movq %rax, %rdx
+; CHECK-O3-NEXT:    shrq $63, %rdx
+; CHECK-O3-NEXT:    sarq $3, %rax
 ; CHECK-O3-NEXT:    addq %rax, %rdx
 ; CHECK-O3-NEXT:    leaq (%rdx,%rdx,4), %rax
 ; CHECK-O3-NEXT:    leaq (%rax,%rax,2), %rax
@@ -1128,11 +1139,17 @@ define i64 @load_fold_and1(ptr %p) {
 }
 
 define i64 @load_fold_and2(ptr %p, i64 %v2) {
-; CHECK-LABEL: load_fold_and2:
-; CHECK:       # %bb.0:
-; CHECK-NEXT:    movq %rsi, %rax
-; CHECK-NEXT:    andq (%rdi), %rax
-; CHECK-NEXT:    retq
+; CHECK-O0-LABEL: load_fold_and2:
+; CHECK-O0:       # %bb.0:
+; CHECK-O0-NEXT:    movq %rsi, %rax
+; CHECK-O0-NEXT:    andq (%rdi), %rax
+; CHECK-O0-NEXT:    retq
+;
+; CHECK-O3-LABEL: load_fold_and2:
+; CHECK-O3:       # %bb.0:
+; CHECK-O3-NEXT:    movq (%rdi), %rax
+; CHECK-O3-NEXT:    andq %rsi, %rax
+; CHECK-O3-NEXT:    retq
   %v = load atomic i64, ptr %p unordered, align 8
   %ret = and i64 %v, %v2
   ret i64 %ret
@@ -1169,11 +1186,17 @@ define i64 @load_fold_or1(ptr %p) {
 }
 
 define i64 @load_fold_or2(ptr %p, i64 %v2) {
-; CHECK-LABEL: load_fold_or2:
-; CHECK:       # %bb.0:
-; CHECK-NEXT:    movq %rsi, %rax
-; CHECK-NEXT:    orq (%rdi), %rax
-; CHECK-NEXT:    retq
+; CHECK-O0-LABEL: load_fold_or2:
+; CHECK-O0:       # %bb.0:
+; CHECK-O0-NEXT:    movq %rsi, %rax
+; CHECK-O0-NEXT:    orq (%rdi), %rax
+; CHECK-O0-NEXT:    retq
+;
+; CHECK-O3-LABEL: load_fold_or2:
+; CHECK-O3:       # %bb.0:
+; CHECK-O3-NEXT:    movq (%rdi), %rax
+; CHECK-O3-NEXT:    orq %rsi, %rax
+; CHECK-O3-NEXT:    retq
   %v = load atomic i64, ptr %p unordered, align 8
   %ret = or i64 %v, %v2
   ret i64 %ret
@@ -1210,11 +1233,17 @@ define i64 @load_fold_xor1(ptr %p) {
 }
 
 define i64 @load_fold_xor2(ptr %p, i64 %v2) {
-; CHECK-LABEL: load_fold_xor2:
-; CHECK:       # %bb.0:
-; CHECK-NEXT:    movq %rsi, %rax
-; CHECK-NEXT:    xorq (%rdi), %rax
-; CHECK-NEXT:    retq
+; CHECK-O0-LABEL: load_fold_xor2:
+; CHECK-O0:       # %bb.0:
+; CHECK-O0-NEXT:    movq %rsi, %rax
+; CHECK-O0-NEXT:    xorq (%rdi), %rax
+; CHECK-O0-NEXT:    retq
+;
+; CHECK-O3-LABEL: load_fold_xor2:
+; CHECK-O3:       # %bb.0:
+; CHECK-O3-NEXT:    movq (%rdi), %rax
+; CHECK-O3-NEXT:    xorq %rsi, %rax
+; CHECK-O3-NEXT:    retq
   %v = load atomic i64, ptr %p unordered, align 8
   %ret = xor i64 %v, %v2
   ret i64 %ret
@@ -1394,18 +1423,12 @@ define void @rmw_fold_mul1(ptr %p, i64 %v) {
 
 ; Legal to fold (TODO)
 define void @rmw_fold_mul2(ptr %p, i64 %v) {
-; CHECK-O0-LABEL: rmw_fold_mul2:
-; CHECK-O0:       # %bb.0:
-; CHECK-O0-NEXT:    movq (%rdi), %rax
-; CHECK-O0-NEXT:    imulq %rsi, %rax
-; CHECK-O0-NEXT:    movq %rax, (%rdi)
-; CHECK-O0-NEXT:    retq
-;
-; CHECK-O3-LABEL: rmw_fold_mul2:
-; CHECK-O3:       # %bb.0:
-; CHECK-O3-NEXT:    imulq (%rdi), %rsi
-; CHECK-O3-NEXT:    movq %rsi, (%rdi)
-; CHECK-O3-NEXT:    retq
+; CHECK-LABEL: rmw_fold_mul2:
+; CHECK:       # %bb.0:
+; CHECK-NEXT:    movq (%rdi), %rax
+; CHECK-NEXT:    imulq %rsi, %rax
+; CHECK-NEXT:    movq %rax, (%rdi)
+; CHECK-NEXT:    retq
   %prev = load atomic i64, ptr %p unordered, align 8
   %val = mul i64 %prev, %v
   store atomic i64 %val, ptr %p unordered, align 8
@@ -1435,12 +1458,12 @@ define void @rmw_fold_sdiv1(ptr %p, i64 %v) {
 ; CHECK-O3-NEXT:    movabsq $-8608480567731124087, %rdx # imm = 0x8888888888888889
 ; CHECK-O3-NEXT:    movq %rcx, %rax
 ; CHECK-O3-NEXT:    imulq %rdx
-; CHECK-O3-NEXT:    addq %rcx, %rdx
-; CHECK-O3-NEXT:    movq %rdx, %rax
-; CHECK-O3-NEXT:    shrq $63, %rax
-; CHECK-O3-NEXT:    sarq $3, %rdx
-; CHECK-O3-NEXT:    addq %rax, %rdx
-; CHECK-O3-NEXT:    movq %rdx, (%rdi)
+; CHECK-O3-NEXT:    leaq (%rdx,%rcx), %rax
+; CHECK-O3-NEXT:    movq %rax, %rcx
+; CHECK-O3-NEXT:    shrq $63, %rcx
+; CHECK-O3-NEXT:    sarq $3, %rax
+; CHECK-O3-NEXT:    addq %rax, %rcx
+; CHECK-O3-NEXT:    movq %rcx, (%rdi)
 ; CHECK-O3-NEXT:    retq
   %prev = load atomic i64, ptr %p unordered, align 8
   %val = sdiv i64 %prev, 15
@@ -1562,10 +1585,10 @@ define void @rmw_fold_srem1(ptr %p, i64 %v) {
 ; CHECK-O3-NEXT:    movabsq $-8608480567731124087, %rdx # imm = 0x8888888888888889
 ; CHECK-O3-NEXT:    movq %rcx, %rax
 ; CHECK-O3-NEXT:    imulq %rdx
-; CHECK-O3-NEXT:    addq %rcx, %rdx
-; CHECK-O3-NEXT:    movq %rdx, %rax
-; CHECK-O3-NEXT:    shrq $63, %rax
-; CHECK-O3-NEXT:    sarq $3, %rdx
+; CHECK-O3-NEXT:    leaq (%rdx,%rcx), %rax
+; CHECK-O3-NEXT:    movq %rax, %rdx
+; CHECK-O3-NEXT:    shrq $63, %rdx
+; CHECK-O3-NEXT:    sarq $3, %rax
 ; CHECK-O3-NEXT:    addq %rax, %rdx
 ; CHECK-O3-NEXT:    leaq (%rdx,%rdx,4), %rax
 ; CHECK-O3-NEXT:    leaq (%rax,%rax,2), %rax
@@ -1934,9 +1957,9 @@ define i32 @fold_trunc_add(ptr %p, i32 %v2) {
 ;
 ; CHECK-O3-LABEL: fold_trunc_add:
 ; CHECK-O3:       # %bb.0:
+; CHECK-O3-NEXT:    # kill: def $esi killed $esi def $rsi
 ; CHECK-O3-NEXT:    movq (%rdi), %rax
 ; CHECK-O3-NEXT:    addl %esi, %eax
-; CHECK-O3-NEXT:    # kill: def $eax killed $eax killed $rax
 ; CHECK-O3-NEXT:    retq
   %v = load atomic i64, ptr %p unordered, align 8
   %trunc = trunc i64 %v to i32
@@ -2140,8 +2163,8 @@ define i64 @fold_constant(i64 %arg) {
 ;
 ; CHECK-O3-LABEL: fold_constant:
 ; CHECK-O3:       # %bb.0:
-; CHECK-O3-NEXT:    movq %rdi, %rax
-; CHECK-O3-NEXT:    addq Constant(%rip), %rax
+; CHECK-O3-NEXT:    movq Constant(%rip), %rax
+; CHECK-O3-NEXT:    addq %rdi, %rax
 ; CHECK-O3-NEXT:    retq
   %v = load atomic i64, ptr @Constant unordered, align 8
   %ret = add i64 %v, %arg

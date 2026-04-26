@@ -29,15 +29,16 @@ define double @foo2(float %p1, double %p2, double %p3) nounwind {
 ; CHECK:       # %bb.0: # %entry
 ; CHECK-NEXT:    xorps %xmm3, %xmm3
 ; CHECK-NEXT:    ucomiss %xmm3, %xmm0
-; CHECK-NEXT:    movsd {{.*#+}} xmm0 = [1.25E+0,0.0E+0]
+; CHECK-NEXT:    movsd {{.*#+}} xmm3 = [1.25E+0,0.0E+0]
 ; CHECK-NEXT:    jae .LBB1_1
 ; CHECK-NEXT:  # %bb.2: # %entry
-; CHECK-NEXT:    addsd %xmm0, %xmm2
+; CHECK-NEXT:    addsd %xmm3, %xmm2
 ; CHECK-NEXT:    movapd %xmm2, %xmm0
 ; CHECK-NEXT:    movapd %xmm2, %xmm1
 ; CHECK-NEXT:    jmp .LBB1_3
 ; CHECK-NEXT:  .LBB1_1:
-; CHECK-NEXT:    addsd %xmm1, %xmm0
+; CHECK-NEXT:    movapd %xmm1, %xmm0
+; CHECK-NEXT:    addsd %xmm3, %xmm0
 ; CHECK-NEXT:  .LBB1_3: # %entry
 ; CHECK-NEXT:    subsd %xmm1, %xmm0
 ; CHECK-NEXT:    addsd %xmm2, %xmm0
@@ -122,16 +123,17 @@ define double @foo5(float %p1, double %p2, double %p3) nounwind {
 ; CHECK:       # %bb.0: # %entry
 ; CHECK-NEXT:    xorps %xmm3, %xmm3
 ; CHECK-NEXT:    ucomiss %xmm3, %xmm0
-; CHECK-NEXT:    movsd {{.*#+}} xmm0 = [1.25E+0,0.0E+0]
+; CHECK-NEXT:    movsd {{.*#+}} xmm3 = [1.25E+0,0.0E+0]
 ; CHECK-NEXT:    jae .LBB4_1
 ; CHECK-NEXT:  # %bb.2: # %select.false
-; CHECK-NEXT:    addsd %xmm2, %xmm0
+; CHECK-NEXT:    movapd %xmm2, %xmm0
+; CHECK-NEXT:    addsd %xmm3, %xmm0
 ; CHECK-NEXT:  .LBB4_3: # %select.end
 ; CHECK-NEXT:    subsd %xmm1, %xmm0
 ; CHECK-NEXT:    addsd %xmm2, %xmm0
 ; CHECK-NEXT:    retq
 ; CHECK-NEXT:  .LBB4_1:
-; CHECK-NEXT:    addsd %xmm0, %xmm1
+; CHECK-NEXT:    addsd %xmm3, %xmm1
 ; CHECK-NEXT:    movapd %xmm1, %xmm0
 ; CHECK-NEXT:    movapd %xmm1, %xmm2
 ; CHECK-NEXT:    jmp .LBB4_3
@@ -156,11 +158,12 @@ define double @foo6(float %p1, double %p2, double %p3) nounwind {
 ; CHECK-NEXT:    movaps %xmm0, %xmm3
 ; CHECK-NEXT:    xorps %xmm0, %xmm0
 ; CHECK-NEXT:    ucomiss %xmm0, %xmm3
-; CHECK-NEXT:    movsd {{.*#+}} xmm0 = [1.25E+0,0.0E+0]
+; CHECK-NEXT:    movsd {{.*#+}} xmm4 = [1.25E+0,0.0E+0]
 ; CHECK-NEXT:    jae .LBB5_1
 ; CHECK-NEXT:  # %bb.2: # %select.false
-; CHECK-NEXT:    addsd %xmm2, %xmm0
+; CHECK-NEXT:    movapd %xmm2, %xmm0
 ; CHECK-NEXT:  .LBB5_3: # %select.end
+; CHECK-NEXT:    addsd %xmm4, %xmm0
 ; CHECK-NEXT:    ucomiss {{\.?LCPI[0-9]+_[0-9]+}}(%rip), %xmm3
 ; CHECK-NEXT:    movapd %xmm0, %xmm4
 ; CHECK-NEXT:    jae .LBB5_5
@@ -177,7 +180,7 @@ define double @foo6(float %p1, double %p2, double %p3) nounwind {
 ; CHECK-NEXT:    addsd %xmm1, %xmm0
 ; CHECK-NEXT:    retq
 ; CHECK-NEXT:  .LBB5_1:
-; CHECK-NEXT:    addsd %xmm1, %xmm0
+; CHECK-NEXT:    movapd %xmm1, %xmm0
 ; CHECK-NEXT:    jmp .LBB5_3
 entry:
   %c1 = fcmp oge float %p1, 0.000000e+00
@@ -201,17 +204,18 @@ declare void @llvm.dbg.value(metadata, metadata, metadata)
 define double @foo1_g(float %p1, double %p2, double %p3) nounwind !dbg !4 {
 ; CHECK-LABEL: foo1_g:
 ; CHECK:       # %bb.0: # %entry
-; CHECK-NEXT:    .file   1 "." "test.c"
-; CHECK-NEXT:    .loc 1 3 0 prologue_end
+; CHECK-NEXT:    .file 1 "." "test.c"
+; CHECK-NEXT:    .loc 1 3 0 prologue_end # test.c:3:0
 ; CHECK-NEXT:    xorps %xmm3, %xmm3
 ; CHECK-NEXT:    ucomiss %xmm3, %xmm0
-; CHECK-NEXT:    movsd {{.*#+}} xmm0 = [1.25E+0,0.0E+0]
+; CHECK-NEXT:    movsd {{.*#+}} xmm3 = [1.25E+0,0.0E+0]
 ; CHECK-NEXT:    jae .LBB6_1
 ; CHECK-NEXT:  # %bb.2: # %entry
-; CHECK-NEXT:    addsd %xmm2, %xmm0
+; CHECK-NEXT:    movapd %xmm2, %xmm0
+; CHECK-NEXT:    addsd %xmm3, %xmm0
 ; CHECK-NEXT:    jmp .LBB6_3
 ; CHECK-NEXT:  .LBB6_1:
-; CHECK-NEXT:    addsd %xmm0, %xmm1
+; CHECK-NEXT:    addsd %xmm3, %xmm1
 ; CHECK-NEXT:    movapd %xmm1, %xmm0
 ; CHECK-NEXT:    movapd %xmm1, %xmm2
 ; CHECK-NEXT:  .LBB6_3: # %entry

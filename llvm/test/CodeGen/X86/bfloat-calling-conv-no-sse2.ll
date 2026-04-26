@@ -30,21 +30,21 @@ define <3 x bfloat> @return_arg_v3bf16(<3 x bfloat> %x) #0 {
 ; NOSSE-NEXT:    flds {{[0-9]+}}(%esp)
 ; NOSSE-NEXT:    fstps (%esp)
 ; NOSSE-NEXT:    calll __truncsfbf2
+; NOSSE-NEXT:    movl %eax, %edi
+; NOSSE-NEXT:    flds {{[0-9]+}}(%esp)
+; NOSSE-NEXT:    fstps (%esp)
+; NOSSE-NEXT:    calll __truncsfbf2
 ; NOSSE-NEXT:    movl %eax, %esi
 ; NOSSE-NEXT:    flds {{[0-9]+}}(%esp)
 ; NOSSE-NEXT:    fstps (%esp)
+; NOSSE-NEXT:    shll $16, %esi
+; NOSSE-NEXT:    movzwl %di, %eax
+; NOSSE-NEXT:    orl %eax, %esi
+; NOSSE-NEXT:    movl {{[0-9]+}}(%esp), %edi
 ; NOSSE-NEXT:    calll __truncsfbf2
-; NOSSE-NEXT:    # kill: def $ax killed $ax def $eax
-; NOSSE-NEXT:    flds {{[0-9]+}}(%esp)
-; NOSSE-NEXT:    fstps (%esp)
-; NOSSE-NEXT:    shll $16, %eax
-; NOSSE-NEXT:    movzwl %si, %edi
-; NOSSE-NEXT:    orl %eax, %edi
-; NOSSE-NEXT:    movl {{[0-9]+}}(%esp), %esi
-; NOSSE-NEXT:    calll __truncsfbf2
-; NOSSE-NEXT:    movw %ax, 4(%esi)
-; NOSSE-NEXT:    movl %edi, (%esi)
-; NOSSE-NEXT:    movl %esi, %eax
+; NOSSE-NEXT:    movw %ax, 4(%edi)
+; NOSSE-NEXT:    movl %esi, (%edi)
+; NOSSE-NEXT:    movl %edi, %eax
 ; NOSSE-NEXT:    addl $4, %esp
 ; NOSSE-NEXT:    popl %esi
 ; NOSSE-NEXT:    popl %edi
@@ -58,21 +58,21 @@ define <3 x bfloat> @return_arg_v3bf16(<3 x bfloat> %x) #0 {
 ; SSE-NEXT:    movss {{.*#+}} xmm0 = mem[0],zero,zero,zero
 ; SSE-NEXT:    movss %xmm0, (%esp)
 ; SSE-NEXT:    calll __truncsfbf2
+; SSE-NEXT:    movl %eax, %edi
+; SSE-NEXT:    movss {{.*#+}} xmm0 = mem[0],zero,zero,zero
+; SSE-NEXT:    movss %xmm0, (%esp)
+; SSE-NEXT:    calll __truncsfbf2
 ; SSE-NEXT:    movl %eax, %esi
 ; SSE-NEXT:    movss {{.*#+}} xmm0 = mem[0],zero,zero,zero
 ; SSE-NEXT:    movss %xmm0, (%esp)
+; SSE-NEXT:    shll $16, %esi
+; SSE-NEXT:    movzwl %di, %eax
+; SSE-NEXT:    orl %eax, %esi
+; SSE-NEXT:    movl {{[0-9]+}}(%esp), %edi
 ; SSE-NEXT:    calll __truncsfbf2
-; SSE-NEXT:    # kill: def $ax killed $ax def $eax
-; SSE-NEXT:    movss {{.*#+}} xmm0 = mem[0],zero,zero,zero
-; SSE-NEXT:    movss %xmm0, (%esp)
-; SSE-NEXT:    shll $16, %eax
-; SSE-NEXT:    movzwl %si, %edi
-; SSE-NEXT:    orl %eax, %edi
-; SSE-NEXT:    movl {{[0-9]+}}(%esp), %esi
-; SSE-NEXT:    calll __truncsfbf2
-; SSE-NEXT:    movw %ax, 4(%esi)
-; SSE-NEXT:    movl %edi, (%esi)
-; SSE-NEXT:    movl %esi, %eax
+; SSE-NEXT:    movw %ax, 4(%edi)
+; SSE-NEXT:    movl %esi, (%edi)
+; SSE-NEXT:    movl %edi, %eax
 ; SSE-NEXT:    addl $4, %esp
 ; SSE-NEXT:    popl %esi
 ; SSE-NEXT:    popl %edi

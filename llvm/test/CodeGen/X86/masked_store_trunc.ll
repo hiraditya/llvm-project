@@ -283,13 +283,17 @@ define void @truncstore_v8i64_v8i16(<8 x i64> %x, ptr %p, <8 x i32> %mask) {
 ; SSE4-LABEL: truncstore_v8i64_v8i16:
 ; SSE4:       # %bb.0:
 ; SSE4-NEXT:    pxor %xmm6, %xmm6
-; SSE4-NEXT:    pblendw {{.*#+}} xmm3 = xmm3[0],xmm6[1,2,3],xmm3[4],xmm6[5,6,7]
-; SSE4-NEXT:    pblendw {{.*#+}} xmm2 = xmm2[0],xmm6[1,2,3],xmm2[4],xmm6[5,6,7]
-; SSE4-NEXT:    packusdw %xmm3, %xmm2
-; SSE4-NEXT:    pblendw {{.*#+}} xmm1 = xmm1[0],xmm6[1,2,3],xmm1[4],xmm6[5,6,7]
-; SSE4-NEXT:    pblendw {{.*#+}} xmm0 = xmm0[0],xmm6[1,2,3],xmm0[4],xmm6[5,6,7]
-; SSE4-NEXT:    packusdw %xmm1, %xmm0
-; SSE4-NEXT:    packusdw %xmm2, %xmm0
+; SSE4-NEXT:    pxor %xmm7, %xmm7
+; SSE4-NEXT:    pblendw {{.*#+}} xmm7 = xmm3[0],xmm7[1,2,3],xmm3[4],xmm7[5,6,7]
+; SSE4-NEXT:    pxor %xmm3, %xmm3
+; SSE4-NEXT:    pblendw {{.*#+}} xmm3 = xmm2[0],xmm3[1,2,3],xmm2[4],xmm3[5,6,7]
+; SSE4-NEXT:    packusdw %xmm7, %xmm3
+; SSE4-NEXT:    pxor %xmm2, %xmm2
+; SSE4-NEXT:    pblendw {{.*#+}} xmm2 = xmm1[0],xmm2[1,2,3],xmm1[4],xmm2[5,6,7]
+; SSE4-NEXT:    pxor %xmm1, %xmm1
+; SSE4-NEXT:    pblendw {{.*#+}} xmm1 = xmm0[0],xmm1[1,2,3],xmm0[4],xmm1[5,6,7]
+; SSE4-NEXT:    packusdw %xmm2, %xmm1
+; SSE4-NEXT:    packusdw %xmm3, %xmm1
 ; SSE4-NEXT:    pcmpeqd %xmm6, %xmm5
 ; SSE4-NEXT:    pcmpeqd %xmm6, %xmm4
 ; SSE4-NEXT:    packssdw %xmm5, %xmm4
@@ -322,35 +326,35 @@ define void @truncstore_v8i64_v8i16(<8 x i64> %x, ptr %p, <8 x i32> %mask) {
 ; SSE4-NEXT:  .LBB1_16: # %else14
 ; SSE4-NEXT:    retq
 ; SSE4-NEXT:  .LBB1_1: # %cond.store
-; SSE4-NEXT:    pextrw $0, %xmm0, (%rdi)
+; SSE4-NEXT:    pextrw $0, %xmm1, (%rdi)
 ; SSE4-NEXT:    testb $2, %al
 ; SSE4-NEXT:    je .LBB1_4
 ; SSE4-NEXT:  .LBB1_3: # %cond.store1
-; SSE4-NEXT:    pextrw $1, %xmm0, 2(%rdi)
+; SSE4-NEXT:    pextrw $1, %xmm1, 2(%rdi)
 ; SSE4-NEXT:    testb $4, %al
 ; SSE4-NEXT:    je .LBB1_6
 ; SSE4-NEXT:  .LBB1_5: # %cond.store3
-; SSE4-NEXT:    pextrw $2, %xmm0, 4(%rdi)
+; SSE4-NEXT:    pextrw $2, %xmm1, 4(%rdi)
 ; SSE4-NEXT:    testb $8, %al
 ; SSE4-NEXT:    je .LBB1_8
 ; SSE4-NEXT:  .LBB1_7: # %cond.store5
-; SSE4-NEXT:    pextrw $3, %xmm0, 6(%rdi)
+; SSE4-NEXT:    pextrw $3, %xmm1, 6(%rdi)
 ; SSE4-NEXT:    testb $16, %al
 ; SSE4-NEXT:    je .LBB1_10
 ; SSE4-NEXT:  .LBB1_9: # %cond.store7
-; SSE4-NEXT:    pextrw $4, %xmm0, 8(%rdi)
+; SSE4-NEXT:    pextrw $4, %xmm1, 8(%rdi)
 ; SSE4-NEXT:    testb $32, %al
 ; SSE4-NEXT:    je .LBB1_12
 ; SSE4-NEXT:  .LBB1_11: # %cond.store9
-; SSE4-NEXT:    pextrw $5, %xmm0, 10(%rdi)
+; SSE4-NEXT:    pextrw $5, %xmm1, 10(%rdi)
 ; SSE4-NEXT:    testb $64, %al
 ; SSE4-NEXT:    je .LBB1_14
 ; SSE4-NEXT:  .LBB1_13: # %cond.store11
-; SSE4-NEXT:    pextrw $6, %xmm0, 12(%rdi)
+; SSE4-NEXT:    pextrw $6, %xmm1, 12(%rdi)
 ; SSE4-NEXT:    testb $-128, %al
 ; SSE4-NEXT:    je .LBB1_16
 ; SSE4-NEXT:  .LBB1_15: # %cond.store13
-; SSE4-NEXT:    pextrw $7, %xmm0, 14(%rdi)
+; SSE4-NEXT:    pextrw $7, %xmm1, 14(%rdi)
 ; SSE4-NEXT:    retq
 ;
 ; AVX1-LABEL: truncstore_v8i64_v8i16:
@@ -1271,10 +1275,12 @@ define void @truncstore_v4i64_v4i16(<4 x i64> %x, ptr %p, <4 x i32> %mask) {
 ; SSE4-LABEL: truncstore_v4i64_v4i16:
 ; SSE4:       # %bb.0:
 ; SSE4-NEXT:    pxor %xmm3, %xmm3
-; SSE4-NEXT:    pblendw {{.*#+}} xmm1 = xmm1[0],xmm3[1,2,3],xmm1[4],xmm3[5,6,7]
-; SSE4-NEXT:    pblendw {{.*#+}} xmm0 = xmm0[0],xmm3[1,2,3],xmm0[4],xmm3[5,6,7]
-; SSE4-NEXT:    packusdw %xmm1, %xmm0
-; SSE4-NEXT:    packusdw %xmm3, %xmm0
+; SSE4-NEXT:    pxor %xmm4, %xmm4
+; SSE4-NEXT:    pblendw {{.*#+}} xmm4 = xmm1[0],xmm4[1,2,3],xmm1[4],xmm4[5,6,7]
+; SSE4-NEXT:    pxor %xmm1, %xmm1
+; SSE4-NEXT:    pblendw {{.*#+}} xmm1 = xmm0[0],xmm1[1,2,3],xmm0[4],xmm1[5,6,7]
+; SSE4-NEXT:    packusdw %xmm4, %xmm1
+; SSE4-NEXT:    packusdw %xmm3, %xmm1
 ; SSE4-NEXT:    pcmpeqd %xmm3, %xmm2
 ; SSE4-NEXT:    movmskps %xmm2, %eax
 ; SSE4-NEXT:    xorl $15, %eax
@@ -1292,19 +1298,19 @@ define void @truncstore_v4i64_v4i16(<4 x i64> %x, ptr %p, <4 x i32> %mask) {
 ; SSE4-NEXT:  .LBB4_8: # %else6
 ; SSE4-NEXT:    retq
 ; SSE4-NEXT:  .LBB4_1: # %cond.store
-; SSE4-NEXT:    pextrw $0, %xmm0, (%rdi)
+; SSE4-NEXT:    pextrw $0, %xmm1, (%rdi)
 ; SSE4-NEXT:    testb $2, %al
 ; SSE4-NEXT:    je .LBB4_4
 ; SSE4-NEXT:  .LBB4_3: # %cond.store1
-; SSE4-NEXT:    pextrw $1, %xmm0, 2(%rdi)
+; SSE4-NEXT:    pextrw $1, %xmm1, 2(%rdi)
 ; SSE4-NEXT:    testb $4, %al
 ; SSE4-NEXT:    je .LBB4_6
 ; SSE4-NEXT:  .LBB4_5: # %cond.store3
-; SSE4-NEXT:    pextrw $2, %xmm0, 4(%rdi)
+; SSE4-NEXT:    pextrw $2, %xmm1, 4(%rdi)
 ; SSE4-NEXT:    testb $8, %al
 ; SSE4-NEXT:    je .LBB4_8
 ; SSE4-NEXT:  .LBB4_7: # %cond.store5
-; SSE4-NEXT:    pextrw $3, %xmm0, 6(%rdi)
+; SSE4-NEXT:    pextrw $3, %xmm1, 6(%rdi)
 ; SSE4-NEXT:    retq
 ;
 ; AVX1-LABEL: truncstore_v4i64_v4i16:
@@ -1993,17 +1999,18 @@ define void @truncstore_v2i64_v2i8(<2 x i64> %x, ptr %p, <2 x i64> %mask) {
 ; SSE2-LABEL: truncstore_v2i64_v2i8:
 ; SSE2:       # %bb.0:
 ; SSE2-NEXT:    pxor %xmm2, %xmm2
-; SSE2-NEXT:    pand {{\.?LCPI[0-9]+_[0-9]+}}(%rip), %xmm0
-; SSE2-NEXT:    packuswb %xmm0, %xmm0
-; SSE2-NEXT:    packuswb %xmm0, %xmm0
-; SSE2-NEXT:    packuswb %xmm0, %xmm0
+; SSE2-NEXT:    movdqa {{.*#+}} xmm3 = [255,0,0,0,255,0,0,0]
+; SSE2-NEXT:    pand %xmm0, %xmm3
+; SSE2-NEXT:    packuswb %xmm3, %xmm3
+; SSE2-NEXT:    packuswb %xmm3, %xmm3
+; SSE2-NEXT:    packuswb %xmm3, %xmm3
 ; SSE2-NEXT:    pcmpeqd %xmm1, %xmm2
-; SSE2-NEXT:    pshufd {{.*#+}} xmm1 = xmm2[1,0,3,2]
-; SSE2-NEXT:    pand %xmm2, %xmm1
-; SSE2-NEXT:    movmskpd %xmm1, %eax
+; SSE2-NEXT:    pshufd {{.*#+}} xmm0 = xmm2[1,0,3,2]
+; SSE2-NEXT:    pand %xmm2, %xmm0
+; SSE2-NEXT:    movmskpd %xmm0, %eax
 ; SSE2-NEXT:    xorl $3, %eax
 ; SSE2-NEXT:    testb $1, %al
-; SSE2-NEXT:    movd %xmm0, %ecx
+; SSE2-NEXT:    movd %xmm3, %ecx
 ; SSE2-NEXT:    jne .LBB8_1
 ; SSE2-NEXT:  # %bb.2: # %else
 ; SSE2-NEXT:    testb $2, %al
@@ -4809,14 +4816,15 @@ define void @truncstore_v4i32_v4i8(<4 x i32> %x, ptr %p, <4 x i32> %mask) {
 ; SSE2-LABEL: truncstore_v4i32_v4i8:
 ; SSE2:       # %bb.0:
 ; SSE2-NEXT:    pxor %xmm2, %xmm2
-; SSE2-NEXT:    pand {{\.?LCPI[0-9]+_[0-9]+}}(%rip), %xmm0
-; SSE2-NEXT:    packuswb %xmm0, %xmm0
-; SSE2-NEXT:    packuswb %xmm0, %xmm0
+; SSE2-NEXT:    movdqa {{.*#+}} xmm3 = [255,0,255,0,255,0,255,0]
+; SSE2-NEXT:    pand %xmm0, %xmm3
+; SSE2-NEXT:    packuswb %xmm3, %xmm3
+; SSE2-NEXT:    packuswb %xmm3, %xmm3
 ; SSE2-NEXT:    pcmpeqd %xmm1, %xmm2
 ; SSE2-NEXT:    movmskps %xmm2, %ecx
 ; SSE2-NEXT:    xorl $15, %ecx
 ; SSE2-NEXT:    testb $1, %cl
-; SSE2-NEXT:    movd %xmm0, %eax
+; SSE2-NEXT:    movd %xmm3, %eax
 ; SSE2-NEXT:    jne .LBB14_1
 ; SSE2-NEXT:  # %bb.2: # %else
 ; SSE2-NEXT:    testb $2, %cl
@@ -7210,15 +7218,16 @@ define void @truncstore_v16i16_v16i8(<16 x i16> %x, ptr %p, <16 x i8> %mask) {
 define void @truncstore_v8i16_v8i8(<8 x i16> %x, ptr %p, <8 x i16> %mask) {
 ; SSE2-LABEL: truncstore_v8i16_v8i8:
 ; SSE2:       # %bb.0:
-; SSE2-NEXT:    pxor %xmm2, %xmm2
-; SSE2-NEXT:    pand {{\.?LCPI[0-9]+_[0-9]+}}(%rip), %xmm0
-; SSE2-NEXT:    packuswb %xmm0, %xmm0
-; SSE2-NEXT:    pcmpeqw %xmm1, %xmm2
-; SSE2-NEXT:    packsswb %xmm2, %xmm2
-; SSE2-NEXT:    pmovmskb %xmm2, %eax
+; SSE2-NEXT:    pxor %xmm3, %xmm3
+; SSE2-NEXT:    movdqa {{.*#+}} xmm2 = [255,255,255,255,255,255,255,255]
+; SSE2-NEXT:    pand %xmm0, %xmm2
+; SSE2-NEXT:    packuswb %xmm2, %xmm2
+; SSE2-NEXT:    pcmpeqw %xmm1, %xmm3
+; SSE2-NEXT:    packsswb %xmm3, %xmm3
+; SSE2-NEXT:    pmovmskb %xmm3, %eax
 ; SSE2-NEXT:    notl %eax
 ; SSE2-NEXT:    testb $1, %al
-; SSE2-NEXT:    movd %xmm0, %ecx
+; SSE2-NEXT:    movd %xmm2, %ecx
 ; SSE2-NEXT:    jne .LBB17_1
 ; SSE2-NEXT:  # %bb.2: # %else
 ; SSE2-NEXT:    testb $2, %al
@@ -7234,7 +7243,7 @@ define void @truncstore_v8i16_v8i8(<8 x i16> %x, ptr %p, <8 x i16> %mask) {
 ; SSE2-NEXT:    movb %cl, 3(%rdi)
 ; SSE2-NEXT:  .LBB17_8: # %else6
 ; SSE2-NEXT:    testb $16, %al
-; SSE2-NEXT:    pextrw $2, %xmm0, %ecx
+; SSE2-NEXT:    pextrw $2, %xmm2, %ecx
 ; SSE2-NEXT:    je .LBB17_10
 ; SSE2-NEXT:  # %bb.9: # %cond.store7
 ; SSE2-NEXT:    movb %cl, 4(%rdi)
@@ -7245,7 +7254,7 @@ define void @truncstore_v8i16_v8i8(<8 x i16> %x, ptr %p, <8 x i16> %mask) {
 ; SSE2-NEXT:    movb %ch, 5(%rdi)
 ; SSE2-NEXT:  .LBB17_12: # %else10
 ; SSE2-NEXT:    testb $64, %al
-; SSE2-NEXT:    pextrw $3, %xmm0, %ecx
+; SSE2-NEXT:    pextrw $3, %xmm2, %ecx
 ; SSE2-NEXT:    jne .LBB17_13
 ; SSE2-NEXT:  # %bb.14: # %else12
 ; SSE2-NEXT:    testb $-128, %al

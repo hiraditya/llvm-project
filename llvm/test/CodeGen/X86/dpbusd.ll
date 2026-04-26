@@ -7,6 +7,7 @@
 define i32 @no_dpbusd(ptr%a, ptr%b, i32 %c, i32 %n) {
 ; CHECK-LABEL: no_dpbusd:
 ; CHECK:       # %bb.0: # %entry
+; CHECK-NEXT:    # kill: def $edx killed $edx def $rdx
 ; CHECK-NEXT:    vpmovzxbw {{.*#+}} ymm0 = mem[0],zero,mem[1],zero,mem[2],zero,mem[3],zero,mem[4],zero,mem[5],zero,mem[6],zero,mem[7],zero,mem[8],zero,mem[9],zero,mem[10],zero,mem[11],zero,mem[12],zero,mem[13],zero,mem[14],zero,mem[15],zero
 ; CHECK-NEXT:    vpmovzxbw {{.*#+}} ymm1 = mem[0],zero,mem[1],zero,mem[2],zero,mem[3],zero,mem[4],zero,mem[5],zero,mem[6],zero,mem[7],zero,mem[8],zero,mem[9],zero,mem[10],zero,mem[11],zero,mem[12],zero,mem[13],zero,mem[14],zero,mem[15],zero
 ; CHECK-NEXT:    vpmaddwd %ymm0, %ymm1, %ymm0
@@ -34,6 +35,7 @@ entry:
 define i32 @vpdpbusd_mutate(ptr%a, ptr%b, i32 %c, i32 %n) {
 ; AVXVNNI-LABEL: vpdpbusd_mutate:
 ; AVXVNNI:       # %bb.0: # %entry
+; AVXVNNI-NEXT:    # kill: def $edx killed $edx def $rdx
 ; AVXVNNI-NEXT:    vmovdqa (%rsi), %xmm0
 ; AVXVNNI-NEXT:    vpxor %xmm1, %xmm1, %xmm1
 ; AVXVNNI-NEXT:    {vex} vpdpbusd (%rdi), %xmm0, %xmm1
@@ -47,6 +49,7 @@ define i32 @vpdpbusd_mutate(ptr%a, ptr%b, i32 %c, i32 %n) {
 ;
 ; AVX512VNNI-LABEL: vpdpbusd_mutate:
 ; AVX512VNNI:       # %bb.0: # %entry
+; AVX512VNNI-NEXT:    # kill: def $edx killed $edx def $rdx
 ; AVX512VNNI-NEXT:    vmovdqa (%rdi), %xmm0
 ; AVX512VNNI-NEXT:    vmovdqa (%rsi), %xmm1
 ; AVX512VNNI-NEXT:    vpxor %xmm2, %xmm2, %xmm2
@@ -62,6 +65,7 @@ define i32 @vpdpbusd_mutate(ptr%a, ptr%b, i32 %c, i32 %n) {
 ;
 ; AVX512VLVNNI-LABEL: vpdpbusd_mutate:
 ; AVX512VLVNNI:       # %bb.0: # %entry
+; AVX512VLVNNI-NEXT:    # kill: def $edx killed $edx def $rdx
 ; AVX512VLVNNI-NEXT:    vmovdqa (%rsi), %xmm0
 ; AVX512VLVNNI-NEXT:    vpxor %xmm1, %xmm1, %xmm1
 ; AVX512VLVNNI-NEXT:    vpdpbusd (%rdi), %xmm0, %xmm1
@@ -86,6 +90,7 @@ entry:
 define i32 @mul_zext(ptr%a, ptr%b, i32 %c, i32 %n) {
 ; AVXVNNI-AVX-LABEL: mul_zext:
 ; AVXVNNI-AVX:       # %bb.0: # %entry
+; AVXVNNI-AVX-NEXT:    # kill: def $edx killed $edx def $rdx
 ; AVXVNNI-AVX-NEXT:    vpmovzxbw {{.*#+}} ymm0 = mem[0],zero,mem[1],zero,mem[2],zero,mem[3],zero,mem[4],zero,mem[5],zero,mem[6],zero,mem[7],zero,mem[8],zero,mem[9],zero,mem[10],zero,mem[11],zero,mem[12],zero,mem[13],zero,mem[14],zero,mem[15],zero
 ; AVXVNNI-AVX-NEXT:    vpmovsxbw (%rsi), %ymm1
 ; AVXVNNI-AVX-NEXT:    vpmullw %ymm0, %ymm1, %ymm0
@@ -106,6 +111,7 @@ define i32 @mul_zext(ptr%a, ptr%b, i32 %c, i32 %n) {
 ;
 ; AVXVNNI-AVX512-LABEL: mul_zext:
 ; AVXVNNI-AVX512:       # %bb.0: # %entry
+; AVXVNNI-AVX512-NEXT:    # kill: def $edx killed $edx def $rdx
 ; AVXVNNI-AVX512-NEXT:    vpmovzxbw {{.*#+}} ymm0 = mem[0],zero,mem[1],zero,mem[2],zero,mem[3],zero,mem[4],zero,mem[5],zero,mem[6],zero,mem[7],zero,mem[8],zero,mem[9],zero,mem[10],zero,mem[11],zero,mem[12],zero,mem[13],zero,mem[14],zero,mem[15],zero
 ; AVXVNNI-AVX512-NEXT:    vpmovsxbw (%rsi), %ymm1
 ; AVXVNNI-AVX512-NEXT:    vpmullw %ymm0, %ymm1, %ymm0
@@ -125,6 +131,7 @@ define i32 @mul_zext(ptr%a, ptr%b, i32 %c, i32 %n) {
 ;
 ; AVX512-LABEL: mul_zext:
 ; AVX512:       # %bb.0: # %entry
+; AVX512-NEXT:    # kill: def $edx killed $edx def $rdx
 ; AVX512-NEXT:    vpmovzxbw {{.*#+}} ymm0 = mem[0],zero,mem[1],zero,mem[2],zero,mem[3],zero,mem[4],zero,mem[5],zero,mem[6],zero,mem[7],zero,mem[8],zero,mem[9],zero,mem[10],zero,mem[11],zero,mem[12],zero,mem[13],zero,mem[14],zero,mem[15],zero
 ; AVX512-NEXT:    vpmovsxbw (%rsi), %ymm1
 ; AVX512-NEXT:    vpmullw %ymm0, %ymm1, %ymm0
@@ -159,6 +166,7 @@ entry:
 define i32 @mul_sext(ptr%a, ptr%b, i32 %c, i32 %n) {
 ; AVXVNNI-AVX-LABEL: mul_sext:
 ; AVXVNNI-AVX:       # %bb.0: # %entry
+; AVXVNNI-AVX-NEXT:    # kill: def $edx killed $edx def $rdx
 ; AVXVNNI-AVX-NEXT:    vpmovzxbw {{.*#+}} ymm0 = mem[0],zero,mem[1],zero,mem[2],zero,mem[3],zero,mem[4],zero,mem[5],zero,mem[6],zero,mem[7],zero,mem[8],zero,mem[9],zero,mem[10],zero,mem[11],zero,mem[12],zero,mem[13],zero,mem[14],zero,mem[15],zero
 ; AVXVNNI-AVX-NEXT:    vpmovsxbw (%rsi), %ymm1
 ; AVXVNNI-AVX-NEXT:    vpmullw %ymm0, %ymm1, %ymm0
@@ -179,6 +187,7 @@ define i32 @mul_sext(ptr%a, ptr%b, i32 %c, i32 %n) {
 ;
 ; AVXVNNI-AVX512-LABEL: mul_sext:
 ; AVXVNNI-AVX512:       # %bb.0: # %entry
+; AVXVNNI-AVX512-NEXT:    # kill: def $edx killed $edx def $rdx
 ; AVXVNNI-AVX512-NEXT:    vpmovzxbw {{.*#+}} ymm0 = mem[0],zero,mem[1],zero,mem[2],zero,mem[3],zero,mem[4],zero,mem[5],zero,mem[6],zero,mem[7],zero,mem[8],zero,mem[9],zero,mem[10],zero,mem[11],zero,mem[12],zero,mem[13],zero,mem[14],zero,mem[15],zero
 ; AVXVNNI-AVX512-NEXT:    vpmovsxbw (%rsi), %ymm1
 ; AVXVNNI-AVX512-NEXT:    vpmullw %ymm0, %ymm1, %ymm0
@@ -198,6 +207,7 @@ define i32 @mul_sext(ptr%a, ptr%b, i32 %c, i32 %n) {
 ;
 ; AVX512-LABEL: mul_sext:
 ; AVX512:       # %bb.0: # %entry
+; AVX512-NEXT:    # kill: def $edx killed $edx def $rdx
 ; AVX512-NEXT:    vpmovzxbw {{.*#+}} ymm0 = mem[0],zero,mem[1],zero,mem[2],zero,mem[3],zero,mem[4],zero,mem[5],zero,mem[6],zero,mem[7],zero,mem[8],zero,mem[9],zero,mem[10],zero,mem[11],zero,mem[12],zero,mem[13],zero,mem[14],zero,mem[15],zero
 ; AVX512-NEXT:    vpmovsxbw (%rsi), %ymm1
 ; AVX512-NEXT:    vpmullw %ymm0, %ymm1, %ymm0
@@ -233,6 +243,7 @@ entry:
 define i32 @vpdpbusd_512(ptr%a, ptr%b, i32 %c, i32 %n) {
 ; AVXVNNI-LABEL: vpdpbusd_512:
 ; AVXVNNI:       # %bb.0: # %entry
+; AVXVNNI-NEXT:    # kill: def $edx killed $edx def $rdx
 ; AVXVNNI-NEXT:    vmovdqa (%rdi), %xmm0
 ; AVXVNNI-NEXT:    vpxor %xmm1, %xmm1, %xmm1
 ; AVXVNNI-NEXT:    {vex} vpdpbusd (%rsi), %xmm0, %xmm1
@@ -246,6 +257,7 @@ define i32 @vpdpbusd_512(ptr%a, ptr%b, i32 %c, i32 %n) {
 ;
 ; AVX512VNNI-LABEL: vpdpbusd_512:
 ; AVX512VNNI:       # %bb.0: # %entry
+; AVX512VNNI-NEXT:    # kill: def $edx killed $edx def $rdx
 ; AVX512VNNI-NEXT:    vmovdqa (%rdi), %xmm0
 ; AVX512VNNI-NEXT:    vmovdqa (%rsi), %xmm1
 ; AVX512VNNI-NEXT:    vpxor %xmm2, %xmm2, %xmm2
@@ -261,6 +273,7 @@ define i32 @vpdpbusd_512(ptr%a, ptr%b, i32 %c, i32 %n) {
 ;
 ; AVX512VLVNNI-LABEL: vpdpbusd_512:
 ; AVX512VLVNNI:       # %bb.0: # %entry
+; AVX512VLVNNI-NEXT:    # kill: def $edx killed $edx def $rdx
 ; AVX512VLVNNI-NEXT:    vmovdqa (%rdi), %xmm0
 ; AVX512VLVNNI-NEXT:    vpxor %xmm1, %xmm1, %xmm1
 ; AVX512VLVNNI-NEXT:    vpdpbusd (%rsi), %xmm0, %xmm1
@@ -287,6 +300,7 @@ declare i32 @llvm.vector.reduce.add.v16i32(<16 x i32>)
 define i32 @vpdpbusd_256(ptr%a, ptr%b, i32 %c, i32 %n) {
 ; AVXVNNI-LABEL: vpdpbusd_256:
 ; AVXVNNI:       # %bb.0: # %entry
+; AVXVNNI-NEXT:    # kill: def $edx killed $edx def $rdx
 ; AVXVNNI-NEXT:    vmovq {{.*#+}} xmm0 = mem[0],zero
 ; AVXVNNI-NEXT:    vmovq {{.*#+}} xmm1 = mem[0],zero
 ; AVXVNNI-NEXT:    vpxor %xmm2, %xmm2, %xmm2
@@ -299,6 +313,7 @@ define i32 @vpdpbusd_256(ptr%a, ptr%b, i32 %c, i32 %n) {
 ;
 ; AVX512VNNI-LABEL: vpdpbusd_256:
 ; AVX512VNNI:       # %bb.0: # %entry
+; AVX512VNNI-NEXT:    # kill: def $edx killed $edx def $rdx
 ; AVX512VNNI-NEXT:    vmovq {{.*#+}} xmm0 = mem[0],zero
 ; AVX512VNNI-NEXT:    vmovq {{.*#+}} xmm1 = mem[0],zero
 ; AVX512VNNI-NEXT:    vpxor %xmm2, %xmm2, %xmm2
@@ -312,6 +327,7 @@ define i32 @vpdpbusd_256(ptr%a, ptr%b, i32 %c, i32 %n) {
 ;
 ; AVX512VLVNNI-LABEL: vpdpbusd_256:
 ; AVX512VLVNNI:       # %bb.0: # %entry
+; AVX512VLVNNI-NEXT:    # kill: def $edx killed $edx def $rdx
 ; AVX512VLVNNI-NEXT:    vmovq {{.*#+}} xmm0 = mem[0],zero
 ; AVX512VLVNNI-NEXT:    vmovq {{.*#+}} xmm1 = mem[0],zero
 ; AVX512VLVNNI-NEXT:    vpxor %xmm2, %xmm2, %xmm2
@@ -337,6 +353,7 @@ declare i32 @llvm.vector.reduce.add.v8i32(<8 x i32>)
 define i32 @vpdpbusd_128(ptr%a, ptr%b, i32 %c, i32 %n) {
 ; AVXVNNI-AVX-LABEL: vpdpbusd_128:
 ; AVXVNNI-AVX:       # %bb.0: # %entry
+; AVXVNNI-AVX-NEXT:    # kill: def $edx killed $edx def $rdx
 ; AVXVNNI-AVX-NEXT:    vmovq {{.*#+}} xmm0 = mem[0],zero
 ; AVXVNNI-AVX-NEXT:    vmovq {{.*#+}} xmm1 = mem[0],zero
 ; AVXVNNI-AVX-NEXT:    vpxor %xmm2, %xmm2, %xmm2
@@ -349,6 +366,7 @@ define i32 @vpdpbusd_128(ptr%a, ptr%b, i32 %c, i32 %n) {
 ;
 ; AVXVNNI-AVX512-LABEL: vpdpbusd_128:
 ; AVXVNNI-AVX512:       # %bb.0: # %entry
+; AVXVNNI-AVX512-NEXT:    # kill: def $edx killed $edx def $rdx
 ; AVXVNNI-AVX512-NEXT:    vmovq {{.*#+}} xmm0 = mem[0],zero
 ; AVXVNNI-AVX512-NEXT:    vmovq {{.*#+}} xmm1 = mem[0],zero
 ; AVXVNNI-AVX512-NEXT:    vpxor %xmm2, %xmm2, %xmm2
@@ -362,6 +380,7 @@ define i32 @vpdpbusd_128(ptr%a, ptr%b, i32 %c, i32 %n) {
 ;
 ; AVX512VNNI-LABEL: vpdpbusd_128:
 ; AVX512VNNI:       # %bb.0: # %entry
+; AVX512VNNI-NEXT:    # kill: def $edx killed $edx def $rdx
 ; AVX512VNNI-NEXT:    vmovq {{.*#+}} xmm0 = mem[0],zero
 ; AVX512VNNI-NEXT:    vpxor %xmm1, %xmm1, %xmm1
 ; AVX512VNNI-NEXT:    vpblendd {{.*#+}} xmm0 = xmm0[0],xmm1[1,2,3]
@@ -376,6 +395,7 @@ define i32 @vpdpbusd_128(ptr%a, ptr%b, i32 %c, i32 %n) {
 ;
 ; AVX512VLVNNI-LABEL: vpdpbusd_128:
 ; AVX512VLVNNI:       # %bb.0: # %entry
+; AVX512VLVNNI-NEXT:    # kill: def $edx killed $edx def $rdx
 ; AVX512VLVNNI-NEXT:    vmovq {{.*#+}} xmm0 = mem[0],zero
 ; AVX512VLVNNI-NEXT:    vmovq {{.*#+}} xmm1 = mem[0],zero
 ; AVX512VLVNNI-NEXT:    vpxor %xmm2, %xmm2, %xmm2
@@ -402,6 +422,7 @@ declare i32 @llvm.vector.reduce.add.v4i32(<4 x i32>)
 define i32 @vpdpbusd_2xi32(ptr%a, ptr%b, i32 %c, i32 %n) {
 ; AVXVNNI-LABEL: vpdpbusd_2xi32:
 ; AVXVNNI:       # %bb.0: # %entry
+; AVXVNNI-NEXT:    # kill: def $edx killed $edx def $rdx
 ; AVXVNNI-NEXT:    vmovq {{.*#+}} xmm0 = mem[0],zero
 ; AVXVNNI-NEXT:    vmovq {{.*#+}} xmm1 = mem[0],zero
 ; AVXVNNI-NEXT:    vpxor %xmm2, %xmm2, %xmm2
@@ -414,6 +435,7 @@ define i32 @vpdpbusd_2xi32(ptr%a, ptr%b, i32 %c, i32 %n) {
 ;
 ; AVX512VNNI-LABEL: vpdpbusd_2xi32:
 ; AVX512VNNI:       # %bb.0: # %entry
+; AVX512VNNI-NEXT:    # kill: def $edx killed $edx def $rdx
 ; AVX512VNNI-NEXT:    vmovq {{.*#+}} xmm0 = mem[0],zero
 ; AVX512VNNI-NEXT:    vmovd {{.*#+}} xmm1 = [65535,0,0,0]
 ; AVX512VNNI-NEXT:    vpandq %zmm1, %zmm0, %zmm0
@@ -428,6 +450,7 @@ define i32 @vpdpbusd_2xi32(ptr%a, ptr%b, i32 %c, i32 %n) {
 ;
 ; AVX512VLVNNI-LABEL: vpdpbusd_2xi32:
 ; AVX512VLVNNI:       # %bb.0: # %entry
+; AVX512VLVNNI-NEXT:    # kill: def $edx killed $edx def $rdx
 ; AVX512VLVNNI-NEXT:    vmovq {{.*#+}} xmm0 = mem[0],zero
 ; AVX512VLVNNI-NEXT:    vmovq {{.*#+}} xmm1 = mem[0],zero
 ; AVX512VLVNNI-NEXT:    vpxor %xmm2, %xmm2, %xmm2
@@ -453,6 +476,7 @@ declare i32 @llvm.vector.reduce.add.v2i32(<2 x i32>)
 define i32 @vpdpbusd_32xi32(ptr%a, ptr%b, i32 %c, i32 %n) {
 ; AVXVNNI-LABEL: vpdpbusd_32xi32:
 ; AVXVNNI:       # %bb.0: # %entry
+; AVXVNNI-NEXT:    # kill: def $edx killed $edx def $rdx
 ; AVXVNNI-NEXT:    vmovdqu (%rdi), %ymm0
 ; AVXVNNI-NEXT:    vpxor %xmm1, %xmm1, %xmm1
 ; AVXVNNI-NEXT:    {vex} vpdpbusd (%rsi), %ymm0, %ymm1
@@ -469,6 +493,7 @@ define i32 @vpdpbusd_32xi32(ptr%a, ptr%b, i32 %c, i32 %n) {
 ;
 ; AVX512VNNI-LABEL: vpdpbusd_32xi32:
 ; AVX512VNNI:       # %bb.0: # %entry
+; AVX512VNNI-NEXT:    # kill: def $edx killed $edx def $rdx
 ; AVX512VNNI-NEXT:    vmovdqu (%rdi), %ymm0
 ; AVX512VNNI-NEXT:    vmovdqu (%rsi), %ymm1
 ; AVX512VNNI-NEXT:    vpxor %xmm2, %xmm2, %xmm2
@@ -486,6 +511,7 @@ define i32 @vpdpbusd_32xi32(ptr%a, ptr%b, i32 %c, i32 %n) {
 ;
 ; AVX512VLVNNI-LABEL: vpdpbusd_32xi32:
 ; AVX512VLVNNI:       # %bb.0: # %entry
+; AVX512VLVNNI-NEXT:    # kill: def $edx killed $edx def $rdx
 ; AVX512VLVNNI-NEXT:    vmovdqu (%rdi), %ymm0
 ; AVX512VLVNNI-NEXT:    vpxor %xmm1, %xmm1, %xmm1
 ; AVX512VLVNNI-NEXT:    vpdpbusd (%rsi), %ymm0, %ymm1
@@ -515,6 +541,7 @@ declare i32 @llvm.vector.reduce.add.v32i32(<32 x i32>)
 define i32 @vpdpbusd_64xi32(ptr%a, ptr%b, i32 %c, i32 %n) {
 ; AVXVNNI-LABEL: vpdpbusd_64xi32:
 ; AVXVNNI:       # %bb.0: # %entry
+; AVXVNNI-NEXT:    # kill: def $edx killed $edx def $rdx
 ; AVXVNNI-NEXT:    vmovdqu (%rdi), %ymm0
 ; AVXVNNI-NEXT:    vmovdqu 32(%rdi), %ymm1
 ; AVXVNNI-NEXT:    vpxor %xmm2, %xmm2, %xmm2
@@ -535,6 +562,7 @@ define i32 @vpdpbusd_64xi32(ptr%a, ptr%b, i32 %c, i32 %n) {
 ;
 ; AVX512-LABEL: vpdpbusd_64xi32:
 ; AVX512:       # %bb.0: # %entry
+; AVX512-NEXT:    # kill: def $edx killed $edx def $rdx
 ; AVX512-NEXT:    vmovdqu64 (%rdi), %zmm0
 ; AVX512-NEXT:    vpxor %xmm1, %xmm1, %xmm1
 ; AVX512-NEXT:    vpdpbusd (%rsi), %zmm0, %zmm1

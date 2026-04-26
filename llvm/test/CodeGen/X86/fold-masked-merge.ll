@@ -16,9 +16,9 @@ define i32 @masked_merge0(i32 %a0, i32 %a1, i32 %a2) {
 ;
 ; BMI-LABEL: masked_merge0:
 ; BMI:       # %bb.0:
-; BMI-NEXT:    andl %edi, %esi
 ; BMI-NEXT:    andnl %edx, %edi, %eax
-; BMI-NEXT:    orl %esi, %eax
+; BMI-NEXT:    andl %esi, %edi
+; BMI-NEXT:    orl %edi, %eax
 ; BMI-NEXT:    retq
   %and0 = and i32 %a0, %a1
   %not = xor i32 %a0, -1
@@ -96,10 +96,11 @@ define i32 @not_a_masked_merge0(i32 %a0, i32 %a1, i32 %a2) {
 ; CHECK-LABEL: not_a_masked_merge0:
 ; CHECK:       # %bb.0:
 ; CHECK-NEXT:    movl %edi, %eax
-; CHECK-NEXT:    andl %edi, %esi
+; CHECK-NEXT:    movl %edi, %ecx
+; CHECK-NEXT:    andl %esi, %ecx
 ; CHECK-NEXT:    negl %eax
 ; CHECK-NEXT:    andl %edx, %eax
-; CHECK-NEXT:    orl %esi, %eax
+; CHECK-NEXT:    orl %ecx, %eax
 ; CHECK-NEXT:    retq
   %and0 = and i32 %a0, %a1
   %not_a_not = sub i32 0, %a0
@@ -137,17 +138,18 @@ define i32 @not_a_masked_merge2(i32 %a0, i32 %a1, i32 %a2) {
 ; NOBMI-LABEL: not_a_masked_merge2:
 ; NOBMI:       # %bb.0:
 ; NOBMI-NEXT:    movl %edi, %eax
-; NOBMI-NEXT:    orl %edi, %esi
+; NOBMI-NEXT:    movl %edi, %ecx
+; NOBMI-NEXT:    orl %esi, %ecx
 ; NOBMI-NEXT:    notl %eax
 ; NOBMI-NEXT:    andl %edx, %eax
-; NOBMI-NEXT:    orl %esi, %eax
+; NOBMI-NEXT:    orl %ecx, %eax
 ; NOBMI-NEXT:    retq
 ;
 ; BMI-LABEL: not_a_masked_merge2:
 ; BMI:       # %bb.0:
-; BMI-NEXT:    orl %edi, %esi
 ; BMI-NEXT:    andnl %edx, %edi, %eax
-; BMI-NEXT:    orl %esi, %eax
+; BMI-NEXT:    orl %esi, %edi
+; BMI-NEXT:    orl %edi, %eax
 ; BMI-NEXT:    retq
   %not_an_and0 = or i32 %a0, %a1
   %not = xor i32 %a0, -1
@@ -160,11 +162,12 @@ define i32 @not_a_masked_merge2(i32 %a0, i32 %a1, i32 %a2) {
 define i32 @not_a_masked_merge3(i32 %a0, i32 %a1, i32 %a2) {
 ; CHECK-LABEL: not_a_masked_merge3:
 ; CHECK:       # %bb.0:
-; CHECK-NEXT:    movl %edx, %eax
-; CHECK-NEXT:    andl %edi, %esi
-; CHECK-NEXT:    xorl %edi, %eax
+; CHECK-NEXT:    movl %edi, %eax
+; CHECK-NEXT:    movl %edi, %ecx
+; CHECK-NEXT:    andl %esi, %ecx
+; CHECK-NEXT:    xorl %edx, %eax
 ; CHECK-NEXT:    notl %eax
-; CHECK-NEXT:    orl %esi, %eax
+; CHECK-NEXT:    orl %ecx, %eax
 ; CHECK-NEXT:    retq
   %and0 = and i32 %a0, %a1
   %not = xor i32 %a0, -1
@@ -191,21 +194,20 @@ define i32 @not_a_masked_merge4(i32 %a0, i32 %a1, i32 %a2) {
 define i32 @masked_merge_no_transform0(i32 %a0, i32 %a1, i32 %a2, ptr %p1) {
 ; NOBMI-LABEL: masked_merge_no_transform0:
 ; NOBMI:       # %bb.0:
-; NOBMI-NEXT:    # kill: def $esi killed $esi def $rsi
-; NOBMI-NEXT:    # kill: def $edi killed $edi def $rdi
-; NOBMI-NEXT:    andl %edi, %esi
-; NOBMI-NEXT:    notl %edi
-; NOBMI-NEXT:    andl %edx, %edi
-; NOBMI-NEXT:    leal (%rdi,%rsi), %eax
-; NOBMI-NEXT:    movl %esi, (%rcx)
+; NOBMI-NEXT:    movl %edi, %eax
+; NOBMI-NEXT:    andl %esi, %edi
+; NOBMI-NEXT:    notl %eax
+; NOBMI-NEXT:    andl %edx, %eax
+; NOBMI-NEXT:    orl %edi, %eax
+; NOBMI-NEXT:    movl %edi, (%rcx)
 ; NOBMI-NEXT:    retq
 ;
 ; BMI-LABEL: masked_merge_no_transform0:
 ; BMI:       # %bb.0:
-; BMI-NEXT:    andl %edi, %esi
 ; BMI-NEXT:    andnl %edx, %edi, %eax
-; BMI-NEXT:    orl %esi, %eax
-; BMI-NEXT:    movl %esi, (%rcx)
+; BMI-NEXT:    andl %esi, %edi
+; BMI-NEXT:    orl %edi, %eax
+; BMI-NEXT:    movl %edi, (%rcx)
 ; BMI-NEXT:    retq
   %and0 = and i32 %a0, %a1
   %not = xor i32 %a0, -1
@@ -219,22 +221,23 @@ define i32 @masked_merge_no_transform0(i32 %a0, i32 %a1, i32 %a2, ptr %p1) {
 define i32 @masked_merge_no_transform1(i32 %a0, i32 %a1, i32 %a2, ptr %p1) {
 ; NOBMI-LABEL: masked_merge_no_transform1:
 ; NOBMI:       # %bb.0:
-; NOBMI-NEXT:    # kill: def $edx killed $edx def $rdx
-; NOBMI-NEXT:    # kill: def $esi killed $esi def $rsi
-; NOBMI-NEXT:    andl %edi, %esi
+; NOBMI-NEXT:    movl %edi, %r8d
+; NOBMI-NEXT:    andl %esi, %r8d
 ; NOBMI-NEXT:    notl %edi
-; NOBMI-NEXT:    andl %edi, %edx
-; NOBMI-NEXT:    leal (%rdx,%rsi), %eax
 ; NOBMI-NEXT:    movl %edi, (%rcx)
+; NOBMI-NEXT:    movl %edi, %eax
+; NOBMI-NEXT:    andl %edx, %eax
+; NOBMI-NEXT:    orl %r8d, %eax
 ; NOBMI-NEXT:    retq
 ;
 ; BMI-LABEL: masked_merge_no_transform1:
 ; BMI:       # %bb.0:
-; BMI-NEXT:    andl %edi, %esi
+; BMI-NEXT:    movl %edi, %r8d
 ; BMI-NEXT:    andnl %edx, %edi, %eax
-; BMI-NEXT:    notl %edi
-; BMI-NEXT:    orl %esi, %eax
-; BMI-NEXT:    movl %edi, (%rcx)
+; BMI-NEXT:    andl %esi, %edi
+; BMI-NEXT:    notl %r8d
+; BMI-NEXT:    orl %edi, %eax
+; BMI-NEXT:    movl %r8d, (%rcx)
 ; BMI-NEXT:    retq
   %and0 = and i32 %a0, %a1
   %not = xor i32 %a0, -1
@@ -248,21 +251,21 @@ define i32 @masked_merge_no_transform1(i32 %a0, i32 %a1, i32 %a2, ptr %p1) {
 define i32 @masked_merge_no_transform2(i32 %a0, i32 %a1, i32 %a2, ptr %p1) {
 ; NOBMI-LABEL: masked_merge_no_transform2:
 ; NOBMI:       # %bb.0:
-; NOBMI-NEXT:    # kill: def $esi killed $esi def $rsi
 ; NOBMI-NEXT:    # kill: def $edi killed $edi def $rdi
-; NOBMI-NEXT:    andl %edi, %esi
+; NOBMI-NEXT:    movl %edi, %eax
+; NOBMI-NEXT:    andl %esi, %eax
 ; NOBMI-NEXT:    notl %edi
 ; NOBMI-NEXT:    andl %edx, %edi
-; NOBMI-NEXT:    leal (%rsi,%rdi), %eax
+; NOBMI-NEXT:    addl %edi, %eax
 ; NOBMI-NEXT:    movl %edi, (%rcx)
 ; NOBMI-NEXT:    retq
 ;
 ; BMI-LABEL: masked_merge_no_transform2:
 ; BMI:       # %bb.0:
-; BMI-NEXT:    # kill: def $esi killed $esi def $rsi
-; BMI-NEXT:    andl %edi, %esi
 ; BMI-NEXT:    andnl %edx, %edi, %edx
-; BMI-NEXT:    leal (%rsi,%rdx), %eax
+; BMI-NEXT:    movl %edi, %eax
+; BMI-NEXT:    andl %esi, %eax
+; BMI-NEXT:    addl %edx, %eax
 ; BMI-NEXT:    movl %edx, (%rcx)
 ; BMI-NEXT:    retq
   %and0 = and i32 %a0, %a1
@@ -284,10 +287,11 @@ define i32 @pr137641_crash({ i8, i32 } %0) {
 ; BMI-LABEL: pr137641_crash:
 ; BMI:       # %bb.0:
 ; BMI-NEXT:    movl %esi, %eax
-; BMI-NEXT:    notl %eax
-; BMI-NEXT:    andl $1, %eax
-; BMI-NEXT:    andl $200, %esi
-; BMI-NEXT:    orl %esi, %eax
+; BMI-NEXT:    movl %esi, %ecx
+; BMI-NEXT:    notl %ecx
+; BMI-NEXT:    andl $1, %ecx
+; BMI-NEXT:    andl $200, %eax
+; BMI-NEXT:    orl %ecx, %eax
 ; BMI-NEXT:    retq
   %asmresult1.i = extractvalue { i8, i32 } %0, 1
   %not = xor i32 %asmresult1.i, 1

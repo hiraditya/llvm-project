@@ -29,13 +29,13 @@ define <7 x i1> @create_mask7(i64 %0) {
 ; CHECK-NEXT:    kmovd r10d, k0
 ; CHECK-NEXT:    and r10b, 1
 ; CHECK-NEXT:    and r9b, 1
-; CHECK-NEXT:    add r9b, r9b
+; CHECK-NEXT:    add r9d, r9d
 ; CHECK-NEXT:    or r9b, r10b
 ; CHECK-NEXT:    and r8b, 1
-; CHECK-NEXT:    shl r8b, 2
+; CHECK-NEXT:    lea r8d, [4*r8]
 ; CHECK-NEXT:    or r8b, r9b
 ; CHECK-NEXT:    and dil, 1
-; CHECK-NEXT:    shl dil, 3
+; CHECK-NEXT:    lea edi, [8*rdi]
 ; CHECK-NEXT:    or dil, r8b
 ; CHECK-NEXT:    and sil, 1
 ; CHECK-NEXT:    shl sil, 4

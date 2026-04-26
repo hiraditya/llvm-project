@@ -41,26 +41,26 @@ define i32 @extract3(ptr, i32) nounwind {
 ; X64-NEXT:    # kill: def $esi killed $esi def $rsi
 ; X64-NEXT:    movzwl (%rdi), %eax
 ; X64-NEXT:    movl %eax, %ecx
-; X64-NEXT:    shrl $9, %ecx
-; X64-NEXT:    andl $7, %ecx
-; X64-NEXT:    movd %ecx, %xmm0
-; X64-NEXT:    movl %eax, %ecx
+; X64-NEXT:    movl %eax, %edx
+; X64-NEXT:    movl %eax, %edi
+; X64-NEXT:    movd %eax, %xmm0
+; X64-NEXT:    shrl $9, %eax
+; X64-NEXT:    andl $7, %eax
+; X64-NEXT:    movd %eax, %xmm1
 ; X64-NEXT:    shrl $6, %ecx
 ; X64-NEXT:    andl $7, %ecx
-; X64-NEXT:    movd %ecx, %xmm1
-; X64-NEXT:    punpcklwd {{.*#+}} xmm1 = xmm1[0],xmm0[0],xmm1[1],xmm0[1],xmm1[2],xmm0[2],xmm1[3],xmm0[3]
-; X64-NEXT:    movl %eax, %ecx
-; X64-NEXT:    andl $7, %ecx
-; X64-NEXT:    movd %ecx, %xmm0
-; X64-NEXT:    movd %eax, %xmm2
-; X64-NEXT:    shrl $3, %eax
-; X64-NEXT:    andl $7, %eax
-; X64-NEXT:    movd %eax, %xmm3
-; X64-NEXT:    punpcklwd {{.*#+}} xmm0 = xmm0[0],xmm3[0],xmm0[1],xmm3[1],xmm0[2],xmm3[2],xmm0[3],xmm3[3]
-; X64-NEXT:    punpckldq {{.*#+}} xmm0 = xmm0[0],xmm1[0],xmm0[1],xmm1[1]
-; X64-NEXT:    psrld $12, %xmm2
-; X64-NEXT:    punpcklqdq {{.*#+}} xmm0 = xmm0[0],xmm2[0]
-; X64-NEXT:    movdqa %xmm0, -24(%rsp)
+; X64-NEXT:    movd %ecx, %xmm2
+; X64-NEXT:    punpcklwd {{.*#+}} xmm2 = xmm2[0],xmm1[0],xmm2[1],xmm1[1],xmm2[2],xmm1[2],xmm2[3],xmm1[3]
+; X64-NEXT:    andl $7, %edx
+; X64-NEXT:    movd %edx, %xmm1
+; X64-NEXT:    shrl $3, %edi
+; X64-NEXT:    andl $7, %edi
+; X64-NEXT:    movd %edi, %xmm3
+; X64-NEXT:    punpcklwd {{.*#+}} xmm1 = xmm1[0],xmm3[0],xmm1[1],xmm3[1],xmm1[2],xmm3[2],xmm1[3],xmm3[3]
+; X64-NEXT:    punpckldq {{.*#+}} xmm1 = xmm1[0],xmm2[0],xmm1[1],xmm2[1]
+; X64-NEXT:    psrld $12, %xmm0
+; X64-NEXT:    punpcklqdq {{.*#+}} xmm1 = xmm1[0],xmm0[0]
+; X64-NEXT:    movdqa %xmm1, -24(%rsp)
 ; X64-NEXT:    andl $7, %esi
 ; X64-NEXT:    movzwl -24(%rsp,%rsi,2), %eax
 ; X64-NEXT:    andl $7, %eax

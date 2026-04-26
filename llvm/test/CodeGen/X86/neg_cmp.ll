@@ -28,7 +28,7 @@ if.end:
 define void @neg_cmp_commuted(i32 %x, i32 %y) nounwind {
 ; CHECK-LABEL: neg_cmp_commuted:
 ; CHECK:       # %bb.0:
-; CHECK-NEXT:    addl %esi, %edi
+; CHECK-NEXT:    addl %edi, %esi
 ; CHECK-NEXT:    je g # TAILCALL
 ; CHECK-NEXT:  # %bb.1: # %if.end
 ; CHECK-NEXT:    retq

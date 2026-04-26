@@ -16,8 +16,8 @@ entry:
 define i64 @t2(i64 %a) nounwind readnone {
 ; CHECK-LABEL: t2:
 ; CHECK:       # %bb.0: # %entry
-; CHECK-NEXT:    shlq $3, %rdi
-; CHECK-NEXT:    leaq (%rdi,%rdi,4), %rax
+; CHECK-NEXT:    leaq (,%rdi,8), %rax
+; CHECK-NEXT:    leaq (%rax,%rax,4), %rax
 ; CHECK-NEXT:    retq
 entry:
   %0 = mul i64 %a, 40

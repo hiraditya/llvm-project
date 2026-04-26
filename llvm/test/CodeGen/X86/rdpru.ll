@@ -40,7 +40,8 @@ define i64 @rdpru_param(i32 %regid) local_unnamed_addr {
 ; X64-NEXT:    movl %edi, %ecx
 ; X64-NEXT:    rdpru
 ; X64-NEXT:    shlq $32, %rdx
-; X64-NEXT:    orq %rdx, %rax
+; X64-NEXT:    orq %rax, %rdx
+; X64-NEXT:    movq %rdx, %rax
 ; X64-NEXT:    retq
 entry:
   %0 = tail call i64 @llvm.x86.rdpru(i32 %regid)
@@ -59,7 +60,8 @@ define i64 @rdpru_mperf() local_unnamed_addr {
 ; X64-NEXT:    xorl %ecx, %ecx
 ; X64-NEXT:    rdpru
 ; X64-NEXT:    shlq $32, %rdx
-; X64-NEXT:    orq %rdx, %rax
+; X64-NEXT:    orq %rax, %rdx
+; X64-NEXT:    movq %rdx, %rax
 ; X64-NEXT:    retq
 entry:
   %0 = tail call i64 @llvm.x86.rdpru(i32 0)
@@ -78,7 +80,8 @@ define i64 @rdpru_aperf() local_unnamed_addr {
 ; X64-NEXT:    movl $1, %ecx
 ; X64-NEXT:    rdpru
 ; X64-NEXT:    shlq $32, %rdx
-; X64-NEXT:    orq %rdx, %rax
+; X64-NEXT:    orq %rax, %rdx
+; X64-NEXT:    movq %rdx, %rax
 ; X64-NEXT:    retq
 entry:
   %0 = tail call i64 @llvm.x86.rdpru(i32 1)

@@ -9,8 +9,8 @@ define i8 @or_lshr_commute0(i8 %x0, i8 %x1, i8 %y, i8 %z) {
 ; CHECK-NEXT:    orl %esi, %edi
 ; CHECK-NEXT:    # kill: def $cl killed $cl killed $ecx
 ; CHECK-NEXT:    shrb %cl, %dil
-; CHECK-NEXT:    orb %dil, %al
-; CHECK-NEXT:    # kill: def $al killed $al killed $eax
+; CHECK-NEXT:    orb %al, %dil
+; CHECK-NEXT:    movl %edi, %eax
 ; CHECK-NEXT:    retq
   %sh1 = lshr i8 %x0, %y
   %sh2 = lshr i8 %x1, %y
@@ -27,7 +27,8 @@ define i32 @or_lshr_commute1(i32 %x0, i32 %x1, i32 %y, i32 %z) {
 ; CHECK-NEXT:    orl %esi, %edi
 ; CHECK-NEXT:    # kill: def $cl killed $cl killed $ecx
 ; CHECK-NEXT:    shrl %cl, %edi
-; CHECK-NEXT:    orl %edi, %eax
+; CHECK-NEXT:    orl %eax, %edi
+; CHECK-NEXT:    movl %edi, %eax
 ; CHECK-NEXT:    retq
   %sh1 = lshr i32 %x0, %y
   %sh2 = lshr i32 %x1, %y
@@ -96,7 +97,8 @@ define i64 @or_ashr_commute1(i64 %x0, i64 %x1, i64 %y, i64 %z) {
 ; CHECK-NEXT:    orq %rsi, %rdi
 ; CHECK-NEXT:    # kill: def $cl killed $cl killed $rcx
 ; CHECK-NEXT:    sarq %cl, %rdi
-; CHECK-NEXT:    orq %rdi, %rax
+; CHECK-NEXT:    orq %rax, %rdi
+; CHECK-NEXT:    movq %rdi, %rax
 ; CHECK-NEXT:    retq
   %sh1 = ashr i64 %x0, %y
   %sh2 = ashr i64 %x1, %y
@@ -164,7 +166,8 @@ define i32 @or_shl_commute0(i32 %x0, i32 %x1, i32 %y, i32 %z) {
 ; CHECK-NEXT:    orl %esi, %edi
 ; CHECK-NEXT:    # kill: def $cl killed $cl killed $ecx
 ; CHECK-NEXT:    shll %cl, %edi
-; CHECK-NEXT:    orl %edi, %eax
+; CHECK-NEXT:    orl %eax, %edi
+; CHECK-NEXT:    movl %edi, %eax
 ; CHECK-NEXT:    retq
   %sh1 = shl i32 %x0, %y
   %sh2 = shl i32 %x1, %y
@@ -181,8 +184,8 @@ define i8 @or_shl_commute1(i8 %x0, i8 %x1, i8 %y, i8 %z) {
 ; CHECK-NEXT:    orl %esi, %edi
 ; CHECK-NEXT:    # kill: def $cl killed $cl killed $ecx
 ; CHECK-NEXT:    shlb %cl, %dil
-; CHECK-NEXT:    orb %dil, %al
-; CHECK-NEXT:    # kill: def $al killed $al killed $eax
+; CHECK-NEXT:    orb %al, %dil
+; CHECK-NEXT:    movl %edi, %eax
 ; CHECK-NEXT:    retq
   %sh1 = shl i8 %x0, %y
   %sh2 = shl i8 %x1, %y
@@ -234,8 +237,9 @@ define i64 @or_mix_shr(i64 %x0, i64 %x1, i64 %y, i64 %z) {
 ; CHECK-NEXT:    sarq %cl, %rdi
 ; CHECK-NEXT:    # kill: def $cl killed $cl killed $rcx
 ; CHECK-NEXT:    shrq %cl, %rsi
-; CHECK-NEXT:    orq %rdi, %rax
-; CHECK-NEXT:    orq %rsi, %rax
+; CHECK-NEXT:    orq %rax, %rdi
+; CHECK-NEXT:    orq %rdi, %rsi
+; CHECK-NEXT:    movq %rsi, %rax
 ; CHECK-NEXT:    retq
   %sh1 = ashr i64 %x0, %y
   %sh2 = lshr i64 %x1, %y
@@ -255,8 +259,9 @@ define i64 @or_lshr_mix_shift_amount(i64 %x0, i64 %x1, i64 %y, i64 %z, i64 %w) {
 ; CHECK-NEXT:    shrq %cl, %rdi
 ; CHECK-NEXT:    movl %r8d, %ecx
 ; CHECK-NEXT:    shrq %cl, %rsi
-; CHECK-NEXT:    orq %rdi, %rax
-; CHECK-NEXT:    orq %rsi, %rax
+; CHECK-NEXT:    orq %rax, %rdi
+; CHECK-NEXT:    orq %rdi, %rsi
+; CHECK-NEXT:    movq %rsi, %rax
 ; CHECK-NEXT:    retq
   %sh1 = lshr i64 %x0, %y
   %sh2 = lshr i64 %x1, %w
@@ -275,8 +280,9 @@ define i64 @mix_logic_lshr(i64 %x0, i64 %x1, i64 %y, i64 %z) {
 ; CHECK-NEXT:    shrq %cl, %rdi
 ; CHECK-NEXT:    # kill: def $cl killed $cl killed $rcx
 ; CHECK-NEXT:    shrq %cl, %rsi
-; CHECK-NEXT:    xorq %rdi, %rax
-; CHECK-NEXT:    orq %rsi, %rax
+; CHECK-NEXT:    xorq %rax, %rdi
+; CHECK-NEXT:    orq %rdi, %rsi
+; CHECK-NEXT:    movq %rsi, %rax
 ; CHECK-NEXT:    retq
   %sh1 = lshr i64 %x0, %y
   %sh2 = lshr i64 %x1, %y
@@ -293,8 +299,8 @@ define i8 @xor_lshr_commute0(i8 %x0, i8 %x1, i8 %y, i8 %z) {
 ; CHECK-NEXT:    xorl %esi, %edi
 ; CHECK-NEXT:    # kill: def $cl killed $cl killed $ecx
 ; CHECK-NEXT:    shrb %cl, %dil
-; CHECK-NEXT:    xorb %dil, %al
-; CHECK-NEXT:    # kill: def $al killed $al killed $eax
+; CHECK-NEXT:    xorb %al, %dil
+; CHECK-NEXT:    movl %edi, %eax
 ; CHECK-NEXT:    retq
   %sh1 = lshr i8 %x0, %y
   %sh2 = lshr i8 %x1, %y
@@ -311,7 +317,8 @@ define i32 @xor_lshr_commute1(i32 %x0, i32 %x1, i32 %y, i32 %z) {
 ; CHECK-NEXT:    xorl %esi, %edi
 ; CHECK-NEXT:    # kill: def $cl killed $cl killed $ecx
 ; CHECK-NEXT:    shrl %cl, %edi
-; CHECK-NEXT:    xorl %edi, %eax
+; CHECK-NEXT:    xorl %eax, %edi
+; CHECK-NEXT:    movl %edi, %eax
 ; CHECK-NEXT:    retq
   %sh1 = lshr i32 %x0, %y
   %sh2 = lshr i32 %x1, %y
@@ -380,7 +387,8 @@ define i64 @xor_ashr_commute1(i64 %x0, i64 %x1, i64 %y, i64 %z) {
 ; CHECK-NEXT:    xorq %rsi, %rdi
 ; CHECK-NEXT:    # kill: def $cl killed $cl killed $rcx
 ; CHECK-NEXT:    sarq %cl, %rdi
-; CHECK-NEXT:    xorq %rdi, %rax
+; CHECK-NEXT:    xorq %rax, %rdi
+; CHECK-NEXT:    movq %rdi, %rax
 ; CHECK-NEXT:    retq
   %sh1 = ashr i64 %x0, %y
   %sh2 = ashr i64 %x1, %y
@@ -448,7 +456,8 @@ define i32 @xor_shl_commute0(i32 %x0, i32 %x1, i32 %y, i32 %z) {
 ; CHECK-NEXT:    xorl %esi, %edi
 ; CHECK-NEXT:    # kill: def $cl killed $cl killed $ecx
 ; CHECK-NEXT:    shll %cl, %edi
-; CHECK-NEXT:    xorl %edi, %eax
+; CHECK-NEXT:    xorl %eax, %edi
+; CHECK-NEXT:    movl %edi, %eax
 ; CHECK-NEXT:    retq
   %sh1 = shl i32 %x0, %y
   %sh2 = shl i32 %x1, %y
@@ -465,8 +474,8 @@ define i8 @xor_shl_commute1(i8 %x0, i8 %x1, i8 %y, i8 %z) {
 ; CHECK-NEXT:    xorl %esi, %edi
 ; CHECK-NEXT:    # kill: def $cl killed $cl killed $ecx
 ; CHECK-NEXT:    shlb %cl, %dil
-; CHECK-NEXT:    xorb %dil, %al
-; CHECK-NEXT:    # kill: def $al killed $al killed $eax
+; CHECK-NEXT:    xorb %al, %dil
+; CHECK-NEXT:    movl %edi, %eax
 ; CHECK-NEXT:    retq
   %sh1 = shl i8 %x0, %y
   %sh2 = shl i8 %x1, %y
@@ -518,8 +527,9 @@ define i64 @xor_mix_shr(i64 %x0, i64 %x1, i64 %y, i64 %z) {
 ; CHECK-NEXT:    sarq %cl, %rdi
 ; CHECK-NEXT:    # kill: def $cl killed $cl killed $rcx
 ; CHECK-NEXT:    shrq %cl, %rsi
-; CHECK-NEXT:    xorq %rdi, %rax
-; CHECK-NEXT:    xorq %rsi, %rax
+; CHECK-NEXT:    xorq %rax, %rdi
+; CHECK-NEXT:    xorq %rdi, %rsi
+; CHECK-NEXT:    movq %rsi, %rax
 ; CHECK-NEXT:    retq
   %sh1 = ashr i64 %x0, %y
   %sh2 = lshr i64 %x1, %y
@@ -539,8 +549,9 @@ define i64 @xor_lshr_mix_shift_amount(i64 %x0, i64 %x1, i64 %y, i64 %z, i64 %w) 
 ; CHECK-NEXT:    shrq %cl, %rdi
 ; CHECK-NEXT:    movl %r8d, %ecx
 ; CHECK-NEXT:    shrq %cl, %rsi
-; CHECK-NEXT:    xorq %rdi, %rax
-; CHECK-NEXT:    xorq %rsi, %rax
+; CHECK-NEXT:    xorq %rax, %rdi
+; CHECK-NEXT:    xorq %rdi, %rsi
+; CHECK-NEXT:    movq %rsi, %rax
 ; CHECK-NEXT:    retq
   %sh1 = lshr i64 %x0, %y
   %sh2 = lshr i64 %x1, %w
@@ -559,8 +570,9 @@ define i64 @mix_logic_ashr(i64 %x0, i64 %x1, i64 %y, i64 %z) {
 ; CHECK-NEXT:    sarq %cl, %rdi
 ; CHECK-NEXT:    # kill: def $cl killed $cl killed $rcx
 ; CHECK-NEXT:    sarq %cl, %rsi
-; CHECK-NEXT:    orq %rdi, %rax
-; CHECK-NEXT:    xorq %rsi, %rax
+; CHECK-NEXT:    orq %rax, %rdi
+; CHECK-NEXT:    xorq %rdi, %rsi
+; CHECK-NEXT:    movq %rsi, %rax
 ; CHECK-NEXT:    retq
   %sh1 = ashr i64 %x0, %y
   %sh2 = ashr i64 %x1, %y
@@ -577,8 +589,8 @@ define i8 @and_lshr_commute0(i8 %x0, i8 %x1, i8 %y, i8 %z) {
 ; CHECK-NEXT:    andl %esi, %edi
 ; CHECK-NEXT:    # kill: def $cl killed $cl killed $ecx
 ; CHECK-NEXT:    shrb %cl, %dil
-; CHECK-NEXT:    andb %dil, %al
-; CHECK-NEXT:    # kill: def $al killed $al killed $eax
+; CHECK-NEXT:    andb %al, %dil
+; CHECK-NEXT:    movl %edi, %eax
 ; CHECK-NEXT:    retq
   %sh1 = lshr i8 %x0, %y
   %sh2 = lshr i8 %x1, %y
@@ -595,7 +607,8 @@ define i32 @and_lshr_commute1(i32 %x0, i32 %x1, i32 %y, i32 %z) {
 ; CHECK-NEXT:    andl %esi, %edi
 ; CHECK-NEXT:    # kill: def $cl killed $cl killed $ecx
 ; CHECK-NEXT:    shrl %cl, %edi
-; CHECK-NEXT:    andl %edi, %eax
+; CHECK-NEXT:    andl %eax, %edi
+; CHECK-NEXT:    movl %edi, %eax
 ; CHECK-NEXT:    retq
   %sh1 = lshr i32 %x0, %y
   %sh2 = lshr i32 %x1, %y
@@ -664,7 +677,8 @@ define i64 @and_ashr_commute1(i64 %x0, i64 %x1, i64 %y, i64 %z) {
 ; CHECK-NEXT:    andq %rsi, %rdi
 ; CHECK-NEXT:    # kill: def $cl killed $cl killed $rcx
 ; CHECK-NEXT:    sarq %cl, %rdi
-; CHECK-NEXT:    andq %rdi, %rax
+; CHECK-NEXT:    andq %rax, %rdi
+; CHECK-NEXT:    movq %rdi, %rax
 ; CHECK-NEXT:    retq
   %sh1 = ashr i64 %x0, %y
   %sh2 = ashr i64 %x1, %y
@@ -732,7 +746,8 @@ define i32 @and_shl_commute0(i32 %x0, i32 %x1, i32 %y, i32 %z) {
 ; CHECK-NEXT:    andl %esi, %edi
 ; CHECK-NEXT:    # kill: def $cl killed $cl killed $ecx
 ; CHECK-NEXT:    shll %cl, %edi
-; CHECK-NEXT:    andl %edi, %eax
+; CHECK-NEXT:    andl %eax, %edi
+; CHECK-NEXT:    movl %edi, %eax
 ; CHECK-NEXT:    retq
   %sh1 = shl i32 %x0, %y
   %sh2 = shl i32 %x1, %y
@@ -749,8 +764,8 @@ define i8 @and_shl_commute1(i8 %x0, i8 %x1, i8 %y, i8 %z) {
 ; CHECK-NEXT:    andl %esi, %edi
 ; CHECK-NEXT:    # kill: def $cl killed $cl killed $ecx
 ; CHECK-NEXT:    shlb %cl, %dil
-; CHECK-NEXT:    andb %dil, %al
-; CHECK-NEXT:    # kill: def $al killed $al killed $eax
+; CHECK-NEXT:    andb %al, %dil
+; CHECK-NEXT:    movl %edi, %eax
 ; CHECK-NEXT:    retq
   %sh1 = shl i8 %x0, %y
   %sh2 = shl i8 %x1, %y
@@ -802,8 +817,9 @@ define i64 @and_mix_shr(i64 %x0, i64 %x1, i64 %y, i64 %z) {
 ; CHECK-NEXT:    shrq %cl, %rdi
 ; CHECK-NEXT:    # kill: def $cl killed $cl killed $rcx
 ; CHECK-NEXT:    sarq %cl, %rsi
-; CHECK-NEXT:    andq %rdi, %rax
-; CHECK-NEXT:    andq %rsi, %rax
+; CHECK-NEXT:    andq %rax, %rdi
+; CHECK-NEXT:    andq %rdi, %rsi
+; CHECK-NEXT:    movq %rsi, %rax
 ; CHECK-NEXT:    retq
   %sh1 = lshr i64 %x0, %y
   %sh2 = ashr i64 %x1, %y
@@ -823,8 +839,9 @@ define i64 @and_lshr_mix_shift_amount(i64 %x0, i64 %x1, i64 %y, i64 %z, i64 %w) 
 ; CHECK-NEXT:    shrq %cl, %rdi
 ; CHECK-NEXT:    movl %r8d, %ecx
 ; CHECK-NEXT:    shrq %cl, %rsi
-; CHECK-NEXT:    andq %rdi, %rax
-; CHECK-NEXT:    andq %rsi, %rax
+; CHECK-NEXT:    andq %rax, %rdi
+; CHECK-NEXT:    andq %rdi, %rsi
+; CHECK-NEXT:    movq %rsi, %rax
 ; CHECK-NEXT:    retq
   %sh1 = lshr i64 %x0, %y
   %sh2 = lshr i64 %x1, %w
@@ -843,8 +860,9 @@ define i64 @mix_logic_shl(i64 %x0, i64 %x1, i64 %y, i64 %z) {
 ; CHECK-NEXT:    shlq %cl, %rdi
 ; CHECK-NEXT:    # kill: def $cl killed $cl killed $rcx
 ; CHECK-NEXT:    shlq %cl, %rsi
-; CHECK-NEXT:    xorq %rdi, %rax
-; CHECK-NEXT:    andq %rsi, %rax
+; CHECK-NEXT:    xorq %rax, %rdi
+; CHECK-NEXT:    andq %rdi, %rsi
+; CHECK-NEXT:    movq %rsi, %rax
 ; CHECK-NEXT:    retq
   %sh1 = shl i64 %x0, %y
   %sh2 = shl i64 %x1, %y
@@ -858,8 +876,8 @@ define i64 @mix_logic_shl(i64 %x0, i64 %x1, i64 %y, i64 %z) {
 define i32 @or_fshl_commute0(i32 %x, i32 %y) {
 ; CHECK-LABEL: or_fshl_commute0:
 ; CHECK:       # %bb.0:
-; CHECK-NEXT:    movl %esi, %eax
-; CHECK-NEXT:    orl %edi, %eax
+; CHECK-NEXT:    movl %edi, %eax
+; CHECK-NEXT:    orl %esi, %eax
 ; CHECK-NEXT:    shldl $5, %edi, %eax
 ; CHECK-NEXT:    retq
   %or1 = or i32 %x, %y
@@ -872,8 +890,8 @@ define i32 @or_fshl_commute0(i32 %x, i32 %y) {
 define i64 @or_fshl_commute1(i64 %x, i64 %y) {
 ; CHECK-LABEL: or_fshl_commute1:
 ; CHECK:       # %bb.0:
-; CHECK-NEXT:    movl %edi, %eax
-; CHECK-NEXT:    orl %esi, %eax
+; CHECK-NEXT:    movq %rsi, %rax
+; CHECK-NEXT:    orl %edi, %eax
 ; CHECK-NEXT:    shldq $35, %rdi, %rax
 ; CHECK-NEXT:    retq
   %or1 = or i64 %y, %x
@@ -887,8 +905,9 @@ define i16 @or_fshl_commute2(i16 %x, i16 %y) {
 ; CHECK-LABEL: or_fshl_commute2:
 ; CHECK:       # %bb.0:
 ; CHECK-NEXT:    movl %edi, %eax
-; CHECK-NEXT:    orl %edi, %esi
-; CHECK-NEXT:    shrdw $14, %si, %ax
+; CHECK-NEXT:    movl %eax, %ecx
+; CHECK-NEXT:    orl %esi, %eax
+; CHECK-NEXT:    shldw $2, %cx, %ax
 ; CHECK-NEXT:    # kill: def $ax killed $ax killed $eax
 ; CHECK-NEXT:    retq
   %or1 = or i16 %x, %y
@@ -919,10 +938,11 @@ define i32 @or_fshl_wrong_shift(i32 %x, i32 %y) {
 ; CHECK-LABEL: or_fshl_wrong_shift:
 ; CHECK:       # %bb.0:
 ; CHECK-NEXT:    movl %edi, %eax
-; CHECK-NEXT:    orl %edi, %esi
-; CHECK-NEXT:    shll $20, %esi
+; CHECK-NEXT:    movl %edi, %ecx
+; CHECK-NEXT:    orl %esi, %ecx
+; CHECK-NEXT:    shll $20, %ecx
 ; CHECK-NEXT:    shrl $11, %eax
-; CHECK-NEXT:    orl %esi, %eax
+; CHECK-NEXT:    orl %ecx, %eax
 ; CHECK-NEXT:    retq
   %or1 = or i32 %x, %y
   %sh1 = shl i32 %or1, 20
@@ -936,8 +956,8 @@ define i32 @or_fshl_wrong_shift(i32 %x, i32 %y) {
 define i64 @or_fshr_commute0(i64 %x, i64 %y) {
 ; CHECK-LABEL: or_fshr_commute0:
 ; CHECK:       # %bb.0:
-; CHECK-NEXT:    movq %rsi, %rax
-; CHECK-NEXT:    orq %rdi, %rax
+; CHECK-NEXT:    movq %rdi, %rax
+; CHECK-NEXT:    orq %rsi, %rax
 ; CHECK-NEXT:    shrdq $24, %rdi, %rax
 ; CHECK-NEXT:    retq
   %or1 = or i64 %x, %y
@@ -964,9 +984,10 @@ define i32 @or_fshr_commute1(i32 %x, i32 %y) {
 define i16 @or_fshr_commute2(i16 %x, i16 %y) {
 ; CHECK-LABEL: or_fshr_commute2:
 ; CHECK:       # %bb.0:
-; CHECK-NEXT:    movl %esi, %eax
-; CHECK-NEXT:    orl %edi, %eax
-; CHECK-NEXT:    shrdw $7, %di, %ax
+; CHECK-NEXT:    movl %edi, %eax
+; CHECK-NEXT:    movl %eax, %ecx
+; CHECK-NEXT:    orl %esi, %eax
+; CHECK-NEXT:    shrdw $7, %cx, %ax
 ; CHECK-NEXT:    # kill: def $ax killed $ax killed $eax
 ; CHECK-NEXT:    retq
   %or1 = or i16 %x, %y
@@ -979,11 +1000,12 @@ define i16 @or_fshr_commute2(i16 %x, i16 %y) {
 define i8 @or_fshr_commute3(i8 %x, i8 %y) {
 ; CHECK-LABEL: or_fshr_commute3:
 ; CHECK:       # %bb.0:
+; CHECK-NEXT:    movl %esi, %eax
 ; CHECK-NEXT:    # kill: def $edi killed $edi def $rdi
-; CHECK-NEXT:    orl %edi, %esi
-; CHECK-NEXT:    shrb $6, %sil
-; CHECK-NEXT:    leal (,%rdi,4), %eax
-; CHECK-NEXT:    orb %sil, %al
+; CHECK-NEXT:    orl %edi, %eax
+; CHECK-NEXT:    shrb $6, %al
+; CHECK-NEXT:    leal (,%rdi,4), %ecx
+; CHECK-NEXT:    orb %cl, %al
 ; CHECK-NEXT:    # kill: def $al killed $al killed $eax
 ; CHECK-NEXT:    retq
   %or1 = or i8 %y, %x
@@ -996,12 +1018,11 @@ define i8 @or_fshr_commute3(i8 %x, i8 %y) {
 define i32 @or_fshr_wrong_shift(i32 %x, i32 %y) {
 ; CHECK-LABEL: or_fshr_wrong_shift:
 ; CHECK:       # %bb.0:
-; CHECK-NEXT:    # kill: def $esi killed $esi def $rsi
-; CHECK-NEXT:    # kill: def $edi killed $edi def $rdi
-; CHECK-NEXT:    orl %edi, %esi
+; CHECK-NEXT:    movl %edi, %eax
+; CHECK-NEXT:    orl %esi, %eax
 ; CHECK-NEXT:    shll $7, %edi
-; CHECK-NEXT:    shrl $26, %esi
-; CHECK-NEXT:    leal (%rsi,%rdi), %eax
+; CHECK-NEXT:    shrl $26, %eax
+; CHECK-NEXT:    orl %edi, %eax
 ; CHECK-NEXT:    retq
   %or1 = or i32 %x, %y
   %sh1 = shl i32 %x, 7

@@ -100,8 +100,8 @@ define i64 @muls_i64(i64 %a, i64 %b, i64 %c) {
 ; RV32XTHEADMAC-NEXT:    th.mula a6, a2, a5
 ; RV32XTHEADMAC-NEXT:    mul a5, a2, a4
 ; RV32XTHEADMAC-NEXT:    sltu a5, a0, a5
-; RV32XTHEADMAC-NEXT:    th.muls a0, a2, a4
 ; RV32XTHEADMAC-NEXT:    th.mula a6, a3, a4
+; RV32XTHEADMAC-NEXT:    th.muls a0, a2, a4
 ; RV32XTHEADMAC-NEXT:    sub a1, a1, a5
 ; RV32XTHEADMAC-NEXT:    sub a1, a1, a6
 ; RV32XTHEADMAC-NEXT:    ret

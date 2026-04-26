@@ -184,9 +184,11 @@ define float @ext_1(<4 x float> %v) nounwind {
 ; X86-SSE-NEXT:    pushl %eax ## encoding: [0x50]
 ; X86-SSE-NEXT:    shufps $255, %xmm0, %xmm0 ## encoding: [0x0f,0xc6,0xc0,0xff]
 ; X86-SSE-NEXT:    ## xmm0 = xmm0[3,3,3,3]
-; X86-SSE-NEXT:    addss {{\.?LCPI[0-9]+_[0-9]+}}, %xmm0 ## encoding: [0xf3,0x0f,0x58,0x05,A,A,A,A]
+; X86-SSE-NEXT:    movss {{.*#+}} xmm1 = [1.0E+0,0.0E+0,0.0E+0,0.0E+0]
+; X86-SSE-NEXT:    ## encoding: [0xf3,0x0f,0x10,0x0d,A,A,A,A]
 ; X86-SSE-NEXT:    ## fixup A - offset: 4, value: {{\.?LCPI[0-9]+_[0-9]+}}, kind: FK_Data_4
-; X86-SSE-NEXT:    movss %xmm0, (%esp) ## encoding: [0xf3,0x0f,0x11,0x04,0x24]
+; X86-SSE-NEXT:    addss %xmm0, %xmm1 ## encoding: [0xf3,0x0f,0x58,0xc8]
+; X86-SSE-NEXT:    movss %xmm1, (%esp) ## encoding: [0xf3,0x0f,0x11,0x0c,0x24]
 ; X86-SSE-NEXT:    flds (%esp) ## encoding: [0xd9,0x04,0x24]
 ; X86-SSE-NEXT:    popl %eax ## encoding: [0x58]
 ; X86-SSE-NEXT:    retl ## encoding: [0xc3]
@@ -219,8 +221,11 @@ define float @ext_1(<4 x float> %v) nounwind {
 ; X64-SSE:       ## %bb.0:
 ; X64-SSE-NEXT:    shufps $255, %xmm0, %xmm0 ## encoding: [0x0f,0xc6,0xc0,0xff]
 ; X64-SSE-NEXT:    ## xmm0 = xmm0[3,3,3,3]
-; X64-SSE-NEXT:    addss {{\.?LCPI[0-9]+_[0-9]+}}(%rip), %xmm0 ## encoding: [0xf3,0x0f,0x58,0x05,A,A,A,A]
+; X64-SSE-NEXT:    movss {{.*#+}} xmm1 = [1.0E+0,0.0E+0,0.0E+0,0.0E+0]
+; X64-SSE-NEXT:    ## encoding: [0xf3,0x0f,0x10,0x0d,A,A,A,A]
 ; X64-SSE-NEXT:    ## fixup A - offset: 4, value: {{\.?LCPI[0-9]+_[0-9]+}}, kind: reloc_riprel_4byte
+; X64-SSE-NEXT:    addss %xmm0, %xmm1 ## encoding: [0xf3,0x0f,0x58,0xc8]
+; X64-SSE-NEXT:    movaps %xmm1, %xmm0 ## encoding: [0x0f,0x28,0xc1]
 ; X64-SSE-NEXT:    retq ## encoding: [0xc3]
 ;
 ; X64-AVX1-LABEL: ext_1:
@@ -345,8 +350,9 @@ define <4 x float> @blendps_not_insertps_1(<4 x float> %t1, float %t2) nounwind 
 ; X86-SSE:       ## %bb.0:
 ; X86-SSE-NEXT:    movss {{[0-9]+}}(%esp), %xmm1 ## xmm1 = mem[0],zero,zero,zero
 ; X86-SSE-NEXT:    ## encoding: [0xf3,0x0f,0x10,0x4c,0x24,0x04]
-; X86-SSE-NEXT:    movss %xmm1, %xmm0 ## encoding: [0xf3,0x0f,0x10,0xc1]
-; X86-SSE-NEXT:    ## xmm0 = xmm1[0],xmm0[1,2,3]
+; X86-SSE-NEXT:    blendps $14, %xmm0, %xmm1 ## encoding: [0x66,0x0f,0x3a,0x0c,0xc8,0x0e]
+; X86-SSE-NEXT:    ## xmm1 = xmm1[0],xmm0[1,2,3]
+; X86-SSE-NEXT:    movaps %xmm1, %xmm0 ## encoding: [0x0f,0x28,0xc1]
 ; X86-SSE-NEXT:    retl ## encoding: [0xc3]
 ;
 ; X86-AVX1-LABEL: blendps_not_insertps_1:
@@ -388,8 +394,9 @@ define <4 x float> @insertps_or_blendps(<4 x float> %t1, float %t2) minsize noun
 ; X86-SSE:       ## %bb.0:
 ; X86-SSE-NEXT:    movss {{[0-9]+}}(%esp), %xmm1 ## xmm1 = mem[0],zero,zero,zero
 ; X86-SSE-NEXT:    ## encoding: [0xf3,0x0f,0x10,0x4c,0x24,0x04]
-; X86-SSE-NEXT:    movss %xmm1, %xmm0 ## encoding: [0xf3,0x0f,0x10,0xc1]
-; X86-SSE-NEXT:    ## xmm0 = xmm1[0],xmm0[1,2,3]
+; X86-SSE-NEXT:    blendps $14, %xmm0, %xmm1 ## encoding: [0x66,0x0f,0x3a,0x0c,0xc8,0x0e]
+; X86-SSE-NEXT:    ## xmm1 = xmm1[0],xmm0[1,2,3]
+; X86-SSE-NEXT:    movaps %xmm1, %xmm0 ## encoding: [0x0f,0x28,0xc1]
 ; X86-SSE-NEXT:    retl ## encoding: [0xc3]
 ;
 ; X86-AVX1-LABEL: insertps_or_blendps:
@@ -515,10 +522,10 @@ define <2 x float> @buildvector(<2 x float> %A, <2 x float> %B) nounwind  {
 ; SSE-NEXT:    ## xmm2 = xmm0[1,1,3,3]
 ; SSE-NEXT:    movshdup %xmm1, %xmm3 ## encoding: [0xf3,0x0f,0x16,0xd9]
 ; SSE-NEXT:    ## xmm3 = xmm1[1,1,3,3]
-; SSE-NEXT:    addss %xmm2, %xmm3 ## encoding: [0xf3,0x0f,0x58,0xda]
+; SSE-NEXT:    addss %xmm3, %xmm2 ## encoding: [0xf3,0x0f,0x58,0xd3]
 ; SSE-NEXT:    addss %xmm1, %xmm0 ## encoding: [0xf3,0x0f,0x58,0xc1]
-; SSE-NEXT:    insertps $16, %xmm3, %xmm0 ## encoding: [0x66,0x0f,0x3a,0x21,0xc3,0x10]
-; SSE-NEXT:    ## xmm0 = xmm0[0],xmm3[0],xmm0[2,3]
+; SSE-NEXT:    insertps $16, %xmm2, %xmm0 ## encoding: [0x66,0x0f,0x3a,0x21,0xc2,0x10]
+; SSE-NEXT:    ## xmm0 = xmm0[0],xmm2[0],xmm0[2,3]
 ; SSE-NEXT:    ret{{[l|q]}} ## encoding: [0xc3]
 ;
 ; AVX1-LABEL: buildvector:
@@ -638,8 +645,9 @@ define <4 x i32> @pinsrd_from_shufflevector_i32(<4 x i32> %a, ptr nocapture read
 ; X86-SSE-NEXT:    movl {{[0-9]+}}(%esp), %eax ## encoding: [0x8b,0x44,0x24,0x04]
 ; X86-SSE-NEXT:    pshufd $0, (%eax), %xmm1 ## encoding: [0x66,0x0f,0x70,0x08,0x00]
 ; X86-SSE-NEXT:    ## xmm1 = mem[0,0,0,0]
-; X86-SSE-NEXT:    pblendw $192, %xmm1, %xmm0 ## encoding: [0x66,0x0f,0x3a,0x0e,0xc1,0xc0]
-; X86-SSE-NEXT:    ## xmm0 = xmm0[0,1,2,3,4,5],xmm1[6,7]
+; X86-SSE-NEXT:    pblendw $63, %xmm0, %xmm1 ## encoding: [0x66,0x0f,0x3a,0x0e,0xc8,0x3f]
+; X86-SSE-NEXT:    ## xmm1 = xmm0[0,1,2,3,4,5],xmm1[6,7]
+; X86-SSE-NEXT:    movdqa %xmm1, %xmm0 ## encoding: [0x66,0x0f,0x6f,0xc1]
 ; X86-SSE-NEXT:    retl ## encoding: [0xc3]
 ;
 ; X86-AVX1-LABEL: pinsrd_from_shufflevector_i32:
@@ -662,8 +670,9 @@ define <4 x i32> @pinsrd_from_shufflevector_i32(<4 x i32> %a, ptr nocapture read
 ; X64-SSE:       ## %bb.0: ## %entry
 ; X64-SSE-NEXT:    pshufd $0, (%rdi), %xmm1 ## encoding: [0x66,0x0f,0x70,0x0f,0x00]
 ; X64-SSE-NEXT:    ## xmm1 = mem[0,0,0,0]
-; X64-SSE-NEXT:    pblendw $192, %xmm1, %xmm0 ## encoding: [0x66,0x0f,0x3a,0x0e,0xc1,0xc0]
-; X64-SSE-NEXT:    ## xmm0 = xmm0[0,1,2,3,4,5],xmm1[6,7]
+; X64-SSE-NEXT:    pblendw $63, %xmm0, %xmm1 ## encoding: [0x66,0x0f,0x3a,0x0e,0xc8,0x3f]
+; X64-SSE-NEXT:    ## xmm1 = xmm0[0,1,2,3,4,5],xmm1[6,7]
+; X64-SSE-NEXT:    movdqa %xmm1, %xmm0 ## encoding: [0x66,0x0f,0x6f,0xc1]
 ; X64-SSE-NEXT:    retq ## encoding: [0xc3]
 ;
 ; X64-AVX1-LABEL: pinsrd_from_shufflevector_i32:
@@ -690,8 +699,9 @@ define <4 x i32> @insertps_from_shufflevector_i32_2(<4 x i32> %a, <4 x i32> %b) 
 ; SSE:       ## %bb.0: ## %entry
 ; SSE-NEXT:    pshufd $238, %xmm1, %xmm1 ## encoding: [0x66,0x0f,0x70,0xc9,0xee]
 ; SSE-NEXT:    ## xmm1 = xmm1[2,3,2,3]
-; SSE-NEXT:    pblendw $12, %xmm1, %xmm0 ## encoding: [0x66,0x0f,0x3a,0x0e,0xc1,0x0c]
-; SSE-NEXT:    ## xmm0 = xmm0[0,1],xmm1[2,3],xmm0[4,5,6,7]
+; SSE-NEXT:    pblendw $243, %xmm0, %xmm1 ## encoding: [0x66,0x0f,0x3a,0x0e,0xc8,0xf3]
+; SSE-NEXT:    ## xmm1 = xmm0[0,1],xmm1[2,3],xmm0[4,5,6,7]
+; SSE-NEXT:    movdqa %xmm1, %xmm0 ## encoding: [0x66,0x0f,0x6f,0xc1]
 ; SSE-NEXT:    ret{{[l|q]}} ## encoding: [0xc3]
 ;
 ; AVX1-LABEL: insertps_from_shufflevector_i32_2:
@@ -804,8 +814,9 @@ define <4 x float> @shuf_XYZ0(<4 x float> %x, <4 x float> %a) {
 ; SSE-LABEL: shuf_XYZ0:
 ; SSE:       ## %bb.0:
 ; SSE-NEXT:    xorps %xmm1, %xmm1 ## encoding: [0x0f,0x57,0xc9]
-; SSE-NEXT:    blendps $8, %xmm1, %xmm0 ## encoding: [0x66,0x0f,0x3a,0x0c,0xc1,0x08]
-; SSE-NEXT:    ## xmm0 = xmm0[0,1,2],xmm1[3]
+; SSE-NEXT:    blendps $7, %xmm0, %xmm1 ## encoding: [0x66,0x0f,0x3a,0x0c,0xc8,0x07]
+; SSE-NEXT:    ## xmm1 = xmm0[0,1,2],xmm1[3]
+; SSE-NEXT:    movaps %xmm1, %xmm0 ## encoding: [0x0f,0x28,0xc1]
 ; SSE-NEXT:    ret{{[l|q]}} ## encoding: [0xc3]
 ;
 ; AVX1-LABEL: shuf_XYZ0:
@@ -1030,8 +1041,9 @@ define <4 x i32> @i32_shuf_XYZ0(<4 x i32> %x, <4 x i32> %a) {
 ; SSE-LABEL: i32_shuf_XYZ0:
 ; SSE:       ## %bb.0:
 ; SSE-NEXT:    xorps %xmm1, %xmm1 ## encoding: [0x0f,0x57,0xc9]
-; SSE-NEXT:    blendps $8, %xmm1, %xmm0 ## encoding: [0x66,0x0f,0x3a,0x0c,0xc1,0x08]
-; SSE-NEXT:    ## xmm0 = xmm0[0,1,2],xmm1[3]
+; SSE-NEXT:    blendps $7, %xmm0, %xmm1 ## encoding: [0x66,0x0f,0x3a,0x0c,0xc8,0x07]
+; SSE-NEXT:    ## xmm1 = xmm0[0,1,2],xmm1[3]
+; SSE-NEXT:    movaps %xmm1, %xmm0 ## encoding: [0x0f,0x28,0xc1]
 ; SSE-NEXT:    ret{{[l|q]}} ## encoding: [0xc3]
 ;
 ; AVX1-LABEL: i32_shuf_XYZ0:
@@ -1196,12 +1208,12 @@ define <4 x i32> @i32_shuf_X00A(<4 x i32> %x, <4 x i32> %a) {
 ; SSE-LABEL: i32_shuf_X00A:
 ; SSE:       ## %bb.0:
 ; SSE-NEXT:    pxor %xmm2, %xmm2 ## encoding: [0x66,0x0f,0xef,0xd2]
-; SSE-NEXT:    pblendw $252, %xmm2, %xmm0 ## encoding: [0x66,0x0f,0x3a,0x0e,0xc2,0xfc]
-; SSE-NEXT:    ## xmm0 = xmm0[0,1],xmm2[2,3,4,5,6,7]
-; SSE-NEXT:    pshufd $0, %xmm1, %xmm1 ## encoding: [0x66,0x0f,0x70,0xc9,0x00]
-; SSE-NEXT:    ## xmm1 = xmm1[0,0,0,0]
-; SSE-NEXT:    pblendw $192, %xmm1, %xmm0 ## encoding: [0x66,0x0f,0x3a,0x0e,0xc1,0xc0]
-; SSE-NEXT:    ## xmm0 = xmm0[0,1,2,3,4,5],xmm1[6,7]
+; SSE-NEXT:    pblendw $3, %xmm0, %xmm2 ## encoding: [0x66,0x0f,0x3a,0x0e,0xd0,0x03]
+; SSE-NEXT:    ## xmm2 = xmm0[0,1],xmm2[2,3,4,5,6,7]
+; SSE-NEXT:    pshufd $0, %xmm1, %xmm0 ## encoding: [0x66,0x0f,0x70,0xc1,0x00]
+; SSE-NEXT:    ## xmm0 = xmm1[0,0,0,0]
+; SSE-NEXT:    pblendw $63, %xmm2, %xmm0 ## encoding: [0x66,0x0f,0x3a,0x0e,0xc2,0x3f]
+; SSE-NEXT:    ## xmm0 = xmm2[0,1,2,3,4,5],xmm0[6,7]
 ; SSE-NEXT:    ret{{[l|q]}} ## encoding: [0xc3]
 ;
 ; AVX1-LABEL: i32_shuf_X00A:
@@ -1238,8 +1250,9 @@ define <4 x i32> @i32_shuf_X00X(<4 x i32> %x, <4 x i32> %a) {
 ; SSE-NEXT:    pxor %xmm1, %xmm1 ## encoding: [0x66,0x0f,0xef,0xc9]
 ; SSE-NEXT:    pshufd $0, %xmm0, %xmm0 ## encoding: [0x66,0x0f,0x70,0xc0,0x00]
 ; SSE-NEXT:    ## xmm0 = xmm0[0,0,0,0]
-; SSE-NEXT:    pblendw $60, %xmm1, %xmm0 ## encoding: [0x66,0x0f,0x3a,0x0e,0xc1,0x3c]
-; SSE-NEXT:    ## xmm0 = xmm0[0,1],xmm1[2,3,4,5],xmm0[6,7]
+; SSE-NEXT:    pblendw $195, %xmm0, %xmm1 ## encoding: [0x66,0x0f,0x3a,0x0e,0xc8,0xc3]
+; SSE-NEXT:    ## xmm1 = xmm0[0,1],xmm1[2,3,4,5],xmm0[6,7]
+; SSE-NEXT:    movdqa %xmm1, %xmm0 ## encoding: [0x66,0x0f,0x6f,0xc1]
 ; SSE-NEXT:    ret{{[l|q]}} ## encoding: [0xc3]
 ;
 ; AVX1-LABEL: i32_shuf_X00X:
@@ -1645,13 +1658,14 @@ define <4 x float> @insertps_from_broadcast_multiple_use(<4 x float> %a, <4 x fl
 ; X86-SSE-NEXT:    ## xmm0 = xmm0[0,1,2],xmm4[0]
 ; X86-SSE-NEXT:    insertps $48, %xmm4, %xmm1 ## encoding: [0x66,0x0f,0x3a,0x21,0xcc,0x30]
 ; X86-SSE-NEXT:    ## xmm1 = xmm1[0,1,2],xmm4[0]
-; X86-SSE-NEXT:    addps %xmm1, %xmm0 ## encoding: [0x0f,0x58,0xc1]
+; X86-SSE-NEXT:    addps %xmm0, %xmm1 ## encoding: [0x0f,0x58,0xc8]
 ; X86-SSE-NEXT:    insertps $48, %xmm4, %xmm2 ## encoding: [0x66,0x0f,0x3a,0x21,0xd4,0x30]
 ; X86-SSE-NEXT:    ## xmm2 = xmm2[0,1,2],xmm4[0]
 ; X86-SSE-NEXT:    insertps $48, %xmm4, %xmm3 ## encoding: [0x66,0x0f,0x3a,0x21,0xdc,0x30]
 ; X86-SSE-NEXT:    ## xmm3 = xmm3[0,1,2],xmm4[0]
 ; X86-SSE-NEXT:    addps %xmm2, %xmm3 ## encoding: [0x0f,0x58,0xda]
-; X86-SSE-NEXT:    addps %xmm3, %xmm0 ## encoding: [0x0f,0x58,0xc3]
+; X86-SSE-NEXT:    addps %xmm1, %xmm3 ## encoding: [0x0f,0x58,0xd9]
+; X86-SSE-NEXT:    movaps %xmm3, %xmm0 ## encoding: [0x0f,0x28,0xc3]
 ; X86-SSE-NEXT:    retl ## encoding: [0xc3]
 ;
 ; X86-AVX1-LABEL: insertps_from_broadcast_multiple_use:
@@ -1698,13 +1712,14 @@ define <4 x float> @insertps_from_broadcast_multiple_use(<4 x float> %a, <4 x fl
 ; X64-SSE-NEXT:    ## xmm0 = xmm0[0,1,2],xmm4[0]
 ; X64-SSE-NEXT:    insertps $48, %xmm4, %xmm1 ## encoding: [0x66,0x0f,0x3a,0x21,0xcc,0x30]
 ; X64-SSE-NEXT:    ## xmm1 = xmm1[0,1,2],xmm4[0]
-; X64-SSE-NEXT:    addps %xmm1, %xmm0 ## encoding: [0x0f,0x58,0xc1]
+; X64-SSE-NEXT:    addps %xmm0, %xmm1 ## encoding: [0x0f,0x58,0xc8]
 ; X64-SSE-NEXT:    insertps $48, %xmm4, %xmm2 ## encoding: [0x66,0x0f,0x3a,0x21,0xd4,0x30]
 ; X64-SSE-NEXT:    ## xmm2 = xmm2[0,1,2],xmm4[0]
 ; X64-SSE-NEXT:    insertps $48, %xmm4, %xmm3 ## encoding: [0x66,0x0f,0x3a,0x21,0xdc,0x30]
 ; X64-SSE-NEXT:    ## xmm3 = xmm3[0,1,2],xmm4[0]
 ; X64-SSE-NEXT:    addps %xmm2, %xmm3 ## encoding: [0x0f,0x58,0xda]
-; X64-SSE-NEXT:    addps %xmm3, %xmm0 ## encoding: [0x0f,0x58,0xc3]
+; X64-SSE-NEXT:    addps %xmm1, %xmm3 ## encoding: [0x0f,0x58,0xd9]
+; X64-SSE-NEXT:    movaps %xmm3, %xmm0 ## encoding: [0x0f,0x28,0xc3]
 ; X64-SSE-NEXT:    retq ## encoding: [0xc3]
 ;
 ; X64-AVX1-LABEL: insertps_from_broadcast_multiple_use:
@@ -2117,8 +2132,9 @@ define <4 x float> @build_vector_to_shuffle_1(<4 x float> %A) {
 ; SSE-LABEL: build_vector_to_shuffle_1:
 ; SSE:       ## %bb.0:
 ; SSE-NEXT:    xorps %xmm1, %xmm1 ## encoding: [0x0f,0x57,0xc9]
-; SSE-NEXT:    blendps $5, %xmm1, %xmm0 ## encoding: [0x66,0x0f,0x3a,0x0c,0xc1,0x05]
-; SSE-NEXT:    ## xmm0 = xmm1[0],xmm0[1],xmm1[2],xmm0[3]
+; SSE-NEXT:    blendps $10, %xmm0, %xmm1 ## encoding: [0x66,0x0f,0x3a,0x0c,0xc8,0x0a]
+; SSE-NEXT:    ## xmm1 = xmm1[0],xmm0[1],xmm1[2],xmm0[3]
+; SSE-NEXT:    movaps %xmm1, %xmm0 ## encoding: [0x0f,0x28,0xc1]
 ; SSE-NEXT:    ret{{[l|q]}} ## encoding: [0xc3]
 ;
 ; AVX1-LABEL: build_vector_to_shuffle_1:
@@ -2145,8 +2161,9 @@ define <4 x float> @build_vector_to_shuffle_2(<4 x float> %A) {
 ; SSE-LABEL: build_vector_to_shuffle_2:
 ; SSE:       ## %bb.0:
 ; SSE-NEXT:    xorps %xmm1, %xmm1 ## encoding: [0x0f,0x57,0xc9]
-; SSE-NEXT:    blendps $13, %xmm1, %xmm0 ## encoding: [0x66,0x0f,0x3a,0x0c,0xc1,0x0d]
-; SSE-NEXT:    ## xmm0 = xmm1[0],xmm0[1],xmm1[2,3]
+; SSE-NEXT:    blendps $2, %xmm0, %xmm1 ## encoding: [0x66,0x0f,0x3a,0x0c,0xc8,0x02]
+; SSE-NEXT:    ## xmm1 = xmm1[0],xmm0[1],xmm1[2,3]
+; SSE-NEXT:    movaps %xmm1, %xmm0 ## encoding: [0x0f,0x28,0xc1]
 ; SSE-NEXT:    ret{{[l|q]}} ## encoding: [0xc3]
 ;
 ; AVX1-LABEL: build_vector_to_shuffle_2:

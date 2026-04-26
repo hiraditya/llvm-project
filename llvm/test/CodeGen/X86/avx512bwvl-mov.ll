@@ -23,7 +23,7 @@ define <32 x i8> @test_256_3(ptr %addr, <32 x i8> %old, <32 x i8> %mask1) {
 ; CHECK-LABEL: test_256_3:
 ; CHECK:       ## %bb.0:
 ; CHECK-NEXT:    vptestmb %ymm1, %ymm1, %k1 ## encoding: [0x62,0xf2,0x75,0x28,0x26,0xc9]
-; CHECK-NEXT:    vmovdqu8 (%rdi), %ymm0 {%k1} ## encoding: [0x62,0xf1,0x7f,0x29,0x6f,0x07]
+; CHECK-NEXT:    vpblendmb (%rdi), %ymm0, %ymm0 {%k1} ## encoding: [0x62,0xf2,0x7d,0x29,0x66,0x07]
 ; CHECK-NEXT:    retq ## encoding: [0xc3]
   %mask = icmp ne <32 x i8> %mask1, zeroinitializer
   %r = load <32 x i8>, ptr %addr, align 1
@@ -65,7 +65,7 @@ define <16 x i16> @test_256_7(ptr %addr, <16 x i16> %old, <16 x i16> %mask1) {
 ; CHECK-LABEL: test_256_7:
 ; CHECK:       ## %bb.0:
 ; CHECK-NEXT:    vptestmw %ymm1, %ymm1, %k1 ## encoding: [0x62,0xf2,0xf5,0x28,0x26,0xc9]
-; CHECK-NEXT:    vmovdqu16 (%rdi), %ymm0 {%k1} ## encoding: [0x62,0xf1,0xff,0x29,0x6f,0x07]
+; CHECK-NEXT:    vpblendmw (%rdi), %ymm0, %ymm0 {%k1} ## encoding: [0x62,0xf2,0xfd,0x29,0x66,0x07]
 ; CHECK-NEXT:    retq ## encoding: [0xc3]
   %mask = icmp ne <16 x i16> %mask1, zeroinitializer
   %r = load <16 x i16>, ptr %addr, align 1
@@ -107,7 +107,7 @@ define <16 x i8> @test_128_3(ptr %addr, <16 x i8> %old, <16 x i8> %mask1) {
 ; CHECK-LABEL: test_128_3:
 ; CHECK:       ## %bb.0:
 ; CHECK-NEXT:    vptestmb %xmm1, %xmm1, %k1 ## encoding: [0x62,0xf2,0x75,0x08,0x26,0xc9]
-; CHECK-NEXT:    vmovdqu8 (%rdi), %xmm0 {%k1} ## encoding: [0x62,0xf1,0x7f,0x09,0x6f,0x07]
+; CHECK-NEXT:    vpblendmb (%rdi), %xmm0, %xmm0 {%k1} ## encoding: [0x62,0xf2,0x7d,0x09,0x66,0x07]
 ; CHECK-NEXT:    retq ## encoding: [0xc3]
   %mask = icmp ne <16 x i8> %mask1, zeroinitializer
   %r = load <16 x i8>, ptr %addr, align 1
@@ -149,7 +149,7 @@ define <8 x i16> @test_128_7(ptr %addr, <8 x i16> %old, <8 x i16> %mask1) {
 ; CHECK-LABEL: test_128_7:
 ; CHECK:       ## %bb.0:
 ; CHECK-NEXT:    vptestmw %xmm1, %xmm1, %k1 ## encoding: [0x62,0xf2,0xf5,0x08,0x26,0xc9]
-; CHECK-NEXT:    vmovdqu16 (%rdi), %xmm0 {%k1} ## encoding: [0x62,0xf1,0xff,0x09,0x6f,0x07]
+; CHECK-NEXT:    vpblendmw (%rdi), %xmm0, %xmm0 {%k1} ## encoding: [0x62,0xf2,0xfd,0x09,0x66,0x07]
 ; CHECK-NEXT:    retq ## encoding: [0xc3]
   %mask = icmp ne <8 x i16> %mask1, zeroinitializer
   %r = load <8 x i16>, ptr %addr, align 1

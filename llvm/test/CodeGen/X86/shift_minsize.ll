@@ -189,7 +189,8 @@ define dso_local { i64, i64 } @lshr128(i64 %x.coerce0, i64 %x.coerce1, i8 signex
 ; CHECK-WIN-NEXT:    xorl %ecx, %ecx
 ; CHECK-WIN-NEXT:    testb $64, %r8b
 ; CHECK-WIN-NEXT:    cmovneq %rdx, %rax
-; CHECK-WIN-NEXT:    cmovneq %rcx, %rdx
+; CHECK-WIN-NEXT:    cmoveq %rdx, %rcx
+; CHECK-WIN-NEXT:    movq %rcx, %rdx
 ; CHECK-WIN-NEXT:    retq
 entry:
   %x.sroa.2.0.insert.ext = zext i64 %x.coerce1 to i128

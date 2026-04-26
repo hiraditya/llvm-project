@@ -39,9 +39,10 @@ define <4 x i8> @pull_bitcast2(ptr %pA, ptr %pB, ptr %pC) {
 ; CHECK:       # %bb.0:
 ; CHECK-NEXT:    movl (%rdi), %eax
 ; CHECK-NEXT:    movl %eax, (%rdx)
-; CHECK-NEXT:    xorl (%rsi), %eax
-; CHECK-NEXT:    vmovd %eax, %xmm0
-; CHECK-NEXT:    movl %eax, (%rdi)
+; CHECK-NEXT:    movl (%rsi), %ecx
+; CHECK-NEXT:    xorl %eax, %ecx
+; CHECK-NEXT:    vmovd %ecx, %xmm0
+; CHECK-NEXT:    movl %ecx, (%rdi)
 ; CHECK-NEXT:    retq
   %A = load <4 x i8>, ptr %pA
   store <4 x i8> %A, ptr %pC

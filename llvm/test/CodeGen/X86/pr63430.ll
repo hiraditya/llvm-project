@@ -7,9 +7,10 @@ define i1 @test(ptr %a0, ptr %a1, ptr %a2, ptr %a3, ptr %a4, ptr %a5, i128 %x) {
 ; CHECK:       # %bb.0:
 ; CHECK-NEXT:    movq 8(%rsp), %rax
 ; CHECK-NEXT:    xorps %xmm0, %xmm0
-; CHECK-NEXT:    andq 16(%rsp), %rax
+; CHECK-NEXT:    movq 16(%rsp), %rcx
+; CHECK-NEXT:    andq %rax, %rcx
 ; CHECK-NEXT:    movaps %xmm0, 8(%rsp)
-; CHECK-NEXT:    cmpq $-1, %rax
+; CHECK-NEXT:    cmpq $-1, %rcx
 ; CHECK-NEXT:    sete %al
 ; CHECK-NEXT:    retq
   %alloca = alloca i128

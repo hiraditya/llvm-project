@@ -29,7 +29,8 @@ define <1 x bfloat> @vfmadd_vv_v1bf16(<1 x bfloat> %va, <1 x bfloat> %vb, <1 x b
 ; ZVFBFA-LABEL: vfmadd_vv_v1bf16:
 ; ZVFBFA:       # %bb.0:
 ; ZVFBFA-NEXT:    vsetivli zero, 1, e16alt, mf4, ta, ma
-; ZVFBFA-NEXT:    vfmadd.vv v8, v9, v10
+; ZVFBFA-NEXT:    vfmadd.vv v9, v8, v10
+; ZVFBFA-NEXT:    vmv1r.v v8, v9
 ; ZVFBFA-NEXT:    ret
   %vd = call <1 x bfloat> @llvm.experimental.constrained.fma.v1bf16(<1 x bfloat> %va, <1 x bfloat> %vb, <1 x bfloat> %vc, metadata !"round.dynamic", metadata !"fpexcept.strict")
   ret <1 x bfloat> %vd
@@ -51,7 +52,8 @@ define <2 x bfloat> @vfmadd_vv_v2bf16(<2 x bfloat> %va, <2 x bfloat> %vb, <2 x b
 ; ZVFBFA-LABEL: vfmadd_vv_v2bf16:
 ; ZVFBFA:       # %bb.0:
 ; ZVFBFA-NEXT:    vsetivli zero, 2, e16alt, mf4, ta, ma
-; ZVFBFA-NEXT:    vfmadd.vv v8, v10, v9
+; ZVFBFA-NEXT:    vfmadd.vv v10, v8, v9
+; ZVFBFA-NEXT:    vmv1r.v v8, v10
 ; ZVFBFA-NEXT:    ret
   %vd = call <2 x bfloat> @llvm.experimental.constrained.fma.v2bf16(<2 x bfloat> %va, <2 x bfloat> %vc, <2 x bfloat> %vb, metadata !"round.dynamic", metadata !"fpexcept.strict")
   ret <2 x bfloat> %vd
@@ -95,7 +97,8 @@ define <8 x bfloat> @vfmadd_vv_v8bf16(<8 x bfloat> %va, <8 x bfloat> %vb, <8 x b
 ; ZVFBFA-LABEL: vfmadd_vv_v8bf16:
 ; ZVFBFA:       # %bb.0:
 ; ZVFBFA-NEXT:    vsetivli zero, 8, e16alt, m1, ta, ma
-; ZVFBFA-NEXT:    vfmacc.vv v8, v10, v9
+; ZVFBFA-NEXT:    vfmadd.vv v10, v9, v8
+; ZVFBFA-NEXT:    vmv.v.v v8, v10
 ; ZVFBFA-NEXT:    ret
   %vd = call <8 x bfloat> @llvm.experimental.constrained.fma.v8bf16(<8 x bfloat> %vb, <8 x bfloat> %vc, <8 x bfloat> %va, metadata !"round.dynamic", metadata !"fpexcept.strict")
   ret <8 x bfloat> %vd
@@ -141,7 +144,8 @@ define <32 x bfloat> @vfmadd_vv_v32bf16(<32 x bfloat> %va, <32 x bfloat> %vb, <3
 ; ZVFBFA:       # %bb.0:
 ; ZVFBFA-NEXT:    li a0, 32
 ; ZVFBFA-NEXT:    vsetvli zero, a0, e16alt, m4, ta, ma
-; ZVFBFA-NEXT:    vfmacc.vv v8, v16, v12
+; ZVFBFA-NEXT:    vfmadd.vv v16, v12, v8
+; ZVFBFA-NEXT:    vmv.v.v v8, v16
 ; ZVFBFA-NEXT:    ret
   %vd = call <32 x bfloat> @llvm.experimental.constrained.fma.v32bf16(<32 x bfloat> %vb, <32 x bfloat> %vc, <32 x bfloat> %va, metadata !"round.dynamic", metadata !"fpexcept.strict")
   ret <32 x bfloat> %vd
@@ -151,7 +155,8 @@ define <2 x half> @vfmadd_vv_v2f16(<2 x half> %va, <2 x half> %vb, <2 x half> %v
 ; ZVFH-LABEL: vfmadd_vv_v2f16:
 ; ZVFH:       # %bb.0:
 ; ZVFH-NEXT:    vsetivli zero, 2, e16, mf4, ta, ma
-; ZVFH-NEXT:    vfmadd.vv v8, v10, v9
+; ZVFH-NEXT:    vfmadd.vv v10, v8, v9
+; ZVFH-NEXT:    vmv1r.v v8, v10
 ; ZVFH-NEXT:    ret
 ;
 ; ZVFBFA-LABEL: vfmadd_vv_v2f16:
@@ -173,7 +178,8 @@ define <2 x half> @vfmadd_vf_v2f16(<2 x half> %va, <2 x half> %vb, half %c) stri
 ; ZVFH-LABEL: vfmadd_vf_v2f16:
 ; ZVFH:       # %bb.0:
 ; ZVFH-NEXT:    vsetivli zero, 2, e16, mf4, ta, ma
-; ZVFH-NEXT:    vfmacc.vf v8, fa0, v9
+; ZVFH-NEXT:    vfmadd.vf v9, fa0, v8
+; ZVFH-NEXT:    vmv1r.v v8, v9
 ; ZVFH-NEXT:    ret
 ;
 ; ZVFBFA-LABEL: vfmadd_vf_v2f16:
@@ -185,9 +191,9 @@ define <2 x half> @vfmadd_vf_v2f16(<2 x half> %va, <2 x half> %vb, half %c) stri
 ; ZVFBFA-NEXT:    vfwcvt.f.f.v v11, v9
 ; ZVFBFA-NEXT:    vfwcvt.f.f.v v9, v8
 ; ZVFBFA-NEXT:    vsetvli zero, zero, e32, mf2, ta, ma
-; ZVFBFA-NEXT:    vfmadd.vv v9, v11, v10
+; ZVFBFA-NEXT:    vfmadd.vv v11, v9, v10
 ; ZVFBFA-NEXT:    vsetvli zero, zero, e16, mf4, ta, ma
-; ZVFBFA-NEXT:    vfncvt.f.f.w v8, v9
+; ZVFBFA-NEXT:    vfncvt.f.f.w v8, v11
 ; ZVFBFA-NEXT:    ret
   %head = insertelement <2 x half> poison, half %c, i32 0
   %splat = shufflevector <2 x half> %head, <2 x half> poison, <2 x i32> zeroinitializer
@@ -231,11 +237,11 @@ define <4 x half> @vfmadd_vf_v4f16(<4 x half> %va, <4 x half> %vb, half %c) stri
 ; ZVFBFA-NEXT:    vfwcvt.f.f.v v10, v9
 ; ZVFBFA-NEXT:    vmv.v.x v9, a0
 ; ZVFBFA-NEXT:    vfwcvt.f.f.v v11, v8
-; ZVFBFA-NEXT:    vfwcvt.f.f.v v12, v9
+; ZVFBFA-NEXT:    vfwcvt.f.f.v v8, v9
 ; ZVFBFA-NEXT:    vsetvli zero, zero, e32, m1, ta, ma
-; ZVFBFA-NEXT:    vfmadd.vv v12, v11, v10
+; ZVFBFA-NEXT:    vfmadd.vv v11, v8, v10
 ; ZVFBFA-NEXT:    vsetvli zero, zero, e16, mf2, ta, ma
-; ZVFBFA-NEXT:    vfncvt.f.f.w v8, v12
+; ZVFBFA-NEXT:    vfncvt.f.f.w v8, v11
 ; ZVFBFA-NEXT:    ret
   %head = insertelement <4 x half> poison, half %c, i32 0
   %splat = shufflevector <4 x half> %head, <4 x half> poison, <4 x i32> zeroinitializer
@@ -247,7 +253,8 @@ define <8 x half> @vfmadd_vv_v8f16(<8 x half> %va, <8 x half> %vb, <8 x half> %v
 ; ZVFH-LABEL: vfmadd_vv_v8f16:
 ; ZVFH:       # %bb.0:
 ; ZVFH-NEXT:    vsetivli zero, 8, e16, m1, ta, ma
-; ZVFH-NEXT:    vfmacc.vv v8, v10, v9
+; ZVFH-NEXT:    vfmadd.vv v10, v9, v8
+; ZVFH-NEXT:    vmv.v.v v8, v10
 ; ZVFH-NEXT:    ret
 ;
 ; ZVFBFA-LABEL: vfmadd_vv_v8f16:
@@ -269,7 +276,8 @@ define <8 x half> @vfmadd_vf_v8f16(<8 x half> %va, <8 x half> %vb, half %c) stri
 ; ZVFH-LABEL: vfmadd_vf_v8f16:
 ; ZVFH:       # %bb.0:
 ; ZVFH-NEXT:    vsetivli zero, 8, e16, m1, ta, ma
-; ZVFH-NEXT:    vfmacc.vf v8, fa0, v9
+; ZVFH-NEXT:    vfmadd.vf v9, fa0, v8
+; ZVFH-NEXT:    vmv.v.v v8, v9
 ; ZVFH-NEXT:    ret
 ;
 ; ZVFBFA-LABEL: vfmadd_vf_v8f16:
@@ -277,13 +285,13 @@ define <8 x half> @vfmadd_vf_v8f16(<8 x half> %va, <8 x half> %vb, half %c) stri
 ; ZVFBFA-NEXT:    fmv.x.h a0, fa0
 ; ZVFBFA-NEXT:    vsetivli zero, 8, e16, m1, ta, ma
 ; ZVFBFA-NEXT:    vfwcvt.f.f.v v10, v8
-; ZVFBFA-NEXT:    vmv.v.x v8, a0
+; ZVFBFA-NEXT:    vmv.v.x v14, a0
 ; ZVFBFA-NEXT:    vfwcvt.f.f.v v12, v9
-; ZVFBFA-NEXT:    vfwcvt.f.f.v v14, v8
+; ZVFBFA-NEXT:    vfwcvt.f.f.v v8, v14
 ; ZVFBFA-NEXT:    vsetvli zero, zero, e32, m2, ta, ma
-; ZVFBFA-NEXT:    vfmadd.vv v14, v12, v10
+; ZVFBFA-NEXT:    vfmadd.vv v12, v8, v10
 ; ZVFBFA-NEXT:    vsetvli zero, zero, e16, m1, ta, ma
-; ZVFBFA-NEXT:    vfncvt.f.f.w v8, v14
+; ZVFBFA-NEXT:    vfncvt.f.f.w v8, v12
 ; ZVFBFA-NEXT:    ret
   %head = insertelement <8 x half> poison, half %c, i32 0
   %splat = shufflevector <8 x half> %head, <8 x half> poison, <8 x i32> zeroinitializer
@@ -325,13 +333,13 @@ define <16 x half> @vfmadd_vf_v16f16(<16 x half> %va, <16 x half> %vb, half %c) 
 ; ZVFBFA-NEXT:    fmv.x.h a0, fa0
 ; ZVFBFA-NEXT:    vsetivli zero, 16, e16, m2, ta, ma
 ; ZVFBFA-NEXT:    vfwcvt.f.f.v v12, v10
-; ZVFBFA-NEXT:    vmv.v.x v10, a0
+; ZVFBFA-NEXT:    vmv.v.x v20, a0
 ; ZVFBFA-NEXT:    vfwcvt.f.f.v v16, v8
-; ZVFBFA-NEXT:    vfwcvt.f.f.v v20, v10
+; ZVFBFA-NEXT:    vfwcvt.f.f.v v8, v20
 ; ZVFBFA-NEXT:    vsetvli zero, zero, e32, m4, ta, ma
-; ZVFBFA-NEXT:    vfmadd.vv v20, v16, v12
+; ZVFBFA-NEXT:    vfmadd.vv v16, v8, v12
 ; ZVFBFA-NEXT:    vsetvli zero, zero, e16, m2, ta, ma
-; ZVFBFA-NEXT:    vfncvt.f.f.w v8, v20
+; ZVFBFA-NEXT:    vfncvt.f.f.w v8, v16
 ; ZVFBFA-NEXT:    ret
   %head = insertelement <16 x half> poison, half %c, i32 0
   %splat = shufflevector <16 x half> %head, <16 x half> poison, <16 x i32> zeroinitializer
@@ -344,7 +352,8 @@ define <32 x half> @vfmadd_vv_v32f16(<32 x half> %va, <32 x half> %vb, <32 x hal
 ; ZVFH:       # %bb.0:
 ; ZVFH-NEXT:    li a0, 32
 ; ZVFH-NEXT:    vsetvli zero, a0, e16, m4, ta, ma
-; ZVFH-NEXT:    vfmacc.vv v8, v16, v12
+; ZVFH-NEXT:    vfmadd.vv v12, v16, v8
+; ZVFH-NEXT:    vmv.v.v v8, v12
 ; ZVFH-NEXT:    ret
 ;
 ; ZVFBFA-LABEL: vfmadd_vv_v32f16:
@@ -384,23 +393,23 @@ define <32 x half> @vfmadd_vf_v32f16(<32 x half> %va, <32 x half> %vb, half %c) 
 ; ZVFH:       # %bb.0:
 ; ZVFH-NEXT:    li a0, 32
 ; ZVFH-NEXT:    vsetvli zero, a0, e16, m4, ta, ma
-; ZVFH-NEXT:    vfmacc.vf v8, fa0, v12
+; ZVFH-NEXT:    vfmadd.vf v12, fa0, v8
+; ZVFH-NEXT:    vmv.v.v v8, v12
 ; ZVFH-NEXT:    ret
 ;
 ; ZVFBFA-LABEL: vfmadd_vf_v32f16:
 ; ZVFBFA:       # %bb.0:
-; ZVFBFA-NEXT:    li a0, 32
-; ZVFBFA-NEXT:    vsetvli zero, a0, e16, m4, ta, ma
-; ZVFBFA-NEXT:    vmv4r.v v4, v12
 ; ZVFBFA-NEXT:    fmv.x.h a0, fa0
-; ZVFBFA-NEXT:    vmv.v.x v12, a0
+; ZVFBFA-NEXT:    li a1, 32
+; ZVFBFA-NEXT:    vsetvli zero, a1, e16, m4, ta, ma
+; ZVFBFA-NEXT:    vmv.v.x v4, a0
 ; ZVFBFA-NEXT:    vfwcvt.f.f.v v16, v8
-; ZVFBFA-NEXT:    vfwcvt.f.f.v v24, v4
-; ZVFBFA-NEXT:    vfwcvt.f.f.v v0, v12
+; ZVFBFA-NEXT:    vfwcvt.f.f.v v24, v12
+; ZVFBFA-NEXT:    vfwcvt.f.f.v v8, v4
 ; ZVFBFA-NEXT:    vsetvli zero, zero, e32, m8, ta, ma
-; ZVFBFA-NEXT:    vfmadd.vv v0, v24, v16
+; ZVFBFA-NEXT:    vfmadd.vv v24, v8, v16
 ; ZVFBFA-NEXT:    vsetvli zero, zero, e16, m4, ta, ma
-; ZVFBFA-NEXT:    vfncvt.f.f.w v8, v0
+; ZVFBFA-NEXT:    vfncvt.f.f.w v8, v24
 ; ZVFBFA-NEXT:    ret
   %head = insertelement <32 x half> poison, half %c, i32 0
   %splat = shufflevector <32 x half> %head, <32 x half> poison, <32 x i32> zeroinitializer
@@ -412,7 +421,8 @@ define <2 x float> @vfmadd_vv_v2f32(<2 x float> %va, <2 x float> %vb, <2 x float
 ; CHECK-LABEL: vfmadd_vv_v2f32:
 ; CHECK:       # %bb.0:
 ; CHECK-NEXT:    vsetivli zero, 2, e32, mf2, ta, ma
-; CHECK-NEXT:    vfmadd.vv v8, v10, v9
+; CHECK-NEXT:    vfmadd.vv v10, v8, v9
+; CHECK-NEXT:    vmv1r.v v8, v10
 ; CHECK-NEXT:    ret
   %vd = call <2 x float> @llvm.experimental.constrained.fma.v2f32(<2 x float> %va, <2 x float> %vc, <2 x float> %vb, metadata !"round.dynamic", metadata !"fpexcept.strict")
   ret <2 x float> %vd
@@ -422,7 +432,8 @@ define <2 x float> @vfmadd_vf_v2f32(<2 x float> %va, <2 x float> %vb, float %c) 
 ; CHECK-LABEL: vfmadd_vf_v2f32:
 ; CHECK:       # %bb.0:
 ; CHECK-NEXT:    vsetivli zero, 2, e32, mf2, ta, ma
-; CHECK-NEXT:    vfmacc.vf v8, fa0, v9
+; CHECK-NEXT:    vfmadd.vf v9, fa0, v8
+; CHECK-NEXT:    vmv1r.v v8, v9
 ; CHECK-NEXT:    ret
   %head = insertelement <2 x float> poison, float %c, i32 0
   %splat = shufflevector <2 x float> %head, <2 x float> poison, <2 x i32> zeroinitializer
@@ -456,7 +467,8 @@ define <8 x float> @vfmadd_vv_v8f32(<8 x float> %va, <8 x float> %vb, <8 x float
 ; CHECK-LABEL: vfmadd_vv_v8f32:
 ; CHECK:       # %bb.0:
 ; CHECK-NEXT:    vsetivli zero, 8, e32, m2, ta, ma
-; CHECK-NEXT:    vfmacc.vv v8, v12, v10
+; CHECK-NEXT:    vfmadd.vv v12, v10, v8
+; CHECK-NEXT:    vmv.v.v v8, v12
 ; CHECK-NEXT:    ret
   %vd = call <8 x float> @llvm.experimental.constrained.fma.v8f32(<8 x float> %vb, <8 x float> %vc, <8 x float> %va, metadata !"round.dynamic", metadata !"fpexcept.strict")
   ret <8 x float> %vd
@@ -466,7 +478,8 @@ define <8 x float> @vfmadd_vf_v8f32(<8 x float> %va, <8 x float> %vb, float %c) 
 ; CHECK-LABEL: vfmadd_vf_v8f32:
 ; CHECK:       # %bb.0:
 ; CHECK-NEXT:    vsetivli zero, 8, e32, m2, ta, ma
-; CHECK-NEXT:    vfmacc.vf v8, fa0, v10
+; CHECK-NEXT:    vfmadd.vf v10, fa0, v8
+; CHECK-NEXT:    vmv.v.v v8, v10
 ; CHECK-NEXT:    ret
   %head = insertelement <8 x float> poison, float %c, i32 0
   %splat = shufflevector <8 x float> %head, <8 x float> poison, <8 x i32> zeroinitializer
@@ -500,7 +513,8 @@ define <2 x double> @vfmadd_vv_v2f64(<2 x double> %va, <2 x double> %vb, <2 x do
 ; CHECK-LABEL: vfmadd_vv_v2f64:
 ; CHECK:       # %bb.0:
 ; CHECK-NEXT:    vsetivli zero, 2, e64, m1, ta, ma
-; CHECK-NEXT:    vfmadd.vv v8, v10, v9
+; CHECK-NEXT:    vfmadd.vv v10, v8, v9
+; CHECK-NEXT:    vmv.v.v v8, v10
 ; CHECK-NEXT:    ret
   %vd = call <2 x double> @llvm.experimental.constrained.fma.v2f64(<2 x double> %va, <2 x double> %vc, <2 x double> %vb, metadata !"round.dynamic", metadata !"fpexcept.strict")
   ret <2 x double> %vd
@@ -510,7 +524,8 @@ define <2 x double> @vfmadd_vf_v2f64(<2 x double> %va, <2 x double> %vb, double 
 ; CHECK-LABEL: vfmadd_vf_v2f64:
 ; CHECK:       # %bb.0:
 ; CHECK-NEXT:    vsetivli zero, 2, e64, m1, ta, ma
-; CHECK-NEXT:    vfmacc.vf v8, fa0, v9
+; CHECK-NEXT:    vfmadd.vf v9, fa0, v8
+; CHECK-NEXT:    vmv.v.v v8, v9
 ; CHECK-NEXT:    ret
   %head = insertelement <2 x double> poison, double %c, i32 0
   %splat = shufflevector <2 x double> %head, <2 x double> poison, <2 x i32> zeroinitializer
@@ -544,7 +559,8 @@ define <8 x double> @vfmadd_vv_v8f64(<8 x double> %va, <8 x double> %vb, <8 x do
 ; CHECK-LABEL: vfmadd_vv_v8f64:
 ; CHECK:       # %bb.0:
 ; CHECK-NEXT:    vsetivli zero, 8, e64, m4, ta, ma
-; CHECK-NEXT:    vfmacc.vv v8, v16, v12
+; CHECK-NEXT:    vfmadd.vv v16, v12, v8
+; CHECK-NEXT:    vmv.v.v v8, v16
 ; CHECK-NEXT:    ret
   %vd = call <8 x double> @llvm.experimental.constrained.fma.v8f64(<8 x double> %vb, <8 x double> %vc, <8 x double> %va, metadata !"round.dynamic", metadata !"fpexcept.strict")
   ret <8 x double> %vd
@@ -554,7 +570,8 @@ define <8 x double> @vfmadd_vf_v8f64(<8 x double> %va, <8 x double> %vb, double 
 ; CHECK-LABEL: vfmadd_vf_v8f64:
 ; CHECK:       # %bb.0:
 ; CHECK-NEXT:    vsetivli zero, 8, e64, m4, ta, ma
-; CHECK-NEXT:    vfmacc.vf v8, fa0, v12
+; CHECK-NEXT:    vfmadd.vf v12, fa0, v8
+; CHECK-NEXT:    vmv.v.v v8, v12
 ; CHECK-NEXT:    ret
   %head = insertelement <8 x double> poison, double %c, i32 0
   %splat = shufflevector <8 x double> %head, <8 x double> poison, <8 x i32> zeroinitializer

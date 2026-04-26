@@ -451,31 +451,29 @@ define i32 @MaxValue(i32 %n, ptr nocapture readonly %a) #0 {
 ;
 ; CHECK-FORCEALL-LABEL: MaxValue:
 ; CHECK-FORCEALL:       # %bb.0: # %entry
-; CHECK-FORCEALL-NEXT:    movl (%rsi), %r8d
+; CHECK-FORCEALL-NEXT:    movl (%rsi), %eax
 ; CHECK-FORCEALL-NEXT:    cmpl $2, %edi
-; CHECK-FORCEALL-NEXT:    jge .LBB4_3
-; CHECK-FORCEALL-NEXT:  # %bb.1:
-; CHECK-FORCEALL-NEXT:    movl %r8d, %eax
-; CHECK-FORCEALL-NEXT:  .LBB4_2: # %for.cond.cleanup
-; CHECK-FORCEALL-NEXT:    retq
-; CHECK-FORCEALL-NEXT:  .LBB4_3: # %for.body.preheader
+; CHECK-FORCEALL-NEXT:    jl .LBB4_5
+; CHECK-FORCEALL-NEXT:  # %bb.1: # %for.body.preheader
 ; CHECK-FORCEALL-NEXT:    movl %edi, %ecx
 ; CHECK-FORCEALL-NEXT:    movl $1, %edx
-; CHECK-FORCEALL-NEXT:  .LBB4_4: # %for.body
+; CHECK-FORCEALL-NEXT:    movl %eax, %edi
+; CHECK-FORCEALL-NEXT:  .LBB4_2: # %for.body
 ; CHECK-FORCEALL-NEXT:    # =>This Inner Loop Header: Depth=1
 ; CHECK-FORCEALL-NEXT:    movl (%rsi,%rdx,4), %eax
-; CHECK-FORCEALL-NEXT:    cmpl %r8d, %eax
-; CHECK-FORCEALL-NEXT:    jg .LBB4_6
-; CHECK-FORCEALL-NEXT:  # %bb.5: # %for.body
-; CHECK-FORCEALL-NEXT:    # in Loop: Header=BB4_4 Depth=1
-; CHECK-FORCEALL-NEXT:    movl %r8d, %eax
-; CHECK-FORCEALL-NEXT:  .LBB4_6: # %for.body
-; CHECK-FORCEALL-NEXT:    # in Loop: Header=BB4_4 Depth=1
+; CHECK-FORCEALL-NEXT:    cmpl %edi, %eax
+; CHECK-FORCEALL-NEXT:    jg .LBB4_4
+; CHECK-FORCEALL-NEXT:  # %bb.3: # %for.body
+; CHECK-FORCEALL-NEXT:    # in Loop: Header=BB4_2 Depth=1
+; CHECK-FORCEALL-NEXT:    movl %edi, %eax
+; CHECK-FORCEALL-NEXT:  .LBB4_4: # %for.body
+; CHECK-FORCEALL-NEXT:    # in Loop: Header=BB4_2 Depth=1
 ; CHECK-FORCEALL-NEXT:    addq $1, %rdx
-; CHECK-FORCEALL-NEXT:    movl %eax, %r8d
+; CHECK-FORCEALL-NEXT:    movl %eax, %edi
 ; CHECK-FORCEALL-NEXT:    cmpq %rdx, %rcx
-; CHECK-FORCEALL-NEXT:    je .LBB4_2
-; CHECK-FORCEALL-NEXT:    jmp .LBB4_4
+; CHECK-FORCEALL-NEXT:    jne .LBB4_2
+; CHECK-FORCEALL-NEXT:  .LBB4_5: # %for.cond.cleanup
+; CHECK-FORCEALL-NEXT:    retq
 entry:
   %0 = load i32, ptr %a, align 4
   %cmp13 = icmp sgt i32 %n, 1
@@ -600,10 +598,10 @@ define void @Transform(ptr%arr, ptr%arr2, i32 %a, i32 %b, i32 %c, i32 %n) #0 {
 ; CHECK-NEXT:    jne .LBB6_5
 ; CHECK-NEXT:  # %bb.1: # %while.body.preheader
 ; CHECK-NEXT:    movl %edx, %ecx
-; CHECK-NEXT:    xorl %esi, %esi
+; CHECK-NEXT:    xorl %eax, %eax
 ; CHECK-NEXT:  .LBB6_2: # %while.body
 ; CHECK-NEXT:    # =>This Inner Loop Header: Depth=1
-; CHECK-NEXT:    movslq %esi, %rsi
+; CHECK-NEXT:    movslq %eax, %rsi
 ; CHECK-NEXT:    movl (%rdi,%rsi,4), %eax
 ; CHECK-NEXT:    xorl %edx, %edx
 ; CHECK-NEXT:    divl %ecx
@@ -621,8 +619,8 @@ define void @Transform(ptr%arr, ptr%arr2, i32 %a, i32 %b, i32 %c, i32 %n) #0 {
 ; CHECK-NEXT:    xorl %edx, %edx
 ; CHECK-NEXT:    divl %r8d
 ; CHECK-NEXT:    movl %edx, (%rdi,%rsi,4)
-; CHECK-NEXT:    addl $1, %esi
-; CHECK-NEXT:    cmpl %r9d, %esi
+; CHECK-NEXT:    leal 1(%rsi), %eax
+; CHECK-NEXT:    cmpl %r9d, %eax
 ; CHECK-NEXT:    ja .LBB6_2
 ; CHECK-NEXT:  .LBB6_5: # %while.end
 ; CHECK-NEXT:    retq
@@ -634,10 +632,10 @@ define void @Transform(ptr%arr, ptr%arr2, i32 %a, i32 %b, i32 %c, i32 %n) #0 {
 ; CHECK-FORCEALL-NEXT:    jne .LBB6_5
 ; CHECK-FORCEALL-NEXT:  # %bb.1: # %while.body.preheader
 ; CHECK-FORCEALL-NEXT:    movl %edx, %ecx
-; CHECK-FORCEALL-NEXT:    xorl %esi, %esi
+; CHECK-FORCEALL-NEXT:    xorl %eax, %eax
 ; CHECK-FORCEALL-NEXT:  .LBB6_2: # %while.body
 ; CHECK-FORCEALL-NEXT:    # =>This Inner Loop Header: Depth=1
-; CHECK-FORCEALL-NEXT:    movslq %esi, %rsi
+; CHECK-FORCEALL-NEXT:    movslq %eax, %rsi
 ; CHECK-FORCEALL-NEXT:    movl (%rdi,%rsi,4), %eax
 ; CHECK-FORCEALL-NEXT:    xorl %edx, %edx
 ; CHECK-FORCEALL-NEXT:    divl %ecx
@@ -655,8 +653,8 @@ define void @Transform(ptr%arr, ptr%arr2, i32 %a, i32 %b, i32 %c, i32 %n) #0 {
 ; CHECK-FORCEALL-NEXT:    xorl %edx, %edx
 ; CHECK-FORCEALL-NEXT:    divl %r8d
 ; CHECK-FORCEALL-NEXT:    movl %edx, (%rdi,%rsi,4)
-; CHECK-FORCEALL-NEXT:    addl $1, %esi
-; CHECK-FORCEALL-NEXT:    cmpl %r9d, %esi
+; CHECK-FORCEALL-NEXT:    leal 1(%rsi), %eax
+; CHECK-FORCEALL-NEXT:    cmpl %r9d, %eax
 ; CHECK-FORCEALL-NEXT:    ja .LBB6_2
 ; CHECK-FORCEALL-NEXT:  .LBB6_5: # %while.end
 ; CHECK-FORCEALL-NEXT:    retq
@@ -716,16 +714,16 @@ entry:
 define i32 @test_cmov_memoperand_unpredictable(i32 %a, i32 %b, i32 %x, ptr %y) #0 {
 ; CHECK-LABEL: test_cmov_memoperand_unpredictable:
 ; CHECK:       # %bb.0: # %entry
-; CHECK-NEXT:    movl %edx, %eax
 ; CHECK-NEXT:    cmpl %esi, %edi
-; CHECK-NEXT:    cmovbel (%rcx), %eax
+; CHECK-NEXT:    movl (%rcx), %eax
+; CHECK-NEXT:    cmoval %edx, %eax
 ; CHECK-NEXT:    retq
 ;
 ; CHECK-FORCEALL-LABEL: test_cmov_memoperand_unpredictable:
 ; CHECK-FORCEALL:       # %bb.0: # %entry
-; CHECK-FORCEALL-NEXT:    movl %edx, %eax
 ; CHECK-FORCEALL-NEXT:    cmpl %esi, %edi
-; CHECK-FORCEALL-NEXT:    cmovbel (%rcx), %eax
+; CHECK-FORCEALL-NEXT:    movl (%rcx), %eax
+; CHECK-FORCEALL-NEXT:    cmoval %edx, %eax
 ; CHECK-FORCEALL-NEXT:    retq
 entry:
   %cond = icmp ugt i32 %a, %b
@@ -739,32 +737,34 @@ entry:
 define i32 @test_cmov_memoperand_in_group(i32 %a, i32 %b, i32 %x, ptr %y.ptr) #0 {
 ; CHECK-LABEL: test_cmov_memoperand_in_group:
 ; CHECK:       # %bb.0: # %entry
+; CHECK-NEXT:    # kill: def $edx killed $edx def $rdx
 ; CHECK-NEXT:    movl %edx, %eax
 ; CHECK-NEXT:    movl %edx, %r8d
 ; CHECK-NEXT:    cmpl %esi, %edi
 ; CHECK-NEXT:    ja .LBB9_2
 ; CHECK-NEXT:  # %bb.1: # %entry
-; CHECK-NEXT:    movl (%rcx), %edx
-; CHECK-NEXT:    movl %edi, %eax
+; CHECK-NEXT:    movl (%rcx), %eax
+; CHECK-NEXT:    movl %edi, %edx
 ; CHECK-NEXT:    movl %esi, %r8d
 ; CHECK-NEXT:  .LBB9_2: # %entry
-; CHECK-NEXT:    addl %r8d, %eax
-; CHECK-NEXT:    addl %edx, %eax
+; CHECK-NEXT:    leal (%rdx,%r8), %ecx
+; CHECK-NEXT:    addl %ecx, %eax
 ; CHECK-NEXT:    retq
 ;
 ; CHECK-FORCEALL-LABEL: test_cmov_memoperand_in_group:
 ; CHECK-FORCEALL:       # %bb.0: # %entry
+; CHECK-FORCEALL-NEXT:    # kill: def $edx killed $edx def $rdx
 ; CHECK-FORCEALL-NEXT:    movl %edx, %eax
 ; CHECK-FORCEALL-NEXT:    movl %edx, %r8d
 ; CHECK-FORCEALL-NEXT:    cmpl %esi, %edi
 ; CHECK-FORCEALL-NEXT:    ja .LBB9_2
 ; CHECK-FORCEALL-NEXT:  # %bb.1: # %entry
-; CHECK-FORCEALL-NEXT:    movl (%rcx), %edx
-; CHECK-FORCEALL-NEXT:    movl %edi, %eax
+; CHECK-FORCEALL-NEXT:    movl (%rcx), %eax
+; CHECK-FORCEALL-NEXT:    movl %edi, %edx
 ; CHECK-FORCEALL-NEXT:    movl %esi, %r8d
 ; CHECK-FORCEALL-NEXT:  .LBB9_2: # %entry
-; CHECK-FORCEALL-NEXT:    addl %r8d, %eax
-; CHECK-FORCEALL-NEXT:    addl %edx, %eax
+; CHECK-FORCEALL-NEXT:    leal (%rdx,%r8), %ecx
+; CHECK-FORCEALL-NEXT:    addl %ecx, %eax
 ; CHECK-FORCEALL-NEXT:    retq
 entry:
   %cond = icmp ugt i32 %a, %b
@@ -781,32 +781,34 @@ entry:
 define i32 @test_cmov_memoperand_in_group2(i32 %a, i32 %b, i32 %x, ptr %y.ptr) #0 {
 ; CHECK-LABEL: test_cmov_memoperand_in_group2:
 ; CHECK:       # %bb.0: # %entry
-; CHECK-NEXT:    movl %edx, %eax
+; CHECK-NEXT:    # kill: def $edx killed $edx def $rdx
 ; CHECK-NEXT:    movl %edx, %r8d
+; CHECK-NEXT:    movl %edx, %eax
 ; CHECK-NEXT:    cmpl %esi, %edi
 ; CHECK-NEXT:    jbe .LBB10_2
 ; CHECK-NEXT:  # %bb.1: # %entry
-; CHECK-NEXT:    movl (%rcx), %edx
-; CHECK-NEXT:    movl %edi, %eax
-; CHECK-NEXT:    movl %esi, %r8d
+; CHECK-NEXT:    movl (%rcx), %r8d
+; CHECK-NEXT:    movl %edi, %edx
+; CHECK-NEXT:    movl %esi, %eax
 ; CHECK-NEXT:  .LBB10_2: # %entry
-; CHECK-NEXT:    addl %r8d, %eax
 ; CHECK-NEXT:    addl %edx, %eax
+; CHECK-NEXT:    addl %r8d, %eax
 ; CHECK-NEXT:    retq
 ;
 ; CHECK-FORCEALL-LABEL: test_cmov_memoperand_in_group2:
 ; CHECK-FORCEALL:       # %bb.0: # %entry
-; CHECK-FORCEALL-NEXT:    movl %edx, %eax
+; CHECK-FORCEALL-NEXT:    # kill: def $edx killed $edx def $rdx
 ; CHECK-FORCEALL-NEXT:    movl %edx, %r8d
+; CHECK-FORCEALL-NEXT:    movl %edx, %eax
 ; CHECK-FORCEALL-NEXT:    cmpl %esi, %edi
 ; CHECK-FORCEALL-NEXT:    jbe .LBB10_2
 ; CHECK-FORCEALL-NEXT:  # %bb.1: # %entry
-; CHECK-FORCEALL-NEXT:    movl (%rcx), %edx
-; CHECK-FORCEALL-NEXT:    movl %edi, %eax
-; CHECK-FORCEALL-NEXT:    movl %esi, %r8d
+; CHECK-FORCEALL-NEXT:    movl (%rcx), %r8d
+; CHECK-FORCEALL-NEXT:    movl %edi, %edx
+; CHECK-FORCEALL-NEXT:    movl %esi, %eax
 ; CHECK-FORCEALL-NEXT:  .LBB10_2: # %entry
-; CHECK-FORCEALL-NEXT:    addl %r8d, %eax
 ; CHECK-FORCEALL-NEXT:    addl %edx, %eax
+; CHECK-FORCEALL-NEXT:    addl %r8d, %eax
 ; CHECK-FORCEALL-NEXT:    retq
 entry:
   %cond = icmp ugt i32 %a, %b
@@ -825,19 +827,21 @@ define i32 @test_cmov_memoperand_conflicting_dir(i32 %a, i32 %b, i32 %x, ptr %y1
 ; CHECK-LABEL: test_cmov_memoperand_conflicting_dir:
 ; CHECK:       # %bb.0: # %entry
 ; CHECK-NEXT:    cmpl %esi, %edi
-; CHECK-NEXT:    movl (%rcx), %eax
-; CHECK-NEXT:    cmoval %edx, %eax
-; CHECK-NEXT:    cmoval (%r8), %edx
-; CHECK-NEXT:    addl %edx, %eax
+; CHECK-NEXT:    movl (%rcx), %ecx
+; CHECK-NEXT:    cmoval %edx, %ecx
+; CHECK-NEXT:    movl (%r8), %eax
+; CHECK-NEXT:    cmovbel %edx, %eax
+; CHECK-NEXT:    addl %ecx, %eax
 ; CHECK-NEXT:    retq
 ;
 ; CHECK-FORCEALL-LABEL: test_cmov_memoperand_conflicting_dir:
 ; CHECK-FORCEALL:       # %bb.0: # %entry
 ; CHECK-FORCEALL-NEXT:    cmpl %esi, %edi
-; CHECK-FORCEALL-NEXT:    movl (%rcx), %eax
-; CHECK-FORCEALL-NEXT:    cmoval %edx, %eax
-; CHECK-FORCEALL-NEXT:    cmoval (%r8), %edx
-; CHECK-FORCEALL-NEXT:    addl %edx, %eax
+; CHECK-FORCEALL-NEXT:    movl (%rcx), %ecx
+; CHECK-FORCEALL-NEXT:    cmoval %edx, %ecx
+; CHECK-FORCEALL-NEXT:    movl (%r8), %eax
+; CHECK-FORCEALL-NEXT:    cmovbel %edx, %eax
+; CHECK-FORCEALL-NEXT:    addl %ecx, %eax
 ; CHECK-FORCEALL-NEXT:    retq
 entry:
   %cond = icmp ugt i32 %a, %b

@@ -17,7 +17,8 @@ define i64 @test_builtin_read_pmc(i32 %ID) {
 ; X64-NEXT:    movl %edi, %ecx
 ; X64-NEXT:    rdpmc
 ; X64-NEXT:    shlq $32, %rdx
-; X64-NEXT:    orq %rdx, %rax
+; X64-NEXT:    orq %rax, %rdx
+; X64-NEXT:    movq %rdx, %rax
 ; X64-NEXT:    retq
   %1 = tail call i64 @llvm.x86.rdpmc(i32 %ID)
   ret i64 %1

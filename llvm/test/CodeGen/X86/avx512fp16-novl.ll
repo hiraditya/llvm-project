@@ -198,7 +198,7 @@ define <8 x half> @select(<8 x half> %x) {
 ; CHECK-NEXT:    kshiftlw $7, %k1, %k1
 ; CHECK-NEXT:    korw %k1, %k0, %k1
 ; CHECK-NEXT:    vpbroadcastw {{.*#+}} xmm1 = [1.0E+0,1.0E+0,1.0E+0,1.0E+0,1.0E+0,1.0E+0,1.0E+0,1.0E+0]
-; CHECK-NEXT:    vmovdqu16 %zmm1, %zmm0 {%k1}
+; CHECK-NEXT:    vpblendmw %zmm1, %zmm0, %zmm0 {%k1}
 ; CHECK-NEXT:    # kill: def $xmm0 killed $xmm0 killed $zmm0
 ; CHECK-NEXT:    vzeroupper
 ; CHECK-NEXT:    retq

@@ -30,7 +30,8 @@ define i128 @i64_zext_sext_i128(i64 %a, i64 %b) {
 ; CHECK-NEXT:    mulq %rsi
 ; CHECK-NEXT:    sarq $63, %rsi
 ; CHECK-NEXT:    imulq %rdi, %rsi
-; CHECK-NEXT:    addq %rsi, %rdx
+; CHECK-NEXT:    addq %rdx, %rsi
+; CHECK-NEXT:    movq %rsi, %rdx
 ; CHECK-NEXT:    retq
   %aa = zext i64 %a to i128
   %bb = sext i64 %b to i128
@@ -46,7 +47,8 @@ define i128 @i64_sext_zext_i128(i64 %a, i64 %b) {
 ; CHECK-NEXT:    sarq $63, %rcx
 ; CHECK-NEXT:    mulq %rsi
 ; CHECK-NEXT:    imulq %rsi, %rcx
-; CHECK-NEXT:    addq %rcx, %rdx
+; CHECK-NEXT:    addq %rdx, %rcx
+; CHECK-NEXT:    movq %rcx, %rdx
 ; CHECK-NEXT:    retq
   %aa = sext i64 %a to i128
   %bb = zext i64 %b to i128

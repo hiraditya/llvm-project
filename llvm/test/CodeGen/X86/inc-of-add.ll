@@ -12,8 +12,9 @@
 define i8 @scalar_i8(i8 %x, i8 %y) nounwind {
 ; X86-LABEL: scalar_i8:
 ; X86:       # %bb.0:
+; X86-NEXT:    movzbl {{[0-9]+}}(%esp), %ecx
 ; X86-NEXT:    movzbl {{[0-9]+}}(%esp), %eax
-; X86-NEXT:    addb {{[0-9]+}}(%esp), %al
+; X86-NEXT:    addb %cl, %al
 ; X86-NEXT:    incb %al
 ; X86-NEXT:    retl
 ;
@@ -22,7 +23,7 @@ define i8 @scalar_i8(i8 %x, i8 %y) nounwind {
 ; X64-NEXT:    # kill: def $esi killed $esi def $rsi
 ; X64-NEXT:    # kill: def $edi killed $edi def $rdi
 ; X64-NEXT:    leal (%rdi,%rsi), %eax
-; X64-NEXT:    incb %al
+; X64-NEXT:    incl %eax
 ; X64-NEXT:    # kill: def $al killed $al killed $eax
 ; X64-NEXT:    retq
   %t0 = add i8 %x, 1
@@ -34,8 +35,9 @@ define i16 @scalar_i16(i16 %x, i16 %y) nounwind {
 ; X86-LABEL: scalar_i16:
 ; X86:       # %bb.0:
 ; X86-NEXT:    movzwl {{[0-9]+}}(%esp), %eax
-; X86-NEXT:    addw {{[0-9]+}}(%esp), %ax
-; X86-NEXT:    incl %eax
+; X86-NEXT:    movzwl {{[0-9]+}}(%esp), %ecx
+; X86-NEXT:    addw %ax, %cx
+; X86-NEXT:    leal 1(%ecx), %eax
 ; X86-NEXT:    # kill: def $ax killed $ax killed $eax
 ; X86-NEXT:    retl
 ;
@@ -81,12 +83,16 @@ define i32 @scalar_i32(i32 %x, i32 %y) nounwind {
 define i64 @scalar_i64(i64 %x, i64 %y) nounwind {
 ; X86-LABEL: scalar_i64:
 ; X86:       # %bb.0:
+; X86-NEXT:    pushl %esi
+; X86-NEXT:    movl {{[0-9]+}}(%esp), %ecx
+; X86-NEXT:    movl {{[0-9]+}}(%esp), %esi
 ; X86-NEXT:    movl {{[0-9]+}}(%esp), %eax
+; X86-NEXT:    addl %ecx, %eax
 ; X86-NEXT:    movl {{[0-9]+}}(%esp), %edx
-; X86-NEXT:    addl {{[0-9]+}}(%esp), %eax
-; X86-NEXT:    adcl {{[0-9]+}}(%esp), %edx
+; X86-NEXT:    adcl %esi, %edx
 ; X86-NEXT:    addl $1, %eax
 ; X86-NEXT:    adcl $0, %edx
+; X86-NEXT:    popl %esi
 ; X86-NEXT:    retl
 ;
 ; X64-LABEL: scalar_i64:

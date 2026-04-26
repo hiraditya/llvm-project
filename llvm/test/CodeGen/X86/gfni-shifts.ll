@@ -16,8 +16,9 @@ define <16 x i8> @var_shl_v16i8(<16 x i8> %a, <16 x i8> %b) nounwind {
 ; GFNISSE-NEXT:    pshufb %xmm1, %xmm2
 ; GFNISSE-NEXT:    movq {{.*#+}} xmm3 = [72909780498219007,0]
 ; GFNISSE-NEXT:    pshufb %xmm1, %xmm3
-; GFNISSE-NEXT:    pand %xmm3, %xmm0
-; GFNISSE-NEXT:    gf2p8mulb %xmm2, %xmm0
+; GFNISSE-NEXT:    pand %xmm0, %xmm3
+; GFNISSE-NEXT:    gf2p8mulb %xmm3, %xmm2
+; GFNISSE-NEXT:    movdqa %xmm2, %xmm0
 ; GFNISSE-NEXT:    retq
 ;
 ; GFNIAVX1OR2-LABEL: var_shl_v16i8:
@@ -58,9 +59,9 @@ define <16 x i8> @var_lshr_v16i8(<16 x i8> %a, <16 x i8> %b) nounwind {
 ; GFNISSE-NEXT:    pshufb %xmm1, %xmm2
 ; GFNISSE-NEXT:    movdqa {{.*#+}} xmm3 = [1,2,4,8,16,32,64,128,1,2,4,8,16,32,64,128]
 ; GFNISSE-NEXT:    gf2p8affineqb $0, %xmm3, %xmm0
-; GFNISSE-NEXT:    pand %xmm2, %xmm0
-; GFNISSE-NEXT:    movq {{.*#+}} xmm2 = [9241421688590303745,0]
-; GFNISSE-NEXT:    pshufb %xmm1, %xmm2
+; GFNISSE-NEXT:    pand %xmm0, %xmm2
+; GFNISSE-NEXT:    movq {{.*#+}} xmm0 = [9241421688590303745,0]
+; GFNISSE-NEXT:    pshufb %xmm1, %xmm0
 ; GFNISSE-NEXT:    gf2p8mulb %xmm2, %xmm0
 ; GFNISSE-NEXT:    gf2p8affineqb $0, %xmm3, %xmm0
 ; GFNISSE-NEXT:    retq
@@ -194,13 +195,14 @@ define <16 x i8> @var_ashr_v16i8(<16 x i8> %a, <16 x i8> %b) nounwind {
 define <16 x i8> @splatvar_shl_v16i8(<16 x i8> %a, <16 x i8> %b) nounwind {
 ; GFNISSE-LABEL: splatvar_shl_v16i8:
 ; GFNISSE:       # %bb.0:
-; GFNISSE-NEXT:    pmovzxbq {{.*#+}} xmm1 = xmm1[0],zero,zero,zero,zero,zero,zero,zero,xmm1[1],zero,zero,zero,zero,zero,zero,zero
-; GFNISSE-NEXT:    psllw %xmm1, %xmm0
-; GFNISSE-NEXT:    pcmpeqd %xmm2, %xmm2
-; GFNISSE-NEXT:    psllw %xmm1, %xmm2
-; GFNISSE-NEXT:    pxor %xmm1, %xmm1
-; GFNISSE-NEXT:    pshufb %xmm1, %xmm2
-; GFNISSE-NEXT:    pand %xmm2, %xmm0
+; GFNISSE-NEXT:    pmovzxbq {{.*#+}} xmm2 = xmm1[0],zero,zero,zero,zero,zero,zero,zero,xmm1[1],zero,zero,zero,zero,zero,zero,zero
+; GFNISSE-NEXT:    psllw %xmm2, %xmm0
+; GFNISSE-NEXT:    pcmpeqd %xmm1, %xmm1
+; GFNISSE-NEXT:    psllw %xmm2, %xmm1
+; GFNISSE-NEXT:    pxor %xmm2, %xmm2
+; GFNISSE-NEXT:    pshufb %xmm2, %xmm1
+; GFNISSE-NEXT:    pand %xmm0, %xmm1
+; GFNISSE-NEXT:    movdqa %xmm1, %xmm0
 ; GFNISSE-NEXT:    retq
 ;
 ; GFNIAVX1-LABEL: splatvar_shl_v16i8:
@@ -249,12 +251,13 @@ define <16 x i8> @splatvar_shl_v16i8(<16 x i8> %a, <16 x i8> %b) nounwind {
 define <16 x i8> @splatvar_lshr_v16i8(<16 x i8> %a, <16 x i8> %b) nounwind {
 ; GFNISSE-LABEL: splatvar_lshr_v16i8:
 ; GFNISSE:       # %bb.0:
-; GFNISSE-NEXT:    pmovzxbq {{.*#+}} xmm1 = xmm1[0],zero,zero,zero,zero,zero,zero,zero,xmm1[1],zero,zero,zero,zero,zero,zero,zero
-; GFNISSE-NEXT:    psrlw %xmm1, %xmm0
-; GFNISSE-NEXT:    pcmpeqd %xmm2, %xmm2
-; GFNISSE-NEXT:    psrlw %xmm1, %xmm2
-; GFNISSE-NEXT:    pshufb {{.*#+}} xmm2 = xmm2[1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1]
-; GFNISSE-NEXT:    pand %xmm2, %xmm0
+; GFNISSE-NEXT:    pmovzxbq {{.*#+}} xmm2 = xmm1[0],zero,zero,zero,zero,zero,zero,zero,xmm1[1],zero,zero,zero,zero,zero,zero,zero
+; GFNISSE-NEXT:    psrlw %xmm2, %xmm0
+; GFNISSE-NEXT:    pcmpeqd %xmm1, %xmm1
+; GFNISSE-NEXT:    psrlw %xmm2, %xmm1
+; GFNISSE-NEXT:    pshufb {{.*#+}} xmm1 = xmm1[1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1]
+; GFNISSE-NEXT:    pand %xmm0, %xmm1
+; GFNISSE-NEXT:    movdqa %xmm1, %xmm0
 ; GFNISSE-NEXT:    retq
 ;
 ; GFNIAVX1-LABEL: splatvar_lshr_v16i8:
@@ -303,16 +306,17 @@ define <16 x i8> @splatvar_lshr_v16i8(<16 x i8> %a, <16 x i8> %b) nounwind {
 define <16 x i8> @splatvar_ashr_v16i8(<16 x i8> %a, <16 x i8> %b) nounwind {
 ; GFNISSE-LABEL: splatvar_ashr_v16i8:
 ; GFNISSE:       # %bb.0:
-; GFNISSE-NEXT:    pmovzxbq {{.*#+}} xmm1 = xmm1[0],zero,zero,zero,zero,zero,zero,zero,xmm1[1],zero,zero,zero,zero,zero,zero,zero
-; GFNISSE-NEXT:    psrlw %xmm1, %xmm0
-; GFNISSE-NEXT:    pcmpeqd %xmm2, %xmm2
-; GFNISSE-NEXT:    psrlw %xmm1, %xmm2
-; GFNISSE-NEXT:    pshufb {{.*#+}} xmm2 = xmm2[1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1]
-; GFNISSE-NEXT:    pand %xmm2, %xmm0
-; GFNISSE-NEXT:    movdqa {{.*#+}} xmm2 = [32896,32896,32896,32896,32896,32896,32896,32896]
-; GFNISSE-NEXT:    psrlw %xmm1, %xmm2
-; GFNISSE-NEXT:    pxor %xmm2, %xmm0
-; GFNISSE-NEXT:    psubb %xmm2, %xmm0
+; GFNISSE-NEXT:    pmovzxbq {{.*#+}} xmm2 = xmm1[0],zero,zero,zero,zero,zero,zero,zero,xmm1[1],zero,zero,zero,zero,zero,zero,zero
+; GFNISSE-NEXT:    psrlw %xmm2, %xmm0
+; GFNISSE-NEXT:    pcmpeqd %xmm1, %xmm1
+; GFNISSE-NEXT:    psrlw %xmm2, %xmm1
+; GFNISSE-NEXT:    pshufb {{.*#+}} xmm1 = xmm1[1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1]
+; GFNISSE-NEXT:    pand %xmm0, %xmm1
+; GFNISSE-NEXT:    movdqa {{.*#+}} xmm0 = [32896,32896,32896,32896,32896,32896,32896,32896]
+; GFNISSE-NEXT:    psrlw %xmm2, %xmm0
+; GFNISSE-NEXT:    pxor %xmm0, %xmm1
+; GFNISSE-NEXT:    psubb %xmm0, %xmm1
+; GFNISSE-NEXT:    movdqa %xmm1, %xmm0
 ; GFNISSE-NEXT:    retq
 ;
 ; GFNIAVX1-LABEL: splatvar_ashr_v16i8:
@@ -369,12 +373,13 @@ define <16 x i8> @splatvar_ashr_v16i8(<16 x i8> %a, <16 x i8> %b) nounwind {
 define <16 x i8> @constant_shl_v16i8(<16 x i8> %a) nounwind {
 ; GFNISSE-LABEL: constant_shl_v16i8:
 ; GFNISSE:       # %bb.0:
-; GFNISSE-NEXT:    movdqa %xmm0, %xmm1
-; GFNISSE-NEXT:    pmaddubsw {{\.?LCPI[0-9]+_[0-9]+}}(%rip), %xmm1 # [0,2,0,8,0,32,0,128,0,64,0,16,0,4,0,1]
-; GFNISSE-NEXT:    psllw $8, %xmm1
-; GFNISSE-NEXT:    pmullw {{\.?LCPI[0-9]+_[0-9]+}}(%rip), %xmm0 # [1,2,4,8,16,32,64,128,128,64,32,16,8,4,2,1]
-; GFNISSE-NEXT:    pand {{\.?LCPI[0-9]+_[0-9]+}}(%rip), %xmm0
-; GFNISSE-NEXT:    por %xmm1, %xmm0
+; GFNISSE-NEXT:    movdqa {{.*#+}} xmm1 = [1,2,4,8,16,32,64,128,128,64,32,16,8,4,2,1]
+; GFNISSE-NEXT:    pmullw %xmm0, %xmm1
+; GFNISSE-NEXT:    pmaddubsw {{\.?LCPI[0-9]+_[0-9]+}}(%rip), %xmm0 # [0,2,0,8,0,32,0,128,0,64,0,16,0,4,0,1]
+; GFNISSE-NEXT:    psllw $8, %xmm0
+; GFNISSE-NEXT:    pmovzxbw {{.*#+}} xmm2 = [255,255,255,255,255,255,255,255]
+; GFNISSE-NEXT:    pand %xmm1, %xmm2
+; GFNISSE-NEXT:    por %xmm2, %xmm0
 ; GFNISSE-NEXT:    retq
 ;
 ; GFNIAVX1-LABEL: constant_shl_v16i8:
@@ -420,8 +425,10 @@ define <16 x i8> @constant_lshr_v16i8(<16 x i8> %a) nounwind {
 ; GFNISSE:       # %bb.0:
 ; GFNISSE-NEXT:    movdqa {{.*#+}} xmm1 = [1,2,4,8,16,32,64,128,1,2,4,8,16,32,64,128]
 ; GFNISSE-NEXT:    gf2p8affineqb $0, %xmm1, %xmm0
-; GFNISSE-NEXT:    pand {{\.?LCPI[0-9]+_[0-9]+}}(%rip), %xmm0
-; GFNISSE-NEXT:    gf2p8mulb {{\.?LCPI[0-9]+_[0-9]+}}(%rip), %xmm0
+; GFNISSE-NEXT:    movdqa {{.*#+}} xmm2 = [255,127,63,31,15,7,3,1,1,3,7,15,31,63,127,255]
+; GFNISSE-NEXT:    pand %xmm0, %xmm2
+; GFNISSE-NEXT:    movdqa {{.*#+}} xmm0 = [1,2,4,8,16,32,64,128,128,64,32,16,8,4,2,1]
+; GFNISSE-NEXT:    gf2p8mulb %xmm2, %xmm0
 ; GFNISSE-NEXT:    gf2p8affineqb $0, %xmm1, %xmm0
 ; GFNISSE-NEXT:    retq
 ;
@@ -469,13 +476,16 @@ define <16 x i8> @constant_ashr_v16i8(<16 x i8> %a) nounwind {
 ; GFNISSE-NEXT:    movdqa %xmm0, %xmm1
 ; GFNISSE-NEXT:    punpckhbw {{.*#+}} xmm1 = xmm1[8],xmm0[8],xmm1[9],xmm0[9],xmm1[10],xmm0[10],xmm1[11],xmm0[11],xmm1[12],xmm0[12],xmm1[13],xmm0[13],xmm1[14],xmm0[14],xmm1[15],xmm0[15]
 ; GFNISSE-NEXT:    psraw $8, %xmm1
-; GFNISSE-NEXT:    pmullw {{\.?LCPI[0-9]+_[0-9]+}}(%rip), %xmm1 # [2,4,8,16,32,64,128,256]
-; GFNISSE-NEXT:    psrlw $8, %xmm1
+; GFNISSE-NEXT:    movdqa {{.*#+}} xmm2 = [2,4,8,16,32,64,128,256]
+; GFNISSE-NEXT:    pmullw %xmm1, %xmm2
+; GFNISSE-NEXT:    psrlw $8, %xmm2
 ; GFNISSE-NEXT:    punpcklbw {{.*#+}} xmm0 = xmm0[0,0,1,1,2,2,3,3,4,4,5,5,6,6,7,7]
 ; GFNISSE-NEXT:    psraw $8, %xmm0
-; GFNISSE-NEXT:    pmullw {{\.?LCPI[0-9]+_[0-9]+}}(%rip), %xmm0 # [256,128,64,32,16,8,4,2]
-; GFNISSE-NEXT:    psrlw $8, %xmm0
-; GFNISSE-NEXT:    packuswb %xmm1, %xmm0
+; GFNISSE-NEXT:    movdqa {{.*#+}} xmm1 = [256,128,64,32,16,8,4,2]
+; GFNISSE-NEXT:    pmullw %xmm0, %xmm1
+; GFNISSE-NEXT:    psrlw $8, %xmm1
+; GFNISSE-NEXT:    packuswb %xmm2, %xmm1
+; GFNISSE-NEXT:    movdqa %xmm1, %xmm0
 ; GFNISSE-NEXT:    retq
 ;
 ; GFNIAVX1-LABEL: constant_ashr_v16i8:
@@ -590,12 +600,14 @@ define <32 x i8> @var_shl_v32i8(<32 x i8> %a, <32 x i8> %b) nounwind {
 ; GFNISSE-NEXT:    movq {{.*#+}} xmm6 = [72909780498219007,0]
 ; GFNISSE-NEXT:    movdqa %xmm6, %xmm7
 ; GFNISSE-NEXT:    pshufb %xmm2, %xmm7
-; GFNISSE-NEXT:    pand %xmm7, %xmm0
-; GFNISSE-NEXT:    gf2p8mulb %xmm5, %xmm0
+; GFNISSE-NEXT:    pand %xmm0, %xmm7
+; GFNISSE-NEXT:    gf2p8mulb %xmm7, %xmm5
 ; GFNISSE-NEXT:    pshufb %xmm3, %xmm4
 ; GFNISSE-NEXT:    pshufb %xmm3, %xmm6
-; GFNISSE-NEXT:    pand %xmm6, %xmm1
-; GFNISSE-NEXT:    gf2p8mulb %xmm4, %xmm1
+; GFNISSE-NEXT:    pand %xmm1, %xmm6
+; GFNISSE-NEXT:    gf2p8mulb %xmm6, %xmm4
+; GFNISSE-NEXT:    movdqa %xmm5, %xmm0
+; GFNISSE-NEXT:    movdqa %xmm4, %xmm1
 ; GFNISSE-NEXT:    retq
 ;
 ; GFNIAVX1-LABEL: var_shl_v32i8:
@@ -651,23 +663,24 @@ define <32 x i8> @var_shl_v32i8(<32 x i8> %a, <32 x i8> %b) nounwind {
 define <32 x i8> @var_lshr_v32i8(<32 x i8> %a, <32 x i8> %b) nounwind {
 ; GFNISSE-LABEL: var_lshr_v32i8:
 ; GFNISSE:       # %bb.0:
-; GFNISSE-NEXT:    movq {{.*#+}} xmm4 = [72909780498219007,0]
-; GFNISSE-NEXT:    movdqa %xmm4, %xmm5
-; GFNISSE-NEXT:    pshufb %xmm2, %xmm5
-; GFNISSE-NEXT:    movdqa {{.*#+}} xmm6 = [1,2,4,8,16,32,64,128,1,2,4,8,16,32,64,128]
-; GFNISSE-NEXT:    gf2p8affineqb $0, %xmm6, %xmm0
-; GFNISSE-NEXT:    pand %xmm5, %xmm0
-; GFNISSE-NEXT:    movq {{.*#+}} xmm5 = [9241421688590303745,0]
-; GFNISSE-NEXT:    movdqa %xmm5, %xmm7
-; GFNISSE-NEXT:    pshufb %xmm2, %xmm7
-; GFNISSE-NEXT:    gf2p8mulb %xmm7, %xmm0
-; GFNISSE-NEXT:    gf2p8affineqb $0, %xmm6, %xmm0
-; GFNISSE-NEXT:    pshufb %xmm3, %xmm4
-; GFNISSE-NEXT:    gf2p8affineqb $0, %xmm6, %xmm1
-; GFNISSE-NEXT:    pand %xmm4, %xmm1
+; GFNISSE-NEXT:    movq {{.*#+}} xmm5 = [72909780498219007,0]
+; GFNISSE-NEXT:    movdqa %xmm5, %xmm6
+; GFNISSE-NEXT:    pshufb %xmm2, %xmm6
+; GFNISSE-NEXT:    movdqa {{.*#+}} xmm7 = [1,2,4,8,16,32,64,128,1,2,4,8,16,32,64,128]
+; GFNISSE-NEXT:    gf2p8affineqb $0, %xmm7, %xmm0
+; GFNISSE-NEXT:    pand %xmm0, %xmm6
+; GFNISSE-NEXT:    movq {{.*#+}} xmm4 = [9241421688590303745,0]
+; GFNISSE-NEXT:    movdqa %xmm4, %xmm0
+; GFNISSE-NEXT:    pshufb %xmm2, %xmm0
+; GFNISSE-NEXT:    gf2p8mulb %xmm6, %xmm0
+; GFNISSE-NEXT:    gf2p8affineqb $0, %xmm7, %xmm0
 ; GFNISSE-NEXT:    pshufb %xmm3, %xmm5
-; GFNISSE-NEXT:    gf2p8mulb %xmm5, %xmm1
-; GFNISSE-NEXT:    gf2p8affineqb $0, %xmm6, %xmm1
+; GFNISSE-NEXT:    gf2p8affineqb $0, %xmm7, %xmm1
+; GFNISSE-NEXT:    pand %xmm1, %xmm5
+; GFNISSE-NEXT:    pshufb %xmm3, %xmm4
+; GFNISSE-NEXT:    gf2p8mulb %xmm5, %xmm4
+; GFNISSE-NEXT:    gf2p8affineqb $0, %xmm7, %xmm4
+; GFNISSE-NEXT:    movdqa %xmm4, %xmm1
 ; GFNISSE-NEXT:    retq
 ;
 ; GFNIAVX1-LABEL: var_lshr_v32i8:
@@ -738,28 +751,28 @@ define <32 x i8> @var_ashr_v32i8(<32 x i8> %a, <32 x i8> %b) nounwind {
 ; GFNISSE-NEXT:    movq {{.*#+}} xmm5 = [72909780498219007,0]
 ; GFNISSE-NEXT:    movdqa %xmm5, %xmm8
 ; GFNISSE-NEXT:    pshufb %xmm2, %xmm8
-; GFNISSE-NEXT:    movdqa {{.*#+}} xmm2 = [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1]
-; GFNISSE-NEXT:    movdqa {{.*#+}} xmm6 = [1,2,4,8,16,32,64,128,1,2,4,8,16,32,64,128]
-; GFNISSE-NEXT:    gf2p8affineqb $0, %xmm6, %xmm0
+; GFNISSE-NEXT:    movdqa {{.*#+}} xmm6 = [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1]
+; GFNISSE-NEXT:    movdqa {{.*#+}} xmm2 = [1,2,4,8,16,32,64,128,1,2,4,8,16,32,64,128]
+; GFNISSE-NEXT:    gf2p8affineqb $0, %xmm2, %xmm0
 ; GFNISSE-NEXT:    pand %xmm8, %xmm0
-; GFNISSE-NEXT:    pand %xmm2, %xmm8
+; GFNISSE-NEXT:    pand %xmm6, %xmm8
 ; GFNISSE-NEXT:    gf2p8mulb %xmm7, %xmm8
-; GFNISSE-NEXT:    gf2p8affineqb $0, %xmm6, %xmm8
+; GFNISSE-NEXT:    gf2p8affineqb $0, %xmm2, %xmm8
 ; GFNISSE-NEXT:    gf2p8mulb %xmm7, %xmm0
-; GFNISSE-NEXT:    gf2p8affineqb $0, %xmm6, %xmm0
+; GFNISSE-NEXT:    gf2p8affineqb $0, %xmm2, %xmm0
 ; GFNISSE-NEXT:    pxor %xmm8, %xmm0
 ; GFNISSE-NEXT:    psubb %xmm8, %xmm0
 ; GFNISSE-NEXT:    pshufb %xmm3, %xmm4
 ; GFNISSE-NEXT:    pshufb %xmm3, %xmm5
-; GFNISSE-NEXT:    pand %xmm5, %xmm2
-; GFNISSE-NEXT:    gf2p8mulb %xmm4, %xmm2
-; GFNISSE-NEXT:    gf2p8affineqb $0, %xmm6, %xmm2
-; GFNISSE-NEXT:    gf2p8affineqb $0, %xmm6, %xmm1
+; GFNISSE-NEXT:    gf2p8affineqb $0, %xmm2, %xmm1
 ; GFNISSE-NEXT:    pand %xmm5, %xmm1
+; GFNISSE-NEXT:    pand %xmm6, %xmm5
+; GFNISSE-NEXT:    gf2p8mulb %xmm4, %xmm5
+; GFNISSE-NEXT:    gf2p8affineqb $0, %xmm2, %xmm5
 ; GFNISSE-NEXT:    gf2p8mulb %xmm4, %xmm1
-; GFNISSE-NEXT:    gf2p8affineqb $0, %xmm6, %xmm1
-; GFNISSE-NEXT:    pxor %xmm2, %xmm1
-; GFNISSE-NEXT:    psubb %xmm2, %xmm1
+; GFNISSE-NEXT:    gf2p8affineqb $0, %xmm2, %xmm1
+; GFNISSE-NEXT:    pxor %xmm5, %xmm1
+; GFNISSE-NEXT:    psubb %xmm5, %xmm1
 ; GFNISSE-NEXT:    retq
 ;
 ; GFNIAVX1-LABEL: var_ashr_v32i8:
@@ -1061,11 +1074,12 @@ define <32 x i8> @constant_shl_v32i8(<32 x i8> %a) nounwind {
 ; GFNISSE-NEXT:    pmaddubsw %xmm5, %xmm0
 ; GFNISSE-NEXT:    psllw $8, %xmm0
 ; GFNISSE-NEXT:    por %xmm3, %xmm0
-; GFNISSE-NEXT:    pmullw %xmm1, %xmm2
-; GFNISSE-NEXT:    pand %xmm4, %xmm2
+; GFNISSE-NEXT:    movdqa %xmm1, %xmm3
+; GFNISSE-NEXT:    pmullw %xmm2, %xmm3
+; GFNISSE-NEXT:    pand %xmm4, %xmm3
 ; GFNISSE-NEXT:    pmaddubsw %xmm5, %xmm1
 ; GFNISSE-NEXT:    psllw $8, %xmm1
-; GFNISSE-NEXT:    por %xmm2, %xmm1
+; GFNISSE-NEXT:    por %xmm3, %xmm1
 ; GFNISSE-NEXT:    retq
 ;
 ; GFNIAVX1-LABEL: constant_shl_v32i8:
@@ -1099,7 +1113,8 @@ define <32 x i8> @constant_shl_v32i8(<32 x i8> %a) nounwind {
 ; GFNIAVX512VL-NEXT:    vpmullw {{\.?LCPI[0-9]+_[0-9]+}}(%rip), %ymm0, %ymm1 # [1,2,4,8,16,32,64,128,128,64,32,16,8,4,2,1,1,2,4,8,16,32,64,128,128,64,32,16,8,4,2,1]
 ; GFNIAVX512VL-NEXT:    vpmaddubsw {{\.?LCPI[0-9]+_[0-9]+}}(%rip), %ymm0, %ymm0 # [0,2,0,8,0,32,0,128,0,64,0,16,0,4,0,1,0,2,0,8,0,32,0,128,0,64,0,16,0,4,0,1]
 ; GFNIAVX512VL-NEXT:    vpsllw $8, %ymm0, %ymm0
-; GFNIAVX512VL-NEXT:    vpternlogd {{.*#+}} ymm0 = ymm0 | (ymm1 & m32bcst)
+; GFNIAVX512VL-NEXT:    vpternlogd {{.*#+}} ymm1 = (ymm1 & m32bcst) | ymm0
+; GFNIAVX512VL-NEXT:    vmovdqa %ymm1, %ymm0
 ; GFNIAVX512VL-NEXT:    retq
 ;
 ; GFNIAVX512BW-LABEL: constant_shl_v32i8:
@@ -1324,30 +1339,34 @@ define <32 x i8> @splatconstant_ashr_v32i8(<32 x i8> %a) nounwind {
 define <64 x i8> @var_shl_v64i8(<64 x i8> %a, <64 x i8> %b) nounwind {
 ; GFNISSE-LABEL: var_shl_v64i8:
 ; GFNISSE:       # %bb.0:
-; GFNISSE-NEXT:    movq {{.*#+}} xmm8 = [9241421688590303745,0]
-; GFNISSE-NEXT:    movdqa %xmm8, %xmm9
-; GFNISSE-NEXT:    pshufb %xmm4, %xmm9
+; GFNISSE-NEXT:    movdqa %xmm3, %xmm8
+; GFNISSE-NEXT:    movdqa %xmm0, %xmm9
+; GFNISSE-NEXT:    movq {{.*#+}} xmm3 = [9241421688590303745,0]
+; GFNISSE-NEXT:    movdqa %xmm3, %xmm0
+; GFNISSE-NEXT:    pshufb %xmm4, %xmm0
 ; GFNISSE-NEXT:    movq {{.*#+}} xmm10 = [72909780498219007,0]
 ; GFNISSE-NEXT:    movdqa %xmm10, %xmm11
 ; GFNISSE-NEXT:    pshufb %xmm4, %xmm11
-; GFNISSE-NEXT:    pand %xmm11, %xmm0
-; GFNISSE-NEXT:    gf2p8mulb %xmm9, %xmm0
-; GFNISSE-NEXT:    movdqa %xmm8, %xmm4
+; GFNISSE-NEXT:    pand %xmm9, %xmm11
+; GFNISSE-NEXT:    gf2p8mulb %xmm11, %xmm0
+; GFNISSE-NEXT:    movdqa %xmm3, %xmm4
 ; GFNISSE-NEXT:    pshufb %xmm5, %xmm4
 ; GFNISSE-NEXT:    movdqa %xmm10, %xmm9
 ; GFNISSE-NEXT:    pshufb %xmm5, %xmm9
-; GFNISSE-NEXT:    pand %xmm9, %xmm1
-; GFNISSE-NEXT:    gf2p8mulb %xmm4, %xmm1
-; GFNISSE-NEXT:    movdqa %xmm8, %xmm4
-; GFNISSE-NEXT:    pshufb %xmm6, %xmm4
-; GFNISSE-NEXT:    movdqa %xmm10, %xmm5
+; GFNISSE-NEXT:    pand %xmm1, %xmm9
+; GFNISSE-NEXT:    gf2p8mulb %xmm9, %xmm4
+; GFNISSE-NEXT:    movdqa %xmm3, %xmm5
 ; GFNISSE-NEXT:    pshufb %xmm6, %xmm5
-; GFNISSE-NEXT:    pand %xmm5, %xmm2
-; GFNISSE-NEXT:    gf2p8mulb %xmm4, %xmm2
-; GFNISSE-NEXT:    pshufb %xmm7, %xmm8
+; GFNISSE-NEXT:    movdqa %xmm10, %xmm1
+; GFNISSE-NEXT:    pshufb %xmm6, %xmm1
+; GFNISSE-NEXT:    pand %xmm2, %xmm1
+; GFNISSE-NEXT:    gf2p8mulb %xmm1, %xmm5
+; GFNISSE-NEXT:    pshufb %xmm7, %xmm3
 ; GFNISSE-NEXT:    pshufb %xmm7, %xmm10
-; GFNISSE-NEXT:    pand %xmm10, %xmm3
-; GFNISSE-NEXT:    gf2p8mulb %xmm8, %xmm3
+; GFNISSE-NEXT:    pand %xmm8, %xmm10
+; GFNISSE-NEXT:    gf2p8mulb %xmm10, %xmm3
+; GFNISSE-NEXT:    movdqa %xmm4, %xmm1
+; GFNISSE-NEXT:    movdqa %xmm5, %xmm2
 ; GFNISSE-NEXT:    retq
 ;
 ; GFNIAVX1-LABEL: var_shl_v64i8:
@@ -1426,38 +1445,39 @@ define <64 x i8> @var_lshr_v64i8(<64 x i8> %a, <64 x i8> %b) nounwind {
 ; GFNISSE-LABEL: var_lshr_v64i8:
 ; GFNISSE:       # %bb.0:
 ; GFNISSE-NEXT:    movq {{.*#+}} xmm9 = [72909780498219007,0]
-; GFNISSE-NEXT:    movdqa %xmm9, %xmm10
-; GFNISSE-NEXT:    pshufb %xmm4, %xmm10
-; GFNISSE-NEXT:    movdqa {{.*#+}} xmm8 = [1,2,4,8,16,32,64,128,1,2,4,8,16,32,64,128]
-; GFNISSE-NEXT:    gf2p8affineqb $0, %xmm8, %xmm0
-; GFNISSE-NEXT:    pand %xmm10, %xmm0
-; GFNISSE-NEXT:    movq {{.*#+}} xmm10 = [9241421688590303745,0]
-; GFNISSE-NEXT:    movdqa %xmm10, %xmm11
+; GFNISSE-NEXT:    movdqa %xmm9, %xmm11
 ; GFNISSE-NEXT:    pshufb %xmm4, %xmm11
+; GFNISSE-NEXT:    movdqa {{.*#+}} xmm10 = [1,2,4,8,16,32,64,128,1,2,4,8,16,32,64,128]
+; GFNISSE-NEXT:    gf2p8affineqb $0, %xmm10, %xmm0
+; GFNISSE-NEXT:    pand %xmm0, %xmm11
+; GFNISSE-NEXT:    movq {{.*#+}} xmm8 = [9241421688590303745,0]
+; GFNISSE-NEXT:    movdqa %xmm8, %xmm0
+; GFNISSE-NEXT:    pshufb %xmm4, %xmm0
 ; GFNISSE-NEXT:    gf2p8mulb %xmm11, %xmm0
-; GFNISSE-NEXT:    gf2p8affineqb $0, %xmm8, %xmm0
+; GFNISSE-NEXT:    gf2p8affineqb $0, %xmm10, %xmm0
 ; GFNISSE-NEXT:    movdqa %xmm9, %xmm4
 ; GFNISSE-NEXT:    pshufb %xmm5, %xmm4
-; GFNISSE-NEXT:    gf2p8affineqb $0, %xmm8, %xmm1
-; GFNISSE-NEXT:    pand %xmm4, %xmm1
-; GFNISSE-NEXT:    movdqa %xmm10, %xmm4
-; GFNISSE-NEXT:    pshufb %xmm5, %xmm4
+; GFNISSE-NEXT:    gf2p8affineqb $0, %xmm10, %xmm1
+; GFNISSE-NEXT:    pand %xmm1, %xmm4
+; GFNISSE-NEXT:    movdqa %xmm8, %xmm1
+; GFNISSE-NEXT:    pshufb %xmm5, %xmm1
 ; GFNISSE-NEXT:    gf2p8mulb %xmm4, %xmm1
-; GFNISSE-NEXT:    gf2p8affineqb $0, %xmm8, %xmm1
+; GFNISSE-NEXT:    gf2p8affineqb $0, %xmm10, %xmm1
 ; GFNISSE-NEXT:    movdqa %xmm9, %xmm4
 ; GFNISSE-NEXT:    pshufb %xmm6, %xmm4
-; GFNISSE-NEXT:    gf2p8affineqb $0, %xmm8, %xmm2
-; GFNISSE-NEXT:    pand %xmm4, %xmm2
-; GFNISSE-NEXT:    movdqa %xmm10, %xmm4
-; GFNISSE-NEXT:    pshufb %xmm6, %xmm4
+; GFNISSE-NEXT:    gf2p8affineqb $0, %xmm10, %xmm2
+; GFNISSE-NEXT:    pand %xmm2, %xmm4
+; GFNISSE-NEXT:    movdqa %xmm8, %xmm2
+; GFNISSE-NEXT:    pshufb %xmm6, %xmm2
 ; GFNISSE-NEXT:    gf2p8mulb %xmm4, %xmm2
-; GFNISSE-NEXT:    gf2p8affineqb $0, %xmm8, %xmm2
+; GFNISSE-NEXT:    gf2p8affineqb $0, %xmm10, %xmm2
 ; GFNISSE-NEXT:    pshufb %xmm7, %xmm9
-; GFNISSE-NEXT:    gf2p8affineqb $0, %xmm8, %xmm3
-; GFNISSE-NEXT:    pand %xmm9, %xmm3
-; GFNISSE-NEXT:    pshufb %xmm7, %xmm10
-; GFNISSE-NEXT:    gf2p8mulb %xmm10, %xmm3
-; GFNISSE-NEXT:    gf2p8affineqb $0, %xmm8, %xmm3
+; GFNISSE-NEXT:    gf2p8affineqb $0, %xmm10, %xmm3
+; GFNISSE-NEXT:    pand %xmm3, %xmm9
+; GFNISSE-NEXT:    pshufb %xmm7, %xmm8
+; GFNISSE-NEXT:    gf2p8mulb %xmm9, %xmm8
+; GFNISSE-NEXT:    gf2p8affineqb $0, %xmm10, %xmm8
+; GFNISSE-NEXT:    movdqa %xmm8, %xmm3
 ; GFNISSE-NEXT:    retq
 ;
 ; GFNIAVX1-LABEL: var_lshr_v64i8:
@@ -1557,54 +1577,54 @@ define <64 x i8> @var_ashr_v64i8(<64 x i8> %a, <64 x i8> %b) nounwind {
 ; GFNISSE-NEXT:    movq {{.*#+}} xmm9 = [72909780498219007,0]
 ; GFNISSE-NEXT:    movdqa %xmm9, %xmm12
 ; GFNISSE-NEXT:    pshufb %xmm4, %xmm12
-; GFNISSE-NEXT:    movdqa {{.*#+}} xmm4 = [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1]
-; GFNISSE-NEXT:    movdqa {{.*#+}} xmm10 = [1,2,4,8,16,32,64,128,1,2,4,8,16,32,64,128]
-; GFNISSE-NEXT:    gf2p8affineqb $0, %xmm10, %xmm0
+; GFNISSE-NEXT:    movdqa {{.*#+}} xmm10 = [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1]
+; GFNISSE-NEXT:    movdqa {{.*#+}} xmm4 = [1,2,4,8,16,32,64,128,1,2,4,8,16,32,64,128]
+; GFNISSE-NEXT:    gf2p8affineqb $0, %xmm4, %xmm0
 ; GFNISSE-NEXT:    pand %xmm12, %xmm0
-; GFNISSE-NEXT:    pand %xmm4, %xmm12
+; GFNISSE-NEXT:    pand %xmm10, %xmm12
 ; GFNISSE-NEXT:    gf2p8mulb %xmm11, %xmm12
-; GFNISSE-NEXT:    gf2p8affineqb $0, %xmm10, %xmm12
+; GFNISSE-NEXT:    gf2p8affineqb $0, %xmm4, %xmm12
 ; GFNISSE-NEXT:    gf2p8mulb %xmm11, %xmm0
-; GFNISSE-NEXT:    gf2p8affineqb $0, %xmm10, %xmm0
+; GFNISSE-NEXT:    gf2p8affineqb $0, %xmm4, %xmm0
 ; GFNISSE-NEXT:    pxor %xmm12, %xmm0
 ; GFNISSE-NEXT:    psubb %xmm12, %xmm0
 ; GFNISSE-NEXT:    movdqa %xmm8, %xmm11
 ; GFNISSE-NEXT:    pshufb %xmm5, %xmm11
 ; GFNISSE-NEXT:    movdqa %xmm9, %xmm12
 ; GFNISSE-NEXT:    pshufb %xmm5, %xmm12
-; GFNISSE-NEXT:    gf2p8affineqb $0, %xmm10, %xmm1
+; GFNISSE-NEXT:    gf2p8affineqb $0, %xmm4, %xmm1
 ; GFNISSE-NEXT:    pand %xmm12, %xmm1
-; GFNISSE-NEXT:    pand %xmm4, %xmm12
+; GFNISSE-NEXT:    pand %xmm10, %xmm12
 ; GFNISSE-NEXT:    gf2p8mulb %xmm11, %xmm12
-; GFNISSE-NEXT:    gf2p8affineqb $0, %xmm10, %xmm12
+; GFNISSE-NEXT:    gf2p8affineqb $0, %xmm4, %xmm12
 ; GFNISSE-NEXT:    gf2p8mulb %xmm11, %xmm1
-; GFNISSE-NEXT:    gf2p8affineqb $0, %xmm10, %xmm1
+; GFNISSE-NEXT:    gf2p8affineqb $0, %xmm4, %xmm1
 ; GFNISSE-NEXT:    pxor %xmm12, %xmm1
 ; GFNISSE-NEXT:    psubb %xmm12, %xmm1
 ; GFNISSE-NEXT:    movdqa %xmm8, %xmm5
 ; GFNISSE-NEXT:    pshufb %xmm6, %xmm5
 ; GFNISSE-NEXT:    movdqa %xmm9, %xmm11
 ; GFNISSE-NEXT:    pshufb %xmm6, %xmm11
-; GFNISSE-NEXT:    gf2p8affineqb $0, %xmm10, %xmm2
+; GFNISSE-NEXT:    gf2p8affineqb $0, %xmm4, %xmm2
 ; GFNISSE-NEXT:    pand %xmm11, %xmm2
-; GFNISSE-NEXT:    pand %xmm4, %xmm11
+; GFNISSE-NEXT:    pand %xmm10, %xmm11
 ; GFNISSE-NEXT:    gf2p8mulb %xmm5, %xmm11
-; GFNISSE-NEXT:    gf2p8affineqb $0, %xmm10, %xmm11
+; GFNISSE-NEXT:    gf2p8affineqb $0, %xmm4, %xmm11
 ; GFNISSE-NEXT:    gf2p8mulb %xmm5, %xmm2
-; GFNISSE-NEXT:    gf2p8affineqb $0, %xmm10, %xmm2
+; GFNISSE-NEXT:    gf2p8affineqb $0, %xmm4, %xmm2
 ; GFNISSE-NEXT:    pxor %xmm11, %xmm2
 ; GFNISSE-NEXT:    psubb %xmm11, %xmm2
 ; GFNISSE-NEXT:    pshufb %xmm7, %xmm8
 ; GFNISSE-NEXT:    pshufb %xmm7, %xmm9
-; GFNISSE-NEXT:    pand %xmm9, %xmm4
-; GFNISSE-NEXT:    gf2p8mulb %xmm8, %xmm4
-; GFNISSE-NEXT:    gf2p8affineqb $0, %xmm10, %xmm4
-; GFNISSE-NEXT:    gf2p8affineqb $0, %xmm10, %xmm3
+; GFNISSE-NEXT:    gf2p8affineqb $0, %xmm4, %xmm3
 ; GFNISSE-NEXT:    pand %xmm9, %xmm3
+; GFNISSE-NEXT:    pand %xmm10, %xmm9
+; GFNISSE-NEXT:    gf2p8mulb %xmm8, %xmm9
+; GFNISSE-NEXT:    gf2p8affineqb $0, %xmm4, %xmm9
 ; GFNISSE-NEXT:    gf2p8mulb %xmm8, %xmm3
-; GFNISSE-NEXT:    gf2p8affineqb $0, %xmm10, %xmm3
-; GFNISSE-NEXT:    pxor %xmm4, %xmm3
-; GFNISSE-NEXT:    psubb %xmm4, %xmm3
+; GFNISSE-NEXT:    gf2p8affineqb $0, %xmm4, %xmm3
+; GFNISSE-NEXT:    pxor %xmm9, %xmm3
+; GFNISSE-NEXT:    psubb %xmm9, %xmm3
 ; GFNISSE-NEXT:    retq
 ;
 ; GFNIAVX1-LABEL: var_ashr_v64i8:
@@ -1743,8 +1763,7 @@ define <64 x i8> @var_ashr_v64i8(<64 x i8> %a, <64 x i8> %b) nounwind {
 ; GFNIAVX512BW-NEXT:    vpsravw %zmm1, %zmm0, %zmm0
 ; GFNIAVX512BW-NEXT:    movabsq $6148914691236517205, %rax # imm = 0x5555555555555555
 ; GFNIAVX512BW-NEXT:    kmovq %rax, %k1
-; GFNIAVX512BW-NEXT:    vmovdqu8 %zmm0, %zmm2 {%k1}
-; GFNIAVX512BW-NEXT:    vmovdqa64 %zmm2, %zmm0
+; GFNIAVX512BW-NEXT:    vpblendmb %zmm0, %zmm2, %zmm0 {%k1}
 ; GFNIAVX512BW-NEXT:    retq
   %shift = ashr <64 x i8> %a, %b
   ret <64 x i8> %shift
@@ -2046,11 +2065,12 @@ define <64 x i8> @constant_shl_v64i8(<64 x i8> %a) nounwind {
 ; GFNISSE-NEXT:    pmaddubsw %xmm7, %xmm2
 ; GFNISSE-NEXT:    psllw $8, %xmm2
 ; GFNISSE-NEXT:    por %xmm6, %xmm2
-; GFNISSE-NEXT:    pmullw %xmm3, %xmm4
-; GFNISSE-NEXT:    pand %xmm5, %xmm4
+; GFNISSE-NEXT:    movdqa %xmm3, %xmm6
+; GFNISSE-NEXT:    pmullw %xmm4, %xmm6
+; GFNISSE-NEXT:    pand %xmm5, %xmm6
 ; GFNISSE-NEXT:    pmaddubsw %xmm7, %xmm3
 ; GFNISSE-NEXT:    psllw $8, %xmm3
-; GFNISSE-NEXT:    por %xmm4, %xmm3
+; GFNISSE-NEXT:    por %xmm6, %xmm3
 ; GFNISSE-NEXT:    retq
 ;
 ; GFNIAVX1-LABEL: constant_shl_v64i8:
@@ -2103,20 +2123,21 @@ define <64 x i8> @constant_shl_v64i8(<64 x i8> %a) nounwind {
 ;
 ; GFNIAVX512VL-LABEL: constant_shl_v64i8:
 ; GFNIAVX512VL:       # %bb.0:
-; GFNIAVX512VL-NEXT:    vextracti64x4 $1, %zmm0, %ymm1
-; GFNIAVX512VL-NEXT:    vbroadcasti128 {{.*#+}} ymm2 = [1,2,4,8,16,32,64,128,128,64,32,16,8,4,2,1,1,2,4,8,16,32,64,128,128,64,32,16,8,4,2,1]
-; GFNIAVX512VL-NEXT:    # ymm2 = mem[0,1,0,1]
-; GFNIAVX512VL-NEXT:    vpmullw %ymm2, %ymm1, %ymm3
-; GFNIAVX512VL-NEXT:    vpmullw %ymm2, %ymm0, %ymm2
-; GFNIAVX512VL-NEXT:    vinserti64x4 $1, %ymm3, %zmm2, %zmm2
+; GFNIAVX512VL-NEXT:    vextracti64x4 $1, %zmm0, %ymm2
+; GFNIAVX512VL-NEXT:    vbroadcasti128 {{.*#+}} ymm1 = [1,2,4,8,16,32,64,128,128,64,32,16,8,4,2,1,1,2,4,8,16,32,64,128,128,64,32,16,8,4,2,1]
+; GFNIAVX512VL-NEXT:    # ymm1 = mem[0,1,0,1]
+; GFNIAVX512VL-NEXT:    vpmullw %ymm1, %ymm2, %ymm3
+; GFNIAVX512VL-NEXT:    vpmullw %ymm1, %ymm0, %ymm1
+; GFNIAVX512VL-NEXT:    vinserti64x4 $1, %ymm3, %zmm1, %zmm1
 ; GFNIAVX512VL-NEXT:    vbroadcasti128 {{.*#+}} ymm3 = [0,2,0,8,0,32,0,128,0,64,0,16,0,4,0,1,0,2,0,8,0,32,0,128,0,64,0,16,0,4,0,1]
 ; GFNIAVX512VL-NEXT:    # ymm3 = mem[0,1,0,1]
 ; GFNIAVX512VL-NEXT:    vpmaddubsw %ymm3, %ymm0, %ymm0
 ; GFNIAVX512VL-NEXT:    vpsllw $8, %ymm0, %ymm0
-; GFNIAVX512VL-NEXT:    vpmaddubsw %ymm3, %ymm1, %ymm1
-; GFNIAVX512VL-NEXT:    vpsllw $8, %ymm1, %ymm1
-; GFNIAVX512VL-NEXT:    vinserti64x4 $1, %ymm1, %zmm0, %zmm0
-; GFNIAVX512VL-NEXT:    vpternlogd {{.*#+}} zmm0 = zmm0 | (zmm2 & m32bcst)
+; GFNIAVX512VL-NEXT:    vpmaddubsw %ymm3, %ymm2, %ymm2
+; GFNIAVX512VL-NEXT:    vpsllw $8, %ymm2, %ymm2
+; GFNIAVX512VL-NEXT:    vinserti64x4 $1, %ymm2, %zmm0, %zmm0
+; GFNIAVX512VL-NEXT:    vpternlogd {{.*#+}} zmm1 = (zmm1 & m32bcst) | zmm0
+; GFNIAVX512VL-NEXT:    vmovdqa64 %zmm1, %zmm0
 ; GFNIAVX512VL-NEXT:    retq
 ;
 ; GFNIAVX512BW-LABEL: constant_shl_v64i8:
@@ -2124,7 +2145,8 @@ define <64 x i8> @constant_shl_v64i8(<64 x i8> %a) nounwind {
 ; GFNIAVX512BW-NEXT:    vpmullw {{\.?LCPI[0-9]+_[0-9]+}}(%rip), %zmm0, %zmm1 # [1,2,4,8,16,32,64,128,128,64,32,16,8,4,2,1,1,2,4,8,16,32,64,128,128,64,32,16,8,4,2,1,1,2,4,8,16,32,64,128,128,64,32,16,8,4,2,1,1,2,4,8,16,32,64,128,128,64,32,16,8,4,2,1]
 ; GFNIAVX512BW-NEXT:    vpmaddubsw {{\.?LCPI[0-9]+_[0-9]+}}(%rip), %zmm0, %zmm0 # [0,2,0,8,0,32,0,128,0,64,0,16,0,4,0,1,0,2,0,8,0,32,0,128,0,64,0,16,0,4,0,1,0,2,0,8,0,32,0,128,0,64,0,16,0,4,0,1,0,2,0,8,0,32,0,128,0,64,0,16,0,4,0,1]
 ; GFNIAVX512BW-NEXT:    vpsllw $8, %zmm0, %zmm0
-; GFNIAVX512BW-NEXT:    vpternlogd {{.*#+}} zmm0 = zmm0 | (zmm1 & m32bcst)
+; GFNIAVX512BW-NEXT:    vpternlogd {{.*#+}} zmm1 = (zmm1 & m32bcst) | zmm0
+; GFNIAVX512BW-NEXT:    vmovdqa64 %zmm1, %zmm0
 ; GFNIAVX512BW-NEXT:    retq
   %shift = shl <64 x i8> %a, <i8 0, i8 1, i8 2, i8 3, i8 4, i8 5, i8 6, i8 7, i8 7, i8 6, i8 5, i8 4, i8 3, i8 2, i8 1, i8 0, i8 0, i8 1, i8 2, i8 3, i8 4, i8 5, i8 6, i8 7, i8 7, i8 6, i8 5, i8 4, i8 3, i8 2, i8 1, i8 0, i8 0, i8 1, i8 2, i8 3, i8 4, i8 5, i8 6, i8 7, i8 7, i8 6, i8 5, i8 4, i8 3, i8 2, i8 1, i8 0, i8 0, i8 1, i8 2, i8 3, i8 4, i8 5, i8 6, i8 7, i8 7, i8 6, i8 5, i8 4, i8 3, i8 2, i8 1, i8 0>
   ret <64 x i8> %shift

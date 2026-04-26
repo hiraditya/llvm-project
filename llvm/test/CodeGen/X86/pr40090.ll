@@ -4,8 +4,8 @@
 define i64 @foo(i64 %x, i64 %y) {
 ; CHECK-LABEL: foo:
 ; CHECK:       # %bb.0:
-; CHECK-NEXT:    bsrq %rdi, %rcx
-; CHECK-NEXT:    orq $64, %rcx
+; CHECK-NEXT:    bsrq %rdi, %rax
+; CHECK-NEXT:    leaq 64(%rax), %rcx
 ; CHECK-NEXT:    bsrq %rsi, %rcx
 ; CHECK-NEXT:    movl $63, %eax
 ; CHECK-NEXT:    subq %rcx, %rax

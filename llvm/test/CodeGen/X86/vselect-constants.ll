@@ -18,9 +18,9 @@ define <4 x i32> @sel_C1_or_C2_vec(<4 x i1> %cond) {
 ; SSE:       # %bb.0:
 ; SSE-NEXT:    pslld $31, %xmm0
 ; SSE-NEXT:    psrad $31, %xmm0
-; SSE-NEXT:    movdqa %xmm0, %xmm1
-; SSE-NEXT:    pandn {{\.?LCPI[0-9]+_[0-9]+}}(%rip), %xmm1
-; SSE-NEXT:    pand {{\.?LCPI[0-9]+_[0-9]+}}(%rip), %xmm0
+; SSE-NEXT:    movdqa {{.*#+}} xmm1 = [3000,1,4294967295,0]
+; SSE-NEXT:    pand %xmm0, %xmm1
+; SSE-NEXT:    pandn {{\.?LCPI[0-9]+_[0-9]+}}(%rip), %xmm0
 ; SSE-NEXT:    por %xmm1, %xmm0
 ; SSE-NEXT:    retq
 ;
@@ -38,9 +38,9 @@ define <4 x i32> @cmp_sel_C1_or_C2_vec(<4 x i32> %x, <4 x i32> %y) {
 ; SSE-LABEL: cmp_sel_C1_or_C2_vec:
 ; SSE:       # %bb.0:
 ; SSE-NEXT:    pcmpeqd %xmm1, %xmm0
-; SSE-NEXT:    movdqa %xmm0, %xmm1
-; SSE-NEXT:    pandn {{\.?LCPI[0-9]+_[0-9]+}}(%rip), %xmm1
-; SSE-NEXT:    pand {{\.?LCPI[0-9]+_[0-9]+}}(%rip), %xmm0
+; SSE-NEXT:    movdqa {{.*#+}} xmm1 = [3000,1,4294967295,0]
+; SSE-NEXT:    pand %xmm0, %xmm1
+; SSE-NEXT:    pandn {{\.?LCPI[0-9]+_[0-9]+}}(%rip), %xmm0
 ; SSE-NEXT:    por %xmm1, %xmm0
 ; SSE-NEXT:    retq
 ;
@@ -58,14 +58,16 @@ define <4 x i32> @cmp_sel_C1_or_C2_vec(<4 x i32> %x, <4 x i32> %y) {
 define <4 x i32> @sel_Cplus1_or_C_vec(<4 x i1> %cond) {
 ; SSE-LABEL: sel_Cplus1_or_C_vec:
 ; SSE:       # %bb.0:
-; SSE-NEXT:    pand {{\.?LCPI[0-9]+_[0-9]+}}(%rip), %xmm0
-; SSE-NEXT:    paddd {{\.?LCPI[0-9]+_[0-9]+}}(%rip), %xmm0
+; SSE-NEXT:    movdqa {{.*#+}} xmm1 = [1,1,1,1]
+; SSE-NEXT:    pand %xmm0, %xmm1
+; SSE-NEXT:    movdqa {{.*#+}} xmm0 = [42,0,4294967294,4294967295]
+; SSE-NEXT:    paddd %xmm1, %xmm0
 ; SSE-NEXT:    retq
 ;
 ; AVX-LABEL: sel_Cplus1_or_C_vec:
 ; AVX:       # %bb.0:
 ; AVX-NEXT:    vpand {{\.?LCPI[0-9]+_[0-9]+}}(%rip), %xmm0, %xmm0
-; AVX-NEXT:    vpaddd {{\.?LCPI[0-9]+_[0-9]+}}(%rip), %xmm0, %xmm0
+; AVX-NEXT:    vpaddd {{\.?LCPI[0-9]+_[0-9]+}}(%rip), %xmm0, %xmm0 # [42,0,4294967294,4294967295]
 ; AVX-NEXT:    retq
   %add = select <4 x i1> %cond, <4 x i32> <i32 43, i32 1, i32 -1, i32 0>, <4 x i32> <i32 42, i32 0, i32 -2, i32 -1>
   ret <4 x i32> %add
@@ -96,14 +98,16 @@ define <4 x i32> @sel_Cminus1_or_C_vec(<4 x i1> %cond) {
 ; SSE:       # %bb.0:
 ; SSE-NEXT:    pslld $31, %xmm0
 ; SSE-NEXT:    psrad $31, %xmm0
-; SSE-NEXT:    paddd {{\.?LCPI[0-9]+_[0-9]+}}(%rip), %xmm0
+; SSE-NEXT:    movdqa {{.*#+}} xmm1 = [44,2,0,1]
+; SSE-NEXT:    paddd %xmm0, %xmm1
+; SSE-NEXT:    movdqa %xmm1, %xmm0
 ; SSE-NEXT:    retq
 ;
 ; AVX-LABEL: sel_Cminus1_or_C_vec:
 ; AVX:       # %bb.0:
 ; AVX-NEXT:    vpslld $31, %xmm0, %xmm0
 ; AVX-NEXT:    vpsrad $31, %xmm0, %xmm0
-; AVX-NEXT:    vpaddd {{\.?LCPI[0-9]+_[0-9]+}}(%rip), %xmm0, %xmm0
+; AVX-NEXT:    vpaddd {{\.?LCPI[0-9]+_[0-9]+}}(%rip), %xmm0, %xmm0 # [44,2,0,1]
 ; AVX-NEXT:    retq
   %add = select <4 x i1> %cond, <4 x i32> <i32 43, i32 1, i32 -1, i32 0>, <4 x i32> <i32 44, i32 2, i32 0, i32 1>
   ret <4 x i32> %add
@@ -113,13 +117,15 @@ define <4 x i32> @cmp_sel_Cminus1_or_C_vec(<4 x i32> %x, <4 x i32> %y) {
 ; SSE-LABEL: cmp_sel_Cminus1_or_C_vec:
 ; SSE:       # %bb.0:
 ; SSE-NEXT:    pcmpeqd %xmm1, %xmm0
-; SSE-NEXT:    paddd {{\.?LCPI[0-9]+_[0-9]+}}(%rip), %xmm0
+; SSE-NEXT:    movdqa {{.*#+}} xmm1 = [44,2,0,1]
+; SSE-NEXT:    paddd %xmm0, %xmm1
+; SSE-NEXT:    movdqa %xmm1, %xmm0
 ; SSE-NEXT:    retq
 ;
 ; AVX-LABEL: cmp_sel_Cminus1_or_C_vec:
 ; AVX:       # %bb.0:
 ; AVX-NEXT:    vpcmpeqd %xmm1, %xmm0, %xmm0
-; AVX-NEXT:    vpaddd {{\.?LCPI[0-9]+_[0-9]+}}(%rip), %xmm0, %xmm0
+; AVX-NEXT:    vpaddd {{\.?LCPI[0-9]+_[0-9]+}}(%rip), %xmm0, %xmm0 # [44,2,0,1]
 ; AVX-NEXT:    retq
   %cond = icmp eq <4 x i32> %x, %y
   %add = select <4 x i1> %cond, <4 x i32> <i32 43, i32 1, i32 -1, i32 0>, <4 x i32> <i32 44, i32 2, i32 0, i32 1>
@@ -160,8 +166,9 @@ define <4 x i32> @cmp_sel_minus1_or_0_vec(<4 x i32> %x, <4 x i32> %y) {
 define <4 x i32> @sel_0_or_minus1_vec(<4 x i1> %cond) {
 ; SSE-LABEL: sel_0_or_minus1_vec:
 ; SSE:       # %bb.0:
-; SSE-NEXT:    pand {{\.?LCPI[0-9]+_[0-9]+}}(%rip), %xmm0
-; SSE-NEXT:    pcmpeqd %xmm1, %xmm1
+; SSE-NEXT:    movdqa {{.*#+}} xmm1 = [1,1,1,1]
+; SSE-NEXT:    pand %xmm0, %xmm1
+; SSE-NEXT:    pcmpeqd %xmm0, %xmm0
 ; SSE-NEXT:    paddd %xmm1, %xmm0
 ; SSE-NEXT:    retq
 ;
@@ -180,7 +187,8 @@ define <4 x i32> @cmp_sel_0_or_minus1_vec(<4 x i32> %x, <4 x i32> %y) {
 ; SSE:       # %bb.0:
 ; SSE-NEXT:    pcmpeqd %xmm1, %xmm0
 ; SSE-NEXT:    pcmpeqd %xmm1, %xmm1
-; SSE-NEXT:    pxor %xmm1, %xmm0
+; SSE-NEXT:    pxor %xmm0, %xmm1
+; SSE-NEXT:    movdqa %xmm1, %xmm0
 ; SSE-NEXT:    retq
 ;
 ; AVX-LABEL: cmp_sel_0_or_minus1_vec:
@@ -197,7 +205,9 @@ define <4 x i32> @cmp_sel_0_or_minus1_vec(<4 x i32> %x, <4 x i32> %y) {
 define <4 x i32> @sel_1_or_0_vec(<4 x i1> %cond) {
 ; SSE-LABEL: sel_1_or_0_vec:
 ; SSE:       # %bb.0:
-; SSE-NEXT:    andps {{\.?LCPI[0-9]+_[0-9]+}}(%rip), %xmm0
+; SSE-NEXT:    movaps {{.*#+}} xmm1 = [1,1,1,1]
+; SSE-NEXT:    andps %xmm0, %xmm1
+; SSE-NEXT:    movaps %xmm1, %xmm0
 ; SSE-NEXT:    retq
 ;
 ; AVX-LABEL: sel_1_or_0_vec:
@@ -284,8 +294,8 @@ define i32 @wrong_min_signbits(<2 x i16> %x) {
 ; SSE-NEXT:    movd {{.*#+}} xmm0 = [1,0,0,0]
 ; SSE-NEXT:    pand %xmm1, %xmm0
 ; SSE-NEXT:    pandn {{\.?LCPI[0-9]+_[0-9]+}}(%rip), %xmm1
-; SSE-NEXT:    por %xmm0, %xmm1
-; SSE-NEXT:    movd %xmm1, %eax
+; SSE-NEXT:    por %xmm1, %xmm0
+; SSE-NEXT:    movd %xmm0, %eax
 ; SSE-NEXT:    retq
 ;
 ; AVX-LABEL: wrong_min_signbits:

@@ -24,24 +24,27 @@ define <16 x i8> @test_v16i8_nosignbit(<16 x i8> %a, <16 x i8> %b) {
 ; SSE2:       # %bb.0:
 ; SSE2-NEXT:    movdqa {{.*#+}} xmm2 = [15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15]
 ; SSE2-NEXT:    pand %xmm2, %xmm0
-; SSE2-NEXT:    pand %xmm1, %xmm2
-; SSE2-NEXT:    pminub %xmm2, %xmm0
+; SSE2-NEXT:    pand %xmm2, %xmm1
+; SSE2-NEXT:    pminub %xmm0, %xmm1
+; SSE2-NEXT:    movdqa %xmm1, %xmm0
 ; SSE2-NEXT:    retq
 ;
 ; SSE41-LABEL: test_v16i8_nosignbit:
 ; SSE41:       # %bb.0:
 ; SSE41-NEXT:    movdqa {{.*#+}} xmm2 = [15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15]
 ; SSE41-NEXT:    pand %xmm2, %xmm0
-; SSE41-NEXT:    pand %xmm1, %xmm2
-; SSE41-NEXT:    pminsb %xmm2, %xmm0
+; SSE41-NEXT:    pand %xmm2, %xmm1
+; SSE41-NEXT:    pminsb %xmm0, %xmm1
+; SSE41-NEXT:    movdqa %xmm1, %xmm0
 ; SSE41-NEXT:    retq
 ;
 ; SSE42-LABEL: test_v16i8_nosignbit:
 ; SSE42:       # %bb.0:
 ; SSE42-NEXT:    movdqa {{.*#+}} xmm2 = [15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15]
 ; SSE42-NEXT:    pand %xmm2, %xmm0
-; SSE42-NEXT:    pand %xmm1, %xmm2
-; SSE42-NEXT:    pminsb %xmm2, %xmm0
+; SSE42-NEXT:    pand %xmm2, %xmm1
+; SSE42-NEXT:    pminsb %xmm0, %xmm1
+; SSE42-NEXT:    movdqa %xmm1, %xmm0
 ; SSE42-NEXT:    retq
 ;
 ; AVX1-LABEL: test_v16i8_nosignbit:
@@ -71,24 +74,27 @@ define <16 x i8> @test_v16i8_knownnegative(<16 x i8> %a, <16 x i8> %b) {
 ; SSE2:       # %bb.0:
 ; SSE2-NEXT:    movdqa {{.*#+}} xmm2 = [128,128,128,128,128,128,128,128,128,128,128,128,128,128,128,128]
 ; SSE2-NEXT:    por %xmm2, %xmm0
-; SSE2-NEXT:    por %xmm1, %xmm2
-; SSE2-NEXT:    pminub %xmm2, %xmm0
+; SSE2-NEXT:    por %xmm2, %xmm1
+; SSE2-NEXT:    pminub %xmm0, %xmm1
+; SSE2-NEXT:    movdqa %xmm1, %xmm0
 ; SSE2-NEXT:    retq
 ;
 ; SSE41-LABEL: test_v16i8_knownnegative:
 ; SSE41:       # %bb.0:
 ; SSE41-NEXT:    movdqa {{.*#+}} xmm2 = [128,128,128,128,128,128,128,128,128,128,128,128,128,128,128,128]
 ; SSE41-NEXT:    por %xmm2, %xmm0
-; SSE41-NEXT:    por %xmm1, %xmm2
-; SSE41-NEXT:    pminsb %xmm2, %xmm0
+; SSE41-NEXT:    por %xmm2, %xmm1
+; SSE41-NEXT:    pminsb %xmm0, %xmm1
+; SSE41-NEXT:    movdqa %xmm1, %xmm0
 ; SSE41-NEXT:    retq
 ;
 ; SSE42-LABEL: test_v16i8_knownnegative:
 ; SSE42:       # %bb.0:
 ; SSE42-NEXT:    movdqa {{.*#+}} xmm2 = [128,128,128,128,128,128,128,128,128,128,128,128,128,128,128,128]
 ; SSE42-NEXT:    por %xmm2, %xmm0
-; SSE42-NEXT:    por %xmm1, %xmm2
-; SSE42-NEXT:    pminsb %xmm2, %xmm0
+; SSE42-NEXT:    por %xmm2, %xmm1
+; SSE42-NEXT:    pminsb %xmm0, %xmm1
+; SSE42-NEXT:    movdqa %xmm1, %xmm0
 ; SSE42-NEXT:    retq
 ;
 ; AVX1-LABEL: test_v16i8_knownnegative:
@@ -118,19 +124,22 @@ define <16 x i8> @test_v16i8_reassociation(<16 x i8> %a) {
 ; SSE2:       # %bb.0:
 ; SSE2-NEXT:    pxor %xmm1, %xmm1
 ; SSE2-NEXT:    pcmpgtb %xmm0, %xmm1
-; SSE2-NEXT:    pand %xmm1, %xmm0
+; SSE2-NEXT:    pand %xmm0, %xmm1
+; SSE2-NEXT:    movdqa %xmm1, %xmm0
 ; SSE2-NEXT:    retq
 ;
 ; SSE41-LABEL: test_v16i8_reassociation:
 ; SSE41:       # %bb.0:
 ; SSE41-NEXT:    pxor %xmm1, %xmm1
-; SSE41-NEXT:    pminsb %xmm1, %xmm0
+; SSE41-NEXT:    pminsb %xmm0, %xmm1
+; SSE41-NEXT:    movdqa %xmm1, %xmm0
 ; SSE41-NEXT:    retq
 ;
 ; SSE42-LABEL: test_v16i8_reassociation:
 ; SSE42:       # %bb.0:
 ; SSE42-NEXT:    pxor %xmm1, %xmm1
-; SSE42-NEXT:    pminsb %xmm1, %xmm0
+; SSE42-NEXT:    pminsb %xmm0, %xmm1
+; SSE42-NEXT:    movdqa %xmm1, %xmm0
 ; SSE42-NEXT:    retq
 ;
 ; AVX-LABEL: test_v16i8_reassociation:
@@ -149,10 +158,10 @@ define <16 x i8> @test_v16i8_demandedbits(<16 x i8> %x, <16 x i8> %y, <16 x i8> 
 ; SSE2-NEXT:    por %xmm1, %xmm0
 ; SSE2-NEXT:    pxor %xmm1, %xmm1
 ; SSE2-NEXT:    pcmpgtb %xmm0, %xmm1
-; SSE2-NEXT:    pand %xmm1, %xmm3
-; SSE2-NEXT:    pandn %xmm2, %xmm1
-; SSE2-NEXT:    por %xmm3, %xmm1
 ; SSE2-NEXT:    movdqa %xmm1, %xmm0
+; SSE2-NEXT:    pand %xmm3, %xmm0
+; SSE2-NEXT:    pandn %xmm2, %xmm1
+; SSE2-NEXT:    por %xmm1, %xmm0
 ; SSE2-NEXT:    retq
 ;
 ; SSE41-LABEL: test_v16i8_demandedbits:

@@ -21,8 +21,8 @@ define i32 @fcmp_oeq(float %x, float %y) {
 ; GISEL-X64-NEXT:    ucomiss %xmm1, %xmm0
 ; GISEL-X64-NEXT:    sete %al
 ; GISEL-X64-NEXT:    setnp %cl
-; GISEL-X64-NEXT:    andb %al, %cl
-; GISEL-X64-NEXT:    testb $1, %cl
+; GISEL-X64-NEXT:    andb %cl, %al
+; GISEL-X64-NEXT:    testb $1, %al
 ; GISEL-X64-NEXT:    je LBB0_1
 ; GISEL-X64-NEXT:  ## %bb.2: ## %bb1
 ; GISEL-X64-NEXT:    xorl %eax, %eax
@@ -440,8 +440,8 @@ define i32 @fcmp_une(float %x, float %y) {
 ; GISEL-X64-NEXT:    ucomiss %xmm1, %xmm0
 ; GISEL-X64-NEXT:    setne %al
 ; GISEL-X64-NEXT:    setp %cl
-; GISEL-X64-NEXT:    orb %al, %cl
-; GISEL-X64-NEXT:    testb $1, %cl
+; GISEL-X64-NEXT:    orb %cl, %al
+; GISEL-X64-NEXT:    testb $1, %al
 ; GISEL-X64-NEXT:    je LBB13_1
 ; GISEL-X64-NEXT:  ## %bb.2: ## %bb1
 ; GISEL-X64-NEXT:    xorl %eax, %eax
@@ -474,8 +474,8 @@ define i32 @fcmp_oeq1(float %x) {
 ; GISEL-X64-NEXT:    ucomiss %xmm0, %xmm0
 ; GISEL-X64-NEXT:    sete %al
 ; GISEL-X64-NEXT:    setnp %cl
-; GISEL-X64-NEXT:    andb %al, %cl
-; GISEL-X64-NEXT:    testb $1, %cl
+; GISEL-X64-NEXT:    andb %cl, %al
+; GISEL-X64-NEXT:    testb $1, %al
 ; GISEL-X64-NEXT:    je LBB14_1
 ; GISEL-X64-NEXT:  ## %bb.2: ## %bb1
 ; GISEL-X64-NEXT:    xorl %eax, %eax
@@ -511,8 +511,8 @@ define i32 @fcmp_oeq2(float %x) {
 ; GISEL-X64-NEXT:    ucomiss %xmm1, %xmm0
 ; GISEL-X64-NEXT:    sete %al
 ; GISEL-X64-NEXT:    setnp %cl
-; GISEL-X64-NEXT:    andb %al, %cl
-; GISEL-X64-NEXT:    testb $1, %cl
+; GISEL-X64-NEXT:    andb %cl, %al
+; GISEL-X64-NEXT:    testb $1, %al
 ; GISEL-X64-NEXT:    je LBB15_1
 ; GISEL-X64-NEXT:  ## %bb.2: ## %bb1
 ; GISEL-X64-NEXT:    xorl %eax, %eax
@@ -1371,8 +1371,8 @@ define i32 @fcmp_une1(float %x) {
 ; GISEL-X64-NEXT:    ucomiss %xmm0, %xmm0
 ; GISEL-X64-NEXT:    setne %al
 ; GISEL-X64-NEXT:    setp %cl
-; GISEL-X64-NEXT:    orb %al, %cl
-; GISEL-X64-NEXT:    testb $1, %cl
+; GISEL-X64-NEXT:    orb %cl, %al
+; GISEL-X64-NEXT:    testb $1, %al
 ; GISEL-X64-NEXT:    je LBB40_1
 ; GISEL-X64-NEXT:  ## %bb.2: ## %bb1
 ; GISEL-X64-NEXT:    xorl %eax, %eax
@@ -1408,8 +1408,8 @@ define i32 @fcmp_une2(float %x) {
 ; GISEL-X64-NEXT:    ucomiss %xmm1, %xmm0
 ; GISEL-X64-NEXT:    setne %al
 ; GISEL-X64-NEXT:    setp %cl
-; GISEL-X64-NEXT:    orb %al, %cl
-; GISEL-X64-NEXT:    testb $1, %cl
+; GISEL-X64-NEXT:    orb %cl, %al
+; GISEL-X64-NEXT:    testb $1, %al
 ; GISEL-X64-NEXT:    je LBB41_1
 ; GISEL-X64-NEXT:  ## %bb.2: ## %bb1
 ; GISEL-X64-NEXT:    xorl %eax, %eax

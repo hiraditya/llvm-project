@@ -476,9 +476,9 @@ define float @select_icmp_sle_f32(i64 %a, i64 %b, float %c, float %d) {
 define i8 @select_icmp_sle_i8(i64 %a, i64 %b, i8 %c, i8 %d) {
 ; ISEL-LABEL: select_icmp_sle_i8:
 ; ISEL:       ## %bb.0:
-; ISEL-NEXT:    movl %edx, %eax
+; ISEL-NEXT:    movl %ecx, %eax
 ; ISEL-NEXT:    cmpq %rsi, %rdi
-; ISEL-NEXT:    cmovgl %ecx, %eax
+; ISEL-NEXT:    cmovlel %edx, %eax
 ; ISEL-NEXT:    ## kill: def $al killed $al killed $eax
 ; ISEL-NEXT:    retq
 ;

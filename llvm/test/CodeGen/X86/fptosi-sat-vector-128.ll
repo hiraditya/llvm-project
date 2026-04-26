@@ -433,8 +433,8 @@ define <2 x i8> @test_signed_v2i8_v2f64(<2 x double> %f) nounwind {
 ; CHECK-NEXT:    minsd %xmm1, %xmm3
 ; CHECK-NEXT:    cvttsd2si %xmm3, %ecx
 ; CHECK-NEXT:    shll $8, %ecx
-; CHECK-NEXT:    orl %eax, %ecx
-; CHECK-NEXT:    movd %ecx, %xmm0
+; CHECK-NEXT:    orl %ecx, %eax
+; CHECK-NEXT:    movd %eax, %xmm0
 ; CHECK-NEXT:    retq
   %x = call <2 x i8> @llvm.fptosi.sat.v2i8.v2f64(<2 x double> %f)
   ret <2 x i8> %x

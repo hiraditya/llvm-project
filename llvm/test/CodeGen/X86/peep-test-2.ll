@@ -12,8 +12,8 @@ target triple = "i386-apple-darwin9.6"
 define i32 @f(i32 %j) nounwind readnone {
 ; CHECK-LABEL: f:
 ; CHECK:       ## %bb.0: ## %entry
-; CHECK-NEXT:    movl {{[0-9]+}}(%esp), %ecx
-; CHECK-NEXT:    incl %ecx
+; CHECK-NEXT:    movl {{[0-9]+}}(%esp), %eax
+; CHECK-NEXT:    leal 1(%eax), %ecx
 ; CHECK-NEXT:    xorl %eax, %eax
 ; CHECK-NEXT:    testl %ecx, %ecx
 ; CHECK-NEXT:    setg %al

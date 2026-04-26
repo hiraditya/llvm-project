@@ -129,7 +129,8 @@ define float @PR22206(<4 x float> %a) {
 ; CHECK-LABEL: PR22206:
 ; CHECK:       ## %bb.0:
 ; CHECK-NEXT:    sqrtss %xmm0, %xmm1
-; CHECK-NEXT:    addss %xmm1, %xmm0
+; CHECK-NEXT:    addss %xmm0, %xmm1
+; CHECK-NEXT:    movaps %xmm1, %xmm0
 ; CHECK-NEXT:    retq
   %res = tail call <4 x float> @llvm.x86.sse.sqrt.ss(<4 x float> %a) nounwind
   %new = extractelement <4 x float> %res, i32 0

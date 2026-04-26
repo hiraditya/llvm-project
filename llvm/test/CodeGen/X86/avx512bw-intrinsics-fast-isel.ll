@@ -582,10 +582,12 @@ define i64 @test_mm512_mask_test_epi8_mask(i64 %__U, <8 x i64> %__A, <8 x i64> %
 ; X86:       # %bb.0: # %entry
 ; X86-NEXT:    vptestmb %zmm0, %zmm1, %k0
 ; X86-NEXT:    kshiftrq $32, %k0, %k1
-; X86-NEXT:    kmovd %k1, %edx
-; X86-NEXT:    kmovd %k0, %eax
-; X86-NEXT:    andl {{[0-9]+}}(%esp), %eax
-; X86-NEXT:    andl {{[0-9]+}}(%esp), %edx
+; X86-NEXT:    kmovd %k1, %ecx
+; X86-NEXT:    kmovd %k0, %edx
+; X86-NEXT:    movl {{[0-9]+}}(%esp), %eax
+; X86-NEXT:    andl %edx, %eax
+; X86-NEXT:    movl {{[0-9]+}}(%esp), %edx
+; X86-NEXT:    andl %ecx, %edx
 ; X86-NEXT:    vzeroupper
 ; X86-NEXT:    retl
 ;
@@ -676,10 +678,12 @@ define i64 @test_mm512_mask_testn_epi8_mask(i64 %__U, <8 x i64> %__A, <8 x i64> 
 ; X86:       # %bb.0: # %entry
 ; X86-NEXT:    vptestnmb %zmm0, %zmm1, %k0
 ; X86-NEXT:    kshiftrq $32, %k0, %k1
-; X86-NEXT:    kmovd %k1, %edx
-; X86-NEXT:    kmovd %k0, %eax
-; X86-NEXT:    andl {{[0-9]+}}(%esp), %eax
-; X86-NEXT:    andl {{[0-9]+}}(%esp), %edx
+; X86-NEXT:    kmovd %k1, %ecx
+; X86-NEXT:    kmovd %k0, %edx
+; X86-NEXT:    movl {{[0-9]+}}(%esp), %eax
+; X86-NEXT:    andl %edx, %eax
+; X86-NEXT:    movl {{[0-9]+}}(%esp), %edx
+; X86-NEXT:    andl %ecx, %edx
 ; X86-NEXT:    vzeroupper
 ; X86-NEXT:    retl
 ;

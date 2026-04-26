@@ -216,9 +216,9 @@ define i4 @v4i64(<4 x i64> %a, <4 x i64> %b) {
 ; SSE2-SSSE3-NEXT:    pcmpeqd %xmm3, %xmm1
 ; SSE2-SSSE3-NEXT:    pcmpeqd %xmm2, %xmm0
 ; SSE2-SSSE3-NEXT:    shufps {{.*#+}} xmm0 = xmm0[1,3],xmm1[1,3]
-; SSE2-SSSE3-NEXT:    andps %xmm6, %xmm0
+; SSE2-SSSE3-NEXT:    andps %xmm0, %xmm6
 ; SSE2-SSSE3-NEXT:    shufps {{.*#+}} xmm4 = xmm4[1,3],xmm5[1,3]
-; SSE2-SSSE3-NEXT:    orps %xmm0, %xmm4
+; SSE2-SSSE3-NEXT:    orps %xmm6, %xmm4
 ; SSE2-SSSE3-NEXT:    movmskps %xmm4, %eax
 ; SSE2-SSSE3-NEXT:    # kill: def $al killed $al killed $eax
 ; SSE2-SSSE3-NEXT:    retq

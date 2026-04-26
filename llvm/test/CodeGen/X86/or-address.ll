@@ -19,16 +19,16 @@ define void @test(ptr nocapture %array, i32 %r0) nounwind ssp noredzone {
 ; CHECK-NEXT:    movzbl %r8b, %r8d
 ; CHECK-NEXT:    cmovgel %ecx, %r8d
 ; CHECK-NEXT:    sete %r9b
-; CHECK-NEXT:    addb %r9b, %dl
+; CHECK-NEXT:    leal (%rdx,%r9), %edx
 ; CHECK-NEXT:    leal (,%rdx,4), %r9d
-; CHECK-NEXT:    addb %r8b, %r9b
-; CHECK-NEXT:    shlb $2, %r9b
+; CHECK-NEXT:    addl %r8d, %r9d
+; CHECK-NEXT:    leal (,%r9,4), %r9d
 ; CHECK-NEXT:    movzbl %r9b, %r9d
 ; CHECK-NEXT:    movl %esi, (%rdi,%r9,4)
 ; CHECK-NEXT:    movl %esi, 8(%rdi,%r9,4)
 ; CHECK-NEXT:    movl %esi, 4(%rdi,%r9,4)
 ; CHECK-NEXT:    movl %esi, 12(%rdi,%r9,4)
-; CHECK-NEXT:    incb %r8b
+; CHECK-NEXT:    incl %r8d
 ; CHECK-NEXT:    decb %al
 ; CHECK-NEXT:    jne LBB0_1
 ; CHECK-NEXT:  ## %bb.2: ## %return
@@ -72,7 +72,7 @@ return:                                           ; preds = %bb
 define void @test1(ptr nocapture %array, i32 %r0, i8 signext %k, i8 signext %i0) nounwind {
 ; CHECK-LABEL: test1:
 ; CHECK:       ## %bb.0: ## %bb.nph
-; CHECK-NEXT:    ## kill: def $ecx killed $ecx def $rcx
+; CHECK-NEXT:    ## kill: def $edx killed $edx def $rdx
 ; CHECK-NEXT:    movb $32, %al
 ; CHECK-NEXT:    xorl %r8d, %r8d
 ; CHECK-NEXT:    .p2align 4
@@ -82,17 +82,17 @@ define void @test1(ptr nocapture %array, i32 %r0, i8 signext %k, i8 signext %i0)
 ; CHECK-NEXT:    movzbl %cl, %ecx
 ; CHECK-NEXT:    cmovgel %r8d, %ecx
 ; CHECK-NEXT:    sete %r9b
-; CHECK-NEXT:    addb %r9b, %dl
+; CHECK-NEXT:    addl %r9d, %edx
 ; CHECK-NEXT:    leal (,%rcx,4), %r9d
 ; CHECK-NEXT:    movl %edx, %r10d
 ; CHECK-NEXT:    shlb $4, %r10b
-; CHECK-NEXT:    addb %r9b, %r10b
-; CHECK-NEXT:    movzbl %r10b, %r9d
+; CHECK-NEXT:    addb %r10b, %r9b
+; CHECK-NEXT:    movzbl %r9b, %r9d
 ; CHECK-NEXT:    movl %esi, (%rdi,%r9,4)
 ; CHECK-NEXT:    movl %esi, 8(%rdi,%r9,4)
 ; CHECK-NEXT:    movl %esi, 4(%rdi,%r9,4)
 ; CHECK-NEXT:    movl %esi, 12(%rdi,%r9,4)
-; CHECK-NEXT:    incb %cl
+; CHECK-NEXT:    incl %ecx
 ; CHECK-NEXT:    decb %al
 ; CHECK-NEXT:    jne LBB1_1
 ; CHECK-NEXT:  ## %bb.2: ## %for.end

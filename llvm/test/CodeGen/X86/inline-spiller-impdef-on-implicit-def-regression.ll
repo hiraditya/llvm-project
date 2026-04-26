@@ -27,7 +27,6 @@ define i32 @decode_sb(ptr %t, i32 %bl, i32 %_msprop1966, i32 %sub.i, i64 %idxpro
 ; CHECK-NEXT:    .cfi_offset %r14, -32
 ; CHECK-NEXT:    .cfi_offset %r15, -24
 ; CHECK-NEXT:    movl %r9d, %ebx
-; CHECK-NEXT:    # kill: def $edx killed $edx def $rdx
 ; CHECK-NEXT:    movabsq $87960930222080, %r14 # imm = 0x500000000000
 ; CHECK-NEXT:    movl 0, %r13d
 ; CHECK-NEXT:    movl %esi, %r15d
@@ -37,36 +36,36 @@ define i32 @decode_sb(ptr %t, i32 %bl, i32 %_msprop1966, i32 %sub.i, i64 %idxpro
 ; CHECK-NEXT:  # %bb.1: # %if.else
 ; CHECK-NEXT:    movl %ecx, %r12d
 ; CHECK-NEXT:    andl $1, %r12d
-; CHECK-NEXT:    movzbl 544(%r12), %r9d
-; CHECK-NEXT:    andl $1, %r9d
+; CHECK-NEXT:    movzbl 544(%r12), %eax
+; CHECK-NEXT:    andl $1, %eax
 ; CHECK-NEXT:    movl %r14d, %r10d
 ; CHECK-NEXT:    andl $1, %r10d
 ; CHECK-NEXT:    andl $1, %r8d
-; CHECK-NEXT:    movabsq $17592186044416, %rax # imm = 0x100000000000
-; CHECK-NEXT:    orq %r8, %rax
+; CHECK-NEXT:    movabsq $17592186044416, %r9 # imm = 0x100000000000
+; CHECK-NEXT:    orq %r8, %r9
 ; CHECK-NEXT:    movl %esi, %r8d
 ; CHECK-NEXT:    # kill: def $cl killed $cl killed $ecx
 ; CHECK-NEXT:    shrl %cl, %r8d
 ; CHECK-NEXT:    andl $2, %r8d
 ; CHECK-NEXT:    testb $1, %bl
-; CHECK-NEXT:    cmoveq %r10, %rax
-; CHECK-NEXT:    orl %r9d, %edx
+; CHECK-NEXT:    cmoveq %r10, %r9
+; CHECK-NEXT:    orl %edx, %eax
 ; CHECK-NEXT:    movq %r13, %rcx
 ; CHECK-NEXT:    orq $1, %rcx
 ; CHECK-NEXT:    orl %esi, %r8d
-; CHECK-NEXT:    movl $1, %r8d
+; CHECK-NEXT:    movl $1, %edx
 ; CHECK-NEXT:    je .LBB0_3
 ; CHECK-NEXT:  # %bb.2: # %if.else
-; CHECK-NEXT:    movl (%rax), %r8d
+; CHECK-NEXT:    movl (%r9), %edx
 ; CHECK-NEXT:  .LBB0_3: # %if.else
-; CHECK-NEXT:    shlq $5, %rdx
-; CHECK-NEXT:    movq %r15, %rax
-; CHECK-NEXT:    shlq $7, %rax
-; CHECK-NEXT:    leaq (%rax,%rdx), %rsi
+; CHECK-NEXT:    shlq $5, %rax
+; CHECK-NEXT:    movq %r15, %rsi
+; CHECK-NEXT:    shlq $7, %rsi
+; CHECK-NEXT:    addq %rax, %rsi
 ; CHECK-NEXT:    addq $1248, %rsi # imm = 0x4E0
 ; CHECK-NEXT:    movq %rcx, 0
 ; CHECK-NEXT:    movq %rdi, %r14
-; CHECK-NEXT:    movl %r8d, (%rdi)
+; CHECK-NEXT:    movl %edx, (%rdi)
 ; CHECK-NEXT:    xorl %eax, %eax
 ; CHECK-NEXT:    xorl %edi, %edi
 ; CHECK-NEXT:    xorl %edx, %edx

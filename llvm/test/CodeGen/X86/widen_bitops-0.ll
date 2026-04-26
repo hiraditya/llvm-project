@@ -9,8 +9,9 @@
 define i24 @and_i24_as_v3i8(i24 %a, i24 %b) nounwind {
 ; X86-LABEL: and_i24_as_v3i8:
 ; X86:       # %bb.0:
+; X86-NEXT:    movl {{[0-9]+}}(%esp), %ecx
 ; X86-NEXT:    movl {{[0-9]+}}(%esp), %eax
-; X86-NEXT:    andl {{[0-9]+}}(%esp), %eax
+; X86-NEXT:    andl %ecx, %eax
 ; X86-NEXT:    retl
 ;
 ; X64-LABEL: and_i24_as_v3i8:
@@ -28,8 +29,9 @@ define i24 @and_i24_as_v3i8(i24 %a, i24 %b) nounwind {
 define i24 @xor_i24_as_v3i8(i24 %a, i24 %b) nounwind {
 ; X86-LABEL: xor_i24_as_v3i8:
 ; X86:       # %bb.0:
+; X86-NEXT:    movl {{[0-9]+}}(%esp), %ecx
 ; X86-NEXT:    movl {{[0-9]+}}(%esp), %eax
-; X86-NEXT:    xorl {{[0-9]+}}(%esp), %eax
+; X86-NEXT:    xorl %ecx, %eax
 ; X86-NEXT:    retl
 ;
 ; X64-LABEL: xor_i24_as_v3i8:
@@ -47,8 +49,9 @@ define i24 @xor_i24_as_v3i8(i24 %a, i24 %b) nounwind {
 define i24 @or_i24_as_v3i8(i24 %a, i24 %b) nounwind {
 ; X86-LABEL: or_i24_as_v3i8:
 ; X86:       # %bb.0:
+; X86-NEXT:    movl {{[0-9]+}}(%esp), %ecx
 ; X86-NEXT:    movl {{[0-9]+}}(%esp), %eax
-; X86-NEXT:    orl {{[0-9]+}}(%esp), %eax
+; X86-NEXT:    orl %ecx, %eax
 ; X86-NEXT:    retl
 ;
 ; X64-LABEL: or_i24_as_v3i8:
@@ -70,8 +73,9 @@ define i24 @or_i24_as_v3i8(i24 %a, i24 %b) nounwind {
 define i24 @and_i24_as_v8i3(i24 %a, i24 %b) nounwind {
 ; X86-LABEL: and_i24_as_v8i3:
 ; X86:       # %bb.0:
+; X86-NEXT:    movl {{[0-9]+}}(%esp), %ecx
 ; X86-NEXT:    movl {{[0-9]+}}(%esp), %eax
-; X86-NEXT:    andl {{[0-9]+}}(%esp), %eax
+; X86-NEXT:    andl %ecx, %eax
 ; X86-NEXT:    retl
 ;
 ; X64-LABEL: and_i24_as_v8i3:
@@ -89,8 +93,9 @@ define i24 @and_i24_as_v8i3(i24 %a, i24 %b) nounwind {
 define i24 @xor_i24_as_v8i3(i24 %a, i24 %b) nounwind {
 ; X86-LABEL: xor_i24_as_v8i3:
 ; X86:       # %bb.0:
+; X86-NEXT:    movl {{[0-9]+}}(%esp), %ecx
 ; X86-NEXT:    movl {{[0-9]+}}(%esp), %eax
-; X86-NEXT:    xorl {{[0-9]+}}(%esp), %eax
+; X86-NEXT:    xorl %ecx, %eax
 ; X86-NEXT:    retl
 ;
 ; X64-LABEL: xor_i24_as_v8i3:
@@ -108,8 +113,9 @@ define i24 @xor_i24_as_v8i3(i24 %a, i24 %b) nounwind {
 define i24 @or_i24_as_v8i3(i24 %a, i24 %b) nounwind {
 ; X86-LABEL: or_i24_as_v8i3:
 ; X86:       # %bb.0:
+; X86-NEXT:    movl {{[0-9]+}}(%esp), %ecx
 ; X86-NEXT:    movl {{[0-9]+}}(%esp), %eax
-; X86-NEXT:    orl {{[0-9]+}}(%esp), %eax
+; X86-NEXT:    orl %ecx, %eax
 ; X86-NEXT:    retl
 ;
 ; X64-LABEL: or_i24_as_v8i3:
@@ -137,10 +143,10 @@ define <3 x i8> @and_v3i8_as_i24(<3 x i8> %a, <3 x i8> %b) nounwind {
 ; X86-NEXT:    movd {{.*#+}} xmm1 = mem[0],zero,zero,zero
 ; X86-NEXT:    pinsrb $1, {{[0-9]+}}(%esp), %xmm1
 ; X86-NEXT:    pinsrb $2, {{[0-9]+}}(%esp), %xmm1
-; X86-NEXT:    pand %xmm0, %xmm1
-; X86-NEXT:    movd %xmm1, %eax
-; X86-NEXT:    pextrb $1, %xmm1, %edx
-; X86-NEXT:    pextrb $2, %xmm1, %ecx
+; X86-NEXT:    pand %xmm1, %xmm0
+; X86-NEXT:    movd %xmm0, %eax
+; X86-NEXT:    pextrb $1, %xmm0, %edx
+; X86-NEXT:    pextrb $2, %xmm0, %ecx
 ; X86-NEXT:    # kill: def $al killed $al killed $eax
 ; X86-NEXT:    # kill: def $dl killed $dl killed $edx
 ; X86-NEXT:    # kill: def $cl killed $cl killed $ecx
@@ -154,10 +160,10 @@ define <3 x i8> @and_v3i8_as_i24(<3 x i8> %a, <3 x i8> %b) nounwind {
 ; X64-NEXT:    movd %edi, %xmm1
 ; X64-NEXT:    pinsrb $1, %esi, %xmm1
 ; X64-NEXT:    pinsrb $2, %edx, %xmm1
-; X64-NEXT:    pand %xmm0, %xmm1
-; X64-NEXT:    movd %xmm1, %eax
-; X64-NEXT:    pextrb $1, %xmm1, %edx
-; X64-NEXT:    pextrb $2, %xmm1, %ecx
+; X64-NEXT:    pand %xmm1, %xmm0
+; X64-NEXT:    movd %xmm0, %eax
+; X64-NEXT:    pextrb $1, %xmm0, %edx
+; X64-NEXT:    pextrb $2, %xmm0, %ecx
 ; X64-NEXT:    # kill: def $al killed $al killed $eax
 ; X64-NEXT:    # kill: def $dl killed $dl killed $edx
 ; X64-NEXT:    # kill: def $cl killed $cl killed $ecx
@@ -178,10 +184,10 @@ define <3 x i8> @xor_v3i8_as_i24(<3 x i8> %a, <3 x i8> %b) nounwind {
 ; X86-NEXT:    movd {{.*#+}} xmm1 = mem[0],zero,zero,zero
 ; X86-NEXT:    pinsrb $1, {{[0-9]+}}(%esp), %xmm1
 ; X86-NEXT:    pinsrb $2, {{[0-9]+}}(%esp), %xmm1
-; X86-NEXT:    pxor %xmm0, %xmm1
-; X86-NEXT:    movd %xmm1, %eax
-; X86-NEXT:    pextrb $1, %xmm1, %edx
-; X86-NEXT:    pextrb $2, %xmm1, %ecx
+; X86-NEXT:    pxor %xmm1, %xmm0
+; X86-NEXT:    movd %xmm0, %eax
+; X86-NEXT:    pextrb $1, %xmm0, %edx
+; X86-NEXT:    pextrb $2, %xmm0, %ecx
 ; X86-NEXT:    # kill: def $al killed $al killed $eax
 ; X86-NEXT:    # kill: def $dl killed $dl killed $edx
 ; X86-NEXT:    # kill: def $cl killed $cl killed $ecx
@@ -195,10 +201,10 @@ define <3 x i8> @xor_v3i8_as_i24(<3 x i8> %a, <3 x i8> %b) nounwind {
 ; X64-NEXT:    movd %edi, %xmm1
 ; X64-NEXT:    pinsrb $1, %esi, %xmm1
 ; X64-NEXT:    pinsrb $2, %edx, %xmm1
-; X64-NEXT:    pxor %xmm0, %xmm1
-; X64-NEXT:    movd %xmm1, %eax
-; X64-NEXT:    pextrb $1, %xmm1, %edx
-; X64-NEXT:    pextrb $2, %xmm1, %ecx
+; X64-NEXT:    pxor %xmm1, %xmm0
+; X64-NEXT:    movd %xmm0, %eax
+; X64-NEXT:    pextrb $1, %xmm0, %edx
+; X64-NEXT:    pextrb $2, %xmm0, %ecx
 ; X64-NEXT:    # kill: def $al killed $al killed $eax
 ; X64-NEXT:    # kill: def $dl killed $dl killed $edx
 ; X64-NEXT:    # kill: def $cl killed $cl killed $ecx
@@ -219,10 +225,10 @@ define <3 x i8> @or_v3i8_as_i24(<3 x i8> %a, <3 x i8> %b) nounwind {
 ; X86-NEXT:    movd {{.*#+}} xmm1 = mem[0],zero,zero,zero
 ; X86-NEXT:    pinsrb $1, {{[0-9]+}}(%esp), %xmm1
 ; X86-NEXT:    pinsrb $2, {{[0-9]+}}(%esp), %xmm1
-; X86-NEXT:    por %xmm0, %xmm1
-; X86-NEXT:    movd %xmm1, %eax
-; X86-NEXT:    pextrb $1, %xmm1, %edx
-; X86-NEXT:    pextrb $2, %xmm1, %ecx
+; X86-NEXT:    por %xmm1, %xmm0
+; X86-NEXT:    movd %xmm0, %eax
+; X86-NEXT:    pextrb $1, %xmm0, %edx
+; X86-NEXT:    pextrb $2, %xmm0, %ecx
 ; X86-NEXT:    # kill: def $al killed $al killed $eax
 ; X86-NEXT:    # kill: def $dl killed $dl killed $edx
 ; X86-NEXT:    # kill: def $cl killed $cl killed $ecx
@@ -236,10 +242,10 @@ define <3 x i8> @or_v3i8_as_i24(<3 x i8> %a, <3 x i8> %b) nounwind {
 ; X64-NEXT:    movd %edi, %xmm1
 ; X64-NEXT:    pinsrb $1, %esi, %xmm1
 ; X64-NEXT:    pinsrb $2, %edx, %xmm1
-; X64-NEXT:    por %xmm0, %xmm1
-; X64-NEXT:    movd %xmm1, %eax
-; X64-NEXT:    pextrb $1, %xmm1, %edx
-; X64-NEXT:    pextrb $2, %xmm1, %ecx
+; X64-NEXT:    por %xmm1, %xmm0
+; X64-NEXT:    movd %xmm0, %eax
+; X64-NEXT:    pextrb $1, %xmm0, %edx
+; X64-NEXT:    pextrb $2, %xmm0, %ecx
 ; X64-NEXT:    # kill: def $al killed $al killed $eax
 ; X64-NEXT:    # kill: def $dl killed $dl killed $edx
 ; X64-NEXT:    # kill: def $cl killed $cl killed $ecx

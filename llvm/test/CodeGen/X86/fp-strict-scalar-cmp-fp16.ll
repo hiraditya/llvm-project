@@ -86,8 +86,8 @@ define i32 @test_f16_ogt_q(i32 %a, i32 %b, half %f1, half %f2) #0 {
 ; SSE2-NEXT:    # xmm0 = mem[0],zero,zero,zero
 ; SSE2-NEXT:    callq __extendhfsf2@PLT
 ; SSE2-NEXT:    ucomiss (%rsp), %xmm0 # 4-byte Folded Reload
-; SSE2-NEXT:    cmovbel %ebx, %ebp
-; SSE2-NEXT:    movl %ebp, %eax
+; SSE2-NEXT:    cmoval %ebp, %ebx
+; SSE2-NEXT:    movl %ebx, %eax
 ; SSE2-NEXT:    addq $8, %rsp
 ; SSE2-NEXT:    popq %rbx
 ; SSE2-NEXT:    popq %rbp
@@ -95,7 +95,7 @@ define i32 @test_f16_ogt_q(i32 %a, i32 %b, half %f1, half %f2) #0 {
 ;
 ; AVX-LABEL: test_f16_ogt_q:
 ; AVX:       # %bb.0:
-; AVX-NEXT:    movl %edi, %eax
+; AVX-NEXT:    movl %esi, %eax
 ; AVX-NEXT:    vpextrw $0, %xmm0, %ecx
 ; AVX-NEXT:    vpextrw $0, %xmm1, %edx
 ; AVX-NEXT:    movzwl %dx, %edx
@@ -105,7 +105,7 @@ define i32 @test_f16_ogt_q(i32 %a, i32 %b, half %f1, half %f2) #0 {
 ; AVX-NEXT:    vmovd %ecx, %xmm1
 ; AVX-NEXT:    vcvtph2ps %xmm1, %xmm1
 ; AVX-NEXT:    vucomiss %xmm0, %xmm1
-; AVX-NEXT:    cmovbel %esi, %eax
+; AVX-NEXT:    cmoval %edi, %eax
 ; AVX-NEXT:    retq
 ;
 ; X86-FP16-LABEL: test_f16_ogt_q:
@@ -114,15 +114,15 @@ define i32 @test_f16_ogt_q(i32 %a, i32 %b, half %f1, half %f2) #0 {
 ; X86-FP16-NEXT:    vucomish {{[0-9]+}}(%esp), %xmm0
 ; X86-FP16-NEXT:    leal {{[0-9]+}}(%esp), %eax
 ; X86-FP16-NEXT:    leal {{[0-9]+}}(%esp), %ecx
-; X86-FP16-NEXT:    cmoval %eax, %ecx
-; X86-FP16-NEXT:    movl (%ecx), %eax
+; X86-FP16-NEXT:    cmovbel %ecx, %eax
+; X86-FP16-NEXT:    movl (%eax), %eax
 ; X86-FP16-NEXT:    retl
 ;
 ; X64-FP16-LABEL: test_f16_ogt_q:
 ; X64-FP16:       # %bb.0:
-; X64-FP16-NEXT:    movl %edi, %eax
+; X64-FP16-NEXT:    movl %esi, %eax
 ; X64-FP16-NEXT:    vucomish %xmm1, %xmm0
-; X64-FP16-NEXT:    cmovbel %esi, %eax
+; X64-FP16-NEXT:    cmoval %edi, %eax
 ; X64-FP16-NEXT:    retq
   %cond = call i1 @llvm.experimental.constrained.fcmp.f16(
                                                half %f1, half %f2, metadata !"ogt",
@@ -147,8 +147,8 @@ define i32 @test_f16_oge_q(i32 %a, i32 %b, half %f1, half %f2) #0 {
 ; SSE2-NEXT:    # xmm0 = mem[0],zero,zero,zero
 ; SSE2-NEXT:    callq __extendhfsf2@PLT
 ; SSE2-NEXT:    ucomiss (%rsp), %xmm0 # 4-byte Folded Reload
-; SSE2-NEXT:    cmovbl %ebx, %ebp
-; SSE2-NEXT:    movl %ebp, %eax
+; SSE2-NEXT:    cmovael %ebp, %ebx
+; SSE2-NEXT:    movl %ebx, %eax
 ; SSE2-NEXT:    addq $8, %rsp
 ; SSE2-NEXT:    popq %rbx
 ; SSE2-NEXT:    popq %rbp
@@ -156,7 +156,7 @@ define i32 @test_f16_oge_q(i32 %a, i32 %b, half %f1, half %f2) #0 {
 ;
 ; AVX-LABEL: test_f16_oge_q:
 ; AVX:       # %bb.0:
-; AVX-NEXT:    movl %edi, %eax
+; AVX-NEXT:    movl %esi, %eax
 ; AVX-NEXT:    vpextrw $0, %xmm0, %ecx
 ; AVX-NEXT:    vpextrw $0, %xmm1, %edx
 ; AVX-NEXT:    movzwl %dx, %edx
@@ -166,7 +166,7 @@ define i32 @test_f16_oge_q(i32 %a, i32 %b, half %f1, half %f2) #0 {
 ; AVX-NEXT:    vmovd %ecx, %xmm1
 ; AVX-NEXT:    vcvtph2ps %xmm1, %xmm1
 ; AVX-NEXT:    vucomiss %xmm0, %xmm1
-; AVX-NEXT:    cmovbl %esi, %eax
+; AVX-NEXT:    cmovael %edi, %eax
 ; AVX-NEXT:    retq
 ;
 ; X86-FP16-LABEL: test_f16_oge_q:
@@ -175,15 +175,15 @@ define i32 @test_f16_oge_q(i32 %a, i32 %b, half %f1, half %f2) #0 {
 ; X86-FP16-NEXT:    vucomish {{[0-9]+}}(%esp), %xmm0
 ; X86-FP16-NEXT:    leal {{[0-9]+}}(%esp), %eax
 ; X86-FP16-NEXT:    leal {{[0-9]+}}(%esp), %ecx
-; X86-FP16-NEXT:    cmovael %eax, %ecx
-; X86-FP16-NEXT:    movl (%ecx), %eax
+; X86-FP16-NEXT:    cmovbl %ecx, %eax
+; X86-FP16-NEXT:    movl (%eax), %eax
 ; X86-FP16-NEXT:    retl
 ;
 ; X64-FP16-LABEL: test_f16_oge_q:
 ; X64-FP16:       # %bb.0:
-; X64-FP16-NEXT:    movl %edi, %eax
+; X64-FP16-NEXT:    movl %esi, %eax
 ; X64-FP16-NEXT:    vucomish %xmm1, %xmm0
-; X64-FP16-NEXT:    cmovbl %esi, %eax
+; X64-FP16-NEXT:    cmovael %edi, %eax
 ; X64-FP16-NEXT:    retq
   %cond = call i1 @llvm.experimental.constrained.fcmp.f16(
                                                half %f1, half %f2, metadata !"oge",
@@ -210,8 +210,8 @@ define i32 @test_f16_olt_q(i32 %a, i32 %b, half %f1, half %f2) #0 {
 ; SSE2-NEXT:    movss (%rsp), %xmm1 # 4-byte Reload
 ; SSE2-NEXT:    # xmm1 = mem[0],zero,zero,zero
 ; SSE2-NEXT:    ucomiss %xmm0, %xmm1
-; SSE2-NEXT:    cmovbel %ebx, %ebp
-; SSE2-NEXT:    movl %ebp, %eax
+; SSE2-NEXT:    cmoval %ebp, %ebx
+; SSE2-NEXT:    movl %ebx, %eax
 ; SSE2-NEXT:    addq $8, %rsp
 ; SSE2-NEXT:    popq %rbx
 ; SSE2-NEXT:    popq %rbp
@@ -219,7 +219,7 @@ define i32 @test_f16_olt_q(i32 %a, i32 %b, half %f1, half %f2) #0 {
 ;
 ; AVX-LABEL: test_f16_olt_q:
 ; AVX:       # %bb.0:
-; AVX-NEXT:    movl %edi, %eax
+; AVX-NEXT:    movl %esi, %eax
 ; AVX-NEXT:    vpextrw $0, %xmm1, %ecx
 ; AVX-NEXT:    vpextrw $0, %xmm0, %edx
 ; AVX-NEXT:    movzwl %dx, %edx
@@ -229,7 +229,7 @@ define i32 @test_f16_olt_q(i32 %a, i32 %b, half %f1, half %f2) #0 {
 ; AVX-NEXT:    vmovd %ecx, %xmm1
 ; AVX-NEXT:    vcvtph2ps %xmm1, %xmm1
 ; AVX-NEXT:    vucomiss %xmm0, %xmm1
-; AVX-NEXT:    cmovbel %esi, %eax
+; AVX-NEXT:    cmoval %edi, %eax
 ; AVX-NEXT:    retq
 ;
 ; X86-FP16-LABEL: test_f16_olt_q:
@@ -238,15 +238,15 @@ define i32 @test_f16_olt_q(i32 %a, i32 %b, half %f1, half %f2) #0 {
 ; X86-FP16-NEXT:    vucomish {{[0-9]+}}(%esp), %xmm0
 ; X86-FP16-NEXT:    leal {{[0-9]+}}(%esp), %eax
 ; X86-FP16-NEXT:    leal {{[0-9]+}}(%esp), %ecx
-; X86-FP16-NEXT:    cmoval %eax, %ecx
-; X86-FP16-NEXT:    movl (%ecx), %eax
+; X86-FP16-NEXT:    cmovbel %ecx, %eax
+; X86-FP16-NEXT:    movl (%eax), %eax
 ; X86-FP16-NEXT:    retl
 ;
 ; X64-FP16-LABEL: test_f16_olt_q:
 ; X64-FP16:       # %bb.0:
-; X64-FP16-NEXT:    movl %edi, %eax
+; X64-FP16-NEXT:    movl %esi, %eax
 ; X64-FP16-NEXT:    vucomish %xmm0, %xmm1
-; X64-FP16-NEXT:    cmovbel %esi, %eax
+; X64-FP16-NEXT:    cmoval %edi, %eax
 ; X64-FP16-NEXT:    retq
   %cond = call i1 @llvm.experimental.constrained.fcmp.f16(
                                                half %f1, half %f2, metadata !"olt",
@@ -273,8 +273,8 @@ define i32 @test_f16_ole_q(i32 %a, i32 %b, half %f1, half %f2) #0 {
 ; SSE2-NEXT:    movss (%rsp), %xmm1 # 4-byte Reload
 ; SSE2-NEXT:    # xmm1 = mem[0],zero,zero,zero
 ; SSE2-NEXT:    ucomiss %xmm0, %xmm1
-; SSE2-NEXT:    cmovbl %ebx, %ebp
-; SSE2-NEXT:    movl %ebp, %eax
+; SSE2-NEXT:    cmovael %ebp, %ebx
+; SSE2-NEXT:    movl %ebx, %eax
 ; SSE2-NEXT:    addq $8, %rsp
 ; SSE2-NEXT:    popq %rbx
 ; SSE2-NEXT:    popq %rbp
@@ -282,7 +282,7 @@ define i32 @test_f16_ole_q(i32 %a, i32 %b, half %f1, half %f2) #0 {
 ;
 ; AVX-LABEL: test_f16_ole_q:
 ; AVX:       # %bb.0:
-; AVX-NEXT:    movl %edi, %eax
+; AVX-NEXT:    movl %esi, %eax
 ; AVX-NEXT:    vpextrw $0, %xmm1, %ecx
 ; AVX-NEXT:    vpextrw $0, %xmm0, %edx
 ; AVX-NEXT:    movzwl %dx, %edx
@@ -292,7 +292,7 @@ define i32 @test_f16_ole_q(i32 %a, i32 %b, half %f1, half %f2) #0 {
 ; AVX-NEXT:    vmovd %ecx, %xmm1
 ; AVX-NEXT:    vcvtph2ps %xmm1, %xmm1
 ; AVX-NEXT:    vucomiss %xmm0, %xmm1
-; AVX-NEXT:    cmovbl %esi, %eax
+; AVX-NEXT:    cmovael %edi, %eax
 ; AVX-NEXT:    retq
 ;
 ; X86-FP16-LABEL: test_f16_ole_q:
@@ -301,15 +301,15 @@ define i32 @test_f16_ole_q(i32 %a, i32 %b, half %f1, half %f2) #0 {
 ; X86-FP16-NEXT:    vucomish {{[0-9]+}}(%esp), %xmm0
 ; X86-FP16-NEXT:    leal {{[0-9]+}}(%esp), %eax
 ; X86-FP16-NEXT:    leal {{[0-9]+}}(%esp), %ecx
-; X86-FP16-NEXT:    cmovael %eax, %ecx
-; X86-FP16-NEXT:    movl (%ecx), %eax
+; X86-FP16-NEXT:    cmovbl %ecx, %eax
+; X86-FP16-NEXT:    movl (%eax), %eax
 ; X86-FP16-NEXT:    retl
 ;
 ; X64-FP16-LABEL: test_f16_ole_q:
 ; X64-FP16:       # %bb.0:
-; X64-FP16-NEXT:    movl %edi, %eax
+; X64-FP16-NEXT:    movl %esi, %eax
 ; X64-FP16-NEXT:    vucomish %xmm0, %xmm1
-; X64-FP16-NEXT:    cmovbl %esi, %eax
+; X64-FP16-NEXT:    cmovael %edi, %eax
 ; X64-FP16-NEXT:    retq
   %cond = call i1 @llvm.experimental.constrained.fcmp.f16(
                                                half %f1, half %f2, metadata !"ole",
@@ -334,8 +334,8 @@ define i32 @test_f16_one_q(i32 %a, i32 %b, half %f1, half %f2) #0 {
 ; SSE2-NEXT:    # xmm0 = mem[0],zero,zero,zero
 ; SSE2-NEXT:    callq __extendhfsf2@PLT
 ; SSE2-NEXT:    ucomiss (%rsp), %xmm0 # 4-byte Folded Reload
-; SSE2-NEXT:    cmovel %ebx, %ebp
-; SSE2-NEXT:    movl %ebp, %eax
+; SSE2-NEXT:    cmovnel %ebp, %ebx
+; SSE2-NEXT:    movl %ebx, %eax
 ; SSE2-NEXT:    addq $8, %rsp
 ; SSE2-NEXT:    popq %rbx
 ; SSE2-NEXT:    popq %rbp
@@ -343,7 +343,7 @@ define i32 @test_f16_one_q(i32 %a, i32 %b, half %f1, half %f2) #0 {
 ;
 ; AVX-LABEL: test_f16_one_q:
 ; AVX:       # %bb.0:
-; AVX-NEXT:    movl %edi, %eax
+; AVX-NEXT:    movl %esi, %eax
 ; AVX-NEXT:    vpextrw $0, %xmm0, %ecx
 ; AVX-NEXT:    vpextrw $0, %xmm1, %edx
 ; AVX-NEXT:    movzwl %dx, %edx
@@ -353,7 +353,7 @@ define i32 @test_f16_one_q(i32 %a, i32 %b, half %f1, half %f2) #0 {
 ; AVX-NEXT:    vmovd %ecx, %xmm1
 ; AVX-NEXT:    vcvtph2ps %xmm1, %xmm1
 ; AVX-NEXT:    vucomiss %xmm0, %xmm1
-; AVX-NEXT:    cmovel %esi, %eax
+; AVX-NEXT:    cmovnel %edi, %eax
 ; AVX-NEXT:    retq
 ;
 ; X86-FP16-LABEL: test_f16_one_q:
@@ -362,15 +362,15 @@ define i32 @test_f16_one_q(i32 %a, i32 %b, half %f1, half %f2) #0 {
 ; X86-FP16-NEXT:    vucomish {{[0-9]+}}(%esp), %xmm0
 ; X86-FP16-NEXT:    leal {{[0-9]+}}(%esp), %eax
 ; X86-FP16-NEXT:    leal {{[0-9]+}}(%esp), %ecx
-; X86-FP16-NEXT:    cmovnel %eax, %ecx
-; X86-FP16-NEXT:    movl (%ecx), %eax
+; X86-FP16-NEXT:    cmovel %ecx, %eax
+; X86-FP16-NEXT:    movl (%eax), %eax
 ; X86-FP16-NEXT:    retl
 ;
 ; X64-FP16-LABEL: test_f16_one_q:
 ; X64-FP16:       # %bb.0:
-; X64-FP16-NEXT:    movl %edi, %eax
+; X64-FP16-NEXT:    movl %esi, %eax
 ; X64-FP16-NEXT:    vucomish %xmm1, %xmm0
-; X64-FP16-NEXT:    cmovel %esi, %eax
+; X64-FP16-NEXT:    cmovnel %edi, %eax
 ; X64-FP16-NEXT:    retq
   %cond = call i1 @llvm.experimental.constrained.fcmp.f16(
                                                half %f1, half %f2, metadata !"one",
@@ -395,8 +395,8 @@ define i32 @test_f16_ord_q(i32 %a, i32 %b, half %f1, half %f2) #0 {
 ; SSE2-NEXT:    # xmm0 = mem[0],zero,zero,zero
 ; SSE2-NEXT:    callq __extendhfsf2@PLT
 ; SSE2-NEXT:    ucomiss (%rsp), %xmm0 # 4-byte Folded Reload
-; SSE2-NEXT:    cmovpl %ebx, %ebp
-; SSE2-NEXT:    movl %ebp, %eax
+; SSE2-NEXT:    cmovnpl %ebp, %ebx
+; SSE2-NEXT:    movl %ebx, %eax
 ; SSE2-NEXT:    addq $8, %rsp
 ; SSE2-NEXT:    popq %rbx
 ; SSE2-NEXT:    popq %rbp
@@ -404,7 +404,7 @@ define i32 @test_f16_ord_q(i32 %a, i32 %b, half %f1, half %f2) #0 {
 ;
 ; AVX-LABEL: test_f16_ord_q:
 ; AVX:       # %bb.0:
-; AVX-NEXT:    movl %edi, %eax
+; AVX-NEXT:    movl %esi, %eax
 ; AVX-NEXT:    vpextrw $0, %xmm0, %ecx
 ; AVX-NEXT:    vpextrw $0, %xmm1, %edx
 ; AVX-NEXT:    movzwl %dx, %edx
@@ -414,7 +414,7 @@ define i32 @test_f16_ord_q(i32 %a, i32 %b, half %f1, half %f2) #0 {
 ; AVX-NEXT:    vmovd %ecx, %xmm1
 ; AVX-NEXT:    vcvtph2ps %xmm1, %xmm1
 ; AVX-NEXT:    vucomiss %xmm0, %xmm1
-; AVX-NEXT:    cmovpl %esi, %eax
+; AVX-NEXT:    cmovnpl %edi, %eax
 ; AVX-NEXT:    retq
 ;
 ; X86-FP16-LABEL: test_f16_ord_q:
@@ -423,15 +423,15 @@ define i32 @test_f16_ord_q(i32 %a, i32 %b, half %f1, half %f2) #0 {
 ; X86-FP16-NEXT:    vucomish {{[0-9]+}}(%esp), %xmm0
 ; X86-FP16-NEXT:    leal {{[0-9]+}}(%esp), %eax
 ; X86-FP16-NEXT:    leal {{[0-9]+}}(%esp), %ecx
-; X86-FP16-NEXT:    cmovnpl %eax, %ecx
-; X86-FP16-NEXT:    movl (%ecx), %eax
+; X86-FP16-NEXT:    cmovpl %ecx, %eax
+; X86-FP16-NEXT:    movl (%eax), %eax
 ; X86-FP16-NEXT:    retl
 ;
 ; X64-FP16-LABEL: test_f16_ord_q:
 ; X64-FP16:       # %bb.0:
-; X64-FP16-NEXT:    movl %edi, %eax
+; X64-FP16-NEXT:    movl %esi, %eax
 ; X64-FP16-NEXT:    vucomish %xmm1, %xmm0
-; X64-FP16-NEXT:    cmovpl %esi, %eax
+; X64-FP16-NEXT:    cmovnpl %edi, %eax
 ; X64-FP16-NEXT:    retq
   %cond = call i1 @llvm.experimental.constrained.fcmp.f16(
                                                half %f1, half %f2, metadata !"ord",
@@ -456,8 +456,8 @@ define i32 @test_f16_ueq_q(i32 %a, i32 %b, half %f1, half %f2) #0 {
 ; SSE2-NEXT:    # xmm0 = mem[0],zero,zero,zero
 ; SSE2-NEXT:    callq __extendhfsf2@PLT
 ; SSE2-NEXT:    ucomiss (%rsp), %xmm0 # 4-byte Folded Reload
-; SSE2-NEXT:    cmovnel %ebx, %ebp
-; SSE2-NEXT:    movl %ebp, %eax
+; SSE2-NEXT:    cmovel %ebp, %ebx
+; SSE2-NEXT:    movl %ebx, %eax
 ; SSE2-NEXT:    addq $8, %rsp
 ; SSE2-NEXT:    popq %rbx
 ; SSE2-NEXT:    popq %rbp
@@ -465,7 +465,7 @@ define i32 @test_f16_ueq_q(i32 %a, i32 %b, half %f1, half %f2) #0 {
 ;
 ; AVX-LABEL: test_f16_ueq_q:
 ; AVX:       # %bb.0:
-; AVX-NEXT:    movl %edi, %eax
+; AVX-NEXT:    movl %esi, %eax
 ; AVX-NEXT:    vpextrw $0, %xmm0, %ecx
 ; AVX-NEXT:    vpextrw $0, %xmm1, %edx
 ; AVX-NEXT:    movzwl %dx, %edx
@@ -475,7 +475,7 @@ define i32 @test_f16_ueq_q(i32 %a, i32 %b, half %f1, half %f2) #0 {
 ; AVX-NEXT:    vmovd %ecx, %xmm1
 ; AVX-NEXT:    vcvtph2ps %xmm1, %xmm1
 ; AVX-NEXT:    vucomiss %xmm0, %xmm1
-; AVX-NEXT:    cmovnel %esi, %eax
+; AVX-NEXT:    cmovel %edi, %eax
 ; AVX-NEXT:    retq
 ;
 ; X86-FP16-LABEL: test_f16_ueq_q:
@@ -484,15 +484,15 @@ define i32 @test_f16_ueq_q(i32 %a, i32 %b, half %f1, half %f2) #0 {
 ; X86-FP16-NEXT:    vucomish {{[0-9]+}}(%esp), %xmm0
 ; X86-FP16-NEXT:    leal {{[0-9]+}}(%esp), %eax
 ; X86-FP16-NEXT:    leal {{[0-9]+}}(%esp), %ecx
-; X86-FP16-NEXT:    cmovel %eax, %ecx
-; X86-FP16-NEXT:    movl (%ecx), %eax
+; X86-FP16-NEXT:    cmovnel %ecx, %eax
+; X86-FP16-NEXT:    movl (%eax), %eax
 ; X86-FP16-NEXT:    retl
 ;
 ; X64-FP16-LABEL: test_f16_ueq_q:
 ; X64-FP16:       # %bb.0:
-; X64-FP16-NEXT:    movl %edi, %eax
+; X64-FP16-NEXT:    movl %esi, %eax
 ; X64-FP16-NEXT:    vucomish %xmm1, %xmm0
-; X64-FP16-NEXT:    cmovnel %esi, %eax
+; X64-FP16-NEXT:    cmovel %edi, %eax
 ; X64-FP16-NEXT:    retq
   %cond = call i1 @llvm.experimental.constrained.fcmp.f16(
                                                half %f1, half %f2, metadata !"ueq",
@@ -519,8 +519,8 @@ define i32 @test_f16_ugt_q(i32 %a, i32 %b, half %f1, half %f2) #0 {
 ; SSE2-NEXT:    movss (%rsp), %xmm1 # 4-byte Reload
 ; SSE2-NEXT:    # xmm1 = mem[0],zero,zero,zero
 ; SSE2-NEXT:    ucomiss %xmm0, %xmm1
-; SSE2-NEXT:    cmovael %ebx, %ebp
-; SSE2-NEXT:    movl %ebp, %eax
+; SSE2-NEXT:    cmovbl %ebp, %ebx
+; SSE2-NEXT:    movl %ebx, %eax
 ; SSE2-NEXT:    addq $8, %rsp
 ; SSE2-NEXT:    popq %rbx
 ; SSE2-NEXT:    popq %rbp
@@ -528,7 +528,7 @@ define i32 @test_f16_ugt_q(i32 %a, i32 %b, half %f1, half %f2) #0 {
 ;
 ; AVX-LABEL: test_f16_ugt_q:
 ; AVX:       # %bb.0:
-; AVX-NEXT:    movl %edi, %eax
+; AVX-NEXT:    movl %esi, %eax
 ; AVX-NEXT:    vpextrw $0, %xmm1, %ecx
 ; AVX-NEXT:    vpextrw $0, %xmm0, %edx
 ; AVX-NEXT:    movzwl %dx, %edx
@@ -538,7 +538,7 @@ define i32 @test_f16_ugt_q(i32 %a, i32 %b, half %f1, half %f2) #0 {
 ; AVX-NEXT:    vmovd %ecx, %xmm1
 ; AVX-NEXT:    vcvtph2ps %xmm1, %xmm1
 ; AVX-NEXT:    vucomiss %xmm0, %xmm1
-; AVX-NEXT:    cmovael %esi, %eax
+; AVX-NEXT:    cmovbl %edi, %eax
 ; AVX-NEXT:    retq
 ;
 ; X86-FP16-LABEL: test_f16_ugt_q:
@@ -547,15 +547,15 @@ define i32 @test_f16_ugt_q(i32 %a, i32 %b, half %f1, half %f2) #0 {
 ; X86-FP16-NEXT:    vucomish {{[0-9]+}}(%esp), %xmm0
 ; X86-FP16-NEXT:    leal {{[0-9]+}}(%esp), %eax
 ; X86-FP16-NEXT:    leal {{[0-9]+}}(%esp), %ecx
-; X86-FP16-NEXT:    cmovbl %eax, %ecx
-; X86-FP16-NEXT:    movl (%ecx), %eax
+; X86-FP16-NEXT:    cmovael %ecx, %eax
+; X86-FP16-NEXT:    movl (%eax), %eax
 ; X86-FP16-NEXT:    retl
 ;
 ; X64-FP16-LABEL: test_f16_ugt_q:
 ; X64-FP16:       # %bb.0:
-; X64-FP16-NEXT:    movl %edi, %eax
+; X64-FP16-NEXT:    movl %esi, %eax
 ; X64-FP16-NEXT:    vucomish %xmm0, %xmm1
-; X64-FP16-NEXT:    cmovael %esi, %eax
+; X64-FP16-NEXT:    cmovbl %edi, %eax
 ; X64-FP16-NEXT:    retq
   %cond = call i1 @llvm.experimental.constrained.fcmp.f16(
                                                half %f1, half %f2, metadata !"ugt",
@@ -582,8 +582,8 @@ define i32 @test_f16_uge_q(i32 %a, i32 %b, half %f1, half %f2) #0 {
 ; SSE2-NEXT:    movss (%rsp), %xmm1 # 4-byte Reload
 ; SSE2-NEXT:    # xmm1 = mem[0],zero,zero,zero
 ; SSE2-NEXT:    ucomiss %xmm0, %xmm1
-; SSE2-NEXT:    cmoval %ebx, %ebp
-; SSE2-NEXT:    movl %ebp, %eax
+; SSE2-NEXT:    cmovbel %ebp, %ebx
+; SSE2-NEXT:    movl %ebx, %eax
 ; SSE2-NEXT:    addq $8, %rsp
 ; SSE2-NEXT:    popq %rbx
 ; SSE2-NEXT:    popq %rbp
@@ -591,7 +591,7 @@ define i32 @test_f16_uge_q(i32 %a, i32 %b, half %f1, half %f2) #0 {
 ;
 ; AVX-LABEL: test_f16_uge_q:
 ; AVX:       # %bb.0:
-; AVX-NEXT:    movl %edi, %eax
+; AVX-NEXT:    movl %esi, %eax
 ; AVX-NEXT:    vpextrw $0, %xmm1, %ecx
 ; AVX-NEXT:    vpextrw $0, %xmm0, %edx
 ; AVX-NEXT:    movzwl %dx, %edx
@@ -601,7 +601,7 @@ define i32 @test_f16_uge_q(i32 %a, i32 %b, half %f1, half %f2) #0 {
 ; AVX-NEXT:    vmovd %ecx, %xmm1
 ; AVX-NEXT:    vcvtph2ps %xmm1, %xmm1
 ; AVX-NEXT:    vucomiss %xmm0, %xmm1
-; AVX-NEXT:    cmoval %esi, %eax
+; AVX-NEXT:    cmovbel %edi, %eax
 ; AVX-NEXT:    retq
 ;
 ; X86-FP16-LABEL: test_f16_uge_q:
@@ -610,15 +610,15 @@ define i32 @test_f16_uge_q(i32 %a, i32 %b, half %f1, half %f2) #0 {
 ; X86-FP16-NEXT:    vucomish {{[0-9]+}}(%esp), %xmm0
 ; X86-FP16-NEXT:    leal {{[0-9]+}}(%esp), %eax
 ; X86-FP16-NEXT:    leal {{[0-9]+}}(%esp), %ecx
-; X86-FP16-NEXT:    cmovbel %eax, %ecx
-; X86-FP16-NEXT:    movl (%ecx), %eax
+; X86-FP16-NEXT:    cmoval %ecx, %eax
+; X86-FP16-NEXT:    movl (%eax), %eax
 ; X86-FP16-NEXT:    retl
 ;
 ; X64-FP16-LABEL: test_f16_uge_q:
 ; X64-FP16:       # %bb.0:
-; X64-FP16-NEXT:    movl %edi, %eax
+; X64-FP16-NEXT:    movl %esi, %eax
 ; X64-FP16-NEXT:    vucomish %xmm0, %xmm1
-; X64-FP16-NEXT:    cmoval %esi, %eax
+; X64-FP16-NEXT:    cmovbel %edi, %eax
 ; X64-FP16-NEXT:    retq
   %cond = call i1 @llvm.experimental.constrained.fcmp.f16(
                                                half %f1, half %f2, metadata !"uge",
@@ -643,8 +643,8 @@ define i32 @test_f16_ult_q(i32 %a, i32 %b, half %f1, half %f2) #0 {
 ; SSE2-NEXT:    # xmm0 = mem[0],zero,zero,zero
 ; SSE2-NEXT:    callq __extendhfsf2@PLT
 ; SSE2-NEXT:    ucomiss (%rsp), %xmm0 # 4-byte Folded Reload
-; SSE2-NEXT:    cmovael %ebx, %ebp
-; SSE2-NEXT:    movl %ebp, %eax
+; SSE2-NEXT:    cmovbl %ebp, %ebx
+; SSE2-NEXT:    movl %ebx, %eax
 ; SSE2-NEXT:    addq $8, %rsp
 ; SSE2-NEXT:    popq %rbx
 ; SSE2-NEXT:    popq %rbp
@@ -652,7 +652,7 @@ define i32 @test_f16_ult_q(i32 %a, i32 %b, half %f1, half %f2) #0 {
 ;
 ; AVX-LABEL: test_f16_ult_q:
 ; AVX:       # %bb.0:
-; AVX-NEXT:    movl %edi, %eax
+; AVX-NEXT:    movl %esi, %eax
 ; AVX-NEXT:    vpextrw $0, %xmm0, %ecx
 ; AVX-NEXT:    vpextrw $0, %xmm1, %edx
 ; AVX-NEXT:    movzwl %dx, %edx
@@ -662,7 +662,7 @@ define i32 @test_f16_ult_q(i32 %a, i32 %b, half %f1, half %f2) #0 {
 ; AVX-NEXT:    vmovd %ecx, %xmm1
 ; AVX-NEXT:    vcvtph2ps %xmm1, %xmm1
 ; AVX-NEXT:    vucomiss %xmm0, %xmm1
-; AVX-NEXT:    cmovael %esi, %eax
+; AVX-NEXT:    cmovbl %edi, %eax
 ; AVX-NEXT:    retq
 ;
 ; X86-FP16-LABEL: test_f16_ult_q:
@@ -671,15 +671,15 @@ define i32 @test_f16_ult_q(i32 %a, i32 %b, half %f1, half %f2) #0 {
 ; X86-FP16-NEXT:    vucomish {{[0-9]+}}(%esp), %xmm0
 ; X86-FP16-NEXT:    leal {{[0-9]+}}(%esp), %eax
 ; X86-FP16-NEXT:    leal {{[0-9]+}}(%esp), %ecx
-; X86-FP16-NEXT:    cmovbl %eax, %ecx
-; X86-FP16-NEXT:    movl (%ecx), %eax
+; X86-FP16-NEXT:    cmovael %ecx, %eax
+; X86-FP16-NEXT:    movl (%eax), %eax
 ; X86-FP16-NEXT:    retl
 ;
 ; X64-FP16-LABEL: test_f16_ult_q:
 ; X64-FP16:       # %bb.0:
-; X64-FP16-NEXT:    movl %edi, %eax
+; X64-FP16-NEXT:    movl %esi, %eax
 ; X64-FP16-NEXT:    vucomish %xmm1, %xmm0
-; X64-FP16-NEXT:    cmovael %esi, %eax
+; X64-FP16-NEXT:    cmovbl %edi, %eax
 ; X64-FP16-NEXT:    retq
   %cond = call i1 @llvm.experimental.constrained.fcmp.f16(
                                                half %f1, half %f2, metadata !"ult",
@@ -704,8 +704,8 @@ define i32 @test_f16_ule_q(i32 %a, i32 %b, half %f1, half %f2) #0 {
 ; SSE2-NEXT:    # xmm0 = mem[0],zero,zero,zero
 ; SSE2-NEXT:    callq __extendhfsf2@PLT
 ; SSE2-NEXT:    ucomiss (%rsp), %xmm0 # 4-byte Folded Reload
-; SSE2-NEXT:    cmoval %ebx, %ebp
-; SSE2-NEXT:    movl %ebp, %eax
+; SSE2-NEXT:    cmovbel %ebp, %ebx
+; SSE2-NEXT:    movl %ebx, %eax
 ; SSE2-NEXT:    addq $8, %rsp
 ; SSE2-NEXT:    popq %rbx
 ; SSE2-NEXT:    popq %rbp
@@ -713,7 +713,7 @@ define i32 @test_f16_ule_q(i32 %a, i32 %b, half %f1, half %f2) #0 {
 ;
 ; AVX-LABEL: test_f16_ule_q:
 ; AVX:       # %bb.0:
-; AVX-NEXT:    movl %edi, %eax
+; AVX-NEXT:    movl %esi, %eax
 ; AVX-NEXT:    vpextrw $0, %xmm0, %ecx
 ; AVX-NEXT:    vpextrw $0, %xmm1, %edx
 ; AVX-NEXT:    movzwl %dx, %edx
@@ -723,7 +723,7 @@ define i32 @test_f16_ule_q(i32 %a, i32 %b, half %f1, half %f2) #0 {
 ; AVX-NEXT:    vmovd %ecx, %xmm1
 ; AVX-NEXT:    vcvtph2ps %xmm1, %xmm1
 ; AVX-NEXT:    vucomiss %xmm0, %xmm1
-; AVX-NEXT:    cmoval %esi, %eax
+; AVX-NEXT:    cmovbel %edi, %eax
 ; AVX-NEXT:    retq
 ;
 ; X86-FP16-LABEL: test_f16_ule_q:
@@ -732,15 +732,15 @@ define i32 @test_f16_ule_q(i32 %a, i32 %b, half %f1, half %f2) #0 {
 ; X86-FP16-NEXT:    vucomish {{[0-9]+}}(%esp), %xmm0
 ; X86-FP16-NEXT:    leal {{[0-9]+}}(%esp), %eax
 ; X86-FP16-NEXT:    leal {{[0-9]+}}(%esp), %ecx
-; X86-FP16-NEXT:    cmovbel %eax, %ecx
-; X86-FP16-NEXT:    movl (%ecx), %eax
+; X86-FP16-NEXT:    cmoval %ecx, %eax
+; X86-FP16-NEXT:    movl (%eax), %eax
 ; X86-FP16-NEXT:    retl
 ;
 ; X64-FP16-LABEL: test_f16_ule_q:
 ; X64-FP16:       # %bb.0:
-; X64-FP16-NEXT:    movl %edi, %eax
+; X64-FP16-NEXT:    movl %esi, %eax
 ; X64-FP16-NEXT:    vucomish %xmm1, %xmm0
-; X64-FP16-NEXT:    cmoval %esi, %eax
+; X64-FP16-NEXT:    cmovbel %edi, %eax
 ; X64-FP16-NEXT:    retq
   %cond = call i1 @llvm.experimental.constrained.fcmp.f16(
                                                half %f1, half %f2, metadata !"ule",
@@ -830,8 +830,8 @@ define i32 @test_f16_uno_q(i32 %a, i32 %b, half %f1, half %f2) #0 {
 ; SSE2-NEXT:    # xmm0 = mem[0],zero,zero,zero
 ; SSE2-NEXT:    callq __extendhfsf2@PLT
 ; SSE2-NEXT:    ucomiss (%rsp), %xmm0 # 4-byte Folded Reload
-; SSE2-NEXT:    cmovnpl %ebx, %ebp
-; SSE2-NEXT:    movl %ebp, %eax
+; SSE2-NEXT:    cmovpl %ebp, %ebx
+; SSE2-NEXT:    movl %ebx, %eax
 ; SSE2-NEXT:    addq $8, %rsp
 ; SSE2-NEXT:    popq %rbx
 ; SSE2-NEXT:    popq %rbp
@@ -839,7 +839,7 @@ define i32 @test_f16_uno_q(i32 %a, i32 %b, half %f1, half %f2) #0 {
 ;
 ; AVX-LABEL: test_f16_uno_q:
 ; AVX:       # %bb.0:
-; AVX-NEXT:    movl %edi, %eax
+; AVX-NEXT:    movl %esi, %eax
 ; AVX-NEXT:    vpextrw $0, %xmm0, %ecx
 ; AVX-NEXT:    vpextrw $0, %xmm1, %edx
 ; AVX-NEXT:    movzwl %dx, %edx
@@ -849,7 +849,7 @@ define i32 @test_f16_uno_q(i32 %a, i32 %b, half %f1, half %f2) #0 {
 ; AVX-NEXT:    vmovd %ecx, %xmm1
 ; AVX-NEXT:    vcvtph2ps %xmm1, %xmm1
 ; AVX-NEXT:    vucomiss %xmm0, %xmm1
-; AVX-NEXT:    cmovnpl %esi, %eax
+; AVX-NEXT:    cmovpl %edi, %eax
 ; AVX-NEXT:    retq
 ;
 ; X86-FP16-LABEL: test_f16_uno_q:
@@ -858,15 +858,15 @@ define i32 @test_f16_uno_q(i32 %a, i32 %b, half %f1, half %f2) #0 {
 ; X86-FP16-NEXT:    vucomish {{[0-9]+}}(%esp), %xmm0
 ; X86-FP16-NEXT:    leal {{[0-9]+}}(%esp), %eax
 ; X86-FP16-NEXT:    leal {{[0-9]+}}(%esp), %ecx
-; X86-FP16-NEXT:    cmovpl %eax, %ecx
-; X86-FP16-NEXT:    movl (%ecx), %eax
+; X86-FP16-NEXT:    cmovnpl %ecx, %eax
+; X86-FP16-NEXT:    movl (%eax), %eax
 ; X86-FP16-NEXT:    retl
 ;
 ; X64-FP16-LABEL: test_f16_uno_q:
 ; X64-FP16:       # %bb.0:
-; X64-FP16-NEXT:    movl %edi, %eax
+; X64-FP16-NEXT:    movl %esi, %eax
 ; X64-FP16-NEXT:    vucomish %xmm1, %xmm0
-; X64-FP16-NEXT:    cmovnpl %esi, %eax
+; X64-FP16-NEXT:    cmovpl %edi, %eax
 ; X64-FP16-NEXT:    retq
   %cond = call i1 @llvm.experimental.constrained.fcmp.f16(
                                                half %f1, half %f2, metadata !"uno",
@@ -956,8 +956,8 @@ define i32 @test_f16_ogt_s(i32 %a, i32 %b, half %f1, half %f2) #0 {
 ; SSE2-NEXT:    # xmm0 = mem[0],zero,zero,zero
 ; SSE2-NEXT:    callq __extendhfsf2@PLT
 ; SSE2-NEXT:    comiss (%rsp), %xmm0 # 4-byte Folded Reload
-; SSE2-NEXT:    cmovbel %ebx, %ebp
-; SSE2-NEXT:    movl %ebp, %eax
+; SSE2-NEXT:    cmoval %ebp, %ebx
+; SSE2-NEXT:    movl %ebx, %eax
 ; SSE2-NEXT:    addq $8, %rsp
 ; SSE2-NEXT:    popq %rbx
 ; SSE2-NEXT:    popq %rbp
@@ -965,7 +965,7 @@ define i32 @test_f16_ogt_s(i32 %a, i32 %b, half %f1, half %f2) #0 {
 ;
 ; AVX-LABEL: test_f16_ogt_s:
 ; AVX:       # %bb.0:
-; AVX-NEXT:    movl %edi, %eax
+; AVX-NEXT:    movl %esi, %eax
 ; AVX-NEXT:    vpextrw $0, %xmm0, %ecx
 ; AVX-NEXT:    vpextrw $0, %xmm1, %edx
 ; AVX-NEXT:    movzwl %dx, %edx
@@ -975,7 +975,7 @@ define i32 @test_f16_ogt_s(i32 %a, i32 %b, half %f1, half %f2) #0 {
 ; AVX-NEXT:    vmovd %ecx, %xmm1
 ; AVX-NEXT:    vcvtph2ps %xmm1, %xmm1
 ; AVX-NEXT:    vcomiss %xmm0, %xmm1
-; AVX-NEXT:    cmovbel %esi, %eax
+; AVX-NEXT:    cmoval %edi, %eax
 ; AVX-NEXT:    retq
 ;
 ; X86-FP16-LABEL: test_f16_ogt_s:
@@ -984,15 +984,15 @@ define i32 @test_f16_ogt_s(i32 %a, i32 %b, half %f1, half %f2) #0 {
 ; X86-FP16-NEXT:    vcomish {{[0-9]+}}(%esp), %xmm0
 ; X86-FP16-NEXT:    leal {{[0-9]+}}(%esp), %eax
 ; X86-FP16-NEXT:    leal {{[0-9]+}}(%esp), %ecx
-; X86-FP16-NEXT:    cmoval %eax, %ecx
-; X86-FP16-NEXT:    movl (%ecx), %eax
+; X86-FP16-NEXT:    cmovbel %ecx, %eax
+; X86-FP16-NEXT:    movl (%eax), %eax
 ; X86-FP16-NEXT:    retl
 ;
 ; X64-FP16-LABEL: test_f16_ogt_s:
 ; X64-FP16:       # %bb.0:
-; X64-FP16-NEXT:    movl %edi, %eax
+; X64-FP16-NEXT:    movl %esi, %eax
 ; X64-FP16-NEXT:    vcomish %xmm1, %xmm0
-; X64-FP16-NEXT:    cmovbel %esi, %eax
+; X64-FP16-NEXT:    cmoval %edi, %eax
 ; X64-FP16-NEXT:    retq
   %cond = call i1 @llvm.experimental.constrained.fcmps.f16(
                                                half %f1, half %f2, metadata !"ogt",
@@ -1017,8 +1017,8 @@ define i32 @test_f16_oge_s(i32 %a, i32 %b, half %f1, half %f2) #0 {
 ; SSE2-NEXT:    # xmm0 = mem[0],zero,zero,zero
 ; SSE2-NEXT:    callq __extendhfsf2@PLT
 ; SSE2-NEXT:    comiss (%rsp), %xmm0 # 4-byte Folded Reload
-; SSE2-NEXT:    cmovbl %ebx, %ebp
-; SSE2-NEXT:    movl %ebp, %eax
+; SSE2-NEXT:    cmovael %ebp, %ebx
+; SSE2-NEXT:    movl %ebx, %eax
 ; SSE2-NEXT:    addq $8, %rsp
 ; SSE2-NEXT:    popq %rbx
 ; SSE2-NEXT:    popq %rbp
@@ -1026,7 +1026,7 @@ define i32 @test_f16_oge_s(i32 %a, i32 %b, half %f1, half %f2) #0 {
 ;
 ; AVX-LABEL: test_f16_oge_s:
 ; AVX:       # %bb.0:
-; AVX-NEXT:    movl %edi, %eax
+; AVX-NEXT:    movl %esi, %eax
 ; AVX-NEXT:    vpextrw $0, %xmm0, %ecx
 ; AVX-NEXT:    vpextrw $0, %xmm1, %edx
 ; AVX-NEXT:    movzwl %dx, %edx
@@ -1036,7 +1036,7 @@ define i32 @test_f16_oge_s(i32 %a, i32 %b, half %f1, half %f2) #0 {
 ; AVX-NEXT:    vmovd %ecx, %xmm1
 ; AVX-NEXT:    vcvtph2ps %xmm1, %xmm1
 ; AVX-NEXT:    vcomiss %xmm0, %xmm1
-; AVX-NEXT:    cmovbl %esi, %eax
+; AVX-NEXT:    cmovael %edi, %eax
 ; AVX-NEXT:    retq
 ;
 ; X86-FP16-LABEL: test_f16_oge_s:
@@ -1045,15 +1045,15 @@ define i32 @test_f16_oge_s(i32 %a, i32 %b, half %f1, half %f2) #0 {
 ; X86-FP16-NEXT:    vcomish {{[0-9]+}}(%esp), %xmm0
 ; X86-FP16-NEXT:    leal {{[0-9]+}}(%esp), %eax
 ; X86-FP16-NEXT:    leal {{[0-9]+}}(%esp), %ecx
-; X86-FP16-NEXT:    cmovael %eax, %ecx
-; X86-FP16-NEXT:    movl (%ecx), %eax
+; X86-FP16-NEXT:    cmovbl %ecx, %eax
+; X86-FP16-NEXT:    movl (%eax), %eax
 ; X86-FP16-NEXT:    retl
 ;
 ; X64-FP16-LABEL: test_f16_oge_s:
 ; X64-FP16:       # %bb.0:
-; X64-FP16-NEXT:    movl %edi, %eax
+; X64-FP16-NEXT:    movl %esi, %eax
 ; X64-FP16-NEXT:    vcomish %xmm1, %xmm0
-; X64-FP16-NEXT:    cmovbl %esi, %eax
+; X64-FP16-NEXT:    cmovael %edi, %eax
 ; X64-FP16-NEXT:    retq
   %cond = call i1 @llvm.experimental.constrained.fcmps.f16(
                                                half %f1, half %f2, metadata !"oge",
@@ -1080,8 +1080,8 @@ define i32 @test_f16_olt_s(i32 %a, i32 %b, half %f1, half %f2) #0 {
 ; SSE2-NEXT:    movss (%rsp), %xmm1 # 4-byte Reload
 ; SSE2-NEXT:    # xmm1 = mem[0],zero,zero,zero
 ; SSE2-NEXT:    comiss %xmm0, %xmm1
-; SSE2-NEXT:    cmovbel %ebx, %ebp
-; SSE2-NEXT:    movl %ebp, %eax
+; SSE2-NEXT:    cmoval %ebp, %ebx
+; SSE2-NEXT:    movl %ebx, %eax
 ; SSE2-NEXT:    addq $8, %rsp
 ; SSE2-NEXT:    popq %rbx
 ; SSE2-NEXT:    popq %rbp
@@ -1089,7 +1089,7 @@ define i32 @test_f16_olt_s(i32 %a, i32 %b, half %f1, half %f2) #0 {
 ;
 ; AVX-LABEL: test_f16_olt_s:
 ; AVX:       # %bb.0:
-; AVX-NEXT:    movl %edi, %eax
+; AVX-NEXT:    movl %esi, %eax
 ; AVX-NEXT:    vpextrw $0, %xmm1, %ecx
 ; AVX-NEXT:    vpextrw $0, %xmm0, %edx
 ; AVX-NEXT:    movzwl %dx, %edx
@@ -1099,7 +1099,7 @@ define i32 @test_f16_olt_s(i32 %a, i32 %b, half %f1, half %f2) #0 {
 ; AVX-NEXT:    vmovd %ecx, %xmm1
 ; AVX-NEXT:    vcvtph2ps %xmm1, %xmm1
 ; AVX-NEXT:    vcomiss %xmm0, %xmm1
-; AVX-NEXT:    cmovbel %esi, %eax
+; AVX-NEXT:    cmoval %edi, %eax
 ; AVX-NEXT:    retq
 ;
 ; X86-FP16-LABEL: test_f16_olt_s:
@@ -1108,15 +1108,15 @@ define i32 @test_f16_olt_s(i32 %a, i32 %b, half %f1, half %f2) #0 {
 ; X86-FP16-NEXT:    vcomish {{[0-9]+}}(%esp), %xmm0
 ; X86-FP16-NEXT:    leal {{[0-9]+}}(%esp), %eax
 ; X86-FP16-NEXT:    leal {{[0-9]+}}(%esp), %ecx
-; X86-FP16-NEXT:    cmoval %eax, %ecx
-; X86-FP16-NEXT:    movl (%ecx), %eax
+; X86-FP16-NEXT:    cmovbel %ecx, %eax
+; X86-FP16-NEXT:    movl (%eax), %eax
 ; X86-FP16-NEXT:    retl
 ;
 ; X64-FP16-LABEL: test_f16_olt_s:
 ; X64-FP16:       # %bb.0:
-; X64-FP16-NEXT:    movl %edi, %eax
+; X64-FP16-NEXT:    movl %esi, %eax
 ; X64-FP16-NEXT:    vcomish %xmm0, %xmm1
-; X64-FP16-NEXT:    cmovbel %esi, %eax
+; X64-FP16-NEXT:    cmoval %edi, %eax
 ; X64-FP16-NEXT:    retq
   %cond = call i1 @llvm.experimental.constrained.fcmps.f16(
                                                half %f1, half %f2, metadata !"olt",
@@ -1143,8 +1143,8 @@ define i32 @test_f16_ole_s(i32 %a, i32 %b, half %f1, half %f2) #0 {
 ; SSE2-NEXT:    movss (%rsp), %xmm1 # 4-byte Reload
 ; SSE2-NEXT:    # xmm1 = mem[0],zero,zero,zero
 ; SSE2-NEXT:    comiss %xmm0, %xmm1
-; SSE2-NEXT:    cmovbl %ebx, %ebp
-; SSE2-NEXT:    movl %ebp, %eax
+; SSE2-NEXT:    cmovael %ebp, %ebx
+; SSE2-NEXT:    movl %ebx, %eax
 ; SSE2-NEXT:    addq $8, %rsp
 ; SSE2-NEXT:    popq %rbx
 ; SSE2-NEXT:    popq %rbp
@@ -1152,7 +1152,7 @@ define i32 @test_f16_ole_s(i32 %a, i32 %b, half %f1, half %f2) #0 {
 ;
 ; AVX-LABEL: test_f16_ole_s:
 ; AVX:       # %bb.0:
-; AVX-NEXT:    movl %edi, %eax
+; AVX-NEXT:    movl %esi, %eax
 ; AVX-NEXT:    vpextrw $0, %xmm1, %ecx
 ; AVX-NEXT:    vpextrw $0, %xmm0, %edx
 ; AVX-NEXT:    movzwl %dx, %edx
@@ -1162,7 +1162,7 @@ define i32 @test_f16_ole_s(i32 %a, i32 %b, half %f1, half %f2) #0 {
 ; AVX-NEXT:    vmovd %ecx, %xmm1
 ; AVX-NEXT:    vcvtph2ps %xmm1, %xmm1
 ; AVX-NEXT:    vcomiss %xmm0, %xmm1
-; AVX-NEXT:    cmovbl %esi, %eax
+; AVX-NEXT:    cmovael %edi, %eax
 ; AVX-NEXT:    retq
 ;
 ; X86-FP16-LABEL: test_f16_ole_s:
@@ -1171,15 +1171,15 @@ define i32 @test_f16_ole_s(i32 %a, i32 %b, half %f1, half %f2) #0 {
 ; X86-FP16-NEXT:    vcomish {{[0-9]+}}(%esp), %xmm0
 ; X86-FP16-NEXT:    leal {{[0-9]+}}(%esp), %eax
 ; X86-FP16-NEXT:    leal {{[0-9]+}}(%esp), %ecx
-; X86-FP16-NEXT:    cmovael %eax, %ecx
-; X86-FP16-NEXT:    movl (%ecx), %eax
+; X86-FP16-NEXT:    cmovbl %ecx, %eax
+; X86-FP16-NEXT:    movl (%eax), %eax
 ; X86-FP16-NEXT:    retl
 ;
 ; X64-FP16-LABEL: test_f16_ole_s:
 ; X64-FP16:       # %bb.0:
-; X64-FP16-NEXT:    movl %edi, %eax
+; X64-FP16-NEXT:    movl %esi, %eax
 ; X64-FP16-NEXT:    vcomish %xmm0, %xmm1
-; X64-FP16-NEXT:    cmovbl %esi, %eax
+; X64-FP16-NEXT:    cmovael %edi, %eax
 ; X64-FP16-NEXT:    retq
   %cond = call i1 @llvm.experimental.constrained.fcmps.f16(
                                                half %f1, half %f2, metadata !"ole",
@@ -1204,8 +1204,8 @@ define i32 @test_f16_one_s(i32 %a, i32 %b, half %f1, half %f2) #0 {
 ; SSE2-NEXT:    # xmm0 = mem[0],zero,zero,zero
 ; SSE2-NEXT:    callq __extendhfsf2@PLT
 ; SSE2-NEXT:    comiss (%rsp), %xmm0 # 4-byte Folded Reload
-; SSE2-NEXT:    cmovel %ebx, %ebp
-; SSE2-NEXT:    movl %ebp, %eax
+; SSE2-NEXT:    cmovnel %ebp, %ebx
+; SSE2-NEXT:    movl %ebx, %eax
 ; SSE2-NEXT:    addq $8, %rsp
 ; SSE2-NEXT:    popq %rbx
 ; SSE2-NEXT:    popq %rbp
@@ -1213,7 +1213,7 @@ define i32 @test_f16_one_s(i32 %a, i32 %b, half %f1, half %f2) #0 {
 ;
 ; AVX-LABEL: test_f16_one_s:
 ; AVX:       # %bb.0:
-; AVX-NEXT:    movl %edi, %eax
+; AVX-NEXT:    movl %esi, %eax
 ; AVX-NEXT:    vpextrw $0, %xmm0, %ecx
 ; AVX-NEXT:    vpextrw $0, %xmm1, %edx
 ; AVX-NEXT:    movzwl %dx, %edx
@@ -1223,7 +1223,7 @@ define i32 @test_f16_one_s(i32 %a, i32 %b, half %f1, half %f2) #0 {
 ; AVX-NEXT:    vmovd %ecx, %xmm1
 ; AVX-NEXT:    vcvtph2ps %xmm1, %xmm1
 ; AVX-NEXT:    vcomiss %xmm0, %xmm1
-; AVX-NEXT:    cmovel %esi, %eax
+; AVX-NEXT:    cmovnel %edi, %eax
 ; AVX-NEXT:    retq
 ;
 ; X86-FP16-LABEL: test_f16_one_s:
@@ -1232,15 +1232,15 @@ define i32 @test_f16_one_s(i32 %a, i32 %b, half %f1, half %f2) #0 {
 ; X86-FP16-NEXT:    vcomish {{[0-9]+}}(%esp), %xmm0
 ; X86-FP16-NEXT:    leal {{[0-9]+}}(%esp), %eax
 ; X86-FP16-NEXT:    leal {{[0-9]+}}(%esp), %ecx
-; X86-FP16-NEXT:    cmovnel %eax, %ecx
-; X86-FP16-NEXT:    movl (%ecx), %eax
+; X86-FP16-NEXT:    cmovel %ecx, %eax
+; X86-FP16-NEXT:    movl (%eax), %eax
 ; X86-FP16-NEXT:    retl
 ;
 ; X64-FP16-LABEL: test_f16_one_s:
 ; X64-FP16:       # %bb.0:
-; X64-FP16-NEXT:    movl %edi, %eax
+; X64-FP16-NEXT:    movl %esi, %eax
 ; X64-FP16-NEXT:    vcomish %xmm1, %xmm0
-; X64-FP16-NEXT:    cmovel %esi, %eax
+; X64-FP16-NEXT:    cmovnel %edi, %eax
 ; X64-FP16-NEXT:    retq
   %cond = call i1 @llvm.experimental.constrained.fcmps.f16(
                                                half %f1, half %f2, metadata !"one",
@@ -1265,8 +1265,8 @@ define i32 @test_f16_ord_s(i32 %a, i32 %b, half %f1, half %f2) #0 {
 ; SSE2-NEXT:    # xmm0 = mem[0],zero,zero,zero
 ; SSE2-NEXT:    callq __extendhfsf2@PLT
 ; SSE2-NEXT:    comiss (%rsp), %xmm0 # 4-byte Folded Reload
-; SSE2-NEXT:    cmovpl %ebx, %ebp
-; SSE2-NEXT:    movl %ebp, %eax
+; SSE2-NEXT:    cmovnpl %ebp, %ebx
+; SSE2-NEXT:    movl %ebx, %eax
 ; SSE2-NEXT:    addq $8, %rsp
 ; SSE2-NEXT:    popq %rbx
 ; SSE2-NEXT:    popq %rbp
@@ -1274,7 +1274,7 @@ define i32 @test_f16_ord_s(i32 %a, i32 %b, half %f1, half %f2) #0 {
 ;
 ; AVX-LABEL: test_f16_ord_s:
 ; AVX:       # %bb.0:
-; AVX-NEXT:    movl %edi, %eax
+; AVX-NEXT:    movl %esi, %eax
 ; AVX-NEXT:    vpextrw $0, %xmm0, %ecx
 ; AVX-NEXT:    vpextrw $0, %xmm1, %edx
 ; AVX-NEXT:    movzwl %dx, %edx
@@ -1284,7 +1284,7 @@ define i32 @test_f16_ord_s(i32 %a, i32 %b, half %f1, half %f2) #0 {
 ; AVX-NEXT:    vmovd %ecx, %xmm1
 ; AVX-NEXT:    vcvtph2ps %xmm1, %xmm1
 ; AVX-NEXT:    vcomiss %xmm0, %xmm1
-; AVX-NEXT:    cmovpl %esi, %eax
+; AVX-NEXT:    cmovnpl %edi, %eax
 ; AVX-NEXT:    retq
 ;
 ; X86-FP16-LABEL: test_f16_ord_s:
@@ -1293,15 +1293,15 @@ define i32 @test_f16_ord_s(i32 %a, i32 %b, half %f1, half %f2) #0 {
 ; X86-FP16-NEXT:    vcomish {{[0-9]+}}(%esp), %xmm0
 ; X86-FP16-NEXT:    leal {{[0-9]+}}(%esp), %eax
 ; X86-FP16-NEXT:    leal {{[0-9]+}}(%esp), %ecx
-; X86-FP16-NEXT:    cmovnpl %eax, %ecx
-; X86-FP16-NEXT:    movl (%ecx), %eax
+; X86-FP16-NEXT:    cmovpl %ecx, %eax
+; X86-FP16-NEXT:    movl (%eax), %eax
 ; X86-FP16-NEXT:    retl
 ;
 ; X64-FP16-LABEL: test_f16_ord_s:
 ; X64-FP16:       # %bb.0:
-; X64-FP16-NEXT:    movl %edi, %eax
+; X64-FP16-NEXT:    movl %esi, %eax
 ; X64-FP16-NEXT:    vcomish %xmm1, %xmm0
-; X64-FP16-NEXT:    cmovpl %esi, %eax
+; X64-FP16-NEXT:    cmovnpl %edi, %eax
 ; X64-FP16-NEXT:    retq
   %cond = call i1 @llvm.experimental.constrained.fcmps.f16(
                                                half %f1, half %f2, metadata !"ord",
@@ -1326,8 +1326,8 @@ define i32 @test_f16_ueq_s(i32 %a, i32 %b, half %f1, half %f2) #0 {
 ; SSE2-NEXT:    # xmm0 = mem[0],zero,zero,zero
 ; SSE2-NEXT:    callq __extendhfsf2@PLT
 ; SSE2-NEXT:    comiss (%rsp), %xmm0 # 4-byte Folded Reload
-; SSE2-NEXT:    cmovnel %ebx, %ebp
-; SSE2-NEXT:    movl %ebp, %eax
+; SSE2-NEXT:    cmovel %ebp, %ebx
+; SSE2-NEXT:    movl %ebx, %eax
 ; SSE2-NEXT:    addq $8, %rsp
 ; SSE2-NEXT:    popq %rbx
 ; SSE2-NEXT:    popq %rbp
@@ -1335,7 +1335,7 @@ define i32 @test_f16_ueq_s(i32 %a, i32 %b, half %f1, half %f2) #0 {
 ;
 ; AVX-LABEL: test_f16_ueq_s:
 ; AVX:       # %bb.0:
-; AVX-NEXT:    movl %edi, %eax
+; AVX-NEXT:    movl %esi, %eax
 ; AVX-NEXT:    vpextrw $0, %xmm0, %ecx
 ; AVX-NEXT:    vpextrw $0, %xmm1, %edx
 ; AVX-NEXT:    movzwl %dx, %edx
@@ -1345,7 +1345,7 @@ define i32 @test_f16_ueq_s(i32 %a, i32 %b, half %f1, half %f2) #0 {
 ; AVX-NEXT:    vmovd %ecx, %xmm1
 ; AVX-NEXT:    vcvtph2ps %xmm1, %xmm1
 ; AVX-NEXT:    vcomiss %xmm0, %xmm1
-; AVX-NEXT:    cmovnel %esi, %eax
+; AVX-NEXT:    cmovel %edi, %eax
 ; AVX-NEXT:    retq
 ;
 ; X86-FP16-LABEL: test_f16_ueq_s:
@@ -1354,15 +1354,15 @@ define i32 @test_f16_ueq_s(i32 %a, i32 %b, half %f1, half %f2) #0 {
 ; X86-FP16-NEXT:    vcomish {{[0-9]+}}(%esp), %xmm0
 ; X86-FP16-NEXT:    leal {{[0-9]+}}(%esp), %eax
 ; X86-FP16-NEXT:    leal {{[0-9]+}}(%esp), %ecx
-; X86-FP16-NEXT:    cmovel %eax, %ecx
-; X86-FP16-NEXT:    movl (%ecx), %eax
+; X86-FP16-NEXT:    cmovnel %ecx, %eax
+; X86-FP16-NEXT:    movl (%eax), %eax
 ; X86-FP16-NEXT:    retl
 ;
 ; X64-FP16-LABEL: test_f16_ueq_s:
 ; X64-FP16:       # %bb.0:
-; X64-FP16-NEXT:    movl %edi, %eax
+; X64-FP16-NEXT:    movl %esi, %eax
 ; X64-FP16-NEXT:    vcomish %xmm1, %xmm0
-; X64-FP16-NEXT:    cmovnel %esi, %eax
+; X64-FP16-NEXT:    cmovel %edi, %eax
 ; X64-FP16-NEXT:    retq
   %cond = call i1 @llvm.experimental.constrained.fcmps.f16(
                                                half %f1, half %f2, metadata !"ueq",
@@ -1389,8 +1389,8 @@ define i32 @test_f16_ugt_s(i32 %a, i32 %b, half %f1, half %f2) #0 {
 ; SSE2-NEXT:    movss (%rsp), %xmm1 # 4-byte Reload
 ; SSE2-NEXT:    # xmm1 = mem[0],zero,zero,zero
 ; SSE2-NEXT:    comiss %xmm0, %xmm1
-; SSE2-NEXT:    cmovael %ebx, %ebp
-; SSE2-NEXT:    movl %ebp, %eax
+; SSE2-NEXT:    cmovbl %ebp, %ebx
+; SSE2-NEXT:    movl %ebx, %eax
 ; SSE2-NEXT:    addq $8, %rsp
 ; SSE2-NEXT:    popq %rbx
 ; SSE2-NEXT:    popq %rbp
@@ -1398,7 +1398,7 @@ define i32 @test_f16_ugt_s(i32 %a, i32 %b, half %f1, half %f2) #0 {
 ;
 ; AVX-LABEL: test_f16_ugt_s:
 ; AVX:       # %bb.0:
-; AVX-NEXT:    movl %edi, %eax
+; AVX-NEXT:    movl %esi, %eax
 ; AVX-NEXT:    vpextrw $0, %xmm1, %ecx
 ; AVX-NEXT:    vpextrw $0, %xmm0, %edx
 ; AVX-NEXT:    movzwl %dx, %edx
@@ -1408,7 +1408,7 @@ define i32 @test_f16_ugt_s(i32 %a, i32 %b, half %f1, half %f2) #0 {
 ; AVX-NEXT:    vmovd %ecx, %xmm1
 ; AVX-NEXT:    vcvtph2ps %xmm1, %xmm1
 ; AVX-NEXT:    vcomiss %xmm0, %xmm1
-; AVX-NEXT:    cmovael %esi, %eax
+; AVX-NEXT:    cmovbl %edi, %eax
 ; AVX-NEXT:    retq
 ;
 ; X86-FP16-LABEL: test_f16_ugt_s:
@@ -1417,15 +1417,15 @@ define i32 @test_f16_ugt_s(i32 %a, i32 %b, half %f1, half %f2) #0 {
 ; X86-FP16-NEXT:    vcomish {{[0-9]+}}(%esp), %xmm0
 ; X86-FP16-NEXT:    leal {{[0-9]+}}(%esp), %eax
 ; X86-FP16-NEXT:    leal {{[0-9]+}}(%esp), %ecx
-; X86-FP16-NEXT:    cmovbl %eax, %ecx
-; X86-FP16-NEXT:    movl (%ecx), %eax
+; X86-FP16-NEXT:    cmovael %ecx, %eax
+; X86-FP16-NEXT:    movl (%eax), %eax
 ; X86-FP16-NEXT:    retl
 ;
 ; X64-FP16-LABEL: test_f16_ugt_s:
 ; X64-FP16:       # %bb.0:
-; X64-FP16-NEXT:    movl %edi, %eax
+; X64-FP16-NEXT:    movl %esi, %eax
 ; X64-FP16-NEXT:    vcomish %xmm0, %xmm1
-; X64-FP16-NEXT:    cmovael %esi, %eax
+; X64-FP16-NEXT:    cmovbl %edi, %eax
 ; X64-FP16-NEXT:    retq
   %cond = call i1 @llvm.experimental.constrained.fcmps.f16(
                                                half %f1, half %f2, metadata !"ugt",
@@ -1452,8 +1452,8 @@ define i32 @test_f16_uge_s(i32 %a, i32 %b, half %f1, half %f2) #0 {
 ; SSE2-NEXT:    movss (%rsp), %xmm1 # 4-byte Reload
 ; SSE2-NEXT:    # xmm1 = mem[0],zero,zero,zero
 ; SSE2-NEXT:    comiss %xmm0, %xmm1
-; SSE2-NEXT:    cmoval %ebx, %ebp
-; SSE2-NEXT:    movl %ebp, %eax
+; SSE2-NEXT:    cmovbel %ebp, %ebx
+; SSE2-NEXT:    movl %ebx, %eax
 ; SSE2-NEXT:    addq $8, %rsp
 ; SSE2-NEXT:    popq %rbx
 ; SSE2-NEXT:    popq %rbp
@@ -1461,7 +1461,7 @@ define i32 @test_f16_uge_s(i32 %a, i32 %b, half %f1, half %f2) #0 {
 ;
 ; AVX-LABEL: test_f16_uge_s:
 ; AVX:       # %bb.0:
-; AVX-NEXT:    movl %edi, %eax
+; AVX-NEXT:    movl %esi, %eax
 ; AVX-NEXT:    vpextrw $0, %xmm1, %ecx
 ; AVX-NEXT:    vpextrw $0, %xmm0, %edx
 ; AVX-NEXT:    movzwl %dx, %edx
@@ -1471,7 +1471,7 @@ define i32 @test_f16_uge_s(i32 %a, i32 %b, half %f1, half %f2) #0 {
 ; AVX-NEXT:    vmovd %ecx, %xmm1
 ; AVX-NEXT:    vcvtph2ps %xmm1, %xmm1
 ; AVX-NEXT:    vcomiss %xmm0, %xmm1
-; AVX-NEXT:    cmoval %esi, %eax
+; AVX-NEXT:    cmovbel %edi, %eax
 ; AVX-NEXT:    retq
 ;
 ; X86-FP16-LABEL: test_f16_uge_s:
@@ -1480,15 +1480,15 @@ define i32 @test_f16_uge_s(i32 %a, i32 %b, half %f1, half %f2) #0 {
 ; X86-FP16-NEXT:    vcomish {{[0-9]+}}(%esp), %xmm0
 ; X86-FP16-NEXT:    leal {{[0-9]+}}(%esp), %eax
 ; X86-FP16-NEXT:    leal {{[0-9]+}}(%esp), %ecx
-; X86-FP16-NEXT:    cmovbel %eax, %ecx
-; X86-FP16-NEXT:    movl (%ecx), %eax
+; X86-FP16-NEXT:    cmoval %ecx, %eax
+; X86-FP16-NEXT:    movl (%eax), %eax
 ; X86-FP16-NEXT:    retl
 ;
 ; X64-FP16-LABEL: test_f16_uge_s:
 ; X64-FP16:       # %bb.0:
-; X64-FP16-NEXT:    movl %edi, %eax
+; X64-FP16-NEXT:    movl %esi, %eax
 ; X64-FP16-NEXT:    vcomish %xmm0, %xmm1
-; X64-FP16-NEXT:    cmoval %esi, %eax
+; X64-FP16-NEXT:    cmovbel %edi, %eax
 ; X64-FP16-NEXT:    retq
   %cond = call i1 @llvm.experimental.constrained.fcmps.f16(
                                                half %f1, half %f2, metadata !"uge",
@@ -1513,8 +1513,8 @@ define i32 @test_f16_ult_s(i32 %a, i32 %b, half %f1, half %f2) #0 {
 ; SSE2-NEXT:    # xmm0 = mem[0],zero,zero,zero
 ; SSE2-NEXT:    callq __extendhfsf2@PLT
 ; SSE2-NEXT:    comiss (%rsp), %xmm0 # 4-byte Folded Reload
-; SSE2-NEXT:    cmovael %ebx, %ebp
-; SSE2-NEXT:    movl %ebp, %eax
+; SSE2-NEXT:    cmovbl %ebp, %ebx
+; SSE2-NEXT:    movl %ebx, %eax
 ; SSE2-NEXT:    addq $8, %rsp
 ; SSE2-NEXT:    popq %rbx
 ; SSE2-NEXT:    popq %rbp
@@ -1522,7 +1522,7 @@ define i32 @test_f16_ult_s(i32 %a, i32 %b, half %f1, half %f2) #0 {
 ;
 ; AVX-LABEL: test_f16_ult_s:
 ; AVX:       # %bb.0:
-; AVX-NEXT:    movl %edi, %eax
+; AVX-NEXT:    movl %esi, %eax
 ; AVX-NEXT:    vpextrw $0, %xmm0, %ecx
 ; AVX-NEXT:    vpextrw $0, %xmm1, %edx
 ; AVX-NEXT:    movzwl %dx, %edx
@@ -1532,7 +1532,7 @@ define i32 @test_f16_ult_s(i32 %a, i32 %b, half %f1, half %f2) #0 {
 ; AVX-NEXT:    vmovd %ecx, %xmm1
 ; AVX-NEXT:    vcvtph2ps %xmm1, %xmm1
 ; AVX-NEXT:    vcomiss %xmm0, %xmm1
-; AVX-NEXT:    cmovael %esi, %eax
+; AVX-NEXT:    cmovbl %edi, %eax
 ; AVX-NEXT:    retq
 ;
 ; X86-FP16-LABEL: test_f16_ult_s:
@@ -1541,15 +1541,15 @@ define i32 @test_f16_ult_s(i32 %a, i32 %b, half %f1, half %f2) #0 {
 ; X86-FP16-NEXT:    vcomish {{[0-9]+}}(%esp), %xmm0
 ; X86-FP16-NEXT:    leal {{[0-9]+}}(%esp), %eax
 ; X86-FP16-NEXT:    leal {{[0-9]+}}(%esp), %ecx
-; X86-FP16-NEXT:    cmovbl %eax, %ecx
-; X86-FP16-NEXT:    movl (%ecx), %eax
+; X86-FP16-NEXT:    cmovael %ecx, %eax
+; X86-FP16-NEXT:    movl (%eax), %eax
 ; X86-FP16-NEXT:    retl
 ;
 ; X64-FP16-LABEL: test_f16_ult_s:
 ; X64-FP16:       # %bb.0:
-; X64-FP16-NEXT:    movl %edi, %eax
+; X64-FP16-NEXT:    movl %esi, %eax
 ; X64-FP16-NEXT:    vcomish %xmm1, %xmm0
-; X64-FP16-NEXT:    cmovael %esi, %eax
+; X64-FP16-NEXT:    cmovbl %edi, %eax
 ; X64-FP16-NEXT:    retq
   %cond = call i1 @llvm.experimental.constrained.fcmps.f16(
                                                half %f1, half %f2, metadata !"ult",
@@ -1574,8 +1574,8 @@ define i32 @test_f16_ule_s(i32 %a, i32 %b, half %f1, half %f2) #0 {
 ; SSE2-NEXT:    # xmm0 = mem[0],zero,zero,zero
 ; SSE2-NEXT:    callq __extendhfsf2@PLT
 ; SSE2-NEXT:    comiss (%rsp), %xmm0 # 4-byte Folded Reload
-; SSE2-NEXT:    cmoval %ebx, %ebp
-; SSE2-NEXT:    movl %ebp, %eax
+; SSE2-NEXT:    cmovbel %ebp, %ebx
+; SSE2-NEXT:    movl %ebx, %eax
 ; SSE2-NEXT:    addq $8, %rsp
 ; SSE2-NEXT:    popq %rbx
 ; SSE2-NEXT:    popq %rbp
@@ -1583,7 +1583,7 @@ define i32 @test_f16_ule_s(i32 %a, i32 %b, half %f1, half %f2) #0 {
 ;
 ; AVX-LABEL: test_f16_ule_s:
 ; AVX:       # %bb.0:
-; AVX-NEXT:    movl %edi, %eax
+; AVX-NEXT:    movl %esi, %eax
 ; AVX-NEXT:    vpextrw $0, %xmm0, %ecx
 ; AVX-NEXT:    vpextrw $0, %xmm1, %edx
 ; AVX-NEXT:    movzwl %dx, %edx
@@ -1593,7 +1593,7 @@ define i32 @test_f16_ule_s(i32 %a, i32 %b, half %f1, half %f2) #0 {
 ; AVX-NEXT:    vmovd %ecx, %xmm1
 ; AVX-NEXT:    vcvtph2ps %xmm1, %xmm1
 ; AVX-NEXT:    vcomiss %xmm0, %xmm1
-; AVX-NEXT:    cmoval %esi, %eax
+; AVX-NEXT:    cmovbel %edi, %eax
 ; AVX-NEXT:    retq
 ;
 ; X86-FP16-LABEL: test_f16_ule_s:
@@ -1602,15 +1602,15 @@ define i32 @test_f16_ule_s(i32 %a, i32 %b, half %f1, half %f2) #0 {
 ; X86-FP16-NEXT:    vcomish {{[0-9]+}}(%esp), %xmm0
 ; X86-FP16-NEXT:    leal {{[0-9]+}}(%esp), %eax
 ; X86-FP16-NEXT:    leal {{[0-9]+}}(%esp), %ecx
-; X86-FP16-NEXT:    cmovbel %eax, %ecx
-; X86-FP16-NEXT:    movl (%ecx), %eax
+; X86-FP16-NEXT:    cmoval %ecx, %eax
+; X86-FP16-NEXT:    movl (%eax), %eax
 ; X86-FP16-NEXT:    retl
 ;
 ; X64-FP16-LABEL: test_f16_ule_s:
 ; X64-FP16:       # %bb.0:
-; X64-FP16-NEXT:    movl %edi, %eax
+; X64-FP16-NEXT:    movl %esi, %eax
 ; X64-FP16-NEXT:    vcomish %xmm1, %xmm0
-; X64-FP16-NEXT:    cmoval %esi, %eax
+; X64-FP16-NEXT:    cmovbel %edi, %eax
 ; X64-FP16-NEXT:    retq
   %cond = call i1 @llvm.experimental.constrained.fcmps.f16(
                                                half %f1, half %f2, metadata !"ule",
@@ -1700,8 +1700,8 @@ define i32 @test_f16_uno_s(i32 %a, i32 %b, half %f1, half %f2) #0 {
 ; SSE2-NEXT:    # xmm0 = mem[0],zero,zero,zero
 ; SSE2-NEXT:    callq __extendhfsf2@PLT
 ; SSE2-NEXT:    comiss (%rsp), %xmm0 # 4-byte Folded Reload
-; SSE2-NEXT:    cmovnpl %ebx, %ebp
-; SSE2-NEXT:    movl %ebp, %eax
+; SSE2-NEXT:    cmovpl %ebp, %ebx
+; SSE2-NEXT:    movl %ebx, %eax
 ; SSE2-NEXT:    addq $8, %rsp
 ; SSE2-NEXT:    popq %rbx
 ; SSE2-NEXT:    popq %rbp
@@ -1709,7 +1709,7 @@ define i32 @test_f16_uno_s(i32 %a, i32 %b, half %f1, half %f2) #0 {
 ;
 ; AVX-LABEL: test_f16_uno_s:
 ; AVX:       # %bb.0:
-; AVX-NEXT:    movl %edi, %eax
+; AVX-NEXT:    movl %esi, %eax
 ; AVX-NEXT:    vpextrw $0, %xmm0, %ecx
 ; AVX-NEXT:    vpextrw $0, %xmm1, %edx
 ; AVX-NEXT:    movzwl %dx, %edx
@@ -1719,7 +1719,7 @@ define i32 @test_f16_uno_s(i32 %a, i32 %b, half %f1, half %f2) #0 {
 ; AVX-NEXT:    vmovd %ecx, %xmm1
 ; AVX-NEXT:    vcvtph2ps %xmm1, %xmm1
 ; AVX-NEXT:    vcomiss %xmm0, %xmm1
-; AVX-NEXT:    cmovnpl %esi, %eax
+; AVX-NEXT:    cmovpl %edi, %eax
 ; AVX-NEXT:    retq
 ;
 ; X86-FP16-LABEL: test_f16_uno_s:
@@ -1728,15 +1728,15 @@ define i32 @test_f16_uno_s(i32 %a, i32 %b, half %f1, half %f2) #0 {
 ; X86-FP16-NEXT:    vcomish {{[0-9]+}}(%esp), %xmm0
 ; X86-FP16-NEXT:    leal {{[0-9]+}}(%esp), %eax
 ; X86-FP16-NEXT:    leal {{[0-9]+}}(%esp), %ecx
-; X86-FP16-NEXT:    cmovpl %eax, %ecx
-; X86-FP16-NEXT:    movl (%ecx), %eax
+; X86-FP16-NEXT:    cmovnpl %ecx, %eax
+; X86-FP16-NEXT:    movl (%eax), %eax
 ; X86-FP16-NEXT:    retl
 ;
 ; X64-FP16-LABEL: test_f16_uno_s:
 ; X64-FP16:       # %bb.0:
-; X64-FP16-NEXT:    movl %edi, %eax
+; X64-FP16-NEXT:    movl %esi, %eax
 ; X64-FP16-NEXT:    vcomish %xmm1, %xmm0
-; X64-FP16-NEXT:    cmovnpl %esi, %eax
+; X64-FP16-NEXT:    cmovpl %edi, %eax
 ; X64-FP16-NEXT:    retq
   %cond = call i1 @llvm.experimental.constrained.fcmps.f16(
                                                half %f1, half %f2, metadata !"uno",

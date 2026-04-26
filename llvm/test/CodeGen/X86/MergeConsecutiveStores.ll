@@ -872,12 +872,12 @@ define void @MergeLoadStoreBaseIndexOffsetComplicated(ptr %a, ptr %b, ptr %c, i6
 ; X86-BWON-NEXT:    movl %eax, %edx
 ; X86-BWON-NEXT:    orl $1, %edx
 ; X86-BWON-NEXT:    movb %cl, (%ebx,%edx)
-; X86-BWON-NEXT:    incl %edi
 ; X86-BWON-NEXT:    addl $2, %eax
 ; X86-BWON-NEXT:    adcl $0, %ebp
 ; X86-BWON-NEXT:    cmpl {{[0-9]+}}(%esp), %eax
 ; X86-BWON-NEXT:    movl %ebp, %ecx
 ; X86-BWON-NEXT:    sbbl {{[0-9]+}}(%esp), %ecx
+; X86-BWON-NEXT:    leal 1(%edi), %edi
 ; X86-BWON-NEXT:    jl .LBB10_1
 ; X86-BWON-NEXT:  # %bb.2:
 ; X86-BWON-NEXT:    popl %esi
@@ -918,12 +918,12 @@ define void @MergeLoadStoreBaseIndexOffsetComplicated(ptr %a, ptr %b, ptr %c, i6
 ; X86-BWOFF-NEXT:    movl %eax, %edx
 ; X86-BWOFF-NEXT:    orl $1, %edx
 ; X86-BWOFF-NEXT:    movb %cl, (%ebx,%edx)
-; X86-BWOFF-NEXT:    incl %edi
 ; X86-BWOFF-NEXT:    addl $2, %eax
 ; X86-BWOFF-NEXT:    adcl $0, %ebp
 ; X86-BWOFF-NEXT:    cmpl {{[0-9]+}}(%esp), %eax
 ; X86-BWOFF-NEXT:    movl %ebp, %ecx
 ; X86-BWOFF-NEXT:    sbbl {{[0-9]+}}(%esp), %ecx
+; X86-BWOFF-NEXT:    leal 1(%edi), %edi
 ; X86-BWOFF-NEXT:    jl .LBB10_1
 ; X86-BWOFF-NEXT:  # %bb.2:
 ; X86-BWOFF-NEXT:    popl %esi

@@ -169,6 +169,7 @@ define i32 @interp_switch(ptr nocapture readonly %0, i32 %1) {
 ; CHECK-NEXT:    incq %rdi
 ; CHECK-NEXT:    jmp .LBB1_1
 ; CHECK-NEXT:  .LBB1_9:
+; CHECK-NEXT:    # kill: def $eax killed $eax killed $rax
 ; CHECK-NEXT:    retq
   br label %3
 

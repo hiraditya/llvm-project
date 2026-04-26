@@ -47,10 +47,10 @@ define i64 @PR46237(i64 %x, i64 %y, i64 %z) optsize {
 ; CHECK:       # %bb.0:
 ; CHECK-NEXT:    movl %edx, %eax
 ; CHECK-NEXT:    shll $6, %eax
-; CHECK-NEXT:    movzbl %al, %ecx
+; CHECK-NEXT:    movzbl %al, %eax
 ; CHECK-NEXT:    andl $7, %esi
 ; CHECK-NEXT:    andl $7, %edx
-; CHECK-NEXT:    leaq (%rdx,%rsi,8), %rax
+; CHECK-NEXT:    leaq (%rdx,%rsi,8), %rcx
 ; CHECK-NEXT:    orq %rcx, %rax
 ; CHECK-NEXT:    retq
   %and = shl i64 %z, 6

@@ -6,9 +6,10 @@ define i128 @select_eq_i128(ptr %a) {
 ; CHECK-LABEL: select_eq_i128:
 ; CHECK:       # %bb.0:
 ; CHECK-NEXT:    movdqa (%rdi), %xmm0
-; CHECK-NEXT:    pxor {{\.?LCPI[0-9]+_[0-9]+}}(%rip), %xmm0
+; CHECK-NEXT:    movd {{.*#+}} xmm1 = [1,0,0,0]
+; CHECK-NEXT:    pxor %xmm0, %xmm1
 ; CHECK-NEXT:    xorl %eax, %eax
-; CHECK-NEXT:    ptest %xmm0, %xmm0
+; CHECK-NEXT:    ptest %xmm1, %xmm1
 ; CHECK-NEXT:    setne %al
 ; CHECK-NEXT:    addq $-1, %rax
 ; CHECK-NEXT:    movabsq $9223372036854775807, %rdx # imm = 0x7FFFFFFFFFFFFFFF
@@ -18,9 +19,10 @@ define i128 @select_eq_i128(ptr %a) {
 ; NDD-LABEL: select_eq_i128:
 ; NDD:       # %bb.0:
 ; NDD-NEXT:    movdqa (%rdi), %xmm0
-; NDD-NEXT:    pxor {{\.?LCPI[0-9]+_[0-9]+}}(%rip), %xmm0
+; NDD-NEXT:    movd {{.*#+}} xmm1 = [1,0,0,0]
+; NDD-NEXT:    pxor %xmm0, %xmm1
 ; NDD-NEXT:    xorl %eax, %eax
-; NDD-NEXT:    ptest %xmm0, %xmm0
+; NDD-NEXT:    ptest %xmm1, %xmm1
 ; NDD-NEXT:    setne %al
 ; NDD-NEXT:    addq $-1, %rax
 ; NDD-NEXT:    movabsq $9223372036854775807, %rdx # imm = 0x7FFFFFFFFFFFFFFF

@@ -31,13 +31,15 @@ define <4 x double> @concat_vpermv3_ops_vpermv_swap_v4f64(ptr %p0, <4 x i64> %m)
 ; X86:       # %bb.0:
 ; X86-NEXT:    movl {{[0-9]+}}(%esp), %eax
 ; X86-NEXT:    vmovapd 32(%eax), %ymm1
-; X86-NEXT:    vpermi2pd (%eax), %ymm1, %ymm0
+; X86-NEXT:    vpermt2pd (%eax), %ymm0, %ymm1
+; X86-NEXT:    vmovapd %ymm1, %ymm0
 ; X86-NEXT:    retl
 ;
 ; X64-LABEL: concat_vpermv3_ops_vpermv_swap_v4f64:
 ; X64:       # %bb.0:
 ; X64-NEXT:    vmovapd 32(%rdi), %ymm1
-; X64-NEXT:    vpermi2pd (%rdi), %ymm1, %ymm0
+; X64-NEXT:    vpermt2pd (%rdi), %ymm0, %ymm1
+; X64-NEXT:    vmovapd %ymm1, %ymm0
 ; X64-NEXT:    retq
   %p1 = getelementptr inbounds nuw i8, ptr %p0, i64 32
   %lo = load <4 x double>, ptr %p1, align 32

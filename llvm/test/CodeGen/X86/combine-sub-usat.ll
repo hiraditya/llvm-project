@@ -130,22 +130,26 @@ define <4 x i32> @combine_dec_v4i32(<4 x i32> %a0) {
 ; SSE2:       # %bb.0:
 ; SSE2-NEXT:    pcmpeqd %xmm1, %xmm1
 ; SSE2-NEXT:    paddd %xmm0, %xmm1
-; SSE2-NEXT:    pxor {{\.?LCPI[0-9]+_[0-9]+}}(%rip), %xmm0
-; SSE2-NEXT:    pcmpgtd {{\.?LCPI[0-9]+_[0-9]+}}(%rip), %xmm0
-; SSE2-NEXT:    pand %xmm1, %xmm0
+; SSE2-NEXT:    movdqa {{.*#+}} xmm2 = [2147483648,2147483648,2147483648,2147483648]
+; SSE2-NEXT:    pxor %xmm0, %xmm2
+; SSE2-NEXT:    pcmpgtd {{\.?LCPI[0-9]+_[0-9]+}}(%rip), %xmm2
+; SSE2-NEXT:    pand %xmm2, %xmm1
+; SSE2-NEXT:    movdqa %xmm1, %xmm0
 ; SSE2-NEXT:    retq
 ;
 ; SSE41-LABEL: combine_dec_v4i32:
 ; SSE41:       # %bb.0:
-; SSE41-NEXT:    pmaxud {{\.?LCPI[0-9]+_[0-9]+}}(%rip), %xmm0
-; SSE41-NEXT:    pcmpeqd %xmm1, %xmm1
+; SSE41-NEXT:    pmovsxbd {{.*#+}} xmm1 = [1,1,1,1]
+; SSE41-NEXT:    pmaxud %xmm0, %xmm1
+; SSE41-NEXT:    pcmpeqd %xmm0, %xmm0
 ; SSE41-NEXT:    paddd %xmm1, %xmm0
 ; SSE41-NEXT:    retq
 ;
 ; SSE42-LABEL: combine_dec_v4i32:
 ; SSE42:       # %bb.0:
-; SSE42-NEXT:    pmaxud {{\.?LCPI[0-9]+_[0-9]+}}(%rip), %xmm0
-; SSE42-NEXT:    pcmpeqd %xmm1, %xmm1
+; SSE42-NEXT:    pmovsxbd {{.*#+}} xmm1 = [1,1,1,1]
+; SSE42-NEXT:    pmaxud %xmm0, %xmm1
+; SSE42-NEXT:    pcmpeqd %xmm0, %xmm0
 ; SSE42-NEXT:    paddd %xmm1, %xmm0
 ; SSE42-NEXT:    retq
 ;
@@ -239,10 +243,10 @@ define <8 x i16> @combine_no_overflow_v8i16(<8 x i16> %a0, <8 x i16> %a1) {
 define i16 @combine_trunc_i32_i16(i16 %a0, i32 %a1) {
 ; CHECK-LABEL: combine_trunc_i32_i16:
 ; CHECK:       # %bb.0:
-; CHECK-NEXT:    movzwl %di, %eax
-; CHECK-NEXT:    xorl %ecx, %ecx
-; CHECK-NEXT:    subl %esi, %eax
-; CHECK-NEXT:    cmovbl %ecx, %eax
+; CHECK-NEXT:    movzwl %di, %ecx
+; CHECK-NEXT:    xorl %eax, %eax
+; CHECK-NEXT:    subl %esi, %ecx
+; CHECK-NEXT:    cmovael %ecx, %eax
 ; CHECK-NEXT:    # kill: def $ax killed $ax killed $eax
 ; CHECK-NEXT:    retq
   %1 = zext i16 %a0 to i32
@@ -301,11 +305,12 @@ define <8 x i16> @combine_trunc_v8i32_v8i16(<8 x i16> %a0, <8 x i32> %a1) {
 ; SSE2-NEXT:    por %xmm2, %xmm6
 ; SSE2-NEXT:    pslld $16, %xmm6
 ; SSE2-NEXT:    psrad $16, %xmm6
-; SSE2-NEXT:    pxor %xmm1, %xmm3
-; SSE2-NEXT:    pcmpgtd %xmm3, %xmm5
-; SSE2-NEXT:    pxor %xmm5, %xmm4
-; SSE2-NEXT:    pand %xmm1, %xmm5
-; SSE2-NEXT:    por %xmm4, %xmm5
+; SSE2-NEXT:    movdqa %xmm1, %xmm2
+; SSE2-NEXT:    pxor %xmm3, %xmm2
+; SSE2-NEXT:    pcmpgtd %xmm2, %xmm5
+; SSE2-NEXT:    pand %xmm5, %xmm1
+; SSE2-NEXT:    pxor %xmm4, %xmm5
+; SSE2-NEXT:    por %xmm1, %xmm5
 ; SSE2-NEXT:    pslld $16, %xmm5
 ; SSE2-NEXT:    psrad $16, %xmm5
 ; SSE2-NEXT:    packssdw %xmm6, %xmm5

@@ -28,11 +28,12 @@ define void @update(ptr %dst, ptr %src, i32 %n) nounwind {
 ; CHECK-NEXT:    shll $4, %eax
 ; CHECK-NEXT:    movl 12(%ebp), %edx
 ; CHECK-NEXT:    movaps (%edx,%eax), %xmm1
-; CHECK-NEXT:    mulps {{[0-9]+}}(%esp), %xmm1
-; CHECK-NEXT:    addps %xmm0, %xmm1
-; CHECK-NEXT:    extractps $2, %xmm1, 8(%ecx,%eax)
-; CHECK-NEXT:    extractps $1, %xmm1, 4(%ecx,%eax)
-; CHECK-NEXT:    movss %xmm1, (%ecx,%eax)
+; CHECK-NEXT:    movaps {{[0-9]+}}(%esp), %xmm2
+; CHECK-NEXT:    mulps %xmm1, %xmm2
+; CHECK-NEXT:    addps %xmm0, %xmm2
+; CHECK-NEXT:    extractps $2, %xmm2, 8(%ecx,%eax)
+; CHECK-NEXT:    extractps $1, %xmm2, 4(%ecx,%eax)
+; CHECK-NEXT:    movss %xmm2, (%ecx,%eax)
 ; CHECK-NEXT:    incl {{[0-9]+}}(%esp)
 ; CHECK-NEXT:    jmp .LBB0_1
 ; CHECK-NEXT:  .LBB0_3: # %afterfor

@@ -47,7 +47,8 @@ define float @test_fneg_fma_subx_suby_negz_f32(float %w, float %x, float %y, flo
 ; FMA3:       # %bb.0: # %entry
 ; FMA3-NEXT:    vsubss %xmm1, %xmm0, %xmm1
 ; FMA3-NEXT:    vsubss %xmm2, %xmm0, %xmm0
-; FMA3-NEXT:    vfnmadd213ss {{.*#+}} xmm0 = -(xmm1 * xmm0) + xmm3
+; FMA3-NEXT:    vfnmadd213ss {{.*#+}} xmm1 = -(xmm0 * xmm1) + xmm3
+; FMA3-NEXT:    vmovaps %xmm1, %xmm0
 ; FMA3-NEXT:    retq
 ;
 ; FMA4-LABEL: test_fneg_fma_subx_suby_negz_f32:
@@ -90,7 +91,8 @@ define <4 x float> @test_fma_rcp_fneg_v4f32(<4 x float> %x, <4 x float> %y, <4 x
 ; FMA3-LABEL: test_fma_rcp_fneg_v4f32:
 ; FMA3:       # %bb.0: # %entry
 ; FMA3-NEXT:    vrcpps %xmm2, %xmm2
-; FMA3-NEXT:    vfmsub213ps {{.*#+}} xmm0 = (xmm1 * xmm0) - xmm2
+; FMA3-NEXT:    vfmsub231ps {{.*#+}} xmm2 = (xmm0 * xmm1) - xmm2
+; FMA3-NEXT:    vmovaps %xmm2, %xmm0
 ; FMA3-NEXT:    retq
 ;
 ; FMA4-LABEL: test_fma_rcp_fneg_v4f32:
@@ -111,8 +113,10 @@ declare <4 x float> @llvm.x86.sse.rcp.ps(<4 x float>)
 define float @negated_constant(float %x) {
 ; FMA3-LABEL: negated_constant:
 ; FMA3:       # %bb.0:
-; FMA3-NEXT:    vmulss {{\.?LCPI[0-9]+_[0-9]+}}(%rip), %xmm0, %xmm1
-; FMA3-NEXT:    vfnmsub132ss {{.*#+}} xmm0 = -(xmm0 * mem) - xmm1
+; FMA3-NEXT:    vmulss {{\.?LCPI[0-9]+_[0-9]+}}(%rip), %xmm0, %xmm2
+; FMA3-NEXT:    vmovss {{.*#+}} xmm1 = [-4.2E+1,0.0E+0,0.0E+0,0.0E+0]
+; FMA3-NEXT:    vfnmsub213ss {{.*#+}} xmm1 = -(xmm0 * xmm1) - xmm2
+; FMA3-NEXT:    vmovaps %xmm1, %xmm0
 ; FMA3-NEXT:    retq
 ;
 ; FMA4-LABEL: negated_constant:
@@ -130,7 +134,8 @@ define <4 x double> @negated_constant_v4f64(<4 x double> %a) {
 ; FMA3-LABEL: negated_constant_v4f64:
 ; FMA3:       # %bb.0:
 ; FMA3-NEXT:    vmovapd {{.*#+}} ymm1 = [-5.0E-1,-2.5E-1,-1.25E-1,-6.25E-2]
-; FMA3-NEXT:    vfnmadd213pd {{.*#+}} ymm0 = -(ymm1 * ymm0) + ymm1
+; FMA3-NEXT:    vfnmadd213pd {{.*#+}} ymm1 = -(ymm0 * ymm1) + ymm1
+; FMA3-NEXT:    vmovapd %ymm1, %ymm0
 ; FMA3-NEXT:    retq
 ;
 ; FMA4-LABEL: negated_constant_v4f64:
@@ -190,9 +195,11 @@ define <4 x double> @negated_constant_v4f64_2fma_undefs(<4 x double> %a, <4 x do
 ; FMA3-LABEL: negated_constant_v4f64_2fma_undefs:
 ; FMA3:       # %bb.0:
 ; FMA3-NEXT:    vbroadcastsd {{.*#+}} ymm2 = [-5.0E-1,-5.0E-1,-5.0E-1,-5.0E-1]
-; FMA3-NEXT:    vfnmadd213pd {{.*#+}} ymm0 = -(ymm2 * ymm0) + mem
-; FMA3-NEXT:    vfmadd132pd {{.*#+}} ymm1 = (ymm1 * mem) + ymm2
-; FMA3-NEXT:    vaddpd %ymm1, %ymm0, %ymm0
+; FMA3-NEXT:    vbroadcastsd {{.*#+}} ymm3 = [-5.0E-1,-5.0E-1,-5.0E-1,-5.0E-1]
+; FMA3-NEXT:    vfnmadd231pd {{.*#+}} ymm3 = -(ymm0 * ymm2) + ymm3
+; FMA3-NEXT:    vbroadcastsd {{.*#+}} ymm0 = [5.0E-1,5.0E-1,5.0E-1,5.0E-1]
+; FMA3-NEXT:    vfmadd213pd {{.*#+}} ymm0 = (ymm1 * ymm0) + ymm2
+; FMA3-NEXT:    vaddpd %ymm0, %ymm3, %ymm0
 ; FMA3-NEXT:    retq
 ;
 ; FMA4-LABEL: negated_constant_v4f64_2fma_undefs:

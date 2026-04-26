@@ -412,9 +412,9 @@ define <vscale x 4 x i64> @vwaddu_wv(<vscale x 4 x i64> %a, <vscale x 4 x i32> %
 ; CHECK-LABEL: vwaddu_wv:
 ; CHECK:       # %bb.0:
 ; CHECK-NEXT:    vsetvli zero, a0, e32, m2, ta, ma
-; CHECK-NEXT:    vwaddu.wv v8, v8, v12
+; CHECK-NEXT:    vwaddu.wv v16, v8, v12
 ; CHECK-NEXT:    vsetvli zero, zero, e64, m4, ta, ma
-; CHECK-NEXT:    vadd.vv v8, v8, v8
+; CHECK-NEXT:    vadd.vv v8, v16, v16
 ; CHECK-NEXT:    ret
   %1 = call <vscale x 4 x i64> @llvm.riscv.vwaddu.w.nxv4i64.nxv4i32.nxv4i32(<vscale x 4 x i64> poison, <vscale x 4 x i64> %a, <vscale x 4 x i32> %b, iXLen -1)
   %2 = call <vscale x 4 x i64> @llvm.riscv.vadd.nxv4i64.nxv4i64(<vscale x 4 x i64> poison, <vscale x 4 x i64> %1, <vscale x 4 x i64> %1, iXLen %vl)
@@ -438,9 +438,9 @@ define <vscale x 4 x i64> @vwsubu_wv(<vscale x 4 x i64> %a, <vscale x 4 x i32> %
 ; CHECK-LABEL: vwsubu_wv:
 ; CHECK:       # %bb.0:
 ; CHECK-NEXT:    vsetvli zero, a0, e32, m2, ta, ma
-; CHECK-NEXT:    vwsubu.wv v8, v8, v12
+; CHECK-NEXT:    vwsubu.wv v16, v8, v12
 ; CHECK-NEXT:    vsetvli zero, zero, e64, m4, ta, ma
-; CHECK-NEXT:    vadd.vv v8, v8, v8
+; CHECK-NEXT:    vadd.vv v8, v16, v16
 ; CHECK-NEXT:    ret
   %1 = call <vscale x 4 x i64> @llvm.riscv.vwsubu.w.nxv4i64.nxv4i32.nxv4i32(<vscale x 4 x i64> poison, <vscale x 4 x i64> %a, <vscale x 4 x i32> %b, iXLen -1)
   %2 = call <vscale x 4 x i64> @llvm.riscv.vadd.nxv4i64.nxv4i64(<vscale x 4 x i64> poison, <vscale x 4 x i64> %1, <vscale x 4 x i64> %1, iXLen %vl)
@@ -464,9 +464,9 @@ define <vscale x 4 x i64> @vwadd_wv(<vscale x 4 x i64> %a, <vscale x 4 x i32> %b
 ; CHECK-LABEL: vwadd_wv:
 ; CHECK:       # %bb.0:
 ; CHECK-NEXT:    vsetvli zero, a0, e32, m2, ta, ma
-; CHECK-NEXT:    vwadd.wv v8, v8, v12
+; CHECK-NEXT:    vwadd.wv v16, v8, v12
 ; CHECK-NEXT:    vsetvli zero, zero, e64, m4, ta, ma
-; CHECK-NEXT:    vadd.vv v8, v8, v8
+; CHECK-NEXT:    vadd.vv v8, v16, v16
 ; CHECK-NEXT:    ret
   %1 = call <vscale x 4 x i64> @llvm.riscv.vwadd.w.nxv4i64.nxv4i32.nxv4i32(<vscale x 4 x i64> poison, <vscale x 4 x i64> %a, <vscale x 4 x i32> %b, iXLen -1)
   %2 = call <vscale x 4 x i64> @llvm.riscv.vadd.nxv4i64.nxv4i64(<vscale x 4 x i64> poison, <vscale x 4 x i64> %1, <vscale x 4 x i64> %1, iXLen %vl)
@@ -490,9 +490,9 @@ define <vscale x 4 x i64> @vwsub_wv(<vscale x 4 x i64> %a, <vscale x 4 x i32> %b
 ; CHECK-LABEL: vwsub_wv:
 ; CHECK:       # %bb.0:
 ; CHECK-NEXT:    vsetvli zero, a0, e32, m2, ta, ma
-; CHECK-NEXT:    vwsub.wv v8, v8, v12
+; CHECK-NEXT:    vwsub.wv v16, v8, v12
 ; CHECK-NEXT:    vsetvli zero, zero, e64, m4, ta, ma
-; CHECK-NEXT:    vadd.vv v8, v8, v8
+; CHECK-NEXT:    vadd.vv v8, v16, v16
 ; CHECK-NEXT:    ret
   %1 = call <vscale x 4 x i64> @llvm.riscv.vwsub.w.nxv4i64.nxv4i32.nxv4i32(<vscale x 4 x i64> poison, <vscale x 4 x i64> %a, <vscale x 4 x i32> %b, iXLen -1)
   %2 = call <vscale x 4 x i64> @llvm.riscv.vadd.nxv4i64.nxv4i64(<vscale x 4 x i64> poison, <vscale x 4 x i64> %1, <vscale x 4 x i64> %1, iXLen %vl)
@@ -2376,9 +2376,9 @@ define <vscale x 4 x double> @vfwadd_wv(<vscale x 4 x double> %a, <vscale x 4 x 
 ; CHECK-LABEL: vfwadd_wv:
 ; CHECK:       # %bb.0:
 ; CHECK-NEXT:    vsetvli zero, a0, e32, m2, ta, ma
-; CHECK-NEXT:    vfwadd.wv v8, v8, v12
+; CHECK-NEXT:    vfwadd.wv v16, v8, v12
 ; CHECK-NEXT:    vsetvli zero, zero, e64, m4, ta, ma
-; CHECK-NEXT:    vfadd.vv v8, v8, v8
+; CHECK-NEXT:    vfadd.vv v8, v16, v16
 ; CHECK-NEXT:    ret
   %1 = call <vscale x 4 x double> @llvm.riscv.vfwadd.w.nxv4f64.nxv4f32.nxv4f32(<vscale x 4 x double> poison, <vscale x 4 x double> %a, <vscale x 4 x float> %b, iXLen 7, iXLen -1)
   %2 = call <vscale x 4 x double> @llvm.riscv.vfadd.nxv4f64.nxv4f64(<vscale x 4 x double> poison, <vscale x 4 x double> %1, <vscale x 4 x double> %1, iXLen 7, iXLen %vl)
@@ -2402,9 +2402,9 @@ define <vscale x 4 x double> @vfwsub_wv(<vscale x 4 x double> %a, <vscale x 4 x 
 ; CHECK-LABEL: vfwsub_wv:
 ; CHECK:       # %bb.0:
 ; CHECK-NEXT:    vsetvli zero, a0, e32, m2, ta, ma
-; CHECK-NEXT:    vfwsub.wv v8, v8, v12
+; CHECK-NEXT:    vfwsub.wv v16, v8, v12
 ; CHECK-NEXT:    vsetvli zero, zero, e64, m4, ta, ma
-; CHECK-NEXT:    vfadd.vv v8, v8, v8
+; CHECK-NEXT:    vfadd.vv v8, v16, v16
 ; CHECK-NEXT:    ret
   %1 = call <vscale x 4 x double> @llvm.riscv.vfwsub.w.nxv4f64.nxv4f32.nxv4f32(<vscale x 4 x double> poison, <vscale x 4 x double> %a, <vscale x 4 x float> %b, iXLen 7, iXLen -1)
   %2 = call <vscale x 4 x double> @llvm.riscv.vfadd.nxv4f64.nxv4f64(<vscale x 4 x double> poison, <vscale x 4 x double> %1, <vscale x 4 x double> %1, iXLen 7, iXLen %vl)
@@ -2954,8 +2954,8 @@ define <vscale x 4 x float> @vfmacc_vv(<vscale x 4 x float> %a, <vscale x 4 x fl
 ; CHECK-LABEL: vfmacc_vv:
 ; CHECK:       # %bb.0:
 ; CHECK-NEXT:    vsetvli zero, a0, e32, m2, ta, ma
-; CHECK-NEXT:    vfmacc.vv v8, v12, v10
-; CHECK-NEXT:    vfadd.vv v8, v8, v12
+; CHECK-NEXT:    vfmadd.vv v10, v12, v8
+; CHECK-NEXT:    vfadd.vv v8, v10, v12
 ; CHECK-NEXT:    ret
   %1 = call <vscale x 4 x float> @llvm.riscv.vfmacc(<vscale x 4 x float> %a, <vscale x 4 x float> %b, <vscale x 4 x float> %c, iXLen 7, iXLen -1, iXLen 3)
   %2 = call <vscale x 4 x float> @llvm.riscv.vfadd(<vscale x 4 x float> poison, <vscale x 4 x float> %1, <vscale x 4 x float> %c, iXLen 7, iXLen %vl)
@@ -2978,8 +2978,8 @@ define <vscale x 4 x float> @vfnmacc_vv(<vscale x 4 x float> %a, <vscale x 4 x f
 ; CHECK-LABEL: vfnmacc_vv:
 ; CHECK:       # %bb.0:
 ; CHECK-NEXT:    vsetvli zero, a0, e32, m2, ta, ma
-; CHECK-NEXT:    vfnmacc.vv v8, v12, v10
-; CHECK-NEXT:    vfadd.vv v8, v8, v12
+; CHECK-NEXT:    vfnmadd.vv v10, v12, v8
+; CHECK-NEXT:    vfadd.vv v8, v10, v12
 ; CHECK-NEXT:    ret
   %1 = call <vscale x 4 x float> @llvm.riscv.vfnmacc(<vscale x 4 x float> %a, <vscale x 4 x float> %b, <vscale x 4 x float> %c, iXLen 7, iXLen -1, iXLen 3)
   %2 = call <vscale x 4 x float> @llvm.riscv.vfadd(<vscale x 4 x float> poison, <vscale x 4 x float> %1, <vscale x 4 x float> %c, iXLen 7, iXLen %vl)
@@ -3002,8 +3002,8 @@ define <vscale x 4 x float> @vfmsac_vv(<vscale x 4 x float> %a, <vscale x 4 x fl
 ; CHECK-LABEL: vfmsac_vv:
 ; CHECK:       # %bb.0:
 ; CHECK-NEXT:    vsetvli zero, a0, e32, m2, ta, ma
-; CHECK-NEXT:    vfmsac.vv v8, v12, v10
-; CHECK-NEXT:    vfadd.vv v8, v8, v12
+; CHECK-NEXT:    vfmsub.vv v10, v12, v8
+; CHECK-NEXT:    vfadd.vv v8, v10, v12
 ; CHECK-NEXT:    ret
   %1 = call <vscale x 4 x float> @llvm.riscv.vfmsac(<vscale x 4 x float> %a, <vscale x 4 x float> %b, <vscale x 4 x float> %c, iXLen 7, iXLen -1, iXLen 3)
   %2 = call <vscale x 4 x float> @llvm.riscv.vfadd(<vscale x 4 x float> poison, <vscale x 4 x float> %1, <vscale x 4 x float> %c, iXLen 7, iXLen %vl)
@@ -3026,8 +3026,8 @@ define <vscale x 4 x float> @vfnmsac_vv(<vscale x 4 x float> %a, <vscale x 4 x f
 ; CHECK-LABEL: vfnmsac_vv:
 ; CHECK:       # %bb.0:
 ; CHECK-NEXT:    vsetvli zero, a0, e32, m2, ta, ma
-; CHECK-NEXT:    vfnmsac.vv v8, v12, v10
-; CHECK-NEXT:    vfadd.vv v8, v8, v12
+; CHECK-NEXT:    vfnmsub.vv v10, v12, v8
+; CHECK-NEXT:    vfadd.vv v8, v10, v12
 ; CHECK-NEXT:    ret
   %1 = call <vscale x 4 x float> @llvm.riscv.vfnmsac(<vscale x 4 x float> %a, <vscale x 4 x float> %b, <vscale x 4 x float> %c, iXLen 7, iXLen -1, iXLen 3)
   %2 = call <vscale x 4 x float> @llvm.riscv.vfadd(<vscale x 4 x float> poison, <vscale x 4 x float> %1, <vscale x 4 x float> %c, iXLen 7, iXLen %vl)

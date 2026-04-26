@@ -16,7 +16,9 @@ define <4 x float> @vec_fsub_zero(<4 x float> %x) {
 define <4 x float> @vec_fneg(<4 x float> %x) {
 ; CHECK-LABEL: vec_fneg:
 ; CHECK:       # %bb.0:
-; CHECK-NEXT:    xorps {{\.?LCPI[0-9]+_[0-9]+}}(%rip), %xmm0
+; CHECK-NEXT:    movaps {{.*#+}} xmm1 = [-0.0E+0,-0.0E+0,-0.0E+0,-0.0E+0]
+; CHECK-NEXT:    xorps %xmm0, %xmm1
+; CHECK-NEXT:    movaps %xmm1, %xmm0
 ; CHECK-NEXT:    retq
   %sub = fsub nsz <4 x float> zeroinitializer, %x
   ret <4 x float> %sub

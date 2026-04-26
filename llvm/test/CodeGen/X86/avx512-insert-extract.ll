@@ -210,21 +210,21 @@ define <16 x i32> @test11(<16 x i32>%a, <16 x i32>%b) nounwind {
 define i64 @test12(<16 x i64>%a, <16 x i64>%b, i64 %a1, i64 %b1) nounwind {
 ; KNL-LABEL: test12:
 ; KNL:       ## %bb.0:
-; KNL-NEXT:    movq %rdi, %rax
+; KNL-NEXT:    movq %rsi, %rax
 ; KNL-NEXT:    vpcmpgtq %zmm0, %zmm2, %k0
 ; KNL-NEXT:    kmovw %k0, %ecx
 ; KNL-NEXT:    testb $1, %cl
-; KNL-NEXT:    cmoveq %rsi, %rax
+; KNL-NEXT:    cmovneq %rdi, %rax
 ; KNL-NEXT:    vzeroupper
 ; KNL-NEXT:    retq
 ;
 ; SKX-LABEL: test12:
 ; SKX:       ## %bb.0:
-; SKX-NEXT:    movq %rdi, %rax
+; SKX-NEXT:    movq %rsi, %rax
 ; SKX-NEXT:    vpcmpgtq %zmm0, %zmm2, %k0
 ; SKX-NEXT:    kmovd %k0, %ecx
 ; SKX-NEXT:    testb $1, %cl
-; SKX-NEXT:    cmoveq %rsi, %rax
+; SKX-NEXT:    cmovneq %rdi, %rax
 ; SKX-NEXT:    vzeroupper
 ; SKX-NEXT:    retq
   %cmpvector_func.i = icmp slt <16 x i64> %a, %b
@@ -272,21 +272,21 @@ define i16 @test13(i32 %a, i32 %b) nounwind {
 define i64 @test14(<8 x i64>%a, <8 x i64>%b, i64 %a1, i64 %b1) nounwind {
 ; KNL-LABEL: test14:
 ; KNL:       ## %bb.0:
-; KNL-NEXT:    movq %rdi, %rax
+; KNL-NEXT:    movq %rsi, %rax
 ; KNL-NEXT:    vpcmpgtq %zmm0, %zmm1, %k0
 ; KNL-NEXT:    kmovw %k0, %ecx
 ; KNL-NEXT:    testb $16, %cl
-; KNL-NEXT:    cmoveq %rsi, %rax
+; KNL-NEXT:    cmovneq %rdi, %rax
 ; KNL-NEXT:    vzeroupper
 ; KNL-NEXT:    retq
 ;
 ; SKX-LABEL: test14:
 ; SKX:       ## %bb.0:
-; SKX-NEXT:    movq %rdi, %rax
+; SKX-NEXT:    movq %rsi, %rax
 ; SKX-NEXT:    vpcmpgtq %zmm0, %zmm1, %k0
 ; SKX-NEXT:    kmovd %k0, %ecx
 ; SKX-NEXT:    testb $16, %cl
-; SKX-NEXT:    cmoveq %rsi, %rax
+; SKX-NEXT:    cmovneq %rdi, %rax
 ; SKX-NEXT:    vzeroupper
 ; SKX-NEXT:    retq
   %cmpvector_func.i = icmp slt <8 x i64> %a, %b
@@ -669,10 +669,10 @@ define <32 x i16> @insert_v32i16(<32 x i16> %x, i16 %y, ptr %ptr) nounwind {
 ; KNL-LABEL: insert_v32i16:
 ; KNL:       ## %bb.0:
 ; KNL-NEXT:    vpinsrw $1, (%rsi), %xmm0, %xmm1
-; KNL-NEXT:    vinserti32x4 $0, %xmm1, %zmm0, %zmm1
-; KNL-NEXT:    vmovd %edi, %xmm0
-; KNL-NEXT:    vpbroadcastw %xmm0, %ymm0
-; KNL-NEXT:    vpternlogq {{.*#+}} zmm0 = zmm0 ^ (mem & (zmm0 ^ zmm1))
+; KNL-NEXT:    vinserti32x4 $0, %xmm1, %zmm0, %zmm0
+; KNL-NEXT:    vmovd %edi, %xmm1
+; KNL-NEXT:    vpbroadcastw %xmm1, %ymm1
+; KNL-NEXT:    vpternlogq {{.*#+}} zmm0 = zmm1 ^ (mem & (zmm0 ^ zmm1))
 ; KNL-NEXT:    retq
 ;
 ; SKX-LABEL: insert_v32i16:
@@ -839,18 +839,18 @@ define i32 @test_insertelement_v32i1(i32 %a, i32 %b, <32 x i32> %x , <32 x i32> 
 ; KNL-LABEL: test_insertelement_v32i1:
 ; KNL:       ## %bb.0:
 ; KNL-NEXT:    cmpl %esi, %edi
-; KNL-NEXT:    setb %al
+; KNL-NEXT:    setb %cl
 ; KNL-NEXT:    vpcmpltud %zmm3, %zmm1, %k0
-; KNL-NEXT:    kmovw %k0, %ecx
-; KNL-NEXT:    shll $16, %ecx
+; KNL-NEXT:    kmovw %k0, %eax
+; KNL-NEXT:    shll $16, %eax
 ; KNL-NEXT:    movw $-17, %dx
 ; KNL-NEXT:    kmovw %edx, %k1
 ; KNL-NEXT:    vpcmpltud %zmm2, %zmm0, %k0 {%k1}
-; KNL-NEXT:    kmovw %eax, %k1
+; KNL-NEXT:    kmovw %ecx, %k1
 ; KNL-NEXT:    kshiftlw $15, %k1, %k1
 ; KNL-NEXT:    kshiftrw $11, %k1, %k1
 ; KNL-NEXT:    korw %k1, %k0, %k0
-; KNL-NEXT:    kmovw %k0, %eax
+; KNL-NEXT:    kmovw %k0, %ecx
 ; KNL-NEXT:    orl %ecx, %eax
 ; KNL-NEXT:    vzeroupper
 ; KNL-NEXT:    retq
@@ -1110,7 +1110,7 @@ define zeroext i8 @extractelement_v64i1_alt(<64 x i8> %a, <64 x i8> %b) nounwind
 ; KNL-NEXT:    vextracti128 $1, %ymm0, %xmm0
 ; KNL-NEXT:    vpextrb $15, %xmm0, %eax
 ; KNL-NEXT:    notb %al
-; KNL-NEXT:    addb $4, %al
+; KNL-NEXT:    addl $4, %eax
 ; KNL-NEXT:    movzbl %al, %eax
 ; KNL-NEXT:    vzeroupper
 ; KNL-NEXT:    retq
@@ -1442,9 +1442,10 @@ define i8 @test_extractelement_variable_v64i8_indexi8(<64 x i8> %t1, i8 %index) 
 ; CHECK-NEXT:    movq %rsp, %rbp
 ; CHECK-NEXT:    andq $-64, %rsp
 ; CHECK-NEXT:    subq $128, %rsp
-; CHECK-NEXT:    addb %dil, %dil
+; CHECK-NEXT:    ## kill: def $edi killed $edi def $rdi
+; CHECK-NEXT:    leal (%rdi,%rdi), %eax
 ; CHECK-NEXT:    vmovaps %zmm0, (%rsp)
-; CHECK-NEXT:    movzbl %dil, %eax
+; CHECK-NEXT:    movzbl %al, %eax
 ; CHECK-NEXT:    andl $62, %eax
 ; CHECK-NEXT:    movzbl (%rsp,%rax), %eax
 ; CHECK-NEXT:    movq %rbp, %rsp

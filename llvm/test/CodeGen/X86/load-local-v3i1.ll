@@ -15,31 +15,33 @@ declare void @llvm.masked.store.v3i32.p1(<3 x i32>, ptr addrspace(1), i32, <3 x 
 define  <3 x i32> @masked_load_v3(ptr addrspace(1), <3 x i1>) {
 ; CHECK-LABEL: masked_load_v3:
 ; CHECK:       # %bb.0: # %entry
+; CHECK-NEXT:    # kill: def $ecx killed $ecx def $rcx
+; CHECK-NEXT:    # kill: def $edx killed $edx def $rdx
 ; CHECK-NEXT:    andb $1, %sil
 ; CHECK-NEXT:    andb $1, %dl
-; CHECK-NEXT:    addb %dl, %dl
+; CHECK-NEXT:    addl %edx, %edx
 ; CHECK-NEXT:    orb %sil, %dl
 ; CHECK-NEXT:    andb $1, %cl
-; CHECK-NEXT:    shlb $2, %cl
-; CHECK-NEXT:    orb %dl, %cl
-; CHECK-NEXT:    testb $1, %cl
+; CHECK-NEXT:    leal (,%rcx,4), %eax
+; CHECK-NEXT:    orb %dl, %al
+; CHECK-NEXT:    testb $1, %al
 ; CHECK-NEXT:    # implicit-def: $xmm0
 ; CHECK-NEXT:    jne .LBB0_1
 ; CHECK-NEXT:  # %bb.2: # %else
-; CHECK-NEXT:    testb $2, %cl
+; CHECK-NEXT:    testb $2, %al
 ; CHECK-NEXT:    jne .LBB0_3
 ; CHECK-NEXT:  .LBB0_4: # %else2
-; CHECK-NEXT:    testb $4, %cl
+; CHECK-NEXT:    testb $4, %al
 ; CHECK-NEXT:    jne .LBB0_5
 ; CHECK-NEXT:  .LBB0_6: # %else5
 ; CHECK-NEXT:    retq
 ; CHECK-NEXT:  .LBB0_1: # %cond.load
 ; CHECK-NEXT:    movd {{.*#+}} xmm0 = mem[0],zero,zero,zero
-; CHECK-NEXT:    testb $2, %cl
+; CHECK-NEXT:    testb $2, %al
 ; CHECK-NEXT:    je .LBB0_4
 ; CHECK-NEXT:  .LBB0_3: # %cond.load1
 ; CHECK-NEXT:    pinsrd $1, 4(%rdi), %xmm0
-; CHECK-NEXT:    testb $4, %cl
+; CHECK-NEXT:    testb $4, %al
 ; CHECK-NEXT:    je .LBB0_6
 ; CHECK-NEXT:  .LBB0_5: # %cond.load4
 ; CHECK-NEXT:    pinsrd $2, 8(%rdi), %xmm0
@@ -52,30 +54,32 @@ entry:
 define void @masked_store4_v3(<3 x i32>, ptr addrspace(1), <3 x i1>) {
 ; CHECK-LABEL: masked_store4_v3:
 ; CHECK:       # %bb.0: # %entry
+; CHECK-NEXT:    # kill: def $ecx killed $ecx def $rcx
+; CHECK-NEXT:    # kill: def $edx killed $edx def $rdx
 ; CHECK-NEXT:    andb $1, %sil
 ; CHECK-NEXT:    andb $1, %dl
-; CHECK-NEXT:    addb %dl, %dl
+; CHECK-NEXT:    addl %edx, %edx
 ; CHECK-NEXT:    orb %sil, %dl
 ; CHECK-NEXT:    andb $1, %cl
-; CHECK-NEXT:    shlb $2, %cl
-; CHECK-NEXT:    orb %dl, %cl
-; CHECK-NEXT:    testb $1, %cl
+; CHECK-NEXT:    leal (,%rcx,4), %eax
+; CHECK-NEXT:    orb %dl, %al
+; CHECK-NEXT:    testb $1, %al
 ; CHECK-NEXT:    jne .LBB1_1
 ; CHECK-NEXT:  # %bb.2: # %else
-; CHECK-NEXT:    testb $2, %cl
+; CHECK-NEXT:    testb $2, %al
 ; CHECK-NEXT:    jne .LBB1_3
 ; CHECK-NEXT:  .LBB1_4: # %else2
-; CHECK-NEXT:    testb $4, %cl
+; CHECK-NEXT:    testb $4, %al
 ; CHECK-NEXT:    jne .LBB1_5
 ; CHECK-NEXT:  .LBB1_6: # %else4
 ; CHECK-NEXT:    retq
 ; CHECK-NEXT:  .LBB1_1: # %cond.store
 ; CHECK-NEXT:    movss %xmm0, (%rdi)
-; CHECK-NEXT:    testb $2, %cl
+; CHECK-NEXT:    testb $2, %al
 ; CHECK-NEXT:    je .LBB1_4
 ; CHECK-NEXT:  .LBB1_3: # %cond.store1
 ; CHECK-NEXT:    extractps $1, %xmm0, 4(%rdi)
-; CHECK-NEXT:    testb $4, %cl
+; CHECK-NEXT:    testb $4, %al
 ; CHECK-NEXT:    je .LBB1_6
 ; CHECK-NEXT:  .LBB1_5: # %cond.store3
 ; CHECK-NEXT:    extractps $2, %xmm0, 8(%rdi)

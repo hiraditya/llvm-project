@@ -5943,12 +5943,13 @@ define i8 @atomicrmw_nand_i8_monotonic(ptr %a, i8 %b) nounwind {
 ; RV32IA-WMO-ZABHA-ZACAS-NEXT:    lbu a0, 0(a0)
 ; RV32IA-WMO-ZABHA-ZACAS-NEXT:  .LBB30_1: # %atomicrmw.start
 ; RV32IA-WMO-ZABHA-ZACAS-NEXT:    # =>This Inner Loop Header: Depth=1
-; RV32IA-WMO-ZABHA-ZACAS-NEXT:    and a3, a0, a1
-; RV32IA-WMO-ZABHA-ZACAS-NEXT:    not a3, a3
-; RV32IA-WMO-ZABHA-ZACAS-NEXT:    slli a4, a0, 24
-; RV32IA-WMO-ZABHA-ZACAS-NEXT:    amocas.b a0, a3, (a2)
-; RV32IA-WMO-ZABHA-ZACAS-NEXT:    srai a4, a4, 24
-; RV32IA-WMO-ZABHA-ZACAS-NEXT:    bne a0, a4, .LBB30_1
+; RV32IA-WMO-ZABHA-ZACAS-NEXT:    mv a3, a0
+; RV32IA-WMO-ZABHA-ZACAS-NEXT:    and a4, a0, a1
+; RV32IA-WMO-ZABHA-ZACAS-NEXT:    not a4, a4
+; RV32IA-WMO-ZABHA-ZACAS-NEXT:    amocas.b a0, a4, (a2)
+; RV32IA-WMO-ZABHA-ZACAS-NEXT:    slli a3, a3, 24
+; RV32IA-WMO-ZABHA-ZACAS-NEXT:    srai a3, a3, 24
+; RV32IA-WMO-ZABHA-ZACAS-NEXT:    bne a0, a3, .LBB30_1
 ; RV32IA-WMO-ZABHA-ZACAS-NEXT:  # %bb.2: # %atomicrmw.end
 ; RV32IA-WMO-ZABHA-ZACAS-NEXT:    ret
 ;
@@ -5958,12 +5959,13 @@ define i8 @atomicrmw_nand_i8_monotonic(ptr %a, i8 %b) nounwind {
 ; RV32IA-TSO-ZABHA-ZACAS-NEXT:    lbu a0, 0(a0)
 ; RV32IA-TSO-ZABHA-ZACAS-NEXT:  .LBB30_1: # %atomicrmw.start
 ; RV32IA-TSO-ZABHA-ZACAS-NEXT:    # =>This Inner Loop Header: Depth=1
-; RV32IA-TSO-ZABHA-ZACAS-NEXT:    and a3, a0, a1
-; RV32IA-TSO-ZABHA-ZACAS-NEXT:    not a3, a3
-; RV32IA-TSO-ZABHA-ZACAS-NEXT:    slli a4, a0, 24
-; RV32IA-TSO-ZABHA-ZACAS-NEXT:    amocas.b a0, a3, (a2)
-; RV32IA-TSO-ZABHA-ZACAS-NEXT:    srai a4, a4, 24
-; RV32IA-TSO-ZABHA-ZACAS-NEXT:    bne a0, a4, .LBB30_1
+; RV32IA-TSO-ZABHA-ZACAS-NEXT:    mv a3, a0
+; RV32IA-TSO-ZABHA-ZACAS-NEXT:    and a4, a0, a1
+; RV32IA-TSO-ZABHA-ZACAS-NEXT:    not a4, a4
+; RV32IA-TSO-ZABHA-ZACAS-NEXT:    amocas.b a0, a4, (a2)
+; RV32IA-TSO-ZABHA-ZACAS-NEXT:    slli a3, a3, 24
+; RV32IA-TSO-ZABHA-ZACAS-NEXT:    srai a3, a3, 24
+; RV32IA-TSO-ZABHA-ZACAS-NEXT:    bne a0, a3, .LBB30_1
 ; RV32IA-TSO-ZABHA-ZACAS-NEXT:  # %bb.2: # %atomicrmw.end
 ; RV32IA-TSO-ZABHA-ZACAS-NEXT:    ret
 ;
@@ -5973,12 +5975,13 @@ define i8 @atomicrmw_nand_i8_monotonic(ptr %a, i8 %b) nounwind {
 ; RV64IA-WMO-ZABHA-ZACAS-NEXT:    lbu a0, 0(a0)
 ; RV64IA-WMO-ZABHA-ZACAS-NEXT:  .LBB30_1: # %atomicrmw.start
 ; RV64IA-WMO-ZABHA-ZACAS-NEXT:    # =>This Inner Loop Header: Depth=1
-; RV64IA-WMO-ZABHA-ZACAS-NEXT:    and a3, a0, a1
-; RV64IA-WMO-ZABHA-ZACAS-NEXT:    not a3, a3
-; RV64IA-WMO-ZABHA-ZACAS-NEXT:    slli a4, a0, 56
-; RV64IA-WMO-ZABHA-ZACAS-NEXT:    amocas.b a0, a3, (a2)
-; RV64IA-WMO-ZABHA-ZACAS-NEXT:    srai a4, a4, 56
-; RV64IA-WMO-ZABHA-ZACAS-NEXT:    bne a0, a4, .LBB30_1
+; RV64IA-WMO-ZABHA-ZACAS-NEXT:    mv a3, a0
+; RV64IA-WMO-ZABHA-ZACAS-NEXT:    and a4, a0, a1
+; RV64IA-WMO-ZABHA-ZACAS-NEXT:    not a4, a4
+; RV64IA-WMO-ZABHA-ZACAS-NEXT:    amocas.b a0, a4, (a2)
+; RV64IA-WMO-ZABHA-ZACAS-NEXT:    slli a3, a3, 56
+; RV64IA-WMO-ZABHA-ZACAS-NEXT:    srai a3, a3, 56
+; RV64IA-WMO-ZABHA-ZACAS-NEXT:    bne a0, a3, .LBB30_1
 ; RV64IA-WMO-ZABHA-ZACAS-NEXT:  # %bb.2: # %atomicrmw.end
 ; RV64IA-WMO-ZABHA-ZACAS-NEXT:    ret
 ;
@@ -5988,12 +5991,13 @@ define i8 @atomicrmw_nand_i8_monotonic(ptr %a, i8 %b) nounwind {
 ; RV64IA-TSO-ZABHA-ZACAS-NEXT:    lbu a0, 0(a0)
 ; RV64IA-TSO-ZABHA-ZACAS-NEXT:  .LBB30_1: # %atomicrmw.start
 ; RV64IA-TSO-ZABHA-ZACAS-NEXT:    # =>This Inner Loop Header: Depth=1
-; RV64IA-TSO-ZABHA-ZACAS-NEXT:    and a3, a0, a1
-; RV64IA-TSO-ZABHA-ZACAS-NEXT:    not a3, a3
-; RV64IA-TSO-ZABHA-ZACAS-NEXT:    slli a4, a0, 56
-; RV64IA-TSO-ZABHA-ZACAS-NEXT:    amocas.b a0, a3, (a2)
-; RV64IA-TSO-ZABHA-ZACAS-NEXT:    srai a4, a4, 56
-; RV64IA-TSO-ZABHA-ZACAS-NEXT:    bne a0, a4, .LBB30_1
+; RV64IA-TSO-ZABHA-ZACAS-NEXT:    mv a3, a0
+; RV64IA-TSO-ZABHA-ZACAS-NEXT:    and a4, a0, a1
+; RV64IA-TSO-ZABHA-ZACAS-NEXT:    not a4, a4
+; RV64IA-TSO-ZABHA-ZACAS-NEXT:    amocas.b a0, a4, (a2)
+; RV64IA-TSO-ZABHA-ZACAS-NEXT:    slli a3, a3, 56
+; RV64IA-TSO-ZABHA-ZACAS-NEXT:    srai a3, a3, 56
+; RV64IA-TSO-ZABHA-ZACAS-NEXT:    bne a0, a3, .LBB30_1
 ; RV64IA-TSO-ZABHA-ZACAS-NEXT:  # %bb.2: # %atomicrmw.end
 ; RV64IA-TSO-ZABHA-ZACAS-NEXT:    ret
   %1 = atomicrmw nand ptr %a, i8 %b monotonic
@@ -6321,12 +6325,13 @@ define i8 @atomicrmw_nand_i8_acquire(ptr %a, i8 %b) nounwind {
 ; RV32IA-WMO-ZABHA-ZACAS-NEXT:    lbu a0, 0(a0)
 ; RV32IA-WMO-ZABHA-ZACAS-NEXT:  .LBB31_1: # %atomicrmw.start
 ; RV32IA-WMO-ZABHA-ZACAS-NEXT:    # =>This Inner Loop Header: Depth=1
-; RV32IA-WMO-ZABHA-ZACAS-NEXT:    and a3, a0, a1
-; RV32IA-WMO-ZABHA-ZACAS-NEXT:    not a3, a3
-; RV32IA-WMO-ZABHA-ZACAS-NEXT:    slli a4, a0, 24
-; RV32IA-WMO-ZABHA-ZACAS-NEXT:    amocas.b.aq a0, a3, (a2)
-; RV32IA-WMO-ZABHA-ZACAS-NEXT:    srai a4, a4, 24
-; RV32IA-WMO-ZABHA-ZACAS-NEXT:    bne a0, a4, .LBB31_1
+; RV32IA-WMO-ZABHA-ZACAS-NEXT:    mv a3, a0
+; RV32IA-WMO-ZABHA-ZACAS-NEXT:    and a4, a0, a1
+; RV32IA-WMO-ZABHA-ZACAS-NEXT:    not a4, a4
+; RV32IA-WMO-ZABHA-ZACAS-NEXT:    amocas.b.aq a0, a4, (a2)
+; RV32IA-WMO-ZABHA-ZACAS-NEXT:    slli a3, a3, 24
+; RV32IA-WMO-ZABHA-ZACAS-NEXT:    srai a3, a3, 24
+; RV32IA-WMO-ZABHA-ZACAS-NEXT:    bne a0, a3, .LBB31_1
 ; RV32IA-WMO-ZABHA-ZACAS-NEXT:  # %bb.2: # %atomicrmw.end
 ; RV32IA-WMO-ZABHA-ZACAS-NEXT:    ret
 ;
@@ -6336,12 +6341,13 @@ define i8 @atomicrmw_nand_i8_acquire(ptr %a, i8 %b) nounwind {
 ; RV32IA-TSO-ZABHA-ZACAS-NEXT:    lbu a0, 0(a0)
 ; RV32IA-TSO-ZABHA-ZACAS-NEXT:  .LBB31_1: # %atomicrmw.start
 ; RV32IA-TSO-ZABHA-ZACAS-NEXT:    # =>This Inner Loop Header: Depth=1
-; RV32IA-TSO-ZABHA-ZACAS-NEXT:    and a3, a0, a1
-; RV32IA-TSO-ZABHA-ZACAS-NEXT:    not a3, a3
-; RV32IA-TSO-ZABHA-ZACAS-NEXT:    slli a4, a0, 24
-; RV32IA-TSO-ZABHA-ZACAS-NEXT:    amocas.b a0, a3, (a2)
-; RV32IA-TSO-ZABHA-ZACAS-NEXT:    srai a4, a4, 24
-; RV32IA-TSO-ZABHA-ZACAS-NEXT:    bne a0, a4, .LBB31_1
+; RV32IA-TSO-ZABHA-ZACAS-NEXT:    mv a3, a0
+; RV32IA-TSO-ZABHA-ZACAS-NEXT:    and a4, a0, a1
+; RV32IA-TSO-ZABHA-ZACAS-NEXT:    not a4, a4
+; RV32IA-TSO-ZABHA-ZACAS-NEXT:    amocas.b a0, a4, (a2)
+; RV32IA-TSO-ZABHA-ZACAS-NEXT:    slli a3, a3, 24
+; RV32IA-TSO-ZABHA-ZACAS-NEXT:    srai a3, a3, 24
+; RV32IA-TSO-ZABHA-ZACAS-NEXT:    bne a0, a3, .LBB31_1
 ; RV32IA-TSO-ZABHA-ZACAS-NEXT:  # %bb.2: # %atomicrmw.end
 ; RV32IA-TSO-ZABHA-ZACAS-NEXT:    ret
 ;
@@ -6351,12 +6357,13 @@ define i8 @atomicrmw_nand_i8_acquire(ptr %a, i8 %b) nounwind {
 ; RV64IA-WMO-ZABHA-ZACAS-NEXT:    lbu a0, 0(a0)
 ; RV64IA-WMO-ZABHA-ZACAS-NEXT:  .LBB31_1: # %atomicrmw.start
 ; RV64IA-WMO-ZABHA-ZACAS-NEXT:    # =>This Inner Loop Header: Depth=1
-; RV64IA-WMO-ZABHA-ZACAS-NEXT:    and a3, a0, a1
-; RV64IA-WMO-ZABHA-ZACAS-NEXT:    not a3, a3
-; RV64IA-WMO-ZABHA-ZACAS-NEXT:    slli a4, a0, 56
-; RV64IA-WMO-ZABHA-ZACAS-NEXT:    amocas.b.aq a0, a3, (a2)
-; RV64IA-WMO-ZABHA-ZACAS-NEXT:    srai a4, a4, 56
-; RV64IA-WMO-ZABHA-ZACAS-NEXT:    bne a0, a4, .LBB31_1
+; RV64IA-WMO-ZABHA-ZACAS-NEXT:    mv a3, a0
+; RV64IA-WMO-ZABHA-ZACAS-NEXT:    and a4, a0, a1
+; RV64IA-WMO-ZABHA-ZACAS-NEXT:    not a4, a4
+; RV64IA-WMO-ZABHA-ZACAS-NEXT:    amocas.b.aq a0, a4, (a2)
+; RV64IA-WMO-ZABHA-ZACAS-NEXT:    slli a3, a3, 56
+; RV64IA-WMO-ZABHA-ZACAS-NEXT:    srai a3, a3, 56
+; RV64IA-WMO-ZABHA-ZACAS-NEXT:    bne a0, a3, .LBB31_1
 ; RV64IA-WMO-ZABHA-ZACAS-NEXT:  # %bb.2: # %atomicrmw.end
 ; RV64IA-WMO-ZABHA-ZACAS-NEXT:    ret
 ;
@@ -6366,12 +6373,13 @@ define i8 @atomicrmw_nand_i8_acquire(ptr %a, i8 %b) nounwind {
 ; RV64IA-TSO-ZABHA-ZACAS-NEXT:    lbu a0, 0(a0)
 ; RV64IA-TSO-ZABHA-ZACAS-NEXT:  .LBB31_1: # %atomicrmw.start
 ; RV64IA-TSO-ZABHA-ZACAS-NEXT:    # =>This Inner Loop Header: Depth=1
-; RV64IA-TSO-ZABHA-ZACAS-NEXT:    and a3, a0, a1
-; RV64IA-TSO-ZABHA-ZACAS-NEXT:    not a3, a3
-; RV64IA-TSO-ZABHA-ZACAS-NEXT:    slli a4, a0, 56
-; RV64IA-TSO-ZABHA-ZACAS-NEXT:    amocas.b a0, a3, (a2)
-; RV64IA-TSO-ZABHA-ZACAS-NEXT:    srai a4, a4, 56
-; RV64IA-TSO-ZABHA-ZACAS-NEXT:    bne a0, a4, .LBB31_1
+; RV64IA-TSO-ZABHA-ZACAS-NEXT:    mv a3, a0
+; RV64IA-TSO-ZABHA-ZACAS-NEXT:    and a4, a0, a1
+; RV64IA-TSO-ZABHA-ZACAS-NEXT:    not a4, a4
+; RV64IA-TSO-ZABHA-ZACAS-NEXT:    amocas.b a0, a4, (a2)
+; RV64IA-TSO-ZABHA-ZACAS-NEXT:    slli a3, a3, 56
+; RV64IA-TSO-ZABHA-ZACAS-NEXT:    srai a3, a3, 56
+; RV64IA-TSO-ZABHA-ZACAS-NEXT:    bne a0, a3, .LBB31_1
 ; RV64IA-TSO-ZABHA-ZACAS-NEXT:  # %bb.2: # %atomicrmw.end
 ; RV64IA-TSO-ZABHA-ZACAS-NEXT:    ret
   %1 = atomicrmw nand ptr %a, i8 %b acquire
@@ -6699,12 +6707,13 @@ define i8 @atomicrmw_nand_i8_release(ptr %a, i8 %b) nounwind {
 ; RV32IA-WMO-ZABHA-ZACAS-NEXT:    lbu a0, 0(a0)
 ; RV32IA-WMO-ZABHA-ZACAS-NEXT:  .LBB32_1: # %atomicrmw.start
 ; RV32IA-WMO-ZABHA-ZACAS-NEXT:    # =>This Inner Loop Header: Depth=1
-; RV32IA-WMO-ZABHA-ZACAS-NEXT:    and a3, a0, a1
-; RV32IA-WMO-ZABHA-ZACAS-NEXT:    not a3, a3
-; RV32IA-WMO-ZABHA-ZACAS-NEXT:    slli a4, a0, 24
-; RV32IA-WMO-ZABHA-ZACAS-NEXT:    amocas.b.rl a0, a3, (a2)
-; RV32IA-WMO-ZABHA-ZACAS-NEXT:    srai a4, a4, 24
-; RV32IA-WMO-ZABHA-ZACAS-NEXT:    bne a0, a4, .LBB32_1
+; RV32IA-WMO-ZABHA-ZACAS-NEXT:    mv a3, a0
+; RV32IA-WMO-ZABHA-ZACAS-NEXT:    and a4, a0, a1
+; RV32IA-WMO-ZABHA-ZACAS-NEXT:    not a4, a4
+; RV32IA-WMO-ZABHA-ZACAS-NEXT:    amocas.b.rl a0, a4, (a2)
+; RV32IA-WMO-ZABHA-ZACAS-NEXT:    slli a3, a3, 24
+; RV32IA-WMO-ZABHA-ZACAS-NEXT:    srai a3, a3, 24
+; RV32IA-WMO-ZABHA-ZACAS-NEXT:    bne a0, a3, .LBB32_1
 ; RV32IA-WMO-ZABHA-ZACAS-NEXT:  # %bb.2: # %atomicrmw.end
 ; RV32IA-WMO-ZABHA-ZACAS-NEXT:    ret
 ;
@@ -6714,12 +6723,13 @@ define i8 @atomicrmw_nand_i8_release(ptr %a, i8 %b) nounwind {
 ; RV32IA-TSO-ZABHA-ZACAS-NEXT:    lbu a0, 0(a0)
 ; RV32IA-TSO-ZABHA-ZACAS-NEXT:  .LBB32_1: # %atomicrmw.start
 ; RV32IA-TSO-ZABHA-ZACAS-NEXT:    # =>This Inner Loop Header: Depth=1
-; RV32IA-TSO-ZABHA-ZACAS-NEXT:    and a3, a0, a1
-; RV32IA-TSO-ZABHA-ZACAS-NEXT:    not a3, a3
-; RV32IA-TSO-ZABHA-ZACAS-NEXT:    slli a4, a0, 24
-; RV32IA-TSO-ZABHA-ZACAS-NEXT:    amocas.b a0, a3, (a2)
-; RV32IA-TSO-ZABHA-ZACAS-NEXT:    srai a4, a4, 24
-; RV32IA-TSO-ZABHA-ZACAS-NEXT:    bne a0, a4, .LBB32_1
+; RV32IA-TSO-ZABHA-ZACAS-NEXT:    mv a3, a0
+; RV32IA-TSO-ZABHA-ZACAS-NEXT:    and a4, a0, a1
+; RV32IA-TSO-ZABHA-ZACAS-NEXT:    not a4, a4
+; RV32IA-TSO-ZABHA-ZACAS-NEXT:    amocas.b a0, a4, (a2)
+; RV32IA-TSO-ZABHA-ZACAS-NEXT:    slli a3, a3, 24
+; RV32IA-TSO-ZABHA-ZACAS-NEXT:    srai a3, a3, 24
+; RV32IA-TSO-ZABHA-ZACAS-NEXT:    bne a0, a3, .LBB32_1
 ; RV32IA-TSO-ZABHA-ZACAS-NEXT:  # %bb.2: # %atomicrmw.end
 ; RV32IA-TSO-ZABHA-ZACAS-NEXT:    ret
 ;
@@ -6729,12 +6739,13 @@ define i8 @atomicrmw_nand_i8_release(ptr %a, i8 %b) nounwind {
 ; RV64IA-WMO-ZABHA-ZACAS-NEXT:    lbu a0, 0(a0)
 ; RV64IA-WMO-ZABHA-ZACAS-NEXT:  .LBB32_1: # %atomicrmw.start
 ; RV64IA-WMO-ZABHA-ZACAS-NEXT:    # =>This Inner Loop Header: Depth=1
-; RV64IA-WMO-ZABHA-ZACAS-NEXT:    and a3, a0, a1
-; RV64IA-WMO-ZABHA-ZACAS-NEXT:    not a3, a3
-; RV64IA-WMO-ZABHA-ZACAS-NEXT:    slli a4, a0, 56
-; RV64IA-WMO-ZABHA-ZACAS-NEXT:    amocas.b.rl a0, a3, (a2)
-; RV64IA-WMO-ZABHA-ZACAS-NEXT:    srai a4, a4, 56
-; RV64IA-WMO-ZABHA-ZACAS-NEXT:    bne a0, a4, .LBB32_1
+; RV64IA-WMO-ZABHA-ZACAS-NEXT:    mv a3, a0
+; RV64IA-WMO-ZABHA-ZACAS-NEXT:    and a4, a0, a1
+; RV64IA-WMO-ZABHA-ZACAS-NEXT:    not a4, a4
+; RV64IA-WMO-ZABHA-ZACAS-NEXT:    amocas.b.rl a0, a4, (a2)
+; RV64IA-WMO-ZABHA-ZACAS-NEXT:    slli a3, a3, 56
+; RV64IA-WMO-ZABHA-ZACAS-NEXT:    srai a3, a3, 56
+; RV64IA-WMO-ZABHA-ZACAS-NEXT:    bne a0, a3, .LBB32_1
 ; RV64IA-WMO-ZABHA-ZACAS-NEXT:  # %bb.2: # %atomicrmw.end
 ; RV64IA-WMO-ZABHA-ZACAS-NEXT:    ret
 ;
@@ -6744,12 +6755,13 @@ define i8 @atomicrmw_nand_i8_release(ptr %a, i8 %b) nounwind {
 ; RV64IA-TSO-ZABHA-ZACAS-NEXT:    lbu a0, 0(a0)
 ; RV64IA-TSO-ZABHA-ZACAS-NEXT:  .LBB32_1: # %atomicrmw.start
 ; RV64IA-TSO-ZABHA-ZACAS-NEXT:    # =>This Inner Loop Header: Depth=1
-; RV64IA-TSO-ZABHA-ZACAS-NEXT:    and a3, a0, a1
-; RV64IA-TSO-ZABHA-ZACAS-NEXT:    not a3, a3
-; RV64IA-TSO-ZABHA-ZACAS-NEXT:    slli a4, a0, 56
-; RV64IA-TSO-ZABHA-ZACAS-NEXT:    amocas.b a0, a3, (a2)
-; RV64IA-TSO-ZABHA-ZACAS-NEXT:    srai a4, a4, 56
-; RV64IA-TSO-ZABHA-ZACAS-NEXT:    bne a0, a4, .LBB32_1
+; RV64IA-TSO-ZABHA-ZACAS-NEXT:    mv a3, a0
+; RV64IA-TSO-ZABHA-ZACAS-NEXT:    and a4, a0, a1
+; RV64IA-TSO-ZABHA-ZACAS-NEXT:    not a4, a4
+; RV64IA-TSO-ZABHA-ZACAS-NEXT:    amocas.b a0, a4, (a2)
+; RV64IA-TSO-ZABHA-ZACAS-NEXT:    slli a3, a3, 56
+; RV64IA-TSO-ZABHA-ZACAS-NEXT:    srai a3, a3, 56
+; RV64IA-TSO-ZABHA-ZACAS-NEXT:    bne a0, a3, .LBB32_1
 ; RV64IA-TSO-ZABHA-ZACAS-NEXT:  # %bb.2: # %atomicrmw.end
 ; RV64IA-TSO-ZABHA-ZACAS-NEXT:    ret
   %1 = atomicrmw nand ptr %a, i8 %b release
@@ -7077,12 +7089,13 @@ define i8 @atomicrmw_nand_i8_acq_rel(ptr %a, i8 %b) nounwind {
 ; RV32IA-WMO-ZABHA-ZACAS-NEXT:    lbu a0, 0(a0)
 ; RV32IA-WMO-ZABHA-ZACAS-NEXT:  .LBB33_1: # %atomicrmw.start
 ; RV32IA-WMO-ZABHA-ZACAS-NEXT:    # =>This Inner Loop Header: Depth=1
-; RV32IA-WMO-ZABHA-ZACAS-NEXT:    and a3, a0, a1
-; RV32IA-WMO-ZABHA-ZACAS-NEXT:    not a3, a3
-; RV32IA-WMO-ZABHA-ZACAS-NEXT:    slli a4, a0, 24
-; RV32IA-WMO-ZABHA-ZACAS-NEXT:    amocas.b.aqrl a0, a3, (a2)
-; RV32IA-WMO-ZABHA-ZACAS-NEXT:    srai a4, a4, 24
-; RV32IA-WMO-ZABHA-ZACAS-NEXT:    bne a0, a4, .LBB33_1
+; RV32IA-WMO-ZABHA-ZACAS-NEXT:    mv a3, a0
+; RV32IA-WMO-ZABHA-ZACAS-NEXT:    and a4, a0, a1
+; RV32IA-WMO-ZABHA-ZACAS-NEXT:    not a4, a4
+; RV32IA-WMO-ZABHA-ZACAS-NEXT:    amocas.b.aqrl a0, a4, (a2)
+; RV32IA-WMO-ZABHA-ZACAS-NEXT:    slli a3, a3, 24
+; RV32IA-WMO-ZABHA-ZACAS-NEXT:    srai a3, a3, 24
+; RV32IA-WMO-ZABHA-ZACAS-NEXT:    bne a0, a3, .LBB33_1
 ; RV32IA-WMO-ZABHA-ZACAS-NEXT:  # %bb.2: # %atomicrmw.end
 ; RV32IA-WMO-ZABHA-ZACAS-NEXT:    ret
 ;
@@ -7092,12 +7105,13 @@ define i8 @atomicrmw_nand_i8_acq_rel(ptr %a, i8 %b) nounwind {
 ; RV32IA-TSO-ZABHA-ZACAS-NEXT:    lbu a0, 0(a0)
 ; RV32IA-TSO-ZABHA-ZACAS-NEXT:  .LBB33_1: # %atomicrmw.start
 ; RV32IA-TSO-ZABHA-ZACAS-NEXT:    # =>This Inner Loop Header: Depth=1
-; RV32IA-TSO-ZABHA-ZACAS-NEXT:    and a3, a0, a1
-; RV32IA-TSO-ZABHA-ZACAS-NEXT:    not a3, a3
-; RV32IA-TSO-ZABHA-ZACAS-NEXT:    slli a4, a0, 24
-; RV32IA-TSO-ZABHA-ZACAS-NEXT:    amocas.b a0, a3, (a2)
-; RV32IA-TSO-ZABHA-ZACAS-NEXT:    srai a4, a4, 24
-; RV32IA-TSO-ZABHA-ZACAS-NEXT:    bne a0, a4, .LBB33_1
+; RV32IA-TSO-ZABHA-ZACAS-NEXT:    mv a3, a0
+; RV32IA-TSO-ZABHA-ZACAS-NEXT:    and a4, a0, a1
+; RV32IA-TSO-ZABHA-ZACAS-NEXT:    not a4, a4
+; RV32IA-TSO-ZABHA-ZACAS-NEXT:    amocas.b a0, a4, (a2)
+; RV32IA-TSO-ZABHA-ZACAS-NEXT:    slli a3, a3, 24
+; RV32IA-TSO-ZABHA-ZACAS-NEXT:    srai a3, a3, 24
+; RV32IA-TSO-ZABHA-ZACAS-NEXT:    bne a0, a3, .LBB33_1
 ; RV32IA-TSO-ZABHA-ZACAS-NEXT:  # %bb.2: # %atomicrmw.end
 ; RV32IA-TSO-ZABHA-ZACAS-NEXT:    ret
 ;
@@ -7107,12 +7121,13 @@ define i8 @atomicrmw_nand_i8_acq_rel(ptr %a, i8 %b) nounwind {
 ; RV64IA-WMO-ZABHA-ZACAS-NEXT:    lbu a0, 0(a0)
 ; RV64IA-WMO-ZABHA-ZACAS-NEXT:  .LBB33_1: # %atomicrmw.start
 ; RV64IA-WMO-ZABHA-ZACAS-NEXT:    # =>This Inner Loop Header: Depth=1
-; RV64IA-WMO-ZABHA-ZACAS-NEXT:    and a3, a0, a1
-; RV64IA-WMO-ZABHA-ZACAS-NEXT:    not a3, a3
-; RV64IA-WMO-ZABHA-ZACAS-NEXT:    slli a4, a0, 56
-; RV64IA-WMO-ZABHA-ZACAS-NEXT:    amocas.b.aqrl a0, a3, (a2)
-; RV64IA-WMO-ZABHA-ZACAS-NEXT:    srai a4, a4, 56
-; RV64IA-WMO-ZABHA-ZACAS-NEXT:    bne a0, a4, .LBB33_1
+; RV64IA-WMO-ZABHA-ZACAS-NEXT:    mv a3, a0
+; RV64IA-WMO-ZABHA-ZACAS-NEXT:    and a4, a0, a1
+; RV64IA-WMO-ZABHA-ZACAS-NEXT:    not a4, a4
+; RV64IA-WMO-ZABHA-ZACAS-NEXT:    amocas.b.aqrl a0, a4, (a2)
+; RV64IA-WMO-ZABHA-ZACAS-NEXT:    slli a3, a3, 56
+; RV64IA-WMO-ZABHA-ZACAS-NEXT:    srai a3, a3, 56
+; RV64IA-WMO-ZABHA-ZACAS-NEXT:    bne a0, a3, .LBB33_1
 ; RV64IA-WMO-ZABHA-ZACAS-NEXT:  # %bb.2: # %atomicrmw.end
 ; RV64IA-WMO-ZABHA-ZACAS-NEXT:    ret
 ;
@@ -7122,12 +7137,13 @@ define i8 @atomicrmw_nand_i8_acq_rel(ptr %a, i8 %b) nounwind {
 ; RV64IA-TSO-ZABHA-ZACAS-NEXT:    lbu a0, 0(a0)
 ; RV64IA-TSO-ZABHA-ZACAS-NEXT:  .LBB33_1: # %atomicrmw.start
 ; RV64IA-TSO-ZABHA-ZACAS-NEXT:    # =>This Inner Loop Header: Depth=1
-; RV64IA-TSO-ZABHA-ZACAS-NEXT:    and a3, a0, a1
-; RV64IA-TSO-ZABHA-ZACAS-NEXT:    not a3, a3
-; RV64IA-TSO-ZABHA-ZACAS-NEXT:    slli a4, a0, 56
-; RV64IA-TSO-ZABHA-ZACAS-NEXT:    amocas.b a0, a3, (a2)
-; RV64IA-TSO-ZABHA-ZACAS-NEXT:    srai a4, a4, 56
-; RV64IA-TSO-ZABHA-ZACAS-NEXT:    bne a0, a4, .LBB33_1
+; RV64IA-TSO-ZABHA-ZACAS-NEXT:    mv a3, a0
+; RV64IA-TSO-ZABHA-ZACAS-NEXT:    and a4, a0, a1
+; RV64IA-TSO-ZABHA-ZACAS-NEXT:    not a4, a4
+; RV64IA-TSO-ZABHA-ZACAS-NEXT:    amocas.b a0, a4, (a2)
+; RV64IA-TSO-ZABHA-ZACAS-NEXT:    slli a3, a3, 56
+; RV64IA-TSO-ZABHA-ZACAS-NEXT:    srai a3, a3, 56
+; RV64IA-TSO-ZABHA-ZACAS-NEXT:    bne a0, a3, .LBB33_1
 ; RV64IA-TSO-ZABHA-ZACAS-NEXT:  # %bb.2: # %atomicrmw.end
 ; RV64IA-TSO-ZABHA-ZACAS-NEXT:    ret
   %1 = atomicrmw nand ptr %a, i8 %b acq_rel
@@ -7371,13 +7387,14 @@ define i8 @atomicrmw_nand_i8_seq_cst(ptr %a, i8 %b) nounwind {
 ; RV32IA-WMO-ZABHA-ZACAS-NEXT:    lbu a0, 0(a0)
 ; RV32IA-WMO-ZABHA-ZACAS-NEXT:  .LBB34_1: # %atomicrmw.start
 ; RV32IA-WMO-ZABHA-ZACAS-NEXT:    # =>This Inner Loop Header: Depth=1
-; RV32IA-WMO-ZABHA-ZACAS-NEXT:    and a3, a0, a1
+; RV32IA-WMO-ZABHA-ZACAS-NEXT:    mv a3, a0
+; RV32IA-WMO-ZABHA-ZACAS-NEXT:    and a4, a0, a1
+; RV32IA-WMO-ZABHA-ZACAS-NEXT:    not a4, a4
 ; RV32IA-WMO-ZABHA-ZACAS-NEXT:    fence rw, rw
-; RV32IA-WMO-ZABHA-ZACAS-NEXT:    not a3, a3
-; RV32IA-WMO-ZABHA-ZACAS-NEXT:    slli a4, a0, 24
-; RV32IA-WMO-ZABHA-ZACAS-NEXT:    amocas.b.aqrl a0, a3, (a2)
-; RV32IA-WMO-ZABHA-ZACAS-NEXT:    srai a4, a4, 24
-; RV32IA-WMO-ZABHA-ZACAS-NEXT:    bne a0, a4, .LBB34_1
+; RV32IA-WMO-ZABHA-ZACAS-NEXT:    amocas.b.aqrl a0, a4, (a2)
+; RV32IA-WMO-ZABHA-ZACAS-NEXT:    slli a3, a3, 24
+; RV32IA-WMO-ZABHA-ZACAS-NEXT:    srai a3, a3, 24
+; RV32IA-WMO-ZABHA-ZACAS-NEXT:    bne a0, a3, .LBB34_1
 ; RV32IA-WMO-ZABHA-ZACAS-NEXT:  # %bb.2: # %atomicrmw.end
 ; RV32IA-WMO-ZABHA-ZACAS-NEXT:    ret
 ;
@@ -7387,13 +7404,14 @@ define i8 @atomicrmw_nand_i8_seq_cst(ptr %a, i8 %b) nounwind {
 ; RV32IA-TSO-ZABHA-ZACAS-NEXT:    lbu a0, 0(a0)
 ; RV32IA-TSO-ZABHA-ZACAS-NEXT:  .LBB34_1: # %atomicrmw.start
 ; RV32IA-TSO-ZABHA-ZACAS-NEXT:    # =>This Inner Loop Header: Depth=1
-; RV32IA-TSO-ZABHA-ZACAS-NEXT:    and a3, a0, a1
+; RV32IA-TSO-ZABHA-ZACAS-NEXT:    mv a3, a0
+; RV32IA-TSO-ZABHA-ZACAS-NEXT:    and a4, a0, a1
+; RV32IA-TSO-ZABHA-ZACAS-NEXT:    not a4, a4
 ; RV32IA-TSO-ZABHA-ZACAS-NEXT:    fence rw, rw
-; RV32IA-TSO-ZABHA-ZACAS-NEXT:    not a3, a3
-; RV32IA-TSO-ZABHA-ZACAS-NEXT:    slli a4, a0, 24
-; RV32IA-TSO-ZABHA-ZACAS-NEXT:    amocas.b a0, a3, (a2)
-; RV32IA-TSO-ZABHA-ZACAS-NEXT:    srai a4, a4, 24
-; RV32IA-TSO-ZABHA-ZACAS-NEXT:    bne a0, a4, .LBB34_1
+; RV32IA-TSO-ZABHA-ZACAS-NEXT:    amocas.b a0, a4, (a2)
+; RV32IA-TSO-ZABHA-ZACAS-NEXT:    slli a3, a3, 24
+; RV32IA-TSO-ZABHA-ZACAS-NEXT:    srai a3, a3, 24
+; RV32IA-TSO-ZABHA-ZACAS-NEXT:    bne a0, a3, .LBB34_1
 ; RV32IA-TSO-ZABHA-ZACAS-NEXT:  # %bb.2: # %atomicrmw.end
 ; RV32IA-TSO-ZABHA-ZACAS-NEXT:    ret
 ;
@@ -7403,13 +7421,14 @@ define i8 @atomicrmw_nand_i8_seq_cst(ptr %a, i8 %b) nounwind {
 ; RV64IA-WMO-ZABHA-ZACAS-NEXT:    lbu a0, 0(a0)
 ; RV64IA-WMO-ZABHA-ZACAS-NEXT:  .LBB34_1: # %atomicrmw.start
 ; RV64IA-WMO-ZABHA-ZACAS-NEXT:    # =>This Inner Loop Header: Depth=1
-; RV64IA-WMO-ZABHA-ZACAS-NEXT:    and a3, a0, a1
+; RV64IA-WMO-ZABHA-ZACAS-NEXT:    mv a3, a0
+; RV64IA-WMO-ZABHA-ZACAS-NEXT:    and a4, a0, a1
+; RV64IA-WMO-ZABHA-ZACAS-NEXT:    not a4, a4
 ; RV64IA-WMO-ZABHA-ZACAS-NEXT:    fence rw, rw
-; RV64IA-WMO-ZABHA-ZACAS-NEXT:    not a3, a3
-; RV64IA-WMO-ZABHA-ZACAS-NEXT:    slli a4, a0, 56
-; RV64IA-WMO-ZABHA-ZACAS-NEXT:    amocas.b.aqrl a0, a3, (a2)
-; RV64IA-WMO-ZABHA-ZACAS-NEXT:    srai a4, a4, 56
-; RV64IA-WMO-ZABHA-ZACAS-NEXT:    bne a0, a4, .LBB34_1
+; RV64IA-WMO-ZABHA-ZACAS-NEXT:    amocas.b.aqrl a0, a4, (a2)
+; RV64IA-WMO-ZABHA-ZACAS-NEXT:    slli a3, a3, 56
+; RV64IA-WMO-ZABHA-ZACAS-NEXT:    srai a3, a3, 56
+; RV64IA-WMO-ZABHA-ZACAS-NEXT:    bne a0, a3, .LBB34_1
 ; RV64IA-WMO-ZABHA-ZACAS-NEXT:  # %bb.2: # %atomicrmw.end
 ; RV64IA-WMO-ZABHA-ZACAS-NEXT:    ret
 ;
@@ -7419,13 +7438,14 @@ define i8 @atomicrmw_nand_i8_seq_cst(ptr %a, i8 %b) nounwind {
 ; RV64IA-TSO-ZABHA-ZACAS-NEXT:    lbu a0, 0(a0)
 ; RV64IA-TSO-ZABHA-ZACAS-NEXT:  .LBB34_1: # %atomicrmw.start
 ; RV64IA-TSO-ZABHA-ZACAS-NEXT:    # =>This Inner Loop Header: Depth=1
-; RV64IA-TSO-ZABHA-ZACAS-NEXT:    and a3, a0, a1
+; RV64IA-TSO-ZABHA-ZACAS-NEXT:    mv a3, a0
+; RV64IA-TSO-ZABHA-ZACAS-NEXT:    and a4, a0, a1
+; RV64IA-TSO-ZABHA-ZACAS-NEXT:    not a4, a4
 ; RV64IA-TSO-ZABHA-ZACAS-NEXT:    fence rw, rw
-; RV64IA-TSO-ZABHA-ZACAS-NEXT:    not a3, a3
-; RV64IA-TSO-ZABHA-ZACAS-NEXT:    slli a4, a0, 56
-; RV64IA-TSO-ZABHA-ZACAS-NEXT:    amocas.b a0, a3, (a2)
-; RV64IA-TSO-ZABHA-ZACAS-NEXT:    srai a4, a4, 56
-; RV64IA-TSO-ZABHA-ZACAS-NEXT:    bne a0, a4, .LBB34_1
+; RV64IA-TSO-ZABHA-ZACAS-NEXT:    amocas.b a0, a4, (a2)
+; RV64IA-TSO-ZABHA-ZACAS-NEXT:    slli a3, a3, 56
+; RV64IA-TSO-ZABHA-ZACAS-NEXT:    srai a3, a3, 56
+; RV64IA-TSO-ZABHA-ZACAS-NEXT:    bne a0, a3, .LBB34_1
 ; RV64IA-TSO-ZABHA-ZACAS-NEXT:  # %bb.2: # %atomicrmw.end
 ; RV64IA-TSO-ZABHA-ZACAS-NEXT:    ret
   %1 = atomicrmw nand ptr %a, i8 %b seq_cst
@@ -21648,12 +21668,13 @@ define i16 @atomicrmw_nand_i16_monotonic(ptr %a, i16 %b) nounwind {
 ; RV32IA-WMO-ZABHA-ZACAS-NEXT:    lhu a0, 0(a0)
 ; RV32IA-WMO-ZABHA-ZACAS-NEXT:  .LBB95_1: # %atomicrmw.start
 ; RV32IA-WMO-ZABHA-ZACAS-NEXT:    # =>This Inner Loop Header: Depth=1
-; RV32IA-WMO-ZABHA-ZACAS-NEXT:    and a3, a0, a1
-; RV32IA-WMO-ZABHA-ZACAS-NEXT:    not a3, a3
-; RV32IA-WMO-ZABHA-ZACAS-NEXT:    slli a4, a0, 16
-; RV32IA-WMO-ZABHA-ZACAS-NEXT:    amocas.h a0, a3, (a2)
-; RV32IA-WMO-ZABHA-ZACAS-NEXT:    srai a4, a4, 16
-; RV32IA-WMO-ZABHA-ZACAS-NEXT:    bne a0, a4, .LBB95_1
+; RV32IA-WMO-ZABHA-ZACAS-NEXT:    mv a3, a0
+; RV32IA-WMO-ZABHA-ZACAS-NEXT:    and a4, a0, a1
+; RV32IA-WMO-ZABHA-ZACAS-NEXT:    not a4, a4
+; RV32IA-WMO-ZABHA-ZACAS-NEXT:    amocas.h a0, a4, (a2)
+; RV32IA-WMO-ZABHA-ZACAS-NEXT:    slli a3, a3, 16
+; RV32IA-WMO-ZABHA-ZACAS-NEXT:    srai a3, a3, 16
+; RV32IA-WMO-ZABHA-ZACAS-NEXT:    bne a0, a3, .LBB95_1
 ; RV32IA-WMO-ZABHA-ZACAS-NEXT:  # %bb.2: # %atomicrmw.end
 ; RV32IA-WMO-ZABHA-ZACAS-NEXT:    ret
 ;
@@ -21663,12 +21684,13 @@ define i16 @atomicrmw_nand_i16_monotonic(ptr %a, i16 %b) nounwind {
 ; RV32IA-TSO-ZABHA-ZACAS-NEXT:    lhu a0, 0(a0)
 ; RV32IA-TSO-ZABHA-ZACAS-NEXT:  .LBB95_1: # %atomicrmw.start
 ; RV32IA-TSO-ZABHA-ZACAS-NEXT:    # =>This Inner Loop Header: Depth=1
-; RV32IA-TSO-ZABHA-ZACAS-NEXT:    and a3, a0, a1
-; RV32IA-TSO-ZABHA-ZACAS-NEXT:    not a3, a3
-; RV32IA-TSO-ZABHA-ZACAS-NEXT:    slli a4, a0, 16
-; RV32IA-TSO-ZABHA-ZACAS-NEXT:    amocas.h a0, a3, (a2)
-; RV32IA-TSO-ZABHA-ZACAS-NEXT:    srai a4, a4, 16
-; RV32IA-TSO-ZABHA-ZACAS-NEXT:    bne a0, a4, .LBB95_1
+; RV32IA-TSO-ZABHA-ZACAS-NEXT:    mv a3, a0
+; RV32IA-TSO-ZABHA-ZACAS-NEXT:    and a4, a0, a1
+; RV32IA-TSO-ZABHA-ZACAS-NEXT:    not a4, a4
+; RV32IA-TSO-ZABHA-ZACAS-NEXT:    amocas.h a0, a4, (a2)
+; RV32IA-TSO-ZABHA-ZACAS-NEXT:    slli a3, a3, 16
+; RV32IA-TSO-ZABHA-ZACAS-NEXT:    srai a3, a3, 16
+; RV32IA-TSO-ZABHA-ZACAS-NEXT:    bne a0, a3, .LBB95_1
 ; RV32IA-TSO-ZABHA-ZACAS-NEXT:  # %bb.2: # %atomicrmw.end
 ; RV32IA-TSO-ZABHA-ZACAS-NEXT:    ret
 ;
@@ -21678,12 +21700,13 @@ define i16 @atomicrmw_nand_i16_monotonic(ptr %a, i16 %b) nounwind {
 ; RV64IA-WMO-ZABHA-ZACAS-NEXT:    lhu a0, 0(a0)
 ; RV64IA-WMO-ZABHA-ZACAS-NEXT:  .LBB95_1: # %atomicrmw.start
 ; RV64IA-WMO-ZABHA-ZACAS-NEXT:    # =>This Inner Loop Header: Depth=1
-; RV64IA-WMO-ZABHA-ZACAS-NEXT:    and a3, a0, a1
-; RV64IA-WMO-ZABHA-ZACAS-NEXT:    not a3, a3
-; RV64IA-WMO-ZABHA-ZACAS-NEXT:    slli a4, a0, 48
-; RV64IA-WMO-ZABHA-ZACAS-NEXT:    amocas.h a0, a3, (a2)
-; RV64IA-WMO-ZABHA-ZACAS-NEXT:    srai a4, a4, 48
-; RV64IA-WMO-ZABHA-ZACAS-NEXT:    bne a0, a4, .LBB95_1
+; RV64IA-WMO-ZABHA-ZACAS-NEXT:    mv a3, a0
+; RV64IA-WMO-ZABHA-ZACAS-NEXT:    and a4, a0, a1
+; RV64IA-WMO-ZABHA-ZACAS-NEXT:    not a4, a4
+; RV64IA-WMO-ZABHA-ZACAS-NEXT:    amocas.h a0, a4, (a2)
+; RV64IA-WMO-ZABHA-ZACAS-NEXT:    slli a3, a3, 48
+; RV64IA-WMO-ZABHA-ZACAS-NEXT:    srai a3, a3, 48
+; RV64IA-WMO-ZABHA-ZACAS-NEXT:    bne a0, a3, .LBB95_1
 ; RV64IA-WMO-ZABHA-ZACAS-NEXT:  # %bb.2: # %atomicrmw.end
 ; RV64IA-WMO-ZABHA-ZACAS-NEXT:    ret
 ;
@@ -21693,12 +21716,13 @@ define i16 @atomicrmw_nand_i16_monotonic(ptr %a, i16 %b) nounwind {
 ; RV64IA-TSO-ZABHA-ZACAS-NEXT:    lhu a0, 0(a0)
 ; RV64IA-TSO-ZABHA-ZACAS-NEXT:  .LBB95_1: # %atomicrmw.start
 ; RV64IA-TSO-ZABHA-ZACAS-NEXT:    # =>This Inner Loop Header: Depth=1
-; RV64IA-TSO-ZABHA-ZACAS-NEXT:    and a3, a0, a1
-; RV64IA-TSO-ZABHA-ZACAS-NEXT:    not a3, a3
-; RV64IA-TSO-ZABHA-ZACAS-NEXT:    slli a4, a0, 48
-; RV64IA-TSO-ZABHA-ZACAS-NEXT:    amocas.h a0, a3, (a2)
-; RV64IA-TSO-ZABHA-ZACAS-NEXT:    srai a4, a4, 48
-; RV64IA-TSO-ZABHA-ZACAS-NEXT:    bne a0, a4, .LBB95_1
+; RV64IA-TSO-ZABHA-ZACAS-NEXT:    mv a3, a0
+; RV64IA-TSO-ZABHA-ZACAS-NEXT:    and a4, a0, a1
+; RV64IA-TSO-ZABHA-ZACAS-NEXT:    not a4, a4
+; RV64IA-TSO-ZABHA-ZACAS-NEXT:    amocas.h a0, a4, (a2)
+; RV64IA-TSO-ZABHA-ZACAS-NEXT:    slli a3, a3, 48
+; RV64IA-TSO-ZABHA-ZACAS-NEXT:    srai a3, a3, 48
+; RV64IA-TSO-ZABHA-ZACAS-NEXT:    bne a0, a3, .LBB95_1
 ; RV64IA-TSO-ZABHA-ZACAS-NEXT:  # %bb.2: # %atomicrmw.end
 ; RV64IA-TSO-ZABHA-ZACAS-NEXT:    ret
   %1 = atomicrmw nand ptr %a, i16 %b monotonic
@@ -22040,12 +22064,13 @@ define i16 @atomicrmw_nand_i16_acquire(ptr %a, i16 %b) nounwind {
 ; RV32IA-WMO-ZABHA-ZACAS-NEXT:    lhu a0, 0(a0)
 ; RV32IA-WMO-ZABHA-ZACAS-NEXT:  .LBB96_1: # %atomicrmw.start
 ; RV32IA-WMO-ZABHA-ZACAS-NEXT:    # =>This Inner Loop Header: Depth=1
-; RV32IA-WMO-ZABHA-ZACAS-NEXT:    and a3, a0, a1
-; RV32IA-WMO-ZABHA-ZACAS-NEXT:    not a3, a3
-; RV32IA-WMO-ZABHA-ZACAS-NEXT:    slli a4, a0, 16
-; RV32IA-WMO-ZABHA-ZACAS-NEXT:    amocas.h.aq a0, a3, (a2)
-; RV32IA-WMO-ZABHA-ZACAS-NEXT:    srai a4, a4, 16
-; RV32IA-WMO-ZABHA-ZACAS-NEXT:    bne a0, a4, .LBB96_1
+; RV32IA-WMO-ZABHA-ZACAS-NEXT:    mv a3, a0
+; RV32IA-WMO-ZABHA-ZACAS-NEXT:    and a4, a0, a1
+; RV32IA-WMO-ZABHA-ZACAS-NEXT:    not a4, a4
+; RV32IA-WMO-ZABHA-ZACAS-NEXT:    amocas.h.aq a0, a4, (a2)
+; RV32IA-WMO-ZABHA-ZACAS-NEXT:    slli a3, a3, 16
+; RV32IA-WMO-ZABHA-ZACAS-NEXT:    srai a3, a3, 16
+; RV32IA-WMO-ZABHA-ZACAS-NEXT:    bne a0, a3, .LBB96_1
 ; RV32IA-WMO-ZABHA-ZACAS-NEXT:  # %bb.2: # %atomicrmw.end
 ; RV32IA-WMO-ZABHA-ZACAS-NEXT:    ret
 ;
@@ -22055,12 +22080,13 @@ define i16 @atomicrmw_nand_i16_acquire(ptr %a, i16 %b) nounwind {
 ; RV32IA-TSO-ZABHA-ZACAS-NEXT:    lhu a0, 0(a0)
 ; RV32IA-TSO-ZABHA-ZACAS-NEXT:  .LBB96_1: # %atomicrmw.start
 ; RV32IA-TSO-ZABHA-ZACAS-NEXT:    # =>This Inner Loop Header: Depth=1
-; RV32IA-TSO-ZABHA-ZACAS-NEXT:    and a3, a0, a1
-; RV32IA-TSO-ZABHA-ZACAS-NEXT:    not a3, a3
-; RV32IA-TSO-ZABHA-ZACAS-NEXT:    slli a4, a0, 16
-; RV32IA-TSO-ZABHA-ZACAS-NEXT:    amocas.h a0, a3, (a2)
-; RV32IA-TSO-ZABHA-ZACAS-NEXT:    srai a4, a4, 16
-; RV32IA-TSO-ZABHA-ZACAS-NEXT:    bne a0, a4, .LBB96_1
+; RV32IA-TSO-ZABHA-ZACAS-NEXT:    mv a3, a0
+; RV32IA-TSO-ZABHA-ZACAS-NEXT:    and a4, a0, a1
+; RV32IA-TSO-ZABHA-ZACAS-NEXT:    not a4, a4
+; RV32IA-TSO-ZABHA-ZACAS-NEXT:    amocas.h a0, a4, (a2)
+; RV32IA-TSO-ZABHA-ZACAS-NEXT:    slli a3, a3, 16
+; RV32IA-TSO-ZABHA-ZACAS-NEXT:    srai a3, a3, 16
+; RV32IA-TSO-ZABHA-ZACAS-NEXT:    bne a0, a3, .LBB96_1
 ; RV32IA-TSO-ZABHA-ZACAS-NEXT:  # %bb.2: # %atomicrmw.end
 ; RV32IA-TSO-ZABHA-ZACAS-NEXT:    ret
 ;
@@ -22070,12 +22096,13 @@ define i16 @atomicrmw_nand_i16_acquire(ptr %a, i16 %b) nounwind {
 ; RV64IA-WMO-ZABHA-ZACAS-NEXT:    lhu a0, 0(a0)
 ; RV64IA-WMO-ZABHA-ZACAS-NEXT:  .LBB96_1: # %atomicrmw.start
 ; RV64IA-WMO-ZABHA-ZACAS-NEXT:    # =>This Inner Loop Header: Depth=1
-; RV64IA-WMO-ZABHA-ZACAS-NEXT:    and a3, a0, a1
-; RV64IA-WMO-ZABHA-ZACAS-NEXT:    not a3, a3
-; RV64IA-WMO-ZABHA-ZACAS-NEXT:    slli a4, a0, 48
-; RV64IA-WMO-ZABHA-ZACAS-NEXT:    amocas.h.aq a0, a3, (a2)
-; RV64IA-WMO-ZABHA-ZACAS-NEXT:    srai a4, a4, 48
-; RV64IA-WMO-ZABHA-ZACAS-NEXT:    bne a0, a4, .LBB96_1
+; RV64IA-WMO-ZABHA-ZACAS-NEXT:    mv a3, a0
+; RV64IA-WMO-ZABHA-ZACAS-NEXT:    and a4, a0, a1
+; RV64IA-WMO-ZABHA-ZACAS-NEXT:    not a4, a4
+; RV64IA-WMO-ZABHA-ZACAS-NEXT:    amocas.h.aq a0, a4, (a2)
+; RV64IA-WMO-ZABHA-ZACAS-NEXT:    slli a3, a3, 48
+; RV64IA-WMO-ZABHA-ZACAS-NEXT:    srai a3, a3, 48
+; RV64IA-WMO-ZABHA-ZACAS-NEXT:    bne a0, a3, .LBB96_1
 ; RV64IA-WMO-ZABHA-ZACAS-NEXT:  # %bb.2: # %atomicrmw.end
 ; RV64IA-WMO-ZABHA-ZACAS-NEXT:    ret
 ;
@@ -22085,12 +22112,13 @@ define i16 @atomicrmw_nand_i16_acquire(ptr %a, i16 %b) nounwind {
 ; RV64IA-TSO-ZABHA-ZACAS-NEXT:    lhu a0, 0(a0)
 ; RV64IA-TSO-ZABHA-ZACAS-NEXT:  .LBB96_1: # %atomicrmw.start
 ; RV64IA-TSO-ZABHA-ZACAS-NEXT:    # =>This Inner Loop Header: Depth=1
-; RV64IA-TSO-ZABHA-ZACAS-NEXT:    and a3, a0, a1
-; RV64IA-TSO-ZABHA-ZACAS-NEXT:    not a3, a3
-; RV64IA-TSO-ZABHA-ZACAS-NEXT:    slli a4, a0, 48
-; RV64IA-TSO-ZABHA-ZACAS-NEXT:    amocas.h a0, a3, (a2)
-; RV64IA-TSO-ZABHA-ZACAS-NEXT:    srai a4, a4, 48
-; RV64IA-TSO-ZABHA-ZACAS-NEXT:    bne a0, a4, .LBB96_1
+; RV64IA-TSO-ZABHA-ZACAS-NEXT:    mv a3, a0
+; RV64IA-TSO-ZABHA-ZACAS-NEXT:    and a4, a0, a1
+; RV64IA-TSO-ZABHA-ZACAS-NEXT:    not a4, a4
+; RV64IA-TSO-ZABHA-ZACAS-NEXT:    amocas.h a0, a4, (a2)
+; RV64IA-TSO-ZABHA-ZACAS-NEXT:    slli a3, a3, 48
+; RV64IA-TSO-ZABHA-ZACAS-NEXT:    srai a3, a3, 48
+; RV64IA-TSO-ZABHA-ZACAS-NEXT:    bne a0, a3, .LBB96_1
 ; RV64IA-TSO-ZABHA-ZACAS-NEXT:  # %bb.2: # %atomicrmw.end
 ; RV64IA-TSO-ZABHA-ZACAS-NEXT:    ret
   %1 = atomicrmw nand ptr %a, i16 %b acquire
@@ -22432,12 +22460,13 @@ define i16 @atomicrmw_nand_i16_release(ptr %a, i16 %b) nounwind {
 ; RV32IA-WMO-ZABHA-ZACAS-NEXT:    lhu a0, 0(a0)
 ; RV32IA-WMO-ZABHA-ZACAS-NEXT:  .LBB97_1: # %atomicrmw.start
 ; RV32IA-WMO-ZABHA-ZACAS-NEXT:    # =>This Inner Loop Header: Depth=1
-; RV32IA-WMO-ZABHA-ZACAS-NEXT:    and a3, a0, a1
-; RV32IA-WMO-ZABHA-ZACAS-NEXT:    not a3, a3
-; RV32IA-WMO-ZABHA-ZACAS-NEXT:    slli a4, a0, 16
-; RV32IA-WMO-ZABHA-ZACAS-NEXT:    amocas.h.rl a0, a3, (a2)
-; RV32IA-WMO-ZABHA-ZACAS-NEXT:    srai a4, a4, 16
-; RV32IA-WMO-ZABHA-ZACAS-NEXT:    bne a0, a4, .LBB97_1
+; RV32IA-WMO-ZABHA-ZACAS-NEXT:    mv a3, a0
+; RV32IA-WMO-ZABHA-ZACAS-NEXT:    and a4, a0, a1
+; RV32IA-WMO-ZABHA-ZACAS-NEXT:    not a4, a4
+; RV32IA-WMO-ZABHA-ZACAS-NEXT:    amocas.h.rl a0, a4, (a2)
+; RV32IA-WMO-ZABHA-ZACAS-NEXT:    slli a3, a3, 16
+; RV32IA-WMO-ZABHA-ZACAS-NEXT:    srai a3, a3, 16
+; RV32IA-WMO-ZABHA-ZACAS-NEXT:    bne a0, a3, .LBB97_1
 ; RV32IA-WMO-ZABHA-ZACAS-NEXT:  # %bb.2: # %atomicrmw.end
 ; RV32IA-WMO-ZABHA-ZACAS-NEXT:    ret
 ;
@@ -22447,12 +22476,13 @@ define i16 @atomicrmw_nand_i16_release(ptr %a, i16 %b) nounwind {
 ; RV32IA-TSO-ZABHA-ZACAS-NEXT:    lhu a0, 0(a0)
 ; RV32IA-TSO-ZABHA-ZACAS-NEXT:  .LBB97_1: # %atomicrmw.start
 ; RV32IA-TSO-ZABHA-ZACAS-NEXT:    # =>This Inner Loop Header: Depth=1
-; RV32IA-TSO-ZABHA-ZACAS-NEXT:    and a3, a0, a1
-; RV32IA-TSO-ZABHA-ZACAS-NEXT:    not a3, a3
-; RV32IA-TSO-ZABHA-ZACAS-NEXT:    slli a4, a0, 16
-; RV32IA-TSO-ZABHA-ZACAS-NEXT:    amocas.h a0, a3, (a2)
-; RV32IA-TSO-ZABHA-ZACAS-NEXT:    srai a4, a4, 16
-; RV32IA-TSO-ZABHA-ZACAS-NEXT:    bne a0, a4, .LBB97_1
+; RV32IA-TSO-ZABHA-ZACAS-NEXT:    mv a3, a0
+; RV32IA-TSO-ZABHA-ZACAS-NEXT:    and a4, a0, a1
+; RV32IA-TSO-ZABHA-ZACAS-NEXT:    not a4, a4
+; RV32IA-TSO-ZABHA-ZACAS-NEXT:    amocas.h a0, a4, (a2)
+; RV32IA-TSO-ZABHA-ZACAS-NEXT:    slli a3, a3, 16
+; RV32IA-TSO-ZABHA-ZACAS-NEXT:    srai a3, a3, 16
+; RV32IA-TSO-ZABHA-ZACAS-NEXT:    bne a0, a3, .LBB97_1
 ; RV32IA-TSO-ZABHA-ZACAS-NEXT:  # %bb.2: # %atomicrmw.end
 ; RV32IA-TSO-ZABHA-ZACAS-NEXT:    ret
 ;
@@ -22462,12 +22492,13 @@ define i16 @atomicrmw_nand_i16_release(ptr %a, i16 %b) nounwind {
 ; RV64IA-WMO-ZABHA-ZACAS-NEXT:    lhu a0, 0(a0)
 ; RV64IA-WMO-ZABHA-ZACAS-NEXT:  .LBB97_1: # %atomicrmw.start
 ; RV64IA-WMO-ZABHA-ZACAS-NEXT:    # =>This Inner Loop Header: Depth=1
-; RV64IA-WMO-ZABHA-ZACAS-NEXT:    and a3, a0, a1
-; RV64IA-WMO-ZABHA-ZACAS-NEXT:    not a3, a3
-; RV64IA-WMO-ZABHA-ZACAS-NEXT:    slli a4, a0, 48
-; RV64IA-WMO-ZABHA-ZACAS-NEXT:    amocas.h.rl a0, a3, (a2)
-; RV64IA-WMO-ZABHA-ZACAS-NEXT:    srai a4, a4, 48
-; RV64IA-WMO-ZABHA-ZACAS-NEXT:    bne a0, a4, .LBB97_1
+; RV64IA-WMO-ZABHA-ZACAS-NEXT:    mv a3, a0
+; RV64IA-WMO-ZABHA-ZACAS-NEXT:    and a4, a0, a1
+; RV64IA-WMO-ZABHA-ZACAS-NEXT:    not a4, a4
+; RV64IA-WMO-ZABHA-ZACAS-NEXT:    amocas.h.rl a0, a4, (a2)
+; RV64IA-WMO-ZABHA-ZACAS-NEXT:    slli a3, a3, 48
+; RV64IA-WMO-ZABHA-ZACAS-NEXT:    srai a3, a3, 48
+; RV64IA-WMO-ZABHA-ZACAS-NEXT:    bne a0, a3, .LBB97_1
 ; RV64IA-WMO-ZABHA-ZACAS-NEXT:  # %bb.2: # %atomicrmw.end
 ; RV64IA-WMO-ZABHA-ZACAS-NEXT:    ret
 ;
@@ -22477,12 +22508,13 @@ define i16 @atomicrmw_nand_i16_release(ptr %a, i16 %b) nounwind {
 ; RV64IA-TSO-ZABHA-ZACAS-NEXT:    lhu a0, 0(a0)
 ; RV64IA-TSO-ZABHA-ZACAS-NEXT:  .LBB97_1: # %atomicrmw.start
 ; RV64IA-TSO-ZABHA-ZACAS-NEXT:    # =>This Inner Loop Header: Depth=1
-; RV64IA-TSO-ZABHA-ZACAS-NEXT:    and a3, a0, a1
-; RV64IA-TSO-ZABHA-ZACAS-NEXT:    not a3, a3
-; RV64IA-TSO-ZABHA-ZACAS-NEXT:    slli a4, a0, 48
-; RV64IA-TSO-ZABHA-ZACAS-NEXT:    amocas.h a0, a3, (a2)
-; RV64IA-TSO-ZABHA-ZACAS-NEXT:    srai a4, a4, 48
-; RV64IA-TSO-ZABHA-ZACAS-NEXT:    bne a0, a4, .LBB97_1
+; RV64IA-TSO-ZABHA-ZACAS-NEXT:    mv a3, a0
+; RV64IA-TSO-ZABHA-ZACAS-NEXT:    and a4, a0, a1
+; RV64IA-TSO-ZABHA-ZACAS-NEXT:    not a4, a4
+; RV64IA-TSO-ZABHA-ZACAS-NEXT:    amocas.h a0, a4, (a2)
+; RV64IA-TSO-ZABHA-ZACAS-NEXT:    slli a3, a3, 48
+; RV64IA-TSO-ZABHA-ZACAS-NEXT:    srai a3, a3, 48
+; RV64IA-TSO-ZABHA-ZACAS-NEXT:    bne a0, a3, .LBB97_1
 ; RV64IA-TSO-ZABHA-ZACAS-NEXT:  # %bb.2: # %atomicrmw.end
 ; RV64IA-TSO-ZABHA-ZACAS-NEXT:    ret
   %1 = atomicrmw nand ptr %a, i16 %b release
@@ -22824,12 +22856,13 @@ define i16 @atomicrmw_nand_i16_acq_rel(ptr %a, i16 %b) nounwind {
 ; RV32IA-WMO-ZABHA-ZACAS-NEXT:    lhu a0, 0(a0)
 ; RV32IA-WMO-ZABHA-ZACAS-NEXT:  .LBB98_1: # %atomicrmw.start
 ; RV32IA-WMO-ZABHA-ZACAS-NEXT:    # =>This Inner Loop Header: Depth=1
-; RV32IA-WMO-ZABHA-ZACAS-NEXT:    and a3, a0, a1
-; RV32IA-WMO-ZABHA-ZACAS-NEXT:    not a3, a3
-; RV32IA-WMO-ZABHA-ZACAS-NEXT:    slli a4, a0, 16
-; RV32IA-WMO-ZABHA-ZACAS-NEXT:    amocas.h.aqrl a0, a3, (a2)
-; RV32IA-WMO-ZABHA-ZACAS-NEXT:    srai a4, a4, 16
-; RV32IA-WMO-ZABHA-ZACAS-NEXT:    bne a0, a4, .LBB98_1
+; RV32IA-WMO-ZABHA-ZACAS-NEXT:    mv a3, a0
+; RV32IA-WMO-ZABHA-ZACAS-NEXT:    and a4, a0, a1
+; RV32IA-WMO-ZABHA-ZACAS-NEXT:    not a4, a4
+; RV32IA-WMO-ZABHA-ZACAS-NEXT:    amocas.h.aqrl a0, a4, (a2)
+; RV32IA-WMO-ZABHA-ZACAS-NEXT:    slli a3, a3, 16
+; RV32IA-WMO-ZABHA-ZACAS-NEXT:    srai a3, a3, 16
+; RV32IA-WMO-ZABHA-ZACAS-NEXT:    bne a0, a3, .LBB98_1
 ; RV32IA-WMO-ZABHA-ZACAS-NEXT:  # %bb.2: # %atomicrmw.end
 ; RV32IA-WMO-ZABHA-ZACAS-NEXT:    ret
 ;
@@ -22839,12 +22872,13 @@ define i16 @atomicrmw_nand_i16_acq_rel(ptr %a, i16 %b) nounwind {
 ; RV32IA-TSO-ZABHA-ZACAS-NEXT:    lhu a0, 0(a0)
 ; RV32IA-TSO-ZABHA-ZACAS-NEXT:  .LBB98_1: # %atomicrmw.start
 ; RV32IA-TSO-ZABHA-ZACAS-NEXT:    # =>This Inner Loop Header: Depth=1
-; RV32IA-TSO-ZABHA-ZACAS-NEXT:    and a3, a0, a1
-; RV32IA-TSO-ZABHA-ZACAS-NEXT:    not a3, a3
-; RV32IA-TSO-ZABHA-ZACAS-NEXT:    slli a4, a0, 16
-; RV32IA-TSO-ZABHA-ZACAS-NEXT:    amocas.h a0, a3, (a2)
-; RV32IA-TSO-ZABHA-ZACAS-NEXT:    srai a4, a4, 16
-; RV32IA-TSO-ZABHA-ZACAS-NEXT:    bne a0, a4, .LBB98_1
+; RV32IA-TSO-ZABHA-ZACAS-NEXT:    mv a3, a0
+; RV32IA-TSO-ZABHA-ZACAS-NEXT:    and a4, a0, a1
+; RV32IA-TSO-ZABHA-ZACAS-NEXT:    not a4, a4
+; RV32IA-TSO-ZABHA-ZACAS-NEXT:    amocas.h a0, a4, (a2)
+; RV32IA-TSO-ZABHA-ZACAS-NEXT:    slli a3, a3, 16
+; RV32IA-TSO-ZABHA-ZACAS-NEXT:    srai a3, a3, 16
+; RV32IA-TSO-ZABHA-ZACAS-NEXT:    bne a0, a3, .LBB98_1
 ; RV32IA-TSO-ZABHA-ZACAS-NEXT:  # %bb.2: # %atomicrmw.end
 ; RV32IA-TSO-ZABHA-ZACAS-NEXT:    ret
 ;
@@ -22854,12 +22888,13 @@ define i16 @atomicrmw_nand_i16_acq_rel(ptr %a, i16 %b) nounwind {
 ; RV64IA-WMO-ZABHA-ZACAS-NEXT:    lhu a0, 0(a0)
 ; RV64IA-WMO-ZABHA-ZACAS-NEXT:  .LBB98_1: # %atomicrmw.start
 ; RV64IA-WMO-ZABHA-ZACAS-NEXT:    # =>This Inner Loop Header: Depth=1
-; RV64IA-WMO-ZABHA-ZACAS-NEXT:    and a3, a0, a1
-; RV64IA-WMO-ZABHA-ZACAS-NEXT:    not a3, a3
-; RV64IA-WMO-ZABHA-ZACAS-NEXT:    slli a4, a0, 48
-; RV64IA-WMO-ZABHA-ZACAS-NEXT:    amocas.h.aqrl a0, a3, (a2)
-; RV64IA-WMO-ZABHA-ZACAS-NEXT:    srai a4, a4, 48
-; RV64IA-WMO-ZABHA-ZACAS-NEXT:    bne a0, a4, .LBB98_1
+; RV64IA-WMO-ZABHA-ZACAS-NEXT:    mv a3, a0
+; RV64IA-WMO-ZABHA-ZACAS-NEXT:    and a4, a0, a1
+; RV64IA-WMO-ZABHA-ZACAS-NEXT:    not a4, a4
+; RV64IA-WMO-ZABHA-ZACAS-NEXT:    amocas.h.aqrl a0, a4, (a2)
+; RV64IA-WMO-ZABHA-ZACAS-NEXT:    slli a3, a3, 48
+; RV64IA-WMO-ZABHA-ZACAS-NEXT:    srai a3, a3, 48
+; RV64IA-WMO-ZABHA-ZACAS-NEXT:    bne a0, a3, .LBB98_1
 ; RV64IA-WMO-ZABHA-ZACAS-NEXT:  # %bb.2: # %atomicrmw.end
 ; RV64IA-WMO-ZABHA-ZACAS-NEXT:    ret
 ;
@@ -22869,12 +22904,13 @@ define i16 @atomicrmw_nand_i16_acq_rel(ptr %a, i16 %b) nounwind {
 ; RV64IA-TSO-ZABHA-ZACAS-NEXT:    lhu a0, 0(a0)
 ; RV64IA-TSO-ZABHA-ZACAS-NEXT:  .LBB98_1: # %atomicrmw.start
 ; RV64IA-TSO-ZABHA-ZACAS-NEXT:    # =>This Inner Loop Header: Depth=1
-; RV64IA-TSO-ZABHA-ZACAS-NEXT:    and a3, a0, a1
-; RV64IA-TSO-ZABHA-ZACAS-NEXT:    not a3, a3
-; RV64IA-TSO-ZABHA-ZACAS-NEXT:    slli a4, a0, 48
-; RV64IA-TSO-ZABHA-ZACAS-NEXT:    amocas.h a0, a3, (a2)
-; RV64IA-TSO-ZABHA-ZACAS-NEXT:    srai a4, a4, 48
-; RV64IA-TSO-ZABHA-ZACAS-NEXT:    bne a0, a4, .LBB98_1
+; RV64IA-TSO-ZABHA-ZACAS-NEXT:    mv a3, a0
+; RV64IA-TSO-ZABHA-ZACAS-NEXT:    and a4, a0, a1
+; RV64IA-TSO-ZABHA-ZACAS-NEXT:    not a4, a4
+; RV64IA-TSO-ZABHA-ZACAS-NEXT:    amocas.h a0, a4, (a2)
+; RV64IA-TSO-ZABHA-ZACAS-NEXT:    slli a3, a3, 48
+; RV64IA-TSO-ZABHA-ZACAS-NEXT:    srai a3, a3, 48
+; RV64IA-TSO-ZABHA-ZACAS-NEXT:    bne a0, a3, .LBB98_1
 ; RV64IA-TSO-ZABHA-ZACAS-NEXT:  # %bb.2: # %atomicrmw.end
 ; RV64IA-TSO-ZABHA-ZACAS-NEXT:    ret
   %1 = atomicrmw nand ptr %a, i16 %b acq_rel
@@ -23128,13 +23164,14 @@ define i16 @atomicrmw_nand_i16_seq_cst(ptr %a, i16 %b) nounwind {
 ; RV32IA-WMO-ZABHA-ZACAS-NEXT:    lhu a0, 0(a0)
 ; RV32IA-WMO-ZABHA-ZACAS-NEXT:  .LBB99_1: # %atomicrmw.start
 ; RV32IA-WMO-ZABHA-ZACAS-NEXT:    # =>This Inner Loop Header: Depth=1
-; RV32IA-WMO-ZABHA-ZACAS-NEXT:    and a3, a0, a1
+; RV32IA-WMO-ZABHA-ZACAS-NEXT:    mv a3, a0
+; RV32IA-WMO-ZABHA-ZACAS-NEXT:    and a4, a0, a1
+; RV32IA-WMO-ZABHA-ZACAS-NEXT:    not a4, a4
 ; RV32IA-WMO-ZABHA-ZACAS-NEXT:    fence rw, rw
-; RV32IA-WMO-ZABHA-ZACAS-NEXT:    not a3, a3
-; RV32IA-WMO-ZABHA-ZACAS-NEXT:    slli a4, a0, 16
-; RV32IA-WMO-ZABHA-ZACAS-NEXT:    amocas.h.aqrl a0, a3, (a2)
-; RV32IA-WMO-ZABHA-ZACAS-NEXT:    srai a4, a4, 16
-; RV32IA-WMO-ZABHA-ZACAS-NEXT:    bne a0, a4, .LBB99_1
+; RV32IA-WMO-ZABHA-ZACAS-NEXT:    amocas.h.aqrl a0, a4, (a2)
+; RV32IA-WMO-ZABHA-ZACAS-NEXT:    slli a3, a3, 16
+; RV32IA-WMO-ZABHA-ZACAS-NEXT:    srai a3, a3, 16
+; RV32IA-WMO-ZABHA-ZACAS-NEXT:    bne a0, a3, .LBB99_1
 ; RV32IA-WMO-ZABHA-ZACAS-NEXT:  # %bb.2: # %atomicrmw.end
 ; RV32IA-WMO-ZABHA-ZACAS-NEXT:    ret
 ;
@@ -23144,13 +23181,14 @@ define i16 @atomicrmw_nand_i16_seq_cst(ptr %a, i16 %b) nounwind {
 ; RV32IA-TSO-ZABHA-ZACAS-NEXT:    lhu a0, 0(a0)
 ; RV32IA-TSO-ZABHA-ZACAS-NEXT:  .LBB99_1: # %atomicrmw.start
 ; RV32IA-TSO-ZABHA-ZACAS-NEXT:    # =>This Inner Loop Header: Depth=1
-; RV32IA-TSO-ZABHA-ZACAS-NEXT:    and a3, a0, a1
+; RV32IA-TSO-ZABHA-ZACAS-NEXT:    mv a3, a0
+; RV32IA-TSO-ZABHA-ZACAS-NEXT:    and a4, a0, a1
+; RV32IA-TSO-ZABHA-ZACAS-NEXT:    not a4, a4
 ; RV32IA-TSO-ZABHA-ZACAS-NEXT:    fence rw, rw
-; RV32IA-TSO-ZABHA-ZACAS-NEXT:    not a3, a3
-; RV32IA-TSO-ZABHA-ZACAS-NEXT:    slli a4, a0, 16
-; RV32IA-TSO-ZABHA-ZACAS-NEXT:    amocas.h a0, a3, (a2)
-; RV32IA-TSO-ZABHA-ZACAS-NEXT:    srai a4, a4, 16
-; RV32IA-TSO-ZABHA-ZACAS-NEXT:    bne a0, a4, .LBB99_1
+; RV32IA-TSO-ZABHA-ZACAS-NEXT:    amocas.h a0, a4, (a2)
+; RV32IA-TSO-ZABHA-ZACAS-NEXT:    slli a3, a3, 16
+; RV32IA-TSO-ZABHA-ZACAS-NEXT:    srai a3, a3, 16
+; RV32IA-TSO-ZABHA-ZACAS-NEXT:    bne a0, a3, .LBB99_1
 ; RV32IA-TSO-ZABHA-ZACAS-NEXT:  # %bb.2: # %atomicrmw.end
 ; RV32IA-TSO-ZABHA-ZACAS-NEXT:    ret
 ;
@@ -23160,13 +23198,14 @@ define i16 @atomicrmw_nand_i16_seq_cst(ptr %a, i16 %b) nounwind {
 ; RV64IA-WMO-ZABHA-ZACAS-NEXT:    lhu a0, 0(a0)
 ; RV64IA-WMO-ZABHA-ZACAS-NEXT:  .LBB99_1: # %atomicrmw.start
 ; RV64IA-WMO-ZABHA-ZACAS-NEXT:    # =>This Inner Loop Header: Depth=1
-; RV64IA-WMO-ZABHA-ZACAS-NEXT:    and a3, a0, a1
+; RV64IA-WMO-ZABHA-ZACAS-NEXT:    mv a3, a0
+; RV64IA-WMO-ZABHA-ZACAS-NEXT:    and a4, a0, a1
+; RV64IA-WMO-ZABHA-ZACAS-NEXT:    not a4, a4
 ; RV64IA-WMO-ZABHA-ZACAS-NEXT:    fence rw, rw
-; RV64IA-WMO-ZABHA-ZACAS-NEXT:    not a3, a3
-; RV64IA-WMO-ZABHA-ZACAS-NEXT:    slli a4, a0, 48
-; RV64IA-WMO-ZABHA-ZACAS-NEXT:    amocas.h.aqrl a0, a3, (a2)
-; RV64IA-WMO-ZABHA-ZACAS-NEXT:    srai a4, a4, 48
-; RV64IA-WMO-ZABHA-ZACAS-NEXT:    bne a0, a4, .LBB99_1
+; RV64IA-WMO-ZABHA-ZACAS-NEXT:    amocas.h.aqrl a0, a4, (a2)
+; RV64IA-WMO-ZABHA-ZACAS-NEXT:    slli a3, a3, 48
+; RV64IA-WMO-ZABHA-ZACAS-NEXT:    srai a3, a3, 48
+; RV64IA-WMO-ZABHA-ZACAS-NEXT:    bne a0, a3, .LBB99_1
 ; RV64IA-WMO-ZABHA-ZACAS-NEXT:  # %bb.2: # %atomicrmw.end
 ; RV64IA-WMO-ZABHA-ZACAS-NEXT:    ret
 ;
@@ -23176,13 +23215,14 @@ define i16 @atomicrmw_nand_i16_seq_cst(ptr %a, i16 %b) nounwind {
 ; RV64IA-TSO-ZABHA-ZACAS-NEXT:    lhu a0, 0(a0)
 ; RV64IA-TSO-ZABHA-ZACAS-NEXT:  .LBB99_1: # %atomicrmw.start
 ; RV64IA-TSO-ZABHA-ZACAS-NEXT:    # =>This Inner Loop Header: Depth=1
-; RV64IA-TSO-ZABHA-ZACAS-NEXT:    and a3, a0, a1
+; RV64IA-TSO-ZABHA-ZACAS-NEXT:    mv a3, a0
+; RV64IA-TSO-ZABHA-ZACAS-NEXT:    and a4, a0, a1
+; RV64IA-TSO-ZABHA-ZACAS-NEXT:    not a4, a4
 ; RV64IA-TSO-ZABHA-ZACAS-NEXT:    fence rw, rw
-; RV64IA-TSO-ZABHA-ZACAS-NEXT:    not a3, a3
-; RV64IA-TSO-ZABHA-ZACAS-NEXT:    slli a4, a0, 48
-; RV64IA-TSO-ZABHA-ZACAS-NEXT:    amocas.h a0, a3, (a2)
-; RV64IA-TSO-ZABHA-ZACAS-NEXT:    srai a4, a4, 48
-; RV64IA-TSO-ZABHA-ZACAS-NEXT:    bne a0, a4, .LBB99_1
+; RV64IA-TSO-ZABHA-ZACAS-NEXT:    amocas.h a0, a4, (a2)
+; RV64IA-TSO-ZABHA-ZACAS-NEXT:    slli a3, a3, 48
+; RV64IA-TSO-ZABHA-ZACAS-NEXT:    srai a3, a3, 48
+; RV64IA-TSO-ZABHA-ZACAS-NEXT:    bne a0, a3, .LBB99_1
 ; RV64IA-TSO-ZABHA-ZACAS-NEXT:  # %bb.2: # %atomicrmw.end
 ; RV64IA-TSO-ZABHA-ZACAS-NEXT:    ret
   %1 = atomicrmw nand ptr %a, i16 %b seq_cst

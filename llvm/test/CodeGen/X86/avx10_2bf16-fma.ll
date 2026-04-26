@@ -15,8 +15,8 @@ define bfloat @fuse_bf16(bfloat %a, bfloat %b, bfloat %c) nounwind {
 ; AVX10_2-NEXT:    vmovd %ecx, %xmm1
 ; AVX10_2-NEXT:    shll $16, %eax
 ; AVX10_2-NEXT:    vmovd %eax, %xmm2
-; AVX10_2-NEXT:    vfmadd213ss {{.*#+}} xmm2 = (xmm1 * xmm2) + xmm0
-; AVX10_2-NEXT:    vcvtneps2bf16 %xmm2, %xmm0
+; AVX10_2-NEXT:    vfmadd213ss {{.*#+}} xmm1 = (xmm2 * xmm1) + xmm0
+; AVX10_2-NEXT:    vcvtneps2bf16 %xmm1, %xmm0
 ; AVX10_2-NEXT:    retq
 ;
 ; AVX512BF16-LABEL: fuse_bf16:
@@ -30,8 +30,8 @@ define bfloat @fuse_bf16(bfloat %a, bfloat %b, bfloat %c) nounwind {
 ; AVX512BF16-NEXT:    vmovd %ecx, %xmm1
 ; AVX512BF16-NEXT:    shll $16, %eax
 ; AVX512BF16-NEXT:    vmovd %eax, %xmm2
-; AVX512BF16-NEXT:    vfmadd213ss {{.*#+}} xmm2 = (xmm1 * xmm2) + xmm0
-; AVX512BF16-NEXT:    vcvtneps2bf16 %xmm2, %xmm0
+; AVX512BF16-NEXT:    vfmadd213ss {{.*#+}} xmm1 = (xmm2 * xmm1) + xmm0
+; AVX512BF16-NEXT:    vcvtneps2bf16 %xmm1, %xmm0
 ; AVX512BF16-NEXT:    retq
 ;
 ; AVXNECONVERT-LABEL: fuse_bf16:
@@ -62,7 +62,8 @@ entry:
 define <8 x bfloat> @fuse_v8bf16(<8 x bfloat> %x, <8 x bfloat> %y, <8 x bfloat> %z) nounwind {
 ; AVX10_2-LABEL: fuse_v8bf16:
 ; AVX10_2:       # %bb.0: # %entry
-; AVX10_2-NEXT:    vfmadd213bf16 %xmm2, %xmm1, %xmm0
+; AVX10_2-NEXT:    vfmadd213bf16 %xmm2, %xmm0, %xmm1
+; AVX10_2-NEXT:    vmovaps %xmm1, %xmm0
 ; AVX10_2-NEXT:    retq
 ;
 ; AVX512BF16-LABEL: fuse_v8bf16:
@@ -223,7 +224,8 @@ entry:
 define <16 x bfloat> @fuse_v16bf16(<16 x bfloat> %x, <16 x bfloat> %y, <16 x bfloat> %z) nounwind {
 ; AVX10_2-LABEL: fuse_v16bf16:
 ; AVX10_2:       # %bb.0: # %entry
-; AVX10_2-NEXT:    vfmadd213bf16 %ymm2, %ymm1, %ymm0
+; AVX10_2-NEXT:    vfmadd213bf16 %ymm2, %ymm0, %ymm1
+; AVX10_2-NEXT:    vmovaps %ymm1, %ymm0
 ; AVX10_2-NEXT:    retq
 ;
 ; AVX512BF16-LABEL: fuse_v16bf16:
@@ -282,7 +284,8 @@ entry:
 define <32 x bfloat> @fuse_v32bf16(<32 x bfloat> %x, <32 x bfloat> %y, <32 x bfloat> %z) nounwind {
 ; AVX10_2-LABEL: fuse_v32bf16:
 ; AVX10_2:       # %bb.0: # %entry
-; AVX10_2-NEXT:    vfmadd213bf16 %zmm2, %zmm1, %zmm0
+; AVX10_2-NEXT:    vfmadd213bf16 %zmm2, %zmm0, %zmm1
+; AVX10_2-NEXT:    vmovaps %zmm1, %zmm0
 ; AVX10_2-NEXT:    retq
 ;
 ; AVX512BF16-LABEL: fuse_v32bf16:
@@ -385,7 +388,8 @@ entry:
 define <5 x bfloat> @fuse_v5bf16(<5 x bfloat> %x, <5 x bfloat> %y, <5 x bfloat> %z) nounwind {
 ; AVX10_2-LABEL: fuse_v5bf16:
 ; AVX10_2:       # %bb.0: # %entry
-; AVX10_2-NEXT:    vfmadd213bf16 %xmm2, %xmm1, %xmm0
+; AVX10_2-NEXT:    vfmadd213bf16 %xmm2, %xmm0, %xmm1
+; AVX10_2-NEXT:    vmovaps %xmm1, %xmm0
 ; AVX10_2-NEXT:    retq
 ;
 ; AVX512BF16-LABEL: fuse_v5bf16:
@@ -546,7 +550,8 @@ entry:
 define <9 x bfloat> @fnmadd_v9bf16(<9 x bfloat> %x, <9 x bfloat> %y, <9 x bfloat> %z) nounwind {
 ; AVX10_2-LABEL: fnmadd_v9bf16:
 ; AVX10_2:       # %bb.0: # %entry
-; AVX10_2-NEXT:    vfnmadd213bf16 %ymm2, %ymm1, %ymm0
+; AVX10_2-NEXT:    vfnmadd213bf16 %ymm2, %ymm0, %ymm1
+; AVX10_2-NEXT:    vmovaps %ymm1, %ymm0
 ; AVX10_2-NEXT:    retq
 ;
 ; AVX512BF16-LABEL: fnmadd_v9bf16:
@@ -606,7 +611,9 @@ entry:
 define <29 x bfloat> @fuse_v19bf16_load(<29 x bfloat> %x, <29 x bfloat> %y, ptr %p) nounwind {
 ; AVX10_2-LABEL: fuse_v19bf16_load:
 ; AVX10_2:       # %bb.0: # %entry
-; AVX10_2-NEXT:    vfmadd213bf16 (%rdi), %zmm1, %zmm0
+; AVX10_2-NEXT:    vmovaps (%rdi), %zmm2
+; AVX10_2-NEXT:    vfmadd231bf16 %zmm1, %zmm0, %zmm2
+; AVX10_2-NEXT:    vmovaps %zmm2, %zmm0
 ; AVX10_2-NEXT:    retq
 ;
 ; AVX512BF16-LABEL: fuse_v19bf16_load:

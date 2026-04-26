@@ -124,9 +124,9 @@ define i16 @xfoo(i16 %x, i16 %y, i16 %z) nounwind {
 define i16 @xbar(i16 %x, i16 %y, i16 %z) nounwind {
 ; X86-LABEL: xbar:
 ; X86:       # %bb.0:
-; X86-NEXT:    movzwl {{[0-9]+}}(%esp), %ecx
 ; X86-NEXT:    movzwl {{[0-9]+}}(%esp), %eax
-; X86-NEXT:    shldw $5, %cx, %ax
+; X86-NEXT:    movzwl {{[0-9]+}}(%esp), %ecx
+; X86-NEXT:    shrdw $11, %cx, %ax
 ; X86-NEXT:    retl
 ;
 ; X64-LABEL: xbar:
@@ -163,9 +163,9 @@ define i16 @xun(i16 %x, i16 %y, i16 %z) nounwind {
 define i16 @xbu(i16 %x, i16 %y, i16 %z) nounwind {
 ; X86-LABEL: xbu:
 ; X86:       # %bb.0:
-; X86-NEXT:    movzwl {{[0-9]+}}(%esp), %ecx
 ; X86-NEXT:    movzwl {{[0-9]+}}(%esp), %eax
-; X86-NEXT:    shldw $11, %cx, %ax
+; X86-NEXT:    movzwl {{[0-9]+}}(%esp), %ecx
+; X86-NEXT:    shrdw $5, %cx, %ax
 ; X86-NEXT:    retl
 ;
 ; X64-LABEL: xbu:
@@ -220,9 +220,10 @@ define i16 @rot16_trunc(i32 %x, i32 %y) nounwind {
 ; X64-LABEL: rot16_trunc:
 ; X64:       # %bb.0:
 ; X64-NEXT:    movl %edi, %eax
-; X64-NEXT:    shrl $11, %eax
-; X64-NEXT:    shll $5, %edi
-; X64-NEXT:    orl %edi, %eax
+; X64-NEXT:    movl %edi, %ecx
+; X64-NEXT:    shrl $11, %ecx
+; X64-NEXT:    shll $5, %eax
+; X64-NEXT:    orl %ecx, %eax
 ; X64-NEXT:    # kill: def $ax killed $ax killed $eax
 ; X64-NEXT:    retq
 	%t0 = lshr i32 %x, 11

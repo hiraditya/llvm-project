@@ -1158,8 +1158,9 @@ define zeroext i1 @demanded_with_known_zeroes(i32 %bit, i32 %bits) {
 ;
 ; X64-LABEL: demanded_with_known_zeroes:
 ; X64:       # %bb.0: # %entry
-; X64-NEXT:    shll $2, %edi
-; X64-NEXT:    btl %edi, %esi
+; X64-NEXT:    # kill: def $edi killed $edi def $rdi
+; X64-NEXT:    leal (,%rdi,4), %eax
+; X64-NEXT:    btl %eax, %esi
 ; X64-NEXT:    setb %al
 ; X64-NEXT:    retq
 entry:

@@ -24,8 +24,8 @@ define i64 @test_add_i64_i16_const(i16 %a) nounwind {
 define i64 @test_add_i64_i16_zext(i16 %a, i16 %b) nounwind {
 ; X86-LABEL: test_add_i64_i16_zext:
 ; X86:       # %bb.0:
-; X86-NEXT:    movzwl {{[0-9]+}}(%esp), %ecx
 ; X86-NEXT:    movzwl {{[0-9]+}}(%esp), %eax
+; X86-NEXT:    movzwl {{[0-9]+}}(%esp), %ecx
 ; X86-NEXT:    addl %ecx, %eax
 ; X86-NEXT:    xorl %edx, %edx
 ; X86-NEXT:    retl
@@ -69,11 +69,11 @@ define i64 @negative_test_add_i64_i16_sext(i16 %a, i16 %b) nounwind {
 ; X86:       # %bb.0:
 ; X86-NEXT:    pushl %esi
 ; X86-NEXT:    movswl {{[0-9]+}}(%esp), %ecx
-; X86-NEXT:    movl %ecx, %esi
-; X86-NEXT:    sarl $31, %esi
-; X86-NEXT:    movswl {{[0-9]+}}(%esp), %eax
-; X86-NEXT:    movl %eax, %edx
+; X86-NEXT:    movl %ecx, %edx
 ; X86-NEXT:    sarl $31, %edx
+; X86-NEXT:    movswl {{[0-9]+}}(%esp), %eax
+; X86-NEXT:    movl %eax, %esi
+; X86-NEXT:    sarl $31, %esi
 ; X86-NEXT:    addl %ecx, %eax
 ; X86-NEXT:    adcl %esi, %edx
 ; X86-NEXT:    popl %esi

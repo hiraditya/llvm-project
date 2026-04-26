@@ -1722,7 +1722,7 @@ void GCNPassConfig::addOptimizedRegAlloc() {
   // the register in LiveVariables, this would trigger a failure in verifier,
   // we should fix it and enable the verifier.
   if (OptVGPRLiveRange)
-    insertPass(&LiveVariablesID, &SIOptimizeVGPRLiveRangeLegacyID);
+    insertPass(&SparseLiveVariablesID, &SIOptimizeVGPRLiveRangeLegacyID);
 
   // This must be run immediately after phi elimination and before
   // TwoAddressInstructions, otherwise the processing of the tied operand of
@@ -2493,7 +2493,8 @@ Error AMDGPUCodeGenPassBuilder::addOptimizedRegAlloc(
   // the register in LiveVariables, this would trigger a failure in verifier,
   // we should fix it and enable the verifier.
   if (OptVGPRLiveRange)
-    insertPass<RequireAnalysisPass<LiveVariablesAnalysis, MachineFunction>>(
+    insertPass<
+        RequireAnalysisPass<SparseLiveVariablesAnalysis, MachineFunction>>(
         SIOptimizeVGPRLiveRangePass());
 
   // This must be run immediately after phi elimination and before

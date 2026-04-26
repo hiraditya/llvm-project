@@ -83,7 +83,7 @@ define   <16 x float> @_ss16xfloat_mask_load(ptr %a.ptr, <16 x float> %i, <16 x 
 ; ALL-LABEL: _ss16xfloat_mask_load:
 ; ALL:       # %bb.0:
 ; ALL-NEXT:    vptestmd %zmm1, %zmm1, %k1
-; ALL-NEXT:    vbroadcastss (%rdi), %zmm0 {%k1}
+; ALL-NEXT:    vblendmps (%rdi){1to16}, %zmm0, %zmm0 {%k1}
 ; ALL-NEXT:    retq
   %a = load float, ptr %a.ptr
   %mask = icmp ne <16 x i32> %mask1, zeroinitializer
@@ -162,7 +162,7 @@ define   <8 x double> @_sd8xdouble_mask_load(ptr %a.ptr, <8 x double> %i, <8 x i
 ; ALL:       # %bb.0:
 ; ALL-NEXT:    # kill: def $ymm1 killed $ymm1 def $zmm1
 ; ALL-NEXT:    vptestmd %zmm1, %zmm1, %k1
-; ALL-NEXT:    vbroadcastsd (%rdi), %zmm0 {%k1}
+; ALL-NEXT:    vblendmpd (%rdi){1to8}, %zmm0, %zmm0 {%k1}
 ; ALL-NEXT:    retq
   %a = load double, ptr %a.ptr
   %mask = icmp ne <8 x i32> %mask1, zeroinitializer

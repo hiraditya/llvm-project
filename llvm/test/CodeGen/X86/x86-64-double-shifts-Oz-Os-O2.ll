@@ -78,9 +78,10 @@ attributes #1 = { nounwind optsize readnone uwtable "less-precise-fpmad"="false"
 define i64 @_Z8lshift12mm(i64 %a, i64 %b) #2 {
 ; CHECK-LABEL: _Z8lshift12mm:
 ; CHECK:       # %bb.0: # %entry
-; CHECK-NEXT:    shrq $52, %rsi
+; CHECK-NEXT:    movq %rsi, %rax
 ; CHECK-NEXT:    shlq $12, %rdi
-; CHECK-NEXT:    leaq (%rdi,%rsi), %rax
+; CHECK-NEXT:    shrq $52, %rax
+; CHECK-NEXT:    orq %rdi, %rax
 ; CHECK-NEXT:    retq
 entry:
   %shl = shl i64 %a, 12

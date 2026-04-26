@@ -10,12 +10,16 @@
 define <4 x float> @t1(<4 x float> %Q) nounwind {
 ; X86-SSE-LABEL: t1:
 ; X86-SSE:       # %bb.0:
-; X86-SSE-NEXT:    xorps {{\.?LCPI[0-9]+_[0-9]+}}, %xmm0
+; X86-SSE-NEXT:    movaps {{.*#+}} xmm1 = [-0.0E+0,-0.0E+0,-0.0E+0,-0.0E+0]
+; X86-SSE-NEXT:    xorps %xmm0, %xmm1
+; X86-SSE-NEXT:    movaps %xmm1, %xmm0
 ; X86-SSE-NEXT:    retl
 ;
 ; X64-SSE-LABEL: t1:
 ; X64-SSE:       # %bb.0:
-; X64-SSE-NEXT:    xorps {{\.?LCPI[0-9]+_[0-9]+}}(%rip), %xmm0
+; X64-SSE-NEXT:    movaps {{.*#+}} xmm1 = [-0.0E+0,-0.0E+0,-0.0E+0,-0.0E+0]
+; X64-SSE-NEXT:    xorps %xmm0, %xmm1
+; X64-SSE-NEXT:    movaps %xmm1, %xmm0
 ; X64-SSE-NEXT:    retq
   %tmp = fsub <4 x float> <float -0.0, float -0.0, float -0.0, float -0.0>, %Q
   ret <4 x float> %tmp
@@ -126,8 +130,9 @@ define <2 x float> @fneg_bitcast(i64 %i) nounwind {
 ; X86-SSE1-NEXT:    movl 12(%ebp), %ecx
 ; X86-SSE1-NEXT:    xorl %eax, %ecx
 ; X86-SSE1-NEXT:    movl %ecx, {{[0-9]+}}(%esp)
-; X86-SSE1-NEXT:    xorl 8(%ebp), %eax
-; X86-SSE1-NEXT:    movl %eax, (%esp)
+; X86-SSE1-NEXT:    movl 8(%ebp), %ecx
+; X86-SSE1-NEXT:    xorl %eax, %ecx
+; X86-SSE1-NEXT:    movl %ecx, (%esp)
 ; X86-SSE1-NEXT:    movaps (%esp), %xmm0
 ; X86-SSE1-NEXT:    movl %ebp, %esp
 ; X86-SSE1-NEXT:    popl %ebp
@@ -139,8 +144,9 @@ define <2 x float> @fneg_bitcast(i64 %i) nounwind {
 ; X86-SSE2-NEXT:    movl {{[0-9]+}}(%esp), %ecx
 ; X86-SSE2-NEXT:    xorl %eax, %ecx
 ; X86-SSE2-NEXT:    movd %ecx, %xmm1
-; X86-SSE2-NEXT:    xorl {{[0-9]+}}(%esp), %eax
-; X86-SSE2-NEXT:    movd %eax, %xmm0
+; X86-SSE2-NEXT:    movl {{[0-9]+}}(%esp), %ecx
+; X86-SSE2-NEXT:    xorl %eax, %ecx
+; X86-SSE2-NEXT:    movd %ecx, %xmm0
 ; X86-SSE2-NEXT:    punpckldq {{.*#+}} xmm0 = xmm0[0],xmm1[0],xmm0[1],xmm1[1]
 ; X86-SSE2-NEXT:    retl
 ;
@@ -166,12 +172,16 @@ define <2 x float> @fneg_bitcast(i64 %i) nounwind {
 define <4 x float> @fneg_undef_elts_v4f32(<4 x float> %x) {
 ; X86-SSE-LABEL: fneg_undef_elts_v4f32:
 ; X86-SSE:       # %bb.0:
-; X86-SSE-NEXT:    xorps {{\.?LCPI[0-9]+_[0-9]+}}, %xmm0
+; X86-SSE-NEXT:    movaps {{.*#+}} xmm1 = [-0.0E+0,-0.0E+0,-0.0E+0,-0.0E+0]
+; X86-SSE-NEXT:    xorps %xmm0, %xmm1
+; X86-SSE-NEXT:    movaps %xmm1, %xmm0
 ; X86-SSE-NEXT:    retl
 ;
 ; X64-SSE-LABEL: fneg_undef_elts_v4f32:
 ; X64-SSE:       # %bb.0:
-; X64-SSE-NEXT:    xorps {{\.?LCPI[0-9]+_[0-9]+}}(%rip), %xmm0
+; X64-SSE-NEXT:    movaps {{.*#+}} xmm1 = [-0.0E+0,-0.0E+0,-0.0E+0,-0.0E+0]
+; X64-SSE-NEXT:    xorps %xmm0, %xmm1
+; X64-SSE-NEXT:    movaps %xmm1, %xmm0
 ; X64-SSE-NEXT:    retq
   %r = fsub <4 x float> <float -0.0, float undef, float undef, float -0.0>, %x
   ret <4 x float> %r
@@ -194,12 +204,16 @@ define <4 x float> @fsub0_undef_elts_v4f32(<4 x float> %x) {
 define <4 x float> @fneg(<4 x float> %Q) nounwind {
 ; X86-SSE-LABEL: fneg:
 ; X86-SSE:       # %bb.0:
-; X86-SSE-NEXT:    xorps {{\.?LCPI[0-9]+_[0-9]+}}, %xmm0
+; X86-SSE-NEXT:    movaps {{.*#+}} xmm1 = [-0.0E+0,-0.0E+0,-0.0E+0,-0.0E+0]
+; X86-SSE-NEXT:    xorps %xmm0, %xmm1
+; X86-SSE-NEXT:    movaps %xmm1, %xmm0
 ; X86-SSE-NEXT:    retl
 ;
 ; X64-SSE-LABEL: fneg:
 ; X64-SSE:       # %bb.0:
-; X64-SSE-NEXT:    xorps {{\.?LCPI[0-9]+_[0-9]+}}(%rip), %xmm0
+; X64-SSE-NEXT:    movaps {{.*#+}} xmm1 = [-0.0E+0,-0.0E+0,-0.0E+0,-0.0E+0]
+; X64-SSE-NEXT:    xorps %xmm0, %xmm1
+; X64-SSE-NEXT:    movaps %xmm1, %xmm0
 ; X64-SSE-NEXT:    retq
   %tmp = fneg <4 x float> %Q
   ret <4 x float> %tmp
@@ -277,15 +291,17 @@ define void @fneg_int_f64(ptr %src, ptr %dst) {
 ; X86-SSE2-NEXT:    movl {{[0-9]+}}(%esp), %eax
 ; X86-SSE2-NEXT:    movl {{[0-9]+}}(%esp), %ecx
 ; X86-SSE2-NEXT:    movsd {{.*#+}} xmm0 = mem[0],zero
-; X86-SSE2-NEXT:    xorps {{\.?LCPI[0-9]+_[0-9]+}}, %xmm0
-; X86-SSE2-NEXT:    movlps %xmm0, (%eax)
+; X86-SSE2-NEXT:    movaps {{.*#+}} xmm1 = [-0.0E+0,-0.0E+0]
+; X86-SSE2-NEXT:    xorps %xmm0, %xmm1
+; X86-SSE2-NEXT:    movlps %xmm1, (%eax)
 ; X86-SSE2-NEXT:    retl
 ;
 ; X64-SSE-LABEL: fneg_int_f64:
 ; X64-SSE:       # %bb.0:
 ; X64-SSE-NEXT:    movabsq $-9223372036854775808, %rax # imm = 0x8000000000000000
-; X64-SSE-NEXT:    xorq (%rdi), %rax
-; X64-SSE-NEXT:    movq %rax, (%rsi)
+; X64-SSE-NEXT:    movq (%rdi), %rcx
+; X64-SSE-NEXT:    xorq %rax, %rcx
+; X64-SSE-NEXT:    movq %rcx, (%rsi)
 ; X64-SSE-NEXT:    retq
   %1 = load double, ptr %src
   %2 = fneg double %1
@@ -300,15 +316,17 @@ define void @fneg_int_v4f32(ptr %src, ptr %dst) {
 ; X86-SSE-NEXT:    movl {{[0-9]+}}(%esp), %eax
 ; X86-SSE-NEXT:    movl {{[0-9]+}}(%esp), %ecx
 ; X86-SSE-NEXT:    movaps (%ecx), %xmm0
-; X86-SSE-NEXT:    xorps {{\.?LCPI[0-9]+_[0-9]+}}, %xmm0
-; X86-SSE-NEXT:    movaps %xmm0, (%eax)
+; X86-SSE-NEXT:    movaps {{.*#+}} xmm1 = [-0.0E+0,-0.0E+0,-0.0E+0,-0.0E+0]
+; X86-SSE-NEXT:    xorps %xmm0, %xmm1
+; X86-SSE-NEXT:    movaps %xmm1, (%eax)
 ; X86-SSE-NEXT:    retl
 ;
 ; X64-SSE-LABEL: fneg_int_v4f32:
 ; X64-SSE:       # %bb.0:
 ; X64-SSE-NEXT:    movaps (%rdi), %xmm0
-; X64-SSE-NEXT:    xorps {{\.?LCPI[0-9]+_[0-9]+}}(%rip), %xmm0
-; X64-SSE-NEXT:    movaps %xmm0, (%rsi)
+; X64-SSE-NEXT:    movaps {{.*#+}} xmm1 = [-0.0E+0,-0.0E+0,-0.0E+0,-0.0E+0]
+; X64-SSE-NEXT:    xorps %xmm0, %xmm1
+; X64-SSE-NEXT:    movaps %xmm1, (%rsi)
 ; X64-SSE-NEXT:    retq
   %1 = load <4 x float>, ptr %src
   %2 = fneg <4 x float> %1

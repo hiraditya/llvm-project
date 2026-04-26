@@ -44,10 +44,9 @@ define i32 @test_pgso(i32 %a) nounwind !prof !14 {
 define i32 @test_add(i32 %a, i32 %b) nounwind {
 ; CHECK-LABEL: test_add:
 ; CHECK:       # %bb.0:
+; CHECK-NEXT:    movl {{[0-9]+}}(%esp), %ecx
 ; CHECK-NEXT:    movl {{[0-9]+}}(%esp), %eax
-; CHECK-NEXT:    addl {{[0-9]+}}(%esp), %eax
-; CHECK-NEXT:    nop
-; CHECK-NEXT:    nop
+; CHECK-NEXT:    addl %ecx, %eax
 ; CHECK-NEXT:    nop
 ; CHECK-NEXT:    nop
 ; CHECK-NEXT:    retl

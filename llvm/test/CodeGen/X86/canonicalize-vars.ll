@@ -19,8 +19,9 @@ define float @canon_fp32_varargsf32(float %a) {
 ; X86-SSE-NEXT:    pushl %eax
 ; X86-SSE-NEXT:    .cfi_def_cfa_offset 8
 ; X86-SSE-NEXT:    movss {{.*#+}} xmm0 = mem[0],zero,zero,zero
-; X86-SSE-NEXT:    mulss {{\.?LCPI[0-9]+_[0-9]+}}, %xmm0
-; X86-SSE-NEXT:    movss %xmm0, (%esp)
+; X86-SSE-NEXT:    movss {{.*#+}} xmm1 = [1.0E+0,0.0E+0,0.0E+0,0.0E+0]
+; X86-SSE-NEXT:    mulss %xmm0, %xmm1
+; X86-SSE-NEXT:    movss %xmm1, (%esp)
 ; X86-SSE-NEXT:    flds (%esp)
 ; X86-SSE-NEXT:    popl %eax
 ; X86-SSE-NEXT:    .cfi_def_cfa_offset 4
@@ -40,7 +41,9 @@ define float @canon_fp32_varargsf32(float %a) {
 ;
 ; SSE-LABEL: canon_fp32_varargsf32:
 ; SSE:       # %bb.0:
-; SSE-NEXT:    mulss {{\.?LCPI[0-9]+_[0-9]+}}(%rip), %xmm0
+; SSE-NEXT:    movss {{.*#+}} xmm1 = [1.0E+0,0.0E+0,0.0E+0,0.0E+0]
+; SSE-NEXT:    mulss %xmm0, %xmm1
+; SSE-NEXT:    movaps %xmm1, %xmm0
 ; SSE-NEXT:    retq
 ;
 ; AVX-LABEL: canon_fp32_varargsf32:
@@ -213,9 +216,10 @@ define double @canonicalize_fp64(double %a, double %b) unnamed_addr #0 {
 ; X86-SSE-NEXT:    andpd %xmm1, %xmm3
 ; X86-SSE-NEXT:    maxsd %xmm0, %xmm1
 ; X86-SSE-NEXT:    andnpd %xmm1, %xmm2
-; X86-SSE-NEXT:    orpd %xmm3, %xmm2
-; X86-SSE-NEXT:    mulsd {{\.?LCPI[0-9]+_[0-9]+}}, %xmm2
-; X86-SSE-NEXT:    movsd %xmm2, (%esp)
+; X86-SSE-NEXT:    orpd %xmm2, %xmm3
+; X86-SSE-NEXT:    movsd {{.*#+}} xmm0 = [1.0E+0,0.0E+0]
+; X86-SSE-NEXT:    mulsd %xmm3, %xmm0
+; X86-SSE-NEXT:    movsd %xmm0, (%esp)
 ; X86-SSE-NEXT:    fldl (%esp)
 ; X86-SSE-NEXT:    movl %ebp, %esp
 ; X86-SSE-NEXT:    popl %ebp
@@ -252,9 +256,9 @@ define double @canonicalize_fp64(double %a, double %b) unnamed_addr #0 {
 ; SSE-NEXT:    andpd %xmm1, %xmm3
 ; SSE-NEXT:    maxsd %xmm0, %xmm1
 ; SSE-NEXT:    andnpd %xmm1, %xmm2
-; SSE-NEXT:    orpd %xmm3, %xmm2
-; SSE-NEXT:    mulsd {{\.?LCPI[0-9]+_[0-9]+}}(%rip), %xmm2
-; SSE-NEXT:    movapd %xmm2, %xmm0
+; SSE-NEXT:    orpd %xmm2, %xmm3
+; SSE-NEXT:    movsd {{.*#+}} xmm0 = [1.0E+0,0.0E+0]
+; SSE-NEXT:    mulsd %xmm3, %xmm0
 ; SSE-NEXT:    retq
 ;
 ; AVX1-LABEL: canonicalize_fp64:
@@ -333,9 +337,10 @@ define float @canonicalize_fp32(float %aa, float %bb) unnamed_addr #0 {
 ; X86-SSE-NEXT:    andps %xmm1, %xmm3
 ; X86-SSE-NEXT:    maxss %xmm0, %xmm1
 ; X86-SSE-NEXT:    andnps %xmm1, %xmm2
-; X86-SSE-NEXT:    orps %xmm3, %xmm2
-; X86-SSE-NEXT:    mulss {{\.?LCPI[0-9]+_[0-9]+}}, %xmm2
-; X86-SSE-NEXT:    movss %xmm2, (%esp)
+; X86-SSE-NEXT:    orps %xmm2, %xmm3
+; X86-SSE-NEXT:    movss {{.*#+}} xmm0 = [1.0E+0,0.0E+0,0.0E+0,0.0E+0]
+; X86-SSE-NEXT:    mulss %xmm3, %xmm0
+; X86-SSE-NEXT:    movss %xmm0, (%esp)
 ; X86-SSE-NEXT:    flds (%esp)
 ; X86-SSE-NEXT:    popl %eax
 ; X86-SSE-NEXT:    .cfi_def_cfa_offset 4
@@ -365,9 +370,9 @@ define float @canonicalize_fp32(float %aa, float %bb) unnamed_addr #0 {
 ; SSE-NEXT:    andps %xmm1, %xmm3
 ; SSE-NEXT:    maxss %xmm0, %xmm1
 ; SSE-NEXT:    andnps %xmm1, %xmm2
-; SSE-NEXT:    orps %xmm3, %xmm2
-; SSE-NEXT:    mulss {{\.?LCPI[0-9]+_[0-9]+}}(%rip), %xmm2
-; SSE-NEXT:    movaps %xmm2, %xmm0
+; SSE-NEXT:    orps %xmm2, %xmm3
+; SSE-NEXT:    movss {{.*#+}} xmm0 = [1.0E+0,0.0E+0,0.0E+0,0.0E+0]
+; SSE-NEXT:    mulss %xmm3, %xmm0
 ; SSE-NEXT:    retq
 ;
 ; AVX1-LABEL: canonicalize_fp32:
@@ -415,8 +420,9 @@ define void @v_test_canonicalize_var_f32(float addrspace(1)* %out) #1 {
 ; X86-SSE:       # %bb.0:
 ; X86-SSE-NEXT:    movl {{[0-9]+}}(%esp), %eax
 ; X86-SSE-NEXT:    movss {{.*#+}} xmm0 = mem[0],zero,zero,zero
-; X86-SSE-NEXT:    mulss {{\.?LCPI[0-9]+_[0-9]+}}, %xmm0
-; X86-SSE-NEXT:    movss %xmm0, (%eax)
+; X86-SSE-NEXT:    movss {{.*#+}} xmm1 = [1.0E+0,0.0E+0,0.0E+0,0.0E+0]
+; X86-SSE-NEXT:    mulss %xmm0, %xmm1
+; X86-SSE-NEXT:    movss %xmm1, (%eax)
 ; X86-SSE-NEXT:    retl
 ;
 ; X86-AVX-LABEL: v_test_canonicalize_var_f32:
@@ -430,8 +436,9 @@ define void @v_test_canonicalize_var_f32(float addrspace(1)* %out) #1 {
 ; SSE-LABEL: v_test_canonicalize_var_f32:
 ; SSE:       # %bb.0:
 ; SSE-NEXT:    movss {{.*#+}} xmm0 = mem[0],zero,zero,zero
-; SSE-NEXT:    mulss {{\.?LCPI[0-9]+_[0-9]+}}(%rip), %xmm0
-; SSE-NEXT:    movss %xmm0, (%rdi)
+; SSE-NEXT:    movss {{.*#+}} xmm1 = [1.0E+0,0.0E+0,0.0E+0,0.0E+0]
+; SSE-NEXT:    mulss %xmm0, %xmm1
+; SSE-NEXT:    movss %xmm1, (%rdi)
 ; SSE-NEXT:    retq
 ;
 ; AVX-LABEL: v_test_canonicalize_var_f32:
@@ -508,8 +515,9 @@ define void @v_test_canonicalize_var_f64(double addrspace(1)* %out) #1 {
 ; X86-SSE:       # %bb.0:
 ; X86-SSE-NEXT:    movl {{[0-9]+}}(%esp), %eax
 ; X86-SSE-NEXT:    movsd {{.*#+}} xmm0 = mem[0],zero
-; X86-SSE-NEXT:    mulsd {{\.?LCPI[0-9]+_[0-9]+}}, %xmm0
-; X86-SSE-NEXT:    movsd %xmm0, (%eax)
+; X86-SSE-NEXT:    movsd {{.*#+}} xmm1 = [1.0E+0,0.0E+0]
+; X86-SSE-NEXT:    mulsd %xmm0, %xmm1
+; X86-SSE-NEXT:    movsd %xmm1, (%eax)
 ; X86-SSE-NEXT:    retl
 ;
 ; X86-AVX-LABEL: v_test_canonicalize_var_f64:
@@ -523,8 +531,9 @@ define void @v_test_canonicalize_var_f64(double addrspace(1)* %out) #1 {
 ; SSE-LABEL: v_test_canonicalize_var_f64:
 ; SSE:       # %bb.0:
 ; SSE-NEXT:    movsd {{.*#+}} xmm0 = mem[0],zero
-; SSE-NEXT:    mulsd {{\.?LCPI[0-9]+_[0-9]+}}(%rip), %xmm0
-; SSE-NEXT:    movsd %xmm0, (%rdi)
+; SSE-NEXT:    movsd {{.*#+}} xmm1 = [1.0E+0,0.0E+0]
+; SSE-NEXT:    mulsd %xmm0, %xmm1
+; SSE-NEXT:    movsd %xmm1, (%rdi)
 ; SSE-NEXT:    retq
 ;
 ; AVX-LABEL: v_test_canonicalize_var_f64:
@@ -600,7 +609,9 @@ define <4 x float> @canon_fp32_varargsv4f32(<4 x float> %a) {
 ;
 ; X86-SSE-LABEL: canon_fp32_varargsv4f32:
 ; X86-SSE:       # %bb.0:
-; X86-SSE-NEXT:    mulps {{\.?LCPI[0-9]+_[0-9]+}}, %xmm0
+; X86-SSE-NEXT:    movaps {{.*#+}} xmm1 = [1.0E+0,1.0E+0,1.0E+0,1.0E+0]
+; X86-SSE-NEXT:    mulps %xmm0, %xmm1
+; X86-SSE-NEXT:    movaps %xmm1, %xmm0
 ; X86-SSE-NEXT:    retl
 ;
 ; X86-AVX-LABEL: canon_fp32_varargsv4f32:
@@ -610,7 +621,9 @@ define <4 x float> @canon_fp32_varargsv4f32(<4 x float> %a) {
 ;
 ; SSE-LABEL: canon_fp32_varargsv4f32:
 ; SSE:       # %bb.0:
-; SSE-NEXT:    mulps {{\.?LCPI[0-9]+_[0-9]+}}(%rip), %xmm0
+; SSE-NEXT:    movaps {{.*#+}} xmm1 = [1.0E+0,1.0E+0,1.0E+0,1.0E+0]
+; SSE-NEXT:    mulps %xmm0, %xmm1
+; SSE-NEXT:    movaps %xmm1, %xmm0
 ; SSE-NEXT:    retq
 ;
 ; AVX1-LABEL: canon_fp32_varargsv4f32:
@@ -772,8 +785,9 @@ define void @vec_canonicalize_var_v4f32(<4 x float> addrspace(1)* %out) #1 {
 ; X86-SSE:       # %bb.0:
 ; X86-SSE-NEXT:    movl {{[0-9]+}}(%esp), %eax
 ; X86-SSE-NEXT:    movaps (%eax), %xmm0
-; X86-SSE-NEXT:    mulps {{\.?LCPI[0-9]+_[0-9]+}}, %xmm0
-; X86-SSE-NEXT:    movaps %xmm0, (%eax)
+; X86-SSE-NEXT:    movaps {{.*#+}} xmm1 = [1.0E+0,1.0E+0,1.0E+0,1.0E+0]
+; X86-SSE-NEXT:    mulps %xmm0, %xmm1
+; X86-SSE-NEXT:    movaps %xmm1, (%eax)
 ; X86-SSE-NEXT:    retl
 ;
 ; X86-AVX-LABEL: vec_canonicalize_var_v4f32:
@@ -787,8 +801,9 @@ define void @vec_canonicalize_var_v4f32(<4 x float> addrspace(1)* %out) #1 {
 ; SSE-LABEL: vec_canonicalize_var_v4f32:
 ; SSE:       # %bb.0:
 ; SSE-NEXT:    movaps (%rdi), %xmm0
-; SSE-NEXT:    mulps {{\.?LCPI[0-9]+_[0-9]+}}(%rip), %xmm0
-; SSE-NEXT:    movaps %xmm0, (%rdi)
+; SSE-NEXT:    movaps {{.*#+}} xmm1 = [1.0E+0,1.0E+0,1.0E+0,1.0E+0]
+; SSE-NEXT:    mulps %xmm0, %xmm1
+; SSE-NEXT:    movaps %xmm1, (%rdi)
 ; SSE-NEXT:    retq
 ;
 ; AVX1-LABEL: vec_canonicalize_var_v4f32:
@@ -844,8 +859,9 @@ define void @vec_canonicalize_var_v4f64(<4 x double> addrspace(1)* %out) #1 {
 ; X86-SSE-NEXT:    movapd {{.*#+}} xmm0 = [1.0E+0,1.0E+0]
 ; X86-SSE-NEXT:    movapd 16(%eax), %xmm1
 ; X86-SSE-NEXT:    mulpd %xmm0, %xmm1
-; X86-SSE-NEXT:    mulpd (%eax), %xmm0
-; X86-SSE-NEXT:    movapd %xmm0, (%eax)
+; X86-SSE-NEXT:    movapd (%eax), %xmm2
+; X86-SSE-NEXT:    mulpd %xmm0, %xmm2
+; X86-SSE-NEXT:    movapd %xmm2, (%eax)
 ; X86-SSE-NEXT:    movapd %xmm1, 16(%eax)
 ; X86-SSE-NEXT:    retl
 ;
@@ -863,8 +879,9 @@ define void @vec_canonicalize_var_v4f64(<4 x double> addrspace(1)* %out) #1 {
 ; SSE-NEXT:    movapd {{.*#+}} xmm0 = [1.0E+0,1.0E+0]
 ; SSE-NEXT:    movapd 16(%rdi), %xmm1
 ; SSE-NEXT:    mulpd %xmm0, %xmm1
-; SSE-NEXT:    mulpd (%rdi), %xmm0
-; SSE-NEXT:    movapd %xmm0, (%rdi)
+; SSE-NEXT:    movapd (%rdi), %xmm2
+; SSE-NEXT:    mulpd %xmm0, %xmm2
+; SSE-NEXT:    movapd %xmm2, (%rdi)
 ; SSE-NEXT:    movapd %xmm1, 16(%rdi)
 ; SSE-NEXT:    retq
 ;

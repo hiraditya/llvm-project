@@ -216,10 +216,11 @@ define void @int7_int7_pair(i7 signext %tmp1, i7 signext %tmp2, ptr %ref.tmp) {
 define void @int1_int1_pair(i1 signext %tmp1, i1 signext %tmp2, ptr %ref.tmp) {
 ; CHECK-LABEL: int1_int1_pair:
 ; CHECK:       # %bb.0:
-; CHECK-NEXT:    addb %sil, %sil
-; CHECK-NEXT:    subb %dil, %sil
-; CHECK-NEXT:    andb $3, %sil
-; CHECK-NEXT:    movb %sil, (%rdx)
+; CHECK-NEXT:    # kill: def $esi killed $esi def $rsi
+; CHECK-NEXT:    leal (%rsi,%rsi), %eax
+; CHECK-NEXT:    subb %dil, %al
+; CHECK-NEXT:    andb $3, %al
+; CHECK-NEXT:    movb %al, (%rdx)
 ; CHECK-NEXT:    retq
   %t1 = zext i1 %tmp2 to i2
   %t2 = shl nuw i2 %t1, 1

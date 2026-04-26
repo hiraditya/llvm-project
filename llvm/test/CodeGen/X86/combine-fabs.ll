@@ -40,7 +40,9 @@ define <4 x float> @combine_vec_fabs_constant() {
 define float @combine_fabs_fabs(float %a) {
 ; SSE-LABEL: combine_fabs_fabs:
 ; SSE:       # %bb.0:
-; SSE-NEXT:    andps {{\.?LCPI[0-9]+_[0-9]+}}(%rip), %xmm0
+; SSE-NEXT:    movaps {{.*#+}} xmm1 = [NaN,NaN,NaN,NaN]
+; SSE-NEXT:    andps %xmm0, %xmm1
+; SSE-NEXT:    movaps %xmm1, %xmm0
 ; SSE-NEXT:    retq
 ;
 ; AVX-LABEL: combine_fabs_fabs:
@@ -56,7 +58,9 @@ define float @combine_fabs_fabs(float %a) {
 define <4 x float> @combine_vec_fabs_fabs(<4 x float> %a) {
 ; SSE-LABEL: combine_vec_fabs_fabs:
 ; SSE:       # %bb.0:
-; SSE-NEXT:    andps {{\.?LCPI[0-9]+_[0-9]+}}(%rip), %xmm0
+; SSE-NEXT:    movaps {{.*#+}} xmm1 = [NaN,NaN,NaN,NaN]
+; SSE-NEXT:    andps %xmm0, %xmm1
+; SSE-NEXT:    movaps %xmm1, %xmm0
 ; SSE-NEXT:    retq
 ;
 ; AVX-LABEL: combine_vec_fabs_fabs:
@@ -73,7 +77,9 @@ define <4 x float> @combine_vec_fabs_fabs(<4 x float> %a) {
 define float @combine_fabs_fneg(float %a) {
 ; SSE-LABEL: combine_fabs_fneg:
 ; SSE:       # %bb.0:
-; SSE-NEXT:    andps {{\.?LCPI[0-9]+_[0-9]+}}(%rip), %xmm0
+; SSE-NEXT:    movaps {{.*#+}} xmm1 = [NaN,NaN,NaN,NaN]
+; SSE-NEXT:    andps %xmm0, %xmm1
+; SSE-NEXT:    movaps %xmm1, %xmm0
 ; SSE-NEXT:    retq
 ;
 ; AVX-LABEL: combine_fabs_fneg:
@@ -89,7 +95,9 @@ define float @combine_fabs_fneg(float %a) {
 define <4 x float> @combine_vec_fabs_fneg(<4 x float> %a) {
 ; SSE-LABEL: combine_vec_fabs_fneg:
 ; SSE:       # %bb.0:
-; SSE-NEXT:    andps {{\.?LCPI[0-9]+_[0-9]+}}(%rip), %xmm0
+; SSE-NEXT:    movaps {{.*#+}} xmm1 = [NaN,NaN,NaN,NaN]
+; SSE-NEXT:    andps %xmm0, %xmm1
+; SSE-NEXT:    movaps %xmm1, %xmm0
 ; SSE-NEXT:    retq
 ;
 ; AVX-LABEL: combine_vec_fabs_fneg:
@@ -106,7 +114,9 @@ define <4 x float> @combine_vec_fabs_fneg(<4 x float> %a) {
 define float @combine_fabs_fcopysign(float %a, float %b) {
 ; SSE-LABEL: combine_fabs_fcopysign:
 ; SSE:       # %bb.0:
-; SSE-NEXT:    andps {{\.?LCPI[0-9]+_[0-9]+}}(%rip), %xmm0
+; SSE-NEXT:    movaps {{.*#+}} xmm1 = [NaN,NaN,NaN,NaN]
+; SSE-NEXT:    andps %xmm0, %xmm1
+; SSE-NEXT:    movaps %xmm1, %xmm0
 ; SSE-NEXT:    retq
 ;
 ; AVX-LABEL: combine_fabs_fcopysign:
@@ -122,7 +132,9 @@ define float @combine_fabs_fcopysign(float %a, float %b) {
 define <4 x float> @combine_vec_fabs_fcopysign(<4 x float> %a, <4 x float> %b) {
 ; SSE-LABEL: combine_vec_fabs_fcopysign:
 ; SSE:       # %bb.0:
-; SSE-NEXT:    andps {{\.?LCPI[0-9]+_[0-9]+}}(%rip), %xmm0
+; SSE-NEXT:    movaps {{.*#+}} xmm1 = [NaN,NaN,NaN,NaN]
+; SSE-NEXT:    andps %xmm0, %xmm1
+; SSE-NEXT:    movaps %xmm1, %xmm0
 ; SSE-NEXT:    retq
 ;
 ; AVX-LABEL: combine_vec_fabs_fcopysign:
@@ -156,15 +168,17 @@ define void @combine_fabs_int_f32(ptr %src, ptr %dst) {
 ; SSE-LABEL: combine_fabs_int_f32:
 ; SSE:       # %bb.0:
 ; SSE-NEXT:    movl $2147483647, %eax # imm = 0x7FFFFFFF
-; SSE-NEXT:    andl (%rdi), %eax
-; SSE-NEXT:    movl %eax, (%rsi)
+; SSE-NEXT:    movl (%rdi), %ecx
+; SSE-NEXT:    andl %eax, %ecx
+; SSE-NEXT:    movl %ecx, (%rsi)
 ; SSE-NEXT:    retq
 ;
 ; AVX-LABEL: combine_fabs_int_f32:
 ; AVX:       # %bb.0:
 ; AVX-NEXT:    movl $2147483647, %eax # imm = 0x7FFFFFFF
-; AVX-NEXT:    andl (%rdi), %eax
-; AVX-NEXT:    movl %eax, (%rsi)
+; AVX-NEXT:    movl (%rdi), %ecx
+; AVX-NEXT:    andl %eax, %ecx
+; AVX-NEXT:    movl %ecx, (%rsi)
 ; AVX-NEXT:    retq
   %1 = load float, ptr %src
   %2 = call float @llvm.fabs.f32(float %1)
@@ -213,8 +227,9 @@ define void @combine_fabs_vec_int_v4f32(ptr %src, ptr %dst) {
 ; SSE-LABEL: combine_fabs_vec_int_v4f32:
 ; SSE:       # %bb.0:
 ; SSE-NEXT:    movaps (%rdi), %xmm0
-; SSE-NEXT:    andps {{\.?LCPI[0-9]+_[0-9]+}}(%rip), %xmm0
-; SSE-NEXT:    movaps %xmm0, (%rsi)
+; SSE-NEXT:    movaps {{.*#+}} xmm1 = [NaN,NaN,NaN,NaN]
+; SSE-NEXT:    andps %xmm0, %xmm1
+; SSE-NEXT:    movaps %xmm1, (%rsi)
 ; SSE-NEXT:    retq
 ;
 ; AVX-LABEL: combine_fabs_vec_int_v4f32:

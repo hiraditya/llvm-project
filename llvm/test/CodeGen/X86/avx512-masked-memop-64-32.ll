@@ -76,14 +76,14 @@ define <8 x double> @load_one_mask_bit_set5(ptr %addr, <8 x double> %val) {
 ; AVX512F:       ## %bb.0:
 ; AVX512F-NEXT:    movb $-128, %al
 ; AVX512F-NEXT:    kmovw %eax, %k1
-; AVX512F-NEXT:    vbroadcastsd 56(%rdi), %zmm0 {%k1}
+; AVX512F-NEXT:    vblendmpd 56(%rdi){1to8}, %zmm0, %zmm0 {%k1}
 ; AVX512F-NEXT:    retq
 ;
 ; SKX-LABEL: load_one_mask_bit_set5:
 ; SKX:       ## %bb.0:
 ; SKX-NEXT:    movb $-128, %al
 ; SKX-NEXT:    kmovd %eax, %k1
-; SKX-NEXT:    vbroadcastsd 56(%rdi), %zmm0 {%k1}
+; SKX-NEXT:    vblendmpd 56(%rdi){1to8}, %zmm0, %zmm0 {%k1}
 ; SKX-NEXT:    retq
   %res = call <8 x double> @llvm.masked.load.v8f64.p0(ptr %addr, i32 4, <8 x i1><i1 false, i1 false, i1 false, i1 false, i1 false, i1 false, i1 false, i1 true>, <8 x double> %val)
   ret <8 x double> %res

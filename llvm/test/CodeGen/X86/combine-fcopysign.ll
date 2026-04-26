@@ -13,7 +13,9 @@
 define <4 x float> @combine_vec_fcopysign_pos_constant0(<4 x float> %x) {
 ; SSE-LABEL: combine_vec_fcopysign_pos_constant0:
 ; SSE:       # %bb.0:
-; SSE-NEXT:    andps {{\.?LCPI[0-9]+_[0-9]+}}(%rip), %xmm0
+; SSE-NEXT:    movaps {{.*#+}} xmm1 = [NaN,NaN,NaN,NaN]
+; SSE-NEXT:    andps %xmm0, %xmm1
+; SSE-NEXT:    movaps %xmm1, %xmm0
 ; SSE-NEXT:    retq
 ;
 ; AVX2-LABEL: combine_vec_fcopysign_pos_constant0:
@@ -33,7 +35,9 @@ define <4 x float> @combine_vec_fcopysign_pos_constant0(<4 x float> %x) {
 define <4 x float> @combine_vec_fcopysign_pos_constant1(<4 x float> %x) {
 ; SSE-LABEL: combine_vec_fcopysign_pos_constant1:
 ; SSE:       # %bb.0:
-; SSE-NEXT:    andps {{\.?LCPI[0-9]+_[0-9]+}}(%rip), %xmm0
+; SSE-NEXT:    movaps {{.*#+}} xmm1 = [NaN,NaN,NaN,NaN]
+; SSE-NEXT:    andps %xmm0, %xmm1
+; SSE-NEXT:    movaps %xmm1, %xmm0
 ; SSE-NEXT:    retq
 ;
 ; AVX2-LABEL: combine_vec_fcopysign_pos_constant1:
@@ -53,7 +57,9 @@ define <4 x float> @combine_vec_fcopysign_pos_constant1(<4 x float> %x) {
 define <4 x float> @combine_vec_fcopysign_fabs_sgn(<4 x float> %x, <4 x float> %y) {
 ; SSE-LABEL: combine_vec_fcopysign_fabs_sgn:
 ; SSE:       # %bb.0:
-; SSE-NEXT:    andps {{\.?LCPI[0-9]+_[0-9]+}}(%rip), %xmm0
+; SSE-NEXT:    movaps {{.*#+}} xmm1 = [NaN,NaN,NaN,NaN]
+; SSE-NEXT:    andps %xmm0, %xmm1
+; SSE-NEXT:    movaps %xmm1, %xmm0
 ; SSE-NEXT:    retq
 ;
 ; AVX2-LABEL: combine_vec_fcopysign_fabs_sgn:
@@ -75,7 +81,9 @@ define <4 x float> @combine_vec_fcopysign_fabs_sgn(<4 x float> %x, <4 x float> %
 define <4 x float> @combine_vec_fcopysign_neg_constant0(<4 x float> %x) {
 ; SSE-LABEL: combine_vec_fcopysign_neg_constant0:
 ; SSE:       # %bb.0:
-; SSE-NEXT:    orps {{\.?LCPI[0-9]+_[0-9]+}}(%rip), %xmm0
+; SSE-NEXT:    movaps {{.*#+}} xmm1 = [-0.0E+0,-0.0E+0,-0.0E+0,-0.0E+0]
+; SSE-NEXT:    orps %xmm0, %xmm1
+; SSE-NEXT:    movaps %xmm1, %xmm0
 ; SSE-NEXT:    retq
 ;
 ; AVX2-LABEL: combine_vec_fcopysign_neg_constant0:
@@ -95,7 +103,9 @@ define <4 x float> @combine_vec_fcopysign_neg_constant0(<4 x float> %x) {
 define <4 x float> @combine_vec_fcopysign_neg_constant1(<4 x float> %x) {
 ; SSE-LABEL: combine_vec_fcopysign_neg_constant1:
 ; SSE:       # %bb.0:
-; SSE-NEXT:    orps {{\.?LCPI[0-9]+_[0-9]+}}(%rip), %xmm0
+; SSE-NEXT:    movaps {{.*#+}} xmm1 = [-0.0E+0,-0.0E+0,-0.0E+0,-0.0E+0]
+; SSE-NEXT:    orps %xmm0, %xmm1
+; SSE-NEXT:    movaps %xmm1, %xmm0
 ; SSE-NEXT:    retq
 ;
 ; AVX2-LABEL: combine_vec_fcopysign_neg_constant1:
@@ -115,7 +125,9 @@ define <4 x float> @combine_vec_fcopysign_neg_constant1(<4 x float> %x) {
 define <4 x float> @combine_vec_fcopysign_fneg_fabs_sgn(<4 x float> %x, <4 x float> %y) {
 ; SSE-LABEL: combine_vec_fcopysign_fneg_fabs_sgn:
 ; SSE:       # %bb.0:
-; SSE-NEXT:    orps {{\.?LCPI[0-9]+_[0-9]+}}(%rip), %xmm0
+; SSE-NEXT:    movaps {{.*#+}} xmm1 = [-0.0E+0,-0.0E+0,-0.0E+0,-0.0E+0]
+; SSE-NEXT:    orps %xmm0, %xmm1
+; SSE-NEXT:    movaps %xmm1, %xmm0
 ; SSE-NEXT:    retq
 ;
 ; AVX2-LABEL: combine_vec_fcopysign_fneg_fabs_sgn:
@@ -138,9 +150,12 @@ define <4 x float> @combine_vec_fcopysign_fneg_fabs_sgn(<4 x float> %x, <4 x flo
 define <4 x float> @combine_vec_fcopysign_fabs_mag(<4 x float> %x, <4 x float> %y) {
 ; SSE-LABEL: combine_vec_fcopysign_fabs_mag:
 ; SSE:       # %bb.0:
-; SSE-NEXT:    andps {{\.?LCPI[0-9]+_[0-9]+}}(%rip), %xmm1
-; SSE-NEXT:    andps {{\.?LCPI[0-9]+_[0-9]+}}(%rip), %xmm0
-; SSE-NEXT:    orps %xmm1, %xmm0
+; SSE-NEXT:    movaps {{.*#+}} xmm2 = [-0.0E+0,-0.0E+0,-0.0E+0,-0.0E+0]
+; SSE-NEXT:    andps %xmm1, %xmm2
+; SSE-NEXT:    movaps {{.*#+}} xmm1 = [NaN,NaN,NaN,NaN]
+; SSE-NEXT:    andps %xmm0, %xmm1
+; SSE-NEXT:    orps %xmm1, %xmm2
+; SSE-NEXT:    movaps %xmm2, %xmm0
 ; SSE-NEXT:    retq
 ;
 ; AVX2-LABEL: combine_vec_fcopysign_fabs_mag:
@@ -154,7 +169,9 @@ define <4 x float> @combine_vec_fcopysign_fabs_mag(<4 x float> %x, <4 x float> %
 ;
 ; AVX512-LABEL: combine_vec_fcopysign_fabs_mag:
 ; AVX512:       # %bb.0:
-; AVX512-NEXT:    vpternlogd {{.*#+}} xmm0 = xmm1 ^ (m32bcst & (xmm0 ^ xmm1))
+; AVX512-NEXT:    vpbroadcastd {{.*#+}} xmm2 = [2147483647,2147483647,2147483647,2147483647]
+; AVX512-NEXT:    vpternlogd {{.*#+}} xmm2 = xmm1 ^ (xmm2 & (xmm0 ^ xmm1))
+; AVX512-NEXT:    vmovdqa %xmm2, %xmm0
 ; AVX512-NEXT:    retq
   %1 = call <4 x float> @llvm.fabs.v4f32(<4 x float> %x)
   %2 = call <4 x float> @llvm.copysign.v4f32(<4 x float> %1, <4 x float> %y)
@@ -165,9 +182,12 @@ define <4 x float> @combine_vec_fcopysign_fabs_mag(<4 x float> %x, <4 x float> %
 define <4 x float> @combine_vec_fcopysign_fneg_mag(<4 x float> %x, <4 x float> %y) {
 ; SSE-LABEL: combine_vec_fcopysign_fneg_mag:
 ; SSE:       # %bb.0:
-; SSE-NEXT:    andps {{\.?LCPI[0-9]+_[0-9]+}}(%rip), %xmm1
-; SSE-NEXT:    andps {{\.?LCPI[0-9]+_[0-9]+}}(%rip), %xmm0
-; SSE-NEXT:    orps %xmm1, %xmm0
+; SSE-NEXT:    movaps {{.*#+}} xmm2 = [-0.0E+0,-0.0E+0,-0.0E+0,-0.0E+0]
+; SSE-NEXT:    andps %xmm1, %xmm2
+; SSE-NEXT:    movaps {{.*#+}} xmm1 = [NaN,NaN,NaN,NaN]
+; SSE-NEXT:    andps %xmm0, %xmm1
+; SSE-NEXT:    orps %xmm1, %xmm2
+; SSE-NEXT:    movaps %xmm2, %xmm0
 ; SSE-NEXT:    retq
 ;
 ; AVX2-LABEL: combine_vec_fcopysign_fneg_mag:
@@ -181,7 +201,9 @@ define <4 x float> @combine_vec_fcopysign_fneg_mag(<4 x float> %x, <4 x float> %
 ;
 ; AVX512-LABEL: combine_vec_fcopysign_fneg_mag:
 ; AVX512:       # %bb.0:
-; AVX512-NEXT:    vpternlogd {{.*#+}} xmm0 = xmm1 ^ (m32bcst & (xmm0 ^ xmm1))
+; AVX512-NEXT:    vpbroadcastd {{.*#+}} xmm2 = [2147483647,2147483647,2147483647,2147483647]
+; AVX512-NEXT:    vpternlogd {{.*#+}} xmm2 = xmm1 ^ (xmm2 & (xmm0 ^ xmm1))
+; AVX512-NEXT:    vmovdqa %xmm2, %xmm0
 ; AVX512-NEXT:    retq
   %1 = fsub <4 x float> <float -0.0, float -0.0, float -0.0, float -0.0>, %x
   %2 = call <4 x float> @llvm.copysign.v4f32(<4 x float> %1, <4 x float> %y)
@@ -192,9 +214,12 @@ define <4 x float> @combine_vec_fcopysign_fneg_mag(<4 x float> %x, <4 x float> %
 define <4 x float> @combine_vec_fcopysign_fcopysign_mag(<4 x float> %x, <4 x float> %y, <4 x float> %z) {
 ; SSE-LABEL: combine_vec_fcopysign_fcopysign_mag:
 ; SSE:       # %bb.0:
-; SSE-NEXT:    andps {{\.?LCPI[0-9]+_[0-9]+}}(%rip), %xmm1
-; SSE-NEXT:    andps {{\.?LCPI[0-9]+_[0-9]+}}(%rip), %xmm0
-; SSE-NEXT:    orps %xmm1, %xmm0
+; SSE-NEXT:    movaps {{.*#+}} xmm2 = [-0.0E+0,-0.0E+0,-0.0E+0,-0.0E+0]
+; SSE-NEXT:    andps %xmm1, %xmm2
+; SSE-NEXT:    movaps {{.*#+}} xmm1 = [NaN,NaN,NaN,NaN]
+; SSE-NEXT:    andps %xmm0, %xmm1
+; SSE-NEXT:    orps %xmm1, %xmm2
+; SSE-NEXT:    movaps %xmm2, %xmm0
 ; SSE-NEXT:    retq
 ;
 ; AVX2-LABEL: combine_vec_fcopysign_fcopysign_mag:
@@ -208,7 +233,9 @@ define <4 x float> @combine_vec_fcopysign_fcopysign_mag(<4 x float> %x, <4 x flo
 ;
 ; AVX512-LABEL: combine_vec_fcopysign_fcopysign_mag:
 ; AVX512:       # %bb.0:
-; AVX512-NEXT:    vpternlogd {{.*#+}} xmm0 = xmm1 ^ (m32bcst & (xmm0 ^ xmm1))
+; AVX512-NEXT:    vpbroadcastd {{.*#+}} xmm2 = [2147483647,2147483647,2147483647,2147483647]
+; AVX512-NEXT:    vpternlogd {{.*#+}} xmm2 = xmm1 ^ (xmm2 & (xmm0 ^ xmm1))
+; AVX512-NEXT:    vmovdqa %xmm2, %xmm0
 ; AVX512-NEXT:    retq
   %1 = call <4 x float> @llvm.copysign.v4f32(<4 x float> %x, <4 x float> %z)
   %2 = call <4 x float> @llvm.copysign.v4f32(<4 x float> %1, <4 x float> %y)
@@ -219,9 +246,12 @@ define <4 x float> @combine_vec_fcopysign_fcopysign_mag(<4 x float> %x, <4 x flo
 define <4 x float> @combine_vec_fcopysign_fcopysign_sgn(<4 x float> %x, <4 x float> %y, <4 x float> %z) {
 ; SSE-LABEL: combine_vec_fcopysign_fcopysign_sgn:
 ; SSE:       # %bb.0:
-; SSE-NEXT:    andps {{\.?LCPI[0-9]+_[0-9]+}}(%rip), %xmm2
-; SSE-NEXT:    andps {{\.?LCPI[0-9]+_[0-9]+}}(%rip), %xmm0
-; SSE-NEXT:    orps %xmm2, %xmm0
+; SSE-NEXT:    movaps {{.*#+}} xmm1 = [-0.0E+0,-0.0E+0,-0.0E+0,-0.0E+0]
+; SSE-NEXT:    andps %xmm2, %xmm1
+; SSE-NEXT:    movaps {{.*#+}} xmm2 = [NaN,NaN,NaN,NaN]
+; SSE-NEXT:    andps %xmm0, %xmm2
+; SSE-NEXT:    orps %xmm2, %xmm1
+; SSE-NEXT:    movaps %xmm1, %xmm0
 ; SSE-NEXT:    retq
 ;
 ; AVX2-LABEL: combine_vec_fcopysign_fcopysign_sgn:
@@ -235,8 +265,10 @@ define <4 x float> @combine_vec_fcopysign_fcopysign_sgn(<4 x float> %x, <4 x flo
 ;
 ; AVX512-LABEL: combine_vec_fcopysign_fcopysign_sgn:
 ; AVX512:       # %bb.0:
-; AVX512-NEXT:    vpandd {{\.?LCPI[0-9]+_[0-9]+}}(%rip){1to4}, %xmm2, %xmm1
-; AVX512-NEXT:    vpternlogd {{.*#+}} xmm0 = xmm1 ^ (m32bcst & (xmm0 ^ xmm1))
+; AVX512-NEXT:    vpandd {{\.?LCPI[0-9]+_[0-9]+}}(%rip){1to4}, %xmm2, %xmm2
+; AVX512-NEXT:    vpbroadcastd {{.*#+}} xmm1 = [2147483647,2147483647,2147483647,2147483647]
+; AVX512-NEXT:    vpternlogd {{.*#+}} xmm1 = xmm2 ^ (xmm1 & (xmm0 ^ xmm2))
+; AVX512-NEXT:    vmovdqa %xmm1, %xmm0
 ; AVX512-NEXT:    retq
   %1 = call <4 x float> @llvm.copysign.v4f32(<4 x float> %y, <4 x float> %z)
   %2 = call <4 x float> @llvm.copysign.v4f32(<4 x float> %x, <4 x float> %1)
@@ -247,17 +279,19 @@ define <4 x float> @combine_vec_fcopysign_fcopysign_sgn(<4 x float> %x, <4 x flo
 define <4 x double> @combine_vec_fcopysign_fpext_sgn(<4 x double> %x, <4 x float> %y) {
 ; SSE-LABEL: combine_vec_fcopysign_fpext_sgn:
 ; SSE:       # %bb.0:
-; SSE-NEXT:    cvtps2pd %xmm2, %xmm3
+; SSE-NEXT:    cvtps2pd %xmm2, %xmm4
 ; SSE-NEXT:    movhlps {{.*#+}} xmm2 = xmm2[1,1]
-; SSE-NEXT:    cvtps2pd %xmm2, %xmm2
-; SSE-NEXT:    movaps {{.*#+}} xmm4 = [NaN,NaN]
-; SSE-NEXT:    andps %xmm4, %xmm0
-; SSE-NEXT:    movaps %xmm4, %xmm5
-; SSE-NEXT:    andnps %xmm3, %xmm5
-; SSE-NEXT:    orps %xmm5, %xmm0
-; SSE-NEXT:    andps %xmm4, %xmm1
-; SSE-NEXT:    andnps %xmm2, %xmm4
-; SSE-NEXT:    orps %xmm4, %xmm1
+; SSE-NEXT:    cvtps2pd %xmm2, %xmm5
+; SSE-NEXT:    movaps {{.*#+}} xmm2 = [NaN,NaN]
+; SSE-NEXT:    andps %xmm2, %xmm0
+; SSE-NEXT:    movaps %xmm2, %xmm3
+; SSE-NEXT:    andnps %xmm4, %xmm3
+; SSE-NEXT:    orps %xmm0, %xmm3
+; SSE-NEXT:    andps %xmm2, %xmm1
+; SSE-NEXT:    andnps %xmm5, %xmm2
+; SSE-NEXT:    orps %xmm1, %xmm2
+; SSE-NEXT:    movaps %xmm3, %xmm0
+; SSE-NEXT:    movaps %xmm2, %xmm1
 ; SSE-NEXT:    retq
 ;
 ; AVX2-LABEL: combine_vec_fcopysign_fpext_sgn:
@@ -272,8 +306,10 @@ define <4 x double> @combine_vec_fcopysign_fpext_sgn(<4 x double> %x, <4 x float
 ;
 ; AVX512-LABEL: combine_vec_fcopysign_fpext_sgn:
 ; AVX512:       # %bb.0:
-; AVX512-NEXT:    vcvtps2pd %xmm1, %ymm1
-; AVX512-NEXT:    vpternlogq {{.*#+}} ymm0 = ymm1 ^ (m64bcst & (ymm0 ^ ymm1))
+; AVX512-NEXT:    vcvtps2pd %xmm1, %ymm2
+; AVX512-NEXT:    vpbroadcastq {{.*#+}} ymm1 = [9223372036854775807,9223372036854775807,9223372036854775807,9223372036854775807]
+; AVX512-NEXT:    vpternlogq {{.*#+}} ymm1 = ymm2 ^ (ymm1 & (ymm0 ^ ymm2))
+; AVX512-NEXT:    vmovdqa %ymm1, %ymm0
 ; AVX512-NEXT:    retq
   %1 = fpext <4 x float> %y to <4 x double>
   %2 = call <4 x double> @llvm.copysign.v4f64(<4 x double> %x, <4 x double> %1)
@@ -285,11 +321,14 @@ define <4 x float> @combine_vec_fcopysign_fptrunc_sgn(<4 x float> %x, <4 x doubl
 ; SSE-LABEL: combine_vec_fcopysign_fptrunc_sgn:
 ; SSE:       # %bb.0:
 ; SSE-NEXT:    cvtpd2ps %xmm2, %xmm2
-; SSE-NEXT:    cvtpd2ps %xmm1, %xmm1
-; SSE-NEXT:    unpcklpd {{.*#+}} xmm1 = xmm1[0],xmm2[0]
-; SSE-NEXT:    andpd {{\.?LCPI[0-9]+_[0-9]+}}(%rip), %xmm1
-; SSE-NEXT:    andpd {{\.?LCPI[0-9]+_[0-9]+}}(%rip), %xmm0
-; SSE-NEXT:    orpd %xmm1, %xmm0
+; SSE-NEXT:    cvtpd2ps %xmm1, %xmm3
+; SSE-NEXT:    unpcklpd {{.*#+}} xmm3 = xmm3[0],xmm2[0]
+; SSE-NEXT:    movapd {{.*#+}} xmm1 = [-0.0E+0,-0.0E+0,-0.0E+0,-0.0E+0]
+; SSE-NEXT:    andpd %xmm3, %xmm1
+; SSE-NEXT:    movapd {{.*#+}} xmm2 = [NaN,NaN,NaN,NaN]
+; SSE-NEXT:    andpd %xmm0, %xmm2
+; SSE-NEXT:    orpd %xmm2, %xmm1
+; SSE-NEXT:    movapd %xmm1, %xmm0
 ; SSE-NEXT:    retq
 ;
 ; AVX2-LABEL: combine_vec_fcopysign_fptrunc_sgn:
@@ -305,8 +344,10 @@ define <4 x float> @combine_vec_fcopysign_fptrunc_sgn(<4 x float> %x, <4 x doubl
 ;
 ; AVX512-LABEL: combine_vec_fcopysign_fptrunc_sgn:
 ; AVX512:       # %bb.0:
-; AVX512-NEXT:    vcvtpd2ps %ymm1, %xmm1
-; AVX512-NEXT:    vpternlogd {{.*#+}} xmm0 = xmm1 ^ (m32bcst & (xmm0 ^ xmm1))
+; AVX512-NEXT:    vcvtpd2ps %ymm1, %xmm2
+; AVX512-NEXT:    vpbroadcastd {{.*#+}} xmm1 = [2147483647,2147483647,2147483647,2147483647]
+; AVX512-NEXT:    vpternlogd {{.*#+}} xmm1 = xmm2 ^ (xmm1 & (xmm0 ^ xmm2))
+; AVX512-NEXT:    vmovdqa %xmm1, %xmm0
 ; AVX512-NEXT:    vzeroupper
 ; AVX512-NEXT:    retq
   %1 = fptrunc <4 x double> %y to <4 x float>
@@ -317,15 +358,15 @@ define <4 x float> @combine_vec_fcopysign_fptrunc_sgn(<4 x float> %x, <4 x doubl
 define double @PR136368(double %x) {
 ; SSE-LABEL: PR136368:
 ; SSE:       # %bb.0:
-; SSE-NEXT:    movapd {{.*#+}} xmm1 = [NaN,NaN]
-; SSE-NEXT:    movapd %xmm0, %xmm2
-; SSE-NEXT:    andpd %xmm1, %xmm2
+; SSE-NEXT:    movapd {{.*#+}} xmm2 = [NaN,NaN]
+; SSE-NEXT:    movapd %xmm2, %xmm1
+; SSE-NEXT:    andnpd %xmm0, %xmm1
+; SSE-NEXT:    andpd %xmm2, %xmm0
 ; SSE-NEXT:    movsd {{.*#+}} xmm3 = [1.5707963267948966E+0,0.0E+0]
 ; SSE-NEXT:    movapd %xmm3, %xmm4
-; SSE-NEXT:    cmpltsd %xmm2, %xmm4
+; SSE-NEXT:    cmpltsd %xmm0, %xmm4
 ; SSE-NEXT:    andpd %xmm3, %xmm4
-; SSE-NEXT:    andpd %xmm1, %xmm4
-; SSE-NEXT:    andnpd %xmm0, %xmm1
+; SSE-NEXT:    andpd %xmm2, %xmm4
 ; SSE-NEXT:    orpd %xmm4, %xmm1
 ; SSE-NEXT:    movapd %xmm1, %xmm0
 ; SSE-NEXT:    retq
@@ -351,7 +392,8 @@ define double @PR136368(double %x) {
 ; AVX512-NEXT:    vmovsd {{.*#+}} xmm3 = [1.5707963267948966E+0,0.0E+0]
 ; AVX512-NEXT:    vcmpltsd %xmm2, %xmm3, %k1
 ; AVX512-NEXT:    vmovsd %xmm3, %xmm3, %xmm2 {%k1} {z}
-; AVX512-NEXT:    vpternlogq {{.*#+}} xmm0 = xmm0 ^ (xmm1 & (xmm0 ^ xmm2))
+; AVX512-NEXT:    vpternlogq {{.*#+}} xmm1 = xmm0 ^ (xmm1 & (xmm2 ^ xmm0))
+; AVX512-NEXT:    vmovdqa %xmm1, %xmm0
 ; AVX512-NEXT:    retq
   %fabs = tail call double @llvm.fabs.f64(double %x)
   %cmp = fcmp ogt double %fabs, 0x3FF921FB54442D18

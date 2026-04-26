@@ -40,18 +40,18 @@ define <8 x i16> @t1(ptr %A, ptr %B) nounwind {
 ; X86-NEXT:    movl {{[0-9]+}}(%esp), %eax
 ; X86-NEXT:    movl {{[0-9]+}}(%esp), %ecx
 ; X86-NEXT:    movaps {{.*#+}} xmm0 = [0,65535,65535,65535,65535,65535,65535,65535]
-; X86-NEXT:    movaps %xmm0, %xmm1
-; X86-NEXT:    andnps (%ecx), %xmm1
-; X86-NEXT:    andps (%eax), %xmm0
+; X86-NEXT:    movaps (%eax), %xmm1
+; X86-NEXT:    andps %xmm0, %xmm1
+; X86-NEXT:    andnps (%ecx), %xmm0
 ; X86-NEXT:    orps %xmm1, %xmm0
 ; X86-NEXT:    retl
 ;
 ; X64-LABEL: t1:
 ; X64:       # %bb.0:
 ; X64-NEXT:    movaps {{.*#+}} xmm0 = [0,65535,65535,65535,65535,65535,65535,65535]
-; X64-NEXT:    movaps %xmm0, %xmm1
-; X64-NEXT:    andnps (%rsi), %xmm1
-; X64-NEXT:    andps (%rdi), %xmm0
+; X64-NEXT:    movaps (%rdi), %xmm1
+; X64-NEXT:    andps %xmm0, %xmm1
+; X64-NEXT:    andnps (%rsi), %xmm0
 ; X64-NEXT:    orps %xmm1, %xmm0
 ; X64-NEXT:    retq
 	%tmp1 = load <8 x i16>, ptr %A
@@ -68,7 +68,8 @@ define <8 x i16> @t2(<8 x i16> %A, <8 x i16> %B) nounwind {
 ; X86-NEXT:    pand %xmm2, %xmm0
 ; X86-NEXT:    pshuflw {{.*#+}} xmm1 = xmm1[1,1,1,1,4,5,6,7]
 ; X86-NEXT:    pandn %xmm1, %xmm2
-; X86-NEXT:    por %xmm2, %xmm0
+; X86-NEXT:    por %xmm0, %xmm2
+; X86-NEXT:    movdqa %xmm2, %xmm0
 ; X86-NEXT:    retl
 ;
 ; X64-LABEL: t2:
@@ -77,7 +78,8 @@ define <8 x i16> @t2(<8 x i16> %A, <8 x i16> %B) nounwind {
 ; X64-NEXT:    pand %xmm2, %xmm0
 ; X64-NEXT:    pshuflw {{.*#+}} xmm1 = xmm1[1,1,1,1,4,5,6,7]
 ; X64-NEXT:    pandn %xmm1, %xmm2
-; X64-NEXT:    por %xmm2, %xmm0
+; X64-NEXT:    por %xmm0, %xmm2
+; X64-NEXT:    movdqa %xmm2, %xmm0
 ; X64-NEXT:    retq
 	%tmp = shufflevector <8 x i16> %A, <8 x i16> %B, <8 x i32> < i32 9, i32 1, i32 2, i32 9, i32 4, i32 5, i32 6, i32 7 >
 	ret <8 x i16> %tmp
@@ -395,14 +397,16 @@ entry:
 define <4 x i32> @t17() nounwind {
 ; X86-LABEL: t17:
 ; X86:       # %bb.0: # %entry
-; X86-NEXT:    pshufd {{.*#+}} xmm0 = mem[0,1,0,1]
-; X86-NEXT:    pand {{\.?LCPI[0-9]+_[0-9]+}}, %xmm0
+; X86-NEXT:    pshufd {{.*#+}} xmm1 = mem[0,1,0,1]
+; X86-NEXT:    movdqa {{.*#+}} xmm0 = [0,0,4294967295,0]
+; X86-NEXT:    pand %xmm1, %xmm0
 ; X86-NEXT:    retl
 ;
 ; X64-LABEL: t17:
 ; X64:       # %bb.0: # %entry
-; X64-NEXT:    pshufd {{.*#+}} xmm0 = mem[0,1,0,1]
-; X64-NEXT:    pand {{\.?LCPI[0-9]+_[0-9]+}}(%rip), %xmm0
+; X64-NEXT:    pshufd {{.*#+}} xmm1 = mem[0,1,0,1]
+; X64-NEXT:    movdqa {{.*#+}} xmm0 = [0,0,4294967295,0]
+; X64-NEXT:    pand %xmm1, %xmm0
 ; X64-NEXT:    retq
 entry:
   %tmp1 = load <4 x float>, ptr undef, align 16

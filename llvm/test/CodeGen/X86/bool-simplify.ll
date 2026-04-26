@@ -4,9 +4,9 @@
 define i32 @foo(<2 x i64> %c, i32 %a, i32 %b) {
 ; CHECK-LABEL: foo:
 ; CHECK:       # %bb.0:
-; CHECK-NEXT:    movl %edi, %eax
+; CHECK-NEXT:    movl %esi, %eax
 ; CHECK-NEXT:    ptest %xmm0, %xmm0
-; CHECK-NEXT:    cmovnel %esi, %eax
+; CHECK-NEXT:    cmovel %edi, %eax
 ; CHECK-NEXT:    retq
   %t1 = call i32 @llvm.x86.sse41.ptestz(<2 x i64> %c, <2 x i64> %c)
   %t2 = icmp ne i32 %t1, 0
@@ -51,9 +51,9 @@ define i32 @bax(<2 x i64> %c) {
 define i16 @rnd16(i16 %arg) nounwind {
 ; CHECK-LABEL: rnd16:
 ; CHECK:       # %bb.0:
-; CHECK-NEXT:    xorl %eax, %eax
-; CHECK-NEXT:    rdrandw %cx
-; CHECK-NEXT:    cmovbl %edi, %eax
+; CHECK-NEXT:    xorl %ecx, %ecx
+; CHECK-NEXT:    rdrandw %ax
+; CHECK-NEXT:    cmovbl %edi, %ecx
 ; CHECK-NEXT:    addl %ecx, %eax
 ; CHECK-NEXT:    # kill: def $ax killed $ax killed $eax
 ; CHECK-NEXT:    retq
@@ -69,9 +69,9 @@ define i16 @rnd16(i16 %arg) nounwind {
 define i32 @rnd32(i32 %arg) nounwind {
 ; CHECK-LABEL: rnd32:
 ; CHECK:       # %bb.0:
-; CHECK-NEXT:    xorl %eax, %eax
-; CHECK-NEXT:    rdrandl %ecx
-; CHECK-NEXT:    cmovbl %edi, %eax
+; CHECK-NEXT:    xorl %ecx, %ecx
+; CHECK-NEXT:    rdrandl %eax
+; CHECK-NEXT:    cmovbl %edi, %ecx
 ; CHECK-NEXT:    addl %ecx, %eax
 ; CHECK-NEXT:    retq
   %1 = tail call { i32, i32 } @llvm.x86.rdrand.32() nounwind
@@ -86,9 +86,9 @@ define i32 @rnd32(i32 %arg) nounwind {
 define i64 @rnd64(i64 %arg) nounwind {
 ; CHECK-LABEL: rnd64:
 ; CHECK:       # %bb.0:
-; CHECK-NEXT:    xorl %eax, %eax
-; CHECK-NEXT:    rdrandq %rcx
-; CHECK-NEXT:    cmovbq %rdi, %rax
+; CHECK-NEXT:    xorl %ecx, %ecx
+; CHECK-NEXT:    rdrandq %rax
+; CHECK-NEXT:    cmovbq %rdi, %rcx
 ; CHECK-NEXT:    addq %rcx, %rax
 ; CHECK-NEXT:    retq
   %1 = tail call { i64, i32 } @llvm.x86.rdrand.64() nounwind
@@ -103,9 +103,9 @@ define i64 @rnd64(i64 %arg) nounwind {
 define i16 @seed16(i16 %arg) nounwind {
 ; CHECK-LABEL: seed16:
 ; CHECK:       # %bb.0:
-; CHECK-NEXT:    xorl %eax, %eax
-; CHECK-NEXT:    rdseedw %cx
-; CHECK-NEXT:    cmovbl %edi, %eax
+; CHECK-NEXT:    xorl %ecx, %ecx
+; CHECK-NEXT:    rdseedw %ax
+; CHECK-NEXT:    cmovbl %edi, %ecx
 ; CHECK-NEXT:    addl %ecx, %eax
 ; CHECK-NEXT:    # kill: def $ax killed $ax killed $eax
 ; CHECK-NEXT:    retq
@@ -121,9 +121,9 @@ define i16 @seed16(i16 %arg) nounwind {
 define i32 @seed32(i32 %arg) nounwind {
 ; CHECK-LABEL: seed32:
 ; CHECK:       # %bb.0:
-; CHECK-NEXT:    xorl %eax, %eax
-; CHECK-NEXT:    rdseedl %ecx
-; CHECK-NEXT:    cmovbl %edi, %eax
+; CHECK-NEXT:    xorl %ecx, %ecx
+; CHECK-NEXT:    rdseedl %eax
+; CHECK-NEXT:    cmovbl %edi, %ecx
 ; CHECK-NEXT:    addl %ecx, %eax
 ; CHECK-NEXT:    retq
   %1 = tail call { i32, i32 } @llvm.x86.rdseed.32() nounwind
@@ -138,9 +138,9 @@ define i32 @seed32(i32 %arg) nounwind {
 define i64 @seed64(i64 %arg) nounwind {
 ; CHECK-LABEL: seed64:
 ; CHECK:       # %bb.0:
-; CHECK-NEXT:    xorl %eax, %eax
-; CHECK-NEXT:    rdseedq %rcx
-; CHECK-NEXT:    cmovbq %rdi, %rax
+; CHECK-NEXT:    xorl %ecx, %ecx
+; CHECK-NEXT:    rdseedq %rax
+; CHECK-NEXT:    cmovbq %rdi, %rcx
 ; CHECK-NEXT:    addq %rcx, %rax
 ; CHECK-NEXT:    retq
   %1 = tail call { i64, i32 } @llvm.x86.rdseed.64() nounwind

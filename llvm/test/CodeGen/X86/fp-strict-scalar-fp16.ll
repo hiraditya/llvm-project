@@ -504,14 +504,15 @@ define half @fma_f16(half %a, half %b, half %c) nounwind strictfp {
 ;
 ; X86-LABEL: fma_f16:
 ; X86:       # %bb.0:
-; X86-NEXT:    vmovsh {{.*#+}} xmm1 = mem[0],zero,zero,zero,zero,zero,zero,zero
 ; X86-NEXT:    vmovsh {{.*#+}} xmm0 = mem[0],zero,zero,zero,zero,zero,zero,zero
+; X86-NEXT:    vmovsh {{.*#+}} xmm1 = mem[0],zero,zero,zero,zero,zero,zero,zero
 ; X86-NEXT:    vfmadd213sh {{[0-9]+}}(%esp), %xmm1, %xmm0
 ; X86-NEXT:    retl
 ;
 ; X64-LABEL: fma_f16:
 ; X64:       # %bb.0:
-; X64-NEXT:    vfmadd213sh %xmm2, %xmm1, %xmm0
+; X64-NEXT:    vfmadd213sh %xmm2, %xmm0, %xmm1
+; X64-NEXT:    vmovaps %xmm1, %xmm0
 ; X64-NEXT:    retq
   %res = call half @llvm.experimental.constrained.fma.f16(half %a, half %b, half %c,
                                                           metadata !"round.dynamic",

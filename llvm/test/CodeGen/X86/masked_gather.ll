@@ -815,22 +815,24 @@ define <16 x i8> @gather_v16i8_v16i32_v16i8(ptr %base, <16 x i32> %idx, <16 x i8
 ; SSE-NEXT:    pextrq $1, %xmm0, %rcx
 ; SSE-NEXT:    pinsrb $1, (%rcx), %xmm5
 ; SSE-NEXT:  .LBB4_4: # %else2
-; SSE-NEXT:    paddq %xmm6, %xmm4
+; SSE-NEXT:    movdqa %xmm6, %xmm0
+; SSE-NEXT:    paddq %xmm4, %xmm0
 ; SSE-NEXT:    testb $4, %al
 ; SSE-NEXT:    je .LBB4_6
 ; SSE-NEXT:  # %bb.5: # %cond.load4
-; SSE-NEXT:    movq %xmm4, %rcx
+; SSE-NEXT:    movq %xmm0, %rcx
 ; SSE-NEXT:    pinsrb $2, (%rcx), %xmm5
 ; SSE-NEXT:  .LBB4_6: # %else5
-; SSE-NEXT:    pmovsxdq %xmm1, %xmm0
+; SSE-NEXT:    pmovsxdq %xmm1, %xmm4
 ; SSE-NEXT:    testb $8, %al
 ; SSE-NEXT:    je .LBB4_8
 ; SSE-NEXT:  # %bb.7: # %cond.load7
-; SSE-NEXT:    pextrq $1, %xmm4, %rcx
+; SSE-NEXT:    pextrq $1, %xmm0, %rcx
 ; SSE-NEXT:    pinsrb $3, (%rcx), %xmm5
 ; SSE-NEXT:  .LBB4_8: # %else8
 ; SSE-NEXT:    pshufd {{.*#+}} xmm1 = xmm1[2,3,2,3]
-; SSE-NEXT:    paddq %xmm6, %xmm0
+; SSE-NEXT:    movdqa %xmm6, %xmm0
+; SSE-NEXT:    paddq %xmm4, %xmm0
 ; SSE-NEXT:    testb $16, %al
 ; SSE-NEXT:    je .LBB4_10
 ; SSE-NEXT:  # %bb.9: # %cond.load10
@@ -844,22 +846,24 @@ define <16 x i8> @gather_v16i8_v16i32_v16i8(ptr %base, <16 x i32> %idx, <16 x i8
 ; SSE-NEXT:    pextrq $1, %xmm0, %rcx
 ; SSE-NEXT:    pinsrb $5, (%rcx), %xmm5
 ; SSE-NEXT:  .LBB4_12: # %else14
-; SSE-NEXT:    paddq %xmm6, %xmm1
+; SSE-NEXT:    movdqa %xmm6, %xmm0
+; SSE-NEXT:    paddq %xmm1, %xmm0
 ; SSE-NEXT:    testb $64, %al
 ; SSE-NEXT:    je .LBB4_14
 ; SSE-NEXT:  # %bb.13: # %cond.load16
-; SSE-NEXT:    movq %xmm1, %rcx
+; SSE-NEXT:    movq %xmm0, %rcx
 ; SSE-NEXT:    pinsrb $6, (%rcx), %xmm5
 ; SSE-NEXT:  .LBB4_14: # %else17
-; SSE-NEXT:    pmovsxdq %xmm2, %xmm0
+; SSE-NEXT:    pmovsxdq %xmm2, %xmm4
 ; SSE-NEXT:    testb %al, %al
 ; SSE-NEXT:    jns .LBB4_16
 ; SSE-NEXT:  # %bb.15: # %cond.load19
-; SSE-NEXT:    pextrq $1, %xmm1, %rcx
+; SSE-NEXT:    pextrq $1, %xmm0, %rcx
 ; SSE-NEXT:    pinsrb $7, (%rcx), %xmm5
 ; SSE-NEXT:  .LBB4_16: # %else20
 ; SSE-NEXT:    pshufd {{.*#+}} xmm1 = xmm2[2,3,2,3]
-; SSE-NEXT:    paddq %xmm6, %xmm0
+; SSE-NEXT:    movdqa %xmm6, %xmm0
+; SSE-NEXT:    paddq %xmm4, %xmm0
 ; SSE-NEXT:    testl $256, %eax # imm = 0x100
 ; SSE-NEXT:    je .LBB4_18
 ; SSE-NEXT:  # %bb.17: # %cond.load22
@@ -873,22 +877,24 @@ define <16 x i8> @gather_v16i8_v16i32_v16i8(ptr %base, <16 x i32> %idx, <16 x i8
 ; SSE-NEXT:    pextrq $1, %xmm0, %rcx
 ; SSE-NEXT:    pinsrb $9, (%rcx), %xmm5
 ; SSE-NEXT:  .LBB4_20: # %else26
-; SSE-NEXT:    paddq %xmm6, %xmm1
+; SSE-NEXT:    movdqa %xmm6, %xmm0
+; SSE-NEXT:    paddq %xmm1, %xmm0
 ; SSE-NEXT:    testl $1024, %eax # imm = 0x400
 ; SSE-NEXT:    je .LBB4_22
 ; SSE-NEXT:  # %bb.21: # %cond.load28
-; SSE-NEXT:    movq %xmm1, %rcx
+; SSE-NEXT:    movq %xmm0, %rcx
 ; SSE-NEXT:    pinsrb $10, (%rcx), %xmm5
 ; SSE-NEXT:  .LBB4_22: # %else29
-; SSE-NEXT:    pmovsxdq %xmm3, %xmm0
+; SSE-NEXT:    pmovsxdq %xmm3, %xmm2
 ; SSE-NEXT:    testl $2048, %eax # imm = 0x800
 ; SSE-NEXT:    je .LBB4_24
 ; SSE-NEXT:  # %bb.23: # %cond.load31
-; SSE-NEXT:    pextrq $1, %xmm1, %rcx
+; SSE-NEXT:    pextrq $1, %xmm0, %rcx
 ; SSE-NEXT:    pinsrb $11, (%rcx), %xmm5
 ; SSE-NEXT:  .LBB4_24: # %else32
 ; SSE-NEXT:    pshufd {{.*#+}} xmm1 = xmm3[2,3,2,3]
-; SSE-NEXT:    paddq %xmm6, %xmm0
+; SSE-NEXT:    movdqa %xmm6, %xmm0
+; SSE-NEXT:    paddq %xmm2, %xmm0
 ; SSE-NEXT:    testl $4096, %eax # imm = 0x1000
 ; SSE-NEXT:    je .LBB4_26
 ; SSE-NEXT:  # %bb.25: # %cond.load34
@@ -1343,122 +1349,129 @@ define <8 x i32> @gather_v8i32_v8i32(<8 x i32> %trigger) {
 ; SSE-NEXT:    movdqa %xmm0, %xmm2
 ; SSE-NEXT:    pxor %xmm0, %xmm0
 ; SSE-NEXT:    pcmpeqd %xmm0, %xmm1
-; SSE-NEXT:    pcmpeqd %xmm2, %xmm0
-; SSE-NEXT:    packssdw %xmm1, %xmm0
-; SSE-NEXT:    packsswb %xmm0, %xmm0
-; SSE-NEXT:    pmovmskb %xmm0, %eax
+; SSE-NEXT:    movdqa %xmm2, %xmm4
+; SSE-NEXT:    pcmpeqd %xmm0, %xmm4
+; SSE-NEXT:    packssdw %xmm1, %xmm4
+; SSE-NEXT:    packsswb %xmm4, %xmm4
+; SSE-NEXT:    pmovmskb %xmm4, %eax
 ; SSE-NEXT:    testb $1, %al
-; SSE-NEXT:    je .LBB5_1
-; SSE-NEXT:  # %bb.2: # %cond.load
+; SSE-NEXT:    je .LBB5_2
+; SSE-NEXT:  # %bb.1: # %cond.load
 ; SSE-NEXT:    movd {{.*#+}} xmm0 = mem[0],zero,zero,zero
 ; SSE-NEXT:    testb $2, %al
-; SSE-NEXT:    jne .LBB5_4
-; SSE-NEXT:    jmp .LBB5_5
-; SSE-NEXT:  .LBB5_1:
+; SSE-NEXT:    jne .LBB5_3
+; SSE-NEXT:    jmp .LBB5_4
+; SSE-NEXT:  .LBB5_2:
 ; SSE-NEXT:    # implicit-def: $xmm0
 ; SSE-NEXT:    testb $2, %al
-; SSE-NEXT:    je .LBB5_5
-; SSE-NEXT:  .LBB5_4: # %cond.load1
+; SSE-NEXT:    je .LBB5_4
+; SSE-NEXT:  .LBB5_3: # %cond.load1
 ; SSE-NEXT:    pinsrd $1, c+12(%rip), %xmm0
-; SSE-NEXT:  .LBB5_5: # %else2
+; SSE-NEXT:  .LBB5_4: # %else2
 ; SSE-NEXT:    testb $4, %al
-; SSE-NEXT:    jne .LBB5_6
-; SSE-NEXT:  # %bb.7: # %else5
-; SSE-NEXT:    testb $8, %al
-; SSE-NEXT:    jne .LBB5_8
-; SSE-NEXT:  .LBB5_9: # %else8
-; SSE-NEXT:    testb $16, %al
-; SSE-NEXT:    je .LBB5_10
-; SSE-NEXT:  .LBB5_11: # %cond.load10
-; SSE-NEXT:    pinsrd $0, c+12(%rip), %xmm1
-; SSE-NEXT:    testb $32, %al
-; SSE-NEXT:    jne .LBB5_13
-; SSE-NEXT:    jmp .LBB5_14
-; SSE-NEXT:  .LBB5_6: # %cond.load4
+; SSE-NEXT:    je .LBB5_5
+; SSE-NEXT:  # %bb.13: # %cond.load4
 ; SSE-NEXT:    pinsrd $2, c+12(%rip), %xmm0
 ; SSE-NEXT:    testb $8, %al
-; SSE-NEXT:    je .LBB5_9
-; SSE-NEXT:  .LBB5_8: # %cond.load7
+; SSE-NEXT:    je .LBB5_6
+; SSE-NEXT:    jmp .LBB5_14
+; SSE-NEXT:  .LBB5_5: # %else5
+; SSE-NEXT:    testb $8, %al
+; SSE-NEXT:    je .LBB5_6
+; SSE-NEXT:  .LBB5_14: # %cond.load7
 ; SSE-NEXT:    pinsrd $3, c+12(%rip), %xmm0
+; SSE-NEXT:  .LBB5_6: # %else8
 ; SSE-NEXT:    testb $16, %al
-; SSE-NEXT:    jne .LBB5_11
-; SSE-NEXT:  .LBB5_10:
 ; SSE-NEXT:    # implicit-def: $xmm1
+; SSE-NEXT:    je .LBB5_7
+; SSE-NEXT:  # %bb.15: # %cond.load10
+; SSE-NEXT:    pinsrd $0, c+12(%rip), %xmm1
 ; SSE-NEXT:    testb $32, %al
-; SSE-NEXT:    je .LBB5_14
-; SSE-NEXT:  .LBB5_13: # %cond.load13
-; SSE-NEXT:    pinsrd $1, c+12(%rip), %xmm1
-; SSE-NEXT:  .LBB5_14: # %else14
+; SSE-NEXT:    jne .LBB5_16
+; SSE-NEXT:  .LBB5_8: # %else14
 ; SSE-NEXT:    testb $64, %al
-; SSE-NEXT:    jne .LBB5_15
-; SSE-NEXT:  # %bb.16: # %else17
+; SSE-NEXT:    je .LBB5_9
+; SSE-NEXT:  .LBB5_17: # %cond.load16
+; SSE-NEXT:    pinsrd $2, c+12(%rip), %xmm1
 ; SSE-NEXT:    testb $-128, %al
-; SSE-NEXT:    je .LBB5_18
-; SSE-NEXT:  .LBB5_17: # %cond.load19
+; SSE-NEXT:    jne .LBB5_10
+; SSE-NEXT:    jmp .LBB5_11
+; SSE-NEXT:  .LBB5_7: # %else11
+; SSE-NEXT:    testb $32, %al
+; SSE-NEXT:    je .LBB5_8
+; SSE-NEXT:  .LBB5_16: # %cond.load13
+; SSE-NEXT:    pinsrd $1, c+12(%rip), %xmm1
+; SSE-NEXT:    testb $64, %al
+; SSE-NEXT:    jne .LBB5_17
+; SSE-NEXT:  .LBB5_9: # %else17
+; SSE-NEXT:    testb $-128, %al
+; SSE-NEXT:    je .LBB5_11
+; SSE-NEXT:  .LBB5_10: # %cond.load19
 ; SSE-NEXT:    pinsrd $3, c+12(%rip), %xmm1
-; SSE-NEXT:  .LBB5_18: # %else20
+; SSE-NEXT:  .LBB5_11: # %else20
 ; SSE-NEXT:    pxor %xmm4, %xmm4
 ; SSE-NEXT:    movdqa %xmm2, %xmm5
 ; SSE-NEXT:    pcmpeqd %xmm4, %xmm5
-; SSE-NEXT:    pcmpeqd %xmm3, %xmm4
-; SSE-NEXT:    packssdw %xmm4, %xmm5
+; SSE-NEXT:    movdqa %xmm3, %xmm6
+; SSE-NEXT:    pcmpeqd %xmm4, %xmm6
+; SSE-NEXT:    packssdw %xmm6, %xmm5
 ; SSE-NEXT:    packsswb %xmm5, %xmm5
 ; SSE-NEXT:    pmovmskb %xmm5, %eax
 ; SSE-NEXT:    testb $1, %al
-; SSE-NEXT:    je .LBB5_19
-; SSE-NEXT:  # %bb.20: # %cond.load23
+; SSE-NEXT:    je .LBB5_18
+; SSE-NEXT:  # %bb.12: # %cond.load23
 ; SSE-NEXT:    movd {{.*#+}} xmm4 = mem[0],zero,zero,zero
 ; SSE-NEXT:    testb $2, %al
-; SSE-NEXT:    jne .LBB5_22
-; SSE-NEXT:    jmp .LBB5_23
-; SSE-NEXT:  .LBB5_15: # %cond.load16
-; SSE-NEXT:    pinsrd $2, c+12(%rip), %xmm1
-; SSE-NEXT:    testb $-128, %al
-; SSE-NEXT:    jne .LBB5_17
-; SSE-NEXT:    jmp .LBB5_18
-; SSE-NEXT:  .LBB5_19:
+; SSE-NEXT:    jne .LBB5_19
+; SSE-NEXT:    jmp .LBB5_20
+; SSE-NEXT:  .LBB5_18:
 ; SSE-NEXT:    # implicit-def: $xmm4
 ; SSE-NEXT:    testb $2, %al
-; SSE-NEXT:    je .LBB5_23
-; SSE-NEXT:  .LBB5_22: # %cond.load28
+; SSE-NEXT:    je .LBB5_20
+; SSE-NEXT:  .LBB5_19: # %cond.load28
 ; SSE-NEXT:    pinsrd $1, c+28(%rip), %xmm4
-; SSE-NEXT:  .LBB5_23: # %else31
+; SSE-NEXT:  .LBB5_20: # %else31
 ; SSE-NEXT:    testb $4, %al
-; SSE-NEXT:    jne .LBB5_24
-; SSE-NEXT:  # %bb.25: # %else36
-; SSE-NEXT:    testb $8, %al
-; SSE-NEXT:    jne .LBB5_26
-; SSE-NEXT:  .LBB5_27: # %else41
-; SSE-NEXT:    testb $16, %al
-; SSE-NEXT:    je .LBB5_28
-; SSE-NEXT:  .LBB5_29: # %cond.load43
-; SSE-NEXT:    pinsrd $0, c+28(%rip), %xmm5
-; SSE-NEXT:    testb $32, %al
-; SSE-NEXT:    jne .LBB5_31
-; SSE-NEXT:    jmp .LBB5_32
-; SSE-NEXT:  .LBB5_24: # %cond.load33
+; SSE-NEXT:    je .LBB5_21
+; SSE-NEXT:  # %bb.29: # %cond.load33
 ; SSE-NEXT:    pinsrd $2, c+28(%rip), %xmm4
 ; SSE-NEXT:    testb $8, %al
-; SSE-NEXT:    je .LBB5_27
-; SSE-NEXT:  .LBB5_26: # %cond.load38
+; SSE-NEXT:    je .LBB5_22
+; SSE-NEXT:    jmp .LBB5_30
+; SSE-NEXT:  .LBB5_21: # %else36
+; SSE-NEXT:    testb $8, %al
+; SSE-NEXT:    je .LBB5_22
+; SSE-NEXT:  .LBB5_30: # %cond.load38
 ; SSE-NEXT:    pinsrd $3, c+28(%rip), %xmm4
+; SSE-NEXT:  .LBB5_22: # %else41
 ; SSE-NEXT:    testb $16, %al
-; SSE-NEXT:    jne .LBB5_29
-; SSE-NEXT:  .LBB5_28:
 ; SSE-NEXT:    # implicit-def: $xmm5
+; SSE-NEXT:    je .LBB5_23
+; SSE-NEXT:  # %bb.31: # %cond.load43
+; SSE-NEXT:    pinsrd $0, c+28(%rip), %xmm5
 ; SSE-NEXT:    testb $32, %al
-; SSE-NEXT:    je .LBB5_32
-; SSE-NEXT:  .LBB5_31: # %cond.load48
+; SSE-NEXT:    jne .LBB5_32
+; SSE-NEXT:  .LBB5_24: # %else51
+; SSE-NEXT:    testb $64, %al
+; SSE-NEXT:    je .LBB5_25
+; SSE-NEXT:  .LBB5_33: # %cond.load53
+; SSE-NEXT:    pinsrd $2, c+28(%rip), %xmm5
+; SSE-NEXT:    testb $-128, %al
+; SSE-NEXT:    jne .LBB5_26
+; SSE-NEXT:    jmp .LBB5_27
+; SSE-NEXT:  .LBB5_23: # %else46
+; SSE-NEXT:    testb $32, %al
+; SSE-NEXT:    je .LBB5_24
+; SSE-NEXT:  .LBB5_32: # %cond.load48
 ; SSE-NEXT:    pinsrd $1, c+28(%rip), %xmm5
-; SSE-NEXT:  .LBB5_32: # %else51
 ; SSE-NEXT:    testb $64, %al
 ; SSE-NEXT:    jne .LBB5_33
-; SSE-NEXT:  # %bb.34: # %else56
+; SSE-NEXT:  .LBB5_25: # %else56
 ; SSE-NEXT:    testb $-128, %al
-; SSE-NEXT:    je .LBB5_36
-; SSE-NEXT:  .LBB5_35: # %cond.load58
+; SSE-NEXT:    je .LBB5_27
+; SSE-NEXT:  .LBB5_26: # %cond.load58
 ; SSE-NEXT:    pinsrd $3, c+28(%rip), %xmm5
-; SSE-NEXT:  .LBB5_36: # %else61
+; SSE-NEXT:  .LBB5_27: # %else61
 ; SSE-NEXT:    pxor %xmm6, %xmm6
 ; SSE-NEXT:    pcmpeqd %xmm6, %xmm2
 ; SSE-NEXT:    pcmpeqd %xmm6, %xmm3
@@ -1466,67 +1479,63 @@ define <8 x i32> @gather_v8i32_v8i32(<8 x i32> %trigger) {
 ; SSE-NEXT:    packsswb %xmm2, %xmm2
 ; SSE-NEXT:    pmovmskb %xmm2, %eax
 ; SSE-NEXT:    testb $1, %al
-; SSE-NEXT:    je .LBB5_37
-; SSE-NEXT:  # %bb.38: # %cond.load64
+; SSE-NEXT:    je .LBB5_34
+; SSE-NEXT:  # %bb.28: # %cond.load64
 ; SSE-NEXT:    movd {{.*#+}} xmm2 = mem[0],zero,zero,zero
 ; SSE-NEXT:    testb $2, %al
-; SSE-NEXT:    jne .LBB5_40
-; SSE-NEXT:    jmp .LBB5_41
-; SSE-NEXT:  .LBB5_33: # %cond.load53
-; SSE-NEXT:    pinsrd $2, c+28(%rip), %xmm5
-; SSE-NEXT:    testb $-128, %al
 ; SSE-NEXT:    jne .LBB5_35
 ; SSE-NEXT:    jmp .LBB5_36
-; SSE-NEXT:  .LBB5_37:
+; SSE-NEXT:  .LBB5_34:
 ; SSE-NEXT:    # implicit-def: $xmm2
 ; SSE-NEXT:    testb $2, %al
-; SSE-NEXT:    je .LBB5_41
-; SSE-NEXT:  .LBB5_40: # %cond.load69
+; SSE-NEXT:    je .LBB5_36
+; SSE-NEXT:  .LBB5_35: # %cond.load69
 ; SSE-NEXT:    pinsrd $1, c+28(%rip), %xmm2
-; SSE-NEXT:  .LBB5_41: # %else72
+; SSE-NEXT:  .LBB5_36: # %else72
 ; SSE-NEXT:    testb $4, %al
-; SSE-NEXT:    jne .LBB5_42
-; SSE-NEXT:  # %bb.43: # %else77
-; SSE-NEXT:    testb $8, %al
-; SSE-NEXT:    jne .LBB5_44
-; SSE-NEXT:  .LBB5_45: # %else82
-; SSE-NEXT:    testb $16, %al
-; SSE-NEXT:    je .LBB5_46
-; SSE-NEXT:  .LBB5_47: # %cond.load84
-; SSE-NEXT:    pinsrd $0, c+28(%rip), %xmm3
-; SSE-NEXT:    testb $32, %al
-; SSE-NEXT:    jne .LBB5_49
-; SSE-NEXT:    jmp .LBB5_50
-; SSE-NEXT:  .LBB5_42: # %cond.load74
+; SSE-NEXT:    je .LBB5_37
+; SSE-NEXT:  # %bb.45: # %cond.load74
 ; SSE-NEXT:    pinsrd $2, c+28(%rip), %xmm2
 ; SSE-NEXT:    testb $8, %al
-; SSE-NEXT:    je .LBB5_45
-; SSE-NEXT:  .LBB5_44: # %cond.load79
+; SSE-NEXT:    je .LBB5_38
+; SSE-NEXT:    jmp .LBB5_46
+; SSE-NEXT:  .LBB5_37: # %else77
+; SSE-NEXT:    testb $8, %al
+; SSE-NEXT:    je .LBB5_38
+; SSE-NEXT:  .LBB5_46: # %cond.load79
 ; SSE-NEXT:    pinsrd $3, c+28(%rip), %xmm2
+; SSE-NEXT:  .LBB5_38: # %else82
 ; SSE-NEXT:    testb $16, %al
-; SSE-NEXT:    jne .LBB5_47
-; SSE-NEXT:  .LBB5_46:
 ; SSE-NEXT:    # implicit-def: $xmm3
+; SSE-NEXT:    je .LBB5_39
+; SSE-NEXT:  # %bb.47: # %cond.load84
+; SSE-NEXT:    pinsrd $0, c+28(%rip), %xmm3
 ; SSE-NEXT:    testb $32, %al
-; SSE-NEXT:    je .LBB5_50
-; SSE-NEXT:  .LBB5_49: # %cond.load89
-; SSE-NEXT:    pinsrd $1, c+28(%rip), %xmm3
-; SSE-NEXT:  .LBB5_50: # %else92
+; SSE-NEXT:    jne .LBB5_48
+; SSE-NEXT:  .LBB5_40: # %else92
 ; SSE-NEXT:    testb $64, %al
-; SSE-NEXT:    je .LBB5_52
-; SSE-NEXT:  # %bb.51: # %cond.load94
+; SSE-NEXT:    je .LBB5_42
+; SSE-NEXT:  .LBB5_41: # %cond.load94
 ; SSE-NEXT:    pinsrd $2, c+28(%rip), %xmm3
-; SSE-NEXT:  .LBB5_52: # %else97
+; SSE-NEXT:  .LBB5_42: # %else97
 ; SSE-NEXT:    paddd %xmm4, %xmm0
 ; SSE-NEXT:    paddd %xmm5, %xmm1
 ; SSE-NEXT:    testb $-128, %al
-; SSE-NEXT:    je .LBB5_54
-; SSE-NEXT:  # %bb.53: # %cond.load99
+; SSE-NEXT:    je .LBB5_44
+; SSE-NEXT:  # %bb.43: # %cond.load99
 ; SSE-NEXT:    pinsrd $3, c+28(%rip), %xmm3
-; SSE-NEXT:  .LBB5_54: # %else102
+; SSE-NEXT:  .LBB5_44: # %else102
 ; SSE-NEXT:    paddd %xmm3, %xmm1
 ; SSE-NEXT:    paddd %xmm2, %xmm0
 ; SSE-NEXT:    retq
+; SSE-NEXT:  .LBB5_39: # %else87
+; SSE-NEXT:    testb $32, %al
+; SSE-NEXT:    je .LBB5_40
+; SSE-NEXT:  .LBB5_48: # %cond.load89
+; SSE-NEXT:    pinsrd $1, c+28(%rip), %xmm3
+; SSE-NEXT:    testb $64, %al
+; SSE-NEXT:    jne .LBB5_41
+; SSE-NEXT:    jmp .LBB5_42
 ;
 ; AVX1-LABEL: gather_v8i32_v8i32:
 ; AVX1:       # %bb.0:
@@ -1564,7 +1573,7 @@ define <8 x i32> @gather_v8i32_v8i32(<8 x i32> %trigger) {
 ; AVX1-NEXT:    vbroadcastss c+12(%rip), %ymm3
 ; AVX1-NEXT:    vblendps {{.*#+}} ymm1 = ymm1[0,1,2,3,4,5,6],ymm3[7]
 ; AVX1-NEXT:  .LBB5_16: # %else20
-; AVX1-NEXT:    vxorps %xmm3, %xmm3, %xmm3
+; AVX1-NEXT:    vpxor %xmm3, %xmm3, %xmm3
 ; AVX1-NEXT:    vpcmpeqd %xmm3, %xmm2, %xmm4
 ; AVX1-NEXT:    vpcmpeqd %xmm3, %xmm0, %xmm3
 ; AVX1-NEXT:    vinsertf128 $1, %xmm4, %ymm3, %ymm3
@@ -1597,7 +1606,7 @@ define <8 x i32> @gather_v8i32_v8i32(<8 x i32> %trigger) {
 ; AVX1-NEXT:    vbroadcastss c+28(%rip), %ymm4
 ; AVX1-NEXT:    vblendps {{.*#+}} ymm3 = ymm3[0,1,2,3,4,5,6],ymm4[7]
 ; AVX1-NEXT:  .LBB5_32: # %else61
-; AVX1-NEXT:    vxorps %xmm4, %xmm4, %xmm4
+; AVX1-NEXT:    vpxor %xmm4, %xmm4, %xmm4
 ; AVX1-NEXT:    vpcmpeqd %xmm4, %xmm2, %xmm2
 ; AVX1-NEXT:    vpcmpeqd %xmm4, %xmm0, %xmm0
 ; AVX1-NEXT:    vinsertf128 $1, %xmm2, %ymm0, %ymm0
@@ -1997,177 +2006,176 @@ define <8 x i32> @masked_gather_v8i32_v8i32(i8 %trigger) {
 ; SSE-LABEL: masked_gather_v8i32_v8i32:
 ; SSE:       # %bb.0:
 ; SSE-NEXT:    testb $1, %dil
-; SSE-NEXT:    je .LBB6_1
-; SSE-NEXT:  # %bb.2: # %cond.load
+; SSE-NEXT:    je .LBB6_2
+; SSE-NEXT:  # %bb.1: # %cond.load
 ; SSE-NEXT:    movd {{.*#+}} xmm0 = mem[0],zero,zero,zero
 ; SSE-NEXT:    testb $2, %dil
-; SSE-NEXT:    jne .LBB6_4
-; SSE-NEXT:    jmp .LBB6_5
-; SSE-NEXT:  .LBB6_1:
+; SSE-NEXT:    jne .LBB6_3
+; SSE-NEXT:    jmp .LBB6_4
+; SSE-NEXT:  .LBB6_2:
 ; SSE-NEXT:    # implicit-def: $xmm0
 ; SSE-NEXT:    testb $2, %dil
-; SSE-NEXT:    je .LBB6_5
-; SSE-NEXT:  .LBB6_4: # %cond.load1
+; SSE-NEXT:    je .LBB6_4
+; SSE-NEXT:  .LBB6_3: # %cond.load1
 ; SSE-NEXT:    pinsrd $1, c+12(%rip), %xmm0
-; SSE-NEXT:  .LBB6_5: # %else2
+; SSE-NEXT:  .LBB6_4: # %else2
 ; SSE-NEXT:    movd %edi, %xmm1
 ; SSE-NEXT:    testb $4, %dil
-; SSE-NEXT:    je .LBB6_7
-; SSE-NEXT:  # %bb.6: # %cond.load4
+; SSE-NEXT:    je .LBB6_6
+; SSE-NEXT:  # %bb.5: # %cond.load4
 ; SSE-NEXT:    pinsrd $2, c+12(%rip), %xmm0
-; SSE-NEXT:  .LBB6_7: # %else5
+; SSE-NEXT:  .LBB6_6: # %else5
 ; SSE-NEXT:    pshuflw {{.*#+}} xmm1 = xmm1[0,0,0,0,4,5,6,7]
 ; SSE-NEXT:    testb $8, %dil
-; SSE-NEXT:    je .LBB6_9
-; SSE-NEXT:  # %bb.8: # %cond.load7
+; SSE-NEXT:    je .LBB6_8
+; SSE-NEXT:  # %bb.7: # %cond.load7
 ; SSE-NEXT:    pinsrd $3, c+12(%rip), %xmm0
-; SSE-NEXT:  .LBB6_9: # %else8
+; SSE-NEXT:  .LBB6_8: # %else8
 ; SSE-NEXT:    pshufd {{.*#+}} xmm3 = xmm1[0,1,0,1]
 ; SSE-NEXT:    pmovzxbw {{.*#+}} xmm2 = [1,2,4,8,16,32,64,128]
 ; SSE-NEXT:    testb $16, %dil
-; SSE-NEXT:    je .LBB6_10
-; SSE-NEXT:  # %bb.11: # %cond.load10
-; SSE-NEXT:    pinsrd $0, c+12(%rip), %xmm1
-; SSE-NEXT:    jmp .LBB6_12
-; SSE-NEXT:  .LBB6_10:
 ; SSE-NEXT:    # implicit-def: $xmm1
-; SSE-NEXT:  .LBB6_12: # %else11
+; SSE-NEXT:    je .LBB6_10
+; SSE-NEXT:  # %bb.9: # %cond.load10
+; SSE-NEXT:    pinsrd $0, c+12(%rip), %xmm1
+; SSE-NEXT:  .LBB6_10: # %else11
 ; SSE-NEXT:    pand %xmm2, %xmm3
 ; SSE-NEXT:    testb $32, %dil
-; SSE-NEXT:    je .LBB6_14
-; SSE-NEXT:  # %bb.13: # %cond.load13
+; SSE-NEXT:    je .LBB6_12
+; SSE-NEXT:  # %bb.11: # %cond.load13
 ; SSE-NEXT:    pinsrd $1, c+12(%rip), %xmm1
-; SSE-NEXT:  .LBB6_14: # %else14
+; SSE-NEXT:  .LBB6_12: # %else14
 ; SSE-NEXT:    pcmpeqw %xmm2, %xmm3
 ; SSE-NEXT:    testb $64, %dil
-; SSE-NEXT:    je .LBB6_16
-; SSE-NEXT:  # %bb.15: # %cond.load16
+; SSE-NEXT:    je .LBB6_14
+; SSE-NEXT:  # %bb.13: # %cond.load16
 ; SSE-NEXT:    pinsrd $2, c+12(%rip), %xmm1
-; SSE-NEXT:  .LBB6_16: # %else17
+; SSE-NEXT:  .LBB6_14: # %else17
 ; SSE-NEXT:    psrlw $15, %xmm3
 ; SSE-NEXT:    testb $-128, %dil
-; SSE-NEXT:    je .LBB6_18
-; SSE-NEXT:  # %bb.17: # %cond.load19
+; SSE-NEXT:    je .LBB6_16
+; SSE-NEXT:  # %bb.15: # %cond.load19
 ; SSE-NEXT:    pinsrd $3, c+12(%rip), %xmm1
-; SSE-NEXT:  .LBB6_18: # %else20
+; SSE-NEXT:  .LBB6_16: # %else20
 ; SSE-NEXT:    psllw $15, %xmm3
 ; SSE-NEXT:    movdqa %xmm3, %xmm2
 ; SSE-NEXT:    packsswb %xmm2, %xmm2
 ; SSE-NEXT:    pmovmskb %xmm2, %eax
 ; SSE-NEXT:    testb $1, %al
-; SSE-NEXT:    je .LBB6_19
-; SSE-NEXT:  # %bb.20: # %cond.load23
+; SSE-NEXT:    je .LBB6_18
+; SSE-NEXT:  # %bb.17: # %cond.load23
 ; SSE-NEXT:    movd {{.*#+}} xmm2 = mem[0],zero,zero,zero
 ; SSE-NEXT:    testb $2, %al
-; SSE-NEXT:    jne .LBB6_22
-; SSE-NEXT:    jmp .LBB6_23
-; SSE-NEXT:  .LBB6_19:
+; SSE-NEXT:    jne .LBB6_19
+; SSE-NEXT:    jmp .LBB6_20
+; SSE-NEXT:  .LBB6_18:
 ; SSE-NEXT:    # implicit-def: $xmm2
 ; SSE-NEXT:    testb $2, %al
-; SSE-NEXT:    je .LBB6_23
-; SSE-NEXT:  .LBB6_22: # %cond.load28
+; SSE-NEXT:    je .LBB6_20
+; SSE-NEXT:  .LBB6_19: # %cond.load28
 ; SSE-NEXT:    pinsrd $1, c+28(%rip), %xmm2
-; SSE-NEXT:  .LBB6_23: # %else31
+; SSE-NEXT:  .LBB6_20: # %else31
 ; SSE-NEXT:    testb $4, %al
-; SSE-NEXT:    jne .LBB6_24
-; SSE-NEXT:  # %bb.25: # %else36
-; SSE-NEXT:    testb $8, %al
-; SSE-NEXT:    jne .LBB6_26
-; SSE-NEXT:  .LBB6_27: # %else41
-; SSE-NEXT:    testb $16, %al
-; SSE-NEXT:    je .LBB6_28
-; SSE-NEXT:  .LBB6_29: # %cond.load43
-; SSE-NEXT:    pinsrd $0, c+28(%rip), %xmm4
-; SSE-NEXT:    testb $32, %al
-; SSE-NEXT:    jne .LBB6_31
-; SSE-NEXT:    jmp .LBB6_32
-; SSE-NEXT:  .LBB6_24: # %cond.load33
+; SSE-NEXT:    je .LBB6_21
+; SSE-NEXT:  # %bb.29: # %cond.load33
 ; SSE-NEXT:    pinsrd $2, c+28(%rip), %xmm2
 ; SSE-NEXT:    testb $8, %al
-; SSE-NEXT:    je .LBB6_27
-; SSE-NEXT:  .LBB6_26: # %cond.load38
+; SSE-NEXT:    je .LBB6_22
+; SSE-NEXT:    jmp .LBB6_30
+; SSE-NEXT:  .LBB6_21: # %else36
+; SSE-NEXT:    testb $8, %al
+; SSE-NEXT:    je .LBB6_22
+; SSE-NEXT:  .LBB6_30: # %cond.load38
 ; SSE-NEXT:    pinsrd $3, c+28(%rip), %xmm2
+; SSE-NEXT:  .LBB6_22: # %else41
 ; SSE-NEXT:    testb $16, %al
-; SSE-NEXT:    jne .LBB6_29
-; SSE-NEXT:  .LBB6_28:
 ; SSE-NEXT:    # implicit-def: $xmm4
+; SSE-NEXT:    je .LBB6_23
+; SSE-NEXT:  # %bb.31: # %cond.load43
+; SSE-NEXT:    pinsrd $0, c+28(%rip), %xmm4
 ; SSE-NEXT:    testb $32, %al
-; SSE-NEXT:    je .LBB6_32
-; SSE-NEXT:  .LBB6_31: # %cond.load48
-; SSE-NEXT:    pinsrd $1, c+28(%rip), %xmm4
-; SSE-NEXT:  .LBB6_32: # %else51
+; SSE-NEXT:    jne .LBB6_32
+; SSE-NEXT:  .LBB6_24: # %else51
 ; SSE-NEXT:    testb $64, %al
-; SSE-NEXT:    jne .LBB6_33
-; SSE-NEXT:  # %bb.34: # %else56
-; SSE-NEXT:    testb $-128, %al
-; SSE-NEXT:    je .LBB6_36
-; SSE-NEXT:  .LBB6_35: # %cond.load58
-; SSE-NEXT:    pinsrd $3, c+28(%rip), %xmm4
-; SSE-NEXT:  .LBB6_36: # %else61
-; SSE-NEXT:    packsswb %xmm3, %xmm3
-; SSE-NEXT:    pmovmskb %xmm3, %eax
-; SSE-NEXT:    testb $1, %al
-; SSE-NEXT:    je .LBB6_37
-; SSE-NEXT:  # %bb.38: # %cond.load64
-; SSE-NEXT:    movd {{.*#+}} xmm3 = mem[0],zero,zero,zero
-; SSE-NEXT:    testb $2, %al
-; SSE-NEXT:    jne .LBB6_40
-; SSE-NEXT:    jmp .LBB6_41
+; SSE-NEXT:    je .LBB6_25
 ; SSE-NEXT:  .LBB6_33: # %cond.load53
 ; SSE-NEXT:    pinsrd $2, c+28(%rip), %xmm4
 ; SSE-NEXT:    testb $-128, %al
+; SSE-NEXT:    jne .LBB6_26
+; SSE-NEXT:    jmp .LBB6_27
+; SSE-NEXT:  .LBB6_23: # %else46
+; SSE-NEXT:    testb $32, %al
+; SSE-NEXT:    je .LBB6_24
+; SSE-NEXT:  .LBB6_32: # %cond.load48
+; SSE-NEXT:    pinsrd $1, c+28(%rip), %xmm4
+; SSE-NEXT:    testb $64, %al
+; SSE-NEXT:    jne .LBB6_33
+; SSE-NEXT:  .LBB6_25: # %else56
+; SSE-NEXT:    testb $-128, %al
+; SSE-NEXT:    je .LBB6_27
+; SSE-NEXT:  .LBB6_26: # %cond.load58
+; SSE-NEXT:    pinsrd $3, c+28(%rip), %xmm4
+; SSE-NEXT:  .LBB6_27: # %else61
+; SSE-NEXT:    packsswb %xmm3, %xmm3
+; SSE-NEXT:    pmovmskb %xmm3, %eax
+; SSE-NEXT:    testb $1, %al
+; SSE-NEXT:    je .LBB6_34
+; SSE-NEXT:  # %bb.28: # %cond.load64
+; SSE-NEXT:    movd {{.*#+}} xmm3 = mem[0],zero,zero,zero
+; SSE-NEXT:    testb $2, %al
 ; SSE-NEXT:    jne .LBB6_35
 ; SSE-NEXT:    jmp .LBB6_36
-; SSE-NEXT:  .LBB6_37:
+; SSE-NEXT:  .LBB6_34:
 ; SSE-NEXT:    # implicit-def: $xmm3
 ; SSE-NEXT:    testb $2, %al
-; SSE-NEXT:    je .LBB6_41
-; SSE-NEXT:  .LBB6_40: # %cond.load69
+; SSE-NEXT:    je .LBB6_36
+; SSE-NEXT:  .LBB6_35: # %cond.load69
 ; SSE-NEXT:    pinsrd $1, c+28(%rip), %xmm3
-; SSE-NEXT:  .LBB6_41: # %else72
+; SSE-NEXT:  .LBB6_36: # %else72
 ; SSE-NEXT:    testb $4, %al
-; SSE-NEXT:    jne .LBB6_42
-; SSE-NEXT:  # %bb.43: # %else77
-; SSE-NEXT:    testb $8, %al
-; SSE-NEXT:    jne .LBB6_44
-; SSE-NEXT:  .LBB6_45: # %else82
-; SSE-NEXT:    testb $16, %al
-; SSE-NEXT:    je .LBB6_46
-; SSE-NEXT:  .LBB6_47: # %cond.load84
-; SSE-NEXT:    pinsrd $0, c+28(%rip), %xmm5
-; SSE-NEXT:    testb $32, %al
-; SSE-NEXT:    jne .LBB6_49
-; SSE-NEXT:    jmp .LBB6_50
-; SSE-NEXT:  .LBB6_42: # %cond.load74
+; SSE-NEXT:    je .LBB6_37
+; SSE-NEXT:  # %bb.45: # %cond.load74
 ; SSE-NEXT:    pinsrd $2, c+28(%rip), %xmm3
 ; SSE-NEXT:    testb $8, %al
-; SSE-NEXT:    je .LBB6_45
-; SSE-NEXT:  .LBB6_44: # %cond.load79
+; SSE-NEXT:    je .LBB6_38
+; SSE-NEXT:    jmp .LBB6_46
+; SSE-NEXT:  .LBB6_37: # %else77
+; SSE-NEXT:    testb $8, %al
+; SSE-NEXT:    je .LBB6_38
+; SSE-NEXT:  .LBB6_46: # %cond.load79
 ; SSE-NEXT:    pinsrd $3, c+28(%rip), %xmm3
+; SSE-NEXT:  .LBB6_38: # %else82
 ; SSE-NEXT:    testb $16, %al
-; SSE-NEXT:    jne .LBB6_47
-; SSE-NEXT:  .LBB6_46:
 ; SSE-NEXT:    # implicit-def: $xmm5
+; SSE-NEXT:    je .LBB6_39
+; SSE-NEXT:  # %bb.47: # %cond.load84
+; SSE-NEXT:    pinsrd $0, c+28(%rip), %xmm5
 ; SSE-NEXT:    testb $32, %al
-; SSE-NEXT:    je .LBB6_50
-; SSE-NEXT:  .LBB6_49: # %cond.load89
-; SSE-NEXT:    pinsrd $1, c+28(%rip), %xmm5
-; SSE-NEXT:  .LBB6_50: # %else92
+; SSE-NEXT:    jne .LBB6_48
+; SSE-NEXT:  .LBB6_40: # %else92
 ; SSE-NEXT:    testb $64, %al
-; SSE-NEXT:    je .LBB6_52
-; SSE-NEXT:  # %bb.51: # %cond.load94
+; SSE-NEXT:    je .LBB6_42
+; SSE-NEXT:  .LBB6_41: # %cond.load94
 ; SSE-NEXT:    pinsrd $2, c+28(%rip), %xmm5
-; SSE-NEXT:  .LBB6_52: # %else97
+; SSE-NEXT:  .LBB6_42: # %else97
 ; SSE-NEXT:    paddd %xmm2, %xmm0
 ; SSE-NEXT:    paddd %xmm4, %xmm1
 ; SSE-NEXT:    testb $-128, %al
-; SSE-NEXT:    je .LBB6_54
-; SSE-NEXT:  # %bb.53: # %cond.load99
+; SSE-NEXT:    je .LBB6_44
+; SSE-NEXT:  # %bb.43: # %cond.load99
 ; SSE-NEXT:    pinsrd $3, c+28(%rip), %xmm5
-; SSE-NEXT:  .LBB6_54: # %else102
+; SSE-NEXT:  .LBB6_44: # %else102
 ; SSE-NEXT:    paddd %xmm5, %xmm1
 ; SSE-NEXT:    paddd %xmm3, %xmm0
 ; SSE-NEXT:    retq
+; SSE-NEXT:  .LBB6_39: # %else87
+; SSE-NEXT:    testb $32, %al
+; SSE-NEXT:    je .LBB6_40
+; SSE-NEXT:  .LBB6_48: # %cond.load89
+; SSE-NEXT:    pinsrd $1, c+28(%rip), %xmm5
+; SSE-NEXT:    testb $64, %al
+; SSE-NEXT:    jne .LBB6_41
+; SSE-NEXT:    jmp .LBB6_42
 ;
 ; AVX1-LABEL: masked_gather_v8i32_v8i32:
 ; AVX1:       # %bb.0:

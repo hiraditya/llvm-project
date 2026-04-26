@@ -36,10 +36,11 @@ define i32 @test_calls_and_rets(ptr%ptr) nounwind {
 ; X64-NOPIC-NEXT:    sarq $63, %rcx
 ; X64-NOPIC-NEXT:    cmpq $.Lslh_ret_addr1, %rax
 ; X64-NOPIC-NEXT:    cmovneq %r14, %rcx
-; X64-NOPIC-NEXT:    addl (%rbx), %ebp
-; X64-NOPIC-NEXT:    orl %ecx, %ebp
+; X64-NOPIC-NEXT:    movl (%rbx), %edx
+; X64-NOPIC-NEXT:    addl %ebp, %edx
+; X64-NOPIC-NEXT:    movl %ecx, %eax
+; X64-NOPIC-NEXT:    orl %edx, %eax
 ; X64-NOPIC-NEXT:    shlq $47, %rcx
-; X64-NOPIC-NEXT:    movl %ebp, %eax
 ; X64-NOPIC-NEXT:    orq %rcx, %rsp
 ; X64-NOPIC-NEXT:    popq %rbx
 ; X64-NOPIC-NEXT:    popq %r14
@@ -76,10 +77,11 @@ define i32 @test_calls_and_rets(ptr%ptr) nounwind {
 ; X64-NOPIC-MCM-NEXT:    leaq .Lslh_ret_addr1(%rip), %rdx
 ; X64-NOPIC-MCM-NEXT:    cmpq %rdx, %rax
 ; X64-NOPIC-MCM-NEXT:    cmovneq %r14, %rcx
-; X64-NOPIC-MCM-NEXT:    addl (%rbx), %ebp
-; X64-NOPIC-MCM-NEXT:    orl %ecx, %ebp
+; X64-NOPIC-MCM-NEXT:    movl (%rbx), %edx
+; X64-NOPIC-MCM-NEXT:    addl %ebp, %edx
+; X64-NOPIC-MCM-NEXT:    movl %ecx, %eax
+; X64-NOPIC-MCM-NEXT:    orl %edx, %eax
 ; X64-NOPIC-MCM-NEXT:    shlq $47, %rcx
-; X64-NOPIC-MCM-NEXT:    movl %ebp, %eax
 ; X64-NOPIC-MCM-NEXT:    orq %rcx, %rsp
 ; X64-NOPIC-MCM-NEXT:    popq %rbx
 ; X64-NOPIC-MCM-NEXT:    popq %r14
@@ -116,10 +118,11 @@ define i32 @test_calls_and_rets(ptr%ptr) nounwind {
 ; X64-PIC-NEXT:    leaq .Lslh_ret_addr1(%rip), %rdx
 ; X64-PIC-NEXT:    cmpq %rdx, %rax
 ; X64-PIC-NEXT:    cmovneq %r14, %rcx
-; X64-PIC-NEXT:    addl (%rbx), %ebp
-; X64-PIC-NEXT:    orl %ecx, %ebp
+; X64-PIC-NEXT:    movl (%rbx), %edx
+; X64-PIC-NEXT:    addl %ebp, %edx
+; X64-PIC-NEXT:    movl %ecx, %eax
+; X64-PIC-NEXT:    orl %edx, %eax
 ; X64-PIC-NEXT:    shlq $47, %rcx
-; X64-PIC-NEXT:    movl %ebp, %eax
 ; X64-PIC-NEXT:    orq %rcx, %rsp
 ; X64-PIC-NEXT:    popq %rbx
 ; X64-PIC-NEXT:    popq %r14
@@ -165,10 +168,11 @@ define i32 @test_calls_and_rets_noredzone(ptr%ptr) nounwind noredzone {
 ; X64-NOPIC-NEXT:    sarq $63, %rcx
 ; X64-NOPIC-NEXT:    cmpq $.Lslh_ret_addr3, %r15
 ; X64-NOPIC-NEXT:    cmovneq %r14, %rcx
-; X64-NOPIC-NEXT:    addl (%rbx), %ebp
-; X64-NOPIC-NEXT:    orl %ecx, %ebp
+; X64-NOPIC-NEXT:    movl (%rbx), %edx
+; X64-NOPIC-NEXT:    addl %ebp, %edx
+; X64-NOPIC-NEXT:    movl %ecx, %eax
+; X64-NOPIC-NEXT:    orl %edx, %eax
 ; X64-NOPIC-NEXT:    shlq $47, %rcx
-; X64-NOPIC-NEXT:    movl %ebp, %eax
 ; X64-NOPIC-NEXT:    orq %rcx, %rsp
 ; X64-NOPIC-NEXT:    addq $8, %rsp
 ; X64-NOPIC-NEXT:    popq %rbx
@@ -209,10 +213,11 @@ define i32 @test_calls_and_rets_noredzone(ptr%ptr) nounwind noredzone {
 ; X64-NOPIC-MCM-NEXT:    leaq .Lslh_ret_addr3(%rip), %rax
 ; X64-NOPIC-MCM-NEXT:    cmpq %rax, %r15
 ; X64-NOPIC-MCM-NEXT:    cmovneq %r14, %rcx
-; X64-NOPIC-MCM-NEXT:    addl (%rbx), %ebp
-; X64-NOPIC-MCM-NEXT:    orl %ecx, %ebp
+; X64-NOPIC-MCM-NEXT:    movl (%rbx), %edx
+; X64-NOPIC-MCM-NEXT:    addl %ebp, %edx
+; X64-NOPIC-MCM-NEXT:    movl %ecx, %eax
+; X64-NOPIC-MCM-NEXT:    orl %edx, %eax
 ; X64-NOPIC-MCM-NEXT:    shlq $47, %rcx
-; X64-NOPIC-MCM-NEXT:    movl %ebp, %eax
 ; X64-NOPIC-MCM-NEXT:    orq %rcx, %rsp
 ; X64-NOPIC-MCM-NEXT:    addq $8, %rsp
 ; X64-NOPIC-MCM-NEXT:    popq %rbx
@@ -253,10 +258,11 @@ define i32 @test_calls_and_rets_noredzone(ptr%ptr) nounwind noredzone {
 ; X64-PIC-NEXT:    leaq .Lslh_ret_addr3(%rip), %rax
 ; X64-PIC-NEXT:    cmpq %rax, %r15
 ; X64-PIC-NEXT:    cmovneq %r14, %rcx
-; X64-PIC-NEXT:    addl (%rbx), %ebp
-; X64-PIC-NEXT:    orl %ecx, %ebp
+; X64-PIC-NEXT:    movl (%rbx), %edx
+; X64-PIC-NEXT:    addl %ebp, %edx
+; X64-PIC-NEXT:    movl %ecx, %eax
+; X64-PIC-NEXT:    orl %edx, %eax
 ; X64-PIC-NEXT:    shlq $47, %rcx
-; X64-PIC-NEXT:    movl %ebp, %eax
 ; X64-PIC-NEXT:    orq %rcx, %rsp
 ; X64-PIC-NEXT:    addq $8, %rsp
 ; X64-PIC-NEXT:    popq %rbx
@@ -313,7 +319,8 @@ define i32 @test_call_setjmp(ptr%ptr) nounwind {
 ; X64-NOPIC-NEXT:    sarq $63, %rax
 ; X64-NOPIC-NEXT:    cmpq $.Lslh_ret_addr5, %r12
 ; X64-NOPIC-NEXT:    cmovneq %r15, %rax
-; X64-NOPIC-NEXT:    addl (%rbx), %ebp
+; X64-NOPIC-NEXT:    movl (%rbx), %r12d
+; X64-NOPIC-NEXT:    addl %ebp, %r12d
 ; X64-NOPIC-NEXT:    shlq $47, %rax
 ; X64-NOPIC-NEXT:    movq %r14, %rdi
 ; X64-NOPIC-NEXT:    movq %r14, %rsi
@@ -327,9 +334,10 @@ define i32 @test_call_setjmp(ptr%ptr) nounwind {
 ; X64-NOPIC-NEXT:    cmpq $.Lslh_ret_addr6, %r14
 ; X64-NOPIC-NEXT:    movq %rax, %rcx
 ; X64-NOPIC-NEXT:    cmovneq %r15, %rcx
-; X64-NOPIC-NEXT:    addl (%rbx), %ebp
-; X64-NOPIC-NEXT:    movl %ebp, %eax
-; X64-NOPIC-NEXT:    orl %ecx, %eax
+; X64-NOPIC-NEXT:    movl (%rbx), %edx
+; X64-NOPIC-NEXT:    addl %r12d, %edx
+; X64-NOPIC-NEXT:    movl %ecx, %eax
+; X64-NOPIC-NEXT:    orl %edx, %eax
 ; X64-NOPIC-NEXT:    shlq $47, %rcx
 ; X64-NOPIC-NEXT:    orq %rcx, %rsp
 ; X64-NOPIC-NEXT:    addq $16, %rsp
@@ -377,7 +385,8 @@ define i32 @test_call_setjmp(ptr%ptr) nounwind {
 ; X64-NOPIC-MCM-NEXT:    leaq .Lslh_ret_addr5(%rip), %rcx
 ; X64-NOPIC-MCM-NEXT:    cmpq %rcx, %r12
 ; X64-NOPIC-MCM-NEXT:    cmovneq %r15, %rax
-; X64-NOPIC-MCM-NEXT:    addl (%rbx), %ebp
+; X64-NOPIC-MCM-NEXT:    movl (%rbx), %r12d
+; X64-NOPIC-MCM-NEXT:    addl %ebp, %r12d
 ; X64-NOPIC-MCM-NEXT:    shlq $47, %rax
 ; X64-NOPIC-MCM-NEXT:    movq %r14, %rdi
 ; X64-NOPIC-MCM-NEXT:    movq %r14, %rsi
@@ -392,9 +401,10 @@ define i32 @test_call_setjmp(ptr%ptr) nounwind {
 ; X64-NOPIC-MCM-NEXT:    cmpq %rcx, %r14
 ; X64-NOPIC-MCM-NEXT:    movq %rax, %rcx
 ; X64-NOPIC-MCM-NEXT:    cmovneq %r15, %rcx
-; X64-NOPIC-MCM-NEXT:    addl (%rbx), %ebp
-; X64-NOPIC-MCM-NEXT:    movl %ebp, %eax
-; X64-NOPIC-MCM-NEXT:    orl %ecx, %eax
+; X64-NOPIC-MCM-NEXT:    movl (%rbx), %edx
+; X64-NOPIC-MCM-NEXT:    addl %r12d, %edx
+; X64-NOPIC-MCM-NEXT:    movl %ecx, %eax
+; X64-NOPIC-MCM-NEXT:    orl %edx, %eax
 ; X64-NOPIC-MCM-NEXT:    shlq $47, %rcx
 ; X64-NOPIC-MCM-NEXT:    orq %rcx, %rsp
 ; X64-NOPIC-MCM-NEXT:    addq $16, %rsp
@@ -442,7 +452,8 @@ define i32 @test_call_setjmp(ptr%ptr) nounwind {
 ; X64-PIC-NEXT:    leaq .Lslh_ret_addr5(%rip), %rcx
 ; X64-PIC-NEXT:    cmpq %rcx, %r12
 ; X64-PIC-NEXT:    cmovneq %r15, %rax
-; X64-PIC-NEXT:    addl (%rbx), %ebp
+; X64-PIC-NEXT:    movl (%rbx), %r12d
+; X64-PIC-NEXT:    addl %ebp, %r12d
 ; X64-PIC-NEXT:    shlq $47, %rax
 ; X64-PIC-NEXT:    movq %r14, %rdi
 ; X64-PIC-NEXT:    movq %r14, %rsi
@@ -457,9 +468,10 @@ define i32 @test_call_setjmp(ptr%ptr) nounwind {
 ; X64-PIC-NEXT:    cmpq %rcx, %r14
 ; X64-PIC-NEXT:    movq %rax, %rcx
 ; X64-PIC-NEXT:    cmovneq %r15, %rcx
-; X64-PIC-NEXT:    addl (%rbx), %ebp
-; X64-PIC-NEXT:    movl %ebp, %eax
-; X64-PIC-NEXT:    orl %ecx, %eax
+; X64-PIC-NEXT:    movl (%rbx), %edx
+; X64-PIC-NEXT:    addl %r12d, %edx
+; X64-PIC-NEXT:    movl %ecx, %eax
+; X64-PIC-NEXT:    orl %edx, %eax
 ; X64-PIC-NEXT:    shlq $47, %rcx
 ; X64-PIC-NEXT:    orq %rcx, %rsp
 ; X64-PIC-NEXT:    addq $16, %rsp

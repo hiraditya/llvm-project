@@ -6,8 +6,9 @@ define i32 @PR40483_add1(ptr, i32) nounwind {
 ; X86-LABEL: PR40483_add1:
 ; X86:       # %bb.0:
 ; X86-NEXT:    movl {{[0-9]+}}(%esp), %ecx
-; X86-NEXT:    movl (%ecx), %eax
-; X86-NEXT:    addl {{[0-9]+}}(%esp), %eax
+; X86-NEXT:    movl (%ecx), %edx
+; X86-NEXT:    movl {{[0-9]+}}(%esp), %eax
+; X86-NEXT:    addl %edx, %eax
 ; X86-NEXT:    movl %eax, (%ecx)
 ; X86-NEXT:    jae .LBB0_2
 ; X86-NEXT:  # %bb.1:
@@ -18,9 +19,10 @@ define i32 @PR40483_add1(ptr, i32) nounwind {
 ; X64-LABEL: PR40483_add1:
 ; X64:       # %bb.0:
 ; X64-NEXT:    xorl %eax, %eax
-; X64-NEXT:    addl (%rdi), %esi
-; X64-NEXT:    movl %esi, (%rdi)
-; X64-NEXT:    cmovael %esi, %eax
+; X64-NEXT:    movl (%rdi), %ecx
+; X64-NEXT:    addl %esi, %ecx
+; X64-NEXT:    movl %ecx, (%rdi)
+; X64-NEXT:    cmovael %ecx, %eax
 ; X64-NEXT:    retq
   %3 = load i32, ptr %0, align 8
   %4 = tail call { i8, i32 } @llvm.x86.addcarry.32(i8 0, i32 %3, i32 %1)
@@ -37,23 +39,27 @@ define i32 @PR40483_add1(ptr, i32) nounwind {
 define i32 @PR40483_add2(ptr, i32) nounwind {
 ; X86-LABEL: PR40483_add2:
 ; X86:       # %bb.0:
+; X86-NEXT:    pushl %esi
 ; X86-NEXT:    movl {{[0-9]+}}(%esp), %edx
-; X86-NEXT:    movl (%edx), %ecx
+; X86-NEXT:    movl (%edx), %esi
 ; X86-NEXT:    xorl %eax, %eax
-; X86-NEXT:    addl {{[0-9]+}}(%esp), %ecx
+; X86-NEXT:    movl {{[0-9]+}}(%esp), %ecx
+; X86-NEXT:    addl %esi, %ecx
 ; X86-NEXT:    movl %ecx, (%edx)
 ; X86-NEXT:    jae .LBB1_2
 ; X86-NEXT:  # %bb.1:
 ; X86-NEXT:    movl %ecx, %eax
 ; X86-NEXT:  .LBB1_2:
+; X86-NEXT:    popl %esi
 ; X86-NEXT:    retl
 ;
 ; X64-LABEL: PR40483_add2:
 ; X64:       # %bb.0:
 ; X64-NEXT:    xorl %eax, %eax
-; X64-NEXT:    addl (%rdi), %esi
-; X64-NEXT:    movl %esi, (%rdi)
-; X64-NEXT:    cmovbl %esi, %eax
+; X64-NEXT:    movl (%rdi), %ecx
+; X64-NEXT:    addl %esi, %ecx
+; X64-NEXT:    movl %ecx, (%rdi)
+; X64-NEXT:    cmovbl %ecx, %eax
 ; X64-NEXT:    retq
   %3 = load i32, ptr %0, align 8
   %4 = tail call { i8, i32 } @llvm.x86.addcarry.32(i8 0, i32 %3, i32 %1)
@@ -140,22 +146,25 @@ define i32 @adc_merge_sub(i32 %a0) nounwind {
 define i32 @adc_add(i32 %0, i32 %1, i32 %2, i32 %3) nounwind {
 ; X86-LABEL: adc_add:
 ; X86:       # %bb.0:
+; X86-NEXT:    pushl %esi
 ; X86-NEXT:    movl {{[0-9]+}}(%esp), %edx
 ; X86-NEXT:    movl {{[0-9]+}}(%esp), %ecx
 ; X86-NEXT:    movl {{[0-9]+}}(%esp), %eax
 ; X86-NEXT:    cmpl %ecx, %eax
-; X86-NEXT:    adcl {{[0-9]+}}(%esp), %edx
+; X86-NEXT:    movl {{[0-9]+}}(%esp), %esi
+; X86-NEXT:    adcl %edx, %esi
 ; X86-NEXT:    js .LBB4_2
 ; X86-NEXT:  # %bb.1:
 ; X86-NEXT:    movl %ecx, %eax
 ; X86-NEXT:  .LBB4_2:
+; X86-NEXT:    popl %esi
 ; X86-NEXT:    retl
 ;
 ; X64-LABEL: adc_add:
 ; X64:       # %bb.0:
 ; X64-NEXT:    movl %esi, %eax
 ; X64-NEXT:    cmpl %esi, %edi
-; X64-NEXT:    adcl %ecx, %edx
+; X64-NEXT:    adcl %edx, %ecx
 ; X64-NEXT:    cmovsl %edi, %eax
 ; X64-NEXT:    retq
   %5 = icmp ult i32 %0, %1
@@ -171,24 +180,29 @@ define i32 @adc_add(i32 %0, i32 %1, i32 %2, i32 %3) nounwind {
 define i32 @adc_add_wrong_flags(i32 %0, i32 %1, i32 %2, i32 %3) nounwind {
 ; X86-LABEL: adc_add_wrong_flags:
 ; X86:       # %bb.0:
+; X86-NEXT:    pushl %esi
 ; X86-NEXT:    movl {{[0-9]+}}(%esp), %ecx
 ; X86-NEXT:    movl {{[0-9]+}}(%esp), %eax
 ; X86-NEXT:    movl {{[0-9]+}}(%esp), %edx
-; X86-NEXT:    addl {{[0-9]+}}(%esp), %edx
+; X86-NEXT:    movl {{[0-9]+}}(%esp), %esi
+; X86-NEXT:    addl %edx, %esi
 ; X86-NEXT:    cmpl %ecx, %eax
-; X86-NEXT:    adcl $0, %edx
+; X86-NEXT:    adcl $0, %esi
 ; X86-NEXT:    jb .LBB5_2
 ; X86-NEXT:  # %bb.1:
 ; X86-NEXT:    movl %ecx, %eax
 ; X86-NEXT:  .LBB5_2:
+; X86-NEXT:    popl %esi
 ; X86-NEXT:    retl
 ;
 ; X64-LABEL: adc_add_wrong_flags:
 ; X64:       # %bb.0:
+; X64-NEXT:    # kill: def $ecx killed $ecx def $rcx
+; X64-NEXT:    # kill: def $edx killed $edx def $rdx
 ; X64-NEXT:    movl %esi, %eax
-; X64-NEXT:    addl %ecx, %edx
+; X64-NEXT:    addl %edx, %ecx
 ; X64-NEXT:    cmpl %esi, %edi
-; X64-NEXT:    adcl $0, %edx
+; X64-NEXT:    adcl $0, %ecx
 ; X64-NEXT:    cmovbl %edi, %eax
 ; X64-NEXT:    retq
   %5 = icmp ult i32 %0, %1
@@ -216,7 +230,8 @@ define i32 @adc_add_multi_use(i32 %0, i32 %1, i32 %2, i32 %3, i32 %4, ptr %5) no
 ; X86-NEXT:    cmpl %ecx, %eax
 ; X86-NEXT:    movl %ebx, (%edx)
 ; X86-NEXT:    adcl %esi, %edi
-; X86-NEXT:    addl {{[0-9]+}}(%esp), %edi
+; X86-NEXT:    movl {{[0-9]+}}(%esp), %edx
+; X86-NEXT:    addl %edi, %edx
 ; X86-NEXT:    js .LBB6_2
 ; X86-NEXT:  # %bb.1:
 ; X86-NEXT:    movl %ecx, %eax

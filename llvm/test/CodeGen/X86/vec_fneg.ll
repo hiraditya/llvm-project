@@ -19,7 +19,9 @@
 define <2 x double> @fneg_v2f64(<2 x double> %p) nounwind {
 ; X86-SSE-LABEL: fneg_v2f64:
 ; X86-SSE:       # %bb.0:
-; X86-SSE-NEXT:    xorps {{\.?LCPI[0-9]+_[0-9]+}}, %xmm0
+; X86-SSE-NEXT:    movaps {{.*#+}} xmm1 = [-0.0E+0,-0.0E+0]
+; X86-SSE-NEXT:    xorps %xmm0, %xmm1
+; X86-SSE-NEXT:    movaps %xmm1, %xmm0
 ; X86-SSE-NEXT:    retl
 ;
 ; X86-AVX-LABEL: fneg_v2f64:
@@ -44,7 +46,9 @@ define <2 x double> @fneg_v2f64(<2 x double> %p) nounwind {
 ;
 ; X64-SSE-LABEL: fneg_v2f64:
 ; X64-SSE:       # %bb.0:
-; X64-SSE-NEXT:    xorps {{\.?LCPI[0-9]+_[0-9]+}}(%rip), %xmm0
+; X64-SSE-NEXT:    movaps {{.*#+}} xmm1 = [-0.0E+0,-0.0E+0]
+; X64-SSE-NEXT:    xorps %xmm0, %xmm1
+; X64-SSE-NEXT:    movaps %xmm1, %xmm0
 ; X64-SSE-NEXT:    retq
 ;
 ; X64-AVX-LABEL: fneg_v2f64:
@@ -73,7 +77,9 @@ define <2 x double> @fneg_v2f64(<2 x double> %p) nounwind {
 define <4 x float> @fneg_v4f32(<4 x float> %p) nounwind {
 ; X86-SSE-LABEL: fneg_v4f32:
 ; X86-SSE:       # %bb.0:
-; X86-SSE-NEXT:    xorps {{\.?LCPI[0-9]+_[0-9]+}}, %xmm0
+; X86-SSE-NEXT:    movaps {{.*#+}} xmm1 = [-0.0E+0,-0.0E+0,-0.0E+0,-0.0E+0]
+; X86-SSE-NEXT:    xorps %xmm0, %xmm1
+; X86-SSE-NEXT:    movaps %xmm1, %xmm0
 ; X86-SSE-NEXT:    retl
 ;
 ; X86-AVX1-LABEL: fneg_v4f32:
@@ -104,7 +110,9 @@ define <4 x float> @fneg_v4f32(<4 x float> %p) nounwind {
 ;
 ; X64-SSE-LABEL: fneg_v4f32:
 ; X64-SSE:       # %bb.0:
-; X64-SSE-NEXT:    xorps {{\.?LCPI[0-9]+_[0-9]+}}(%rip), %xmm0
+; X64-SSE-NEXT:    movaps {{.*#+}} xmm1 = [-0.0E+0,-0.0E+0,-0.0E+0,-0.0E+0]
+; X64-SSE-NEXT:    xorps %xmm0, %xmm1
+; X64-SSE-NEXT:    movaps %xmm1, %xmm0
 ; X64-SSE-NEXT:    retq
 ;
 ; X64-AVX1-LABEL: fneg_v4f32:
@@ -140,8 +148,9 @@ define <8 x half> @fneg_v8f16(ptr %p) nounwind {
 ; X86-SSE-LABEL: fneg_v8f16:
 ; X86-SSE:       # %bb.0:
 ; X86-SSE-NEXT:    movl {{[0-9]+}}(%esp), %eax
-; X86-SSE-NEXT:    movaps (%eax), %xmm0
-; X86-SSE-NEXT:    xorps {{\.?LCPI[0-9]+_[0-9]+}}, %xmm0
+; X86-SSE-NEXT:    movaps (%eax), %xmm1
+; X86-SSE-NEXT:    movaps {{.*#+}} xmm0 = [-0.0E+0,-0.0E+0,-0.0E+0,-0.0E+0,-0.0E+0,-0.0E+0,-0.0E+0,-0.0E+0]
+; X86-SSE-NEXT:    xorps %xmm1, %xmm0
 ; X86-SSE-NEXT:    retl
 ;
 ; X86-AVX1-LABEL: fneg_v8f16:
@@ -167,8 +176,9 @@ define <8 x half> @fneg_v8f16(ptr %p) nounwind {
 ;
 ; X64-SSE-LABEL: fneg_v8f16:
 ; X64-SSE:       # %bb.0:
-; X64-SSE-NEXT:    movaps (%rdi), %xmm0
-; X64-SSE-NEXT:    xorps {{\.?LCPI[0-9]+_[0-9]+}}(%rip), %xmm0
+; X64-SSE-NEXT:    movaps (%rdi), %xmm1
+; X64-SSE-NEXT:    movaps {{.*#+}} xmm0 = [-0.0E+0,-0.0E+0,-0.0E+0,-0.0E+0,-0.0E+0,-0.0E+0,-0.0E+0,-0.0E+0]
+; X64-SSE-NEXT:    xorps %xmm1, %xmm0
 ; X64-SSE-NEXT:    retq
 ;
 ; X64-AVX1-LABEL: fneg_v8f16:
@@ -341,10 +351,11 @@ define <16 x half> @fneg_v16f16(ptr %p) nounwind {
 ; X86-SSE-LABEL: fneg_v16f16:
 ; X86-SSE:       # %bb.0:
 ; X86-SSE-NEXT:    movl {{[0-9]+}}(%esp), %eax
-; X86-SSE-NEXT:    movaps {{.*#+}} xmm1 = [-0.0E+0,-0.0E+0,-0.0E+0,-0.0E+0,-0.0E+0,-0.0E+0,-0.0E+0,-0.0E+0]
+; X86-SSE-NEXT:    movaps {{.*#+}} xmm2 = [-0.0E+0,-0.0E+0,-0.0E+0,-0.0E+0,-0.0E+0,-0.0E+0,-0.0E+0,-0.0E+0]
 ; X86-SSE-NEXT:    movaps (%eax), %xmm0
-; X86-SSE-NEXT:    xorps %xmm1, %xmm0
-; X86-SSE-NEXT:    xorps 16(%eax), %xmm1
+; X86-SSE-NEXT:    xorps %xmm2, %xmm0
+; X86-SSE-NEXT:    movaps 16(%eax), %xmm1
+; X86-SSE-NEXT:    xorps %xmm2, %xmm1
 ; X86-SSE-NEXT:    retl
 ;
 ; X86-AVX1-LABEL: fneg_v16f16:
@@ -370,10 +381,11 @@ define <16 x half> @fneg_v16f16(ptr %p) nounwind {
 ;
 ; X64-SSE-LABEL: fneg_v16f16:
 ; X64-SSE:       # %bb.0:
-; X64-SSE-NEXT:    movaps {{.*#+}} xmm1 = [-0.0E+0,-0.0E+0,-0.0E+0,-0.0E+0,-0.0E+0,-0.0E+0,-0.0E+0,-0.0E+0]
+; X64-SSE-NEXT:    movaps {{.*#+}} xmm2 = [-0.0E+0,-0.0E+0,-0.0E+0,-0.0E+0,-0.0E+0,-0.0E+0,-0.0E+0,-0.0E+0]
 ; X64-SSE-NEXT:    movaps (%rdi), %xmm0
-; X64-SSE-NEXT:    xorps %xmm1, %xmm0
-; X64-SSE-NEXT:    xorps 16(%rdi), %xmm1
+; X64-SSE-NEXT:    xorps %xmm2, %xmm0
+; X64-SSE-NEXT:    movaps 16(%rdi), %xmm1
+; X64-SSE-NEXT:    xorps %xmm2, %xmm1
 ; X64-SSE-NEXT:    retq
 ;
 ; X64-AVX1-LABEL: fneg_v16f16:
@@ -409,11 +421,12 @@ define <8 x double> @fneg_v8f64(<8 x double> %p) nounwind {
 ; X86-SSE-NEXT:    movl %esp, %ebp
 ; X86-SSE-NEXT:    andl $-16, %esp
 ; X86-SSE-NEXT:    subl $16, %esp
-; X86-SSE-NEXT:    movaps {{.*#+}} xmm3 = [-0.0E+0,-0.0E+0]
-; X86-SSE-NEXT:    xorps %xmm3, %xmm0
-; X86-SSE-NEXT:    xorps %xmm3, %xmm1
-; X86-SSE-NEXT:    xorps %xmm3, %xmm2
-; X86-SSE-NEXT:    xorps 8(%ebp), %xmm3
+; X86-SSE-NEXT:    movaps {{.*#+}} xmm4 = [-0.0E+0,-0.0E+0]
+; X86-SSE-NEXT:    xorps %xmm4, %xmm0
+; X86-SSE-NEXT:    xorps %xmm4, %xmm1
+; X86-SSE-NEXT:    xorps %xmm4, %xmm2
+; X86-SSE-NEXT:    movaps 8(%ebp), %xmm3
+; X86-SSE-NEXT:    xorps %xmm4, %xmm3
 ; X86-SSE-NEXT:    movl %ebp, %esp
 ; X86-SSE-NEXT:    popl %ebp
 ; X86-SSE-NEXT:    retl
@@ -481,11 +494,12 @@ define <16 x float> @fneg_v16f32(<16 x float> %p) nounwind {
 ; X86-SSE-NEXT:    movl %esp, %ebp
 ; X86-SSE-NEXT:    andl $-16, %esp
 ; X86-SSE-NEXT:    subl $16, %esp
-; X86-SSE-NEXT:    movaps {{.*#+}} xmm3 = [-0.0E+0,-0.0E+0,-0.0E+0,-0.0E+0]
-; X86-SSE-NEXT:    xorps %xmm3, %xmm0
-; X86-SSE-NEXT:    xorps %xmm3, %xmm1
-; X86-SSE-NEXT:    xorps %xmm3, %xmm2
-; X86-SSE-NEXT:    xorps 8(%ebp), %xmm3
+; X86-SSE-NEXT:    movaps {{.*#+}} xmm4 = [-0.0E+0,-0.0E+0,-0.0E+0,-0.0E+0]
+; X86-SSE-NEXT:    xorps %xmm4, %xmm0
+; X86-SSE-NEXT:    xorps %xmm4, %xmm1
+; X86-SSE-NEXT:    xorps %xmm4, %xmm2
+; X86-SSE-NEXT:    movaps 8(%ebp), %xmm3
+; X86-SSE-NEXT:    xorps %xmm4, %xmm3
 ; X86-SSE-NEXT:    movl %ebp, %esp
 ; X86-SSE-NEXT:    popl %ebp
 ; X86-SSE-NEXT:    retl
@@ -550,14 +564,15 @@ define <32 x half> @fneg_v32f16(ptr %p) nounwind {
 ; X86-SSE-LABEL: fneg_v32f16:
 ; X86-SSE:       # %bb.0:
 ; X86-SSE-NEXT:    movl {{[0-9]+}}(%esp), %eax
-; X86-SSE-NEXT:    movaps {{.*#+}} xmm3 = [-0.0E+0,-0.0E+0,-0.0E+0,-0.0E+0,-0.0E+0,-0.0E+0,-0.0E+0,-0.0E+0]
+; X86-SSE-NEXT:    movaps {{.*#+}} xmm4 = [-0.0E+0,-0.0E+0,-0.0E+0,-0.0E+0,-0.0E+0,-0.0E+0,-0.0E+0,-0.0E+0]
 ; X86-SSE-NEXT:    movaps (%eax), %xmm0
-; X86-SSE-NEXT:    xorps %xmm3, %xmm0
+; X86-SSE-NEXT:    xorps %xmm4, %xmm0
 ; X86-SSE-NEXT:    movaps 16(%eax), %xmm1
-; X86-SSE-NEXT:    xorps %xmm3, %xmm1
+; X86-SSE-NEXT:    xorps %xmm4, %xmm1
 ; X86-SSE-NEXT:    movaps 32(%eax), %xmm2
-; X86-SSE-NEXT:    xorps %xmm3, %xmm2
-; X86-SSE-NEXT:    xorps 48(%eax), %xmm3
+; X86-SSE-NEXT:    xorps %xmm4, %xmm2
+; X86-SSE-NEXT:    movaps 48(%eax), %xmm3
+; X86-SSE-NEXT:    xorps %xmm4, %xmm3
 ; X86-SSE-NEXT:    retl
 ;
 ; X86-AVX1-LABEL: fneg_v32f16:
@@ -601,14 +616,15 @@ define <32 x half> @fneg_v32f16(ptr %p) nounwind {
 ;
 ; X64-SSE-LABEL: fneg_v32f16:
 ; X64-SSE:       # %bb.0:
-; X64-SSE-NEXT:    movaps {{.*#+}} xmm3 = [-0.0E+0,-0.0E+0,-0.0E+0,-0.0E+0,-0.0E+0,-0.0E+0,-0.0E+0,-0.0E+0]
+; X64-SSE-NEXT:    movaps {{.*#+}} xmm4 = [-0.0E+0,-0.0E+0,-0.0E+0,-0.0E+0,-0.0E+0,-0.0E+0,-0.0E+0,-0.0E+0]
 ; X64-SSE-NEXT:    movaps (%rdi), %xmm0
-; X64-SSE-NEXT:    xorps %xmm3, %xmm0
+; X64-SSE-NEXT:    xorps %xmm4, %xmm0
 ; X64-SSE-NEXT:    movaps 16(%rdi), %xmm1
-; X64-SSE-NEXT:    xorps %xmm3, %xmm1
+; X64-SSE-NEXT:    xorps %xmm4, %xmm1
 ; X64-SSE-NEXT:    movaps 32(%rdi), %xmm2
-; X64-SSE-NEXT:    xorps %xmm3, %xmm2
-; X64-SSE-NEXT:    xorps 48(%rdi), %xmm3
+; X64-SSE-NEXT:    xorps %xmm4, %xmm2
+; X64-SSE-NEXT:    movaps 48(%rdi), %xmm3
+; X64-SSE-NEXT:    xorps %xmm4, %xmm3
 ; X64-SSE-NEXT:    retq
 ;
 ; X64-AVX1-LABEL: fneg_v32f16:

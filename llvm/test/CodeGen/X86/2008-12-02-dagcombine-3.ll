@@ -9,8 +9,9 @@ define i32 @test(ptr %a, ptr %L, ptr %P) nounwind {
 ; CHECK:       ## %bb.0: ## %entry
 ; CHECK-NEXT:    movl {{[0-9]+}}(%esp), %eax
 ; CHECK-NEXT:    movl {{[0-9]+}}(%esp), %ecx
-; CHECK-NEXT:    addl {{[0-9]+}}(%esp), %ecx
-; CHECK-NEXT:    subl %ecx, %eax
+; CHECK-NEXT:    movl {{[0-9]+}}(%esp), %edx
+; CHECK-NEXT:    addl %ecx, %edx
+; CHECK-NEXT:    subl %edx, %eax
 ; CHECK-NEXT:    addl $-2, %eax
 ; CHECK-NEXT:    retl
 entry:

@@ -65,38 +65,44 @@ define <32 x i16> @split32(<32 x i16> %a, <32 x i16> %b, <32 x i8> %__mask) {
 define i128 @split128(<2 x i128> %a, <2 x i128> %b) {
 ; SSE4-LABEL: split128:
 ; SSE4:       # %bb.0:
-; SSE4-NEXT:    movq %rdx, %rax
-; SSE4-NEXT:    addq %r8, %rdi
+; SSE4-NEXT:    movq %rdi, %rax
+; SSE4-NEXT:    addq %r8, %rax
 ; SSE4-NEXT:    adcq %r9, %rsi
-; SSE4-NEXT:    addq {{[0-9]+}}(%rsp), %rax
-; SSE4-NEXT:    adcq {{[0-9]+}}(%rsp), %rcx
+; SSE4-NEXT:    movq {{[0-9]+}}(%rsp), %rdi
+; SSE4-NEXT:    addq %rdx, %rdi
+; SSE4-NEXT:    movq {{[0-9]+}}(%rsp), %rdx
+; SSE4-NEXT:    adcq %rcx, %rdx
 ; SSE4-NEXT:    addq %rdi, %rax
-; SSE4-NEXT:    adcq %rsi, %rcx
-; SSE4-NEXT:    movq %rcx, %rdx
+; SSE4-NEXT:    adcq %rdx, %rsi
+; SSE4-NEXT:    movq %rsi, %rdx
 ; SSE4-NEXT:    retq
 ;
 ; AVX1-LABEL: split128:
 ; AVX1:       # %bb.0:
-; AVX1-NEXT:    movq %rdx, %rax
-; AVX1-NEXT:    addq %r8, %rdi
+; AVX1-NEXT:    movq %rdi, %rax
+; AVX1-NEXT:    addq %r8, %rax
 ; AVX1-NEXT:    adcq %r9, %rsi
-; AVX1-NEXT:    addq {{[0-9]+}}(%rsp), %rax
-; AVX1-NEXT:    adcq {{[0-9]+}}(%rsp), %rcx
+; AVX1-NEXT:    movq {{[0-9]+}}(%rsp), %rdi
+; AVX1-NEXT:    addq %rdx, %rdi
+; AVX1-NEXT:    movq {{[0-9]+}}(%rsp), %rdx
+; AVX1-NEXT:    adcq %rcx, %rdx
 ; AVX1-NEXT:    addq %rdi, %rax
-; AVX1-NEXT:    adcq %rsi, %rcx
-; AVX1-NEXT:    movq %rcx, %rdx
+; AVX1-NEXT:    adcq %rdx, %rsi
+; AVX1-NEXT:    movq %rsi, %rdx
 ; AVX1-NEXT:    retq
 ;
 ; AVX2-LABEL: split128:
 ; AVX2:       # %bb.0:
-; AVX2-NEXT:    movq %rdx, %rax
-; AVX2-NEXT:    addq %r8, %rdi
+; AVX2-NEXT:    movq %rdi, %rax
+; AVX2-NEXT:    addq %r8, %rax
 ; AVX2-NEXT:    adcq %r9, %rsi
-; AVX2-NEXT:    addq {{[0-9]+}}(%rsp), %rax
-; AVX2-NEXT:    adcq {{[0-9]+}}(%rsp), %rcx
+; AVX2-NEXT:    movq {{[0-9]+}}(%rsp), %rdi
+; AVX2-NEXT:    addq %rdx, %rdi
+; AVX2-NEXT:    movq {{[0-9]+}}(%rsp), %rdx
+; AVX2-NEXT:    adcq %rcx, %rdx
 ; AVX2-NEXT:    addq %rdi, %rax
-; AVX2-NEXT:    adcq %rsi, %rcx
-; AVX2-NEXT:    movq %rcx, %rdx
+; AVX2-NEXT:    adcq %rdx, %rsi
+; AVX2-NEXT:    movq %rsi, %rdx
 ; AVX2-NEXT:    retq
   %add = add nsw <2 x i128> %a, %b
   %rdx.shuf = shufflevector <2 x i128> %add, <2 x i128> undef, <2 x i32> <i32 undef, i32 0>

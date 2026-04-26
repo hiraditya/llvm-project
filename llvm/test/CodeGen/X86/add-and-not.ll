@@ -7,14 +7,15 @@ declare void @use(i8)
 define i8 @add_and_xor(i8 %x, i8 %y) {
 ; X86-LABEL: add_and_xor:
 ; X86:       # %bb.0:
+; X86-NEXT:    movzbl {{[0-9]+}}(%esp), %ecx
 ; X86-NEXT:    movzbl {{[0-9]+}}(%esp), %eax
-; X86-NEXT:    orb {{[0-9]+}}(%esp), %al
+; X86-NEXT:    orb %cl, %al
 ; X86-NEXT:    retl
 ;
 ; X64-LABEL: add_and_xor:
 ; X64:       # %bb.0:
-; X64-NEXT:    movl %edi, %eax
-; X64-NEXT:    orl %esi, %eax
+; X64-NEXT:    movl %esi, %eax
+; X64-NEXT:    orl %edi, %eax
 ; X64-NEXT:    # kill: def $al killed $al killed $eax
 ; X64-NEXT:    retq
   %xor = xor i8 %x, -1
@@ -27,18 +28,21 @@ define i8 @add_and_xor_wrong_const(i8 %x, i8 %y) {
 ; X86-LABEL: add_and_xor_wrong_const:
 ; X86:       # %bb.0:
 ; X86-NEXT:    movzbl {{[0-9]+}}(%esp), %ecx
-; X86-NEXT:    movl %ecx, %eax
-; X86-NEXT:    xorb $-2, %al
-; X86-NEXT:    andb {{[0-9]+}}(%esp), %al
+; X86-NEXT:    movl %ecx, %edx
+; X86-NEXT:    xorb $-2, %dl
+; X86-NEXT:    movzbl {{[0-9]+}}(%esp), %eax
+; X86-NEXT:    andb %dl, %al
 ; X86-NEXT:    addb %cl, %al
 ; X86-NEXT:    retl
 ;
 ; X64-LABEL: add_and_xor_wrong_const:
 ; X64:       # %bb.0:
+; X64-NEXT:    # kill: def $edi killed $edi def $rdi
 ; X64-NEXT:    movl %edi, %eax
 ; X64-NEXT:    xorb $-2, %al
 ; X64-NEXT:    andb %sil, %al
-; X64-NEXT:    addb %dil, %al
+; X64-NEXT:    addl %edi, %eax
+; X64-NEXT:    # kill: def $al killed $al killed $eax
 ; X64-NEXT:    retq
   %xor = xor i8 %x, -2
   %and = and i8 %xor, %y
@@ -51,8 +55,10 @@ define i8 @add_and_xor_wrong_op(i8 %x, i8 %y, i8 %z) {
 ; X86:       # %bb.0:
 ; X86-NEXT:    movzbl {{[0-9]+}}(%esp), %eax
 ; X86-NEXT:    notb %al
-; X86-NEXT:    andb {{[0-9]+}}(%esp), %al
-; X86-NEXT:    addb {{[0-9]+}}(%esp), %al
+; X86-NEXT:    movzbl {{[0-9]+}}(%esp), %ecx
+; X86-NEXT:    andb %al, %cl
+; X86-NEXT:    movzbl {{[0-9]+}}(%esp), %eax
+; X86-NEXT:    addb %cl, %al
 ; X86-NEXT:    retl
 ;
 ; X64-LABEL: add_and_xor_wrong_op:
@@ -73,14 +79,15 @@ define i8 @add_and_xor_wrong_op(i8 %x, i8 %y, i8 %z) {
 define i8 @add_and_xor_commuted1(i8 %x, i8 %y) {
 ; X86-LABEL: add_and_xor_commuted1:
 ; X86:       # %bb.0:
+; X86-NEXT:    movzbl {{[0-9]+}}(%esp), %ecx
 ; X86-NEXT:    movzbl {{[0-9]+}}(%esp), %eax
-; X86-NEXT:    orb {{[0-9]+}}(%esp), %al
+; X86-NEXT:    orb %cl, %al
 ; X86-NEXT:    retl
 ;
 ; X64-LABEL: add_and_xor_commuted1:
 ; X64:       # %bb.0:
-; X64-NEXT:    movl %edi, %eax
-; X64-NEXT:    orl %esi, %eax
+; X64-NEXT:    movl %esi, %eax
+; X64-NEXT:    orl %edi, %eax
 ; X64-NEXT:    # kill: def $al killed $al killed $eax
 ; X64-NEXT:    retq
   %xor = xor i8 %x, -1
@@ -92,14 +99,15 @@ define i8 @add_and_xor_commuted1(i8 %x, i8 %y) {
 define i8 @add_and_xor_commuted2(i8 %x, i8 %y) {
 ; X86-LABEL: add_and_xor_commuted2:
 ; X86:       # %bb.0:
+; X86-NEXT:    movzbl {{[0-9]+}}(%esp), %ecx
 ; X86-NEXT:    movzbl {{[0-9]+}}(%esp), %eax
-; X86-NEXT:    orb {{[0-9]+}}(%esp), %al
+; X86-NEXT:    orb %cl, %al
 ; X86-NEXT:    retl
 ;
 ; X64-LABEL: add_and_xor_commuted2:
 ; X64:       # %bb.0:
-; X64-NEXT:    movl %edi, %eax
-; X64-NEXT:    orl %esi, %eax
+; X64-NEXT:    movl %esi, %eax
+; X64-NEXT:    orl %edi, %eax
 ; X64-NEXT:    # kill: def $al killed $al killed $eax
 ; X64-NEXT:    retq
   %xor = xor i8 %x, -1
@@ -111,14 +119,15 @@ define i8 @add_and_xor_commuted2(i8 %x, i8 %y) {
 define i8 @add_and_xor_commuted3(i8 %x, i8 %y) {
 ; X86-LABEL: add_and_xor_commuted3:
 ; X86:       # %bb.0:
+; X86-NEXT:    movzbl {{[0-9]+}}(%esp), %ecx
 ; X86-NEXT:    movzbl {{[0-9]+}}(%esp), %eax
-; X86-NEXT:    orb {{[0-9]+}}(%esp), %al
+; X86-NEXT:    orb %cl, %al
 ; X86-NEXT:    retl
 ;
 ; X64-LABEL: add_and_xor_commuted3:
 ; X64:       # %bb.0:
-; X64-NEXT:    movl %edi, %eax
-; X64-NEXT:    orl %esi, %eax
+; X64-NEXT:    movl %esi, %eax
+; X64-NEXT:    orl %edi, %eax
 ; X64-NEXT:    # kill: def $al killed $al killed $eax
 ; X64-NEXT:    retq
   %xor = xor i8 %x, -1
@@ -200,10 +209,11 @@ define i64 @add_and_xor_const_wrong_op(i64 %x, i64 %y) {
 ; X86-LABEL: add_and_xor_const_wrong_op:
 ; X86:       # %bb.0:
 ; X86-NEXT:    movl {{[0-9]+}}(%esp), %edx
+; X86-NEXT:    movl {{[0-9]+}}(%esp), %ecx
+; X86-NEXT:    notl %ecx
+; X86-NEXT:    andl $1, %ecx
 ; X86-NEXT:    movl {{[0-9]+}}(%esp), %eax
-; X86-NEXT:    notl %eax
-; X86-NEXT:    andl $1, %eax
-; X86-NEXT:    addl {{[0-9]+}}(%esp), %eax
+; X86-NEXT:    addl %ecx, %eax
 ; X86-NEXT:    adcl $0, %edx
 ; X86-NEXT:    retl
 ;
@@ -243,24 +253,30 @@ define i64 @add_and_xor_const_explicit_trunc(i64 %x) {
 define i64 @add_and_xor_const_explicit_trunc_wrong_mask(i64 %x) {
 ; X86-LABEL: add_and_xor_const_explicit_trunc_wrong_mask:
 ; X86:       # %bb.0:
+; X86-NEXT:    pushl %esi
+; X86-NEXT:    .cfi_def_cfa_offset 8
+; X86-NEXT:    .cfi_offset %esi, -8
 ; X86-NEXT:    movl {{[0-9]+}}(%esp), %ecx
 ; X86-NEXT:    movl %ecx, %eax
 ; X86-NEXT:    notl %eax
-; X86-NEXT:    movl %eax, %edx
-; X86-NEXT:    shrl $31, %edx
+; X86-NEXT:    movl %eax, %esi
+; X86-NEXT:    shrl $31, %esi
 ; X86-NEXT:    andl $1, %eax
 ; X86-NEXT:    addl %ecx, %eax
-; X86-NEXT:    adcl {{[0-9]+}}(%esp), %edx
+; X86-NEXT:    movl {{[0-9]+}}(%esp), %edx
+; X86-NEXT:    adcl %esi, %edx
+; X86-NEXT:    popl %esi
+; X86-NEXT:    .cfi_def_cfa_offset 4
 ; X86-NEXT:    retl
 ;
 ; X64-LABEL: add_and_xor_const_explicit_trunc_wrong_mask:
 ; X64:       # %bb.0:
 ; X64-NEXT:    movl %edi, %eax
 ; X64-NEXT:    notl %eax
-; X64-NEXT:    movslq %eax, %rcx
-; X64-NEXT:    movabsq $4294967297, %rax # imm = 0x100000001
-; X64-NEXT:    andq %rcx, %rax
-; X64-NEXT:    addq %rdi, %rax
+; X64-NEXT:    cltq
+; X64-NEXT:    movabsq $4294967297, %rcx # imm = 0x100000001
+; X64-NEXT:    andq %rax, %rcx
+; X64-NEXT:    leaq (%rcx,%rdi), %rax
 ; X64-NEXT:    retq
   %trunc = trunc i64 %x to i32
   %xor = xor i32 %trunc, -1
@@ -273,14 +289,15 @@ define i64 @add_and_xor_const_explicit_trunc_wrong_mask(i64 %x) {
 define ptr @gep_and_xor(ptr %a, i64 %m) {
 ; X86-LABEL: gep_and_xor:
 ; X86:       # %bb.0:
+; X86-NEXT:    movl {{[0-9]+}}(%esp), %ecx
 ; X86-NEXT:    movl {{[0-9]+}}(%esp), %eax
-; X86-NEXT:    orl {{[0-9]+}}(%esp), %eax
+; X86-NEXT:    orl %ecx, %eax
 ; X86-NEXT:    retl
 ;
 ; X64-LABEL: gep_and_xor:
 ; X64:       # %bb.0:
-; X64-NEXT:    movq %rdi, %rax
-; X64-NEXT:    orq %rsi, %rax
+; X64-NEXT:    movq %rsi, %rax
+; X64-NEXT:    orq %rdi, %rax
 ; X64-NEXT:    retq
   %old = ptrtoint ptr %a to i64
   %old.not = and i64 %old, %m
@@ -333,8 +350,9 @@ define i64 @add_and_xor_const_zext_trunc_var(i64 %x, i64 %y) {
 ; X86-LABEL: add_and_xor_const_zext_trunc_var:
 ; X86:       # %bb.0:
 ; X86-NEXT:    movl {{[0-9]+}}(%esp), %edx
+; X86-NEXT:    movl {{[0-9]+}}(%esp), %ecx
 ; X86-NEXT:    movl {{[0-9]+}}(%esp), %eax
-; X86-NEXT:    orl {{[0-9]+}}(%esp), %eax
+; X86-NEXT:    orl %ecx, %eax
 ; X86-NEXT:    retl
 ;
 ; X64-LABEL: add_and_xor_const_zext_trunc_var:

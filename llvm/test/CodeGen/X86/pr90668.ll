@@ -4,9 +4,10 @@
 define i64 @off(i8 signext %a) {
 ; CHECK-LABEL: off:
 ; CHECK:       # %bb.0: # %entry
-; CHECK-NEXT:    addb $-128, %dil
-; CHECK-NEXT:    movzbl %dil, %eax
-; CHECK-NEXT:    shll $3, %eax
+; CHECK-NEXT:    # kill: def $edi killed $edi def $rdi
+; CHECK-NEXT:    leal -128(%rdi), %eax
+; CHECK-NEXT:    movzbl %al, %eax
+; CHECK-NEXT:    leal (,%rax,8), %eax
 ; CHECK-NEXT:    retq
 entry:
   %add = xor i8 %a, -128

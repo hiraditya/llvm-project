@@ -310,26 +310,28 @@ define i64 @select_example_smax_1(i64 %a, i64 %b, i1 zeroext %x, i64 %y) {
 ; RV32I-SFB-ZBB:       # %bb.0: # %entry
 ; RV32I-SFB-ZBB-NEXT:    sltu a7, a5, a0
 ; RV32I-SFB-ZBB-NEXT:    slt t0, a6, a1
-; RV32I-SFB-ZBB-NEXT:    bne a1, a6, .LBB4_2
+; RV32I-SFB-ZBB-NEXT:    beq a1, a6, .LBB4_2
 ; RV32I-SFB-ZBB-NEXT:  # %bb.1: # %entry
-; RV32I-SFB-ZBB-NEXT:    mv t0, a7
+; RV32I-SFB-ZBB-NEXT:    mv a7, t0
 ; RV32I-SFB-ZBB-NEXT:  .LBB4_2: # %entry
-; RV32I-SFB-ZBB-NEXT:    bnez t0, .LBB4_4
+; RV32I-SFB-ZBB-NEXT:    beqz a7, .LBB4_4
 ; RV32I-SFB-ZBB-NEXT:  # %bb.3: # %entry
-; RV32I-SFB-ZBB-NEXT:    mv a1, a6
+; RV32I-SFB-ZBB-NEXT:    mv a6, a1
 ; RV32I-SFB-ZBB-NEXT:  .LBB4_4: # %entry
-; RV32I-SFB-ZBB-NEXT:    bnez t0, .LBB4_6
+; RV32I-SFB-ZBB-NEXT:    beqz a7, .LBB4_6
 ; RV32I-SFB-ZBB-NEXT:  # %bb.5: # %entry
-; RV32I-SFB-ZBB-NEXT:    mv a0, a5
+; RV32I-SFB-ZBB-NEXT:    mv a5, a0
 ; RV32I-SFB-ZBB-NEXT:  .LBB4_6: # %entry
 ; RV32I-SFB-ZBB-NEXT:    bnez a4, .LBB4_8
 ; RV32I-SFB-ZBB-NEXT:  # %bb.7: # %entry
-; RV32I-SFB-ZBB-NEXT:    mv a0, a2
+; RV32I-SFB-ZBB-NEXT:    mv a5, a2
 ; RV32I-SFB-ZBB-NEXT:  .LBB4_8: # %entry
 ; RV32I-SFB-ZBB-NEXT:    bnez a4, .LBB4_10
 ; RV32I-SFB-ZBB-NEXT:  # %bb.9: # %entry
-; RV32I-SFB-ZBB-NEXT:    mv a1, a3
+; RV32I-SFB-ZBB-NEXT:    mv a6, a3
 ; RV32I-SFB-ZBB-NEXT:  .LBB4_10: # %entry
+; RV32I-SFB-ZBB-NEXT:    mv a0, a5
+; RV32I-SFB-ZBB-NEXT:    mv a1, a6
 ; RV32I-SFB-ZBB-NEXT:    ret
 ;
 ; RV64I-SFB-ZBB-LABEL: select_example_smax_1:
@@ -345,26 +347,28 @@ define i64 @select_example_smax_1(i64 %a, i64 %b, i1 zeroext %x, i64 %y) {
 ; RV32I-SFBIMinMax-ZBB:       # %bb.0: # %entry
 ; RV32I-SFBIMinMax-ZBB-NEXT:    sltu a7, a5, a0
 ; RV32I-SFBIMinMax-ZBB-NEXT:    slt t0, a6, a1
-; RV32I-SFBIMinMax-ZBB-NEXT:    bne a1, a6, .LBB4_2
+; RV32I-SFBIMinMax-ZBB-NEXT:    beq a1, a6, .LBB4_2
 ; RV32I-SFBIMinMax-ZBB-NEXT:  # %bb.1: # %entry
-; RV32I-SFBIMinMax-ZBB-NEXT:    mv t0, a7
+; RV32I-SFBIMinMax-ZBB-NEXT:    mv a7, t0
 ; RV32I-SFBIMinMax-ZBB-NEXT:  .LBB4_2: # %entry
-; RV32I-SFBIMinMax-ZBB-NEXT:    bnez t0, .LBB4_4
+; RV32I-SFBIMinMax-ZBB-NEXT:    beqz a7, .LBB4_4
 ; RV32I-SFBIMinMax-ZBB-NEXT:  # %bb.3: # %entry
-; RV32I-SFBIMinMax-ZBB-NEXT:    mv a1, a6
+; RV32I-SFBIMinMax-ZBB-NEXT:    mv a6, a1
 ; RV32I-SFBIMinMax-ZBB-NEXT:  .LBB4_4: # %entry
-; RV32I-SFBIMinMax-ZBB-NEXT:    bnez t0, .LBB4_6
+; RV32I-SFBIMinMax-ZBB-NEXT:    beqz a7, .LBB4_6
 ; RV32I-SFBIMinMax-ZBB-NEXT:  # %bb.5: # %entry
-; RV32I-SFBIMinMax-ZBB-NEXT:    mv a0, a5
+; RV32I-SFBIMinMax-ZBB-NEXT:    mv a5, a0
 ; RV32I-SFBIMinMax-ZBB-NEXT:  .LBB4_6: # %entry
 ; RV32I-SFBIMinMax-ZBB-NEXT:    bnez a4, .LBB4_8
 ; RV32I-SFBIMinMax-ZBB-NEXT:  # %bb.7: # %entry
-; RV32I-SFBIMinMax-ZBB-NEXT:    mv a0, a2
+; RV32I-SFBIMinMax-ZBB-NEXT:    mv a5, a2
 ; RV32I-SFBIMinMax-ZBB-NEXT:  .LBB4_8: # %entry
 ; RV32I-SFBIMinMax-ZBB-NEXT:    bnez a4, .LBB4_10
 ; RV32I-SFBIMinMax-ZBB-NEXT:  # %bb.9: # %entry
-; RV32I-SFBIMinMax-ZBB-NEXT:    mv a1, a3
+; RV32I-SFBIMinMax-ZBB-NEXT:    mv a6, a3
 ; RV32I-SFBIMinMax-ZBB-NEXT:  .LBB4_10: # %entry
+; RV32I-SFBIMinMax-ZBB-NEXT:    mv a0, a5
+; RV32I-SFBIMinMax-ZBB-NEXT:    mv a1, a6
 ; RV32I-SFBIMinMax-ZBB-NEXT:    ret
 ;
 ; RV64I-SFBIMinMax-ZBB-LABEL: select_example_smax_1:
@@ -417,26 +421,28 @@ define i64 @select_example_smin_1(i64 %a, i64 %b, i1 zeroext %x, i64 %y) {
 ; RV32I-SFB-ZBB:       # %bb.0: # %entry
 ; RV32I-SFB-ZBB-NEXT:    sltu a7, a0, a5
 ; RV32I-SFB-ZBB-NEXT:    slt t0, a1, a6
-; RV32I-SFB-ZBB-NEXT:    bne a1, a6, .LBB5_2
+; RV32I-SFB-ZBB-NEXT:    beq a1, a6, .LBB5_2
 ; RV32I-SFB-ZBB-NEXT:  # %bb.1: # %entry
-; RV32I-SFB-ZBB-NEXT:    mv t0, a7
+; RV32I-SFB-ZBB-NEXT:    mv a7, t0
 ; RV32I-SFB-ZBB-NEXT:  .LBB5_2: # %entry
-; RV32I-SFB-ZBB-NEXT:    bnez t0, .LBB5_4
+; RV32I-SFB-ZBB-NEXT:    beqz a7, .LBB5_4
 ; RV32I-SFB-ZBB-NEXT:  # %bb.3: # %entry
-; RV32I-SFB-ZBB-NEXT:    mv a1, a6
+; RV32I-SFB-ZBB-NEXT:    mv a6, a1
 ; RV32I-SFB-ZBB-NEXT:  .LBB5_4: # %entry
-; RV32I-SFB-ZBB-NEXT:    bnez t0, .LBB5_6
+; RV32I-SFB-ZBB-NEXT:    beqz a7, .LBB5_6
 ; RV32I-SFB-ZBB-NEXT:  # %bb.5: # %entry
-; RV32I-SFB-ZBB-NEXT:    mv a0, a5
+; RV32I-SFB-ZBB-NEXT:    mv a5, a0
 ; RV32I-SFB-ZBB-NEXT:  .LBB5_6: # %entry
 ; RV32I-SFB-ZBB-NEXT:    bnez a4, .LBB5_8
 ; RV32I-SFB-ZBB-NEXT:  # %bb.7: # %entry
-; RV32I-SFB-ZBB-NEXT:    mv a0, a2
+; RV32I-SFB-ZBB-NEXT:    mv a5, a2
 ; RV32I-SFB-ZBB-NEXT:  .LBB5_8: # %entry
 ; RV32I-SFB-ZBB-NEXT:    bnez a4, .LBB5_10
 ; RV32I-SFB-ZBB-NEXT:  # %bb.9: # %entry
-; RV32I-SFB-ZBB-NEXT:    mv a1, a3
+; RV32I-SFB-ZBB-NEXT:    mv a6, a3
 ; RV32I-SFB-ZBB-NEXT:  .LBB5_10: # %entry
+; RV32I-SFB-ZBB-NEXT:    mv a0, a5
+; RV32I-SFB-ZBB-NEXT:    mv a1, a6
 ; RV32I-SFB-ZBB-NEXT:    ret
 ;
 ; RV64I-SFB-ZBB-LABEL: select_example_smin_1:
@@ -452,26 +458,28 @@ define i64 @select_example_smin_1(i64 %a, i64 %b, i1 zeroext %x, i64 %y) {
 ; RV32I-SFBIMinMax-ZBB:       # %bb.0: # %entry
 ; RV32I-SFBIMinMax-ZBB-NEXT:    sltu a7, a0, a5
 ; RV32I-SFBIMinMax-ZBB-NEXT:    slt t0, a1, a6
-; RV32I-SFBIMinMax-ZBB-NEXT:    bne a1, a6, .LBB5_2
+; RV32I-SFBIMinMax-ZBB-NEXT:    beq a1, a6, .LBB5_2
 ; RV32I-SFBIMinMax-ZBB-NEXT:  # %bb.1: # %entry
-; RV32I-SFBIMinMax-ZBB-NEXT:    mv t0, a7
+; RV32I-SFBIMinMax-ZBB-NEXT:    mv a7, t0
 ; RV32I-SFBIMinMax-ZBB-NEXT:  .LBB5_2: # %entry
-; RV32I-SFBIMinMax-ZBB-NEXT:    bnez t0, .LBB5_4
+; RV32I-SFBIMinMax-ZBB-NEXT:    beqz a7, .LBB5_4
 ; RV32I-SFBIMinMax-ZBB-NEXT:  # %bb.3: # %entry
-; RV32I-SFBIMinMax-ZBB-NEXT:    mv a1, a6
+; RV32I-SFBIMinMax-ZBB-NEXT:    mv a6, a1
 ; RV32I-SFBIMinMax-ZBB-NEXT:  .LBB5_4: # %entry
-; RV32I-SFBIMinMax-ZBB-NEXT:    bnez t0, .LBB5_6
+; RV32I-SFBIMinMax-ZBB-NEXT:    beqz a7, .LBB5_6
 ; RV32I-SFBIMinMax-ZBB-NEXT:  # %bb.5: # %entry
-; RV32I-SFBIMinMax-ZBB-NEXT:    mv a0, a5
+; RV32I-SFBIMinMax-ZBB-NEXT:    mv a5, a0
 ; RV32I-SFBIMinMax-ZBB-NEXT:  .LBB5_6: # %entry
 ; RV32I-SFBIMinMax-ZBB-NEXT:    bnez a4, .LBB5_8
 ; RV32I-SFBIMinMax-ZBB-NEXT:  # %bb.7: # %entry
-; RV32I-SFBIMinMax-ZBB-NEXT:    mv a0, a2
+; RV32I-SFBIMinMax-ZBB-NEXT:    mv a5, a2
 ; RV32I-SFBIMinMax-ZBB-NEXT:  .LBB5_8: # %entry
 ; RV32I-SFBIMinMax-ZBB-NEXT:    bnez a4, .LBB5_10
 ; RV32I-SFBIMinMax-ZBB-NEXT:  # %bb.9: # %entry
-; RV32I-SFBIMinMax-ZBB-NEXT:    mv a1, a3
+; RV32I-SFBIMinMax-ZBB-NEXT:    mv a6, a3
 ; RV32I-SFBIMinMax-ZBB-NEXT:  .LBB5_10: # %entry
+; RV32I-SFBIMinMax-ZBB-NEXT:    mv a0, a5
+; RV32I-SFBIMinMax-ZBB-NEXT:    mv a1, a6
 ; RV32I-SFBIMinMax-ZBB-NEXT:    ret
 ;
 ; RV64I-SFBIMinMax-ZBB-LABEL: select_example_smin_1:
@@ -524,26 +532,28 @@ define i64 @select_example_umax_1(i64 %a, i64 %b, i1 zeroext %x, i64 %y) {
 ; RV32I-SFB-ZBB:       # %bb.0: # %entry
 ; RV32I-SFB-ZBB-NEXT:    sltu a7, a5, a0
 ; RV32I-SFB-ZBB-NEXT:    sltu t0, a6, a1
-; RV32I-SFB-ZBB-NEXT:    bne a1, a6, .LBB6_2
+; RV32I-SFB-ZBB-NEXT:    beq a1, a6, .LBB6_2
 ; RV32I-SFB-ZBB-NEXT:  # %bb.1: # %entry
-; RV32I-SFB-ZBB-NEXT:    mv t0, a7
+; RV32I-SFB-ZBB-NEXT:    mv a7, t0
 ; RV32I-SFB-ZBB-NEXT:  .LBB6_2: # %entry
-; RV32I-SFB-ZBB-NEXT:    bnez t0, .LBB6_4
+; RV32I-SFB-ZBB-NEXT:    beqz a7, .LBB6_4
 ; RV32I-SFB-ZBB-NEXT:  # %bb.3: # %entry
-; RV32I-SFB-ZBB-NEXT:    mv a1, a6
+; RV32I-SFB-ZBB-NEXT:    mv a6, a1
 ; RV32I-SFB-ZBB-NEXT:  .LBB6_4: # %entry
-; RV32I-SFB-ZBB-NEXT:    bnez t0, .LBB6_6
+; RV32I-SFB-ZBB-NEXT:    beqz a7, .LBB6_6
 ; RV32I-SFB-ZBB-NEXT:  # %bb.5: # %entry
-; RV32I-SFB-ZBB-NEXT:    mv a0, a5
+; RV32I-SFB-ZBB-NEXT:    mv a5, a0
 ; RV32I-SFB-ZBB-NEXT:  .LBB6_6: # %entry
 ; RV32I-SFB-ZBB-NEXT:    bnez a4, .LBB6_8
 ; RV32I-SFB-ZBB-NEXT:  # %bb.7: # %entry
-; RV32I-SFB-ZBB-NEXT:    mv a0, a2
+; RV32I-SFB-ZBB-NEXT:    mv a5, a2
 ; RV32I-SFB-ZBB-NEXT:  .LBB6_8: # %entry
 ; RV32I-SFB-ZBB-NEXT:    bnez a4, .LBB6_10
 ; RV32I-SFB-ZBB-NEXT:  # %bb.9: # %entry
-; RV32I-SFB-ZBB-NEXT:    mv a1, a3
+; RV32I-SFB-ZBB-NEXT:    mv a6, a3
 ; RV32I-SFB-ZBB-NEXT:  .LBB6_10: # %entry
+; RV32I-SFB-ZBB-NEXT:    mv a0, a5
+; RV32I-SFB-ZBB-NEXT:    mv a1, a6
 ; RV32I-SFB-ZBB-NEXT:    ret
 ;
 ; RV64I-SFB-ZBB-LABEL: select_example_umax_1:
@@ -559,26 +569,28 @@ define i64 @select_example_umax_1(i64 %a, i64 %b, i1 zeroext %x, i64 %y) {
 ; RV32I-SFBIMinMax-ZBB:       # %bb.0: # %entry
 ; RV32I-SFBIMinMax-ZBB-NEXT:    sltu a7, a5, a0
 ; RV32I-SFBIMinMax-ZBB-NEXT:    sltu t0, a6, a1
-; RV32I-SFBIMinMax-ZBB-NEXT:    bne a1, a6, .LBB6_2
+; RV32I-SFBIMinMax-ZBB-NEXT:    beq a1, a6, .LBB6_2
 ; RV32I-SFBIMinMax-ZBB-NEXT:  # %bb.1: # %entry
-; RV32I-SFBIMinMax-ZBB-NEXT:    mv t0, a7
+; RV32I-SFBIMinMax-ZBB-NEXT:    mv a7, t0
 ; RV32I-SFBIMinMax-ZBB-NEXT:  .LBB6_2: # %entry
-; RV32I-SFBIMinMax-ZBB-NEXT:    bnez t0, .LBB6_4
+; RV32I-SFBIMinMax-ZBB-NEXT:    beqz a7, .LBB6_4
 ; RV32I-SFBIMinMax-ZBB-NEXT:  # %bb.3: # %entry
-; RV32I-SFBIMinMax-ZBB-NEXT:    mv a1, a6
+; RV32I-SFBIMinMax-ZBB-NEXT:    mv a6, a1
 ; RV32I-SFBIMinMax-ZBB-NEXT:  .LBB6_4: # %entry
-; RV32I-SFBIMinMax-ZBB-NEXT:    bnez t0, .LBB6_6
+; RV32I-SFBIMinMax-ZBB-NEXT:    beqz a7, .LBB6_6
 ; RV32I-SFBIMinMax-ZBB-NEXT:  # %bb.5: # %entry
-; RV32I-SFBIMinMax-ZBB-NEXT:    mv a0, a5
+; RV32I-SFBIMinMax-ZBB-NEXT:    mv a5, a0
 ; RV32I-SFBIMinMax-ZBB-NEXT:  .LBB6_6: # %entry
 ; RV32I-SFBIMinMax-ZBB-NEXT:    bnez a4, .LBB6_8
 ; RV32I-SFBIMinMax-ZBB-NEXT:  # %bb.7: # %entry
-; RV32I-SFBIMinMax-ZBB-NEXT:    mv a0, a2
+; RV32I-SFBIMinMax-ZBB-NEXT:    mv a5, a2
 ; RV32I-SFBIMinMax-ZBB-NEXT:  .LBB6_8: # %entry
 ; RV32I-SFBIMinMax-ZBB-NEXT:    bnez a4, .LBB6_10
 ; RV32I-SFBIMinMax-ZBB-NEXT:  # %bb.9: # %entry
-; RV32I-SFBIMinMax-ZBB-NEXT:    mv a1, a3
+; RV32I-SFBIMinMax-ZBB-NEXT:    mv a6, a3
 ; RV32I-SFBIMinMax-ZBB-NEXT:  .LBB6_10: # %entry
+; RV32I-SFBIMinMax-ZBB-NEXT:    mv a0, a5
+; RV32I-SFBIMinMax-ZBB-NEXT:    mv a1, a6
 ; RV32I-SFBIMinMax-ZBB-NEXT:    ret
 ;
 ; RV64I-SFBIMinMax-ZBB-LABEL: select_example_umax_1:
@@ -631,26 +643,28 @@ define i64 @select_example_umin_1(i64 %a, i64 %b, i1 zeroext %x, i64 %y) {
 ; RV32I-SFB-ZBB:       # %bb.0: # %entry
 ; RV32I-SFB-ZBB-NEXT:    sltu a7, a0, a5
 ; RV32I-SFB-ZBB-NEXT:    sltu t0, a1, a6
-; RV32I-SFB-ZBB-NEXT:    bne a1, a6, .LBB7_2
+; RV32I-SFB-ZBB-NEXT:    beq a1, a6, .LBB7_2
 ; RV32I-SFB-ZBB-NEXT:  # %bb.1: # %entry
-; RV32I-SFB-ZBB-NEXT:    mv t0, a7
+; RV32I-SFB-ZBB-NEXT:    mv a7, t0
 ; RV32I-SFB-ZBB-NEXT:  .LBB7_2: # %entry
-; RV32I-SFB-ZBB-NEXT:    bnez t0, .LBB7_4
+; RV32I-SFB-ZBB-NEXT:    beqz a7, .LBB7_4
 ; RV32I-SFB-ZBB-NEXT:  # %bb.3: # %entry
-; RV32I-SFB-ZBB-NEXT:    mv a1, a6
+; RV32I-SFB-ZBB-NEXT:    mv a6, a1
 ; RV32I-SFB-ZBB-NEXT:  .LBB7_4: # %entry
-; RV32I-SFB-ZBB-NEXT:    bnez t0, .LBB7_6
+; RV32I-SFB-ZBB-NEXT:    beqz a7, .LBB7_6
 ; RV32I-SFB-ZBB-NEXT:  # %bb.5: # %entry
-; RV32I-SFB-ZBB-NEXT:    mv a0, a5
+; RV32I-SFB-ZBB-NEXT:    mv a5, a0
 ; RV32I-SFB-ZBB-NEXT:  .LBB7_6: # %entry
 ; RV32I-SFB-ZBB-NEXT:    bnez a4, .LBB7_8
 ; RV32I-SFB-ZBB-NEXT:  # %bb.7: # %entry
-; RV32I-SFB-ZBB-NEXT:    mv a0, a2
+; RV32I-SFB-ZBB-NEXT:    mv a5, a2
 ; RV32I-SFB-ZBB-NEXT:  .LBB7_8: # %entry
 ; RV32I-SFB-ZBB-NEXT:    bnez a4, .LBB7_10
 ; RV32I-SFB-ZBB-NEXT:  # %bb.9: # %entry
-; RV32I-SFB-ZBB-NEXT:    mv a1, a3
+; RV32I-SFB-ZBB-NEXT:    mv a6, a3
 ; RV32I-SFB-ZBB-NEXT:  .LBB7_10: # %entry
+; RV32I-SFB-ZBB-NEXT:    mv a0, a5
+; RV32I-SFB-ZBB-NEXT:    mv a1, a6
 ; RV32I-SFB-ZBB-NEXT:    ret
 ;
 ; RV64I-SFB-ZBB-LABEL: select_example_umin_1:
@@ -666,26 +680,28 @@ define i64 @select_example_umin_1(i64 %a, i64 %b, i1 zeroext %x, i64 %y) {
 ; RV32I-SFBIMinMax-ZBB:       # %bb.0: # %entry
 ; RV32I-SFBIMinMax-ZBB-NEXT:    sltu a7, a0, a5
 ; RV32I-SFBIMinMax-ZBB-NEXT:    sltu t0, a1, a6
-; RV32I-SFBIMinMax-ZBB-NEXT:    bne a1, a6, .LBB7_2
+; RV32I-SFBIMinMax-ZBB-NEXT:    beq a1, a6, .LBB7_2
 ; RV32I-SFBIMinMax-ZBB-NEXT:  # %bb.1: # %entry
-; RV32I-SFBIMinMax-ZBB-NEXT:    mv t0, a7
+; RV32I-SFBIMinMax-ZBB-NEXT:    mv a7, t0
 ; RV32I-SFBIMinMax-ZBB-NEXT:  .LBB7_2: # %entry
-; RV32I-SFBIMinMax-ZBB-NEXT:    bnez t0, .LBB7_4
+; RV32I-SFBIMinMax-ZBB-NEXT:    beqz a7, .LBB7_4
 ; RV32I-SFBIMinMax-ZBB-NEXT:  # %bb.3: # %entry
-; RV32I-SFBIMinMax-ZBB-NEXT:    mv a1, a6
+; RV32I-SFBIMinMax-ZBB-NEXT:    mv a6, a1
 ; RV32I-SFBIMinMax-ZBB-NEXT:  .LBB7_4: # %entry
-; RV32I-SFBIMinMax-ZBB-NEXT:    bnez t0, .LBB7_6
+; RV32I-SFBIMinMax-ZBB-NEXT:    beqz a7, .LBB7_6
 ; RV32I-SFBIMinMax-ZBB-NEXT:  # %bb.5: # %entry
-; RV32I-SFBIMinMax-ZBB-NEXT:    mv a0, a5
+; RV32I-SFBIMinMax-ZBB-NEXT:    mv a5, a0
 ; RV32I-SFBIMinMax-ZBB-NEXT:  .LBB7_6: # %entry
 ; RV32I-SFBIMinMax-ZBB-NEXT:    bnez a4, .LBB7_8
 ; RV32I-SFBIMinMax-ZBB-NEXT:  # %bb.7: # %entry
-; RV32I-SFBIMinMax-ZBB-NEXT:    mv a0, a2
+; RV32I-SFBIMinMax-ZBB-NEXT:    mv a5, a2
 ; RV32I-SFBIMinMax-ZBB-NEXT:  .LBB7_8: # %entry
 ; RV32I-SFBIMinMax-ZBB-NEXT:    bnez a4, .LBB7_10
 ; RV32I-SFBIMinMax-ZBB-NEXT:  # %bb.9: # %entry
-; RV32I-SFBIMinMax-ZBB-NEXT:    mv a1, a3
+; RV32I-SFBIMinMax-ZBB-NEXT:    mv a6, a3
 ; RV32I-SFBIMinMax-ZBB-NEXT:  .LBB7_10: # %entry
+; RV32I-SFBIMinMax-ZBB-NEXT:    mv a0, a5
+; RV32I-SFBIMinMax-ZBB-NEXT:    mv a1, a6
 ; RV32I-SFBIMinMax-ZBB-NEXT:    ret
 ;
 ; RV64I-SFBIMinMax-ZBB-LABEL: select_example_umin_1:

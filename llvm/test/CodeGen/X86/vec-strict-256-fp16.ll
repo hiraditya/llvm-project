@@ -102,7 +102,8 @@ define <4 x half> @f12(<4 x double> %a) #0 {
 define <16 x half> @f13(<16 x half> %a, <16 x half> %b, <16 x half> %c) #0 {
 ; CHECK-LABEL: f13:
 ; CHECK:       # %bb.0:
-; CHECK-NEXT:    vfmadd213ph %ymm2, %ymm1, %ymm0
+; CHECK-NEXT:    vfmadd213ph %ymm2, %ymm0, %ymm1
+; CHECK-NEXT:    vmovaps %ymm1, %ymm0
 ; CHECK-NEXT:    ret{{[l|q]}}
   %res = call <16 x half> @llvm.experimental.constrained.fma.v16f16(<16 x half> %a, <16 x half> %b, <16 x half> %c,
                                                                     metadata !"round.dynamic",

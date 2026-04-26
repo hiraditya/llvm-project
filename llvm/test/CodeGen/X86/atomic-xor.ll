@@ -35,12 +35,12 @@ define i128 @xor128_signbit_used(ptr %p) nounwind {
 ; X86-NEXT:    .p2align 4
 ; X86-NEXT:  .LBB1_1: # %atomicrmw.start
 ; X86-NEXT:    # =>This Inner Loop Header: Depth=1
+; X86-NEXT:    leal -2147483648(%ecx), %eax
 ; X86-NEXT:    movl %ebx, (%esp)
 ; X86-NEXT:    movl %esi, {{[0-9]+}}(%esp)
 ; X86-NEXT:    movl %edx, {{[0-9]+}}(%esp)
 ; X86-NEXT:    movl %ecx, {{[0-9]+}}(%esp)
-; X86-NEXT:    addl $-2147483648, %ecx # imm = 0x80000000
-; X86-NEXT:    movl %ecx, {{[0-9]+}}(%esp)
+; X86-NEXT:    movl %eax, {{[0-9]+}}(%esp)
 ; X86-NEXT:    movl %edx, {{[0-9]+}}(%esp)
 ; X86-NEXT:    movl %esi, {{[0-9]+}}(%esp)
 ; X86-NEXT:    movl %ebx, {{[0-9]+}}(%esp)

@@ -16,8 +16,9 @@ define void @test_extractelement_legalization_storereuse(<4 x i32> %a, ptr nocap
 ; CHECK-NEXT:    movl {{[0-9]+}}(%esp), %eax
 ; CHECK-NEXT:    movl {{[0-9]+}}(%esp), %ecx
 ; CHECK-NEXT:    movl {{[0-9]+}}(%esp), %edx
-; CHECK-NEXT:    paddd (%edx), %xmm0
-; CHECK-NEXT:    movdqa %xmm0, (%edx)
+; CHECK-NEXT:    movdqa (%edx), %xmm1
+; CHECK-NEXT:    paddd %xmm0, %xmm1
+; CHECK-NEXT:    movdqa %xmm1, (%edx)
 ; CHECK-NEXT:    movl (%edx), %esi
 ; CHECK-NEXT:    movl 4(%edx), %edi
 ; CHECK-NEXT:    shll $4, %ecx

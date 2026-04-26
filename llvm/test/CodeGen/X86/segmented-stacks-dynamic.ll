@@ -47,9 +47,9 @@ define i32 @test_basic(i32 %l) #0 {
 ; X86-NEXT:    testl %esi, %esi
 ; X86-NEXT:    je .LBB0_6
 ; X86-NEXT:  # %bb.8: # %false
-; X86-NEXT:    decl %esi
+; X86-NEXT:    leal -1(%esi), %eax
 ; X86-NEXT:    subl $16, %esp
-; X86-NEXT:    movl %esi, (%esp)
+; X86-NEXT:    movl %eax, (%esp)
 ; X86-NEXT:    calll test_basic@PLT
 ; X86-NEXT:    jmp .LBB0_7
 ; X86-NEXT:  .LBB0_6: # %true
@@ -103,8 +103,7 @@ define i32 @test_basic(i32 %l) #0 {
 ; X64-NEXT:    testl %ebx, %ebx
 ; X64-NEXT:    je .LBB0_6
 ; X64-NEXT:  # %bb.8: # %false
-; X64-NEXT:    decl %ebx
-; X64-NEXT:    movl %ebx, %edi
+; X64-NEXT:    leal -1(%rbx), %edi
 ; X64-NEXT:    callq test_basic@PLT
 ; X64-NEXT:    jmp .LBB0_7
 ; X64-NEXT:  .LBB0_6: # %true
@@ -157,8 +156,7 @@ define i32 @test_basic(i32 %l) #0 {
 ; X32ABI-NEXT:    testl %ebx, %ebx
 ; X32ABI-NEXT:    je .LBB0_6
 ; X32ABI-NEXT:  # %bb.8: # %false
-; X32ABI-NEXT:    decl %ebx
-; X32ABI-NEXT:    movl %ebx, %edi
+; X32ABI-NEXT:    leal -1(%rbx), %edi
 ; X32ABI-NEXT:    callq test_basic@PLT
 ; X32ABI-NEXT:    jmp .LBB0_7
 ; X32ABI-NEXT:  .LBB0_6: # %true

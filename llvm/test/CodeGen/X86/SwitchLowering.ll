@@ -11,13 +11,13 @@ define ptr @FindChar(ptr %CurPtr) {
 ; CHECK-NEXT:    .cfi_def_cfa_offset 12
 ; CHECK-NEXT:    .cfi_offset %esi, -12
 ; CHECK-NEXT:    .cfi_offset %edi, -8
-; CHECK-NEXT:    xorl %edi, %edi
-; CHECK-NEXT:    movl {{[0-9]+}}(%esp), %esi
+; CHECK-NEXT:    xorl %esi, %esi
+; CHECK-NEXT:    movl {{[0-9]+}}(%esp), %edi
 ; CHECK-NEXT:    .p2align 4
 ; CHECK-NEXT:  .LBB0_1: # %bb
 ; CHECK-NEXT:    # =>This Inner Loop Header: Depth=1
-; CHECK-NEXT:    movzbl (%esi,%edi), %eax
-; CHECK-NEXT:    incl %edi
+; CHECK-NEXT:    movzbl (%edi,%esi), %eax
+; CHECK-NEXT:    incl %esi
 ; CHECK-NEXT:    cmpl $120, %eax
 ; CHECK-NEXT:    je .LBB0_3
 ; CHECK-NEXT:  # %bb.2: # %bb
@@ -31,8 +31,7 @@ define ptr @FindChar(ptr %CurPtr) {
 ; CHECK-NEXT:    calll foo@PLT
 ; CHECK-NEXT:    addl $4, %esp
 ; CHECK-NEXT:    .cfi_adjust_cfa_offset -4
-; CHECK-NEXT:    addl %edi, %esi
-; CHECK-NEXT:    movl %esi, %eax
+; CHECK-NEXT:    leal (%edi,%esi), %eax
 ; CHECK-NEXT:    popl %esi
 ; CHECK-NEXT:    .cfi_def_cfa_offset 8
 ; CHECK-NEXT:    popl %edi

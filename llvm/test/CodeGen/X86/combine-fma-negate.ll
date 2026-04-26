@@ -10,8 +10,8 @@ define void @fma_neg(<8 x i1> %r280, ptr %pp1, ptr %pp2)  {
 ; CHECK-NEXT:    vmovdqu64 (%rdi), %zmm0
 ; CHECK-NEXT:    vpxorq {{\.?LCPI[0-9]+_[0-9]+}}(%rip){1to8}, %zmm0, %zmm1 {%k1} {z}
 ; CHECK-NEXT:    vxorpd %xmm2, %xmm2, %xmm2
-; CHECK-NEXT:    vfnmadd213pd {{.*#+}} zmm2 = -(zmm0 * zmm2) + zmm1
-; CHECK-NEXT:    vmovupd %zmm2, (%rsi)
+; CHECK-NEXT:    vfnmadd231pd {{.*#+}} zmm1 = -(zmm0 * zmm2) + zmm1
+; CHECK-NEXT:    vmovupd %zmm1, (%rsi)
 ; CHECK-NEXT:    vzeroupper
 ; CHECK-NEXT:    retq
   %r290 = load <8 x double>, ptr %pp1, align 8

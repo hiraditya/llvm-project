@@ -77,14 +77,14 @@ define <2 x i64> @foo_128(i32 %0, <2 x i64> %1, <2 x i64> %2, ptr %3) {
 ; AVX-NEXT:    je .LBB1_6
 ; AVX-NEXT:  # %bb.4: # %.preheader
 ; AVX-NEXT:    shlq $4, %rcx
-; AVX-NEXT:    addq %rcx, %rsi
+; AVX-NEXT:    addq %rsi, %rcx
 ; AVX-NEXT:    shll $4, %eax
-; AVX-NEXT:    xorl %ecx, %ecx
+; AVX-NEXT:    xorl %edx, %edx
 ; AVX-NEXT:    .p2align 4
 ; AVX-NEXT:  .LBB1_5: # =>This Inner Loop Header: Depth=1
-; AVX-NEXT:    {vex} vpdpwssd (%rsi,%rcx), %xmm1, %xmm0
-; AVX-NEXT:    addq $16, %rcx
-; AVX-NEXT:    cmpq %rcx, %rax
+; AVX-NEXT:    {vex} vpdpwssd (%rcx,%rdx), %xmm1, %xmm0
+; AVX-NEXT:    addq $16, %rdx
+; AVX-NEXT:    cmpq %rdx, %rax
 ; AVX-NEXT:    jne .LBB1_5
 ; AVX-NEXT:  .LBB1_6:
 ; AVX-NEXT:    retq
@@ -124,14 +124,14 @@ define <2 x i64> @foo_128(i32 %0, <2 x i64> %1, <2 x i64> %2, ptr %3) {
 ; AVX512-NEXT:    je .LBB1_6
 ; AVX512-NEXT:  # %bb.4: # %.preheader
 ; AVX512-NEXT:    shlq $4, %rcx
-; AVX512-NEXT:    addq %rcx, %rsi
+; AVX512-NEXT:    addq %rsi, %rcx
 ; AVX512-NEXT:    shll $4, %eax
-; AVX512-NEXT:    xorl %ecx, %ecx
+; AVX512-NEXT:    xorl %edx, %edx
 ; AVX512-NEXT:    .p2align 4
 ; AVX512-NEXT:  .LBB1_5: # =>This Inner Loop Header: Depth=1
-; AVX512-NEXT:    vpdpwssd (%rsi,%rcx), %xmm1, %xmm0
-; AVX512-NEXT:    addq $16, %rcx
-; AVX512-NEXT:    cmpq %rcx, %rax
+; AVX512-NEXT:    vpdpwssd (%rcx,%rdx), %xmm1, %xmm0
+; AVX512-NEXT:    addq $16, %rdx
+; AVX512-NEXT:    cmpq %rdx, %rax
 ; AVX512-NEXT:    jne .LBB1_5
 ; AVX512-NEXT:  .LBB1_6:
 ; AVX512-NEXT:    retq
@@ -416,7 +416,7 @@ define <4 x i64> @foo_256(i32 %0, <4 x i64> %1, <4 x i64> %2, ptr %3) {
 ; AVX-NEXT:    vpmaddwd (%rdi), %ymm1, %ymm2
 ; AVX-NEXT:    vpaddd %ymm2, %ymm0, %ymm0
 ; AVX-NEXT:    addq $4, %rcx
-; AVX-NEXT:    subq $-128, %rdi
+; AVX-NEXT:    addq $128, %rdi
 ; AVX-NEXT:    cmpq %rcx, %rdx
 ; AVX-NEXT:    jne .LBB4_8
 ; AVX-NEXT:  .LBB4_3:
@@ -424,14 +424,14 @@ define <4 x i64> @foo_256(i32 %0, <4 x i64> %1, <4 x i64> %2, ptr %3) {
 ; AVX-NEXT:    je .LBB4_6
 ; AVX-NEXT:  # %bb.4: # %.preheader
 ; AVX-NEXT:    shlq $5, %rcx
-; AVX-NEXT:    addq %rcx, %rsi
+; AVX-NEXT:    addq %rsi, %rcx
 ; AVX-NEXT:    shll $5, %eax
-; AVX-NEXT:    xorl %ecx, %ecx
+; AVX-NEXT:    xorl %edx, %edx
 ; AVX-NEXT:    .p2align 4
 ; AVX-NEXT:  .LBB4_5: # =>This Inner Loop Header: Depth=1
-; AVX-NEXT:    {vex} vpdpwssd (%rsi,%rcx), %ymm1, %ymm0
-; AVX-NEXT:    addq $32, %rcx
-; AVX-NEXT:    cmpq %rcx, %rax
+; AVX-NEXT:    {vex} vpdpwssd (%rcx,%rdx), %ymm1, %ymm0
+; AVX-NEXT:    addq $32, %rdx
+; AVX-NEXT:    cmpq %rdx, %rax
 ; AVX-NEXT:    jne .LBB4_5
 ; AVX-NEXT:  .LBB4_6:
 ; AVX-NEXT:    retq
@@ -463,7 +463,7 @@ define <4 x i64> @foo_256(i32 %0, <4 x i64> %1, <4 x i64> %2, ptr %3) {
 ; AVX512-NEXT:    vpmaddwd (%rdi), %ymm1, %ymm2
 ; AVX512-NEXT:    vpaddd %ymm2, %ymm0, %ymm0
 ; AVX512-NEXT:    addq $4, %rcx
-; AVX512-NEXT:    subq $-128, %rdi
+; AVX512-NEXT:    addq $128, %rdi
 ; AVX512-NEXT:    cmpq %rcx, %rdx
 ; AVX512-NEXT:    jne .LBB4_8
 ; AVX512-NEXT:  .LBB4_3:
@@ -471,14 +471,14 @@ define <4 x i64> @foo_256(i32 %0, <4 x i64> %1, <4 x i64> %2, ptr %3) {
 ; AVX512-NEXT:    je .LBB4_6
 ; AVX512-NEXT:  # %bb.4: # %.preheader
 ; AVX512-NEXT:    shlq $5, %rcx
-; AVX512-NEXT:    addq %rcx, %rsi
+; AVX512-NEXT:    addq %rsi, %rcx
 ; AVX512-NEXT:    shll $5, %eax
-; AVX512-NEXT:    xorl %ecx, %ecx
+; AVX512-NEXT:    xorl %edx, %edx
 ; AVX512-NEXT:    .p2align 4
 ; AVX512-NEXT:  .LBB4_5: # =>This Inner Loop Header: Depth=1
-; AVX512-NEXT:    vpdpwssd (%rsi,%rcx), %ymm1, %ymm0
-; AVX512-NEXT:    addq $32, %rcx
-; AVX512-NEXT:    cmpq %rcx, %rax
+; AVX512-NEXT:    vpdpwssd (%rcx,%rdx), %ymm1, %ymm0
+; AVX512-NEXT:    addq $32, %rdx
+; AVX512-NEXT:    cmpq %rdx, %rax
 ; AVX512-NEXT:    jne .LBB4_5
 ; AVX512-NEXT:  .LBB4_6:
 ; AVX512-NEXT:    retq

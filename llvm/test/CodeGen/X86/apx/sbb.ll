@@ -61,7 +61,8 @@ define i8 @sbb8rm(i8 %a, ptr %ptr, i8 %x, i8 %y) nounwind {
 ; NDD:       # %bb.0:
 ; NDD-NEXT:    movl %edi, %eax # encoding: [0x89,0xf8]
 ; NDD-NEXT:    cmpb %dl, %cl # encoding: [0x38,0xd1]
-; NDD-NEXT:    sbbb (%rsi), %al # encoding: [0x1a,0x06]
+; NDD-NEXT:    movzbl (%rsi), %ecx # encoding: [0x0f,0xb6,0x0e]
+; NDD-NEXT:    sbbb %cl, %al # encoding: [0x18,0xc8]
 ; NDD-NEXT:    # kill: def $al killed $al killed $eax
 ; NDD-NEXT:    retq # encoding: [0xc3]
 ;
@@ -69,7 +70,8 @@ define i8 @sbb8rm(i8 %a, ptr %ptr, i8 %x, i8 %y) nounwind {
 ; IMMONLY:       # %bb.0:
 ; IMMONLY-NEXT:    movl %edi, %eax # encoding: [0x89,0xf8]
 ; IMMONLY-NEXT:    cmpb %dl, %cl # encoding: [0x38,0xd1]
-; IMMONLY-NEXT:    sbbb (%rsi), %al # encoding: [0x1a,0x06]
+; IMMONLY-NEXT:    movzbl (%rsi), %ecx # encoding: [0x0f,0xb6,0x0e]
+; IMMONLY-NEXT:    sbbb %cl, %al # encoding: [0x18,0xc8]
 ; IMMONLY-NEXT:    # kill: def $al killed $al killed $eax
 ; IMMONLY-NEXT:    retq # encoding: [0xc3]
 ;
@@ -91,7 +93,8 @@ define i16 @sbb16rm(i16 %a, ptr %ptr, i16 %x, i16 %y) nounwind {
 ; NDD:       # %bb.0:
 ; NDD-NEXT:    movl %edi, %eax # encoding: [0x89,0xf8]
 ; NDD-NEXT:    cmpw %dx, %cx # encoding: [0x66,0x39,0xd1]
-; NDD-NEXT:    sbbw (%rsi), %ax # encoding: [0x66,0x1b,0x06]
+; NDD-NEXT:    movzwl (%rsi), %ecx # encoding: [0x0f,0xb7,0x0e]
+; NDD-NEXT:    sbbw %cx, %ax # encoding: [0x66,0x19,0xc8]
 ; NDD-NEXT:    # kill: def $ax killed $ax killed $eax
 ; NDD-NEXT:    retq # encoding: [0xc3]
 ;
@@ -99,7 +102,8 @@ define i16 @sbb16rm(i16 %a, ptr %ptr, i16 %x, i16 %y) nounwind {
 ; IMMONLY:       # %bb.0:
 ; IMMONLY-NEXT:    movl %edi, %eax # encoding: [0x89,0xf8]
 ; IMMONLY-NEXT:    cmpw %dx, %cx # encoding: [0x66,0x39,0xd1]
-; IMMONLY-NEXT:    sbbw (%rsi), %ax # encoding: [0x66,0x1b,0x06]
+; IMMONLY-NEXT:    movzwl (%rsi), %ecx # encoding: [0x0f,0xb7,0x0e]
+; IMMONLY-NEXT:    sbbw %cx, %ax # encoding: [0x66,0x19,0xc8]
 ; IMMONLY-NEXT:    # kill: def $ax killed $ax killed $eax
 ; IMMONLY-NEXT:    retq # encoding: [0xc3]
 ;

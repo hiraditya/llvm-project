@@ -13,9 +13,10 @@
 define i64 @rshift1(i64 %a, i64 %b) nounwind readnone uwtable {
 ; CHECK-LABEL: rshift1:
 ; CHECK:       # %bb.0:
-; CHECK-NEXT:    shrq %rdi
+; CHECK-NEXT:    movq %rdi, %rax
 ; CHECK-NEXT:    shlq $63, %rsi
-; CHECK-NEXT:    leaq (%rsi,%rdi), %rax
+; CHECK-NEXT:    shrq %rax
+; CHECK-NEXT:    orq %rsi, %rax
 ; CHECK-NEXT:    retq
   %1 = lshr i64 %a, 1
   %2 = shl i64 %b, 63
@@ -31,9 +32,10 @@ define i64 @rshift1(i64 %a, i64 %b) nounwind readnone uwtable {
 define i64 @rshift2(i64 %a, i64 %b) nounwind readnone uwtable {
 ; CHECK-LABEL: rshift2:
 ; CHECK:       # %bb.0:
-; CHECK-NEXT:    shrq $2, %rdi
+; CHECK-NEXT:    movq %rdi, %rax
 ; CHECK-NEXT:    shlq $62, %rsi
-; CHECK-NEXT:    leaq (%rsi,%rdi), %rax
+; CHECK-NEXT:    shrq $2, %rax
+; CHECK-NEXT:    orq %rsi, %rax
 ; CHECK-NEXT:    retq
   %1 = lshr i64 %a, 2
   %2 = shl i64 %b, 62
@@ -49,9 +51,10 @@ define i64 @rshift2(i64 %a, i64 %b) nounwind readnone uwtable {
 define i64 @rshift7(i64 %a, i64 %b) nounwind readnone uwtable {
 ; CHECK-LABEL: rshift7:
 ; CHECK:       # %bb.0:
-; CHECK-NEXT:    shrq $7, %rdi
+; CHECK-NEXT:    movq %rdi, %rax
 ; CHECK-NEXT:    shlq $57, %rsi
-; CHECK-NEXT:    leaq (%rsi,%rdi), %rax
+; CHECK-NEXT:    shrq $7, %rax
+; CHECK-NEXT:    orq %rsi, %rax
 ; CHECK-NEXT:    retq
   %1 = lshr i64 %a, 7
   %2 = shl i64 %b, 57

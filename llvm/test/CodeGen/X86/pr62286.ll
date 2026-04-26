@@ -15,10 +15,11 @@ define i64 @PR62286(i32 %a) {
 ; SSE-NEXT:    pcmpgtd %xmm1, %xmm3
 ; SSE-NEXT:    punpckldq {{.*#+}} xmm1 = xmm1[0],xmm3[0],xmm1[1],xmm3[1]
 ; SSE-NEXT:    pshufd {{.*#+}} xmm0 = xmm0[1,0,1,0]
-; SSE-NEXT:    pand {{\.?LCPI[0-9]+_[0-9]+}}(%rip), %xmm0
-; SSE-NEXT:    pcmpgtd %xmm0, %xmm2
-; SSE-NEXT:    punpckldq {{.*#+}} xmm0 = xmm0[0],xmm2[0],xmm0[1],xmm2[1]
-; SSE-NEXT:    pshufd {{.*#+}} xmm0 = xmm0[2,3,2,3]
+; SSE-NEXT:    movdqa {{.*#+}} xmm3 = [u,2147549184,u,2147549184]
+; SSE-NEXT:    pand %xmm0, %xmm3
+; SSE-NEXT:    pcmpgtd %xmm3, %xmm2
+; SSE-NEXT:    punpckldq {{.*#+}} xmm3 = xmm3[0],xmm2[0],xmm3[1],xmm2[1]
+; SSE-NEXT:    pshufd {{.*#+}} xmm0 = xmm3[2,3,2,3]
 ; SSE-NEXT:    paddq %xmm1, %xmm0
 ; SSE-NEXT:    movq %xmm0, %rax
 ; SSE-NEXT:    retq
@@ -70,7 +71,7 @@ define i64 @PR62286(i32 %a) {
 ; AVX512-NEXT:    vpandd {{\.?LCPI[0-9]+_[0-9]+}}(%rip), %zmm0, %zmm0
 ; AVX512-NEXT:    movw $4369, %ax # imm = 0x1111
 ; AVX512-NEXT:    kmovd %eax, %k1
-; AVX512-NEXT:    vmovdqa32 %zmm1, %zmm0 {%k1}
+; AVX512-NEXT:    vpblendmd %zmm1, %zmm0, %zmm0 {%k1}
 ; AVX512-NEXT:    vpmovsxdq %ymm0, %zmm0
 ; AVX512-NEXT:    vextracti64x4 $1, %zmm0, %ymm1
 ; AVX512-NEXT:    vpaddq %zmm1, %zmm0, %zmm0

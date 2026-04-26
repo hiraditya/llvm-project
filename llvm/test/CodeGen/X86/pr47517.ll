@@ -31,8 +31,8 @@ entry:
 define float @test2(float %x, float %y) {
 ; CHECK-LABEL: test2:
 ; CHECK:       # %bb.0:
-; CHECK-NEXT:    movaps %xmm1, %xmm0
-; CHECK-NEXT:    mulss {{\.?LCPI[0-9]+_[0-9]+}}(%rip), %xmm0
+; CHECK-NEXT:    movss {{.*#+}} xmm0 = [-8.43750016E+8,0.0E+0,0.0E+0,0.0E+0]
+; CHECK-NEXT:    mulss %xmm1, %xmm0
 ; CHECK-NEXT:    retq
   %add = fadd fast float %x, 750.0
   %sub = fsub fast float %x, %add

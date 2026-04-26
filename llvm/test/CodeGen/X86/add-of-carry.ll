@@ -9,8 +9,9 @@
 define i32 @test1(i32 %sum, i32 %x) nounwind readnone ssp {
 ; CHECK-LABEL: test1:
 ; CHECK:       # %bb.0:
+; CHECK-NEXT:    movl {{[0-9]+}}(%esp), %ecx
 ; CHECK-NEXT:    movl {{[0-9]+}}(%esp), %eax
-; CHECK-NEXT:    addl {{[0-9]+}}(%esp), %eax
+; CHECK-NEXT:    addl %ecx, %eax
 ; CHECK-NEXT:    adcl $0, %eax
 ; CHECK-NEXT:    retl
   %add4 = add i32 %x, %sum

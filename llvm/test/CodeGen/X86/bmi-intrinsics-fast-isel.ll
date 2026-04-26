@@ -40,9 +40,10 @@ define i16 @test__tzcnt_u16(i16 %a0) {
 define i32 @test__andn_u32(i32 %a0, i32 %a1) {
 ; X86-LABEL: test__andn_u32:
 ; X86:       # %bb.0:
+; X86-NEXT:    movl {{[0-9]+}}(%esp), %ecx
+; X86-NEXT:    xorl $-1, %ecx
 ; X86-NEXT:    movl {{[0-9]+}}(%esp), %eax
-; X86-NEXT:    xorl $-1, %eax
-; X86-NEXT:    andl {{[0-9]+}}(%esp), %eax
+; X86-NEXT:    andl %ecx, %eax
 ; X86-NEXT:    retl
 ;
 ; X64-LABEL: test__andn_u32:
@@ -86,24 +87,26 @@ define i32 @test__bextr_u32(i32 %a0, i32 %a1) {
 define i32 @test__blsi_u32(i32 %a0) {
 ; X86-LABEL: test__blsi_u32:
 ; X86:       # %bb.0:
-; X86-NEXT:    movl {{[0-9]+}}(%esp), %ecx
-; X86-NEXT:    xorl %eax, %eax
-; X86-NEXT:    subl %ecx, %eax
+; X86-NEXT:    movl {{[0-9]+}}(%esp), %eax
+; X86-NEXT:    xorl %ecx, %ecx
+; X86-NEXT:    subl %eax, %ecx
 ; X86-NEXT:    andl %ecx, %eax
 ; X86-NEXT:    retl
 ;
 ; X64-LABEL: test__blsi_u32:
 ; X64:       # %bb.0:
-; X64-NEXT:    xorl %eax, %eax
-; X64-NEXT:    subl %edi, %eax
-; X64-NEXT:    andl %edi, %eax
+; X64-NEXT:    movl %edi, %eax
+; X64-NEXT:    xorl %ecx, %ecx
+; X64-NEXT:    subl %edi, %ecx
+; X64-NEXT:    andl %ecx, %eax
 ; X64-NEXT:    retq
 ;
 ; EGPR-LABEL: test__blsi_u32:
 ; EGPR:       # %bb.0:
-; EGPR-NEXT:    xorl %eax, %eax # encoding: [0x31,0xc0]
-; EGPR-NEXT:    subl %edi, %eax # encoding: [0x29,0xf8]
-; EGPR-NEXT:    andl %edi, %eax # encoding: [0x21,0xf8]
+; EGPR-NEXT:    movl %edi, %eax # encoding: [0x89,0xf8]
+; EGPR-NEXT:    xorl %ecx, %ecx # encoding: [0x31,0xc9]
+; EGPR-NEXT:    subl %edi, %ecx # encoding: [0x29,0xf9]
+; EGPR-NEXT:    andl %ecx, %eax # encoding: [0x21,0xc8]
 ; EGPR-NEXT:    retq # encoding: [0xc3]
   %neg = sub i32 0, %a0
   %res = and i32 %a0, %neg
@@ -113,23 +116,26 @@ define i32 @test__blsi_u32(i32 %a0) {
 define i32 @test__blsmsk_u32(i32 %a0) {
 ; X86-LABEL: test__blsmsk_u32:
 ; X86:       # %bb.0:
-; X86-NEXT:    movl {{[0-9]+}}(%esp), %ecx
-; X86-NEXT:    leal -1(%ecx), %eax
+; X86-NEXT:    movl {{[0-9]+}}(%esp), %eax
+; X86-NEXT:    movl %eax, %ecx
+; X86-NEXT:    subl $1, %ecx
 ; X86-NEXT:    xorl %ecx, %eax
 ; X86-NEXT:    retl
 ;
 ; X64-LABEL: test__blsmsk_u32:
 ; X64:       # %bb.0:
-; X64-NEXT:    # kill: def $edi killed $edi def $rdi
-; X64-NEXT:    leal -1(%rdi), %eax
-; X64-NEXT:    xorl %edi, %eax
+; X64-NEXT:    movl %edi, %eax
+; X64-NEXT:    movl %edi, %ecx
+; X64-NEXT:    subl $1, %ecx
+; X64-NEXT:    xorl %ecx, %eax
 ; X64-NEXT:    retq
 ;
 ; EGPR-LABEL: test__blsmsk_u32:
 ; EGPR:       # %bb.0:
-; EGPR-NEXT:    # kill: def $edi killed $edi def $rdi
-; EGPR-NEXT:    leal -1(%rdi), %eax # encoding: [0x8d,0x47,0xff]
-; EGPR-NEXT:    xorl %edi, %eax # encoding: [0x31,0xf8]
+; EGPR-NEXT:    movl %edi, %eax # encoding: [0x89,0xf8]
+; EGPR-NEXT:    movl %edi, %ecx # encoding: [0x89,0xf9]
+; EGPR-NEXT:    subl $1, %ecx # encoding: [0x83,0xe9,0x01]
+; EGPR-NEXT:    xorl %ecx, %eax # encoding: [0x31,0xc8]
 ; EGPR-NEXT:    retq # encoding: [0xc3]
   %dec = sub i32 %a0, 1
   %res = xor i32 %a0, %dec
@@ -139,23 +145,26 @@ define i32 @test__blsmsk_u32(i32 %a0) {
 define i32 @test__blsr_u32(i32 %a0) {
 ; X86-LABEL: test__blsr_u32:
 ; X86:       # %bb.0:
-; X86-NEXT:    movl {{[0-9]+}}(%esp), %ecx
-; X86-NEXT:    leal -1(%ecx), %eax
+; X86-NEXT:    movl {{[0-9]+}}(%esp), %eax
+; X86-NEXT:    movl %eax, %ecx
+; X86-NEXT:    subl $1, %ecx
 ; X86-NEXT:    andl %ecx, %eax
 ; X86-NEXT:    retl
 ;
 ; X64-LABEL: test__blsr_u32:
 ; X64:       # %bb.0:
-; X64-NEXT:    # kill: def $edi killed $edi def $rdi
-; X64-NEXT:    leal -1(%rdi), %eax
-; X64-NEXT:    andl %edi, %eax
+; X64-NEXT:    movl %edi, %eax
+; X64-NEXT:    movl %edi, %ecx
+; X64-NEXT:    subl $1, %ecx
+; X64-NEXT:    andl %ecx, %eax
 ; X64-NEXT:    retq
 ;
 ; EGPR-LABEL: test__blsr_u32:
 ; EGPR:       # %bb.0:
-; EGPR-NEXT:    # kill: def $edi killed $edi def $rdi
-; EGPR-NEXT:    leal -1(%rdi), %eax # encoding: [0x8d,0x47,0xff]
-; EGPR-NEXT:    andl %edi, %eax # encoding: [0x21,0xf8]
+; EGPR-NEXT:    movl %edi, %eax # encoding: [0x89,0xf8]
+; EGPR-NEXT:    movl %edi, %ecx # encoding: [0x89,0xf9]
+; EGPR-NEXT:    subl $1, %ecx # encoding: [0x83,0xe9,0x01]
+; EGPR-NEXT:    andl %ecx, %eax # encoding: [0x21,0xc8]
 ; EGPR-NEXT:    retq # encoding: [0xc3]
   %dec = sub i32 %a0, 1
   %res = and i32 %a0, %dec
@@ -218,9 +227,10 @@ define i16 @test_tzcnt_u16(i16 %a0) {
 define i32 @test_andn_u32(i32 %a0, i32 %a1) {
 ; X86-LABEL: test_andn_u32:
 ; X86:       # %bb.0:
+; X86-NEXT:    movl {{[0-9]+}}(%esp), %ecx
+; X86-NEXT:    xorl $-1, %ecx
 ; X86-NEXT:    movl {{[0-9]+}}(%esp), %eax
-; X86-NEXT:    xorl $-1, %eax
-; X86-NEXT:    andl {{[0-9]+}}(%esp), %eax
+; X86-NEXT:    andl %ecx, %eax
 ; X86-NEXT:    retl
 ;
 ; X64-LABEL: test_andn_u32:
@@ -249,8 +259,8 @@ define i32 @test_bextr_u32(i32 %a0, i32 %a1, i32 %a2) {
 ; X86-NEXT:    andl $255, %ecx
 ; X86-NEXT:    andl $255, %eax
 ; X86-NEXT:    shll $8, %eax
-; X86-NEXT:    orl %ecx, %eax
-; X86-NEXT:    bextrl %eax, {{[0-9]+}}(%esp), %eax
+; X86-NEXT:    orl %eax, %ecx
+; X86-NEXT:    bextrl %ecx, {{[0-9]+}}(%esp), %eax
 ; X86-NEXT:    retl
 ;
 ; X64-LABEL: test_bextr_u32:
@@ -258,8 +268,8 @@ define i32 @test_bextr_u32(i32 %a0, i32 %a1, i32 %a2) {
 ; X64-NEXT:    andl $255, %esi
 ; X64-NEXT:    andl $255, %edx
 ; X64-NEXT:    shll $8, %edx
-; X64-NEXT:    orl %esi, %edx
-; X64-NEXT:    bextrl %edx, %edi, %eax
+; X64-NEXT:    orl %edx, %esi
+; X64-NEXT:    bextrl %esi, %edi, %eax
 ; X64-NEXT:    retq
 ;
 ; EGPR-LABEL: test_bextr_u32:
@@ -267,8 +277,8 @@ define i32 @test_bextr_u32(i32 %a0, i32 %a1, i32 %a2) {
 ; EGPR-NEXT:    andl $255, %esi # encoding: [0x81,0xe6,0xff,0x00,0x00,0x00]
 ; EGPR-NEXT:    andl $255, %edx # encoding: [0x81,0xe2,0xff,0x00,0x00,0x00]
 ; EGPR-NEXT:    shll $8, %edx # encoding: [0xc1,0xe2,0x08]
-; EGPR-NEXT:    orl %esi, %edx # encoding: [0x09,0xf2]
-; EGPR-NEXT:    bextrl %edx, %edi, %eax # EVEX TO VEX Compression encoding: [0xc4,0xe2,0x68,0xf7,0xc7]
+; EGPR-NEXT:    orl %edx, %esi # encoding: [0x09,0xd6]
+; EGPR-NEXT:    bextrl %esi, %edi, %eax # EVEX TO VEX Compression encoding: [0xc4,0xe2,0x48,0xf7,0xc7]
 ; EGPR-NEXT:    retq # encoding: [0xc3]
   %and1 = and i32 %a1, 255
   %and2 = and i32 %a2, 255
@@ -281,24 +291,26 @@ define i32 @test_bextr_u32(i32 %a0, i32 %a1, i32 %a2) {
 define i32 @test_blsi_u32(i32 %a0) {
 ; X86-LABEL: test_blsi_u32:
 ; X86:       # %bb.0:
-; X86-NEXT:    movl {{[0-9]+}}(%esp), %ecx
-; X86-NEXT:    xorl %eax, %eax
-; X86-NEXT:    subl %ecx, %eax
+; X86-NEXT:    movl {{[0-9]+}}(%esp), %eax
+; X86-NEXT:    xorl %ecx, %ecx
+; X86-NEXT:    subl %eax, %ecx
 ; X86-NEXT:    andl %ecx, %eax
 ; X86-NEXT:    retl
 ;
 ; X64-LABEL: test_blsi_u32:
 ; X64:       # %bb.0:
-; X64-NEXT:    xorl %eax, %eax
-; X64-NEXT:    subl %edi, %eax
-; X64-NEXT:    andl %edi, %eax
+; X64-NEXT:    movl %edi, %eax
+; X64-NEXT:    xorl %ecx, %ecx
+; X64-NEXT:    subl %edi, %ecx
+; X64-NEXT:    andl %ecx, %eax
 ; X64-NEXT:    retq
 ;
 ; EGPR-LABEL: test_blsi_u32:
 ; EGPR:       # %bb.0:
-; EGPR-NEXT:    xorl %eax, %eax # encoding: [0x31,0xc0]
-; EGPR-NEXT:    subl %edi, %eax # encoding: [0x29,0xf8]
-; EGPR-NEXT:    andl %edi, %eax # encoding: [0x21,0xf8]
+; EGPR-NEXT:    movl %edi, %eax # encoding: [0x89,0xf8]
+; EGPR-NEXT:    xorl %ecx, %ecx # encoding: [0x31,0xc9]
+; EGPR-NEXT:    subl %edi, %ecx # encoding: [0x29,0xf9]
+; EGPR-NEXT:    andl %ecx, %eax # encoding: [0x21,0xc8]
 ; EGPR-NEXT:    retq # encoding: [0xc3]
   %neg = sub i32 0, %a0
   %res = and i32 %a0, %neg
@@ -308,23 +320,26 @@ define i32 @test_blsi_u32(i32 %a0) {
 define i32 @test_blsmsk_u32(i32 %a0) {
 ; X86-LABEL: test_blsmsk_u32:
 ; X86:       # %bb.0:
-; X86-NEXT:    movl {{[0-9]+}}(%esp), %ecx
-; X86-NEXT:    leal -1(%ecx), %eax
+; X86-NEXT:    movl {{[0-9]+}}(%esp), %eax
+; X86-NEXT:    movl %eax, %ecx
+; X86-NEXT:    subl $1, %ecx
 ; X86-NEXT:    xorl %ecx, %eax
 ; X86-NEXT:    retl
 ;
 ; X64-LABEL: test_blsmsk_u32:
 ; X64:       # %bb.0:
-; X64-NEXT:    # kill: def $edi killed $edi def $rdi
-; X64-NEXT:    leal -1(%rdi), %eax
-; X64-NEXT:    xorl %edi, %eax
+; X64-NEXT:    movl %edi, %eax
+; X64-NEXT:    movl %edi, %ecx
+; X64-NEXT:    subl $1, %ecx
+; X64-NEXT:    xorl %ecx, %eax
 ; X64-NEXT:    retq
 ;
 ; EGPR-LABEL: test_blsmsk_u32:
 ; EGPR:       # %bb.0:
-; EGPR-NEXT:    # kill: def $edi killed $edi def $rdi
-; EGPR-NEXT:    leal -1(%rdi), %eax # encoding: [0x8d,0x47,0xff]
-; EGPR-NEXT:    xorl %edi, %eax # encoding: [0x31,0xf8]
+; EGPR-NEXT:    movl %edi, %eax # encoding: [0x89,0xf8]
+; EGPR-NEXT:    movl %edi, %ecx # encoding: [0x89,0xf9]
+; EGPR-NEXT:    subl $1, %ecx # encoding: [0x83,0xe9,0x01]
+; EGPR-NEXT:    xorl %ecx, %eax # encoding: [0x31,0xc8]
 ; EGPR-NEXT:    retq # encoding: [0xc3]
   %dec = sub i32 %a0, 1
   %res = xor i32 %a0, %dec
@@ -334,23 +349,26 @@ define i32 @test_blsmsk_u32(i32 %a0) {
 define i32 @test_blsr_u32(i32 %a0) {
 ; X86-LABEL: test_blsr_u32:
 ; X86:       # %bb.0:
-; X86-NEXT:    movl {{[0-9]+}}(%esp), %ecx
-; X86-NEXT:    leal -1(%ecx), %eax
+; X86-NEXT:    movl {{[0-9]+}}(%esp), %eax
+; X86-NEXT:    movl %eax, %ecx
+; X86-NEXT:    subl $1, %ecx
 ; X86-NEXT:    andl %ecx, %eax
 ; X86-NEXT:    retl
 ;
 ; X64-LABEL: test_blsr_u32:
 ; X64:       # %bb.0:
-; X64-NEXT:    # kill: def $edi killed $edi def $rdi
-; X64-NEXT:    leal -1(%rdi), %eax
-; X64-NEXT:    andl %edi, %eax
+; X64-NEXT:    movl %edi, %eax
+; X64-NEXT:    movl %edi, %ecx
+; X64-NEXT:    subl $1, %ecx
+; X64-NEXT:    andl %ecx, %eax
 ; X64-NEXT:    retq
 ;
 ; EGPR-LABEL: test_blsr_u32:
 ; EGPR:       # %bb.0:
-; EGPR-NEXT:    # kill: def $edi killed $edi def $rdi
-; EGPR-NEXT:    leal -1(%rdi), %eax # encoding: [0x8d,0x47,0xff]
-; EGPR-NEXT:    andl %edi, %eax # encoding: [0x21,0xf8]
+; EGPR-NEXT:    movl %edi, %eax # encoding: [0x89,0xf8]
+; EGPR-NEXT:    movl %edi, %ecx # encoding: [0x89,0xf9]
+; EGPR-NEXT:    subl $1, %ecx # encoding: [0x83,0xe9,0x01]
+; EGPR-NEXT:    andl %ecx, %eax # encoding: [0x21,0xc8]
 ; EGPR-NEXT:    retq # encoding: [0xc3]
   %dec = sub i32 %a0, 1
   %res = and i32 %a0, %dec

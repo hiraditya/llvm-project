@@ -12,8 +12,9 @@ define <2 x i8> @mul_v2i8(<2 x i8> %x, <2 x i8> %y) {
 ; SSE2:       # %bb.0:
 ; SSE2-NEXT:    punpcklbw {{.*#+}} xmm1 = xmm1[0,0,1,1,2,2,3,3,4,4,5,5,6,6,7,7]
 ; SSE2-NEXT:    punpcklbw {{.*#+}} xmm0 = xmm0[0,0,1,1,2,2,3,3,4,4,5,5,6,6,7,7]
-; SSE2-NEXT:    pmullw %xmm1, %xmm0
-; SSE2-NEXT:    pand {{\.?LCPI[0-9]+_[0-9]+}}(%rip), %xmm0
+; SSE2-NEXT:    pmullw %xmm0, %xmm1
+; SSE2-NEXT:    movdqa {{.*#+}} xmm0 = [255,255,255,255,255,255,255,255]
+; SSE2-NEXT:    pand %xmm1, %xmm0
 ; SSE2-NEXT:    packuswb %xmm0, %xmm0
 ; SSE2-NEXT:    retq
 ;
@@ -21,8 +22,9 @@ define <2 x i8> @mul_v2i8(<2 x i8> %x, <2 x i8> %y) {
 ; SSE41:       # %bb.0:
 ; SSE41-NEXT:    pmovzxbw {{.*#+}} xmm1 = xmm1[0],zero,xmm1[1],zero,xmm1[2],zero,xmm1[3],zero,xmm1[4],zero,xmm1[5],zero,xmm1[6],zero,xmm1[7],zero
 ; SSE41-NEXT:    pmovzxbw {{.*#+}} xmm0 = xmm0[0],zero,xmm0[1],zero,xmm0[2],zero,xmm0[3],zero,xmm0[4],zero,xmm0[5],zero,xmm0[6],zero,xmm0[7],zero
-; SSE41-NEXT:    pmullw %xmm1, %xmm0
-; SSE41-NEXT:    pshufb {{.*#+}} xmm0 = xmm0[0,2,u,u,u,u,u,u,u,u,u,u,u,u,u,u]
+; SSE41-NEXT:    pmullw %xmm0, %xmm1
+; SSE41-NEXT:    pshufb {{.*#+}} xmm1 = xmm1[0,2,u,u,u,u,u,u,u,u,u,u,u,u,u,u]
+; SSE41-NEXT:    movdqa %xmm1, %xmm0
 ; SSE41-NEXT:    retq
 ;
 ; AVX-LABEL: mul_v2i8:
@@ -41,8 +43,9 @@ define <4 x i8> @mul_v4i8(<4 x i8> %x, <4 x i8> %y) {
 ; SSE2:       # %bb.0:
 ; SSE2-NEXT:    punpcklbw {{.*#+}} xmm1 = xmm1[0,0,1,1,2,2,3,3,4,4,5,5,6,6,7,7]
 ; SSE2-NEXT:    punpcklbw {{.*#+}} xmm0 = xmm0[0,0,1,1,2,2,3,3,4,4,5,5,6,6,7,7]
-; SSE2-NEXT:    pmullw %xmm1, %xmm0
-; SSE2-NEXT:    pand {{\.?LCPI[0-9]+_[0-9]+}}(%rip), %xmm0
+; SSE2-NEXT:    pmullw %xmm0, %xmm1
+; SSE2-NEXT:    movdqa {{.*#+}} xmm0 = [255,255,255,255,255,255,255,255]
+; SSE2-NEXT:    pand %xmm1, %xmm0
 ; SSE2-NEXT:    packuswb %xmm0, %xmm0
 ; SSE2-NEXT:    retq
 ;
@@ -50,8 +53,9 @@ define <4 x i8> @mul_v4i8(<4 x i8> %x, <4 x i8> %y) {
 ; SSE41:       # %bb.0:
 ; SSE41-NEXT:    pmovzxbw {{.*#+}} xmm1 = xmm1[0],zero,xmm1[1],zero,xmm1[2],zero,xmm1[3],zero,xmm1[4],zero,xmm1[5],zero,xmm1[6],zero,xmm1[7],zero
 ; SSE41-NEXT:    pmovzxbw {{.*#+}} xmm0 = xmm0[0],zero,xmm0[1],zero,xmm0[2],zero,xmm0[3],zero,xmm0[4],zero,xmm0[5],zero,xmm0[6],zero,xmm0[7],zero
-; SSE41-NEXT:    pmullw %xmm1, %xmm0
-; SSE41-NEXT:    pshufb {{.*#+}} xmm0 = xmm0[0,2,4,6,u,u,u,u,u,u,u,u,u,u,u,u]
+; SSE41-NEXT:    pmullw %xmm0, %xmm1
+; SSE41-NEXT:    pshufb {{.*#+}} xmm1 = xmm1[0,2,4,6,u,u,u,u,u,u,u,u,u,u,u,u]
+; SSE41-NEXT:    movdqa %xmm1, %xmm0
 ; SSE41-NEXT:    retq
 ;
 ; AVX-LABEL: mul_v4i8:
@@ -70,8 +74,9 @@ define <8 x i8> @mul_v8i8(<8 x i8> %x, <8 x i8> %y) {
 ; SSE2:       # %bb.0:
 ; SSE2-NEXT:    punpcklbw {{.*#+}} xmm1 = xmm1[0,0,1,1,2,2,3,3,4,4,5,5,6,6,7,7]
 ; SSE2-NEXT:    punpcklbw {{.*#+}} xmm0 = xmm0[0,0,1,1,2,2,3,3,4,4,5,5,6,6,7,7]
-; SSE2-NEXT:    pmullw %xmm1, %xmm0
-; SSE2-NEXT:    pand {{\.?LCPI[0-9]+_[0-9]+}}(%rip), %xmm0
+; SSE2-NEXT:    pmullw %xmm0, %xmm1
+; SSE2-NEXT:    movdqa {{.*#+}} xmm0 = [255,255,255,255,255,255,255,255]
+; SSE2-NEXT:    pand %xmm1, %xmm0
 ; SSE2-NEXT:    packuswb %xmm0, %xmm0
 ; SSE2-NEXT:    retq
 ;
@@ -79,8 +84,9 @@ define <8 x i8> @mul_v8i8(<8 x i8> %x, <8 x i8> %y) {
 ; SSE41:       # %bb.0:
 ; SSE41-NEXT:    pmovzxbw {{.*#+}} xmm1 = xmm1[0],zero,xmm1[1],zero,xmm1[2],zero,xmm1[3],zero,xmm1[4],zero,xmm1[5],zero,xmm1[6],zero,xmm1[7],zero
 ; SSE41-NEXT:    pmovzxbw {{.*#+}} xmm0 = xmm0[0],zero,xmm0[1],zero,xmm0[2],zero,xmm0[3],zero,xmm0[4],zero,xmm0[5],zero,xmm0[6],zero,xmm0[7],zero
-; SSE41-NEXT:    pmullw %xmm1, %xmm0
-; SSE41-NEXT:    pshufb {{.*#+}} xmm0 = xmm0[0,2,4,6,8,10,12,14,u,u,u,u,u,u,u,u]
+; SSE41-NEXT:    pmullw %xmm0, %xmm1
+; SSE41-NEXT:    pshufb {{.*#+}} xmm1 = xmm1[0,2,4,6,8,10,12,14,u,u,u,u,u,u,u,u]
+; SSE41-NEXT:    movdqa %xmm1, %xmm0
 ; SSE41-NEXT:    retq
 ;
 ; AVX-LABEL: mul_v8i8:

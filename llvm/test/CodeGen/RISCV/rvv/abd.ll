@@ -488,8 +488,9 @@ define <vscale x 8 x i16> @vwabda(<vscale x 8 x i16> %acc, <vscale x 8 x i8> %a,
 ; CHECK-NEXT:    vsetvli a0, zero, e8, m1, ta, ma
 ; CHECK-NEXT:    vmin.vv v12, v10, v11
 ; CHECK-NEXT:    vmax.vv v10, v10, v11
-; CHECK-NEXT:    vsub.vv v10, v10, v12
-; CHECK-NEXT:    vwaddu.wv v8, v8, v10
+; CHECK-NEXT:    vsub.vv v12, v10, v12
+; CHECK-NEXT:    vwaddu.wv v10, v8, v12
+; CHECK-NEXT:    vmv2r.v v8, v10
 ; CHECK-NEXT:    ret
 ;
 ; ZVABD-LABEL: vwabda:
@@ -511,8 +512,9 @@ define <vscale x 8 x i16> @vwabdau(<vscale x 8 x i16> %acc, <vscale x 8 x i8> %a
 ; CHECK-NEXT:    vsetvli a0, zero, e8, m1, ta, ma
 ; CHECK-NEXT:    vminu.vv v12, v10, v11
 ; CHECK-NEXT:    vmaxu.vv v10, v10, v11
-; CHECK-NEXT:    vsub.vv v10, v10, v12
-; CHECK-NEXT:    vwaddu.wv v8, v8, v10
+; CHECK-NEXT:    vsub.vv v12, v10, v12
+; CHECK-NEXT:    vwaddu.wv v10, v8, v12
+; CHECK-NEXT:    vmv2r.v v8, v10
 ; CHECK-NEXT:    ret
 ;
 ; ZVABD-LABEL: vwabdau:
@@ -534,10 +536,11 @@ define <vscale x 8 x i32> @vwabda_sext_diff(<vscale x 8 x i32> %acc, <vscale x 8
 ; CHECK-NEXT:    vsetvli a0, zero, e8, m1, ta, ma
 ; CHECK-NEXT:    vmin.vv v14, v12, v13
 ; CHECK-NEXT:    vmax.vv v12, v12, v13
-; CHECK-NEXT:    vsub.vv v14, v12, v14
+; CHECK-NEXT:    vsub.vv v12, v12, v14
 ; CHECK-NEXT:    vsetvli zero, zero, e16, m2, ta, ma
-; CHECK-NEXT:    vzext.vf2 v12, v14
-; CHECK-NEXT:    vwaddu.wv v8, v8, v12
+; CHECK-NEXT:    vzext.vf2 v16, v12
+; CHECK-NEXT:    vwaddu.wv v12, v8, v16
+; CHECK-NEXT:    vmv4r.v v8, v12
 ; CHECK-NEXT:    ret
 ;
 ; ZVABD-LABEL: vwabda_sext_diff:
@@ -562,10 +565,11 @@ define <vscale x 8 x i32> @vwabdau_zext_diff(<vscale x 8 x i32> %acc, <vscale x 
 ; CHECK-NEXT:    vsetvli a0, zero, e8, m1, ta, ma
 ; CHECK-NEXT:    vminu.vv v14, v12, v13
 ; CHECK-NEXT:    vmaxu.vv v12, v12, v13
-; CHECK-NEXT:    vsub.vv v14, v12, v14
+; CHECK-NEXT:    vsub.vv v12, v12, v14
 ; CHECK-NEXT:    vsetvli zero, zero, e16, m2, ta, ma
-; CHECK-NEXT:    vzext.vf2 v12, v14
-; CHECK-NEXT:    vwaddu.wv v8, v8, v12
+; CHECK-NEXT:    vzext.vf2 v16, v12
+; CHECK-NEXT:    vwaddu.wv v12, v8, v16
+; CHECK-NEXT:    vmv4r.v v8, v12
 ; CHECK-NEXT:    ret
 ;
 ; ZVABD-LABEL: vwabdau_zext_diff:

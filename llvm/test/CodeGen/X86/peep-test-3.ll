@@ -12,7 +12,7 @@ define void @or(ptr %A, i32 %IA, i32 %N) nounwind {
 ; CHECK-NEXT:    movl %eax, %edx
 ; CHECK-NEXT:    andl $3, %edx
 ; CHECK-NEXT:    xorl $1, %ecx
-; CHECK-NEXT:    orl %edx, %ecx
+; CHECK-NEXT:    orl %ecx, %edx
 ; CHECK-NEXT:    je .LBB0_2
 ; CHECK-NEXT:  # %bb.1: # %bb
 ; CHECK-NEXT:    movl $0, (%eax)
@@ -40,8 +40,9 @@ define void @xor(ptr %A, i32 %IA, i32 %N) nounwind {
 ; CHECK-NEXT:    movl {{[0-9]+}}(%esp), %eax
 ; CHECK-NEXT:    movl %eax, %ecx
 ; CHECK-NEXT:    andl $3, %ecx
-; CHECK-NEXT:    xorl {{[0-9]+}}(%esp), %ecx
-; CHECK-NEXT:    cmpl $1, %ecx
+; CHECK-NEXT:    movl {{[0-9]+}}(%esp), %edx
+; CHECK-NEXT:    xorl %ecx, %edx
+; CHECK-NEXT:    cmpl $1, %edx
 ; CHECK-NEXT:    je .LBB1_2
 ; CHECK-NEXT:  # %bb.1: # %bb
 ; CHECK-NEXT:    movl $0, (%eax)
@@ -66,12 +67,13 @@ return:                                           ; preds = %entry
 define void @and(ptr %A, i32 %IA, i32 %N, ptr %p) nounwind {
 ; CHECK-LABEL: and:
 ; CHECK:       # %bb.0: # %entry
-; CHECK-NEXT:    movl {{[0-9]+}}(%esp), %ecx
 ; CHECK-NEXT:    movl {{[0-9]+}}(%esp), %eax
-; CHECK-NEXT:    xorl $1, %eax
-; CHECK-NEXT:    andl {{[0-9]+}}(%esp), %eax
-; CHECK-NEXT:    andl $3, %eax
-; CHECK-NEXT:    movb %al, (%ecx)
+; CHECK-NEXT:    movl {{[0-9]+}}(%esp), %ecx
+; CHECK-NEXT:    xorl $1, %ecx
+; CHECK-NEXT:    movl {{[0-9]+}}(%esp), %edx
+; CHECK-NEXT:    andl %ecx, %edx
+; CHECK-NEXT:    andl $3, %edx
+; CHECK-NEXT:    movb %dl, (%eax)
 ; CHECK-NEXT:    je .LBB2_2
 ; CHECK-NEXT:  # %bb.1: # %bb
 ; CHECK-NEXT:    movl $0, 0
@@ -105,8 +107,9 @@ define void @test(ptr %A, i32 %IA, i32 %N, ptr %p) nounwind {
 ; CHECK-NEXT:    movl {{[0-9]+}}(%esp), %ecx
 ; CHECK-NEXT:    movb $0, (%ecx)
 ; CHECK-NEXT:    xorl $1, %eax
-; CHECK-NEXT:    andl {{[0-9]+}}(%esp), %eax
-; CHECK-NEXT:    testb $3, %al
+; CHECK-NEXT:    movl {{[0-9]+}}(%esp), %ecx
+; CHECK-NEXT:    andl %eax, %ecx
+; CHECK-NEXT:    testb $3, %cl
 ; CHECK-NEXT:    je .LBB3_2
 ; CHECK-NEXT:  # %bb.1: # %bb
 ; CHECK-NEXT:    movl $0, 0

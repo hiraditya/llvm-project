@@ -135,8 +135,8 @@ define void @store_constant_v2i32(ptr %p) {
 ; CHECK-NEXT:    vmv.v.i v8, 3
 ; CHECK-NEXT:    vid.v v9
 ; CHECK-NEXT:    li a1, 3
-; CHECK-NEXT:    vmadd.vx v9, a1, v8
-; CHECK-NEXT:    vse32.v v9, (a0)
+; CHECK-NEXT:    vmacc.vx v8, a1, v9
+; CHECK-NEXT:    vse32.v v8, (a0)
 ; CHECK-NEXT:    ret
   store <2 x i32> <i32 3, i32 6>, ptr %p
   ret void
@@ -200,8 +200,8 @@ define void @store_constant_v2i8_align1(ptr %p) {
 ; CHECK-NEXT:    vmv.v.i v8, 3
 ; CHECK-NEXT:    vid.v v9
 ; CHECK-NEXT:    li a1, 3
-; CHECK-NEXT:    vmadd.vx v9, a1, v8
-; CHECK-NEXT:    vse8.v v9, (a0)
+; CHECK-NEXT:    vmacc.vx v8, a1, v9
+; CHECK-NEXT:    vse8.v v8, (a0)
 ; CHECK-NEXT:    ret
   store <2 x i8> <i8 3, i8 6>, ptr %p, align 1
   ret void

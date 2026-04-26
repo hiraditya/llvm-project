@@ -1083,7 +1083,8 @@ define void @ctest32mi_zf(i32 noundef %a, ptr %ptr) {
 ; SETZUCC-NEXT:  # %bb.1: # %entry
 ; SETZUCC-NEXT:    movl $12345, %eax # encoding: [0xb8,0x39,0x30,0x00,0x00]
 ; SETZUCC-NEXT:    # imm = 0x3039
-; SETZUCC-NEXT:    andl (%rsi), %eax # encoding: [0x23,0x06]
+; SETZUCC-NEXT:    movl (%rsi), %ecx # encoding: [0x8b,0x0e]
+; SETZUCC-NEXT:    andl %eax, %ecx # encoding: [0x21,0xc1]
 ; SETZUCC-NEXT:    je .LBB19_3 # encoding: [0x74,A]
 ; SETZUCC-NEXT:    # fixup A - offset: 1, value: .LBB19_3, kind: FK_PCRel_1
 ; SETZUCC-NEXT:  # %bb.2: # %if.end
@@ -1288,8 +1289,8 @@ define i32 @ctest_continous_nobranch(i32 noundef %a, i32 noundef %b, i32 noundef
 ; SETZUCC-NEXT:    testl %edx, %edx # encoding: [0x85,0xd2]
 ; SETZUCC-NEXT:    setzug %dl # encoding: [0x62,0xf4,0x7f,0x18,0x4f,0xc2]
 ; SETZUCC-NEXT:    orb %al, %cl # encoding: [0x08,0xc1]
-; SETZUCC-NEXT:    andb %dl, %cl # encoding: [0x20,0xd1]
-; SETZUCC-NEXT:    movzbl %cl, %eax # encoding: [0x0f,0xb6,0xc1]
+; SETZUCC-NEXT:    andb %cl, %dl # encoding: [0x20,0xca]
+; SETZUCC-NEXT:    movzbl %dl, %eax # encoding: [0x0f,0xb6,0xc2]
 ; SETZUCC-NEXT:    retq # encoding: [0xc3]
 entry:
   %cmp = icmp sgt i32 %a, 0
@@ -1373,8 +1374,8 @@ define void @cmp_srem(ptr %p, i32 %a, ptr %b) {
 ; CHECK-NEXT:    cmpl $1, %esi
 ; CHECK-NEXT:    ccmpael {dfv=zf} $1, %edi
 ; CHECK-NEXT:    sete %dl
-; CHECK-NEXT:    orb %al, %dl
-; CHECK-NEXT:    movb %dl, (%rcx)
+; CHECK-NEXT:    orb %dl, %al
+; CHECK-NEXT:    movb %al, (%rcx)
 ; CHECK-NEXT:    retq
 ;
 ; NDD-LABEL: cmp_srem:
@@ -1399,9 +1400,9 @@ define void @cmp_srem(ptr %p, i32 %a, ptr %b) {
 ; SETZUCC-NEXT:    movl %esi, %eax # encoding: [0x89,0xf0]
 ; SETZUCC-NEXT:    movl (%rdi), %esi # encoding: [0x8b,0x37]
 ; SETZUCC-NEXT:    cmpl $1, %esi # encoding: [0x83,0xfe,0x01]
-; SETZUCC-NEXT:    setzue %dl # encoding: [0x62,0xf4,0x7f,0x18,0x44,0xc2]
+; SETZUCC-NEXT:    setzue %dil # encoding: [0x62,0xf4,0x7f,0x18,0x44,0xc7]
 ; SETZUCC-NEXT:    subl $1, %eax # encoding: [0x83,0xe8,0x01]
-; SETZUCC-NEXT:    setzub %dil # encoding: [0x62,0xf4,0x7f,0x18,0x42,0xc7]
+; SETZUCC-NEXT:    setzub %dl # encoding: [0x62,0xf4,0x7f,0x18,0x42,0xc2]
 ; SETZUCC-NEXT:    setzune %r8b # encoding: [0x62,0xd4,0x7f,0x18,0x45,0xc0]
 ; SETZUCC-NEXT:    orb %dl, %dil # encoding: [0x40,0x08,0xd7]
 ; SETZUCC-NEXT:    cltd # encoding: [0x99]

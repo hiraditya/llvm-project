@@ -9,11 +9,12 @@ declare void @use(i32)
 define i32 @fold_and_xor_neg_v1_32(i32 %x, i32 %y) nounwind {
 ; X86-NOBMI-LABEL: fold_and_xor_neg_v1_32:
 ; X86-NOBMI:       # %bb.0:
-; X86-NOBMI-NEXT:    movl {{[0-9]+}}(%esp), %ecx
-; X86-NOBMI-NEXT:    movl %ecx, %eax
-; X86-NOBMI-NEXT:    negl %eax
-; X86-NOBMI-NEXT:    xorl %ecx, %eax
-; X86-NOBMI-NEXT:    andl {{[0-9]+}}(%esp), %eax
+; X86-NOBMI-NEXT:    movl {{[0-9]+}}(%esp), %eax
+; X86-NOBMI-NEXT:    movl %eax, %ecx
+; X86-NOBMI-NEXT:    negl %ecx
+; X86-NOBMI-NEXT:    xorl %eax, %ecx
+; X86-NOBMI-NEXT:    movl {{[0-9]+}}(%esp), %eax
+; X86-NOBMI-NEXT:    andl %ecx, %eax
 ; X86-NOBMI-NEXT:    retl
 ;
 ; X86-BMI-LABEL: fold_and_xor_neg_v1_32:
@@ -44,11 +45,12 @@ define i32 @fold_and_xor_neg_v1_32(i32 %x, i32 %y) nounwind {
 define i32 @fold_and_xor_neg_v2_32(i32 %x, i32 %y) nounwind {
 ; X86-NOBMI-LABEL: fold_and_xor_neg_v2_32:
 ; X86-NOBMI:       # %bb.0:
-; X86-NOBMI-NEXT:    movl {{[0-9]+}}(%esp), %ecx
-; X86-NOBMI-NEXT:    movl %ecx, %eax
-; X86-NOBMI-NEXT:    negl %eax
-; X86-NOBMI-NEXT:    xorl %ecx, %eax
-; X86-NOBMI-NEXT:    andl {{[0-9]+}}(%esp), %eax
+; X86-NOBMI-NEXT:    movl {{[0-9]+}}(%esp), %eax
+; X86-NOBMI-NEXT:    movl %eax, %ecx
+; X86-NOBMI-NEXT:    negl %ecx
+; X86-NOBMI-NEXT:    xorl %eax, %ecx
+; X86-NOBMI-NEXT:    movl {{[0-9]+}}(%esp), %eax
+; X86-NOBMI-NEXT:    andl %ecx, %eax
 ; X86-NOBMI-NEXT:    retl
 ;
 ; X86-BMI-LABEL: fold_and_xor_neg_v2_32:
@@ -79,11 +81,12 @@ define i32 @fold_and_xor_neg_v2_32(i32 %x, i32 %y) nounwind {
 define i32 @fold_and_xor_neg_v3_32(i32 %x, i32 %y) nounwind {
 ; X86-NOBMI-LABEL: fold_and_xor_neg_v3_32:
 ; X86-NOBMI:       # %bb.0:
-; X86-NOBMI-NEXT:    movl {{[0-9]+}}(%esp), %ecx
-; X86-NOBMI-NEXT:    movl %ecx, %eax
-; X86-NOBMI-NEXT:    negl %eax
-; X86-NOBMI-NEXT:    xorl %ecx, %eax
-; X86-NOBMI-NEXT:    andl {{[0-9]+}}(%esp), %eax
+; X86-NOBMI-NEXT:    movl {{[0-9]+}}(%esp), %eax
+; X86-NOBMI-NEXT:    movl %eax, %ecx
+; X86-NOBMI-NEXT:    negl %ecx
+; X86-NOBMI-NEXT:    xorl %eax, %ecx
+; X86-NOBMI-NEXT:    movl {{[0-9]+}}(%esp), %eax
+; X86-NOBMI-NEXT:    andl %ecx, %eax
 ; X86-NOBMI-NEXT:    retl
 ;
 ; X86-BMI-LABEL: fold_and_xor_neg_v3_32:
@@ -114,11 +117,12 @@ define i32 @fold_and_xor_neg_v3_32(i32 %x, i32 %y) nounwind {
 define i32 @fold_and_xor_neg_v4_32(i32 %x, i32 %y) nounwind {
 ; X86-NOBMI-LABEL: fold_and_xor_neg_v4_32:
 ; X86-NOBMI:       # %bb.0:
-; X86-NOBMI-NEXT:    movl {{[0-9]+}}(%esp), %ecx
-; X86-NOBMI-NEXT:    movl %ecx, %eax
-; X86-NOBMI-NEXT:    negl %eax
-; X86-NOBMI-NEXT:    xorl %ecx, %eax
-; X86-NOBMI-NEXT:    andl {{[0-9]+}}(%esp), %eax
+; X86-NOBMI-NEXT:    movl {{[0-9]+}}(%esp), %eax
+; X86-NOBMI-NEXT:    movl %eax, %ecx
+; X86-NOBMI-NEXT:    negl %ecx
+; X86-NOBMI-NEXT:    xorl %eax, %ecx
+; X86-NOBMI-NEXT:    movl {{[0-9]+}}(%esp), %eax
+; X86-NOBMI-NEXT:    andl %ecx, %eax
 ; X86-NOBMI-NEXT:    retl
 ;
 ; X86-BMI-LABEL: fold_and_xor_neg_v4_32:
@@ -149,18 +153,22 @@ define i32 @fold_and_xor_neg_v4_32(i32 %x, i32 %y) nounwind {
 define i64 @fold_and_xor_neg_v1_64(i64 %x, i64 %y) nounwind {
 ; X86-LABEL: fold_and_xor_neg_v1_64:
 ; X86:       # %bb.0:
+; X86-NEXT:    pushl %edi
 ; X86-NEXT:    pushl %esi
+; X86-NEXT:    movl {{[0-9]+}}(%esp), %eax
 ; X86-NEXT:    movl {{[0-9]+}}(%esp), %ecx
-; X86-NEXT:    movl {{[0-9]+}}(%esp), %esi
-; X86-NEXT:    xorl %edx, %edx
-; X86-NEXT:    movl %ecx, %eax
-; X86-NEXT:    negl %eax
-; X86-NEXT:    sbbl %esi, %edx
-; X86-NEXT:    xorl %esi, %edx
-; X86-NEXT:    xorl %ecx, %eax
-; X86-NEXT:    andl {{[0-9]+}}(%esp), %edx
-; X86-NEXT:    andl {{[0-9]+}}(%esp), %eax
+; X86-NEXT:    xorl %esi, %esi
+; X86-NEXT:    movl %eax, %edi
+; X86-NEXT:    negl %edi
+; X86-NEXT:    sbbl %ecx, %esi
+; X86-NEXT:    xorl %ecx, %esi
+; X86-NEXT:    xorl %eax, %edi
+; X86-NEXT:    movl {{[0-9]+}}(%esp), %edx
+; X86-NEXT:    andl %esi, %edx
+; X86-NEXT:    movl {{[0-9]+}}(%esp), %eax
+; X86-NEXT:    andl %edi, %eax
 ; X86-NEXT:    popl %esi
+; X86-NEXT:    popl %edi
 ; X86-NEXT:    retl
 ;
 ; X64-NOBMI-LABEL: fold_and_xor_neg_v1_64:
@@ -186,12 +194,12 @@ define i64 @fold_and_xor_neg_v1_64(i64 %x, i64 %y) nounwind {
 define i16 @fold_and_xor_neg_v1_16_negative(i16 %x, i16 %y) nounwind {
 ; X86-LABEL: fold_and_xor_neg_v1_16_negative:
 ; X86:       # %bb.0:
-; X86-NEXT:    movl {{[0-9]+}}(%esp), %ecx
-; X86-NEXT:    movl %ecx, %eax
-; X86-NEXT:    negl %eax
-; X86-NEXT:    xorl %ecx, %eax
-; X86-NEXT:    andw {{[0-9]+}}(%esp), %ax
-; X86-NEXT:    # kill: def $ax killed $ax killed $eax
+; X86-NEXT:    movl {{[0-9]+}}(%esp), %eax
+; X86-NEXT:    movl %eax, %ecx
+; X86-NEXT:    negl %ecx
+; X86-NEXT:    xorl %eax, %ecx
+; X86-NEXT:    movzwl {{[0-9]+}}(%esp), %eax
+; X86-NEXT:    andw %cx, %ax
 ; X86-NEXT:    retl
 ;
 ; X64-LABEL: fold_and_xor_neg_v1_16_negative:
@@ -214,16 +222,18 @@ define <4 x i32> @fold_and_xor_neg_v1_v4x32_negative(<4 x i32> %x, <4 x i32> %y)
 ; X86:       # %bb.0:
 ; X86-NEXT:    pxor %xmm2, %xmm2
 ; X86-NEXT:    psubd %xmm0, %xmm2
-; X86-NEXT:    pxor %xmm2, %xmm0
-; X86-NEXT:    pand %xmm1, %xmm0
+; X86-NEXT:    pxor %xmm0, %xmm2
+; X86-NEXT:    pand %xmm1, %xmm2
+; X86-NEXT:    movdqa %xmm2, %xmm0
 ; X86-NEXT:    retl
 ;
 ; X64-LABEL: fold_and_xor_neg_v1_v4x32_negative:
 ; X64:       # %bb.0:
 ; X64-NEXT:    pxor %xmm2, %xmm2
 ; X64-NEXT:    psubd %xmm0, %xmm2
-; X64-NEXT:    pxor %xmm2, %xmm0
-; X64-NEXT:    pand %xmm1, %xmm0
+; X64-NEXT:    pxor %xmm0, %xmm2
+; X64-NEXT:    pand %xmm1, %xmm2
+; X64-NEXT:    movdqa %xmm2, %xmm0
 ; X64-NEXT:    retq
   %neg = sub <4 x i32> zeroinitializer, %x
   %xor = xor <4 x i32> %x, %neg
@@ -252,11 +262,12 @@ define i32 @fold_and_xor_neg_v1_32_two_uses_xor_negative(i32 %x, i32 %y) nounwin
 ; X64-LABEL: fold_and_xor_neg_v1_32_two_uses_xor_negative:
 ; X64:       # %bb.0:
 ; X64-NEXT:    pushq %rbx
-; X64-NEXT:    movl %esi, %ebx
 ; X64-NEXT:    movl %edi, %eax
 ; X64-NEXT:    negl %eax
-; X64-NEXT:    xorl %eax, %edi
-; X64-NEXT:    andl %edi, %ebx
+; X64-NEXT:    xorl %edi, %eax
+; X64-NEXT:    movl %eax, %ebx
+; X64-NEXT:    andl %esi, %ebx
+; X64-NEXT:    movl %eax, %edi
 ; X64-NEXT:    callq use@PLT
 ; X64-NEXT:    movl %ebx, %eax
 ; X64-NEXT:    popq %rbx
@@ -273,12 +284,13 @@ define i32 @fold_and_xor_neg_v1_32_two_uses_sub_negative(i32 %x, i32 %y) nounwin
 ; X86-LABEL: fold_and_xor_neg_v1_32_two_uses_sub_negative:
 ; X86:       # %bb.0:
 ; X86-NEXT:    pushl %esi
+; X86-NEXT:    movl {{[0-9]+}}(%esp), %eax
+; X86-NEXT:    movl %eax, %ecx
+; X86-NEXT:    negl %ecx
+; X86-NEXT:    xorl %ecx, %eax
 ; X86-NEXT:    movl {{[0-9]+}}(%esp), %esi
-; X86-NEXT:    movl %esi, %eax
-; X86-NEXT:    negl %eax
-; X86-NEXT:    xorl %eax, %esi
-; X86-NEXT:    andl {{[0-9]+}}(%esp), %esi
-; X86-NEXT:    pushl %eax
+; X86-NEXT:    andl %eax, %esi
+; X86-NEXT:    pushl %ecx
 ; X86-NEXT:    calll use@PLT
 ; X86-NEXT:    addl $4, %esp
 ; X86-NEXT:    movl %esi, %eax
@@ -309,8 +321,10 @@ define i32 @fold_and_xor_neg_v1_32_no_blsmsk_negative(i32 %x, i32 %y, i32 %z) no
 ; X86:       # %bb.0:
 ; X86-NEXT:    xorl %eax, %eax
 ; X86-NEXT:    subl {{[0-9]+}}(%esp), %eax
-; X86-NEXT:    xorl {{[0-9]+}}(%esp), %eax
-; X86-NEXT:    andl {{[0-9]+}}(%esp), %eax
+; X86-NEXT:    movl {{[0-9]+}}(%esp), %ecx
+; X86-NEXT:    xorl %eax, %ecx
+; X86-NEXT:    movl {{[0-9]+}}(%esp), %eax
+; X86-NEXT:    andl %ecx, %eax
 ; X86-NEXT:    retl
 ;
 ; X64-LABEL: fold_and_xor_neg_v1_32_no_blsmsk_negative:

@@ -15,8 +15,9 @@ define void @Legalize_SplitVectorResult_insert_i28(i28 %elt, i16 %idx, ptr %p1, 
 ; CHECK-NEXT:    movaps {{.*#+}} xmm0 = [268435455,268435455,268435455,268435455]
 ; CHECK-NEXT:    movaps -{{[0-9]+}}(%rsp), %xmm1
 ; CHECK-NEXT:    andps %xmm0, %xmm1
-; CHECK-NEXT:    andps -{{[0-9]+}}(%rsp), %xmm0
-; CHECK-NEXT:    movaps %xmm0, 16(%rcx)
+; CHECK-NEXT:    movaps -{{[0-9]+}}(%rsp), %xmm2
+; CHECK-NEXT:    andps %xmm0, %xmm2
+; CHECK-NEXT:    movaps %xmm2, 16(%rcx)
 ; CHECK-NEXT:    movaps %xmm1, (%rcx)
 ; CHECK-NEXT:    retq
   %vec1 = insertelement <8 x i28> zeroinitializer, i28 %elt, i16 %idx

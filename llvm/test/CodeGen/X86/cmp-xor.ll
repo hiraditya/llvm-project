@@ -33,8 +33,9 @@ define i32 @cmp_xor_i32(i32 %a, i32 %b, i32 %c)
 define i32 @cmp_xor_i32_commute(i32 %a, i32 %b, i32 %c)
 ; X86-LABEL: cmp_xor_i32_commute:
 ; X86:       # %bb.0:
+; X86-NEXT:    movl {{[0-9]+}}(%esp), %ecx
 ; X86-NEXT:    movl {{[0-9]+}}(%esp), %eax
-; X86-NEXT:    xorl {{[0-9]+}}(%esp), %eax
+; X86-NEXT:    xorl %ecx, %eax
 ; X86-NEXT:    jne .LBB1_2
 ; X86-NEXT:  # %bb.1:
 ; X86-NEXT:    movl {{[0-9]+}}(%esp), %eax
@@ -43,8 +44,8 @@ define i32 @cmp_xor_i32_commute(i32 %a, i32 %b, i32 %c)
 ;
 ; X64-LABEL: cmp_xor_i32_commute:
 ; X64:       # %bb.0:
-; X64-NEXT:    movl %edi, %eax
-; X64-NEXT:    xorl %esi, %eax
+; X64-NEXT:    movl %esi, %eax
+; X64-NEXT:    xorl %edi, %eax
 ; X64-NEXT:    cmovel %edx, %eax
 ; X64-NEXT:    retq
 {

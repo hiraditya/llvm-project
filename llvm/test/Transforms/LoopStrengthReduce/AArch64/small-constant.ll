@@ -17,6 +17,7 @@
 define float @test1(ptr nocapture readonly %arr, i64 %start, float %threshold) {
 ; CHECK-LABEL: test1:
 ; CHECK:       // %bb.0: // %entry
+; CHECK-NEXT:    fmov s1, #-7.00000000
 ; CHECK-NEXT:    cbz x1, .LBB0_4
 ; CHECK-NEXT:  // %bb.1: // %for.body.preheader
 ; CHECK-NEXT:    add x8, x0, #28
@@ -24,15 +25,13 @@ define float @test1(ptr nocapture readonly %arr, i64 %start, float %threshold) {
 ; CHECK-NEXT:    // =>This Inner Loop Header: Depth=1
 ; CHECK-NEXT:    ldr s1, [x8, x1, lsl #2]
 ; CHECK-NEXT:    fcmp s1, s0
-; CHECK-NEXT:    b.gt .LBB0_5
+; CHECK-NEXT:    b.gt .LBB0_4
 ; CHECK-NEXT:  // %bb.3: // %for.cond
 ; CHECK-NEXT:    // in Loop: Header=BB0_2 Depth=1
+; CHECK-NEXT:    fmov s1, #-7.00000000
 ; CHECK-NEXT:    add x1, x1, #1
 ; CHECK-NEXT:    cbnz x1, .LBB0_2
-; CHECK-NEXT:  .LBB0_4:
-; CHECK-NEXT:    fmov s0, #-7.00000000
-; CHECK-NEXT:    ret
-; CHECK-NEXT:  .LBB0_5: // %cleanup2
+; CHECK-NEXT:  .LBB0_4: // %cleanup2
 ; CHECK-NEXT:    fmov s0, s1
 ; CHECK-NEXT:    ret
 entry:
@@ -62,6 +61,7 @@ cleanup2:                                         ; preds = %for.cond, %for.body
 define float @test2(ptr nocapture readonly %arr, i64 %start, float %threshold) {
 ; CHECK-LABEL: test2:
 ; CHECK:       // %bb.0: // %entry
+; CHECK-NEXT:    fmov s1, #-7.00000000
 ; CHECK-NEXT:    cbz x1, .LBB1_4
 ; CHECK-NEXT:  // %bb.1: // %for.body.preheader
 ; CHECK-NEXT:    add x8, x0, #28
@@ -71,15 +71,13 @@ define float @test2(ptr nocapture readonly %arr, i64 %start, float %threshold) {
 ; CHECK-NEXT:    fadd s2, s1, s0
 ; CHECK-NEXT:    ldr s1, [x8, x1, lsl #2]
 ; CHECK-NEXT:    fcmp s1, s2
-; CHECK-NEXT:    b.gt .LBB1_5
+; CHECK-NEXT:    b.gt .LBB1_4
 ; CHECK-NEXT:  // %bb.3: // %for.cond
 ; CHECK-NEXT:    // in Loop: Header=BB1_2 Depth=1
+; CHECK-NEXT:    fmov s1, #-7.00000000
 ; CHECK-NEXT:    add x1, x1, #1
 ; CHECK-NEXT:    cbnz x1, .LBB1_2
-; CHECK-NEXT:  .LBB1_4:
-; CHECK-NEXT:    fmov s0, #-7.00000000
-; CHECK-NEXT:    ret
-; CHECK-NEXT:  .LBB1_5: // %cleanup4
+; CHECK-NEXT:  .LBB1_4: // %cleanup4
 ; CHECK-NEXT:    fmov s0, s1
 ; CHECK-NEXT:    ret
 entry:

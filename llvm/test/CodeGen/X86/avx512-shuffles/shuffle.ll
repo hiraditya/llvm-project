@@ -2004,7 +2004,7 @@ define <32 x i16> @test_masked_32xi16_perm_low_mem_mask5(ptr %vp, <32 x i16> %ve
 ; CHECK:       # %bb.0:
 ; CHECK-NEXT:    vpshufd {{.*#+}} zmm2 = mem[0,0,2,3,4,4,6,7,8,8,10,11,12,12,14,15]
 ; CHECK-NEXT:    vptestnmw %zmm1, %zmm1, %k1
-; CHECK-NEXT:    vmovdqu16 %zmm2, %zmm0 {%k1}
+; CHECK-NEXT:    vpblendmw %zmm2, %zmm0, %zmm0 {%k1}
 ; CHECK-NEXT:    retq
   %vec = load <32 x i16>, ptr %vp
   %shuf = shufflevector <32 x i16> %vec, <32 x i16> undef, <32 x i32> <i32 0, i32 1, i32 0, i32 1, i32 4, i32 5, i32 6, i32 7, i32 8, i32 9, i32 8, i32 9, i32 12, i32 13, i32 14, i32 15, i32 16, i32 17, i32 16, i32 17, i32 20, i32 21, i32 22, i32 23, i32 24, i32 25, i32 24, i32 25, i32 28, i32 29, i32 30, i32 31>

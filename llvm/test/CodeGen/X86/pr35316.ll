@@ -36,10 +36,10 @@ define void @foo() {
 ; CHECK-NEXT:    movl c(%rip), %eax
 ; CHECK-NEXT:    cltd
 ; CHECK-NEXT:    idivl %r8d
-; CHECK-NEXT:    andl %edi, %eax
-; CHECK-NEXT:    addl %ecx, %eax
-; CHECK-NEXT:    andl %esi, %eax
-; CHECK-NEXT:    movl %eax, (%rax)
+; CHECK-NEXT:    andl %eax, %edi
+; CHECK-NEXT:    addl %ecx, %edi
+; CHECK-NEXT:    andl %edi, %esi
+; CHECK-NEXT:    movl %esi, (%rax)
 ; CHECK-NEXT:    retq
 entry:
   %e = alloca i32, align 4

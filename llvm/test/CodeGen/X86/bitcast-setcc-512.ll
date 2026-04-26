@@ -443,8 +443,8 @@ define void @bitcast_64i8_store(ptr %p, <64 x i8> %a0) {
 ; AVX2-NEXT:    vpmovmskb %ymm1, %eax
 ; AVX2-NEXT:    shlq $32, %rax
 ; AVX2-NEXT:    vpmovmskb %ymm0, %ecx
-; AVX2-NEXT:    orq %rax, %rcx
-; AVX2-NEXT:    movq %rcx, (%rdi)
+; AVX2-NEXT:    orq %rcx, %rax
+; AVX2-NEXT:    movq %rax, (%rdi)
 ; AVX2-NEXT:    vzeroupper
 ; AVX2-NEXT:    retq
 ;

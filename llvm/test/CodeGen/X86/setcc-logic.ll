@@ -332,7 +332,8 @@ define <4 x i1> @all_bits_clear_vec(<4 x i32> %P, <4 x i32> %Q) nounwind {
 ; CHECK:       # %bb.0:
 ; CHECK-NEXT:    por %xmm1, %xmm0
 ; CHECK-NEXT:    pxor %xmm1, %xmm1
-; CHECK-NEXT:    pcmpeqd %xmm1, %xmm0
+; CHECK-NEXT:    pcmpeqd %xmm0, %xmm1
+; CHECK-NEXT:    movdqa %xmm1, %xmm0
 ; CHECK-NEXT:    retq
   %a = icmp eq <4 x i32> %P, zeroinitializer
   %b = icmp eq <4 x i32> %Q, zeroinitializer
@@ -358,7 +359,8 @@ define <4 x i1> @all_bits_set_vec(<4 x i32> %P, <4 x i32> %Q) nounwind {
 ; CHECK:       # %bb.0:
 ; CHECK-NEXT:    pand %xmm1, %xmm0
 ; CHECK-NEXT:    pcmpeqd %xmm1, %xmm1
-; CHECK-NEXT:    pcmpeqd %xmm1, %xmm0
+; CHECK-NEXT:    pcmpeqd %xmm0, %xmm1
+; CHECK-NEXT:    movdqa %xmm1, %xmm0
 ; CHECK-NEXT:    retq
   %a = icmp eq <4 x i32> %P, <i32 -1, i32 -1, i32 -1, i32 -1>
   %b = icmp eq <4 x i32> %Q, <i32 -1, i32 -1, i32 -1, i32 -1>
@@ -385,8 +387,8 @@ define <4 x i1> @any_bits_set_vec(<4 x i32> %P, <4 x i32> %Q) nounwind {
 ; CHECK:       # %bb.0:
 ; CHECK-NEXT:    por %xmm1, %xmm0
 ; CHECK-NEXT:    pxor %xmm1, %xmm1
-; CHECK-NEXT:    pcmpeqd %xmm1, %xmm0
-; CHECK-NEXT:    pcmpeqd %xmm1, %xmm1
+; CHECK-NEXT:    pcmpeqd %xmm0, %xmm1
+; CHECK-NEXT:    pcmpeqd %xmm0, %xmm0
 ; CHECK-NEXT:    pxor %xmm1, %xmm0
 ; CHECK-NEXT:    retq
   %a = icmp ne <4 x i32> %P, zeroinitializer
@@ -439,8 +441,8 @@ define <4 x i1> @any_sign_bits_clear_vec(<4 x i32> %P, <4 x i32> %Q) nounwind {
 define zeroext i1 @ne_neg1_and_ne_zero(i64 %x) nounwind {
 ; CHECK-LABEL: ne_neg1_and_ne_zero:
 ; CHECK:       # %bb.0:
-; CHECK-NEXT:    incq %rdi
-; CHECK-NEXT:    testq $-2, %rdi
+; CHECK-NEXT:    leaq 1(%rdi), %rax
+; CHECK-NEXT:    testq $-2, %rax
 ; CHECK-NEXT:    setne %al
 ; CHECK-NEXT:    retq
   %cmp1 = icmp ne i64 %x, -1
@@ -486,7 +488,8 @@ define <4 x i1> @and_eq_vec(<4 x i32> %a, <4 x i32> %b, <4 x i32> %c, <4 x i32> 
 ; CHECK:       # %bb.0:
 ; CHECK-NEXT:    pcmpeqd %xmm1, %xmm0
 ; CHECK-NEXT:    pcmpeqd %xmm3, %xmm2
-; CHECK-NEXT:    pand %xmm2, %xmm0
+; CHECK-NEXT:    pand %xmm0, %xmm2
+; CHECK-NEXT:    movdqa %xmm2, %xmm0
 ; CHECK-NEXT:    retq
   %cmp1 = icmp eq <4 x i32> %a, %b
   %cmp2 = icmp eq <4 x i32> %c, %d
@@ -497,8 +500,9 @@ define <4 x i1> @and_eq_vec(<4 x i32> %a, <4 x i32> %b, <4 x i32> %c, <4 x i32> 
 define i1 @or_icmps_const_1bit_diff(i8 %x) {
 ; CHECK-LABEL: or_icmps_const_1bit_diff:
 ; CHECK:       # %bb.0:
-; CHECK-NEXT:    addb $-43, %dil
-; CHECK-NEXT:    testb $-3, %dil
+; CHECK-NEXT:    # kill: def $edi killed $edi def $rdi
+; CHECK-NEXT:    leal -43(%rdi), %eax
+; CHECK-NEXT:    testb $-3, %al
 ; CHECK-NEXT:    sete %al
 ; CHECK-NEXT:    retq
   %a = icmp eq i8 %x, 43
@@ -510,10 +514,12 @@ define i1 @or_icmps_const_1bit_diff(i8 %x) {
 define <4 x i32> @or_icmps_const_1bit_diff_vec(<4 x i32> %x) {
 ; CHECK-LABEL: or_icmps_const_1bit_diff_vec:
 ; CHECK:       # %bb.0:
-; CHECK-NEXT:    movdqa {{.*#+}} xmm1 = [43,45,43,45]
+; CHECK-NEXT:    movdqa {{.*#+}} xmm2 = [43,45,43,45]
+; CHECK-NEXT:    pcmpeqd %xmm0, %xmm2
+; CHECK-NEXT:    movdqa {{.*#+}} xmm1 = [45,43,45,43]
 ; CHECK-NEXT:    pcmpeqd %xmm0, %xmm1
-; CHECK-NEXT:    pcmpeqd {{\.?LCPI[0-9]+_[0-9]+}}(%rip), %xmm0
-; CHECK-NEXT:    por %xmm1, %xmm0
+; CHECK-NEXT:    por %xmm2, %xmm1
+; CHECK-NEXT:    movdqa %xmm1, %xmm0
 ; CHECK-NEXT:    retq
   %a = icmp eq <4 x i32> %x, <i32 43, i32 45, i32 43, i32 45>
   %b = icmp eq <4 x i32> %x, <i32 45, i32 43, i32 45, i32 43>
@@ -525,8 +531,9 @@ define <4 x i32> @or_icmps_const_1bit_diff_vec(<4 x i32> %x) {
 define i1 @and_icmps_const_1bit_diff(i32 %x) {
 ; CHECK-LABEL: and_icmps_const_1bit_diff:
 ; CHECK:       # %bb.0:
-; CHECK-NEXT:    addl $-44, %edi
-; CHECK-NEXT:    testl $-17, %edi
+; CHECK-NEXT:    # kill: def $edi killed $edi def $rdi
+; CHECK-NEXT:    leal -44(%rdi), %eax
+; CHECK-NEXT:    testl $-17, %eax
 ; CHECK-NEXT:    setne %al
 ; CHECK-NEXT:    retq
   %a = icmp ne i32 %x, 44
@@ -540,10 +547,11 @@ define <4 x i32> @and_icmps_const_1bit_diff_vec(<4 x i32> %x) {
 ; CHECK:       # %bb.0:
 ; CHECK-NEXT:    movdqa {{.*#+}} xmm1 = [44,60,44,60]
 ; CHECK-NEXT:    pcmpeqd %xmm0, %xmm1
-; CHECK-NEXT:    pcmpeqd {{\.?LCPI[0-9]+_[0-9]+}}(%rip), %xmm0
-; CHECK-NEXT:    por %xmm1, %xmm0
-; CHECK-NEXT:    pcmpeqd %xmm1, %xmm1
-; CHECK-NEXT:    pxor %xmm1, %xmm0
+; CHECK-NEXT:    movdqa {{.*#+}} xmm2 = [60,44,60,44]
+; CHECK-NEXT:    pcmpeqd %xmm0, %xmm2
+; CHECK-NEXT:    por %xmm1, %xmm2
+; CHECK-NEXT:    pcmpeqd %xmm0, %xmm0
+; CHECK-NEXT:    pxor %xmm2, %xmm0
 ; CHECK-NEXT:    retq
   %a = icmp ne <4 x i32> %x, <i32 44, i32 60, i32 44, i32 60>
   %b = icmp ne <4 x i32> %x, <i32 60, i32 44, i32 60, i32 44>
@@ -558,9 +566,9 @@ define i1 @or_icmps_const_1bit_diff_extra_use(i8 %x, ptr %p) {
 ; CHECK-LABEL: or_icmps_const_1bit_diff_extra_use:
 ; CHECK:       # %bb.0:
 ; CHECK-NEXT:    cmpb $45, %dil
-; CHECK-NEXT:    sete %cl
-; CHECK-NEXT:    cmpb $43, %dil
 ; CHECK-NEXT:    sete %al
+; CHECK-NEXT:    cmpb $43, %dil
+; CHECK-NEXT:    sete %cl
 ; CHECK-NEXT:    sete (%rsi)
 ; CHECK-NEXT:    orb %cl, %al
 ; CHECK-NEXT:    retq
@@ -632,7 +640,7 @@ define i1 @or_cmp_eq_i128(i128 %x, i128 %y) {
 ; NOBMI-NEXT:    notq %rsi
 ; NOBMI-NEXT:    andq %rcx, %rsi
 ; NOBMI-NEXT:    andq %rdx, %rdi
-; NOBMI-NEXT:    orq %rsi, %rdi
+; NOBMI-NEXT:    orq %rdi, %rsi
 ; NOBMI-NEXT:    sete %al
 ; NOBMI-NEXT:    retq
 ;
@@ -640,7 +648,7 @@ define i1 @or_cmp_eq_i128(i128 %x, i128 %y) {
 ; BMI:       # %bb.0:
 ; BMI-NEXT:    andnq %rcx, %rsi, %rax
 ; BMI-NEXT:    andnq %rdx, %rdi, %rcx
-; BMI-NEXT:    orq %rax, %rcx
+; BMI-NEXT:    orq %rcx, %rax
 ; BMI-NEXT:    sete %al
 ; BMI-NEXT:    retq
   %o = or i128 %x, %y
@@ -718,8 +726,10 @@ define i1 @or_cmp_ne_i8(i8 zeroext %x, i8 zeroext %y) {
 define <4 x i32> @or_cmp_eq_v4i32(<4 x i32> %x, <4 x i32> %y) {
 ; CHECK-LABEL: or_cmp_eq_v4i32:
 ; CHECK:       # %bb.0:
-; CHECK-NEXT:    por %xmm0, %xmm1
-; CHECK-NEXT:    pcmpeqd %xmm1, %xmm0
+; CHECK-NEXT:    movdqa %xmm0, %xmm2
+; CHECK-NEXT:    por %xmm1, %xmm2
+; CHECK-NEXT:    pcmpeqd %xmm0, %xmm2
+; CHECK-NEXT:    movdqa %xmm2, %xmm0
 ; CHECK-NEXT:    retq
   %o = or <4 x i32> %x, %y
   %c = icmp eq <4 x i32> %o, %x
@@ -730,10 +740,11 @@ define <4 x i32> @or_cmp_eq_v4i32(<4 x i32> %x, <4 x i32> %y) {
 define <16 x i8> @or_cmp_ne_v4i32(<16 x i8> %x, <16 x i8> %y) {
 ; CHECK-LABEL: or_cmp_ne_v4i32:
 ; CHECK:       # %bb.0:
-; CHECK-NEXT:    por %xmm0, %xmm1
-; CHECK-NEXT:    pcmpeqb %xmm1, %xmm0
-; CHECK-NEXT:    pcmpeqd %xmm1, %xmm1
-; CHECK-NEXT:    pxor %xmm1, %xmm0
+; CHECK-NEXT:    movdqa %xmm0, %xmm2
+; CHECK-NEXT:    por %xmm1, %xmm2
+; CHECK-NEXT:    pcmpeqb %xmm0, %xmm2
+; CHECK-NEXT:    pcmpeqd %xmm0, %xmm0
+; CHECK-NEXT:    pxor %xmm2, %xmm0
 ; CHECK-NEXT:    retq
   %o = or <16 x i8> %x, %y
   %c = icmp ne <16 x i8> %o, %x

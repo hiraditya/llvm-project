@@ -296,10 +296,10 @@ define i64 @test_fptoui_i64(ptr %p) #0 {
 ; CHECK-LIBCALL-NEXT:    pinsrw $0, (%rdi), %xmm0
 ; CHECK-LIBCALL-NEXT:    callq __extendhfsf2@PLT
 ; CHECK-LIBCALL-NEXT:    cvttss2si %xmm0, %rcx
-; CHECK-LIBCALL-NEXT:    movq %rcx, %rdx
-; CHECK-LIBCALL-NEXT:    sarq $63, %rdx
+; CHECK-LIBCALL-NEXT:    movq %rcx, %rax
+; CHECK-LIBCALL-NEXT:    sarq $63, %rax
 ; CHECK-LIBCALL-NEXT:    subss {{\.?LCPI[0-9]+_[0-9]+}}(%rip), %xmm0
-; CHECK-LIBCALL-NEXT:    cvttss2si %xmm0, %rax
+; CHECK-LIBCALL-NEXT:    cvttss2si %xmm0, %rdx
 ; CHECK-LIBCALL-NEXT:    andq %rdx, %rax
 ; CHECK-LIBCALL-NEXT:    orq %rcx, %rax
 ; CHECK-LIBCALL-NEXT:    popq %rcx
@@ -310,10 +310,10 @@ define i64 @test_fptoui_i64(ptr %p) #0 {
 ; BWON-F16C-NEXT:    vpinsrw $0, (%rdi), %xmm0, %xmm0
 ; BWON-F16C-NEXT:    vcvtph2ps %xmm0, %xmm0
 ; BWON-F16C-NEXT:    vcvttss2si %xmm0, %rcx
-; BWON-F16C-NEXT:    movq %rcx, %rdx
-; BWON-F16C-NEXT:    sarq $63, %rdx
+; BWON-F16C-NEXT:    movq %rcx, %rax
+; BWON-F16C-NEXT:    sarq $63, %rax
 ; BWON-F16C-NEXT:    vsubss {{\.?LCPI[0-9]+_[0-9]+}}(%rip), %xmm0, %xmm0
-; BWON-F16C-NEXT:    vcvttss2si %xmm0, %rax
+; BWON-F16C-NEXT:    vcvttss2si %xmm0, %rdx
 ; BWON-F16C-NEXT:    andq %rdx, %rax
 ; BWON-F16C-NEXT:    orq %rcx, %rax
 ; BWON-F16C-NEXT:    retq
@@ -345,9 +345,10 @@ define i64 @test_fptoui_i64(ptr %p) #0 {
 ; CHECK-I686-NEXT:    fldcw {{[0-9]+}}(%esp)
 ; CHECK-I686-NEXT:    fistpll {{[0-9]+}}(%esp)
 ; CHECK-I686-NEXT:    fldcw {{[0-9]+}}(%esp)
-; CHECK-I686-NEXT:    movzbl %al, %edx
-; CHECK-I686-NEXT:    shll $31, %edx
-; CHECK-I686-NEXT:    xorl {{[0-9]+}}(%esp), %edx
+; CHECK-I686-NEXT:    movzbl %al, %eax
+; CHECK-I686-NEXT:    shll $31, %eax
+; CHECK-I686-NEXT:    movl {{[0-9]+}}(%esp), %edx
+; CHECK-I686-NEXT:    xorl %eax, %edx
 ; CHECK-I686-NEXT:    movl {{[0-9]+}}(%esp), %eax
 ; CHECK-I686-NEXT:    addl $28, %esp
 ; CHECK-I686-NEXT:    retl
@@ -835,7 +836,10 @@ define float @test_sitofp_fadd_i32(i32 %a, ptr %b) #0 {
 ; CHECK-LIBCALL-NEXT:    movss {{[-0-9]+}}(%r{{[sb]}}p), %xmm0 # 4-byte Reload
 ; CHECK-LIBCALL-NEXT:    # xmm0 = mem[0],zero,zero,zero
 ; CHECK-LIBCALL-NEXT:    callq __extendhfsf2@PLT
-; CHECK-LIBCALL-NEXT:    addss {{[-0-9]+}}(%r{{[sb]}}p), %xmm0 # 4-byte Folded Reload
+; CHECK-LIBCALL-NEXT:    movss {{[-0-9]+}}(%r{{[sb]}}p), %xmm1 # 4-byte Reload
+; CHECK-LIBCALL-NEXT:    # xmm1 = mem[0],zero,zero,zero
+; CHECK-LIBCALL-NEXT:    addss %xmm0, %xmm1
+; CHECK-LIBCALL-NEXT:    movaps %xmm1, %xmm0
 ; CHECK-LIBCALL-NEXT:    callq __truncsfhf2@PLT
 ; CHECK-LIBCALL-NEXT:    addq $40, %rsp
 ; CHECK-LIBCALL-NEXT:    jmp __extendhfsf2@PLT # TAILCALL
@@ -874,8 +878,9 @@ define float @test_sitofp_fadd_i32(i32 %a, ptr %b) #0 {
 ; CHECK-I686-NEXT:    calll __extendhfsf2
 ; CHECK-I686-NEXT:    fstps {{[0-9]+}}(%esp)
 ; CHECK-I686-NEXT:    movss {{.*#+}} xmm0 = mem[0],zero,zero,zero
-; CHECK-I686-NEXT:    addss {{[0-9]+}}(%esp), %xmm0
-; CHECK-I686-NEXT:    movss %xmm0, (%esp)
+; CHECK-I686-NEXT:    movss {{.*#+}} xmm1 = mem[0],zero,zero,zero
+; CHECK-I686-NEXT:    addss %xmm0, %xmm1
+; CHECK-I686-NEXT:    movss %xmm1, (%esp)
 ; CHECK-I686-NEXT:    calll __truncsfhf2
 ; CHECK-I686-NEXT:    pextrw $0, %xmm0, %eax
 ; CHECK-I686-NEXT:    movw %ax, (%esp)
@@ -948,7 +953,7 @@ define void @brcond(half %0) #0 {
 ; CHECK-LIBCALL-NEXT:    ucomiss %xmm1, %xmm0
 ; CHECK-LIBCALL-NEXT:    setp %al
 ; CHECK-LIBCALL-NEXT:    setne %cl
-; CHECK-LIBCALL-NEXT:    orb %al, %cl
+; CHECK-LIBCALL-NEXT:    orb %cl, %al
 ; CHECK-LIBCALL-NEXT:    jne .LBB18_2
 ; CHECK-LIBCALL-NEXT:  # %bb.1: # %if.then
 ; CHECK-LIBCALL-NEXT:    popq %rax
@@ -962,7 +967,7 @@ define void @brcond(half %0) #0 {
 ; BWON-F16C-NEXT:    vucomiss %xmm1, %xmm0
 ; BWON-F16C-NEXT:    setp %al
 ; BWON-F16C-NEXT:    setne %cl
-; BWON-F16C-NEXT:    orb %al, %cl
+; BWON-F16C-NEXT:    orb %cl, %al
 ; BWON-F16C-NEXT:    jne .LBB18_2
 ; BWON-F16C-NEXT:  # %bb.1: # %if.then
 ; BWON-F16C-NEXT:    retq
@@ -981,7 +986,7 @@ define void @brcond(half %0) #0 {
 ; CHECK-I686-NEXT:    ucomiss %xmm1, %xmm0
 ; CHECK-I686-NEXT:    setp %al
 ; CHECK-I686-NEXT:    setne %cl
-; CHECK-I686-NEXT:    orb %al, %cl
+; CHECK-I686-NEXT:    orb %cl, %al
 ; CHECK-I686-NEXT:    jne .LBB18_2
 ; CHECK-I686-NEXT:  # %bb.1: # %if.then
 ; CHECK-I686-NEXT:    addl $12, %esp
@@ -1190,9 +1195,12 @@ entry:
 define half @fcopysign(half %x, half %y) {
 ; CHECK-LIBCALL-LABEL: fcopysign:
 ; CHECK-LIBCALL:       # %bb.0:
-; CHECK-LIBCALL-NEXT:    andps {{\.?LCPI[0-9]+_[0-9]+}}(%rip), %xmm1
-; CHECK-LIBCALL-NEXT:    andps {{\.?LCPI[0-9]+_[0-9]+}}(%rip), %xmm0
-; CHECK-LIBCALL-NEXT:    orps %xmm1, %xmm0
+; CHECK-LIBCALL-NEXT:    movaps {{.*#+}} xmm2 = [-0.0E+0,-0.0E+0,-0.0E+0,-0.0E+0,-0.0E+0,-0.0E+0,-0.0E+0,-0.0E+0]
+; CHECK-LIBCALL-NEXT:    andps %xmm1, %xmm2
+; CHECK-LIBCALL-NEXT:    movaps {{.*#+}} xmm1 = [NaN,NaN,NaN,NaN,NaN,NaN,NaN,NaN]
+; CHECK-LIBCALL-NEXT:    andps %xmm0, %xmm1
+; CHECK-LIBCALL-NEXT:    orps %xmm1, %xmm2
+; CHECK-LIBCALL-NEXT:    movaps %xmm2, %xmm0
 ; CHECK-LIBCALL-NEXT:    retq
 ;
 ; BWON-F16C-LABEL: fcopysign:
@@ -1204,11 +1212,13 @@ define half @fcopysign(half %x, half %y) {
 ;
 ; CHECK-I686-LABEL: fcopysign:
 ; CHECK-I686:       # %bb.0:
-; CHECK-I686-NEXT:    pinsrw $0, {{[0-9]+}}(%esp), %xmm0
 ; CHECK-I686-NEXT:    pinsrw $0, {{[0-9]+}}(%esp), %xmm1
-; CHECK-I686-NEXT:    pand {{\.?LCPI[0-9]+_[0-9]+}}, %xmm1
-; CHECK-I686-NEXT:    pand {{\.?LCPI[0-9]+_[0-9]+}}, %xmm0
-; CHECK-I686-NEXT:    por %xmm1, %xmm0
+; CHECK-I686-NEXT:    pinsrw $0, {{[0-9]+}}(%esp), %xmm2
+; CHECK-I686-NEXT:    movdqa {{.*#+}} xmm0 = [-0.0E+0,-0.0E+0,-0.0E+0,-0.0E+0,-0.0E+0,-0.0E+0,-0.0E+0,-0.0E+0]
+; CHECK-I686-NEXT:    pand %xmm2, %xmm0
+; CHECK-I686-NEXT:    movdqa {{.*#+}} xmm2 = [NaN,NaN,NaN,NaN,NaN,NaN,NaN,NaN]
+; CHECK-I686-NEXT:    pand %xmm1, %xmm2
+; CHECK-I686-NEXT:    por %xmm2, %xmm0
 ; CHECK-I686-NEXT:    retl
   %a = call half @llvm.copysign.f16(half %x, half %y)
   ret half %a
@@ -1316,8 +1326,9 @@ define half @pr61271(half %0, half %1) #0 {
 ; CHECK-I686-NEXT:    calll __extendhfsf2
 ; CHECK-I686-NEXT:    fstps {{[0-9]+}}(%esp)
 ; CHECK-I686-NEXT:    movss {{.*#+}} xmm0 = mem[0],zero,zero,zero
-; CHECK-I686-NEXT:    minss {{[0-9]+}}(%esp), %xmm0
-; CHECK-I686-NEXT:    movss %xmm0, (%esp)
+; CHECK-I686-NEXT:    movss {{.*#+}} xmm1 = mem[0],zero,zero,zero
+; CHECK-I686-NEXT:    minss %xmm0, %xmm1
+; CHECK-I686-NEXT:    movss %xmm1, (%esp)
 ; CHECK-I686-NEXT:    calll __truncsfhf2
 ; CHECK-I686-NEXT:    addl $44, %esp
 ; CHECK-I686-NEXT:    retl
@@ -1990,8 +2001,8 @@ define <8 x half> @maxnum_v8f16(<8 x half> %0, <8 x half> %1) #0 {
 define void @pr63114() {
 ; CHECK-LIBCALL-LABEL: pr63114:
 ; CHECK-LIBCALL:       # %bb.0:
-; CHECK-LIBCALL-NEXT:    movdqu (%rax), %xmm4
-; CHECK-LIBCALL-NEXT:    pshuflw {{.*#+}} xmm0 = xmm4[0,1,3,3,4,5,6,7]
+; CHECK-LIBCALL-NEXT:    movdqu (%rax), %xmm6
+; CHECK-LIBCALL-NEXT:    pshuflw {{.*#+}} xmm0 = xmm6[0,1,3,3,4,5,6,7]
 ; CHECK-LIBCALL-NEXT:    pshufd {{.*#+}} xmm0 = xmm0[0,0,2,1]
 ; CHECK-LIBCALL-NEXT:    movdqa {{.*#+}} xmm1 = [65535,65535,65535,0,65535,65535,65535,65535]
 ; CHECK-LIBCALL-NEXT:    pand %xmm1, %xmm0
@@ -1999,28 +2010,28 @@ define void @pr63114() {
 ; CHECK-LIBCALL-NEXT:    por %xmm2, %xmm0
 ; CHECK-LIBCALL-NEXT:    movdqa {{.*#+}} xmm3 = [65535,65535,65535,65535,65535,65535,65535,0]
 ; CHECK-LIBCALL-NEXT:    pand %xmm3, %xmm0
-; CHECK-LIBCALL-NEXT:    movdqa {{.*#+}} xmm5 = [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,60]
-; CHECK-LIBCALL-NEXT:    por %xmm5, %xmm0
-; CHECK-LIBCALL-NEXT:    pshufhw {{.*#+}} xmm6 = xmm4[0,1,2,3,4,5,7,7]
-; CHECK-LIBCALL-NEXT:    pshufd {{.*#+}} xmm6 = xmm6[0,2,2,3]
+; CHECK-LIBCALL-NEXT:    movdqa {{.*#+}} xmm4 = [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,60]
+; CHECK-LIBCALL-NEXT:    por %xmm4, %xmm0
+; CHECK-LIBCALL-NEXT:    pshufhw {{.*#+}} xmm5 = xmm6[0,1,2,3,4,5,7,7]
+; CHECK-LIBCALL-NEXT:    pshufd {{.*#+}} xmm5 = xmm5[0,2,2,3]
+; CHECK-LIBCALL-NEXT:    pand %xmm1, %xmm5
+; CHECK-LIBCALL-NEXT:    por %xmm2, %xmm5
+; CHECK-LIBCALL-NEXT:    pand %xmm3, %xmm5
+; CHECK-LIBCALL-NEXT:    por %xmm4, %xmm5
+; CHECK-LIBCALL-NEXT:    pshufhw {{.*#+}} xmm7 = xmm6[0,1,2,3,5,5,5,5]
+; CHECK-LIBCALL-NEXT:    shufps {{.*#+}} xmm6 = xmm6[0,3,0,3]
+; CHECK-LIBCALL-NEXT:    pshufhw {{.*#+}} xmm6 = xmm6[0,1,2,3,5,5,5,5]
 ; CHECK-LIBCALL-NEXT:    pand %xmm1, %xmm6
 ; CHECK-LIBCALL-NEXT:    por %xmm2, %xmm6
 ; CHECK-LIBCALL-NEXT:    pand %xmm3, %xmm6
-; CHECK-LIBCALL-NEXT:    por %xmm5, %xmm6
-; CHECK-LIBCALL-NEXT:    pshufhw {{.*#+}} xmm7 = xmm4[0,1,2,3,5,5,5,5]
-; CHECK-LIBCALL-NEXT:    shufps {{.*#+}} xmm4 = xmm4[0,3,0,3]
-; CHECK-LIBCALL-NEXT:    pshufhw {{.*#+}} xmm4 = xmm4[0,1,2,3,5,5,5,5]
-; CHECK-LIBCALL-NEXT:    pand %xmm1, %xmm4
-; CHECK-LIBCALL-NEXT:    por %xmm2, %xmm4
-; CHECK-LIBCALL-NEXT:    pand %xmm3, %xmm4
-; CHECK-LIBCALL-NEXT:    por %xmm5, %xmm4
+; CHECK-LIBCALL-NEXT:    por %xmm4, %xmm6
 ; CHECK-LIBCALL-NEXT:    pand %xmm1, %xmm7
 ; CHECK-LIBCALL-NEXT:    por %xmm2, %xmm7
 ; CHECK-LIBCALL-NEXT:    pand %xmm3, %xmm7
-; CHECK-LIBCALL-NEXT:    por %xmm5, %xmm7
+; CHECK-LIBCALL-NEXT:    por %xmm4, %xmm7
 ; CHECK-LIBCALL-NEXT:    movdqu %xmm7, 0
-; CHECK-LIBCALL-NEXT:    movdqu %xmm4, 32
-; CHECK-LIBCALL-NEXT:    movdqu %xmm6, 48
+; CHECK-LIBCALL-NEXT:    movdqu %xmm6, 32
+; CHECK-LIBCALL-NEXT:    movdqu %xmm5, 48
 ; CHECK-LIBCALL-NEXT:    movdqu %xmm0, 16
 ; CHECK-LIBCALL-NEXT:    retq
 ;

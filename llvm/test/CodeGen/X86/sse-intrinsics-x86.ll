@@ -44,8 +44,8 @@ define i32 @test_x86_sse_comieq_ss(<4 x float> %a0, <4 x float> %a1) {
 ; SSE-NEXT:    comiss %xmm1, %xmm0 ## encoding: [0x0f,0x2f,0xc1]
 ; SSE-NEXT:    setnp %al ## encoding: [0x0f,0x9b,0xc0]
 ; SSE-NEXT:    sete %cl ## encoding: [0x0f,0x94,0xc1]
-; SSE-NEXT:    andb %al, %cl ## encoding: [0x20,0xc1]
-; SSE-NEXT:    movzbl %cl, %eax ## encoding: [0x0f,0xb6,0xc1]
+; SSE-NEXT:    andb %cl, %al ## encoding: [0x20,0xc8]
+; SSE-NEXT:    movzbl %al, %eax ## encoding: [0x0f,0xb6,0xc0]
 ; SSE-NEXT:    ret{{[l|q]}} ## encoding: [0xc3]
 ;
 ; AVX1-LABEL: test_x86_sse_comieq_ss:
@@ -53,8 +53,8 @@ define i32 @test_x86_sse_comieq_ss(<4 x float> %a0, <4 x float> %a1) {
 ; AVX1-NEXT:    vcomiss %xmm1, %xmm0 ## encoding: [0xc5,0xf8,0x2f,0xc1]
 ; AVX1-NEXT:    setnp %al ## encoding: [0x0f,0x9b,0xc0]
 ; AVX1-NEXT:    sete %cl ## encoding: [0x0f,0x94,0xc1]
-; AVX1-NEXT:    andb %al, %cl ## encoding: [0x20,0xc1]
-; AVX1-NEXT:    movzbl %cl, %eax ## encoding: [0x0f,0xb6,0xc1]
+; AVX1-NEXT:    andb %cl, %al ## encoding: [0x20,0xc8]
+; AVX1-NEXT:    movzbl %al, %eax ## encoding: [0x0f,0xb6,0xc0]
 ; AVX1-NEXT:    ret{{[l|q]}} ## encoding: [0xc3]
 ;
 ; AVX512-LABEL: test_x86_sse_comieq_ss:
@@ -62,8 +62,8 @@ define i32 @test_x86_sse_comieq_ss(<4 x float> %a0, <4 x float> %a1) {
 ; AVX512-NEXT:    vcomiss %xmm1, %xmm0 ## EVEX TO VEX Compression encoding: [0xc5,0xf8,0x2f,0xc1]
 ; AVX512-NEXT:    setnp %al ## encoding: [0x0f,0x9b,0xc0]
 ; AVX512-NEXT:    sete %cl ## encoding: [0x0f,0x94,0xc1]
-; AVX512-NEXT:    andb %al, %cl ## encoding: [0x20,0xc1]
-; AVX512-NEXT:    movzbl %cl, %eax ## encoding: [0x0f,0xb6,0xc1]
+; AVX512-NEXT:    andb %cl, %al ## encoding: [0x20,0xc8]
+; AVX512-NEXT:    movzbl %al, %eax ## encoding: [0x0f,0xb6,0xc0]
 ; AVX512-NEXT:    ret{{[l|q]}} ## encoding: [0xc3]
   %res = call i32 @llvm.x86.sse.comieq.ss(<4 x float> %a0, <4 x float> %a1) ; <i32> [#uses=1]
   ret i32 %res
@@ -185,8 +185,8 @@ define i32 @test_x86_sse_comineq_ss(<4 x float> %a0, <4 x float> %a1) {
 ; SSE-NEXT:    comiss %xmm1, %xmm0 ## encoding: [0x0f,0x2f,0xc1]
 ; SSE-NEXT:    setp %al ## encoding: [0x0f,0x9a,0xc0]
 ; SSE-NEXT:    setne %cl ## encoding: [0x0f,0x95,0xc1]
-; SSE-NEXT:    orb %al, %cl ## encoding: [0x08,0xc1]
-; SSE-NEXT:    movzbl %cl, %eax ## encoding: [0x0f,0xb6,0xc1]
+; SSE-NEXT:    orb %cl, %al ## encoding: [0x08,0xc8]
+; SSE-NEXT:    movzbl %al, %eax ## encoding: [0x0f,0xb6,0xc0]
 ; SSE-NEXT:    ret{{[l|q]}} ## encoding: [0xc3]
 ;
 ; AVX1-LABEL: test_x86_sse_comineq_ss:
@@ -194,8 +194,8 @@ define i32 @test_x86_sse_comineq_ss(<4 x float> %a0, <4 x float> %a1) {
 ; AVX1-NEXT:    vcomiss %xmm1, %xmm0 ## encoding: [0xc5,0xf8,0x2f,0xc1]
 ; AVX1-NEXT:    setp %al ## encoding: [0x0f,0x9a,0xc0]
 ; AVX1-NEXT:    setne %cl ## encoding: [0x0f,0x95,0xc1]
-; AVX1-NEXT:    orb %al, %cl ## encoding: [0x08,0xc1]
-; AVX1-NEXT:    movzbl %cl, %eax ## encoding: [0x0f,0xb6,0xc1]
+; AVX1-NEXT:    orb %cl, %al ## encoding: [0x08,0xc8]
+; AVX1-NEXT:    movzbl %al, %eax ## encoding: [0x0f,0xb6,0xc0]
 ; AVX1-NEXT:    ret{{[l|q]}} ## encoding: [0xc3]
 ;
 ; AVX512-LABEL: test_x86_sse_comineq_ss:
@@ -203,8 +203,8 @@ define i32 @test_x86_sse_comineq_ss(<4 x float> %a0, <4 x float> %a1) {
 ; AVX512-NEXT:    vcomiss %xmm1, %xmm0 ## EVEX TO VEX Compression encoding: [0xc5,0xf8,0x2f,0xc1]
 ; AVX512-NEXT:    setp %al ## encoding: [0x0f,0x9a,0xc0]
 ; AVX512-NEXT:    setne %cl ## encoding: [0x0f,0x95,0xc1]
-; AVX512-NEXT:    orb %al, %cl ## encoding: [0x08,0xc1]
-; AVX512-NEXT:    movzbl %cl, %eax ## encoding: [0x0f,0xb6,0xc1]
+; AVX512-NEXT:    orb %cl, %al ## encoding: [0x08,0xc8]
+; AVX512-NEXT:    movzbl %al, %eax ## encoding: [0x0f,0xb6,0xc0]
 ; AVX512-NEXT:    ret{{[l|q]}} ## encoding: [0xc3]
   %res = call i32 @llvm.x86.sse.comineq.ss(<4 x float> %a0, <4 x float> %a1) ; <i32> [#uses=1]
   ret i32 %res
@@ -482,8 +482,8 @@ define i32 @test_x86_sse_ucomieq_ss(<4 x float> %a0, <4 x float> %a1) {
 ; SSE-NEXT:    ucomiss %xmm1, %xmm0 ## encoding: [0x0f,0x2e,0xc1]
 ; SSE-NEXT:    setnp %al ## encoding: [0x0f,0x9b,0xc0]
 ; SSE-NEXT:    sete %cl ## encoding: [0x0f,0x94,0xc1]
-; SSE-NEXT:    andb %al, %cl ## encoding: [0x20,0xc1]
-; SSE-NEXT:    movzbl %cl, %eax ## encoding: [0x0f,0xb6,0xc1]
+; SSE-NEXT:    andb %cl, %al ## encoding: [0x20,0xc8]
+; SSE-NEXT:    movzbl %al, %eax ## encoding: [0x0f,0xb6,0xc0]
 ; SSE-NEXT:    ret{{[l|q]}} ## encoding: [0xc3]
 ;
 ; AVX1-LABEL: test_x86_sse_ucomieq_ss:
@@ -491,8 +491,8 @@ define i32 @test_x86_sse_ucomieq_ss(<4 x float> %a0, <4 x float> %a1) {
 ; AVX1-NEXT:    vucomiss %xmm1, %xmm0 ## encoding: [0xc5,0xf8,0x2e,0xc1]
 ; AVX1-NEXT:    setnp %al ## encoding: [0x0f,0x9b,0xc0]
 ; AVX1-NEXT:    sete %cl ## encoding: [0x0f,0x94,0xc1]
-; AVX1-NEXT:    andb %al, %cl ## encoding: [0x20,0xc1]
-; AVX1-NEXT:    movzbl %cl, %eax ## encoding: [0x0f,0xb6,0xc1]
+; AVX1-NEXT:    andb %cl, %al ## encoding: [0x20,0xc8]
+; AVX1-NEXT:    movzbl %al, %eax ## encoding: [0x0f,0xb6,0xc0]
 ; AVX1-NEXT:    ret{{[l|q]}} ## encoding: [0xc3]
 ;
 ; AVX512-LABEL: test_x86_sse_ucomieq_ss:
@@ -500,8 +500,8 @@ define i32 @test_x86_sse_ucomieq_ss(<4 x float> %a0, <4 x float> %a1) {
 ; AVX512-NEXT:    vucomiss %xmm1, %xmm0 ## EVEX TO VEX Compression encoding: [0xc5,0xf8,0x2e,0xc1]
 ; AVX512-NEXT:    setnp %al ## encoding: [0x0f,0x9b,0xc0]
 ; AVX512-NEXT:    sete %cl ## encoding: [0x0f,0x94,0xc1]
-; AVX512-NEXT:    andb %al, %cl ## encoding: [0x20,0xc1]
-; AVX512-NEXT:    movzbl %cl, %eax ## encoding: [0x0f,0xb6,0xc1]
+; AVX512-NEXT:    andb %cl, %al ## encoding: [0x20,0xc8]
+; AVX512-NEXT:    movzbl %al, %eax ## encoding: [0x0f,0xb6,0xc0]
 ; AVX512-NEXT:    ret{{[l|q]}} ## encoding: [0xc3]
   %res = call i32 @llvm.x86.sse.ucomieq.ss(<4 x float> %a0, <4 x float> %a1) ; <i32> [#uses=1]
   ret i32 %res
@@ -623,8 +623,8 @@ define i32 @test_x86_sse_ucomineq_ss(<4 x float> %a0, <4 x float> %a1) {
 ; SSE-NEXT:    ucomiss %xmm1, %xmm0 ## encoding: [0x0f,0x2e,0xc1]
 ; SSE-NEXT:    setp %al ## encoding: [0x0f,0x9a,0xc0]
 ; SSE-NEXT:    setne %cl ## encoding: [0x0f,0x95,0xc1]
-; SSE-NEXT:    orb %al, %cl ## encoding: [0x08,0xc1]
-; SSE-NEXT:    movzbl %cl, %eax ## encoding: [0x0f,0xb6,0xc1]
+; SSE-NEXT:    orb %cl, %al ## encoding: [0x08,0xc8]
+; SSE-NEXT:    movzbl %al, %eax ## encoding: [0x0f,0xb6,0xc0]
 ; SSE-NEXT:    ret{{[l|q]}} ## encoding: [0xc3]
 ;
 ; AVX1-LABEL: test_x86_sse_ucomineq_ss:
@@ -632,8 +632,8 @@ define i32 @test_x86_sse_ucomineq_ss(<4 x float> %a0, <4 x float> %a1) {
 ; AVX1-NEXT:    vucomiss %xmm1, %xmm0 ## encoding: [0xc5,0xf8,0x2e,0xc1]
 ; AVX1-NEXT:    setp %al ## encoding: [0x0f,0x9a,0xc0]
 ; AVX1-NEXT:    setne %cl ## encoding: [0x0f,0x95,0xc1]
-; AVX1-NEXT:    orb %al, %cl ## encoding: [0x08,0xc1]
-; AVX1-NEXT:    movzbl %cl, %eax ## encoding: [0x0f,0xb6,0xc1]
+; AVX1-NEXT:    orb %cl, %al ## encoding: [0x08,0xc8]
+; AVX1-NEXT:    movzbl %al, %eax ## encoding: [0x0f,0xb6,0xc0]
 ; AVX1-NEXT:    ret{{[l|q]}} ## encoding: [0xc3]
 ;
 ; AVX512-LABEL: test_x86_sse_ucomineq_ss:
@@ -641,8 +641,8 @@ define i32 @test_x86_sse_ucomineq_ss(<4 x float> %a0, <4 x float> %a1) {
 ; AVX512-NEXT:    vucomiss %xmm1, %xmm0 ## EVEX TO VEX Compression encoding: [0xc5,0xf8,0x2e,0xc1]
 ; AVX512-NEXT:    setp %al ## encoding: [0x0f,0x9a,0xc0]
 ; AVX512-NEXT:    setne %cl ## encoding: [0x0f,0x95,0xc1]
-; AVX512-NEXT:    orb %al, %cl ## encoding: [0x08,0xc1]
-; AVX512-NEXT:    movzbl %cl, %eax ## encoding: [0x0f,0xb6,0xc1]
+; AVX512-NEXT:    orb %cl, %al ## encoding: [0x08,0xc8]
+; AVX512-NEXT:    movzbl %al, %eax ## encoding: [0x0f,0xb6,0xc0]
 ; AVX512-NEXT:    ret{{[l|q]}} ## encoding: [0xc3]
   %res = call i32 @llvm.x86.sse.ucomineq.ss(<4 x float> %a0, <4 x float> %a1) ; <i32> [#uses=1]
   ret i32 %res

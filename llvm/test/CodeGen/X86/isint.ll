@@ -22,8 +22,8 @@ define i32 @isint_return(double %d) nounwind {
 ; X64-SSE2:       # %bb.0:
 ; X64-SSE2-NEXT:    cvttpd2dq %xmm0, %xmm1
 ; X64-SSE2-NEXT:    cvtdq2pd %xmm1, %xmm1
-; X64-SSE2-NEXT:    cmpeqsd %xmm0, %xmm1
-; X64-SSE2-NEXT:    movq %xmm1, %rax
+; X64-SSE2-NEXT:    cmpeqsd %xmm1, %xmm0
+; X64-SSE2-NEXT:    movq %xmm0, %rax
 ; X64-SSE2-NEXT:    andl $1, %eax
 ; X64-SSE2-NEXT:    # kill: def $eax killed $eax killed $rax
 ; X64-SSE2-NEXT:    retq
@@ -74,8 +74,8 @@ define i32 @isint_float_return(float %f) nounwind {
 ; X64-SSE2:       # %bb.0:
 ; X64-SSE2-NEXT:    cvttps2dq %xmm0, %xmm1
 ; X64-SSE2-NEXT:    cvtdq2ps %xmm1, %xmm1
-; X64-SSE2-NEXT:    cmpeqss %xmm0, %xmm1
-; X64-SSE2-NEXT:    movd %xmm1, %eax
+; X64-SSE2-NEXT:    cmpeqss %xmm1, %xmm0
+; X64-SSE2-NEXT:    movd %xmm0, %eax
 ; X64-SSE2-NEXT:    andl $1, %eax
 ; X64-SSE2-NEXT:    retq
 ;

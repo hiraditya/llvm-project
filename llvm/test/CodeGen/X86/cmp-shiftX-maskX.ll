@@ -91,10 +91,11 @@ define i1 @shr_to_shl_eq_i32_s3(i32 %x) {
 define i1 @shl_to_shr_eq_i32_s3_fail(i32 %x) {
 ; CHECK-LABEL: shl_to_shr_eq_i32_s3_fail:
 ; CHECK:       # %bb.0:
-; CHECK-NEXT:    movl %edi, %eax
-; CHECK-NEXT:    andl $536870911, %eax # imm = 0x1FFFFFFF
-; CHECK-NEXT:    shll $3, %edi
-; CHECK-NEXT:    cmpl %edi, %eax
+; CHECK-NEXT:    # kill: def $edi killed $edi def $rdi
+; CHECK-NEXT:    leal (,%rdi,8), %eax
+; CHECK-NEXT:    movl %edi, %ecx
+; CHECK-NEXT:    andl $536870911, %ecx # imm = 0x1FFFFFFF
+; CHECK-NEXT:    cmpl %eax, %ecx
 ; CHECK-NEXT:    sete %al
 ; CHECK-NEXT:    retq
   %and = and i32 %x, 536870911
@@ -336,21 +337,21 @@ define i1 @shr_to_shl_ne_i32_s8(i32 %x) {
 define <4 x i1> @shr_to_ror_eq_4xi32_s4(<4 x i32> %x) {
 ; CHECK-NOBMI-LABEL: shr_to_ror_eq_4xi32_s4:
 ; CHECK-NOBMI:       # %bb.0:
-; CHECK-NOBMI-NEXT:    movdqa %xmm0, %xmm1
-; CHECK-NOBMI-NEXT:    psrld $4, %xmm1
-; CHECK-NOBMI-NEXT:    pand {{\.?LCPI[0-9]+_[0-9]+}}(%rip), %xmm0
-; CHECK-NOBMI-NEXT:    pcmpeqd %xmm1, %xmm0
-; CHECK-NOBMI-NEXT:    pcmpeqd %xmm1, %xmm1
+; CHECK-NOBMI-NEXT:    movdqa {{.*#+}} xmm1 = [268435455,268435455,268435455,268435455]
+; CHECK-NOBMI-NEXT:    pand %xmm0, %xmm1
+; CHECK-NOBMI-NEXT:    psrld $4, %xmm0
+; CHECK-NOBMI-NEXT:    pcmpeqd %xmm0, %xmm1
+; CHECK-NOBMI-NEXT:    pcmpeqd %xmm0, %xmm0
 ; CHECK-NOBMI-NEXT:    pxor %xmm1, %xmm0
 ; CHECK-NOBMI-NEXT:    retq
 ;
 ; CHECK-BMI2-SSE2-LABEL: shr_to_ror_eq_4xi32_s4:
 ; CHECK-BMI2-SSE2:       # %bb.0:
-; CHECK-BMI2-SSE2-NEXT:    movdqa %xmm0, %xmm1
-; CHECK-BMI2-SSE2-NEXT:    psrld $4, %xmm1
-; CHECK-BMI2-SSE2-NEXT:    pand {{\.?LCPI[0-9]+_[0-9]+}}(%rip), %xmm0
-; CHECK-BMI2-SSE2-NEXT:    pcmpeqd %xmm1, %xmm0
-; CHECK-BMI2-SSE2-NEXT:    pcmpeqd %xmm1, %xmm1
+; CHECK-BMI2-SSE2-NEXT:    movdqa {{.*#+}} xmm1 = [268435455,268435455,268435455,268435455]
+; CHECK-BMI2-SSE2-NEXT:    pand %xmm0, %xmm1
+; CHECK-BMI2-SSE2-NEXT:    psrld $4, %xmm0
+; CHECK-BMI2-SSE2-NEXT:    pcmpeqd %xmm0, %xmm1
+; CHECK-BMI2-SSE2-NEXT:    pcmpeqd %xmm0, %xmm0
 ; CHECK-BMI2-SSE2-NEXT:    pxor %xmm1, %xmm0
 ; CHECK-BMI2-SSE2-NEXT:    retq
 ;
@@ -377,7 +378,7 @@ define <4 x i1> @shr_to_ror_eq_4xi32_s4(<4 x i32> %x) {
 ; CHECK-AVX512:       # %bb.0:
 ; CHECK-AVX512-NEXT:    vprold $4, %xmm0, %xmm1
 ; CHECK-AVX512-NEXT:    vpcmpeqd %xmm1, %xmm0, %xmm0
-; CHECK-AVX512-NEXT:    vpternlogq $15, %xmm0, %xmm0, %xmm0
+; CHECK-AVX512-NEXT:    vpternlogq {{.*#+}} xmm0 = ~xmm0
 ; CHECK-AVX512-NEXT:    retq
   %shr = lshr <4 x i32> %x, <i32 4, i32 4, i32 4, i32 4>
   %and = and <4 x i32> %x, <i32 268435455, i32 268435455, i32 268435455, i32 268435455>
@@ -388,21 +389,21 @@ define <4 x i1> @shr_to_ror_eq_4xi32_s4(<4 x i32> %x) {
 define <4 x i1> @shl_to_ror_eq_4xi32_s8(<4 x i32> %x) {
 ; CHECK-NOBMI-LABEL: shl_to_ror_eq_4xi32_s8:
 ; CHECK-NOBMI:       # %bb.0:
-; CHECK-NOBMI-NEXT:    movdqa %xmm0, %xmm1
-; CHECK-NOBMI-NEXT:    pslld $8, %xmm1
-; CHECK-NOBMI-NEXT:    pand {{\.?LCPI[0-9]+_[0-9]+}}(%rip), %xmm0
-; CHECK-NOBMI-NEXT:    pcmpeqd %xmm1, %xmm0
-; CHECK-NOBMI-NEXT:    pcmpeqd %xmm1, %xmm1
+; CHECK-NOBMI-NEXT:    movdqa {{.*#+}} xmm1 = [0,255,255,255,0,255,255,255,0,255,255,255,0,255,255,255]
+; CHECK-NOBMI-NEXT:    pand %xmm0, %xmm1
+; CHECK-NOBMI-NEXT:    pslld $8, %xmm0
+; CHECK-NOBMI-NEXT:    pcmpeqd %xmm0, %xmm1
+; CHECK-NOBMI-NEXT:    pcmpeqd %xmm0, %xmm0
 ; CHECK-NOBMI-NEXT:    pxor %xmm1, %xmm0
 ; CHECK-NOBMI-NEXT:    retq
 ;
 ; CHECK-BMI2-SSE2-LABEL: shl_to_ror_eq_4xi32_s8:
 ; CHECK-BMI2-SSE2:       # %bb.0:
-; CHECK-BMI2-SSE2-NEXT:    movdqa %xmm0, %xmm1
-; CHECK-BMI2-SSE2-NEXT:    pslld $8, %xmm1
-; CHECK-BMI2-SSE2-NEXT:    pand {{\.?LCPI[0-9]+_[0-9]+}}(%rip), %xmm0
-; CHECK-BMI2-SSE2-NEXT:    pcmpeqd %xmm1, %xmm0
-; CHECK-BMI2-SSE2-NEXT:    pcmpeqd %xmm1, %xmm1
+; CHECK-BMI2-SSE2-NEXT:    movdqa {{.*#+}} xmm1 = [0,255,255,255,0,255,255,255,0,255,255,255,0,255,255,255]
+; CHECK-BMI2-SSE2-NEXT:    pand %xmm0, %xmm1
+; CHECK-BMI2-SSE2-NEXT:    pslld $8, %xmm0
+; CHECK-BMI2-SSE2-NEXT:    pcmpeqd %xmm0, %xmm1
+; CHECK-BMI2-SSE2-NEXT:    pcmpeqd %xmm0, %xmm0
 ; CHECK-BMI2-SSE2-NEXT:    pxor %xmm1, %xmm0
 ; CHECK-BMI2-SSE2-NEXT:    retq
 ;
@@ -419,7 +420,7 @@ define <4 x i1> @shl_to_ror_eq_4xi32_s8(<4 x i32> %x) {
 ; CHECK-AVX512:       # %bb.0:
 ; CHECK-AVX512-NEXT:    vprold $8, %xmm0, %xmm1
 ; CHECK-AVX512-NEXT:    vpcmpeqd %xmm1, %xmm0, %xmm0
-; CHECK-AVX512-NEXT:    vpternlogq $15, %xmm0, %xmm0, %xmm0
+; CHECK-AVX512-NEXT:    vpternlogq {{.*#+}} xmm0 = ~xmm0
 ; CHECK-AVX512-NEXT:    retq
   %shr = shl <4 x i32> %x, <i32 8, i32 8, i32 8, i32 8>
   %and = and <4 x i32> %x, <i32 4294967040, i32 4294967040, i32 4294967040, i32 4294967040>
@@ -430,21 +431,21 @@ define <4 x i1> @shl_to_ror_eq_4xi32_s8(<4 x i32> %x) {
 define <4 x i1> @shl_to_ror_eq_4xi32_s7_fail_no_p2(<4 x i32> %x) {
 ; CHECK-NOBMI-LABEL: shl_to_ror_eq_4xi32_s7_fail_no_p2:
 ; CHECK-NOBMI:       # %bb.0:
-; CHECK-NOBMI-NEXT:    movdqa %xmm0, %xmm1
-; CHECK-NOBMI-NEXT:    pslld $7, %xmm1
-; CHECK-NOBMI-NEXT:    pand {{\.?LCPI[0-9]+_[0-9]+}}(%rip), %xmm0
-; CHECK-NOBMI-NEXT:    pcmpeqd %xmm1, %xmm0
-; CHECK-NOBMI-NEXT:    pcmpeqd %xmm1, %xmm1
+; CHECK-NOBMI-NEXT:    movdqa {{.*#+}} xmm1 = [4294967168,4294967168,4294967168,4294967168]
+; CHECK-NOBMI-NEXT:    pand %xmm0, %xmm1
+; CHECK-NOBMI-NEXT:    pslld $7, %xmm0
+; CHECK-NOBMI-NEXT:    pcmpeqd %xmm0, %xmm1
+; CHECK-NOBMI-NEXT:    pcmpeqd %xmm0, %xmm0
 ; CHECK-NOBMI-NEXT:    pxor %xmm1, %xmm0
 ; CHECK-NOBMI-NEXT:    retq
 ;
 ; CHECK-BMI2-SSE2-LABEL: shl_to_ror_eq_4xi32_s7_fail_no_p2:
 ; CHECK-BMI2-SSE2:       # %bb.0:
-; CHECK-BMI2-SSE2-NEXT:    movdqa %xmm0, %xmm1
-; CHECK-BMI2-SSE2-NEXT:    pslld $7, %xmm1
-; CHECK-BMI2-SSE2-NEXT:    pand {{\.?LCPI[0-9]+_[0-9]+}}(%rip), %xmm0
-; CHECK-BMI2-SSE2-NEXT:    pcmpeqd %xmm1, %xmm0
-; CHECK-BMI2-SSE2-NEXT:    pcmpeqd %xmm1, %xmm1
+; CHECK-BMI2-SSE2-NEXT:    movdqa {{.*#+}} xmm1 = [4294967168,4294967168,4294967168,4294967168]
+; CHECK-BMI2-SSE2-NEXT:    pand %xmm0, %xmm1
+; CHECK-BMI2-SSE2-NEXT:    pslld $7, %xmm0
+; CHECK-BMI2-SSE2-NEXT:    pcmpeqd %xmm0, %xmm1
+; CHECK-BMI2-SSE2-NEXT:    pcmpeqd %xmm0, %xmm0
 ; CHECK-BMI2-SSE2-NEXT:    pxor %xmm1, %xmm0
 ; CHECK-BMI2-SSE2-NEXT:    retq
 ;
@@ -472,7 +473,7 @@ define <4 x i1> @shl_to_ror_eq_4xi32_s7_fail_no_p2(<4 x i32> %x) {
 ; CHECK-AVX512-NEXT:    vpslld $7, %xmm0, %xmm1
 ; CHECK-AVX512-NEXT:    vpandd {{\.?LCPI[0-9]+_[0-9]+}}(%rip){1to4}, %xmm0, %xmm0
 ; CHECK-AVX512-NEXT:    vpcmpeqd %xmm0, %xmm1, %xmm0
-; CHECK-AVX512-NEXT:    vpternlogq $15, %xmm0, %xmm0, %xmm0
+; CHECK-AVX512-NEXT:    vpternlogq {{.*#+}} xmm0 = ~xmm0
 ; CHECK-AVX512-NEXT:    retq
   %shr = shl <4 x i32> %x, <i32 7, i32 7, i32 7, i32 7>
   %and = and <4 x i32> %x, <i32 4294967168, i32 4294967168, i32 4294967168, i32 4294967168>
@@ -484,29 +485,29 @@ define <4 x i1> @shr_to_ror_eq_4xi32_s4_fail_no_splat(<4 x i32> %x) {
 ; CHECK-NOBMI-LABEL: shr_to_ror_eq_4xi32_s4_fail_no_splat:
 ; CHECK-NOBMI:       # %bb.0:
 ; CHECK-NOBMI-NEXT:    movdqa %xmm0, %xmm1
-; CHECK-NOBMI-NEXT:    psrld $4, %xmm1
-; CHECK-NOBMI-NEXT:    movdqa %xmm0, %xmm2
-; CHECK-NOBMI-NEXT:    psrld $8, %xmm2
-; CHECK-NOBMI-NEXT:    shufps {{.*#+}} xmm2 = xmm2[3,0],xmm1[2,0]
-; CHECK-NOBMI-NEXT:    shufps {{.*#+}} xmm1 = xmm1[0,1],xmm2[2,0]
-; CHECK-NOBMI-NEXT:    pand {{\.?LCPI[0-9]+_[0-9]+}}(%rip), %xmm0
-; CHECK-NOBMI-NEXT:    pcmpeqd %xmm1, %xmm0
-; CHECK-NOBMI-NEXT:    pcmpeqd %xmm1, %xmm1
-; CHECK-NOBMI-NEXT:    pxor %xmm1, %xmm0
+; CHECK-NOBMI-NEXT:    movdqa {{.*#+}} xmm2 = [268435455,268435455,268435455,268435455]
+; CHECK-NOBMI-NEXT:    pand %xmm0, %xmm2
+; CHECK-NOBMI-NEXT:    psrld $4, %xmm0
+; CHECK-NOBMI-NEXT:    psrld $8, %xmm1
+; CHECK-NOBMI-NEXT:    shufps {{.*#+}} xmm1 = xmm1[3,0],xmm0[2,0]
+; CHECK-NOBMI-NEXT:    shufps {{.*#+}} xmm0 = xmm0[0,1],xmm1[2,0]
+; CHECK-NOBMI-NEXT:    pcmpeqd %xmm0, %xmm2
+; CHECK-NOBMI-NEXT:    pcmpeqd %xmm0, %xmm0
+; CHECK-NOBMI-NEXT:    pxor %xmm2, %xmm0
 ; CHECK-NOBMI-NEXT:    retq
 ;
 ; CHECK-BMI2-SSE2-LABEL: shr_to_ror_eq_4xi32_s4_fail_no_splat:
 ; CHECK-BMI2-SSE2:       # %bb.0:
 ; CHECK-BMI2-SSE2-NEXT:    movdqa %xmm0, %xmm1
-; CHECK-BMI2-SSE2-NEXT:    psrld $4, %xmm1
-; CHECK-BMI2-SSE2-NEXT:    movdqa %xmm0, %xmm2
-; CHECK-BMI2-SSE2-NEXT:    psrld $8, %xmm2
-; CHECK-BMI2-SSE2-NEXT:    shufps {{.*#+}} xmm2 = xmm2[3,0],xmm1[2,0]
-; CHECK-BMI2-SSE2-NEXT:    shufps {{.*#+}} xmm1 = xmm1[0,1],xmm2[2,0]
-; CHECK-BMI2-SSE2-NEXT:    pand {{\.?LCPI[0-9]+_[0-9]+}}(%rip), %xmm0
-; CHECK-BMI2-SSE2-NEXT:    pcmpeqd %xmm1, %xmm0
-; CHECK-BMI2-SSE2-NEXT:    pcmpeqd %xmm1, %xmm1
-; CHECK-BMI2-SSE2-NEXT:    pxor %xmm1, %xmm0
+; CHECK-BMI2-SSE2-NEXT:    movdqa {{.*#+}} xmm2 = [268435455,268435455,268435455,268435455]
+; CHECK-BMI2-SSE2-NEXT:    pand %xmm0, %xmm2
+; CHECK-BMI2-SSE2-NEXT:    psrld $4, %xmm0
+; CHECK-BMI2-SSE2-NEXT:    psrld $8, %xmm1
+; CHECK-BMI2-SSE2-NEXT:    shufps {{.*#+}} xmm1 = xmm1[3,0],xmm0[2,0]
+; CHECK-BMI2-SSE2-NEXT:    shufps {{.*#+}} xmm0 = xmm0[0,1],xmm1[2,0]
+; CHECK-BMI2-SSE2-NEXT:    pcmpeqd %xmm0, %xmm2
+; CHECK-BMI2-SSE2-NEXT:    pcmpeqd %xmm0, %xmm0
+; CHECK-BMI2-SSE2-NEXT:    pxor %xmm2, %xmm0
 ; CHECK-BMI2-SSE2-NEXT:    retq
 ;
 ; CHECK-AVX1-LABEL: shr_to_ror_eq_4xi32_s4_fail_no_splat:
@@ -535,7 +536,7 @@ define <4 x i1> @shr_to_ror_eq_4xi32_s4_fail_no_splat(<4 x i32> %x) {
 ; CHECK-AVX512-NEXT:    vpsrlvd {{\.?LCPI[0-9]+_[0-9]+}}(%rip), %xmm0, %xmm1
 ; CHECK-AVX512-NEXT:    vpandd {{\.?LCPI[0-9]+_[0-9]+}}(%rip){1to4}, %xmm0, %xmm0
 ; CHECK-AVX512-NEXT:    vpcmpeqd %xmm0, %xmm1, %xmm0
-; CHECK-AVX512-NEXT:    vpternlogq $15, %xmm0, %xmm0, %xmm0
+; CHECK-AVX512-NEXT:    vpternlogq {{.*#+}} xmm0 = ~xmm0
 ; CHECK-AVX512-NEXT:    retq
   %shr = lshr <4 x i32> %x, <i32 4, i32 4, i32 4, i32 8>
   %and = and <4 x i32> %x, <i32 268435455, i32 268435455, i32 268435455, i32 268435455>
@@ -557,7 +558,8 @@ define <16 x i1> @shl_to_ror_eq_16xi16_s8_fail_preserve_i16(<16 x i16> %x) {
 ; CHECK-NOBMI-NEXT:    pcmpeqw %xmm3, %xmm1
 ; CHECK-NOBMI-NEXT:    packsswb %xmm1, %xmm0
 ; CHECK-NOBMI-NEXT:    pcmpeqd %xmm1, %xmm1
-; CHECK-NOBMI-NEXT:    pxor %xmm1, %xmm0
+; CHECK-NOBMI-NEXT:    pxor %xmm0, %xmm1
+; CHECK-NOBMI-NEXT:    movdqa %xmm1, %xmm0
 ; CHECK-NOBMI-NEXT:    retq
 ;
 ; CHECK-BMI2-SSE2-LABEL: shl_to_ror_eq_16xi16_s8_fail_preserve_i16:
@@ -573,7 +575,8 @@ define <16 x i1> @shl_to_ror_eq_16xi16_s8_fail_preserve_i16(<16 x i16> %x) {
 ; CHECK-BMI2-SSE2-NEXT:    pcmpeqw %xmm3, %xmm1
 ; CHECK-BMI2-SSE2-NEXT:    packsswb %xmm1, %xmm0
 ; CHECK-BMI2-SSE2-NEXT:    pcmpeqd %xmm1, %xmm1
-; CHECK-BMI2-SSE2-NEXT:    pxor %xmm1, %xmm0
+; CHECK-BMI2-SSE2-NEXT:    pxor %xmm0, %xmm1
+; CHECK-BMI2-SSE2-NEXT:    movdqa %xmm1, %xmm0
 ; CHECK-BMI2-SSE2-NEXT:    retq
 ;
 ; CHECK-AVX1-LABEL: shl_to_ror_eq_16xi16_s8_fail_preserve_i16:
@@ -610,7 +613,7 @@ define <16 x i1> @shl_to_ror_eq_16xi16_s8_fail_preserve_i16(<16 x i16> %x) {
 ; CHECK-AVX512-NEXT:    vpcmpeqw %ymm0, %ymm1, %ymm0
 ; CHECK-AVX512-NEXT:    vpmovzxwd {{.*#+}} zmm0 = ymm0[0],zero,ymm0[1],zero,ymm0[2],zero,ymm0[3],zero,ymm0[4],zero,ymm0[5],zero,ymm0[6],zero,ymm0[7],zero,ymm0[8],zero,ymm0[9],zero,ymm0[10],zero,ymm0[11],zero,ymm0[12],zero,ymm0[13],zero,ymm0[14],zero,ymm0[15],zero
 ; CHECK-AVX512-NEXT:    vpmovdb %zmm0, %xmm0
-; CHECK-AVX512-NEXT:    vpternlogq $15, %xmm0, %xmm0, %xmm0
+; CHECK-AVX512-NEXT:    vpternlogq {{.*#+}} xmm0 = ~xmm0
 ; CHECK-AVX512-NEXT:    vzeroupper
 ; CHECK-AVX512-NEXT:    retq
   %shr = shl <16 x i16> %x, <i16 8, i16 8, i16 8, i16 8, i16 8, i16 8, i16 8, i16 8, i16 8, i16 8, i16 8, i16 8, i16 8, i16 8, i16 8, i16 8>
@@ -623,13 +626,17 @@ define <16 x i8> @shl_s3_cmp_v16i8(<16 x i8> %x, <16 x i8> %y) {
 ; CHECK-NOBMI-LABEL: shl_s3_cmp_v16i8:
 ; CHECK-NOBMI:       # %bb.0:
 ; CHECK-NOBMI-NEXT:    pcmpeqb %xmm1, %xmm0
-; CHECK-NOBMI-NEXT:    pand {{\.?LCPI[0-9]+_[0-9]+}}(%rip), %xmm0
+; CHECK-NOBMI-NEXT:    movdqa {{.*#+}} xmm1 = [248,248,248,248,248,248,248,248,248,248,248,248,248,248,248,248]
+; CHECK-NOBMI-NEXT:    pand %xmm0, %xmm1
+; CHECK-NOBMI-NEXT:    movdqa %xmm1, %xmm0
 ; CHECK-NOBMI-NEXT:    retq
 ;
 ; CHECK-BMI2-SSE2-LABEL: shl_s3_cmp_v16i8:
 ; CHECK-BMI2-SSE2:       # %bb.0:
 ; CHECK-BMI2-SSE2-NEXT:    pcmpeqb %xmm1, %xmm0
-; CHECK-BMI2-SSE2-NEXT:    pand {{\.?LCPI[0-9]+_[0-9]+}}(%rip), %xmm0
+; CHECK-BMI2-SSE2-NEXT:    movdqa {{.*#+}} xmm1 = [248,248,248,248,248,248,248,248,248,248,248,248,248,248,248,248]
+; CHECK-BMI2-SSE2-NEXT:    pand %xmm0, %xmm1
+; CHECK-BMI2-SSE2-NEXT:    movdqa %xmm1, %xmm0
 ; CHECK-BMI2-SSE2-NEXT:    retq
 ;
 ; CHECK-AVX12-LABEL: shl_s3_cmp_v16i8:
@@ -693,13 +700,17 @@ define <16 x i8> @shr_s1_cmp_v16i8(<16 x i8> %x, <16 x i8> %y) {
 ; CHECK-NOBMI-LABEL: shr_s1_cmp_v16i8:
 ; CHECK-NOBMI:       # %bb.0:
 ; CHECK-NOBMI-NEXT:    pcmpeqb %xmm1, %xmm0
-; CHECK-NOBMI-NEXT:    pand {{\.?LCPI[0-9]+_[0-9]+}}(%rip), %xmm0
+; CHECK-NOBMI-NEXT:    movdqa {{.*#+}} xmm1 = [127,127,127,127,127,127,127,127,127,127,127,127,127,127,127,127]
+; CHECK-NOBMI-NEXT:    pand %xmm0, %xmm1
+; CHECK-NOBMI-NEXT:    movdqa %xmm1, %xmm0
 ; CHECK-NOBMI-NEXT:    retq
 ;
 ; CHECK-BMI2-SSE2-LABEL: shr_s1_cmp_v16i8:
 ; CHECK-BMI2-SSE2:       # %bb.0:
 ; CHECK-BMI2-SSE2-NEXT:    pcmpeqb %xmm1, %xmm0
-; CHECK-BMI2-SSE2-NEXT:    pand {{\.?LCPI[0-9]+_[0-9]+}}(%rip), %xmm0
+; CHECK-BMI2-SSE2-NEXT:    movdqa {{.*#+}} xmm1 = [127,127,127,127,127,127,127,127,127,127,127,127,127,127,127,127]
+; CHECK-BMI2-SSE2-NEXT:    pand %xmm0, %xmm1
+; CHECK-BMI2-SSE2-NEXT:    movdqa %xmm1, %xmm0
 ; CHECK-BMI2-SSE2-NEXT:    retq
 ;
 ; CHECK-AVX12-LABEL: shr_s1_cmp_v16i8:

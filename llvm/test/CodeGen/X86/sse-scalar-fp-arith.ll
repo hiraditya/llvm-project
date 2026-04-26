@@ -329,8 +329,9 @@ define <2 x double> @test2_div_sd(<2 x double> %a, <2 x double> %b) {
 define <4 x float> @test_multiple_add_ss(<4 x float> %a, <4 x float> %b) {
 ; SSE-LABEL: test_multiple_add_ss:
 ; SSE:       # %bb.0:
-; SSE-NEXT:    addss %xmm0, %xmm1
-; SSE-NEXT:    addss %xmm1, %xmm0
+; SSE-NEXT:    movaps %xmm0, %xmm2
+; SSE-NEXT:    addss %xmm1, %xmm2
+; SSE-NEXT:    addss %xmm2, %xmm0
 ; SSE-NEXT:    ret{{[l|q]}}
 ;
 ; AVX-LABEL: test_multiple_add_ss:
@@ -370,8 +371,9 @@ define <4 x float> @test_multiple_sub_ss(<4 x float> %a, <4 x float> %b) {
 define <4 x float> @test_multiple_mul_ss(<4 x float> %a, <4 x float> %b) {
 ; SSE-LABEL: test_multiple_mul_ss:
 ; SSE:       # %bb.0:
-; SSE-NEXT:    mulss %xmm0, %xmm1
-; SSE-NEXT:    mulss %xmm1, %xmm0
+; SSE-NEXT:    movaps %xmm0, %xmm2
+; SSE-NEXT:    mulss %xmm1, %xmm2
+; SSE-NEXT:    mulss %xmm2, %xmm0
 ; SSE-NEXT:    ret{{[l|q]}}
 ;
 ; AVX-LABEL: test_multiple_mul_ss:
@@ -1150,12 +1152,6 @@ define <4 x float> @insert_test5_add_ss(<4 x float> %a, <4 x float> %b) {
 }
 
 define <4 x float> @insert_test5_sub_ss(<4 x float> %a, <4 x float> %b) {
-; SSE-LABEL: insert_test5_sub_ss:
-; SSE:       # %bb.0:
-; SSE-NEXT:    subps %xmm0, %xmm1
-; SSE-NEXT:    movss {{.*#+}} xmm0 = xmm1[0],xmm0[1,2,3]
-; SSE-NEXT:    ret{{[l|q]}}
-;
 ; AVX-LABEL: insert_test5_sub_ss:
 ; AVX:       # %bb.0:
 ; AVX-NEXT:    vsubps %xmm0, %xmm1, %xmm1
@@ -1182,12 +1178,6 @@ define <4 x float> @insert_test5_mul_ss(<4 x float> %a, <4 x float> %b) {
 }
 
 define <4 x float> @insert_test5_div_ss(<4 x float> %a, <4 x float> %b) {
-; SSE-LABEL: insert_test5_div_ss:
-; SSE:       # %bb.0:
-; SSE-NEXT:    divps %xmm0, %xmm1
-; SSE-NEXT:    movss {{.*#+}} xmm0 = xmm1[0],xmm0[1,2,3]
-; SSE-NEXT:    ret{{[l|q]}}
-;
 ; AVX-LABEL: insert_test5_div_ss:
 ; AVX:       # %bb.0:
 ; AVX-NEXT:    vdivps %xmm0, %xmm1, %xmm1
@@ -1214,12 +1204,6 @@ define <2 x double> @insert_test5_add_sd(<2 x double> %a, <2 x double> %b) {
 }
 
 define <2 x double> @insert_test5_sub_sd(<2 x double> %a, <2 x double> %b) {
-; SSE-LABEL: insert_test5_sub_sd:
-; SSE:       # %bb.0:
-; SSE-NEXT:    subpd %xmm0, %xmm1
-; SSE-NEXT:    movsd {{.*#+}} xmm0 = xmm1[0],xmm0[1]
-; SSE-NEXT:    ret{{[l|q]}}
-;
 ; AVX-LABEL: insert_test5_sub_sd:
 ; AVX:       # %bb.0:
 ; AVX-NEXT:    vsubpd %xmm0, %xmm1, %xmm1
@@ -1246,12 +1230,6 @@ define <2 x double> @insert_test5_mul_sd(<2 x double> %a, <2 x double> %b) {
 }
 
 define <2 x double> @insert_test5_div_sd(<2 x double> %a, <2 x double> %b) {
-; SSE-LABEL: insert_test5_div_sd:
-; SSE:       # %bb.0:
-; SSE-NEXT:    divpd %xmm0, %xmm1
-; SSE-NEXT:    movsd {{.*#+}} xmm0 = xmm1[0],xmm0[1]
-; SSE-NEXT:    ret{{[l|q]}}
-;
 ; AVX-LABEL: insert_test5_div_sd:
 ; AVX:       # %bb.0:
 ; AVX-NEXT:    vdivpd %xmm0, %xmm1, %xmm1
@@ -1266,13 +1244,12 @@ define <4 x float> @add_ss_mask(<4 x float> %a, <4 x float> %b, <4 x float> %c, 
 ; X86-SSE-LABEL: add_ss_mask:
 ; X86-SSE:       # %bb.0:
 ; X86-SSE-NEXT:    testb $1, {{[0-9]+}}(%esp)
-; X86-SSE-NEXT:    jne .LBB70_1
-; X86-SSE-NEXT:  # %bb.2:
+; X86-SSE-NEXT:    je .LBB70_2
+; X86-SSE-NEXT:  # %bb.1:
+; X86-SSE-NEXT:    movaps %xmm0, %xmm2
+; X86-SSE-NEXT:    addss %xmm1, %xmm2
+; X86-SSE-NEXT:  .LBB70_2:
 ; X86-SSE-NEXT:    movss {{.*#+}} xmm0 = xmm2[0],xmm0[1,2,3]
-; X86-SSE-NEXT:    retl
-; X86-SSE-NEXT:  .LBB70_1:
-; X86-SSE-NEXT:    addss %xmm0, %xmm1
-; X86-SSE-NEXT:    movss {{.*#+}} xmm0 = xmm1[0],xmm0[1,2,3]
 ; X86-SSE-NEXT:    retl
 ;
 ; X86-AVX1-LABEL: add_ss_mask:
@@ -1296,13 +1273,12 @@ define <4 x float> @add_ss_mask(<4 x float> %a, <4 x float> %b, <4 x float> %c, 
 ; X64-SSE-LABEL: add_ss_mask:
 ; X64-SSE:       # %bb.0:
 ; X64-SSE-NEXT:    testb $1, %dil
-; X64-SSE-NEXT:    jne .LBB70_1
-; X64-SSE-NEXT:  # %bb.2:
+; X64-SSE-NEXT:    je .LBB70_2
+; X64-SSE-NEXT:  # %bb.1:
+; X64-SSE-NEXT:    movaps %xmm0, %xmm2
+; X64-SSE-NEXT:    addss %xmm1, %xmm2
+; X64-SSE-NEXT:  .LBB70_2:
 ; X64-SSE-NEXT:    movss {{.*#+}} xmm0 = xmm2[0],xmm0[1,2,3]
-; X64-SSE-NEXT:    retq
-; X64-SSE-NEXT:  .LBB70_1:
-; X64-SSE-NEXT:    addss %xmm0, %xmm1
-; X64-SSE-NEXT:    movss {{.*#+}} xmm0 = xmm1[0],xmm0[1,2,3]
 ; X64-SSE-NEXT:    retq
 ;
 ; X64-AVX1-LABEL: add_ss_mask:
@@ -1336,13 +1312,12 @@ define <2 x double> @add_sd_mask(<2 x double> %a, <2 x double> %b, <2 x double> 
 ; X86-SSE-LABEL: add_sd_mask:
 ; X86-SSE:       # %bb.0:
 ; X86-SSE-NEXT:    testb $1, {{[0-9]+}}(%esp)
-; X86-SSE-NEXT:    jne .LBB71_1
-; X86-SSE-NEXT:  # %bb.2:
+; X86-SSE-NEXT:    je .LBB71_2
+; X86-SSE-NEXT:  # %bb.1:
+; X86-SSE-NEXT:    movapd %xmm0, %xmm2
+; X86-SSE-NEXT:    addsd %xmm1, %xmm2
+; X86-SSE-NEXT:  .LBB71_2:
 ; X86-SSE-NEXT:    movsd {{.*#+}} xmm0 = xmm2[0],xmm0[1]
-; X86-SSE-NEXT:    retl
-; X86-SSE-NEXT:  .LBB71_1:
-; X86-SSE-NEXT:    addsd %xmm0, %xmm1
-; X86-SSE-NEXT:    movsd {{.*#+}} xmm0 = xmm1[0],xmm0[1]
 ; X86-SSE-NEXT:    retl
 ;
 ; X86-AVX1-LABEL: add_sd_mask:
@@ -1366,13 +1341,12 @@ define <2 x double> @add_sd_mask(<2 x double> %a, <2 x double> %b, <2 x double> 
 ; X64-SSE-LABEL: add_sd_mask:
 ; X64-SSE:       # %bb.0:
 ; X64-SSE-NEXT:    testb $1, %dil
-; X64-SSE-NEXT:    jne .LBB71_1
-; X64-SSE-NEXT:  # %bb.2:
+; X64-SSE-NEXT:    je .LBB71_2
+; X64-SSE-NEXT:  # %bb.1:
+; X64-SSE-NEXT:    movapd %xmm0, %xmm2
+; X64-SSE-NEXT:    addsd %xmm1, %xmm2
+; X64-SSE-NEXT:  .LBB71_2:
 ; X64-SSE-NEXT:    movsd {{.*#+}} xmm0 = xmm2[0],xmm0[1]
-; X64-SSE-NEXT:    retq
-; X64-SSE-NEXT:  .LBB71_1:
-; X64-SSE-NEXT:    addsd %xmm0, %xmm1
-; X64-SSE-NEXT:    movsd {{.*#+}} xmm0 = xmm1[0],xmm0[1]
 ; X64-SSE-NEXT:    retq
 ;
 ; X64-AVX1-LABEL: add_sd_mask:
@@ -1428,7 +1402,8 @@ define float @PR26515(<4 x float> %0) nounwind {
 ; X64-SSE:       # %bb.0:
 ; X64-SSE-NEXT:    movaps %xmm0, %xmm1
 ; X64-SSE-NEXT:    unpckhpd {{.*#+}} xmm1 = xmm1[1],xmm0[1]
-; X64-SSE-NEXT:    addss %xmm1, %xmm0
+; X64-SSE-NEXT:    addss %xmm0, %xmm1
+; X64-SSE-NEXT:    movaps %xmm1, %xmm0
 ; X64-SSE-NEXT:    retq
 ;
 ; X64-AVX-LABEL: PR26515:

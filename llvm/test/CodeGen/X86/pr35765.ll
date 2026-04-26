@@ -9,9 +9,10 @@
 define dso_local void @PR35765() {
 ; CHECK-LABEL: PR35765:
 ; CHECK:       # %bb.0: # %entry
-; CHECK-NEXT:    movzbl s1(%rip), %ecx
-; CHECK-NEXT:    addb $-118, %cl
+; CHECK-NEXT:    movzbl s1(%rip), %eax
+; CHECK-NEXT:    leal -118(%rax), %ecx
 ; CHECK-NEXT:    movl $4, %eax
+; CHECK-NEXT:    # kill: def $cl killed $cl killed $ecx
 ; CHECK-NEXT:    shll %cl, %eax
 ; CHECK-NEXT:    movzwl x(%rip), %ecx
 ; CHECK-NEXT:    movzwl s2(%rip), %edx
@@ -19,8 +20,8 @@ define dso_local void @PR35765() {
 ; CHECK-NEXT:    orl $63488, %edx # imm = 0xF800
 ; CHECK-NEXT:    movzwl %dx, %edx
 ; CHECK-NEXT:    orl %ecx, %edx
-; CHECK-NEXT:    xorl %eax, %edx
-; CHECK-NEXT:    movslq %edx, %rax
+; CHECK-NEXT:    xorl %edx, %eax
+; CHECK-NEXT:    cltq
 ; CHECK-NEXT:    movq %rax, ll(%rip)
 ; CHECK-NEXT:    retq
 entry:

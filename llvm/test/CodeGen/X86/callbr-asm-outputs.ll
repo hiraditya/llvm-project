@@ -57,9 +57,8 @@ define i32 @test2(i32 %out1, i32 %out2) nounwind {
 ; CHECK-NEXT:    testl %esi, %edi
 ; CHECK-NEXT:    jne .LBB1_7
 ; CHECK-NEXT:    #NO_APP
-; CHECK-NEXT:  .LBB1_4:
-; CHECK-NEXT:    movl %esi, %eax
-; CHECK-NEXT:    addl %edi, %eax
+; CHECK-NEXT:  .LBB1_4: # %if.end
+; CHECK-NEXT:    leal (%edi,%esi), %eax
 ; CHECK-NEXT:  .LBB1_5: # %return
 ; CHECK-NEXT:    popl %esi
 ; CHECK-NEXT:    popl %edi

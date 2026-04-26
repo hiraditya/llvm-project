@@ -8,9 +8,9 @@ target triple = "x86_64-unknown-unknown"
 define dso_local i32 @select_and(i32 %a0, i32 %a1, float %a2, float %a3, i32 %a4, i32 %a5) {
 ; CHECK-LABEL: select_and:
 ; CHECK:       # %bb.0:
-; CHECK-NEXT:    movl %edx, %eax
 ; CHECK-NEXT:    ucomiss %xmm0, %xmm1
-; CHECK-NEXT:    cmovbel %ecx, %eax
+; CHECK-NEXT:    movl %ecx, %eax
+; CHECK-NEXT:    cmoval %edx, %eax
 ; CHECK-NEXT:    cmpl %esi, %edi
 ; CHECK-NEXT:    cmovael %ecx, %eax
 ; CHECK-NEXT:    retq
@@ -47,16 +47,16 @@ define dso_local i32 @select_or(i32 %a0, i32 %a1, float %a2, float %a3, i32 %a4,
 define dso_local i32 @select_noopt(i32 %a0, i32 %a1, i32 %a2, i32 %a3, i32 %a4) {
 ; CHECK-LABEL: select_noopt:
 ; CHECK:       # %bb.0:
-; CHECK-NEXT:    movl %ecx, %eax
+; CHECK-NEXT:    movl %r8d, %eax
 ; CHECK-NEXT:    cmpl %esi, %edi
-; CHECK-NEXT:    setb %cl
+; CHECK-NEXT:    setb %dil
 ; CHECK-NEXT:    cmpl %edx, %esi
 ; CHECK-NEXT:    setb %dl
-; CHECK-NEXT:    orb %cl, %dl
-; CHECK-NEXT:    movzbl %dl, %ecx
-; CHECK-NEXT:    movl %ecx, var32(%rip)
-; CHECK-NEXT:    testb %cl, %cl
-; CHECK-NEXT:    cmovel %r8d, %eax
+; CHECK-NEXT:    orb %dil, %dl
+; CHECK-NEXT:    movzbl %dl, %edx
+; CHECK-NEXT:    movl %edx, var32(%rip)
+; CHECK-NEXT:    testb %dl, %dl
+; CHECK-NEXT:    cmovnel %ecx, %eax
 ; CHECK-NEXT:    retq
   %cmp0 = icmp ult i32 %a0, %a1
   %cmp1 = icmp ult i32 %a1, %a2

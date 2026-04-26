@@ -611,13 +611,15 @@ define <8 x double> @test_store_8xf64(ptr nocapture %addr, <8 x double> %value, 
 ; X86-SSE-NEXT:    movapd {{[0-9]+}}(%esp), %xmm3
 ; X86-SSE-NEXT:    addpd %xmm4, %xmm3
 ; X86-SSE-NEXT:    movl {{[0-9]+}}(%esp), %eax
-; X86-SSE-NEXT:    addpd {{[0-9]+}}(%esp), %xmm0
-; X86-SSE-NEXT:    movupd %xmm0, (%eax)
+; X86-SSE-NEXT:    movapd {{[0-9]+}}(%esp), %xmm4
+; X86-SSE-NEXT:    addpd %xmm0, %xmm4
+; X86-SSE-NEXT:    movupd %xmm4, (%eax)
 ; X86-SSE-NEXT:    addpd %xmm6, %xmm1
 ; X86-SSE-NEXT:    movupd %xmm1, 16(%eax)
 ; X86-SSE-NEXT:    addpd %xmm5, %xmm2
 ; X86-SSE-NEXT:    movupd %xmm2, 32(%eax)
 ; X86-SSE-NEXT:    movupd %xmm3, 48(%eax)
+; X86-SSE-NEXT:    movapd %xmm4, %xmm0
 ; X86-SSE-NEXT:    addl $12, %esp
 ; X86-SSE-NEXT:    retl
 ;
@@ -684,13 +686,15 @@ define <8 x double> @test_store_8xf64_aligned(ptr nocapture %addr, <8 x double> 
 ; X86-SSE-NEXT:    movapd {{[0-9]+}}(%esp), %xmm3
 ; X86-SSE-NEXT:    addpd %xmm4, %xmm3
 ; X86-SSE-NEXT:    movl {{[0-9]+}}(%esp), %eax
-; X86-SSE-NEXT:    addpd {{[0-9]+}}(%esp), %xmm0
-; X86-SSE-NEXT:    movapd %xmm0, (%eax)
+; X86-SSE-NEXT:    movapd {{[0-9]+}}(%esp), %xmm4
+; X86-SSE-NEXT:    addpd %xmm0, %xmm4
+; X86-SSE-NEXT:    movapd %xmm4, (%eax)
 ; X86-SSE-NEXT:    addpd %xmm6, %xmm1
 ; X86-SSE-NEXT:    movapd %xmm1, 16(%eax)
 ; X86-SSE-NEXT:    addpd %xmm5, %xmm2
 ; X86-SSE-NEXT:    movapd %xmm2, 32(%eax)
 ; X86-SSE-NEXT:    movapd %xmm3, 48(%eax)
+; X86-SSE-NEXT:    movapd %xmm4, %xmm0
 ; X86-SSE-NEXT:    addl $12, %esp
 ; X86-SSE-NEXT:    retl
 ;

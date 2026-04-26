@@ -12,8 +12,9 @@ define i32 @test_x86_tbm_bextri_u32(i32 %a) nounwind readnone {
 ;
 ; X64-LABEL: test_x86_tbm_bextri_u32:
 ; X64:       # %bb.0: # %entry
-; X64-NEXT:    addl %edi, %edi
-; X64-NEXT:    bextrl $3841, %edi, %eax # imm = 0xF01
+; X64-NEXT:    # kill: def $edi killed $edi def $rdi
+; X64-NEXT:    leal (%rdi,%rdi), %eax
+; X64-NEXT:    bextrl $3841, %eax, %eax # imm = 0xF01
 ; X64-NEXT:    retq
 entry:
   %0 = add i32 %a, %a

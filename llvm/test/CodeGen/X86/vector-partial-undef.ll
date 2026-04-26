@@ -24,8 +24,10 @@ define <4 x i64> @xor_insert_insert(<2 x i64> %x, <2 x i64> %y) {
 define <4 x i64> @xor_insert_insert_high_half(<2 x i64> %x, <2 x i64> %y) {
 ; SSE-LABEL: xor_insert_insert_high_half:
 ; SSE:       # %bb.0:
-; SSE-NEXT:    xorps %xmm0, %xmm1
+; SSE-NEXT:    movaps %xmm0, %xmm2
+; SSE-NEXT:    xorps %xmm1, %xmm2
 ; SSE-NEXT:    xorps %xmm0, %xmm0
+; SSE-NEXT:    movaps %xmm2, %xmm1
 ; SSE-NEXT:    retq
 ;
 ; AVX-LABEL: xor_insert_insert_high_half:
@@ -136,10 +138,10 @@ define <8 x i32> @xor_undef_elts(<4 x i32> %x) {
 define <8 x i32> @xor_undef_elts_alt(<4 x i32> %x) {
 ; SSE-LABEL: xor_undef_elts_alt:
 ; SSE:       # %bb.0:
-; SSE-NEXT:    movaps %xmm0, %xmm1
 ; SSE-NEXT:    movaps {{.*#+}} xmm2 = [u,u,44,12]
 ; SSE-NEXT:    xorps %xmm0, %xmm2
-; SSE-NEXT:    xorps {{\.?LCPI[0-9]+_[0-9]+}}(%rip), %xmm1
+; SSE-NEXT:    movsd {{.*#+}} xmm1 = [42,43,0,0]
+; SSE-NEXT:    xorps %xmm0, %xmm1
 ; SSE-NEXT:    movaps %xmm1, %xmm0
 ; SSE-NEXT:    shufps {{.*#+}} xmm0 = xmm0[1,0],xmm2[2,0]
 ; SSE-NEXT:    shufps {{.*#+}} xmm0 = xmm0[2,0],xmm2[1,0]

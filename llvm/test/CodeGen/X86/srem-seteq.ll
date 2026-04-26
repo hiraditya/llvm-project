@@ -9,8 +9,8 @@
 define i32 @test_srem_odd(i32 %X) nounwind {
 ; X86-LABEL: test_srem_odd:
 ; X86:       # %bb.0:
-; X86-NEXT:    imull $-858993459, {{[0-9]+}}(%esp), %ecx # imm = 0xCCCCCCCD
-; X86-NEXT:    addl $429496729, %ecx # imm = 0x19999999
+; X86-NEXT:    imull $-858993459, {{[0-9]+}}(%esp), %eax # imm = 0xCCCCCCCD
+; X86-NEXT:    leal 429496729(%eax), %ecx
 ; X86-NEXT:    xorl %eax, %eax
 ; X86-NEXT:    cmpl $858993459, %ecx # imm = 0x33333333
 ; X86-NEXT:    setb %al
@@ -18,8 +18,8 @@ define i32 @test_srem_odd(i32 %X) nounwind {
 ;
 ; X64-LABEL: test_srem_odd:
 ; X64:       # %bb.0:
-; X64-NEXT:    imull $-858993459, %edi, %ecx # imm = 0xCCCCCCCD
-; X64-NEXT:    addl $429496729, %ecx # imm = 0x19999999
+; X64-NEXT:    imull $-858993459, %edi, %eax # imm = 0xCCCCCCCD
+; X64-NEXT:    leal 429496729(%rax), %ecx
 ; X64-NEXT:    xorl %eax, %eax
 ; X64-NEXT:    cmpl $858993459, %ecx # imm = 0x33333333
 ; X64-NEXT:    setb %al
@@ -33,8 +33,8 @@ define i32 @test_srem_odd(i32 %X) nounwind {
 define i32 @test_srem_odd_25(i32 %X) nounwind {
 ; X86-LABEL: test_srem_odd_25:
 ; X86:       # %bb.0:
-; X86-NEXT:    imull $-1030792151, {{[0-9]+}}(%esp), %ecx # imm = 0xC28F5C29
-; X86-NEXT:    addl $85899345, %ecx # imm = 0x51EB851
+; X86-NEXT:    imull $-1030792151, {{[0-9]+}}(%esp), %eax # imm = 0xC28F5C29
+; X86-NEXT:    leal 85899345(%eax), %ecx
 ; X86-NEXT:    xorl %eax, %eax
 ; X86-NEXT:    cmpl $171798691, %ecx # imm = 0xA3D70A3
 ; X86-NEXT:    setb %al
@@ -42,8 +42,8 @@ define i32 @test_srem_odd_25(i32 %X) nounwind {
 ;
 ; X64-LABEL: test_srem_odd_25:
 ; X64:       # %bb.0:
-; X64-NEXT:    imull $-1030792151, %edi, %ecx # imm = 0xC28F5C29
-; X64-NEXT:    addl $85899345, %ecx # imm = 0x51EB851
+; X64-NEXT:    imull $-1030792151, %edi, %eax # imm = 0xC28F5C29
+; X64-NEXT:    leal 85899345(%rax), %ecx
 ; X64-NEXT:    xorl %eax, %eax
 ; X64-NEXT:    cmpl $171798691, %ecx # imm = 0xA3D70A3
 ; X64-NEXT:    setb %al
@@ -58,8 +58,8 @@ define i32 @test_srem_odd_25(i32 %X) nounwind {
 define i32 @test_srem_odd_bit30(i32 %X) nounwind {
 ; X86-LABEL: test_srem_odd_bit30:
 ; X86:       # %bb.0:
-; X86-NEXT:    imull $1789569707, {{[0-9]+}}(%esp), %ecx # imm = 0x6AAAAAAB
-; X86-NEXT:    incl %ecx
+; X86-NEXT:    imull $1789569707, {{[0-9]+}}(%esp), %eax # imm = 0x6AAAAAAB
+; X86-NEXT:    leal 1(%eax), %ecx
 ; X86-NEXT:    xorl %eax, %eax
 ; X86-NEXT:    cmpl $3, %ecx
 ; X86-NEXT:    setb %al
@@ -67,8 +67,8 @@ define i32 @test_srem_odd_bit30(i32 %X) nounwind {
 ;
 ; X64-LABEL: test_srem_odd_bit30:
 ; X64:       # %bb.0:
-; X64-NEXT:    imull $1789569707, %edi, %ecx # imm = 0x6AAAAAAB
-; X64-NEXT:    incl %ecx
+; X64-NEXT:    imull $1789569707, %edi, %eax # imm = 0x6AAAAAAB
+; X64-NEXT:    leal 1(%rax), %ecx
 ; X64-NEXT:    xorl %eax, %eax
 ; X64-NEXT:    cmpl $3, %ecx
 ; X64-NEXT:    setb %al
@@ -83,8 +83,8 @@ define i32 @test_srem_odd_bit30(i32 %X) nounwind {
 define i32 @test_srem_odd_bit31(i32 %X) nounwind {
 ; X86-LABEL: test_srem_odd_bit31:
 ; X86:       # %bb.0:
-; X86-NEXT:    imull $-715827883, {{[0-9]+}}(%esp), %ecx # imm = 0xD5555555
-; X86-NEXT:    incl %ecx
+; X86-NEXT:    imull $-715827883, {{[0-9]+}}(%esp), %eax # imm = 0xD5555555
+; X86-NEXT:    leal 1(%eax), %ecx
 ; X86-NEXT:    xorl %eax, %eax
 ; X86-NEXT:    cmpl $3, %ecx
 ; X86-NEXT:    setb %al
@@ -92,8 +92,8 @@ define i32 @test_srem_odd_bit31(i32 %X) nounwind {
 ;
 ; X64-LABEL: test_srem_odd_bit31:
 ; X64:       # %bb.0:
-; X64-NEXT:    imull $-715827883, %edi, %ecx # imm = 0xD5555555
-; X64-NEXT:    incl %ecx
+; X64-NEXT:    imull $-715827883, %edi, %eax # imm = 0xD5555555
+; X64-NEXT:    leal 1(%rax), %ecx
 ; X64-NEXT:    xorl %eax, %eax
 ; X64-NEXT:    cmpl $3, %ecx
 ; X64-NEXT:    setb %al
@@ -141,8 +141,8 @@ define i16 @test_srem_even(i16 %X) nounwind {
 define i32 @test_srem_even_100(i32 %X) nounwind {
 ; X86-LABEL: test_srem_even_100:
 ; X86:       # %bb.0:
-; X86-NEXT:    imull $-1030792151, {{[0-9]+}}(%esp), %ecx # imm = 0xC28F5C29
-; X86-NEXT:    addl $85899344, %ecx # imm = 0x51EB850
+; X86-NEXT:    imull $-1030792151, {{[0-9]+}}(%esp), %eax # imm = 0xC28F5C29
+; X86-NEXT:    leal 85899344(%eax), %ecx
 ; X86-NEXT:    rorl $2, %ecx
 ; X86-NEXT:    xorl %eax, %eax
 ; X86-NEXT:    cmpl $42949673, %ecx # imm = 0x28F5C29
@@ -151,8 +151,8 @@ define i32 @test_srem_even_100(i32 %X) nounwind {
 ;
 ; X64-LABEL: test_srem_even_100:
 ; X64:       # %bb.0:
-; X64-NEXT:    imull $-1030792151, %edi, %ecx # imm = 0xC28F5C29
-; X64-NEXT:    addl $85899344, %ecx # imm = 0x51EB850
+; X64-NEXT:    imull $-1030792151, %edi, %eax # imm = 0xC28F5C29
+; X64-NEXT:    leal 85899344(%rax), %ecx
 ; X64-NEXT:    rorl $2, %ecx
 ; X64-NEXT:    xorl %eax, %eax
 ; X64-NEXT:    cmpl $42949673, %ecx # imm = 0x28F5C29
@@ -168,8 +168,8 @@ define i32 @test_srem_even_100(i32 %X) nounwind {
 define i32 @test_srem_even_bit30(i32 %X) nounwind {
 ; X86-LABEL: test_srem_even_bit30:
 ; X86:       # %bb.0:
-; X86-NEXT:    imull $-51622203, {{[0-9]+}}(%esp), %ecx # imm = 0xFCEC4EC5
-; X86-NEXT:    addl $8, %ecx
+; X86-NEXT:    imull $-51622203, {{[0-9]+}}(%esp), %eax # imm = 0xFCEC4EC5
+; X86-NEXT:    leal 8(%eax), %ecx
 ; X86-NEXT:    rorl $3, %ecx
 ; X86-NEXT:    xorl %eax, %eax
 ; X86-NEXT:    cmpl $3, %ecx
@@ -178,8 +178,8 @@ define i32 @test_srem_even_bit30(i32 %X) nounwind {
 ;
 ; X64-LABEL: test_srem_even_bit30:
 ; X64:       # %bb.0:
-; X64-NEXT:    imull $-51622203, %edi, %ecx # imm = 0xFCEC4EC5
-; X64-NEXT:    addl $8, %ecx
+; X64-NEXT:    imull $-51622203, %edi, %eax # imm = 0xFCEC4EC5
+; X64-NEXT:    leal 8(%rax), %ecx
 ; X64-NEXT:    rorl $3, %ecx
 ; X64-NEXT:    xorl %eax, %eax
 ; X64-NEXT:    cmpl $3, %ecx
@@ -195,8 +195,8 @@ define i32 @test_srem_even_bit30(i32 %X) nounwind {
 define i32 @test_srem_even_bit31(i32 %X) nounwind {
 ; X86-LABEL: test_srem_even_bit31:
 ; X86:       # %bb.0:
-; X86-NEXT:    imull $-989526779, {{[0-9]+}}(%esp), %ecx # imm = 0xC5050505
-; X86-NEXT:    addl $2, %ecx
+; X86-NEXT:    imull $-989526779, {{[0-9]+}}(%esp), %eax # imm = 0xC5050505
+; X86-NEXT:    leal 2(%eax), %ecx
 ; X86-NEXT:    rorl %ecx
 ; X86-NEXT:    xorl %eax, %eax
 ; X86-NEXT:    cmpl $3, %ecx
@@ -205,8 +205,8 @@ define i32 @test_srem_even_bit31(i32 %X) nounwind {
 ;
 ; X64-LABEL: test_srem_even_bit31:
 ; X64:       # %bb.0:
-; X64-NEXT:    imull $-989526779, %edi, %ecx # imm = 0xC5050505
-; X64-NEXT:    addl $2, %ecx
+; X64-NEXT:    imull $-989526779, %edi, %eax # imm = 0xC5050505
+; X64-NEXT:    leal 2(%rax), %ecx
 ; X64-NEXT:    rorl %ecx
 ; X64-NEXT:    xorl %eax, %eax
 ; X64-NEXT:    cmpl $3, %ecx
@@ -226,8 +226,8 @@ define i32 @test_srem_even_bit31(i32 %X) nounwind {
 define i32 @test_srem_odd_setne(i32 %X) nounwind {
 ; X86-LABEL: test_srem_odd_setne:
 ; X86:       # %bb.0:
-; X86-NEXT:    imull $-858993459, {{[0-9]+}}(%esp), %ecx # imm = 0xCCCCCCCD
-; X86-NEXT:    addl $429496729, %ecx # imm = 0x19999999
+; X86-NEXT:    imull $-858993459, {{[0-9]+}}(%esp), %eax # imm = 0xCCCCCCCD
+; X86-NEXT:    leal 429496729(%eax), %ecx
 ; X86-NEXT:    xorl %eax, %eax
 ; X86-NEXT:    cmpl $858993459, %ecx # imm = 0x33333333
 ; X86-NEXT:    setae %al
@@ -235,8 +235,8 @@ define i32 @test_srem_odd_setne(i32 %X) nounwind {
 ;
 ; X64-LABEL: test_srem_odd_setne:
 ; X64:       # %bb.0:
-; X64-NEXT:    imull $-858993459, %edi, %ecx # imm = 0xCCCCCCCD
-; X64-NEXT:    addl $429496729, %ecx # imm = 0x19999999
+; X64-NEXT:    imull $-858993459, %edi, %eax # imm = 0xCCCCCCCD
+; X64-NEXT:    leal 429496729(%rax), %ecx
 ; X64-NEXT:    xorl %eax, %eax
 ; X64-NEXT:    cmpl $858993459, %ecx # imm = 0x33333333
 ; X64-NEXT:    setae %al
@@ -251,8 +251,8 @@ define i32 @test_srem_odd_setne(i32 %X) nounwind {
 define i32 @test_srem_negative_odd(i32 %X) nounwind {
 ; X86-LABEL: test_srem_negative_odd:
 ; X86:       # %bb.0:
-; X86-NEXT:    imull $-858993459, {{[0-9]+}}(%esp), %ecx # imm = 0xCCCCCCCD
-; X86-NEXT:    addl $429496729, %ecx # imm = 0x19999999
+; X86-NEXT:    imull $-858993459, {{[0-9]+}}(%esp), %eax # imm = 0xCCCCCCCD
+; X86-NEXT:    leal 429496729(%eax), %ecx
 ; X86-NEXT:    xorl %eax, %eax
 ; X86-NEXT:    cmpl $858993459, %ecx # imm = 0x33333333
 ; X86-NEXT:    setae %al
@@ -260,8 +260,8 @@ define i32 @test_srem_negative_odd(i32 %X) nounwind {
 ;
 ; X64-LABEL: test_srem_negative_odd:
 ; X64:       # %bb.0:
-; X64-NEXT:    imull $-858993459, %edi, %ecx # imm = 0xCCCCCCCD
-; X64-NEXT:    addl $429496729, %ecx # imm = 0x19999999
+; X64-NEXT:    imull $-858993459, %edi, %eax # imm = 0xCCCCCCCD
+; X64-NEXT:    leal 429496729(%rax), %ecx
 ; X64-NEXT:    xorl %eax, %eax
 ; X64-NEXT:    cmpl $858993459, %ecx # imm = 0x33333333
 ; X64-NEXT:    setae %al
@@ -274,8 +274,8 @@ define i32 @test_srem_negative_odd(i32 %X) nounwind {
 define i32 @test_srem_negative_even(i32 %X) nounwind {
 ; X86-LABEL: test_srem_negative_even:
 ; X86:       # %bb.0:
-; X86-NEXT:    imull $-1227133513, {{[0-9]+}}(%esp), %ecx # imm = 0xB6DB6DB7
-; X86-NEXT:    addl $306783378, %ecx # imm = 0x12492492
+; X86-NEXT:    imull $-1227133513, {{[0-9]+}}(%esp), %eax # imm = 0xB6DB6DB7
+; X86-NEXT:    leal 306783378(%eax), %ecx
 ; X86-NEXT:    rorl %ecx
 ; X86-NEXT:    xorl %eax, %eax
 ; X86-NEXT:    cmpl $306783379, %ecx # imm = 0x12492493
@@ -284,8 +284,8 @@ define i32 @test_srem_negative_even(i32 %X) nounwind {
 ;
 ; X64-LABEL: test_srem_negative_even:
 ; X64:       # %bb.0:
-; X64-NEXT:    imull $-1227133513, %edi, %ecx # imm = 0xB6DB6DB7
-; X64-NEXT:    addl $306783378, %ecx # imm = 0x12492492
+; X64-NEXT:    imull $-1227133513, %edi, %eax # imm = 0xB6DB6DB7
+; X64-NEXT:    leal 306783378(%rax), %ecx
 ; X64-NEXT:    rorl %ecx
 ; X64-NEXT:    xorl %eax, %eax
 ; X64-NEXT:    cmpl $306783379, %ecx # imm = 0x12492493

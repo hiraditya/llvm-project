@@ -6,9 +6,10 @@ define i8 @test_addcarry_32_load(i8 %c, ptr %aptr, i32 %b, ptr %ptr) {
 ; CHECK-LABEL: test_addcarry_32_load:
 ; CHECK:       ## %bb.0:
 ; CHECK-NEXT:    addb $-1, %dil ## encoding: [0x40,0x80,0xc7,0xff]
-; CHECK-NEXT:    adcl (%rsi), %edx ## encoding: [0x13,0x16]
+; CHECK-NEXT:    movl (%rsi), %esi ## encoding: [0x8b,0x36]
+; CHECK-NEXT:    adcl %edx, %esi ## encoding: [0x11,0xd6]
 ; CHECK-NEXT:    setb %al ## encoding: [0x0f,0x92,0xc0]
-; CHECK-NEXT:    movl %edx, (%rcx) ## encoding: [0x89,0x11]
+; CHECK-NEXT:    movl %esi, (%rcx) ## encoding: [0x89,0x31]
 ; CHECK-NEXT:    retq ## encoding: [0xc3]
   %a = load i32, ptr %aptr
   %ret = call { i8, i32 } @llvm.x86.addcarry.32(i8 %c, i32 %a, i32 %b)
@@ -22,9 +23,10 @@ define i8 @test_addcarry_32_load2(i8 %c, i32 %a, ptr %bptr, ptr %ptr) {
 ; CHECK-LABEL: test_addcarry_32_load2:
 ; CHECK:       ## %bb.0:
 ; CHECK-NEXT:    addb $-1, %dil ## encoding: [0x40,0x80,0xc7,0xff]
-; CHECK-NEXT:    adcl (%rdx), %esi ## encoding: [0x13,0x32]
+; CHECK-NEXT:    movl (%rdx), %edx ## encoding: [0x8b,0x12]
+; CHECK-NEXT:    adcl %esi, %edx ## encoding: [0x11,0xf2]
 ; CHECK-NEXT:    setb %al ## encoding: [0x0f,0x92,0xc0]
-; CHECK-NEXT:    movl %esi, (%rcx) ## encoding: [0x89,0x31]
+; CHECK-NEXT:    movl %edx, (%rcx) ## encoding: [0x89,0x11]
 ; CHECK-NEXT:    retq ## encoding: [0xc3]
   %b = load i32, ptr %bptr
   %ret = call { i8, i32 } @llvm.x86.addcarry.32(i8 %c, i32 %a, i32 %b)
@@ -108,9 +110,10 @@ define i32 @load_crash(ptr nocapture readonly %a, ptr nocapture readonly %b, ptr
 ; CHECK:       ## %bb.0:
 ; CHECK-NEXT:    movq (%rdi), %rcx ## encoding: [0x48,0x8b,0x0f]
 ; CHECK-NEXT:    xorl %eax, %eax ## encoding: [0x31,0xc0]
-; CHECK-NEXT:    addq (%rsi), %rcx ## encoding: [0x48,0x03,0x0e]
+; CHECK-NEXT:    movq (%rsi), %rsi ## encoding: [0x48,0x8b,0x36]
+; CHECK-NEXT:    addq %rcx, %rsi ## encoding: [0x48,0x01,0xce]
 ; CHECK-NEXT:    setb %al ## encoding: [0x0f,0x92,0xc0]
-; CHECK-NEXT:    movq %rcx, (%rdx) ## encoding: [0x48,0x89,0x0a]
+; CHECK-NEXT:    movq %rsi, (%rdx) ## encoding: [0x48,0x89,0x32]
 ; CHECK-NEXT:    retq ## encoding: [0xc3]
   %1 = load i64, ptr %a, align 8
   %2 = load i64, ptr %b, align 8

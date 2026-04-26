@@ -15,7 +15,8 @@ define i64 @test_builtin_readcyclecounter() {
 ; X64:       # %bb.0:
 ; X64-NEXT:    rdtsc
 ; X64-NEXT:    shlq $32, %rdx
-; X64-NEXT:    orq %rdx, %rax
+; X64-NEXT:    orq %rax, %rdx
+; X64-NEXT:    movq %rdx, %rax
 ; X64-NEXT:    retq
   %1 = tail call i64 @llvm.readcyclecounter()
   ret i64 %1
@@ -34,7 +35,8 @@ define i64 @test_builtin_rdtsc() {
 ; X64:       # %bb.0:
 ; X64-NEXT:    rdtsc
 ; X64-NEXT:    shlq $32, %rdx
-; X64-NEXT:    orq %rdx, %rax
+; X64-NEXT:    orq %rax, %rdx
+; X64-NEXT:    movq %rdx, %rax
 ; X64-NEXT:    retq
   %1 = tail call i64 @llvm.x86.rdtsc()
   ret i64 %1
@@ -57,8 +59,9 @@ define i64 @test_builtin_rdtscp(ptr %A) {
 ; X64:       # %bb.0:
 ; X64-NEXT:    rdtscp
 ; X64-NEXT:    shlq $32, %rdx
-; X64-NEXT:    orq %rdx, %rax
+; X64-NEXT:    orq %rax, %rdx
 ; X64-NEXT:    movl %ecx, (%rdi)
+; X64-NEXT:    movq %rdx, %rax
 ; X64-NEXT:    retq
   %1 = call { i64, i32 } @llvm.x86.rdtscp()
   %2 = extractvalue { i64, i32 } %1, 1

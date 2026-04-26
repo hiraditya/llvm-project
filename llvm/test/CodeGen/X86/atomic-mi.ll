@@ -291,9 +291,11 @@ define void @add_32r_self(ptr %p) {
 define i32 @add_32r_ret_load(ptr %p, i32 %v) {
 ; X64-LABEL: add_32r_ret_load:
 ; X64:       # %bb.0:
+; X64-NEXT:    # kill: def $esi killed $esi def $rsi
 ; X64-NEXT:    movl (%rdi), %eax
-; X64-NEXT:    addl %eax, %esi
-; X64-NEXT:    movl %esi, (%rdi)
+; X64-NEXT:    leal (%rax,%rsi), %ecx
+; X64-NEXT:    movl %ecx, (%rdi)
+; X64-NEXT:    # kill: def $eax killed $eax killed $rax
 ; X64-NEXT:    retq
 ;
 ; X32-LABEL: add_32r_ret_load:
@@ -361,20 +363,25 @@ define void @add_64r(ptr %p, i64 %v) {
 ; X32-NEXT:    .cfi_offset %ebp, -8
 ; X32-NEXT:    movl %esp, %ebp
 ; X32-NEXT:    .cfi_def_cfa_register %ebp
+; X32-NEXT:    pushl %esi
 ; X32-NEXT:    andl $-8, %esp
-; X32-NEXT:    subl $16, %esp
+; X32-NEXT:    subl $24, %esp
+; X32-NEXT:    .cfi_offset %esi, -12
 ; X32-NEXT:    movl 8(%ebp), %eax
 ; X32-NEXT:    fildll (%eax)
 ; X32-NEXT:    fistpll {{[0-9]+}}(%esp)
 ; X32-NEXT:    movl {{[0-9]+}}(%esp), %ecx
 ; X32-NEXT:    movl {{[0-9]+}}(%esp), %edx
-; X32-NEXT:    addl 12(%ebp), %ecx
-; X32-NEXT:    adcl 16(%ebp), %edx
-; X32-NEXT:    movl %ecx, (%esp)
-; X32-NEXT:    movl %edx, {{[0-9]+}}(%esp)
+; X32-NEXT:    movl 12(%ebp), %esi
+; X32-NEXT:    addl %ecx, %esi
+; X32-NEXT:    movl 16(%ebp), %ecx
+; X32-NEXT:    adcl %edx, %ecx
+; X32-NEXT:    movl %esi, (%esp)
+; X32-NEXT:    movl %ecx, {{[0-9]+}}(%esp)
 ; X32-NEXT:    fildll (%esp)
 ; X32-NEXT:    fistpll (%eax)
-; X32-NEXT:    movl %ebp, %esp
+; X32-NEXT:    leal -4(%ebp), %esp
+; X32-NEXT:    popl %esi
 ; X32-NEXT:    popl %ebp
 ; X32-NEXT:    .cfi_def_cfa %esp, 4
 ; X32-NEXT:    retl
@@ -409,6 +416,7 @@ define void @add_32i_seq_cst(ptr %p) {
 define void @add_32r_seq_cst(ptr %p, i32 %v) {
 ; X64-LABEL: add_32r_seq_cst:
 ; X64:       # %bb.0:
+; X64-NEXT:    # kill: def $esi killed $esi def $rsi
 ; X64-NEXT:    movl (%rdi), %eax
 ; X64-NEXT:    addl %esi, %eax
 ; X64-NEXT:    xchgl %eax, (%rdi)
@@ -418,8 +426,9 @@ define void @add_32r_seq_cst(ptr %p, i32 %v) {
 ; X32:       # %bb.0:
 ; X32-NEXT:    movl {{[0-9]+}}(%esp), %eax
 ; X32-NEXT:    movl (%eax), %ecx
-; X32-NEXT:    addl {{[0-9]+}}(%esp), %ecx
-; X32-NEXT:    xchgl %ecx, (%eax)
+; X32-NEXT:    movl {{[0-9]+}}(%esp), %edx
+; X32-NEXT:    addl %ecx, %edx
+; X32-NEXT:    xchgl %edx, (%eax)
 ; X32-NEXT:    retl
   %1 = load atomic i32, ptr %p monotonic, align 4
   %2 = add i32 %1, %v
@@ -744,20 +753,25 @@ define void @and_64r(ptr %p, i64 %v) {
 ; X32-NEXT:    .cfi_offset %ebp, -8
 ; X32-NEXT:    movl %esp, %ebp
 ; X32-NEXT:    .cfi_def_cfa_register %ebp
+; X32-NEXT:    pushl %esi
 ; X32-NEXT:    andl $-8, %esp
-; X32-NEXT:    subl $16, %esp
+; X32-NEXT:    subl $24, %esp
+; X32-NEXT:    .cfi_offset %esi, -12
 ; X32-NEXT:    movl 8(%ebp), %eax
 ; X32-NEXT:    fildll (%eax)
 ; X32-NEXT:    fistpll {{[0-9]+}}(%esp)
 ; X32-NEXT:    movl {{[0-9]+}}(%esp), %ecx
 ; X32-NEXT:    movl {{[0-9]+}}(%esp), %edx
-; X32-NEXT:    andl 16(%ebp), %edx
-; X32-NEXT:    andl 12(%ebp), %ecx
-; X32-NEXT:    movl %ecx, (%esp)
-; X32-NEXT:    movl %edx, {{[0-9]+}}(%esp)
+; X32-NEXT:    movl 16(%ebp), %esi
+; X32-NEXT:    andl %edx, %esi
+; X32-NEXT:    movl 12(%ebp), %edx
+; X32-NEXT:    andl %ecx, %edx
+; X32-NEXT:    movl %edx, (%esp)
+; X32-NEXT:    movl %esi, {{[0-9]+}}(%esp)
 ; X32-NEXT:    fildll (%esp)
 ; X32-NEXT:    fistpll (%eax)
-; X32-NEXT:    movl %ebp, %esp
+; X32-NEXT:    leal -4(%ebp), %esp
+; X32-NEXT:    popl %esi
 ; X32-NEXT:    popl %ebp
 ; X32-NEXT:    .cfi_def_cfa %esp, 4
 ; X32-NEXT:    retl
@@ -801,8 +815,9 @@ define void @and_32r_seq_cst(ptr %p, i32 %v) {
 ; X32:       # %bb.0:
 ; X32-NEXT:    movl {{[0-9]+}}(%esp), %eax
 ; X32-NEXT:    movl (%eax), %ecx
-; X32-NEXT:    andl {{[0-9]+}}(%esp), %ecx
-; X32-NEXT:    xchgl %ecx, (%eax)
+; X32-NEXT:    movl {{[0-9]+}}(%esp), %edx
+; X32-NEXT:    andl %ecx, %edx
+; X32-NEXT:    xchgl %edx, (%eax)
 ; X32-NEXT:    retl
   %1 = load atomic i32, ptr %p monotonic, align 4
   %2 = and i32 %1, %v
@@ -966,20 +981,25 @@ define void @or_64r(ptr %p, i64 %v) {
 ; X32-NEXT:    .cfi_offset %ebp, -8
 ; X32-NEXT:    movl %esp, %ebp
 ; X32-NEXT:    .cfi_def_cfa_register %ebp
+; X32-NEXT:    pushl %esi
 ; X32-NEXT:    andl $-8, %esp
-; X32-NEXT:    subl $16, %esp
+; X32-NEXT:    subl $24, %esp
+; X32-NEXT:    .cfi_offset %esi, -12
 ; X32-NEXT:    movl 8(%ebp), %eax
 ; X32-NEXT:    fildll (%eax)
 ; X32-NEXT:    fistpll {{[0-9]+}}(%esp)
 ; X32-NEXT:    movl {{[0-9]+}}(%esp), %ecx
 ; X32-NEXT:    movl {{[0-9]+}}(%esp), %edx
-; X32-NEXT:    orl 16(%ebp), %edx
-; X32-NEXT:    orl 12(%ebp), %ecx
-; X32-NEXT:    movl %ecx, (%esp)
-; X32-NEXT:    movl %edx, {{[0-9]+}}(%esp)
+; X32-NEXT:    movl 16(%ebp), %esi
+; X32-NEXT:    orl %edx, %esi
+; X32-NEXT:    movl 12(%ebp), %edx
+; X32-NEXT:    orl %ecx, %edx
+; X32-NEXT:    movl %edx, (%esp)
+; X32-NEXT:    movl %esi, {{[0-9]+}}(%esp)
 ; X32-NEXT:    fildll (%esp)
 ; X32-NEXT:    fistpll (%eax)
-; X32-NEXT:    movl %ebp, %esp
+; X32-NEXT:    leal -4(%ebp), %esp
+; X32-NEXT:    popl %esi
 ; X32-NEXT:    popl %ebp
 ; X32-NEXT:    .cfi_def_cfa %esp, 4
 ; X32-NEXT:    retl
@@ -1023,8 +1043,9 @@ define void @or_32r_seq_cst(ptr %p, i32 %v) {
 ; X32:       # %bb.0:
 ; X32-NEXT:    movl {{[0-9]+}}(%esp), %eax
 ; X32-NEXT:    movl (%eax), %ecx
-; X32-NEXT:    orl {{[0-9]+}}(%esp), %ecx
-; X32-NEXT:    xchgl %ecx, (%eax)
+; X32-NEXT:    movl {{[0-9]+}}(%esp), %edx
+; X32-NEXT:    orl %ecx, %edx
+; X32-NEXT:    xchgl %edx, (%eax)
 ; X32-NEXT:    retl
   %1 = load atomic i32, ptr %p monotonic, align 4
   %2 = or i32 %1, %v
@@ -1188,20 +1209,25 @@ define void @xor_64r(ptr %p, i64 %v) {
 ; X32-NEXT:    .cfi_offset %ebp, -8
 ; X32-NEXT:    movl %esp, %ebp
 ; X32-NEXT:    .cfi_def_cfa_register %ebp
+; X32-NEXT:    pushl %esi
 ; X32-NEXT:    andl $-8, %esp
-; X32-NEXT:    subl $16, %esp
+; X32-NEXT:    subl $24, %esp
+; X32-NEXT:    .cfi_offset %esi, -12
 ; X32-NEXT:    movl 8(%ebp), %eax
 ; X32-NEXT:    fildll (%eax)
 ; X32-NEXT:    fistpll {{[0-9]+}}(%esp)
 ; X32-NEXT:    movl {{[0-9]+}}(%esp), %ecx
 ; X32-NEXT:    movl {{[0-9]+}}(%esp), %edx
-; X32-NEXT:    xorl 16(%ebp), %edx
-; X32-NEXT:    xorl 12(%ebp), %ecx
-; X32-NEXT:    movl %ecx, (%esp)
-; X32-NEXT:    movl %edx, {{[0-9]+}}(%esp)
+; X32-NEXT:    movl 16(%ebp), %esi
+; X32-NEXT:    xorl %edx, %esi
+; X32-NEXT:    movl 12(%ebp), %edx
+; X32-NEXT:    xorl %ecx, %edx
+; X32-NEXT:    movl %edx, (%esp)
+; X32-NEXT:    movl %esi, {{[0-9]+}}(%esp)
 ; X32-NEXT:    fildll (%esp)
 ; X32-NEXT:    fistpll (%eax)
-; X32-NEXT:    movl %ebp, %esp
+; X32-NEXT:    leal -4(%ebp), %esp
+; X32-NEXT:    popl %esi
 ; X32-NEXT:    popl %ebp
 ; X32-NEXT:    .cfi_def_cfa %esp, 4
 ; X32-NEXT:    retl
@@ -1245,8 +1271,9 @@ define void @xor_32r_seq_cst(ptr %p, i32 %v) {
 ; X32:       # %bb.0:
 ; X32-NEXT:    movl {{[0-9]+}}(%esp), %eax
 ; X32-NEXT:    movl (%eax), %ecx
-; X32-NEXT:    xorl {{[0-9]+}}(%esp), %ecx
-; X32-NEXT:    xchgl %ecx, (%eax)
+; X32-NEXT:    movl {{[0-9]+}}(%esp), %edx
+; X32-NEXT:    xorl %ecx, %edx
+; X32-NEXT:    xchgl %edx, (%eax)
 ; X32-NEXT:    retl
   %1 = load atomic i32, ptr %p monotonic, align 4
   %2 = xor i32 %1, %v

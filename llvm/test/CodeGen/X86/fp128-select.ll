@@ -26,11 +26,13 @@ define void @test_select(ptr %p, ptr %q, i1 zeroext %c) nounwind {
 ; NOSSE:       # %bb.0:
 ; NOSSE-NEXT:    xorl %eax, %eax
 ; NOSSE-NEXT:    testl %edx, %edx
-; NOSSE-NEXT:    cmovneq (%rdi), %rax
-; NOSSE-NEXT:    movabsq $9223231299366420480, %rcx # imm = 0x7FFF800000000000
-; NOSSE-NEXT:    cmovneq 8(%rdi), %rcx
-; NOSSE-NEXT:    movq %rcx, 8(%rsi)
-; NOSSE-NEXT:    movq %rax, (%rsi)
+; NOSSE-NEXT:    movq (%rdi), %rcx
+; NOSSE-NEXT:    cmoveq %rax, %rcx
+; NOSSE-NEXT:    movabsq $9223231299366420480, %rax # imm = 0x7FFF800000000000
+; NOSSE-NEXT:    movq 8(%rdi), %rdx
+; NOSSE-NEXT:    cmoveq %rax, %rdx
+; NOSSE-NEXT:    movq %rdx, 8(%rsi)
+; NOSSE-NEXT:    movq %rcx, (%rsi)
 ; NOSSE-NEXT:    retq
   %a = load fp128, ptr %p, align 2
   %r = select i1 %c, fp128 %a, fp128 0xL00000000000000007FFF800000000000

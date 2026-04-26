@@ -106,10 +106,9 @@ define <vscale x 32 x i8> @vector_interleave_nxv32i8_nxv16i8(<vscale x 16 x i8> 
 ; ZVBB-LABEL: vector_interleave_nxv32i8_nxv16i8:
 ; ZVBB:       # %bb.0:
 ; ZVBB-NEXT:    vsetvli a0, zero, e8, m2, ta, ma
-; ZVBB-NEXT:    vmv2r.v v12, v10
-; ZVBB-NEXT:    vmv2r.v v14, v8
-; ZVBB-NEXT:    vwsll.vi v8, v12, 8
-; ZVBB-NEXT:    vwaddu.wv v8, v8, v14
+; ZVBB-NEXT:    vmv2r.v v12, v8
+; ZVBB-NEXT:    vwsll.vi v16, v10, 8
+; ZVBB-NEXT:    vwaddu.wv v8, v16, v12
 ; ZVBB-NEXT:    ret
 ;
 ; ZIP-LABEL: vector_interleave_nxv32i8_nxv16i8:
@@ -148,10 +147,9 @@ define <vscale x 16 x i16> @vector_interleave_nxv16i16_nxv8i16(<vscale x 8 x i16
 ; ZVBB-LABEL: vector_interleave_nxv16i16_nxv8i16:
 ; ZVBB:       # %bb.0:
 ; ZVBB-NEXT:    vsetvli a0, zero, e16, m2, ta, ma
-; ZVBB-NEXT:    vmv2r.v v12, v10
-; ZVBB-NEXT:    vmv2r.v v14, v8
-; ZVBB-NEXT:    vwsll.vi v8, v12, 16
-; ZVBB-NEXT:    vwaddu.wv v8, v8, v14
+; ZVBB-NEXT:    vmv2r.v v12, v8
+; ZVBB-NEXT:    vwsll.vi v16, v10, 16
+; ZVBB-NEXT:    vwaddu.wv v8, v16, v12
 ; ZVBB-NEXT:    ret
 ;
 ; ZIP-LABEL: vector_interleave_nxv16i16_nxv8i16:
@@ -190,11 +188,10 @@ define <vscale x 8 x i32> @vector_interleave_nxv8i32_nxv4i32(<vscale x 4 x i32> 
 ; ZVBB-LABEL: vector_interleave_nxv8i32_nxv4i32:
 ; ZVBB:       # %bb.0:
 ; ZVBB-NEXT:    vsetvli a0, zero, e32, m2, ta, ma
-; ZVBB-NEXT:    vmv2r.v v12, v10
-; ZVBB-NEXT:    vmv2r.v v14, v8
+; ZVBB-NEXT:    vmv2r.v v12, v8
 ; ZVBB-NEXT:    li a0, 32
-; ZVBB-NEXT:    vwsll.vx v8, v12, a0
-; ZVBB-NEXT:    vwaddu.wv v8, v8, v14
+; ZVBB-NEXT:    vwsll.vx v16, v10, a0
+; ZVBB-NEXT:    vwaddu.wv v8, v16, v12
 ; ZVBB-NEXT:    ret
 ;
 ; ZIP-LABEL: vector_interleave_nxv8i32_nxv4i32:
@@ -306,16 +303,15 @@ define <vscale x 128 x i1> @vector_interleave_nxv128i1_nxv64i1(<vscale x 64 x i1
 ; ZVBB-NEXT:    vmv.v.i v24, 0
 ; ZVBB-NEXT:    vmerge.vim v16, v24, 1, v0
 ; ZVBB-NEXT:    vmv1r.v v0, v8
-; ZVBB-NEXT:    vmerge.vim v24, v24, 1, v0
+; ZVBB-NEXT:    vmerge.vim v8, v24, 1, v0
 ; ZVBB-NEXT:    vsetvli a0, zero, e8, m4, ta, ma
-; ZVBB-NEXT:    vwsll.vi v8, v24, 8
-; ZVBB-NEXT:    vwsll.vi v0, v28, 8
-; ZVBB-NEXT:    vwaddu.wv v8, v8, v16
-; ZVBB-NEXT:    vwaddu.wv v0, v0, v20
+; ZVBB-NEXT:    vwsll.vi v24, v8, 8
+; ZVBB-NEXT:    vwsll.vi v0, v12, 8
+; ZVBB-NEXT:    vwaddu.wv v8, v24, v16
+; ZVBB-NEXT:    vwaddu.wv v24, v0, v20
 ; ZVBB-NEXT:    vsetvli a0, zero, e8, m8, ta, ma
-; ZVBB-NEXT:    vmsne.vi v16, v8, 0
-; ZVBB-NEXT:    vmsne.vi v8, v0, 0
-; ZVBB-NEXT:    vmv1r.v v0, v16
+; ZVBB-NEXT:    vmsne.vi v0, v8, 0
+; ZVBB-NEXT:    vmsne.vi v8, v24, 0
 ; ZVBB-NEXT:    ret
 ;
 ; ZIP-LABEL: vector_interleave_nxv128i1_nxv64i1:
@@ -377,13 +373,27 @@ define <vscale x 128 x i8> @vector_interleave_nxv128i8_nxv64i8(<vscale x 64 x i8
 ;
 ; ZVBB-LABEL: vector_interleave_nxv128i8_nxv64i8:
 ; ZVBB:       # %bb.0:
+; ZVBB-NEXT:    addi sp, sp, -16
+; ZVBB-NEXT:    .cfi_def_cfa_offset 16
+; ZVBB-NEXT:    csrr a0, vlenb
+; ZVBB-NEXT:    slli a0, a0, 3
+; ZVBB-NEXT:    sub sp, sp, a0
+; ZVBB-NEXT:    .cfi_escape 0x0f, 0x0d, 0x72, 0x00, 0x11, 0x10, 0x22, 0x11, 0x08, 0x92, 0xa2, 0x38, 0x00, 0x1e, 0x22 # sp + 16 + 8 * vlenb
 ; ZVBB-NEXT:    vsetvli a0, zero, e8, m4, ta, ma
 ; ZVBB-NEXT:    vwsll.vi v24, v16, 8
-; ZVBB-NEXT:    vwsll.vi v0, v20, 8
-; ZVBB-NEXT:    vwaddu.wv v24, v24, v8
-; ZVBB-NEXT:    vwaddu.wv v0, v0, v12
-; ZVBB-NEXT:    vmv8r.v v8, v24
-; ZVBB-NEXT:    vmv8r.v v16, v0
+; ZVBB-NEXT:    addi a0, sp, 16
+; ZVBB-NEXT:    vs8r.v v24, (a0) # vscale x 64-byte Folded Spill
+; ZVBB-NEXT:    vwsll.vi v24, v20, 8
+; ZVBB-NEXT:    vl8r.v v16, (a0) # vscale x 64-byte Folded Reload
+; ZVBB-NEXT:    vwaddu.wv v0, v16, v8
+; ZVBB-NEXT:    vwaddu.wv v16, v24, v12
+; ZVBB-NEXT:    vmv8r.v v8, v0
+; ZVBB-NEXT:    csrr a0, vlenb
+; ZVBB-NEXT:    slli a0, a0, 3
+; ZVBB-NEXT:    add sp, sp, a0
+; ZVBB-NEXT:    .cfi_def_cfa sp, 16
+; ZVBB-NEXT:    addi sp, sp, 16
+; ZVBB-NEXT:    .cfi_def_cfa_offset 0
 ; ZVBB-NEXT:    ret
 ;
 ; ZIP-LABEL: vector_interleave_nxv128i8_nxv64i8:
@@ -427,13 +437,27 @@ define <vscale x 64 x i16> @vector_interleave_nxv64i16_nxv32i16(<vscale x 32 x i
 ;
 ; ZVBB-LABEL: vector_interleave_nxv64i16_nxv32i16:
 ; ZVBB:       # %bb.0:
+; ZVBB-NEXT:    addi sp, sp, -16
+; ZVBB-NEXT:    .cfi_def_cfa_offset 16
+; ZVBB-NEXT:    csrr a0, vlenb
+; ZVBB-NEXT:    slli a0, a0, 3
+; ZVBB-NEXT:    sub sp, sp, a0
+; ZVBB-NEXT:    .cfi_escape 0x0f, 0x0d, 0x72, 0x00, 0x11, 0x10, 0x22, 0x11, 0x08, 0x92, 0xa2, 0x38, 0x00, 0x1e, 0x22 # sp + 16 + 8 * vlenb
 ; ZVBB-NEXT:    vsetvli a0, zero, e16, m4, ta, ma
 ; ZVBB-NEXT:    vwsll.vi v24, v16, 16
-; ZVBB-NEXT:    vwsll.vi v0, v20, 16
-; ZVBB-NEXT:    vwaddu.wv v24, v24, v8
-; ZVBB-NEXT:    vwaddu.wv v0, v0, v12
-; ZVBB-NEXT:    vmv8r.v v8, v24
-; ZVBB-NEXT:    vmv8r.v v16, v0
+; ZVBB-NEXT:    addi a0, sp, 16
+; ZVBB-NEXT:    vs8r.v v24, (a0) # vscale x 64-byte Folded Spill
+; ZVBB-NEXT:    vwsll.vi v24, v20, 16
+; ZVBB-NEXT:    vl8r.v v16, (a0) # vscale x 64-byte Folded Reload
+; ZVBB-NEXT:    vwaddu.wv v0, v16, v8
+; ZVBB-NEXT:    vwaddu.wv v16, v24, v12
+; ZVBB-NEXT:    vmv8r.v v8, v0
+; ZVBB-NEXT:    csrr a0, vlenb
+; ZVBB-NEXT:    slli a0, a0, 3
+; ZVBB-NEXT:    add sp, sp, a0
+; ZVBB-NEXT:    .cfi_def_cfa sp, 16
+; ZVBB-NEXT:    addi sp, sp, 16
+; ZVBB-NEXT:    .cfi_def_cfa_offset 0
 ; ZVBB-NEXT:    ret
 ;
 ; ZIP-LABEL: vector_interleave_nxv64i16_nxv32i16:
@@ -477,14 +501,29 @@ define <vscale x 32 x i32> @vector_interleave_nxv32i32_nxv16i32(<vscale x 16 x i
 ;
 ; ZVBB-LABEL: vector_interleave_nxv32i32_nxv16i32:
 ; ZVBB:       # %bb.0:
+; ZVBB-NEXT:    addi sp, sp, -16
+; ZVBB-NEXT:    .cfi_def_cfa_offset 16
+; ZVBB-NEXT:    csrr a0, vlenb
+; ZVBB-NEXT:    slli a0, a0, 3
+; ZVBB-NEXT:    sub sp, sp, a0
+; ZVBB-NEXT:    .cfi_escape 0x0f, 0x0d, 0x72, 0x00, 0x11, 0x10, 0x22, 0x11, 0x08, 0x92, 0xa2, 0x38, 0x00, 0x1e, 0x22 # sp + 16 + 8 * vlenb
 ; ZVBB-NEXT:    li a0, 32
 ; ZVBB-NEXT:    vsetvli a1, zero, e32, m4, ta, ma
 ; ZVBB-NEXT:    vwsll.vx v24, v16, a0
-; ZVBB-NEXT:    vwsll.vx v0, v20, a0
-; ZVBB-NEXT:    vwaddu.wv v24, v24, v8
-; ZVBB-NEXT:    vwaddu.wv v0, v0, v12
-; ZVBB-NEXT:    vmv8r.v v8, v24
-; ZVBB-NEXT:    vmv8r.v v16, v0
+; ZVBB-NEXT:    addi a1, sp, 16
+; ZVBB-NEXT:    vs8r.v v24, (a1) # vscale x 64-byte Folded Spill
+; ZVBB-NEXT:    vwsll.vx v24, v20, a0
+; ZVBB-NEXT:    addi a0, sp, 16
+; ZVBB-NEXT:    vl8r.v v16, (a0) # vscale x 64-byte Folded Reload
+; ZVBB-NEXT:    vwaddu.wv v0, v16, v8
+; ZVBB-NEXT:    vwaddu.wv v16, v24, v12
+; ZVBB-NEXT:    vmv8r.v v8, v0
+; ZVBB-NEXT:    csrr a0, vlenb
+; ZVBB-NEXT:    slli a0, a0, 3
+; ZVBB-NEXT:    add sp, sp, a0
+; ZVBB-NEXT:    .cfi_def_cfa sp, 16
+; ZVBB-NEXT:    addi sp, sp, 16
+; ZVBB-NEXT:    .cfi_def_cfa_offset 0
 ; ZVBB-NEXT:    ret
 ;
 ; ZIP-LABEL: vector_interleave_nxv32i32_nxv16i32:
@@ -7144,12 +7183,12 @@ define <vscale x 4 x bfloat> @vector_interleave_nxv4bf16_nxv2bf16(<vscale x 2 x 
 ; ZVBB-NEXT:    vsetvli a0, zero, e16, mf2, ta, ma
 ; ZVBB-NEXT:    vwsll.vi v10, v9, 16
 ; ZVBB-NEXT:    csrr a0, vlenb
-; ZVBB-NEXT:    vwaddu.wv v10, v10, v8
+; ZVBB-NEXT:    vwaddu.wv v9, v10, v8
 ; ZVBB-NEXT:    srli a0, a0, 2
 ; ZVBB-NEXT:    vsetvli a1, zero, e16, m1, ta, ma
-; ZVBB-NEXT:    vslidedown.vx v8, v10, a0
-; ZVBB-NEXT:    vslideup.vx v10, v8, a0
-; ZVBB-NEXT:    vmv.v.v v8, v10
+; ZVBB-NEXT:    vslidedown.vx v8, v9, a0
+; ZVBB-NEXT:    vslideup.vx v9, v8, a0
+; ZVBB-NEXT:    vmv.v.v v8, v9
 ; ZVBB-NEXT:    ret
 ;
 ; ZIP-LABEL: vector_interleave_nxv4bf16_nxv2bf16:
@@ -7195,10 +7234,9 @@ define <vscale x 8 x bfloat> @vector_interleave_nxv8bf16_nxv4bf16(<vscale x 4 x 
 ; ZVBB-LABEL: vector_interleave_nxv8bf16_nxv4bf16:
 ; ZVBB:       # %bb.0:
 ; ZVBB-NEXT:    vsetvli a0, zero, e16, m1, ta, ma
-; ZVBB-NEXT:    vmv1r.v v10, v9
-; ZVBB-NEXT:    vmv1r.v v11, v8
-; ZVBB-NEXT:    vwsll.vi v8, v10, 16
-; ZVBB-NEXT:    vwaddu.wv v8, v8, v11
+; ZVBB-NEXT:    vmv1r.v v10, v8
+; ZVBB-NEXT:    vwsll.vi v12, v9, 16
+; ZVBB-NEXT:    vwaddu.wv v8, v12, v10
 ; ZVBB-NEXT:    ret
 ;
 ; ZIP-LABEL: vector_interleave_nxv8bf16_nxv4bf16:
@@ -7243,12 +7281,12 @@ define <vscale x 4 x half> @vector_interleave_nxv4f16_nxv2f16(<vscale x 2 x half
 ; ZVBB-NEXT:    vsetvli a0, zero, e16, mf2, ta, ma
 ; ZVBB-NEXT:    vwsll.vi v10, v9, 16
 ; ZVBB-NEXT:    csrr a0, vlenb
-; ZVBB-NEXT:    vwaddu.wv v10, v10, v8
+; ZVBB-NEXT:    vwaddu.wv v9, v10, v8
 ; ZVBB-NEXT:    srli a0, a0, 2
 ; ZVBB-NEXT:    vsetvli a1, zero, e16, m1, ta, ma
-; ZVBB-NEXT:    vslidedown.vx v8, v10, a0
-; ZVBB-NEXT:    vslideup.vx v10, v8, a0
-; ZVBB-NEXT:    vmv.v.v v8, v10
+; ZVBB-NEXT:    vslidedown.vx v8, v9, a0
+; ZVBB-NEXT:    vslideup.vx v9, v8, a0
+; ZVBB-NEXT:    vmv.v.v v8, v9
 ; ZVBB-NEXT:    ret
 ;
 ; ZIP-LABEL: vector_interleave_nxv4f16_nxv2f16:
@@ -7294,10 +7332,9 @@ define <vscale x 8 x half> @vector_interleave_nxv8f16_nxv4f16(<vscale x 4 x half
 ; ZVBB-LABEL: vector_interleave_nxv8f16_nxv4f16:
 ; ZVBB:       # %bb.0:
 ; ZVBB-NEXT:    vsetvli a0, zero, e16, m1, ta, ma
-; ZVBB-NEXT:    vmv1r.v v10, v9
-; ZVBB-NEXT:    vmv1r.v v11, v8
-; ZVBB-NEXT:    vwsll.vi v8, v10, 16
-; ZVBB-NEXT:    vwaddu.wv v8, v8, v11
+; ZVBB-NEXT:    vmv1r.v v10, v8
+; ZVBB-NEXT:    vwsll.vi v12, v9, 16
+; ZVBB-NEXT:    vwaddu.wv v8, v12, v10
 ; ZVBB-NEXT:    ret
 ;
 ; ZIP-LABEL: vector_interleave_nxv8f16_nxv4f16:
@@ -7336,11 +7373,10 @@ define <vscale x 4 x float> @vector_interleave_nxv4f32_nxv2f32(<vscale x 2 x flo
 ; ZVBB-LABEL: vector_interleave_nxv4f32_nxv2f32:
 ; ZVBB:       # %bb.0:
 ; ZVBB-NEXT:    vsetvli a0, zero, e32, m1, ta, ma
-; ZVBB-NEXT:    vmv1r.v v10, v9
-; ZVBB-NEXT:    vmv1r.v v11, v8
+; ZVBB-NEXT:    vmv1r.v v10, v8
 ; ZVBB-NEXT:    li a0, 32
-; ZVBB-NEXT:    vwsll.vx v8, v10, a0
-; ZVBB-NEXT:    vwaddu.wv v8, v8, v11
+; ZVBB-NEXT:    vwsll.vx v12, v9, a0
+; ZVBB-NEXT:    vwaddu.wv v8, v12, v10
 ; ZVBB-NEXT:    ret
 ;
 ; ZIP-LABEL: vector_interleave_nxv4f32_nxv2f32:
@@ -7379,10 +7415,9 @@ define <vscale x 16 x bfloat> @vector_interleave_nxv16bf16_nxv8bf16(<vscale x 8 
 ; ZVBB-LABEL: vector_interleave_nxv16bf16_nxv8bf16:
 ; ZVBB:       # %bb.0:
 ; ZVBB-NEXT:    vsetvli a0, zero, e16, m2, ta, ma
-; ZVBB-NEXT:    vmv2r.v v12, v10
-; ZVBB-NEXT:    vmv2r.v v14, v8
-; ZVBB-NEXT:    vwsll.vi v8, v12, 16
-; ZVBB-NEXT:    vwaddu.wv v8, v8, v14
+; ZVBB-NEXT:    vmv2r.v v12, v8
+; ZVBB-NEXT:    vwsll.vi v16, v10, 16
+; ZVBB-NEXT:    vwaddu.wv v8, v16, v12
 ; ZVBB-NEXT:    ret
 ;
 ; ZIP-LABEL: vector_interleave_nxv16bf16_nxv8bf16:
@@ -7421,10 +7456,9 @@ define <vscale x 16 x half> @vector_interleave_nxv16f16_nxv8f16(<vscale x 8 x ha
 ; ZVBB-LABEL: vector_interleave_nxv16f16_nxv8f16:
 ; ZVBB:       # %bb.0:
 ; ZVBB-NEXT:    vsetvli a0, zero, e16, m2, ta, ma
-; ZVBB-NEXT:    vmv2r.v v12, v10
-; ZVBB-NEXT:    vmv2r.v v14, v8
-; ZVBB-NEXT:    vwsll.vi v8, v12, 16
-; ZVBB-NEXT:    vwaddu.wv v8, v8, v14
+; ZVBB-NEXT:    vmv2r.v v12, v8
+; ZVBB-NEXT:    vwsll.vi v16, v10, 16
+; ZVBB-NEXT:    vwaddu.wv v8, v16, v12
 ; ZVBB-NEXT:    ret
 ;
 ; ZIP-LABEL: vector_interleave_nxv16f16_nxv8f16:
@@ -7463,11 +7497,10 @@ define <vscale x 8 x float> @vector_interleave_nxv8f32_nxv4f32(<vscale x 4 x flo
 ; ZVBB-LABEL: vector_interleave_nxv8f32_nxv4f32:
 ; ZVBB:       # %bb.0:
 ; ZVBB-NEXT:    vsetvli a0, zero, e32, m2, ta, ma
-; ZVBB-NEXT:    vmv2r.v v12, v10
-; ZVBB-NEXT:    vmv2r.v v14, v8
+; ZVBB-NEXT:    vmv2r.v v12, v8
 ; ZVBB-NEXT:    li a0, 32
-; ZVBB-NEXT:    vwsll.vx v8, v12, a0
-; ZVBB-NEXT:    vwaddu.wv v8, v8, v14
+; ZVBB-NEXT:    vwsll.vx v16, v10, a0
+; ZVBB-NEXT:    vwaddu.wv v8, v16, v12
 ; ZVBB-NEXT:    ret
 ;
 ; ZIP-LABEL: vector_interleave_nxv8f32_nxv4f32:
@@ -7567,13 +7600,27 @@ define <vscale x 64 x bfloat> @vector_interleave_nxv64bf16_nxv32bf16(<vscale x 3
 ;
 ; ZVBB-LABEL: vector_interleave_nxv64bf16_nxv32bf16:
 ; ZVBB:       # %bb.0:
+; ZVBB-NEXT:    addi sp, sp, -16
+; ZVBB-NEXT:    .cfi_def_cfa_offset 16
+; ZVBB-NEXT:    csrr a0, vlenb
+; ZVBB-NEXT:    slli a0, a0, 3
+; ZVBB-NEXT:    sub sp, sp, a0
+; ZVBB-NEXT:    .cfi_escape 0x0f, 0x0d, 0x72, 0x00, 0x11, 0x10, 0x22, 0x11, 0x08, 0x92, 0xa2, 0x38, 0x00, 0x1e, 0x22 # sp + 16 + 8 * vlenb
 ; ZVBB-NEXT:    vsetvli a0, zero, e16, m4, ta, ma
 ; ZVBB-NEXT:    vwsll.vi v24, v16, 16
-; ZVBB-NEXT:    vwsll.vi v0, v20, 16
-; ZVBB-NEXT:    vwaddu.wv v24, v24, v8
-; ZVBB-NEXT:    vwaddu.wv v0, v0, v12
-; ZVBB-NEXT:    vmv8r.v v8, v24
-; ZVBB-NEXT:    vmv8r.v v16, v0
+; ZVBB-NEXT:    addi a0, sp, 16
+; ZVBB-NEXT:    vs8r.v v24, (a0) # vscale x 64-byte Folded Spill
+; ZVBB-NEXT:    vwsll.vi v24, v20, 16
+; ZVBB-NEXT:    vl8r.v v16, (a0) # vscale x 64-byte Folded Reload
+; ZVBB-NEXT:    vwaddu.wv v0, v16, v8
+; ZVBB-NEXT:    vwaddu.wv v16, v24, v12
+; ZVBB-NEXT:    vmv8r.v v8, v0
+; ZVBB-NEXT:    csrr a0, vlenb
+; ZVBB-NEXT:    slli a0, a0, 3
+; ZVBB-NEXT:    add sp, sp, a0
+; ZVBB-NEXT:    .cfi_def_cfa sp, 16
+; ZVBB-NEXT:    addi sp, sp, 16
+; ZVBB-NEXT:    .cfi_def_cfa_offset 0
 ; ZVBB-NEXT:    ret
 ;
 ; ZIP-LABEL: vector_interleave_nxv64bf16_nxv32bf16:
@@ -7617,13 +7664,27 @@ define <vscale x 64 x half> @vector_interleave_nxv64f16_nxv32f16(<vscale x 32 x 
 ;
 ; ZVBB-LABEL: vector_interleave_nxv64f16_nxv32f16:
 ; ZVBB:       # %bb.0:
+; ZVBB-NEXT:    addi sp, sp, -16
+; ZVBB-NEXT:    .cfi_def_cfa_offset 16
+; ZVBB-NEXT:    csrr a0, vlenb
+; ZVBB-NEXT:    slli a0, a0, 3
+; ZVBB-NEXT:    sub sp, sp, a0
+; ZVBB-NEXT:    .cfi_escape 0x0f, 0x0d, 0x72, 0x00, 0x11, 0x10, 0x22, 0x11, 0x08, 0x92, 0xa2, 0x38, 0x00, 0x1e, 0x22 # sp + 16 + 8 * vlenb
 ; ZVBB-NEXT:    vsetvli a0, zero, e16, m4, ta, ma
 ; ZVBB-NEXT:    vwsll.vi v24, v16, 16
-; ZVBB-NEXT:    vwsll.vi v0, v20, 16
-; ZVBB-NEXT:    vwaddu.wv v24, v24, v8
-; ZVBB-NEXT:    vwaddu.wv v0, v0, v12
-; ZVBB-NEXT:    vmv8r.v v8, v24
-; ZVBB-NEXT:    vmv8r.v v16, v0
+; ZVBB-NEXT:    addi a0, sp, 16
+; ZVBB-NEXT:    vs8r.v v24, (a0) # vscale x 64-byte Folded Spill
+; ZVBB-NEXT:    vwsll.vi v24, v20, 16
+; ZVBB-NEXT:    vl8r.v v16, (a0) # vscale x 64-byte Folded Reload
+; ZVBB-NEXT:    vwaddu.wv v0, v16, v8
+; ZVBB-NEXT:    vwaddu.wv v16, v24, v12
+; ZVBB-NEXT:    vmv8r.v v8, v0
+; ZVBB-NEXT:    csrr a0, vlenb
+; ZVBB-NEXT:    slli a0, a0, 3
+; ZVBB-NEXT:    add sp, sp, a0
+; ZVBB-NEXT:    .cfi_def_cfa sp, 16
+; ZVBB-NEXT:    addi sp, sp, 16
+; ZVBB-NEXT:    .cfi_def_cfa_offset 0
 ; ZVBB-NEXT:    ret
 ;
 ; ZIP-LABEL: vector_interleave_nxv64f16_nxv32f16:
@@ -7667,14 +7728,29 @@ define <vscale x 32 x float> @vector_interleave_nxv32f32_nxv16f32(<vscale x 16 x
 ;
 ; ZVBB-LABEL: vector_interleave_nxv32f32_nxv16f32:
 ; ZVBB:       # %bb.0:
+; ZVBB-NEXT:    addi sp, sp, -16
+; ZVBB-NEXT:    .cfi_def_cfa_offset 16
+; ZVBB-NEXT:    csrr a0, vlenb
+; ZVBB-NEXT:    slli a0, a0, 3
+; ZVBB-NEXT:    sub sp, sp, a0
+; ZVBB-NEXT:    .cfi_escape 0x0f, 0x0d, 0x72, 0x00, 0x11, 0x10, 0x22, 0x11, 0x08, 0x92, 0xa2, 0x38, 0x00, 0x1e, 0x22 # sp + 16 + 8 * vlenb
 ; ZVBB-NEXT:    li a0, 32
 ; ZVBB-NEXT:    vsetvli a1, zero, e32, m4, ta, ma
 ; ZVBB-NEXT:    vwsll.vx v24, v16, a0
-; ZVBB-NEXT:    vwsll.vx v0, v20, a0
-; ZVBB-NEXT:    vwaddu.wv v24, v24, v8
-; ZVBB-NEXT:    vwaddu.wv v0, v0, v12
-; ZVBB-NEXT:    vmv8r.v v8, v24
-; ZVBB-NEXT:    vmv8r.v v16, v0
+; ZVBB-NEXT:    addi a1, sp, 16
+; ZVBB-NEXT:    vs8r.v v24, (a1) # vscale x 64-byte Folded Spill
+; ZVBB-NEXT:    vwsll.vx v24, v20, a0
+; ZVBB-NEXT:    addi a0, sp, 16
+; ZVBB-NEXT:    vl8r.v v16, (a0) # vscale x 64-byte Folded Reload
+; ZVBB-NEXT:    vwaddu.wv v0, v16, v8
+; ZVBB-NEXT:    vwaddu.wv v16, v24, v12
+; ZVBB-NEXT:    vmv8r.v v8, v0
+; ZVBB-NEXT:    csrr a0, vlenb
+; ZVBB-NEXT:    slli a0, a0, 3
+; ZVBB-NEXT:    add sp, sp, a0
+; ZVBB-NEXT:    .cfi_def_cfa sp, 16
+; ZVBB-NEXT:    addi sp, sp, 16
+; ZVBB-NEXT:    .cfi_def_cfa_offset 0
 ; ZVBB-NEXT:    ret
 ;
 ; ZIP-LABEL: vector_interleave_nxv32f32_nxv16f32:

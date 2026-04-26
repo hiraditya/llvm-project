@@ -238,7 +238,8 @@ define i64 @f10(ptr %foo, i64 %bar, i64 %baz) {
 ; CHECK-NEXT:    sete %bl
 ; CHECK-NEXT:    callq dummy
 ; CHECK-NEXT:    testb %bl, %bl
-; CHECK-NEXT:    cmoveq %rsi, %rax
+; CHECK-NEXT:    cmovneq %rax, %rsi
+; CHECK-NEXT:    movq %rsi, %rax
 ; CHECK-NEXT:    .seh_startepilogue
 ; CHECK-NEXT:    addq $40, %rsp
 ; CHECK-NEXT:    popq %rbx

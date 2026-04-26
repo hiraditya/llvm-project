@@ -5,16 +5,16 @@
 define i32 @test_add_1_cmov_slt(ptr %p, i32 %a0, i32 %a1) #0 {
 ; FASTINCDEC-LABEL: test_add_1_cmov_slt:
 ; FASTINCDEC:       # %bb.0: # %entry
-; FASTINCDEC-NEXT:    movl %esi, %eax
+; FASTINCDEC-NEXT:    movl %edx, %eax
 ; FASTINCDEC-NEXT:    lock incq (%rdi)
-; FASTINCDEC-NEXT:    cmovgl %edx, %eax
+; FASTINCDEC-NEXT:    cmovlel %esi, %eax
 ; FASTINCDEC-NEXT:    retq
 ;
 ; SLOWINCDEC-LABEL: test_add_1_cmov_slt:
 ; SLOWINCDEC:       # %bb.0: # %entry
-; SLOWINCDEC-NEXT:    movl %esi, %eax
+; SLOWINCDEC-NEXT:    movl %edx, %eax
 ; SLOWINCDEC-NEXT:    lock addq $1, (%rdi)
-; SLOWINCDEC-NEXT:    cmovgl %edx, %eax
+; SLOWINCDEC-NEXT:    cmovlel %esi, %eax
 ; SLOWINCDEC-NEXT:    retq
 entry:
   %tmp0 = atomicrmw add ptr %p, i64 1 seq_cst
@@ -26,16 +26,16 @@ entry:
 define i32 @test_add_1_cmov_sge(ptr %p, i32 %a0, i32 %a1) #0 {
 ; FASTINCDEC-LABEL: test_add_1_cmov_sge:
 ; FASTINCDEC:       # %bb.0: # %entry
-; FASTINCDEC-NEXT:    movl %esi, %eax
+; FASTINCDEC-NEXT:    movl %edx, %eax
 ; FASTINCDEC-NEXT:    lock incq (%rdi)
-; FASTINCDEC-NEXT:    cmovlel %edx, %eax
+; FASTINCDEC-NEXT:    cmovgl %esi, %eax
 ; FASTINCDEC-NEXT:    retq
 ;
 ; SLOWINCDEC-LABEL: test_add_1_cmov_sge:
 ; SLOWINCDEC:       # %bb.0: # %entry
-; SLOWINCDEC-NEXT:    movl %esi, %eax
+; SLOWINCDEC-NEXT:    movl %edx, %eax
 ; SLOWINCDEC-NEXT:    lock addq $1, (%rdi)
-; SLOWINCDEC-NEXT:    cmovlel %edx, %eax
+; SLOWINCDEC-NEXT:    cmovgl %esi, %eax
 ; SLOWINCDEC-NEXT:    retq
 entry:
   %tmp0 = atomicrmw add ptr %p, i64 1 seq_cst
@@ -47,16 +47,16 @@ entry:
 define i32 @test_sub_1_cmov_sle(ptr %p, i32 %a0, i32 %a1) #0 {
 ; FASTINCDEC-LABEL: test_sub_1_cmov_sle:
 ; FASTINCDEC:       # %bb.0: # %entry
-; FASTINCDEC-NEXT:    movl %esi, %eax
+; FASTINCDEC-NEXT:    movl %edx, %eax
 ; FASTINCDEC-NEXT:    lock decq (%rdi)
-; FASTINCDEC-NEXT:    cmovgel %edx, %eax
+; FASTINCDEC-NEXT:    cmovll %esi, %eax
 ; FASTINCDEC-NEXT:    retq
 ;
 ; SLOWINCDEC-LABEL: test_sub_1_cmov_sle:
 ; SLOWINCDEC:       # %bb.0: # %entry
-; SLOWINCDEC-NEXT:    movl %esi, %eax
+; SLOWINCDEC-NEXT:    movl %edx, %eax
 ; SLOWINCDEC-NEXT:    lock subq $1, (%rdi)
-; SLOWINCDEC-NEXT:    cmovgel %edx, %eax
+; SLOWINCDEC-NEXT:    cmovll %esi, %eax
 ; SLOWINCDEC-NEXT:    retq
 entry:
   %tmp0 = atomicrmw sub ptr %p, i64 1 seq_cst
@@ -68,16 +68,16 @@ entry:
 define i32 @test_sub_1_cmov_sgt(ptr %p, i32 %a0, i32 %a1) #0 {
 ; FASTINCDEC-LABEL: test_sub_1_cmov_sgt:
 ; FASTINCDEC:       # %bb.0: # %entry
-; FASTINCDEC-NEXT:    movl %esi, %eax
+; FASTINCDEC-NEXT:    movl %edx, %eax
 ; FASTINCDEC-NEXT:    lock decq (%rdi)
-; FASTINCDEC-NEXT:    cmovll %edx, %eax
+; FASTINCDEC-NEXT:    cmovgel %esi, %eax
 ; FASTINCDEC-NEXT:    retq
 ;
 ; SLOWINCDEC-LABEL: test_sub_1_cmov_sgt:
 ; SLOWINCDEC:       # %bb.0: # %entry
-; SLOWINCDEC-NEXT:    movl %esi, %eax
+; SLOWINCDEC-NEXT:    movl %edx, %eax
 ; SLOWINCDEC-NEXT:    lock addq $-1, (%rdi)
-; SLOWINCDEC-NEXT:    cmovll %edx, %eax
+; SLOWINCDEC-NEXT:    cmovgel %esi, %eax
 ; SLOWINCDEC-NEXT:    retq
 entry:
   %tmp0 = atomicrmw sub ptr %p, i64 1 seq_cst
@@ -159,11 +159,11 @@ f:
 define i32 @test_add_1_cmov_sle(ptr %p, i32 %a0, i32 %a1) #0 {
 ; CHECK-LABEL: test_add_1_cmov_sle:
 ; CHECK:       # %bb.0: # %entry
-; CHECK-NEXT:    movl %esi, %eax
+; CHECK-NEXT:    movl %edx, %eax
 ; CHECK-NEXT:    movl $1, %ecx
 ; CHECK-NEXT:    lock xaddq %rcx, (%rdi)
 ; CHECK-NEXT:    testq %rcx, %rcx
-; CHECK-NEXT:    cmovgl %edx, %eax
+; CHECK-NEXT:    cmovlel %esi, %eax
 ; CHECK-NEXT:    retq
 entry:
   %tmp0 = atomicrmw add ptr %p, i64 1 seq_cst
@@ -175,11 +175,11 @@ entry:
 define i32 @test_add_1_cmov_sgt(ptr %p, i32 %a0, i32 %a1) #0 {
 ; CHECK-LABEL: test_add_1_cmov_sgt:
 ; CHECK:       # %bb.0: # %entry
-; CHECK-NEXT:    movl %esi, %eax
+; CHECK-NEXT:    movl %edx, %eax
 ; CHECK-NEXT:    movl $1, %ecx
 ; CHECK-NEXT:    lock xaddq %rcx, (%rdi)
 ; CHECK-NEXT:    testq %rcx, %rcx
-; CHECK-NEXT:    cmovlel %edx, %eax
+; CHECK-NEXT:    cmovgl %esi, %eax
 ; CHECK-NEXT:    retq
 entry:
   %tmp0 = atomicrmw add ptr %p, i64 1 seq_cst
@@ -231,11 +231,11 @@ define i8 @test_add_1_cmov_cmov(ptr %p, ptr %q) #0 {
 ; CHECK-NEXT:    testq %rax, %rax
 ; CHECK-NEXT:    movl $12, %eax
 ; CHECK-NEXT:    movl $34, %ecx
-; CHECK-NEXT:    cmovsl %eax, %ecx
-; CHECK-NEXT:    movb %cl, (%rsi)
-; CHECK-NEXT:    movl $56, %ecx
-; CHECK-NEXT:    movl $78, %eax
-; CHECK-NEXT:    cmovsl %ecx, %eax
+; CHECK-NEXT:    cmovnsl %ecx, %eax
+; CHECK-NEXT:    movb %al, (%rsi)
+; CHECK-NEXT:    movl $56, %eax
+; CHECK-NEXT:    movl $78, %ecx
+; CHECK-NEXT:    cmovnsl %ecx, %eax
 ; CHECK-NEXT:    # kill: def $al killed $al killed $eax
 ; CHECK-NEXT:    retq
 entry:

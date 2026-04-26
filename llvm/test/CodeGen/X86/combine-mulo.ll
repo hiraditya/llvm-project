@@ -30,7 +30,8 @@ define <4 x i32> @combine_vec_smul_two(<4 x i32> %a0, <4 x i32> %a1) {
 ; SSE-NEXT:    paddd %xmm0, %xmm2
 ; SSE-NEXT:    movdqa %xmm0, %xmm3
 ; SSE-NEXT:    pcmpgtd %xmm2, %xmm3
-; SSE-NEXT:    pxor %xmm3, %xmm0
+; SSE-NEXT:    pxor %xmm0, %xmm3
+; SSE-NEXT:    movdqa %xmm3, %xmm0
 ; SSE-NEXT:    blendvps %xmm0, %xmm1, %xmm2
 ; SSE-NEXT:    movaps %xmm2, %xmm0
 ; SSE-NEXT:    retq
@@ -67,11 +68,13 @@ define i32 @combine_umul_two(i32 %a0, i32 %a1) {
 define <4 x i32> @combine_vec_umul_two(<4 x i32> %a0, <4 x i32> %a1) {
 ; SSE-LABEL: combine_vec_umul_two:
 ; SSE:       # %bb.0:
-; SSE-NEXT:    movdqa %xmm0, %xmm2
-; SSE-NEXT:    paddd %xmm0, %xmm2
-; SSE-NEXT:    pmaxud %xmm2, %xmm0
-; SSE-NEXT:    pcmpeqd %xmm2, %xmm0
-; SSE-NEXT:    blendvps %xmm0, %xmm2, %xmm1
+; SSE-NEXT:    movdqa %xmm0, %xmm3
+; SSE-NEXT:    paddd %xmm0, %xmm3
+; SSE-NEXT:    movdqa %xmm3, %xmm2
+; SSE-NEXT:    pmaxud %xmm0, %xmm2
+; SSE-NEXT:    pcmpeqd %xmm3, %xmm2
+; SSE-NEXT:    movdqa %xmm2, %xmm0
+; SSE-NEXT:    blendvps %xmm0, %xmm3, %xmm1
 ; SSE-NEXT:    movaps %xmm1, %xmm0
 ; SSE-NEXT:    retq
 ;
@@ -107,9 +110,11 @@ define { i32, i1 } @combine_smul_nsw(i32 %a, i32 %b) {
 define { <4 x i32>, <4 x i1> } @combine_vec_smul_nsw(<4 x i32> %a, <4 x i32> %b) {
 ; SSE-LABEL: combine_vec_smul_nsw:
 ; SSE:       # %bb.0:
-; SSE-NEXT:    pand {{\.?LCPI[0-9]+_[0-9]+}}(%rip), %xmm0
-; SSE-NEXT:    pand {{\.?LCPI[0-9]+_[0-9]+}}(%rip), %xmm1
-; SSE-NEXT:    pmulld %xmm1, %xmm0
+; SSE-NEXT:    pmovsxwd {{.*#+}} xmm2 = [4095,4095,4095,4095]
+; SSE-NEXT:    pand %xmm0, %xmm2
+; SSE-NEXT:    pmovsxbw {{.*#+}} xmm0 = [65535,7,65535,7,65535,7,65535,7]
+; SSE-NEXT:    pand %xmm1, %xmm0
+; SSE-NEXT:    pmulld %xmm2, %xmm0
 ; SSE-NEXT:    pxor %xmm1, %xmm1
 ; SSE-NEXT:    retq
 ;

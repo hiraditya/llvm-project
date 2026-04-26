@@ -32,9 +32,9 @@ define void @bar(<8 x i64> %arg, ptr addrspace(1) %add.ptr) {
 ; X86-NEXT:    vpbroadcastq {{.*#+}} zmm1 = [257,0,257,0,257,0,257,0,257,0,257,0,257,0,257,0]
 ; X86-NEXT:    movb $2, %al
 ; X86-NEXT:    kmovd %eax, %k1
-; X86-NEXT:    vmovdqa64 %zmm0, %zmm1 {%k1}
+; X86-NEXT:    vpblendmq %zmm0, %zmm1, %zmm0 {%k1}
 ; X86-NEXT:    movl {{[0-9]+}}(%esp), %eax
-; X86-NEXT:    vpsrlq $16, %zmm1, %zmm0
+; X86-NEXT:    vpsrlq $16, %zmm0, %zmm0
 ; X86-NEXT:    vpmovqb %zmm0, (%eax) {%k1}
 ; X86-NEXT:    vzeroupper
 ; X86-NEXT:    retl

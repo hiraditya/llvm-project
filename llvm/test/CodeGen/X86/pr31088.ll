@@ -19,8 +19,9 @@ define <1 x half> @ir_fadd_v1f16(<1 x half> %arg0, <1 x half> %arg1) nounwind {
 ; X86-NEXT:    calll __extendhfsf2
 ; X86-NEXT:    fstps {{[0-9]+}}(%esp)
 ; X86-NEXT:    movss {{.*#+}} xmm0 = mem[0],zero,zero,zero
-; X86-NEXT:    addss {{[0-9]+}}(%esp), %xmm0
-; X86-NEXT:    movss %xmm0, (%esp)
+; X86-NEXT:    movss {{.*#+}} xmm1 = mem[0],zero,zero,zero
+; X86-NEXT:    addss %xmm0, %xmm1
+; X86-NEXT:    movss %xmm1, (%esp)
 ; X86-NEXT:    calll __truncsfhf2
 ; X86-NEXT:    addl $28, %esp
 ; X86-NEXT:    retl
@@ -89,16 +90,18 @@ define <2 x half> @ir_fadd_v2f16(<2 x half> %arg0, <2 x half> %arg1) nounwind {
 ; X86-NEXT:    fstps {{[0-9]+}}(%esp)
 ; X86-NEXT:    calll __extendhfsf2
 ; X86-NEXT:    movss {{.*#+}} xmm0 = mem[0],zero,zero,zero
-; X86-NEXT:    addss {{[0-9]+}}(%esp), %xmm0
-; X86-NEXT:    movss %xmm0, (%esp)
+; X86-NEXT:    movss {{.*#+}} xmm1 = mem[0],zero,zero,zero
+; X86-NEXT:    addss %xmm0, %xmm1
+; X86-NEXT:    movss %xmm1, (%esp)
 ; X86-NEXT:    fstps {{[0-9]+}}(%esp)
 ; X86-NEXT:    fldt {{[-0-9]+}}(%e{{[sb]}}p) # 10-byte Folded Reload
 ; X86-NEXT:    fstps {{[0-9]+}}(%esp)
 ; X86-NEXT:    calll __truncsfhf2
 ; X86-NEXT:    movups %xmm0, {{[-0-9]+}}(%e{{[sb]}}p) # 16-byte Spill
 ; X86-NEXT:    movss {{.*#+}} xmm0 = mem[0],zero,zero,zero
-; X86-NEXT:    addss {{[0-9]+}}(%esp), %xmm0
-; X86-NEXT:    movss %xmm0, (%esp)
+; X86-NEXT:    movss {{.*#+}} xmm1 = mem[0],zero,zero,zero
+; X86-NEXT:    addss %xmm0, %xmm1
+; X86-NEXT:    movss %xmm1, (%esp)
 ; X86-NEXT:    calll __truncsfhf2
 ; X86-NEXT:    movdqu {{[-0-9]+}}(%e{{[sb]}}p), %xmm1 # 16-byte Reload
 ; X86-NEXT:    punpcklwd {{.*#+}} xmm0 = xmm0[0],xmm1[0],xmm0[1],xmm1[1],xmm0[2],xmm1[2],xmm0[3],xmm1[3]

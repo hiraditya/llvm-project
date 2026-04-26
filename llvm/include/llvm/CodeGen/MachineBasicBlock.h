@@ -46,7 +46,6 @@ class SlotIndexes;
 class StringRef;
 class raw_ostream;
 class LiveIntervals;
-class LiveVariables;
 class TargetRegisterClass;
 class TargetRegisterInfo;
 
@@ -1015,7 +1014,6 @@ public:
   struct SplitCriticalEdgeAnalyses {
     LiveIntervals *LIS;
     SlotIndexes *SI;
-    LiveVariables *LV;
     MachineLoopInfo *MLI;
   };
 

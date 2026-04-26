@@ -254,15 +254,16 @@ define dso_local void @PR37100(i8 %arg1, i16 %arg2, i64 %arg3, i8 %arg4, ptr %pt
 ; X64-NEXT:  .LBB3_1: # %bb1
 ; X64-NEXT:    # =>This Inner Loop Header: Depth=1
 ; X64-NEXT:    movsbq %dil, %rax
-; X64-NEXT:    xorl %r11d, %r11d
+; X64-NEXT:    xorl %edx, %edx
 ; X64-NEXT:    cmpq %rax, %r10
-; X64-NEXT:    setl %r11b
-; X64-NEXT:    negl %r11d
+; X64-NEXT:    setl %dl
+; X64-NEXT:    negl %edx
 ; X64-NEXT:    cmpq %rax, %r10
 ; X64-NEXT:    movzbl %al, %edi
 ; X64-NEXT:    cmovgel %ecx, %edi
 ; X64-NEXT:    movb %dil, (%r8)
-; X64-NEXT:    cmovgel (%r9), %r11d
+; X64-NEXT:    movl (%r9), %r11d
+; X64-NEXT:    cmovll %edx, %r11d
 ; X64-NEXT:    movl %esi, %eax
 ; X64-NEXT:    cltd
 ; X64-NEXT:    idivl %r11d

@@ -18,15 +18,16 @@ define <16 x i8> @produceShuffleVectorForByte(i8 zeroext %0) nounwind {
 ; X86-SSE2-NEXT:    pushl %esi
 ; X86-SSE2-NEXT:    movd {{.*#+}} xmm0 = mem[0],zero,zero,zero
 ; X86-SSE2-NEXT:    punpcklbw {{.*#+}} xmm0 = xmm0[0,0,1,1,2,2,3,3,4,4,5,5,6,6,7,7]
-; X86-SSE2-NEXT:    pshuflw {{.*#+}} xmm1 = xmm0[0,0,0,0,4,5,6,7]
-; X86-SSE2-NEXT:    pand {{\.?LCPI[0-9]+_[0-9]+}}, %xmm1
-; X86-SSE2-NEXT:    pxor %xmm0, %xmm0
-; X86-SSE2-NEXT:    pcmpeqb %xmm1, %xmm0
-; X86-SSE2-NEXT:    movq {{.*#+}} xmm1 = [17,17,17,17,17,17,17,17,0,0,0,0,0,0,0,0]
-; X86-SSE2-NEXT:    pand %xmm0, %xmm1
-; X86-SSE2-NEXT:    pshufd {{.*#+}} xmm2 = xmm1[1,1,1,1]
+; X86-SSE2-NEXT:    pshuflw {{.*#+}} xmm0 = xmm0[0,0,0,0,4,5,6,7]
+; X86-SSE2-NEXT:    movq {{.*#+}} xmm2 = [1,2,4,8,16,32,64,128,0,0,0,0,0,0,0,0]
+; X86-SSE2-NEXT:    pand %xmm0, %xmm2
+; X86-SSE2-NEXT:    pxor %xmm1, %xmm1
+; X86-SSE2-NEXT:    pcmpeqb %xmm2, %xmm1
+; X86-SSE2-NEXT:    movq {{.*#+}} xmm0 = [17,17,17,17,17,17,17,17,0,0,0,0,0,0,0,0]
+; X86-SSE2-NEXT:    pand %xmm1, %xmm0
+; X86-SSE2-NEXT:    pshufd {{.*#+}} xmm2 = xmm0[1,1,1,1]
 ; X86-SSE2-NEXT:    movd %xmm2, %esi
-; X86-SSE2-NEXT:    movd %xmm1, %ecx
+; X86-SSE2-NEXT:    movd %xmm0, %ecx
 ; X86-SSE2-NEXT:    movl $286331152, %edi # imm = 0x11111110
 ; X86-SSE2-NEXT:    movl %ecx, %eax
 ; X86-SSE2-NEXT:    mull %edi
@@ -35,11 +36,11 @@ define <16 x i8> @produceShuffleVectorForByte(i8 zeroext %0) nounwind {
 ; X86-SSE2-NEXT:    imull $286331152, %esi, %edx # imm = 0x11111110
 ; X86-SSE2-NEXT:    addl %ebx, %edx
 ; X86-SSE2-NEXT:    movd %edx, %xmm2
-; X86-SSE2-NEXT:    movd %eax, %xmm1
+; X86-SSE2-NEXT:    movd %eax, %xmm0
 ; X86-SSE2-NEXT:    xorl $286331153, %ecx # imm = 0x11111111
 ; X86-SSE2-NEXT:    movl %ecx, %eax
 ; X86-SSE2-NEXT:    mull %edi
-; X86-SSE2-NEXT:    punpckldq {{.*#+}} xmm1 = xmm1[0],xmm2[0],xmm1[1],xmm2[1]
+; X86-SSE2-NEXT:    punpckldq {{.*#+}} xmm0 = xmm0[0],xmm2[0],xmm0[1],xmm2[1]
 ; X86-SSE2-NEXT:    xorl $17895697, %esi # imm = 0x1111111
 ; X86-SSE2-NEXT:    imull $286331153, %ecx, %ecx # imm = 0x11111111
 ; X86-SSE2-NEXT:    addl %edx, %ecx
@@ -48,13 +49,14 @@ define <16 x i8> @produceShuffleVectorForByte(i8 zeroext %0) nounwind {
 ; X86-SSE2-NEXT:    movd %edx, %xmm2
 ; X86-SSE2-NEXT:    movd %eax, %xmm3
 ; X86-SSE2-NEXT:    punpckldq {{.*#+}} xmm3 = xmm3[0],xmm2[0],xmm3[1],xmm2[1]
-; X86-SSE2-NEXT:    pand %xmm0, %xmm1
-; X86-SSE2-NEXT:    pandn %xmm3, %xmm0
-; X86-SSE2-NEXT:    por %xmm1, %xmm0
-; X86-SSE2-NEXT:    movdqa %xmm0, %xmm1
-; X86-SSE2-NEXT:    psrlw $4, %xmm1
-; X86-SSE2-NEXT:    punpcklbw {{.*#+}} xmm0 = xmm0[0],xmm1[0],xmm0[1],xmm1[1],xmm0[2],xmm1[2],xmm0[3],xmm1[3],xmm0[4],xmm1[4],xmm0[5],xmm1[5],xmm0[6],xmm1[6],xmm0[7],xmm1[7]
-; X86-SSE2-NEXT:    pand {{\.?LCPI[0-9]+_[0-9]+}}, %xmm0
+; X86-SSE2-NEXT:    pand %xmm1, %xmm0
+; X86-SSE2-NEXT:    pandn %xmm3, %xmm1
+; X86-SSE2-NEXT:    por %xmm0, %xmm1
+; X86-SSE2-NEXT:    movdqa %xmm1, %xmm0
+; X86-SSE2-NEXT:    psrlw $4, %xmm0
+; X86-SSE2-NEXT:    punpcklbw {{.*#+}} xmm1 = xmm1[0],xmm0[0],xmm1[1],xmm0[1],xmm1[2],xmm0[2],xmm1[3],xmm0[3],xmm1[4],xmm0[4],xmm1[5],xmm0[5],xmm1[6],xmm0[6],xmm1[7],xmm0[7]
+; X86-SSE2-NEXT:    movdqa {{.*#+}} xmm0 = [15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15]
+; X86-SSE2-NEXT:    pand %xmm1, %xmm0
 ; X86-SSE2-NEXT:    popl %esi
 ; X86-SSE2-NEXT:    popl %edi
 ; X86-SSE2-NEXT:    popl %ebx
@@ -64,27 +66,29 @@ define <16 x i8> @produceShuffleVectorForByte(i8 zeroext %0) nounwind {
 ; X64-SSE2:       # %bb.0: # %entry
 ; X64-SSE2-NEXT:    movd %edi, %xmm0
 ; X64-SSE2-NEXT:    punpcklbw {{.*#+}} xmm0 = xmm0[0,0,1,1,2,2,3,3,4,4,5,5,6,6,7,7]
-; X64-SSE2-NEXT:    pshuflw {{.*#+}} xmm1 = xmm0[0,0,0,0,4,5,6,7]
-; X64-SSE2-NEXT:    pand {{\.?LCPI[0-9]+_[0-9]+}}(%rip), %xmm1
-; X64-SSE2-NEXT:    pxor %xmm0, %xmm0
-; X64-SSE2-NEXT:    pcmpeqb %xmm1, %xmm0
-; X64-SSE2-NEXT:    movdqa {{.*#+}} xmm1 = [17,17,17,17,17,17,17,17,u,u,u,u,u,u,u,u]
+; X64-SSE2-NEXT:    pshuflw {{.*#+}} xmm0 = xmm0[0,0,0,0,4,5,6,7]
+; X64-SSE2-NEXT:    movq {{.*#+}} xmm1 = [1,2,4,8,16,32,64,128,0,0,0,0,0,0,0,0]
 ; X64-SSE2-NEXT:    pand %xmm0, %xmm1
-; X64-SSE2-NEXT:    movq %xmm1, %rax
+; X64-SSE2-NEXT:    pxor %xmm2, %xmm2
+; X64-SSE2-NEXT:    pcmpeqb %xmm1, %xmm2
+; X64-SSE2-NEXT:    movdqa {{.*#+}} xmm0 = [17,17,17,17,17,17,17,17,u,u,u,u,u,u,u,u]
+; X64-SSE2-NEXT:    pand %xmm2, %xmm0
+; X64-SSE2-NEXT:    movq %xmm0, %rax
 ; X64-SSE2-NEXT:    movabsq $1229782938247303440, %rcx # imm = 0x1111111111111110
 ; X64-SSE2-NEXT:    movabsq $76861433640456465, %rdx # imm = 0x111111111111111
 ; X64-SSE2-NEXT:    xorq %rax, %rdx
 ; X64-SSE2-NEXT:    imulq %rcx, %rax
-; X64-SSE2-NEXT:    movq %rax, %xmm1
+; X64-SSE2-NEXT:    movq %rax, %xmm0
 ; X64-SSE2-NEXT:    imulq %rcx, %rdx
-; X64-SSE2-NEXT:    movq %rdx, %xmm2
-; X64-SSE2-NEXT:    pand %xmm0, %xmm1
-; X64-SSE2-NEXT:    pandn %xmm2, %xmm0
-; X64-SSE2-NEXT:    por %xmm1, %xmm0
-; X64-SSE2-NEXT:    movdqa %xmm0, %xmm1
-; X64-SSE2-NEXT:    psrlw $4, %xmm1
-; X64-SSE2-NEXT:    punpcklbw {{.*#+}} xmm0 = xmm0[0],xmm1[0],xmm0[1],xmm1[1],xmm0[2],xmm1[2],xmm0[3],xmm1[3],xmm0[4],xmm1[4],xmm0[5],xmm1[5],xmm0[6],xmm1[6],xmm0[7],xmm1[7]
-; X64-SSE2-NEXT:    pand {{\.?LCPI[0-9]+_[0-9]+}}(%rip), %xmm0
+; X64-SSE2-NEXT:    movq %rdx, %xmm1
+; X64-SSE2-NEXT:    pand %xmm2, %xmm0
+; X64-SSE2-NEXT:    pandn %xmm1, %xmm2
+; X64-SSE2-NEXT:    por %xmm0, %xmm2
+; X64-SSE2-NEXT:    movdqa %xmm2, %xmm0
+; X64-SSE2-NEXT:    psrlw $4, %xmm0
+; X64-SSE2-NEXT:    punpcklbw {{.*#+}} xmm2 = xmm2[0],xmm0[0],xmm2[1],xmm0[1],xmm2[2],xmm0[2],xmm2[3],xmm0[3],xmm2[4],xmm0[4],xmm2[5],xmm0[5],xmm2[6],xmm0[6],xmm2[7],xmm0[7]
+; X64-SSE2-NEXT:    movdqa {{.*#+}} xmm0 = [15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15]
+; X64-SSE2-NEXT:    pand %xmm2, %xmm0
 ; X64-SSE2-NEXT:    retq
 ;
 ; X86-SSE42-LABEL: produceShuffleVectorForByte:
@@ -94,8 +98,9 @@ define <16 x i8> @produceShuffleVectorForByte(i8 zeroext %0) nounwind {
 ; X86-SSE42-NEXT:    pushl %esi
 ; X86-SSE42-NEXT:    movd {{.*#+}} xmm0 = mem[0],zero,zero,zero
 ; X86-SSE42-NEXT:    punpcklbw {{.*#+}} xmm0 = xmm0[0,0,1,1,2,2,3,3,4,4,5,5,6,6,7,7]
-; X86-SSE42-NEXT:    pshuflw {{.*#+}} xmm1 = xmm0[0,0,0,0,4,5,6,7]
-; X86-SSE42-NEXT:    pand {{\.?LCPI[0-9]+_[0-9]+}}, %xmm1
+; X86-SSE42-NEXT:    pshuflw {{.*#+}} xmm0 = xmm0[0,0,0,0,4,5,6,7]
+; X86-SSE42-NEXT:    movq {{.*#+}} xmm1 = [1,2,4,8,16,32,64,128,0,0,0,0,0,0,0,0]
+; X86-SSE42-NEXT:    pand %xmm0, %xmm1
 ; X86-SSE42-NEXT:    pxor %xmm0, %xmm0
 ; X86-SSE42-NEXT:    pcmpeqb %xmm1, %xmm0
 ; X86-SSE42-NEXT:    movdqa {{.*#+}} xmm1 = [17,17,17,17,17,17,17,17,u,u,u,u,u,u,u,u]
@@ -109,8 +114,8 @@ define <16 x i8> @produceShuffleVectorForByte(i8 zeroext %0) nounwind {
 ; X86-SSE42-NEXT:    addl %edx, %ebx
 ; X86-SSE42-NEXT:    imull $286331152, %esi, %edx # imm = 0x11111110
 ; X86-SSE42-NEXT:    addl %ebx, %edx
-; X86-SSE42-NEXT:    movd %eax, %xmm2
-; X86-SSE42-NEXT:    pinsrd $1, %edx, %xmm2
+; X86-SSE42-NEXT:    movd %eax, %xmm1
+; X86-SSE42-NEXT:    pinsrd $1, %edx, %xmm1
 ; X86-SSE42-NEXT:    xorl $286331153, %ecx # imm = 0x11111111
 ; X86-SSE42-NEXT:    movl %ecx, %eax
 ; X86-SSE42-NEXT:    mull %edi
@@ -119,14 +124,14 @@ define <16 x i8> @produceShuffleVectorForByte(i8 zeroext %0) nounwind {
 ; X86-SSE42-NEXT:    addl %edx, %ecx
 ; X86-SSE42-NEXT:    imull $286331152, %esi, %edx # imm = 0x11111110
 ; X86-SSE42-NEXT:    addl %ecx, %edx
-; X86-SSE42-NEXT:    movd %eax, %xmm1
-; X86-SSE42-NEXT:    pinsrd $1, %edx, %xmm1
-; X86-SSE42-NEXT:    pblendvb %xmm0, %xmm2, %xmm1
-; X86-SSE42-NEXT:    movdqa %xmm1, %xmm0
+; X86-SSE42-NEXT:    movd %eax, %xmm2
+; X86-SSE42-NEXT:    pinsrd $1, %edx, %xmm2
+; X86-SSE42-NEXT:    pblendvb %xmm0, %xmm1, %xmm2
+; X86-SSE42-NEXT:    movdqa %xmm2, %xmm0
 ; X86-SSE42-NEXT:    psrlw $4, %xmm0
-; X86-SSE42-NEXT:    punpcklbw {{.*#+}} xmm1 = xmm1[0],xmm0[0],xmm1[1],xmm0[1],xmm1[2],xmm0[2],xmm1[3],xmm0[3],xmm1[4],xmm0[4],xmm1[5],xmm0[5],xmm1[6],xmm0[6],xmm1[7],xmm0[7]
-; X86-SSE42-NEXT:    pand {{\.?LCPI[0-9]+_[0-9]+}}, %xmm1
-; X86-SSE42-NEXT:    movdqa %xmm1, %xmm0
+; X86-SSE42-NEXT:    punpcklbw {{.*#+}} xmm2 = xmm2[0],xmm0[0],xmm2[1],xmm0[1],xmm2[2],xmm0[2],xmm2[3],xmm0[3],xmm2[4],xmm0[4],xmm2[5],xmm0[5],xmm2[6],xmm0[6],xmm2[7],xmm0[7]
+; X86-SSE42-NEXT:    movdqa {{.*#+}} xmm0 = [15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15]
+; X86-SSE42-NEXT:    pand %xmm2, %xmm0
 ; X86-SSE42-NEXT:    popl %esi
 ; X86-SSE42-NEXT:    popl %edi
 ; X86-SSE42-NEXT:    popl %ebx
@@ -137,25 +142,26 @@ define <16 x i8> @produceShuffleVectorForByte(i8 zeroext %0) nounwind {
 ; X64-SSE42-NEXT:    movd %edi, %xmm0
 ; X64-SSE42-NEXT:    punpcklbw {{.*#+}} xmm0 = xmm0[0,0,1,1,2,2,3,3,4,4,5,5,6,6,7,7]
 ; X64-SSE42-NEXT:    pshuflw {{.*#+}} xmm0 = xmm0[0,0,0,0,4,5,6,7]
-; X64-SSE42-NEXT:    pand {{\.?LCPI[0-9]+_[0-9]+}}(%rip), %xmm0
-; X64-SSE42-NEXT:    pxor %xmm1, %xmm1
-; X64-SSE42-NEXT:    pcmpeqb %xmm0, %xmm1
-; X64-SSE42-NEXT:    movdqa %xmm1, %xmm0
-; X64-SSE42-NEXT:    pand {{\.?LCPI[0-9]+_[0-9]+}}(%rip), %xmm1
+; X64-SSE42-NEXT:    movq {{.*#+}} xmm1 = [1,2,4,8,16,32,64,128,0,0,0,0,0,0,0,0]
+; X64-SSE42-NEXT:    pand %xmm0, %xmm1
+; X64-SSE42-NEXT:    pxor %xmm0, %xmm0
+; X64-SSE42-NEXT:    pcmpeqb %xmm1, %xmm0
+; X64-SSE42-NEXT:    movdqa {{.*#+}} xmm1 = [17,17,17,17,17,17,17,17,u,u,u,u,u,u,u,u]
+; X64-SSE42-NEXT:    pand %xmm0, %xmm1
 ; X64-SSE42-NEXT:    movq %xmm1, %rax
 ; X64-SSE42-NEXT:    movabsq $1229782938247303440, %rcx # imm = 0x1111111111111110
 ; X64-SSE42-NEXT:    movabsq $76861433640456465, %rdx # imm = 0x111111111111111
 ; X64-SSE42-NEXT:    xorq %rax, %rdx
 ; X64-SSE42-NEXT:    imulq %rcx, %rax
-; X64-SSE42-NEXT:    movq %rax, %xmm2
+; X64-SSE42-NEXT:    movq %rax, %xmm1
 ; X64-SSE42-NEXT:    imulq %rcx, %rdx
-; X64-SSE42-NEXT:    movq %rdx, %xmm1
-; X64-SSE42-NEXT:    pblendvb %xmm0, %xmm2, %xmm1
-; X64-SSE42-NEXT:    movdqa %xmm1, %xmm0
+; X64-SSE42-NEXT:    movq %rdx, %xmm2
+; X64-SSE42-NEXT:    pblendvb %xmm0, %xmm1, %xmm2
+; X64-SSE42-NEXT:    movdqa %xmm2, %xmm0
 ; X64-SSE42-NEXT:    psrlw $4, %xmm0
-; X64-SSE42-NEXT:    punpcklbw {{.*#+}} xmm1 = xmm1[0],xmm0[0],xmm1[1],xmm0[1],xmm1[2],xmm0[2],xmm1[3],xmm0[3],xmm1[4],xmm0[4],xmm1[5],xmm0[5],xmm1[6],xmm0[6],xmm1[7],xmm0[7]
-; X64-SSE42-NEXT:    pand {{\.?LCPI[0-9]+_[0-9]+}}(%rip), %xmm1
-; X64-SSE42-NEXT:    movdqa %xmm1, %xmm0
+; X64-SSE42-NEXT:    punpcklbw {{.*#+}} xmm2 = xmm2[0],xmm0[0],xmm2[1],xmm0[1],xmm2[2],xmm0[2],xmm2[3],xmm0[3],xmm2[4],xmm0[4],xmm2[5],xmm0[5],xmm2[6],xmm0[6],xmm2[7],xmm0[7]
+; X64-SSE42-NEXT:    movdqa {{.*#+}} xmm0 = [15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15]
+; X64-SSE42-NEXT:    pand %xmm2, %xmm0
 ; X64-SSE42-NEXT:    retq
 ;
 ; X86-AVX2-LABEL: produceShuffleVectorForByte:
@@ -247,7 +253,7 @@ define <16 x i8> @produceShuffleVectorForByte(i8 zeroext %0) nounwind {
 ; X86-AVX512-NEXT:    addl %edx, %eax
 ; X86-AVX512-NEXT:    vmovd %esi, %xmm1
 ; X86-AVX512-NEXT:    vpinsrd $1, %eax, %xmm1, %xmm1
-; X86-AVX512-NEXT:    vmovdqu8 %xmm1, %xmm0 {%k1}
+; X86-AVX512-NEXT:    vpblendmb %xmm1, %xmm0, %xmm0 {%k1}
 ; X86-AVX512-NEXT:    vpsrlw $4, %xmm0, %xmm1
 ; X86-AVX512-NEXT:    vpunpcklbw {{.*#+}} xmm0 = xmm0[0],xmm1[0],xmm0[1],xmm1[1],xmm0[2],xmm1[2],xmm0[3],xmm1[3],xmm0[4],xmm1[4],xmm0[5],xmm1[5],xmm0[6],xmm1[6],xmm0[7],xmm1[7]
 ; X86-AVX512-NEXT:    vpandd {{\.?LCPI[0-9]+_[0-9]+}}{1to4}, %xmm0, %xmm0
@@ -269,7 +275,7 @@ define <16 x i8> @produceShuffleVectorForByte(i8 zeroext %0) nounwind {
 ; X64-AVX512-NEXT:    vmovq %rax, %xmm0
 ; X64-AVX512-NEXT:    imulq %rcx, %rdx
 ; X64-AVX512-NEXT:    vmovq %rdx, %xmm1
-; X64-AVX512-NEXT:    vmovdqu8 %xmm1, %xmm0 {%k1}
+; X64-AVX512-NEXT:    vpblendmb %xmm1, %xmm0, %xmm0 {%k1}
 ; X64-AVX512-NEXT:    vpsrlw $4, %xmm0, %xmm1
 ; X64-AVX512-NEXT:    vpunpcklbw {{.*#+}} xmm0 = xmm0[0],xmm1[0],xmm0[1],xmm1[1],xmm0[2],xmm1[2],xmm0[3],xmm1[3],xmm0[4],xmm1[4],xmm0[5],xmm1[5],xmm0[6],xmm1[6],xmm0[7],xmm1[7]
 ; X64-AVX512-NEXT:    vpandd {{\.?LCPI[0-9]+_[0-9]+}}(%rip){1to4}, %xmm0, %xmm0

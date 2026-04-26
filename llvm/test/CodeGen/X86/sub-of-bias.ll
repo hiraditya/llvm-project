@@ -20,9 +20,10 @@
 define i32 @t0_32(i32 %ptr, i32 %mask) nounwind {
 ; NOBMI-X86-LABEL: t0_32:
 ; NOBMI-X86:       # %bb.0:
+; NOBMI-X86-NEXT:    movl {{[0-9]+}}(%esp), %ecx
+; NOBMI-X86-NEXT:    notl %ecx
 ; NOBMI-X86-NEXT:    movl {{[0-9]+}}(%esp), %eax
-; NOBMI-X86-NEXT:    notl %eax
-; NOBMI-X86-NEXT:    andl {{[0-9]+}}(%esp), %eax
+; NOBMI-X86-NEXT:    andl %ecx, %eax
 ; NOBMI-X86-NEXT:    retl
 ;
 ; BMI-X86-LABEL: t0_32:
@@ -49,12 +50,16 @@ define i32 @t0_32(i32 %ptr, i32 %mask) nounwind {
 define i64 @t1_64(i64 %ptr, i64 %mask) nounwind {
 ; NOBMI-X86-LABEL: t1_64:
 ; NOBMI-X86:       # %bb.0:
+; NOBMI-X86-NEXT:    pushl %esi
+; NOBMI-X86-NEXT:    movl {{[0-9]+}}(%esp), %ecx
+; NOBMI-X86-NEXT:    movl {{[0-9]+}}(%esp), %esi
+; NOBMI-X86-NEXT:    notl %ecx
 ; NOBMI-X86-NEXT:    movl {{[0-9]+}}(%esp), %eax
+; NOBMI-X86-NEXT:    andl %ecx, %eax
+; NOBMI-X86-NEXT:    notl %esi
 ; NOBMI-X86-NEXT:    movl {{[0-9]+}}(%esp), %edx
-; NOBMI-X86-NEXT:    notl %eax
-; NOBMI-X86-NEXT:    andl {{[0-9]+}}(%esp), %eax
-; NOBMI-X86-NEXT:    notl %edx
-; NOBMI-X86-NEXT:    andl {{[0-9]+}}(%esp), %edx
+; NOBMI-X86-NEXT:    andl %esi, %edx
+; NOBMI-X86-NEXT:    popl %esi
 ; NOBMI-X86-NEXT:    retl
 ;
 ; BMI-X86-LABEL: t1_64:
@@ -84,9 +89,10 @@ define i64 @t1_64(i64 %ptr, i64 %mask) nounwind {
 define i32 @t2_commutative(i32 %ptr, i32 %mask) nounwind {
 ; NOBMI-X86-LABEL: t2_commutative:
 ; NOBMI-X86:       # %bb.0:
+; NOBMI-X86-NEXT:    movl {{[0-9]+}}(%esp), %ecx
+; NOBMI-X86-NEXT:    notl %ecx
 ; NOBMI-X86-NEXT:    movl {{[0-9]+}}(%esp), %eax
-; NOBMI-X86-NEXT:    notl %eax
-; NOBMI-X86-NEXT:    andl {{[0-9]+}}(%esp), %eax
+; NOBMI-X86-NEXT:    andl %ecx, %eax
 ; NOBMI-X86-NEXT:    retl
 ;
 ; BMI-X86-LABEL: t2_commutative:
@@ -127,9 +133,10 @@ define i32 @n3_extrause1(i32 %ptr, i32 %mask, ptr %bias_storage) nounwind {
 ; X64-LABEL: n3_extrause1:
 ; X64:       # %bb.0:
 ; X64-NEXT:    movl %edi, %eax
-; X64-NEXT:    andl %edi, %esi
-; X64-NEXT:    movl %esi, (%rdx)
-; X64-NEXT:    subl %esi, %eax
+; X64-NEXT:    movl %edi, %ecx
+; X64-NEXT:    andl %esi, %ecx
+; X64-NEXT:    movl %ecx, (%rdx)
+; X64-NEXT:    subl %ecx, %eax
 ; X64-NEXT:    retq
   %bias = and i32 %ptr, %mask ; has extra uses, can't fold
   store i32 %bias, ptr %bias_storage
@@ -144,8 +151,9 @@ define i32 @n4_different_ptrs(i32 %ptr0, i32 %ptr1, i32 %mask) nounwind {
 ; X86:       # %bb.0:
 ; X86-NEXT:    movl {{[0-9]+}}(%esp), %eax
 ; X86-NEXT:    movl {{[0-9]+}}(%esp), %ecx
-; X86-NEXT:    andl {{[0-9]+}}(%esp), %ecx
-; X86-NEXT:    subl %ecx, %eax
+; X86-NEXT:    movl {{[0-9]+}}(%esp), %edx
+; X86-NEXT:    andl %ecx, %edx
+; X86-NEXT:    subl %edx, %eax
 ; X86-NEXT:    retl
 ;
 ; X64-LABEL: n4_different_ptrs:
@@ -163,15 +171,16 @@ define i32 @n5_different_ptrs_commutative(i32 %ptr0, i32 %ptr1, i32 %mask) nounw
 ; X86:       # %bb.0:
 ; X86-NEXT:    movl {{[0-9]+}}(%esp), %eax
 ; X86-NEXT:    movl {{[0-9]+}}(%esp), %ecx
-; X86-NEXT:    andl {{[0-9]+}}(%esp), %ecx
-; X86-NEXT:    subl %ecx, %eax
+; X86-NEXT:    movl {{[0-9]+}}(%esp), %edx
+; X86-NEXT:    andl %ecx, %edx
+; X86-NEXT:    subl %edx, %eax
 ; X86-NEXT:    retl
 ;
 ; X64-LABEL: n5_different_ptrs_commutative:
 ; X64:       # %bb.0:
 ; X64-NEXT:    movl %edi, %eax
-; X64-NEXT:    andl %edx, %esi
-; X64-NEXT:    subl %esi, %eax
+; X64-NEXT:    andl %esi, %edx
+; X64-NEXT:    subl %edx, %eax
 ; X64-NEXT:    retq
   %bias = and i32 %mask, %ptr1 ; swapped, not %ptr0
   %r = sub i32 %ptr0, %bias ; not %ptr1
@@ -181,9 +190,10 @@ define i32 @n5_different_ptrs_commutative(i32 %ptr0, i32 %ptr1, i32 %mask) nounw
 define i32 @n6_not_lowbit_mask(i32 %ptr, i32 %mask) nounwind {
 ; NOBMI-X86-LABEL: n6_not_lowbit_mask:
 ; NOBMI-X86:       # %bb.0:
+; NOBMI-X86-NEXT:    movl {{[0-9]+}}(%esp), %ecx
+; NOBMI-X86-NEXT:    notl %ecx
 ; NOBMI-X86-NEXT:    movl {{[0-9]+}}(%esp), %eax
-; NOBMI-X86-NEXT:    notl %eax
-; NOBMI-X86-NEXT:    andl {{[0-9]+}}(%esp), %eax
+; NOBMI-X86-NEXT:    andl %ecx, %eax
 ; NOBMI-X86-NEXT:    retl
 ;
 ; BMI-X86-LABEL: n6_not_lowbit_mask:
@@ -219,8 +229,8 @@ define i32 @n7_sub_is_not_commutative(i32 %ptr, i32 %mask) nounwind {
 ;
 ; X64-LABEL: n7_sub_is_not_commutative:
 ; X64:       # %bb.0:
-; X64-NEXT:    movl %esi, %eax
-; X64-NEXT:    andl %edi, %eax
+; X64-NEXT:    movl %edi, %eax
+; X64-NEXT:    andl %esi, %eax
 ; X64-NEXT:    subl %edi, %eax
 ; X64-NEXT:    retq
   %bias = and i32 %ptr, %mask

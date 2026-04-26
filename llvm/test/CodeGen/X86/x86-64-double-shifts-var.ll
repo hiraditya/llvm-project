@@ -90,32 +90,34 @@ define i64 @rshift(i64 %a, i64 %b, i32 %c) nounwind readnone {
 ; X64-LABEL: rshift:
 ; X64:       # %bb.0: # %entry
 ; X64-NEXT:    movl %edx, %ecx
-; X64-NEXT:    shrq %cl, %rdi
-; X64-NEXT:    leaq (%rsi,%rsi), %rax
+; X64-NEXT:    movq %rdi, %rax
+; X64-NEXT:    shrq %cl, %rax
+; X64-NEXT:    leaq (%rsi,%rsi), %rdx
 ; X64-NEXT:    notb %cl
 ; X64-NEXT:    # kill: def $cl killed $cl killed $ecx
-; X64-NEXT:    shlq %cl, %rax
-; X64-NEXT:    orq %rdi, %rax
+; X64-NEXT:    shlq %cl, %rdx
+; X64-NEXT:    orq %rdx, %rax
 ; X64-NEXT:    retq
 ;
 ; BMI-LABEL: rshift:
 ; BMI:       # %bb.0: # %entry
 ; BMI-NEXT:    movl %edx, %ecx
-; BMI-NEXT:    leaq (%rsi,%rsi), %rax
-; BMI-NEXT:    shrq %cl, %rdi
+; BMI-NEXT:    movq %rdi, %rax
+; BMI-NEXT:    leaq (%rsi,%rsi), %rdx
+; BMI-NEXT:    shrq %cl, %rax
 ; BMI-NEXT:    notb %cl
 ; BMI-NEXT:    # kill: def $cl killed $cl killed $ecx
-; BMI-NEXT:    shlq %cl, %rax
-; BMI-NEXT:    orq %rdi, %rax
+; BMI-NEXT:    shlq %cl, %rdx
+; BMI-NEXT:    orq %rdx, %rax
 ; BMI-NEXT:    retq
 ;
 ; BMI2-SLOW-LABEL: rshift:
 ; BMI2-SLOW:       # %bb.0: # %entry
 ; BMI2-SLOW-NEXT:    # kill: def $edx killed $edx def $rdx
-; BMI2-SLOW-NEXT:    shrxq %rdx, %rdi, %rcx
+; BMI2-SLOW-NEXT:    shrxq %rdx, %rdi, %rax
 ; BMI2-SLOW-NEXT:    notb %dl
-; BMI2-SLOW-NEXT:    addq %rsi, %rsi
-; BMI2-SLOW-NEXT:    shlxq %rdx, %rsi, %rax
+; BMI2-SLOW-NEXT:    leaq (%rsi,%rsi), %rcx
+; BMI2-SLOW-NEXT:    shlxq %rdx, %rcx, %rcx
 ; BMI2-SLOW-NEXT:    orq %rcx, %rax
 ; BMI2-SLOW-NEXT:    retq
 ;

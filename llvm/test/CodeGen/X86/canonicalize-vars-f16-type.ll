@@ -16,7 +16,10 @@ define void @v_test_canonicalize__half(half addrspace(1)* %out) nounwind {
 ; SSE-NEXT:    movd %xmm0, {{[-0-9]+}}(%r{{[sb]}}p) # 4-byte Folded Spill
 ; SSE-NEXT:    pinsrw $0, {{\.?LCPI[0-9]+_[0-9]+}}(%rip), %xmm0
 ; SSE-NEXT:    callq __extendhfsf2@PLT
-; SSE-NEXT:    mulss {{[-0-9]+}}(%r{{[sb]}}p), %xmm0 # 4-byte Folded Reload
+; SSE-NEXT:    movss {{[-0-9]+}}(%r{{[sb]}}p), %xmm1 # 4-byte Reload
+; SSE-NEXT:    # xmm1 = mem[0],zero,zero,zero
+; SSE-NEXT:    mulss %xmm0, %xmm1
+; SSE-NEXT:    movaps %xmm1, %xmm0
 ; SSE-NEXT:    callq __truncsfhf2@PLT
 ; SSE-NEXT:    pextrw $0, %xmm0, %eax
 ; SSE-NEXT:    movw %ax, (%rbx)
@@ -89,7 +92,10 @@ define half @complex_canonicalize_fmul_half(half %a, half %b) nounwind {
 ; SSE-NEXT:    movss %xmm0, (%rsp) # 4-byte Spill
 ; SSE-NEXT:    pinsrw $0, {{\.?LCPI[0-9]+_[0-9]+}}(%rip), %xmm0
 ; SSE-NEXT:    callq __extendhfsf2@PLT
-; SSE-NEXT:    mulss (%rsp), %xmm0 # 4-byte Folded Reload
+; SSE-NEXT:    movss (%rsp), %xmm1 # 4-byte Reload
+; SSE-NEXT:    # xmm1 = mem[0],zero,zero,zero
+; SSE-NEXT:    mulss %xmm0, %xmm1
+; SSE-NEXT:    movaps %xmm1, %xmm0
 ; SSE-NEXT:    callq __truncsfhf2@PLT
 ; SSE-NEXT:    callq __extendhfsf2@PLT
 ; SSE-NEXT:    subss {{[-0-9]+}}(%r{{[sb]}}p), %xmm0 # 4-byte Folded Reload

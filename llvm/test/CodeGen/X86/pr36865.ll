@@ -12,10 +12,12 @@ define void @main() {
 ; CHECK-NEXT:    callq memset@PLT
 ; CHECK-NEXT:    movl {{[0-9]+}}(%rsp), %eax
 ; CHECK-NEXT:    movl (%rax), %ecx
-; CHECK-NEXT:    addl 0, %eax
-; CHECK-NEXT:    addl %ecx, %ecx
+; CHECK-NEXT:    movl 0, %edx
+; CHECK-NEXT:    addl %eax, %edx
+; CHECK-NEXT:    leal (%rcx,%rcx), %eax
+; CHECK-NEXT:    addl %edx, %eax
+; CHECK-NEXT:    movl {{[0-9]+}}(%rsp), %ecx
 ; CHECK-NEXT:    addl %eax, %ecx
-; CHECK-NEXT:    addl {{[0-9]+}}(%rsp), %ecx
 ; CHECK-NEXT:    movl %ecx, {{[0-9]+}}(%rsp)
 ; CHECK-NEXT:    movl {{[0-9]+}}(%rsp), %eax
 ; CHECK-NEXT:    movl %eax, %ecx

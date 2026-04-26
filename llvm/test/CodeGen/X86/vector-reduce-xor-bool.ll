@@ -554,16 +554,19 @@ define i1 @trunc_v8i64_v8i1(<8 x i64>) nounwind {
 ; SSE41-LABEL: trunc_v8i64_v8i1:
 ; SSE41:       # %bb.0:
 ; SSE41-NEXT:    pxor %xmm4, %xmm4
-; SSE41-NEXT:    pblendw {{.*#+}} xmm3 = xmm3[0],xmm4[1,2,3],xmm3[4],xmm4[5,6,7]
-; SSE41-NEXT:    pblendw {{.*#+}} xmm2 = xmm2[0],xmm4[1,2,3],xmm2[4],xmm4[5,6,7]
-; SSE41-NEXT:    packusdw %xmm3, %xmm2
-; SSE41-NEXT:    pblendw {{.*#+}} xmm1 = xmm1[0],xmm4[1,2,3],xmm1[4],xmm4[5,6,7]
-; SSE41-NEXT:    pblendw {{.*#+}} xmm0 = xmm0[0],xmm4[1,2,3],xmm0[4],xmm4[5,6,7]
-; SSE41-NEXT:    packusdw %xmm1, %xmm0
-; SSE41-NEXT:    packusdw %xmm2, %xmm0
-; SSE41-NEXT:    psllw $15, %xmm0
-; SSE41-NEXT:    packsswb %xmm0, %xmm0
-; SSE41-NEXT:    pmovmskb %xmm0, %eax
+; SSE41-NEXT:    pxor %xmm5, %xmm5
+; SSE41-NEXT:    pblendw {{.*#+}} xmm5 = xmm3[0],xmm5[1,2,3],xmm3[4],xmm5[5,6,7]
+; SSE41-NEXT:    pxor %xmm3, %xmm3
+; SSE41-NEXT:    pblendw {{.*#+}} xmm3 = xmm2[0],xmm3[1,2,3],xmm2[4],xmm3[5,6,7]
+; SSE41-NEXT:    packusdw %xmm5, %xmm3
+; SSE41-NEXT:    pxor %xmm2, %xmm2
+; SSE41-NEXT:    pblendw {{.*#+}} xmm2 = xmm1[0],xmm2[1,2,3],xmm1[4],xmm2[5,6,7]
+; SSE41-NEXT:    pblendw {{.*#+}} xmm4 = xmm0[0],xmm4[1,2,3],xmm0[4],xmm4[5,6,7]
+; SSE41-NEXT:    packusdw %xmm2, %xmm4
+; SSE41-NEXT:    packusdw %xmm3, %xmm4
+; SSE41-NEXT:    psllw $15, %xmm4
+; SSE41-NEXT:    packsswb %xmm4, %xmm4
+; SSE41-NEXT:    pmovmskb %xmm4, %eax
 ; SSE41-NEXT:    testb %al, %al
 ; SSE41-NEXT:    setnp %al
 ; SSE41-NEXT:    retq
@@ -640,8 +643,9 @@ define i1 @trunc_v16i32_v16i1(<16 x i32>) nounwind {
 ; X86-SSE2-NEXT:    pand %xmm3, %xmm0
 ; X86-SSE2-NEXT:    packuswb %xmm1, %xmm0
 ; X86-SSE2-NEXT:    pand %xmm3, %xmm2
-; X86-SSE2-NEXT:    pand 8(%ebp), %xmm3
-; X86-SSE2-NEXT:    packuswb %xmm3, %xmm2
+; X86-SSE2-NEXT:    movdqa 8(%ebp), %xmm1
+; X86-SSE2-NEXT:    pand %xmm3, %xmm1
+; X86-SSE2-NEXT:    packuswb %xmm1, %xmm2
 ; X86-SSE2-NEXT:    packuswb %xmm2, %xmm0
 ; X86-SSE2-NEXT:    psllw $7, %xmm0
 ; X86-SSE2-NEXT:    pmovmskb %xmm0, %eax
@@ -768,8 +772,9 @@ define i1 @trunc_v32i16_v32i1(<32 x i16>) nounwind {
 ; X86-SSE2-NEXT:    pand %xmm3, %xmm0
 ; X86-SSE2-NEXT:    packuswb %xmm1, %xmm0
 ; X86-SSE2-NEXT:    pand %xmm3, %xmm2
-; X86-SSE2-NEXT:    pand 8(%ebp), %xmm3
-; X86-SSE2-NEXT:    packuswb %xmm3, %xmm2
+; X86-SSE2-NEXT:    movdqa 8(%ebp), %xmm1
+; X86-SSE2-NEXT:    pand %xmm3, %xmm1
+; X86-SSE2-NEXT:    packuswb %xmm1, %xmm2
 ; X86-SSE2-NEXT:    pxor %xmm0, %xmm2
 ; X86-SSE2-NEXT:    psllw $7, %xmm2
 ; X86-SSE2-NEXT:    pmovmskb %xmm2, %eax
@@ -788,9 +793,9 @@ define i1 @trunc_v32i16_v32i1(<32 x i16>) nounwind {
 ; X64-SSE2-NEXT:    pand %xmm4, %xmm1
 ; X64-SSE2-NEXT:    pand %xmm4, %xmm0
 ; X64-SSE2-NEXT:    packuswb %xmm1, %xmm0
-; X64-SSE2-NEXT:    pxor %xmm2, %xmm0
-; X64-SSE2-NEXT:    psllw $7, %xmm0
-; X64-SSE2-NEXT:    pmovmskb %xmm0, %eax
+; X64-SSE2-NEXT:    pxor %xmm0, %xmm2
+; X64-SSE2-NEXT:    psllw $7, %xmm2
+; X64-SSE2-NEXT:    pmovmskb %xmm2, %eax
 ; X64-SSE2-NEXT:    xorb %ah, %al
 ; X64-SSE2-NEXT:    setnp %al
 ; X64-SSE2-NEXT:    retq
@@ -804,9 +809,9 @@ define i1 @trunc_v32i16_v32i1(<32 x i16>) nounwind {
 ; SSE41-NEXT:    pand %xmm4, %xmm1
 ; SSE41-NEXT:    pand %xmm4, %xmm0
 ; SSE41-NEXT:    packuswb %xmm1, %xmm0
-; SSE41-NEXT:    pxor %xmm2, %xmm0
-; SSE41-NEXT:    psllw $7, %xmm0
-; SSE41-NEXT:    pmovmskb %xmm0, %eax
+; SSE41-NEXT:    pxor %xmm0, %xmm2
+; SSE41-NEXT:    psllw $7, %xmm2
+; SSE41-NEXT:    pmovmskb %xmm2, %eax
 ; SSE41-NEXT:    xorb %ah, %al
 ; SSE41-NEXT:    setnp %al
 ; SSE41-NEXT:    retq
@@ -899,10 +904,11 @@ define i1 @trunc_v64i8_v64i1(<64 x i8>) nounwind {
 ; X86-SSE2-NEXT:    andl $-16, %esp
 ; X86-SSE2-NEXT:    subl $16, %esp
 ; X86-SSE2-NEXT:    pxor %xmm2, %xmm0
-; X86-SSE2-NEXT:    pxor 8(%ebp), %xmm1
-; X86-SSE2-NEXT:    pxor %xmm0, %xmm1
-; X86-SSE2-NEXT:    psllw $7, %xmm1
-; X86-SSE2-NEXT:    pmovmskb %xmm1, %eax
+; X86-SSE2-NEXT:    movdqa 8(%ebp), %xmm2
+; X86-SSE2-NEXT:    pxor %xmm1, %xmm2
+; X86-SSE2-NEXT:    pxor %xmm0, %xmm2
+; X86-SSE2-NEXT:    psllw $7, %xmm2
+; X86-SSE2-NEXT:    pmovmskb %xmm2, %eax
 ; X86-SSE2-NEXT:    xorb %ah, %al
 ; X86-SSE2-NEXT:    setnp %al
 ; X86-SSE2-NEXT:    movl %ebp, %esp
@@ -913,9 +919,9 @@ define i1 @trunc_v64i8_v64i1(<64 x i8>) nounwind {
 ; X64-SSE:       # %bb.0:
 ; X64-SSE-NEXT:    pxor %xmm3, %xmm1
 ; X64-SSE-NEXT:    pxor %xmm2, %xmm0
-; X64-SSE-NEXT:    pxor %xmm1, %xmm0
-; X64-SSE-NEXT:    psllw $7, %xmm0
-; X64-SSE-NEXT:    pmovmskb %xmm0, %eax
+; X64-SSE-NEXT:    pxor %xmm0, %xmm1
+; X64-SSE-NEXT:    psllw $7, %xmm1
+; X64-SSE-NEXT:    pmovmskb %xmm1, %eax
 ; X64-SSE-NEXT:    xorb %ah, %al
 ; X64-SSE-NEXT:    setnp %al
 ; X64-SSE-NEXT:    retq
@@ -1240,8 +1246,8 @@ define i1 @icmp0_v4i64_v4i1(<4 x i64>) nounwind {
 ; SSE2-NEXT:    movdqa %xmm0, %xmm2
 ; SSE2-NEXT:    shufps {{.*#+}} xmm2 = xmm2[1,3],xmm1[1,3]
 ; SSE2-NEXT:    shufps {{.*#+}} xmm0 = xmm0[0,2],xmm1[0,2]
-; SSE2-NEXT:    andps %xmm2, %xmm0
-; SSE2-NEXT:    movmskps %xmm0, %eax
+; SSE2-NEXT:    andps %xmm0, %xmm2
+; SSE2-NEXT:    movmskps %xmm2, %eax
 ; SSE2-NEXT:    testb %al, %al
 ; SSE2-NEXT:    setnp %al
 ; SSE2-NEXT:    ret{{[l|q]}}
@@ -1466,8 +1472,8 @@ define i1 @icmp0_v32i8_v32i1(<32 x i8>) nounwind {
 ; SSE-NEXT:    pxor %xmm2, %xmm2
 ; SSE-NEXT:    pcmpeqb %xmm2, %xmm1
 ; SSE-NEXT:    pcmpeqb %xmm2, %xmm0
-; SSE-NEXT:    pxor %xmm1, %xmm0
-; SSE-NEXT:    pmovmskb %xmm0, %eax
+; SSE-NEXT:    pxor %xmm0, %xmm1
+; SSE-NEXT:    pmovmskb %xmm1, %eax
 ; SSE-NEXT:    xorb %ah, %al
 ; SSE-NEXT:    setnp %al
 ; SSE-NEXT:    ret{{[l|q]}}
@@ -1566,10 +1572,11 @@ define i1 @icmp0_v8i64_v8i1(<8 x i64>) nounwind {
 ; X86-SSE2-NEXT:    pcmpeqd %xmm3, %xmm2
 ; X86-SSE2-NEXT:    pshufd {{.*#+}} xmm0 = xmm2[1,0,3,2]
 ; X86-SSE2-NEXT:    pand %xmm2, %xmm0
-; X86-SSE2-NEXT:    pcmpeqd 8(%ebp), %xmm3
-; X86-SSE2-NEXT:    pshufd {{.*#+}} xmm2 = xmm3[1,0,3,2]
-; X86-SSE2-NEXT:    pand %xmm3, %xmm2
-; X86-SSE2-NEXT:    packssdw %xmm2, %xmm0
+; X86-SSE2-NEXT:    movdqa 8(%ebp), %xmm2
+; X86-SSE2-NEXT:    pcmpeqd %xmm3, %xmm2
+; X86-SSE2-NEXT:    pshufd {{.*#+}} xmm3 = xmm2[1,0,3,2]
+; X86-SSE2-NEXT:    pand %xmm2, %xmm3
+; X86-SSE2-NEXT:    packssdw %xmm3, %xmm0
 ; X86-SSE2-NEXT:    packssdw %xmm0, %xmm1
 ; X86-SSE2-NEXT:    packsswb %xmm1, %xmm1
 ; X86-SSE2-NEXT:    pmovmskb %xmm1, %eax
@@ -1693,8 +1700,9 @@ define i1 @icmp0_v16i32_v16i1(<16 x i32>) nounwind {
 ; X86-SSE2-NEXT:    pcmpeqd %xmm3, %xmm0
 ; X86-SSE2-NEXT:    packssdw %xmm1, %xmm0
 ; X86-SSE2-NEXT:    pcmpeqd %xmm3, %xmm2
-; X86-SSE2-NEXT:    pcmpeqd 8(%ebp), %xmm3
-; X86-SSE2-NEXT:    packssdw %xmm3, %xmm2
+; X86-SSE2-NEXT:    movdqa 8(%ebp), %xmm1
+; X86-SSE2-NEXT:    pcmpeqd %xmm3, %xmm1
+; X86-SSE2-NEXT:    packssdw %xmm1, %xmm2
 ; X86-SSE2-NEXT:    packsswb %xmm2, %xmm0
 ; X86-SSE2-NEXT:    pmovmskb %xmm0, %eax
 ; X86-SSE2-NEXT:    xorb %ah, %al
@@ -1799,11 +1807,12 @@ define i1 @icmp0_v32i16_v32i1(<32 x i16>) nounwind {
 ; X86-SSE2-NEXT:    pcmpeqw %xmm3, %xmm1
 ; X86-SSE2-NEXT:    pcmpeqw %xmm3, %xmm2
 ; X86-SSE2-NEXT:    pcmpeqw %xmm3, %xmm0
-; X86-SSE2-NEXT:    pxor %xmm2, %xmm0
-; X86-SSE2-NEXT:    pcmpeqw 8(%ebp), %xmm3
-; X86-SSE2-NEXT:    pxor %xmm1, %xmm3
-; X86-SSE2-NEXT:    packsswb %xmm3, %xmm0
-; X86-SSE2-NEXT:    pmovmskb %xmm0, %eax
+; X86-SSE2-NEXT:    pxor %xmm0, %xmm2
+; X86-SSE2-NEXT:    movdqa 8(%ebp), %xmm0
+; X86-SSE2-NEXT:    pcmpeqw %xmm3, %xmm0
+; X86-SSE2-NEXT:    pxor %xmm1, %xmm0
+; X86-SSE2-NEXT:    packsswb %xmm0, %xmm2
+; X86-SSE2-NEXT:    pmovmskb %xmm2, %eax
 ; X86-SSE2-NEXT:    xorb %ah, %al
 ; X86-SSE2-NEXT:    setnp %al
 ; X86-SSE2-NEXT:    movl %ebp, %esp
@@ -1815,12 +1824,12 @@ define i1 @icmp0_v32i16_v32i1(<32 x i16>) nounwind {
 ; X64-SSE-NEXT:    pxor %xmm4, %xmm4
 ; X64-SSE-NEXT:    pcmpeqw %xmm4, %xmm2
 ; X64-SSE-NEXT:    pcmpeqw %xmm4, %xmm0
-; X64-SSE-NEXT:    pxor %xmm2, %xmm0
+; X64-SSE-NEXT:    pxor %xmm0, %xmm2
 ; X64-SSE-NEXT:    pcmpeqw %xmm4, %xmm3
 ; X64-SSE-NEXT:    pcmpeqw %xmm4, %xmm1
-; X64-SSE-NEXT:    pxor %xmm3, %xmm1
-; X64-SSE-NEXT:    packsswb %xmm1, %xmm0
-; X64-SSE-NEXT:    pmovmskb %xmm0, %eax
+; X64-SSE-NEXT:    pxor %xmm1, %xmm3
+; X64-SSE-NEXT:    packsswb %xmm3, %xmm2
+; X64-SSE-NEXT:    pmovmskb %xmm2, %eax
 ; X64-SSE-NEXT:    xorb %ah, %al
 ; X64-SSE-NEXT:    setnp %al
 ; X64-SSE-NEXT:    retq
@@ -1920,11 +1929,12 @@ define i1 @icmp0_v64i8_v64i1(<64 x i8>) nounwind {
 ; X86-SSE2-NEXT:    pcmpeqb %xmm3, %xmm1
 ; X86-SSE2-NEXT:    pcmpeqb %xmm3, %xmm2
 ; X86-SSE2-NEXT:    pcmpeqb %xmm3, %xmm0
+; X86-SSE2-NEXT:    pxor %xmm0, %xmm2
+; X86-SSE2-NEXT:    movdqa 8(%ebp), %xmm0
+; X86-SSE2-NEXT:    pcmpeqb %xmm3, %xmm0
+; X86-SSE2-NEXT:    pxor %xmm1, %xmm0
 ; X86-SSE2-NEXT:    pxor %xmm2, %xmm0
-; X86-SSE2-NEXT:    pcmpeqb 8(%ebp), %xmm3
-; X86-SSE2-NEXT:    pxor %xmm1, %xmm3
-; X86-SSE2-NEXT:    pxor %xmm0, %xmm3
-; X86-SSE2-NEXT:    pmovmskb %xmm3, %eax
+; X86-SSE2-NEXT:    pmovmskb %xmm0, %eax
 ; X86-SSE2-NEXT:    xorb %ah, %al
 ; X86-SSE2-NEXT:    setnp %al
 ; X86-SSE2-NEXT:    movl %ebp, %esp
@@ -1936,12 +1946,12 @@ define i1 @icmp0_v64i8_v64i1(<64 x i8>) nounwind {
 ; X64-SSE-NEXT:    pxor %xmm4, %xmm4
 ; X64-SSE-NEXT:    pcmpeqb %xmm4, %xmm2
 ; X64-SSE-NEXT:    pcmpeqb %xmm4, %xmm0
-; X64-SSE-NEXT:    pxor %xmm2, %xmm0
+; X64-SSE-NEXT:    pxor %xmm0, %xmm2
 ; X64-SSE-NEXT:    pcmpeqb %xmm4, %xmm3
 ; X64-SSE-NEXT:    pcmpeqb %xmm4, %xmm1
-; X64-SSE-NEXT:    pxor %xmm3, %xmm1
-; X64-SSE-NEXT:    pxor %xmm0, %xmm1
-; X64-SSE-NEXT:    pmovmskb %xmm1, %eax
+; X64-SSE-NEXT:    pxor %xmm1, %xmm3
+; X64-SSE-NEXT:    pxor %xmm2, %xmm3
+; X64-SSE-NEXT:    pmovmskb %xmm3, %eax
 ; X64-SSE-NEXT:    xorb %ah, %al
 ; X64-SSE-NEXT:    setnp %al
 ; X64-SSE-NEXT:    retq
@@ -2268,12 +2278,13 @@ define i1 @icmp_v4i64_v4i1(<4 x i64>, <4 x i64>) nounwind {
 ; X86-SSE2-NEXT:    andl $-16, %esp
 ; X86-SSE2-NEXT:    subl $16, %esp
 ; X86-SSE2-NEXT:    pcmpeqd %xmm2, %xmm0
-; X86-SSE2-NEXT:    pcmpeqd 8(%ebp), %xmm1
-; X86-SSE2-NEXT:    movdqa %xmm0, %xmm2
-; X86-SSE2-NEXT:    shufps {{.*#+}} xmm2 = xmm2[1,3],xmm1[1,3]
-; X86-SSE2-NEXT:    shufps {{.*#+}} xmm0 = xmm0[0,2],xmm1[0,2]
-; X86-SSE2-NEXT:    andps %xmm2, %xmm0
-; X86-SSE2-NEXT:    movmskps %xmm0, %eax
+; X86-SSE2-NEXT:    movdqa 8(%ebp), %xmm2
+; X86-SSE2-NEXT:    pcmpeqd %xmm1, %xmm2
+; X86-SSE2-NEXT:    movdqa %xmm0, %xmm1
+; X86-SSE2-NEXT:    shufps {{.*#+}} xmm1 = xmm1[1,3],xmm2[1,3]
+; X86-SSE2-NEXT:    shufps {{.*#+}} xmm0 = xmm0[0,2],xmm2[0,2]
+; X86-SSE2-NEXT:    andps %xmm0, %xmm1
+; X86-SSE2-NEXT:    movmskps %xmm1, %eax
 ; X86-SSE2-NEXT:    testb %al, %al
 ; X86-SSE2-NEXT:    setnp %al
 ; X86-SSE2-NEXT:    movl %ebp, %esp
@@ -2287,8 +2298,8 @@ define i1 @icmp_v4i64_v4i1(<4 x i64>, <4 x i64>) nounwind {
 ; X64-SSE2-NEXT:    movdqa %xmm0, %xmm2
 ; X64-SSE2-NEXT:    shufps {{.*#+}} xmm2 = xmm2[1,3],xmm1[1,3]
 ; X64-SSE2-NEXT:    shufps {{.*#+}} xmm0 = xmm0[0,2],xmm1[0,2]
-; X64-SSE2-NEXT:    andps %xmm2, %xmm0
-; X64-SSE2-NEXT:    movmskps %xmm0, %eax
+; X64-SSE2-NEXT:    andps %xmm0, %xmm2
+; X64-SSE2-NEXT:    movmskps %xmm2, %eax
 ; X64-SSE2-NEXT:    testb %al, %al
 ; X64-SSE2-NEXT:    setnp %al
 ; X64-SSE2-NEXT:    retq
@@ -2368,8 +2379,9 @@ define i1 @icmp_v8i32_v8i1(<8 x i32>, <8 x i32>) nounwind {
 ; X86-SSE2-NEXT:    andl $-16, %esp
 ; X86-SSE2-NEXT:    subl $16, %esp
 ; X86-SSE2-NEXT:    pcmpeqd %xmm2, %xmm0
-; X86-SSE2-NEXT:    pcmpeqd 8(%ebp), %xmm1
-; X86-SSE2-NEXT:    packssdw %xmm1, %xmm0
+; X86-SSE2-NEXT:    movdqa 8(%ebp), %xmm2
+; X86-SSE2-NEXT:    pcmpeqd %xmm1, %xmm2
+; X86-SSE2-NEXT:    packssdw %xmm2, %xmm0
 ; X86-SSE2-NEXT:    packsswb %xmm0, %xmm0
 ; X86-SSE2-NEXT:    pmovmskb %xmm0, %eax
 ; X86-SSE2-NEXT:    testb %al, %al
@@ -2454,8 +2466,9 @@ define i1 @icmp_v16i16_v16i1(<16 x i16>, <16 x i16>) nounwind {
 ; X86-SSE2-NEXT:    andl $-16, %esp
 ; X86-SSE2-NEXT:    subl $16, %esp
 ; X86-SSE2-NEXT:    pcmpeqw %xmm2, %xmm0
-; X86-SSE2-NEXT:    pcmpeqw 8(%ebp), %xmm1
-; X86-SSE2-NEXT:    packsswb %xmm1, %xmm0
+; X86-SSE2-NEXT:    movdqa 8(%ebp), %xmm2
+; X86-SSE2-NEXT:    pcmpeqw %xmm1, %xmm2
+; X86-SSE2-NEXT:    packsswb %xmm2, %xmm0
 ; X86-SSE2-NEXT:    pmovmskb %xmm0, %eax
 ; X86-SSE2-NEXT:    xorb %ah, %al
 ; X86-SSE2-NEXT:    setnp %al
@@ -2546,9 +2559,10 @@ define i1 @icmp_v32i8_v32i1(<32 x i8>, <32 x i8>) nounwind {
 ; X86-SSE2-NEXT:    andl $-16, %esp
 ; X86-SSE2-NEXT:    subl $16, %esp
 ; X86-SSE2-NEXT:    pcmpeqb %xmm2, %xmm0
-; X86-SSE2-NEXT:    pcmpeqb 8(%ebp), %xmm1
-; X86-SSE2-NEXT:    pxor %xmm0, %xmm1
-; X86-SSE2-NEXT:    pmovmskb %xmm1, %eax
+; X86-SSE2-NEXT:    movdqa 8(%ebp), %xmm2
+; X86-SSE2-NEXT:    pcmpeqb %xmm1, %xmm2
+; X86-SSE2-NEXT:    pxor %xmm0, %xmm2
+; X86-SSE2-NEXT:    pmovmskb %xmm2, %eax
 ; X86-SSE2-NEXT:    xorb %ah, %al
 ; X86-SSE2-NEXT:    setnp %al
 ; X86-SSE2-NEXT:    movl %ebp, %esp
@@ -2559,8 +2573,8 @@ define i1 @icmp_v32i8_v32i1(<32 x i8>, <32 x i8>) nounwind {
 ; X64-SSE:       # %bb.0:
 ; X64-SSE-NEXT:    pcmpeqb %xmm3, %xmm1
 ; X64-SSE-NEXT:    pcmpeqb %xmm2, %xmm0
-; X64-SSE-NEXT:    pxor %xmm1, %xmm0
-; X64-SSE-NEXT:    pmovmskb %xmm0, %eax
+; X64-SSE-NEXT:    pxor %xmm0, %xmm1
+; X64-SSE-NEXT:    pmovmskb %xmm1, %eax
 ; X64-SSE-NEXT:    xorb %ah, %al
 ; X64-SSE-NEXT:    setnp %al
 ; X64-SSE-NEXT:    retq
@@ -2648,23 +2662,27 @@ define i1 @icmp_v8i64_v8i1(<8 x i64>, <8 x i64>) nounwind {
 ; X86-SSE2-NEXT:    andl $-16, %esp
 ; X86-SSE2-NEXT:    subl $16, %esp
 ; X86-SSE2-NEXT:    movdqa 8(%ebp), %xmm3
-; X86-SSE2-NEXT:    pcmpeqd 72(%ebp), %xmm3
-; X86-SSE2-NEXT:    pshufd {{.*#+}} xmm4 = xmm3[1,0,3,2]
-; X86-SSE2-NEXT:    pand %xmm3, %xmm4
-; X86-SSE2-NEXT:    pcmpeqd 56(%ebp), %xmm2
-; X86-SSE2-NEXT:    pshufd {{.*#+}} xmm3 = xmm2[1,0,3,2]
-; X86-SSE2-NEXT:    pand %xmm2, %xmm3
-; X86-SSE2-NEXT:    packssdw %xmm4, %xmm3
-; X86-SSE2-NEXT:    pcmpeqd 40(%ebp), %xmm1
-; X86-SSE2-NEXT:    pshufd {{.*#+}} xmm2 = xmm1[1,0,3,2]
-; X86-SSE2-NEXT:    pand %xmm1, %xmm2
-; X86-SSE2-NEXT:    pcmpeqd 24(%ebp), %xmm0
-; X86-SSE2-NEXT:    pshufd {{.*#+}} xmm1 = xmm0[1,0,3,2]
-; X86-SSE2-NEXT:    pand %xmm0, %xmm1
-; X86-SSE2-NEXT:    packssdw %xmm2, %xmm1
-; X86-SSE2-NEXT:    packssdw %xmm3, %xmm1
-; X86-SSE2-NEXT:    packsswb %xmm1, %xmm1
-; X86-SSE2-NEXT:    pmovmskb %xmm1, %eax
+; X86-SSE2-NEXT:    movdqa 72(%ebp), %xmm4
+; X86-SSE2-NEXT:    pcmpeqd %xmm3, %xmm4
+; X86-SSE2-NEXT:    pshufd {{.*#+}} xmm3 = xmm4[1,0,3,2]
+; X86-SSE2-NEXT:    pand %xmm4, %xmm3
+; X86-SSE2-NEXT:    movdqa 56(%ebp), %xmm4
+; X86-SSE2-NEXT:    pcmpeqd %xmm2, %xmm4
+; X86-SSE2-NEXT:    pshufd {{.*#+}} xmm2 = xmm4[1,0,3,2]
+; X86-SSE2-NEXT:    pand %xmm4, %xmm2
+; X86-SSE2-NEXT:    packssdw %xmm3, %xmm2
+; X86-SSE2-NEXT:    movdqa 40(%ebp), %xmm3
+; X86-SSE2-NEXT:    pcmpeqd %xmm1, %xmm3
+; X86-SSE2-NEXT:    pshufd {{.*#+}} xmm1 = xmm3[1,0,3,2]
+; X86-SSE2-NEXT:    pand %xmm3, %xmm1
+; X86-SSE2-NEXT:    movdqa 24(%ebp), %xmm3
+; X86-SSE2-NEXT:    pcmpeqd %xmm0, %xmm3
+; X86-SSE2-NEXT:    pshufd {{.*#+}} xmm0 = xmm3[1,0,3,2]
+; X86-SSE2-NEXT:    pand %xmm3, %xmm0
+; X86-SSE2-NEXT:    packssdw %xmm1, %xmm0
+; X86-SSE2-NEXT:    packssdw %xmm2, %xmm0
+; X86-SSE2-NEXT:    packsswb %xmm0, %xmm0
+; X86-SSE2-NEXT:    pmovmskb %xmm0, %eax
 ; X86-SSE2-NEXT:    testb %al, %al
 ; X86-SSE2-NEXT:    setnp %al
 ; X86-SSE2-NEXT:    movl %ebp, %esp
@@ -2779,14 +2797,18 @@ define i1 @icmp_v16i32_v16i1(<16 x i32>, <16 x i32>) nounwind {
 ; X86-SSE2-NEXT:    andl $-16, %esp
 ; X86-SSE2-NEXT:    subl $16, %esp
 ; X86-SSE2-NEXT:    movdqa 8(%ebp), %xmm3
-; X86-SSE2-NEXT:    pcmpeqd 72(%ebp), %xmm3
-; X86-SSE2-NEXT:    pcmpeqd 56(%ebp), %xmm2
-; X86-SSE2-NEXT:    packssdw %xmm3, %xmm2
-; X86-SSE2-NEXT:    pcmpeqd 40(%ebp), %xmm1
-; X86-SSE2-NEXT:    pcmpeqd 24(%ebp), %xmm0
-; X86-SSE2-NEXT:    packssdw %xmm1, %xmm0
-; X86-SSE2-NEXT:    packsswb %xmm2, %xmm0
-; X86-SSE2-NEXT:    pmovmskb %xmm0, %eax
+; X86-SSE2-NEXT:    movdqa 72(%ebp), %xmm4
+; X86-SSE2-NEXT:    pcmpeqd %xmm3, %xmm4
+; X86-SSE2-NEXT:    movdqa 56(%ebp), %xmm3
+; X86-SSE2-NEXT:    pcmpeqd %xmm2, %xmm3
+; X86-SSE2-NEXT:    packssdw %xmm4, %xmm3
+; X86-SSE2-NEXT:    movdqa 40(%ebp), %xmm2
+; X86-SSE2-NEXT:    pcmpeqd %xmm1, %xmm2
+; X86-SSE2-NEXT:    movdqa 24(%ebp), %xmm1
+; X86-SSE2-NEXT:    pcmpeqd %xmm0, %xmm1
+; X86-SSE2-NEXT:    packssdw %xmm2, %xmm1
+; X86-SSE2-NEXT:    packsswb %xmm3, %xmm1
+; X86-SSE2-NEXT:    pmovmskb %xmm1, %eax
 ; X86-SSE2-NEXT:    xorb %ah, %al
 ; X86-SSE2-NEXT:    setnp %al
 ; X86-SSE2-NEXT:    movl %ebp, %esp
@@ -2884,15 +2906,19 @@ define i1 @icmp_v32i16_v32i1(<32 x i16>, <32 x i16>) nounwind {
 ; X86-SSE2-NEXT:    movl %esp, %ebp
 ; X86-SSE2-NEXT:    andl $-16, %esp
 ; X86-SSE2-NEXT:    subl $16, %esp
-; X86-SSE2-NEXT:    movdqa 8(%ebp), %xmm3
-; X86-SSE2-NEXT:    pcmpeqw 56(%ebp), %xmm2
-; X86-SSE2-NEXT:    pcmpeqw 24(%ebp), %xmm0
+; X86-SSE2-NEXT:    movdqa 8(%ebp), %xmm4
+; X86-SSE2-NEXT:    movdqa 56(%ebp), %xmm3
+; X86-SSE2-NEXT:    pcmpeqw %xmm2, %xmm3
+; X86-SSE2-NEXT:    movdqa 24(%ebp), %xmm2
+; X86-SSE2-NEXT:    pcmpeqw %xmm0, %xmm2
+; X86-SSE2-NEXT:    pxor %xmm2, %xmm3
+; X86-SSE2-NEXT:    movdqa 72(%ebp), %xmm0
+; X86-SSE2-NEXT:    pcmpeqw %xmm4, %xmm0
+; X86-SSE2-NEXT:    movdqa 40(%ebp), %xmm2
+; X86-SSE2-NEXT:    pcmpeqw %xmm1, %xmm2
 ; X86-SSE2-NEXT:    pxor %xmm2, %xmm0
-; X86-SSE2-NEXT:    pcmpeqw 72(%ebp), %xmm3
-; X86-SSE2-NEXT:    pcmpeqw 40(%ebp), %xmm1
-; X86-SSE2-NEXT:    pxor %xmm3, %xmm1
-; X86-SSE2-NEXT:    packsswb %xmm1, %xmm0
-; X86-SSE2-NEXT:    pmovmskb %xmm0, %eax
+; X86-SSE2-NEXT:    packsswb %xmm0, %xmm3
+; X86-SSE2-NEXT:    pmovmskb %xmm3, %eax
 ; X86-SSE2-NEXT:    xorb %ah, %al
 ; X86-SSE2-NEXT:    setnp %al
 ; X86-SSE2-NEXT:    movl %ebp, %esp
@@ -2903,12 +2929,12 @@ define i1 @icmp_v32i16_v32i1(<32 x i16>, <32 x i16>) nounwind {
 ; X64-SSE:       # %bb.0:
 ; X64-SSE-NEXT:    pcmpeqw %xmm6, %xmm2
 ; X64-SSE-NEXT:    pcmpeqw %xmm4, %xmm0
-; X64-SSE-NEXT:    pxor %xmm2, %xmm0
+; X64-SSE-NEXT:    pxor %xmm0, %xmm2
 ; X64-SSE-NEXT:    pcmpeqw %xmm7, %xmm3
 ; X64-SSE-NEXT:    pcmpeqw %xmm5, %xmm1
-; X64-SSE-NEXT:    pxor %xmm3, %xmm1
-; X64-SSE-NEXT:    packsswb %xmm1, %xmm0
-; X64-SSE-NEXT:    pmovmskb %xmm0, %eax
+; X64-SSE-NEXT:    pxor %xmm1, %xmm3
+; X64-SSE-NEXT:    packsswb %xmm3, %xmm2
+; X64-SSE-NEXT:    pmovmskb %xmm2, %eax
 ; X64-SSE-NEXT:    xorb %ah, %al
 ; X64-SSE-NEXT:    setnp %al
 ; X64-SSE-NEXT:    retq
@@ -3004,15 +3030,19 @@ define i1 @icmp_v64i8_v64i1(<64 x i8>, <64 x i8>) nounwind {
 ; X86-SSE2-NEXT:    movl %esp, %ebp
 ; X86-SSE2-NEXT:    andl $-16, %esp
 ; X86-SSE2-NEXT:    subl $16, %esp
-; X86-SSE2-NEXT:    movdqa 8(%ebp), %xmm3
-; X86-SSE2-NEXT:    pcmpeqb 56(%ebp), %xmm2
-; X86-SSE2-NEXT:    pcmpeqb 24(%ebp), %xmm0
+; X86-SSE2-NEXT:    movdqa 8(%ebp), %xmm4
+; X86-SSE2-NEXT:    movdqa 56(%ebp), %xmm3
+; X86-SSE2-NEXT:    pcmpeqb %xmm2, %xmm3
+; X86-SSE2-NEXT:    movdqa 24(%ebp), %xmm2
+; X86-SSE2-NEXT:    pcmpeqb %xmm0, %xmm2
+; X86-SSE2-NEXT:    pxor %xmm2, %xmm3
+; X86-SSE2-NEXT:    movdqa 72(%ebp), %xmm0
+; X86-SSE2-NEXT:    pcmpeqb %xmm4, %xmm0
+; X86-SSE2-NEXT:    movdqa 40(%ebp), %xmm2
+; X86-SSE2-NEXT:    pcmpeqb %xmm1, %xmm2
 ; X86-SSE2-NEXT:    pxor %xmm2, %xmm0
-; X86-SSE2-NEXT:    pcmpeqb 72(%ebp), %xmm3
-; X86-SSE2-NEXT:    pcmpeqb 40(%ebp), %xmm1
-; X86-SSE2-NEXT:    pxor %xmm3, %xmm1
-; X86-SSE2-NEXT:    pxor %xmm0, %xmm1
-; X86-SSE2-NEXT:    pmovmskb %xmm1, %eax
+; X86-SSE2-NEXT:    pxor %xmm3, %xmm0
+; X86-SSE2-NEXT:    pmovmskb %xmm0, %eax
 ; X86-SSE2-NEXT:    xorb %ah, %al
 ; X86-SSE2-NEXT:    setnp %al
 ; X86-SSE2-NEXT:    movl %ebp, %esp
@@ -3023,12 +3053,12 @@ define i1 @icmp_v64i8_v64i1(<64 x i8>, <64 x i8>) nounwind {
 ; X64-SSE:       # %bb.0:
 ; X64-SSE-NEXT:    pcmpeqb %xmm6, %xmm2
 ; X64-SSE-NEXT:    pcmpeqb %xmm4, %xmm0
-; X64-SSE-NEXT:    pxor %xmm2, %xmm0
+; X64-SSE-NEXT:    pxor %xmm0, %xmm2
 ; X64-SSE-NEXT:    pcmpeqb %xmm7, %xmm3
 ; X64-SSE-NEXT:    pcmpeqb %xmm5, %xmm1
-; X64-SSE-NEXT:    pxor %xmm3, %xmm1
-; X64-SSE-NEXT:    pxor %xmm0, %xmm1
-; X64-SSE-NEXT:    pmovmskb %xmm1, %eax
+; X64-SSE-NEXT:    pxor %xmm1, %xmm3
+; X64-SSE-NEXT:    pxor %xmm2, %xmm3
+; X64-SSE-NEXT:    pmovmskb %xmm3, %eax
 ; X64-SSE-NEXT:    xorb %ah, %al
 ; X64-SSE-NEXT:    setnp %al
 ; X64-SSE-NEXT:    retq

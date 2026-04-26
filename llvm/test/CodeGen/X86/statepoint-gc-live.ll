@@ -59,9 +59,9 @@ define ptr addrspace(1) @test_one_derived(ptr addrspace(1) %p) gc "statepoint-ex
 ; CHECK:       # %bb.0: # %entry
 ; CHECK-NEXT:    subq $24, %rsp
 ; CHECK-NEXT:    .cfi_def_cfa_offset 32
+; CHECK-NEXT:    leaq 8(%rdi), %rax
 ; CHECK-NEXT:    movq %rdi, {{[0-9]+}}(%rsp)
-; CHECK-NEXT:    addq $8, %rdi
-; CHECK-NEXT:    movq %rdi, {{[0-9]+}}(%rsp)
+; CHECK-NEXT:    movq %rax, {{[0-9]+}}(%rsp)
 ; CHECK-NEXT:    callq foo@PLT
 ; CHECK-NEXT:  .Ltmp3:
 ; CHECK-NEXT:    movq {{[0-9]+}}(%rsp), %rax

@@ -138,17 +138,15 @@ define i32 @atomicrmw_udec_wrap_i32(ptr %ptr, i32 %val) {
 ; CHECK-NEXT:    .p2align 4
 ; CHECK-NEXT:  .LBB6_1: # %atomicrmw.start
 ; CHECK-NEXT:    # =>This Inner Loop Header: Depth=1
-; CHECK-NEXT:    leal -1(%rax), %ecx
+; CHECK-NEXT:    movl %eax, %ecx
+; CHECK-NEXT:    subl $1, %ecx
 ; CHECK-NEXT:    cmpl %esi, %eax
 ; CHECK-NEXT:    cmoval %esi, %ecx
 ; CHECK-NEXT:    cmpl $1, %eax
 ; CHECK-NEXT:    cmovbl %esi, %ecx
-; CHECK-NEXT:    # kill: def $eax killed $eax killed $rax
 ; CHECK-NEXT:    lock cmpxchgl %ecx, (%rdi)
-; CHECK-NEXT:    # kill: def $eax killed $eax def $rax
 ; CHECK-NEXT:    jne .LBB6_1
 ; CHECK-NEXT:  # %bb.2: # %atomicrmw.end
-; CHECK-NEXT:    # kill: def $eax killed $eax killed $rax
 ; CHECK-NEXT:    retq
   %result = atomicrmw udec_wrap ptr %ptr, i32 %val seq_cst
   ret i32 %result
@@ -161,7 +159,8 @@ define i64 @atomicrmw_udec_wrap_i64(ptr %ptr, i64 %val) {
 ; CHECK-NEXT:    .p2align 4
 ; CHECK-NEXT:  .LBB7_1: # %atomicrmw.start
 ; CHECK-NEXT:    # =>This Inner Loop Header: Depth=1
-; CHECK-NEXT:    leaq -1(%rax), %rcx
+; CHECK-NEXT:    movq %rax, %rcx
+; CHECK-NEXT:    subq $1, %rcx
 ; CHECK-NEXT:    cmpq %rsi, %rax
 ; CHECK-NEXT:    cmovaq %rsi, %rcx
 ; CHECK-NEXT:    cmpq $1, %rax

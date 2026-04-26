@@ -131,8 +131,8 @@ define i32 @test_x86_avx10_com_nesbf16_eq(<8 x bfloat> %a0, <8 x bfloat> %a1) {
 ; CHECK-NEXT:    vcomisbf16 %xmm1, %xmm0 # encoding: [0x62,0xf5,0x7d,0x08,0x2f,0xc1]
 ; CHECK-NEXT:    setnp %al # encoding: [0x0f,0x9b,0xc0]
 ; CHECK-NEXT:    sete %cl # encoding: [0x0f,0x94,0xc1]
-; CHECK-NEXT:    andb %al, %cl # encoding: [0x20,0xc1]
-; CHECK-NEXT:    movzbl %cl, %eax # encoding: [0x0f,0xb6,0xc1]
+; CHECK-NEXT:    andb %cl, %al # encoding: [0x20,0xc8]
+; CHECK-NEXT:    movzbl %al, %eax # encoding: [0x0f,0xb6,0xc0]
 ; CHECK-NEXT:    ret{{[l|q]}} # encoding: [0xc3]
   %res = call i32 @llvm.x86.avx10.vcomisbf16eq(<8 x bfloat> %a0, <8 x bfloat> %a1)
   ret i32 %res
@@ -177,8 +177,8 @@ define i32 @test_x86_avx10_com_nesbf16_neq(<8 x bfloat> %a0, <8 x bfloat> %a1) {
 ; CHECK-NEXT:    vcomisbf16 %xmm1, %xmm0 # encoding: [0x62,0xf5,0x7d,0x08,0x2f,0xc1]
 ; CHECK-NEXT:    setp %al # encoding: [0x0f,0x9a,0xc0]
 ; CHECK-NEXT:    setne %cl # encoding: [0x0f,0x95,0xc1]
-; CHECK-NEXT:    orb %al, %cl # encoding: [0x08,0xc1]
-; CHECK-NEXT:    movzbl %cl, %eax # encoding: [0x0f,0xb6,0xc1]
+; CHECK-NEXT:    orb %cl, %al # encoding: [0x08,0xc8]
+; CHECK-NEXT:    movzbl %al, %eax # encoding: [0x0f,0xb6,0xc0]
 ; CHECK-NEXT:    ret{{[l|q]}} # encoding: [0xc3]
   %res = call i32 @llvm.x86.avx10.vcomisbf16neq(<8 x bfloat> %a0, <8 x bfloat> %a1)
   ret i32 %res

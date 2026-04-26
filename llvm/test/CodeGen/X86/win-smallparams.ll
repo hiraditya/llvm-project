@@ -65,33 +65,33 @@ entry:
 define i32 @manyargs(i8 %a, i16 %b, i8 %c, i16 %d, i8 %e, i16 %f) {
 ; WIN64-LABEL: manyargs:
 ; WIN64:       # %bb.0: # %entry
-; WIN64-NEXT:    movzwl {{[0-9]+}}(%rsp), %r10d
-; WIN64-NEXT:    movzbl {{[0-9]+}}(%rsp), %r11d
-; WIN64-NEXT:    movsbl %cl, %eax
-; WIN64-NEXT:    movswl %dx, %ecx
-; WIN64-NEXT:    addl %eax, %ecx
-; WIN64-NEXT:    movzbl %r8b, %edx
-; WIN64-NEXT:    movzwl %r9w, %eax
-; WIN64-NEXT:    addl %edx, %eax
-; WIN64-NEXT:    addl %ecx, %eax
-; WIN64-NEXT:    addl %r11d, %eax
+; WIN64-NEXT:    movzwl {{[0-9]+}}(%rsp), %eax
+; WIN64-NEXT:    movzbl {{[0-9]+}}(%rsp), %r10d
+; WIN64-NEXT:    movsbl %cl, %ecx
+; WIN64-NEXT:    movswl %dx, %edx
+; WIN64-NEXT:    addl %ecx, %edx
+; WIN64-NEXT:    movzbl %r8b, %ecx
+; WIN64-NEXT:    movzwl %r9w, %r8d
+; WIN64-NEXT:    addl %ecx, %r8d
+; WIN64-NEXT:    addl %edx, %r8d
+; WIN64-NEXT:    addl %r8d, %r10d
 ; WIN64-NEXT:    addl %r10d, %eax
 ; WIN64-NEXT:    retq
 ;
 ; WIN32-MSVC-LABEL: manyargs:
 ; WIN32-MSVC:       # %bb.0: # %entry
 ; WIN32-MSVC-NEXT:    pushl %esi
-; WIN32-MSVC-NEXT:    movzwl {{[0-9]+}}(%esp), %eax
-; WIN32-MSVC-NEXT:    movzbl {{[0-9]+}}(%esp), %ecx
-; WIN32-MSVC-NEXT:    addl %eax, %ecx
-; WIN32-MSVC-NEXT:    movzwl {{[0-9]+}}(%esp), %eax
-; WIN32-MSVC-NEXT:    movzbl {{[0-9]+}}(%esp), %edx
-; WIN32-MSVC-NEXT:    addl %eax, %edx
-; WIN32-MSVC-NEXT:    movswl {{[0-9]+}}(%esp), %esi
-; WIN32-MSVC-NEXT:    movsbl {{[0-9]+}}(%esp), %eax
-; WIN32-MSVC-NEXT:    addl %esi, %eax
-; WIN32-MSVC-NEXT:    addl %edx, %eax
+; WIN32-MSVC-NEXT:    movzwl {{[0-9]+}}(%esp), %ecx
+; WIN32-MSVC-NEXT:    movzbl {{[0-9]+}}(%esp), %eax
 ; WIN32-MSVC-NEXT:    addl %ecx, %eax
+; WIN32-MSVC-NEXT:    movzwl {{[0-9]+}}(%esp), %ecx
+; WIN32-MSVC-NEXT:    movzbl {{[0-9]+}}(%esp), %edx
+; WIN32-MSVC-NEXT:    addl %ecx, %edx
+; WIN32-MSVC-NEXT:    movswl {{[0-9]+}}(%esp), %ecx
+; WIN32-MSVC-NEXT:    movsbl {{[0-9]+}}(%esp), %esi
+; WIN32-MSVC-NEXT:    addl %esi, %ecx
+; WIN32-MSVC-NEXT:    addl %ecx, %edx
+; WIN32-MSVC-NEXT:    addl %edx, %eax
 ; WIN32-MSVC-NEXT:    popl %esi
 ; WIN32-MSVC-NEXT:    retl
 ;
@@ -100,17 +100,17 @@ define i32 @manyargs(i8 %a, i16 %b, i8 %c, i16 %d, i8 %e, i16 %f) {
 ; WIN32-GNU-NEXT:    pushl %esi
 ; WIN32-GNU-NEXT:    .cfi_def_cfa_offset 8
 ; WIN32-GNU-NEXT:    .cfi_offset %esi, -8
-; WIN32-GNU-NEXT:    movzwl {{[0-9]+}}(%esp), %eax
-; WIN32-GNU-NEXT:    movzbl {{[0-9]+}}(%esp), %ecx
-; WIN32-GNU-NEXT:    addl %eax, %ecx
-; WIN32-GNU-NEXT:    movzwl {{[0-9]+}}(%esp), %eax
-; WIN32-GNU-NEXT:    movzbl {{[0-9]+}}(%esp), %edx
-; WIN32-GNU-NEXT:    addl %eax, %edx
-; WIN32-GNU-NEXT:    movswl {{[0-9]+}}(%esp), %esi
-; WIN32-GNU-NEXT:    movsbl {{[0-9]+}}(%esp), %eax
-; WIN32-GNU-NEXT:    addl %esi, %eax
-; WIN32-GNU-NEXT:    addl %edx, %eax
+; WIN32-GNU-NEXT:    movzwl {{[0-9]+}}(%esp), %ecx
+; WIN32-GNU-NEXT:    movzbl {{[0-9]+}}(%esp), %eax
 ; WIN32-GNU-NEXT:    addl %ecx, %eax
+; WIN32-GNU-NEXT:    movzwl {{[0-9]+}}(%esp), %ecx
+; WIN32-GNU-NEXT:    movzbl {{[0-9]+}}(%esp), %edx
+; WIN32-GNU-NEXT:    addl %ecx, %edx
+; WIN32-GNU-NEXT:    movswl {{[0-9]+}}(%esp), %ecx
+; WIN32-GNU-NEXT:    movsbl {{[0-9]+}}(%esp), %esi
+; WIN32-GNU-NEXT:    addl %esi, %ecx
+; WIN32-GNU-NEXT:    addl %ecx, %edx
+; WIN32-GNU-NEXT:    addl %edx, %eax
 ; WIN32-GNU-NEXT:    popl %esi
 ; WIN32-GNU-NEXT:    retl
 entry:

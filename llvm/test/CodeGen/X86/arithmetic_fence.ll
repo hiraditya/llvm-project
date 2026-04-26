@@ -9,8 +9,8 @@ define float @f1(float %a, float %b, float %c) {
 ; X86-NEXT:    .cfi_def_cfa_offset 8
 ; X86-NEXT:    vmovss {{.*#+}} xmm0 = mem[0],zero,zero,zero
 ; X86-NEXT:    vmovss {{.*#+}} xmm1 = mem[0],zero,zero,zero
-; X86-NEXT:    vfmadd213ss {{.*#+}} xmm1 = (xmm0 * xmm1) + mem
-; X86-NEXT:    vmovss %xmm1, (%esp)
+; X86-NEXT:    vfmadd213ss {{.*#+}} xmm0 = (xmm1 * xmm0) + mem
+; X86-NEXT:    vmovss %xmm0, (%esp)
 ; X86-NEXT:    flds (%esp)
 ; X86-NEXT:    popl %eax
 ; X86-NEXT:    .cfi_def_cfa_offset 4

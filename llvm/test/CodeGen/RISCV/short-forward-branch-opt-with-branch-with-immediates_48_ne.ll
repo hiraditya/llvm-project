@@ -16,10 +16,11 @@ define i32 @branch_with_immSFB_mv(i32 %a, i32 %c, i32 %d) {
 ;
 ; RV32I-SFB-WITH-IMM-LABEL: branch_with_immSFB_mv:
 ; RV32I-SFB-WITH-IMM:       # %bb.0: # %entry
-; RV32I-SFB-WITH-IMM-NEXT:    qc.e.bnei a2, 10011, .LBB0_2
+; RV32I-SFB-WITH-IMM-NEXT:    qc.e.beqi a2, 10011, .LBB0_2
 ; RV32I-SFB-WITH-IMM-NEXT:  # %bb.1: # %entry
-; RV32I-SFB-WITH-IMM-NEXT:    mv a0, a1
+; RV32I-SFB-WITH-IMM-NEXT:    mv a1, a0
 ; RV32I-SFB-WITH-IMM-NEXT:  .LBB0_2: # %entry
+; RV32I-SFB-WITH-IMM-NEXT:    mv a0, a1
 ; RV32I-SFB-WITH-IMM-NEXT:    ret
 entry:
   %x = icmp ne i32 %d, 10011
@@ -40,10 +41,12 @@ define i32 @branch_with_immSFB_mv_zerofalsev(i32 %a, i32 %c, i32 %d) {
 ;
 ; RV32I-SFB-WITH-IMM-LABEL: branch_with_immSFB_mv_zerofalsev:
 ; RV32I-SFB-WITH-IMM:       # %bb.0: # %entry
-; RV32I-SFB-WITH-IMM-NEXT:    qc.e.bnei a2, 10011, .LBB1_2
+; RV32I-SFB-WITH-IMM-NEXT:    li a1, 0
+; RV32I-SFB-WITH-IMM-NEXT:    qc.e.beqi a2, 10011, .LBB1_2
 ; RV32I-SFB-WITH-IMM-NEXT:  # %bb.1: # %entry
-; RV32I-SFB-WITH-IMM-NEXT:    li a0, 0
+; RV32I-SFB-WITH-IMM-NEXT:    mv a1, a0
 ; RV32I-SFB-WITH-IMM-NEXT:  .LBB1_2: # %entry
+; RV32I-SFB-WITH-IMM-NEXT:    mv a0, a1
 ; RV32I-SFB-WITH-IMM-NEXT:    ret
 entry:
   %x = icmp ne i32 %d, 10011
@@ -64,10 +67,12 @@ define i32 @branch_with_immSFB_mv_zerofalsev_swapped(i32 %a, i32 %c, i32 %d) {
 ;
 ; RV32I-SFB-WITH-IMM-LABEL: branch_with_immSFB_mv_zerofalsev_swapped:
 ; RV32I-SFB-WITH-IMM:       # %bb.0: # %entry
-; RV32I-SFB-WITH-IMM-NEXT:    qc.e.beqi a2, 10011, .LBB2_2
+; RV32I-SFB-WITH-IMM-NEXT:    li a1, 0
+; RV32I-SFB-WITH-IMM-NEXT:    qc.e.bnei a2, 10011, .LBB2_2
 ; RV32I-SFB-WITH-IMM-NEXT:  # %bb.1: # %entry
-; RV32I-SFB-WITH-IMM-NEXT:    li a0, 0
+; RV32I-SFB-WITH-IMM-NEXT:    mv a1, a0
 ; RV32I-SFB-WITH-IMM-NEXT:  .LBB2_2: # %entry
+; RV32I-SFB-WITH-IMM-NEXT:    mv a0, a1
 ; RV32I-SFB-WITH-IMM-NEXT:    ret
 entry:
   %x = icmp ne i32 %d, 10011
@@ -89,10 +94,11 @@ define i32 @branch_with_immSFB_mv_minusOnefalsev(i32 %a, i32 %c, i32 %d) {
 ; RV32I-SFB-WITH-IMM-LABEL: branch_with_immSFB_mv_minusOnefalsev:
 ; RV32I-SFB-WITH-IMM:       # %bb.0: # %entry
 ; RV32I-SFB-WITH-IMM-NEXT:    li a1, -1
-; RV32I-SFB-WITH-IMM-NEXT:    qc.e.bnei a2, 10011, .LBB3_2
+; RV32I-SFB-WITH-IMM-NEXT:    qc.e.beqi a2, 10011, .LBB3_2
 ; RV32I-SFB-WITH-IMM-NEXT:  # %bb.1: # %entry
-; RV32I-SFB-WITH-IMM-NEXT:    mv a0, a1
+; RV32I-SFB-WITH-IMM-NEXT:    mv a1, a0
 ; RV32I-SFB-WITH-IMM-NEXT:  .LBB3_2: # %entry
+; RV32I-SFB-WITH-IMM-NEXT:    mv a0, a1
 ; RV32I-SFB-WITH-IMM-NEXT:    ret
 entry:
   %x = icmp ne i32 %d, 10011
@@ -114,10 +120,11 @@ define i32 @branch_with_immSFB_mv_minusOnefalsev_swapped(i32 %a, i32 %c, i32 %d)
 ; RV32I-SFB-WITH-IMM-LABEL: branch_with_immSFB_mv_minusOnefalsev_swapped:
 ; RV32I-SFB-WITH-IMM:       # %bb.0: # %entry
 ; RV32I-SFB-WITH-IMM-NEXT:    li a1, -1
-; RV32I-SFB-WITH-IMM-NEXT:    qc.e.beqi a2, 10011, .LBB4_2
+; RV32I-SFB-WITH-IMM-NEXT:    qc.e.bnei a2, 10011, .LBB4_2
 ; RV32I-SFB-WITH-IMM-NEXT:  # %bb.1: # %entry
-; RV32I-SFB-WITH-IMM-NEXT:    mv a0, a1
+; RV32I-SFB-WITH-IMM-NEXT:    mv a1, a0
 ; RV32I-SFB-WITH-IMM-NEXT:  .LBB4_2: # %entry
+; RV32I-SFB-WITH-IMM-NEXT:    mv a0, a1
 ; RV32I-SFB-WITH-IMM-NEXT:    ret
 entry:
   %x = icmp ne i32 %d, 10011

@@ -5,10 +5,11 @@
 define i32 @from_cmpeq(i32 %xx, i32 %y) {
 ; X86-LABEL: from_cmpeq:
 ; X86:       # %bb.0:
-; X86-NEXT:    xorl %eax, %eax
+; X86-NEXT:    xorl %ecx, %ecx
 ; X86-NEXT:    cmpl $9, {{[0-9]+}}(%esp)
-; X86-NEXT:    sete %al
-; X86-NEXT:    andl {{[0-9]+}}(%esp), %eax
+; X86-NEXT:    sete %cl
+; X86-NEXT:    movl {{[0-9]+}}(%esp), %eax
+; X86-NEXT:    andl %ecx, %eax
 ; X86-NEXT:    retl
 ;
 ; X64-LABEL: from_cmpeq:
@@ -40,10 +41,11 @@ define i32 @from_cmpeq_fail_bad_andmask(i32 %xx, i32 %y) {
 ;
 ; X64-LABEL: from_cmpeq_fail_bad_andmask:
 ; X64:       # %bb.0:
-; X64-NEXT:    andl $3, %esi
-; X64-NEXT:    xorl %eax, %eax
+; X64-NEXT:    movl %esi, %eax
+; X64-NEXT:    andl $3, %eax
+; X64-NEXT:    xorl %ecx, %ecx
 ; X64-NEXT:    cmpl $9, %edi
-; X64-NEXT:    cmovel %esi, %eax
+; X64-NEXT:    cmovnel %ecx, %eax
 ; X64-NEXT:    retq
   %x = icmp eq i32 %xx, 9
   %masked = and i32 %y, 3
@@ -54,8 +56,9 @@ define i32 @from_cmpeq_fail_bad_andmask(i32 %xx, i32 %y) {
 define i32 @from_i1(i1 %x, i32 %y) {
 ; X86-LABEL: from_i1:
 ; X86:       # %bb.0:
+; X86-NEXT:    movl {{[0-9]+}}(%esp), %ecx
 ; X86-NEXT:    movl {{[0-9]+}}(%esp), %eax
-; X86-NEXT:    andl {{[0-9]+}}(%esp), %eax
+; X86-NEXT:    andl %ecx, %eax
 ; X86-NEXT:    andl $1, %eax
 ; X86-NEXT:    retl
 ;
@@ -73,8 +76,9 @@ define i32 @from_i1(i1 %x, i32 %y) {
 define i32 @from_trunc_i8(i8 %xx, i32 %y) {
 ; X86-LABEL: from_trunc_i8:
 ; X86:       # %bb.0:
+; X86-NEXT:    movl {{[0-9]+}}(%esp), %ecx
 ; X86-NEXT:    movl {{[0-9]+}}(%esp), %eax
-; X86-NEXT:    andl {{[0-9]+}}(%esp), %eax
+; X86-NEXT:    andl %ecx, %eax
 ; X86-NEXT:    andl $1, %eax
 ; X86-NEXT:    retl
 ;
@@ -93,8 +97,9 @@ define i32 @from_trunc_i8(i8 %xx, i32 %y) {
 define i32 @from_trunc_i64(i64 %xx, i32 %y) {
 ; X86-LABEL: from_trunc_i64:
 ; X86:       # %bb.0:
+; X86-NEXT:    movl {{[0-9]+}}(%esp), %ecx
 ; X86-NEXT:    movl {{[0-9]+}}(%esp), %eax
-; X86-NEXT:    andl {{[0-9]+}}(%esp), %eax
+; X86-NEXT:    andl %ecx, %eax
 ; X86-NEXT:    andl $1, %eax
 ; X86-NEXT:    retl
 ;
@@ -126,10 +131,11 @@ define i32 @from_i1_fail_bad_select0(i1 %x, i32 %y) {
 ;
 ; X64-LABEL: from_i1_fail_bad_select0:
 ; X64:       # %bb.0:
-; X64-NEXT:    andl $1, %esi
+; X64-NEXT:    movl %esi, %eax
+; X64-NEXT:    andl $1, %eax
 ; X64-NEXT:    testb $1, %dil
-; X64-NEXT:    movl $1, %eax
-; X64-NEXT:    cmovnel %esi, %eax
+; X64-NEXT:    movl $1, %ecx
+; X64-NEXT:    cmovel %ecx, %eax
 ; X64-NEXT:    retq
   %masked = and i32 %y, 1
   %r = select i1 %x, i32 %masked, i32 1

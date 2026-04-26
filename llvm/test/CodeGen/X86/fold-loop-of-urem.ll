@@ -69,21 +69,21 @@ define void @simple_urem_to_sel_fail_not_in_loop(i32 %N, i32 %rem_amt) nounwind 
 ; CHECK-NEXT:    testl %edi, %edi
 ; CHECK-NEXT:    je .LBB1_1
 ; CHECK-NEXT:  # %bb.3: # %for.body.preheader
-; CHECK-NEXT:    movl %edi, %r14d
-; CHECK-NEXT:    xorl %ebp, %ebp
+; CHECK-NEXT:    movl %edi, %ebp
+; CHECK-NEXT:    xorl %r14d, %r14d
 ; CHECK-NEXT:    .p2align 4
 ; CHECK-NEXT:  .LBB1_4: # %for.body
 ; CHECK-NEXT:    # =>This Inner Loop Header: Depth=1
-; CHECK-NEXT:    movl %ebp, %edi
+; CHECK-NEXT:    movl %r14d, %edi
 ; CHECK-NEXT:    callq use.i32@PLT
-; CHECK-NEXT:    incl %ebp
-; CHECK-NEXT:    cmpl %ebp, %r14d
+; CHECK-NEXT:    incl %r14d
+; CHECK-NEXT:    cmpl %r14d, %ebp
 ; CHECK-NEXT:    jne .LBB1_4
 ; CHECK-NEXT:    jmp .LBB1_2
 ; CHECK-NEXT:  .LBB1_1:
-; CHECK-NEXT:    xorl %ebp, %ebp
+; CHECK-NEXT:    xorl %r14d, %r14d
 ; CHECK-NEXT:  .LBB1_2: # %for.cond.cleanup
-; CHECK-NEXT:    movl %ebp, %eax
+; CHECK-NEXT:    movl %r14d, %eax
 ; CHECK-NEXT:    xorl %edx, %edx
 ; CHECK-NEXT:    divl %ebx
 ; CHECK-NEXT:    movl %edx, %edi
@@ -359,8 +359,8 @@ define void @simple_urem_fail_bad_incr3(i32 %N, i32 %rem_amt) nounwind {
 ; CHECK-NEXT:    je .LBB5_9
 ; CHECK-NEXT:  # %bb.1:
 ; CHECK-NEXT:    pushq %rbp
-; CHECK-NEXT:    pushq %r14
 ; CHECK-NEXT:    pushq %rbx
+; CHECK-NEXT:    pushq %rax
 ; CHECK-NEXT:    movl %esi, %ebx
 ; CHECK-NEXT:    jmp .LBB5_2
 ; CHECK-NEXT:    .p2align 4
@@ -384,13 +384,13 @@ define void @simple_urem_fail_bad_incr3(i32 %N, i32 %rem_amt) nounwind {
 ; CHECK-NEXT:  # %bb.3: # %for.body0
 ; CHECK-NEXT:    # in Loop: Header=BB5_2 Depth=1
 ; CHECK-NEXT:    callq get.i1@PLT
-; CHECK-NEXT:    movl %eax, %r14d
+; CHECK-NEXT:    movl %eax, %ebp
 ; CHECK-NEXT:    callq get.i32@PLT
-; CHECK-NEXT:    testb $1, %r14b
+; CHECK-NEXT:    # kill: def $eax killed $eax def $rax
+; CHECK-NEXT:    testb $1, %bpl
 ; CHECK-NEXT:    je .LBB5_7
 ; CHECK-NEXT:  # %bb.4: # in Loop: Header=BB5_2 Depth=1
-; CHECK-NEXT:    movl %eax, %ebp
-; CHECK-NEXT:    incl %ebp
+; CHECK-NEXT:    leal 1(%rax), %ebp
 ; CHECK-NEXT:    jmp .LBB5_6
 ; CHECK-NEXT:    .p2align 4
 ; CHECK-NEXT:  .LBB5_5: # %for.body2
@@ -401,8 +401,8 @@ define void @simple_urem_fail_bad_incr3(i32 %N, i32 %rem_amt) nounwind {
 ; CHECK-NEXT:    jne .LBB5_6
 ; CHECK-NEXT:    jmp .LBB5_7
 ; CHECK-NEXT:  .LBB5_8:
+; CHECK-NEXT:    addq $8, %rsp
 ; CHECK-NEXT:    popq %rbx
-; CHECK-NEXT:    popq %r14
 ; CHECK-NEXT:    popq %rbp
 ; CHECK-NEXT:  .LBB5_9: # %for.cond.cleanup
 ; CHECK-NEXT:    retq
@@ -789,33 +789,33 @@ for.body:
 define void @simple_urem_skip_const_rem_amt(i32 %N) nounwind {
 ; CHECK-LABEL: simple_urem_skip_const_rem_amt:
 ; CHECK:       # %bb.0: # %entry
+; CHECK-NEXT:    # kill: def $edi killed $edi def $rdi
 ; CHECK-NEXT:    testl %edi, %edi
 ; CHECK-NEXT:    je .LBB13_4
 ; CHECK-NEXT:  # %bb.1: # %for.body.preheader
-; CHECK-NEXT:    pushq %rbp
+; CHECK-NEXT:    pushq %r15
 ; CHECK-NEXT:    pushq %r14
 ; CHECK-NEXT:    pushq %rbx
-; CHECK-NEXT:    movl %edi, %ebx
-; CHECK-NEXT:    addl $-4, %ebx
-; CHECK-NEXT:    movl $4, %ebp
-; CHECK-NEXT:    movabsq $970881267157434368, %r14 # imm = 0xD79435E58000000
+; CHECK-NEXT:    leal -4(%rdi), %ebx
+; CHECK-NEXT:    movl $4, %r14d
+; CHECK-NEXT:    movabsq $970881267157434368, %r15 # imm = 0xD79435E58000000
 ; CHECK-NEXT:    .p2align 4
 ; CHECK-NEXT:  .LBB13_2: # %for.body
 ; CHECK-NEXT:    # =>This Inner Loop Header: Depth=1
-; CHECK-NEXT:    movl %ebp, %eax
-; CHECK-NEXT:    mulq %r14
+; CHECK-NEXT:    movl %r14d, %eax
+; CHECK-NEXT:    mulq %r15
 ; CHECK-NEXT:    leal (%rdx,%rdx,8), %eax
 ; CHECK-NEXT:    leal (%rdx,%rax,2), %eax
-; CHECK-NEXT:    movl %ebp, %edi
+; CHECK-NEXT:    movl %r14d, %edi
 ; CHECK-NEXT:    subl %eax, %edi
 ; CHECK-NEXT:    callq use.i32@PLT
-; CHECK-NEXT:    incl %ebp
+; CHECK-NEXT:    incl %r14d
 ; CHECK-NEXT:    decl %ebx
 ; CHECK-NEXT:    jne .LBB13_2
 ; CHECK-NEXT:  # %bb.3:
 ; CHECK-NEXT:    popq %rbx
 ; CHECK-NEXT:    popq %r14
-; CHECK-NEXT:    popq %rbp
+; CHECK-NEXT:    popq %r15
 ; CHECK-NEXT:  .LBB13_4: # %for.cond.cleanup
 ; CHECK-NEXT:    retq
 entry:
@@ -890,6 +890,7 @@ for.body:
 define void @simple_urem_multi_latch_non_canonical(i32 %N, i32 %rem_amt) nounwind {
 ; CHECK-LABEL: simple_urem_multi_latch_non_canonical:
 ; CHECK:       # %bb.0: # %entry
+; CHECK-NEXT:    # kill: def $edi killed $edi def $rdi
 ; CHECK-NEXT:    testl %edi, %edi
 ; CHECK-NEXT:    je .LBB15_6
 ; CHECK-NEXT:  # %bb.1: # %for.body.preheader
@@ -901,8 +902,7 @@ define void @simple_urem_multi_latch_non_canonical(i32 %N, i32 %rem_amt) nounwin
 ; CHECK-NEXT:    pushq %rbx
 ; CHECK-NEXT:    pushq %rax
 ; CHECK-NEXT:    movl %esi, %ebx
-; CHECK-NEXT:    movl %edi, %ebp
-; CHECK-NEXT:    decl %ebp
+; CHECK-NEXT:    leal -1(%rdi), %r15d
 ; CHECK-NEXT:    xorl %r12d, %r12d
 ; CHECK-NEXT:    xorl %r14d, %r14d
 ; CHECK-NEXT:    xorl %r13d, %r13d
@@ -919,14 +919,14 @@ define void @simple_urem_multi_latch_non_canonical(i32 %N, i32 %rem_amt) nounwin
 ; CHECK-NEXT:    movl %r14d, %edi
 ; CHECK-NEXT:    callq use.i32@PLT
 ; CHECK-NEXT:    callq get.i1@PLT
-; CHECK-NEXT:    movl %eax, %r15d
+; CHECK-NEXT:    movl %eax, %ebp
 ; CHECK-NEXT:    callq do_stuff0@PLT
-; CHECK-NEXT:    testb $1, %r15b
+; CHECK-NEXT:    testb $1, %bpl
 ; CHECK-NEXT:    je .LBB15_3
 ; CHECK-NEXT:  # %bb.4: # %for.body0
 ; CHECK-NEXT:    # in Loop: Header=BB15_2 Depth=1
 ; CHECK-NEXT:    callq do_stuff1@PLT
-; CHECK-NEXT:    cmpl %r13d, %ebp
+; CHECK-NEXT:    cmpl %r13d, %r15d
 ; CHECK-NEXT:    jne .LBB15_3
 ; CHECK-NEXT:  # %bb.5:
 ; CHECK-NEXT:    addq $8, %rsp
@@ -1025,30 +1025,30 @@ define void @simple_urem_fail_intermediate_inc(i32 %N, i32 %rem_amt) nounwind {
 ; CHECK-NEXT:    testl %edi, %edi
 ; CHECK-NEXT:    je .LBB17_4
 ; CHECK-NEXT:  # %bb.1: # %for.body.preheader
-; CHECK-NEXT:    pushq %rbp
+; CHECK-NEXT:    pushq %r15
 ; CHECK-NEXT:    pushq %r14
 ; CHECK-NEXT:    pushq %rbx
 ; CHECK-NEXT:    movl %esi, %ebx
 ; CHECK-NEXT:    movl %edi, %r14d
 ; CHECK-NEXT:    negl %r14d
-; CHECK-NEXT:    movl $1, %ebp
+; CHECK-NEXT:    movl $1, %r15d
 ; CHECK-NEXT:    .p2align 4
 ; CHECK-NEXT:  .LBB17_2: # %for.body
 ; CHECK-NEXT:    # =>This Inner Loop Header: Depth=1
-; CHECK-NEXT:    movl %ebp, %eax
+; CHECK-NEXT:    movl %r15d, %eax
 ; CHECK-NEXT:    xorl %edx, %edx
 ; CHECK-NEXT:    divl %ebx
 ; CHECK-NEXT:    movl %edx, %edi
 ; CHECK-NEXT:    callq use.i32@PLT
-; CHECK-NEXT:    movl %ebp, %eax
-; CHECK-NEXT:    incl %ebp
-; CHECK-NEXT:    leal 1(%r14,%rax), %eax
+; CHECK-NEXT:    leal 1(%r14,%r15), %eax
+; CHECK-NEXT:    leal 1(%r15), %ecx
 ; CHECK-NEXT:    cmpl $1, %eax
+; CHECK-NEXT:    movl %ecx, %r15d
 ; CHECK-NEXT:    jne .LBB17_2
 ; CHECK-NEXT:  # %bb.3:
 ; CHECK-NEXT:    popq %rbx
 ; CHECK-NEXT:    popq %r14
-; CHECK-NEXT:    popq %rbp
+; CHECK-NEXT:    popq %r15
 ; CHECK-NEXT:  .LBB17_4: # %for.cond.cleanup
 ; CHECK-NEXT:    retq
 entry:
@@ -1192,31 +1192,31 @@ define void @simple_urem_to_sel_non_zero_start_through_add(i32 %N, i32 %rem_amt_
 ; CHECK-NEXT:    cmpl $3, %edi
 ; CHECK-NEXT:    jb .LBB21_4
 ; CHECK-NEXT:  # %bb.1: # %for.body.preheader
-; CHECK-NEXT:    pushq %rbp
+; CHECK-NEXT:    pushq %r15
 ; CHECK-NEXT:    pushq %r14
 ; CHECK-NEXT:    pushq %rbx
 ; CHECK-NEXT:    movl %esi, %ebx
 ; CHECK-NEXT:    movl %edi, %r14d
 ; CHECK-NEXT:    orl $16, %ebx
 ; CHECK-NEXT:    negl %r14d
-; CHECK-NEXT:    movl $7, %ebp
+; CHECK-NEXT:    movl $7, %r15d
 ; CHECK-NEXT:    .p2align 4
 ; CHECK-NEXT:  .LBB21_2: # %for.body
 ; CHECK-NEXT:    # =>This Inner Loop Header: Depth=1
-; CHECK-NEXT:    movl %ebp, %eax
+; CHECK-NEXT:    movl %r15d, %eax
 ; CHECK-NEXT:    xorl %edx, %edx
 ; CHECK-NEXT:    divl %ebx
 ; CHECK-NEXT:    movl %edx, %edi
 ; CHECK-NEXT:    callq use.i32@PLT
-; CHECK-NEXT:    movl %ebp, %eax
-; CHECK-NEXT:    incl %ebp
-; CHECK-NEXT:    leal 1(%r14,%rax), %eax
+; CHECK-NEXT:    leal 1(%r14,%r15), %eax
+; CHECK-NEXT:    leal 1(%r15), %ecx
 ; CHECK-NEXT:    cmpl $5, %eax
+; CHECK-NEXT:    movl %ecx, %r15d
 ; CHECK-NEXT:    jne .LBB21_2
 ; CHECK-NEXT:  # %bb.3:
 ; CHECK-NEXT:    popq %rbx
 ; CHECK-NEXT:    popq %r14
-; CHECK-NEXT:    popq %rbp
+; CHECK-NEXT:    popq %r15
 ; CHECK-NEXT:  .LBB21_4: # %for.cond.cleanup
 ; CHECK-NEXT:    retq
 entry:
@@ -1243,31 +1243,31 @@ define void @simple_urem_to_sel_non_zero_start_through_add_fail_missing_nuw(i32 
 ; CHECK-NEXT:    cmpl $3, %edi
 ; CHECK-NEXT:    jb .LBB22_4
 ; CHECK-NEXT:  # %bb.1: # %for.body.preheader
-; CHECK-NEXT:    pushq %rbp
+; CHECK-NEXT:    pushq %r15
 ; CHECK-NEXT:    pushq %r14
 ; CHECK-NEXT:    pushq %rbx
 ; CHECK-NEXT:    movl %esi, %ebx
 ; CHECK-NEXT:    movl %edi, %r14d
 ; CHECK-NEXT:    orl $16, %ebx
 ; CHECK-NEXT:    negl %r14d
-; CHECK-NEXT:    movl $7, %ebp
+; CHECK-NEXT:    movl $7, %r15d
 ; CHECK-NEXT:    .p2align 4
 ; CHECK-NEXT:  .LBB22_2: # %for.body
 ; CHECK-NEXT:    # =>This Inner Loop Header: Depth=1
-; CHECK-NEXT:    movl %ebp, %eax
+; CHECK-NEXT:    movl %r15d, %eax
 ; CHECK-NEXT:    xorl %edx, %edx
 ; CHECK-NEXT:    divl %ebx
 ; CHECK-NEXT:    movl %edx, %edi
 ; CHECK-NEXT:    callq use.i32@PLT
-; CHECK-NEXT:    movl %ebp, %eax
-; CHECK-NEXT:    incl %ebp
-; CHECK-NEXT:    leal 1(%r14,%rax), %eax
+; CHECK-NEXT:    leal 1(%r14,%r15), %eax
+; CHECK-NEXT:    leal 1(%r15), %ecx
 ; CHECK-NEXT:    cmpl $5, %eax
+; CHECK-NEXT:    movl %ecx, %r15d
 ; CHECK-NEXT:    jne .LBB22_2
 ; CHECK-NEXT:  # %bb.3:
 ; CHECK-NEXT:    popq %rbx
 ; CHECK-NEXT:    popq %r14
-; CHECK-NEXT:    popq %rbp
+; CHECK-NEXT:    popq %r15
 ; CHECK-NEXT:  .LBB22_4: # %for.cond.cleanup
 ; CHECK-NEXT:    retq
 entry:
@@ -1294,30 +1294,30 @@ define void @simple_urem_to_sel_non_zero_start_through_add_fail_no_simplify_rem(
 ; CHECK-NEXT:    cmpl $3, %edi
 ; CHECK-NEXT:    jb .LBB23_4
 ; CHECK-NEXT:  # %bb.1: # %for.body.preheader
-; CHECK-NEXT:    pushq %rbp
+; CHECK-NEXT:    pushq %r15
 ; CHECK-NEXT:    pushq %r14
 ; CHECK-NEXT:    pushq %rbx
 ; CHECK-NEXT:    movl %esi, %ebx
 ; CHECK-NEXT:    movl %edi, %r14d
 ; CHECK-NEXT:    negl %r14d
-; CHECK-NEXT:    movl $7, %ebp
+; CHECK-NEXT:    movl $7, %r15d
 ; CHECK-NEXT:    .p2align 4
 ; CHECK-NEXT:  .LBB23_2: # %for.body
 ; CHECK-NEXT:    # =>This Inner Loop Header: Depth=1
-; CHECK-NEXT:    movl %ebp, %eax
+; CHECK-NEXT:    movl %r15d, %eax
 ; CHECK-NEXT:    xorl %edx, %edx
 ; CHECK-NEXT:    divl %ebx
 ; CHECK-NEXT:    movl %edx, %edi
 ; CHECK-NEXT:    callq use.i32@PLT
-; CHECK-NEXT:    movl %ebp, %eax
-; CHECK-NEXT:    incl %ebp
-; CHECK-NEXT:    leal 1(%r14,%rax), %eax
+; CHECK-NEXT:    leal 1(%r14,%r15), %eax
+; CHECK-NEXT:    leal 1(%r15), %ecx
 ; CHECK-NEXT:    cmpl $5, %eax
+; CHECK-NEXT:    movl %ecx, %r15d
 ; CHECK-NEXT:    jne .LBB23_2
 ; CHECK-NEXT:  # %bb.3:
 ; CHECK-NEXT:    popq %rbx
 ; CHECK-NEXT:    popq %r14
-; CHECK-NEXT:    popq %rbp
+; CHECK-NEXT:    popq %r15
 ; CHECK-NEXT:  .LBB23_4: # %for.cond.cleanup
 ; CHECK-NEXT:    retq
 entry:
@@ -1391,34 +1391,34 @@ for.body:
 define void @simple_urem_to_sel_non_zero_start_through_sub_no_simplfy(i32 %N, i32 %rem_amt, i32 %start) nounwind {
 ; CHECK-LABEL: simple_urem_to_sel_non_zero_start_through_sub_no_simplfy:
 ; CHECK:       # %bb.0: # %entry
+; CHECK-NEXT:    # kill: def $edx killed $edx def $rdx
 ; CHECK-NEXT:    cmpl %edx, %edi
 ; CHECK-NEXT:    jbe .LBB25_4
 ; CHECK-NEXT:  # %bb.1: # %for.body.preheader
-; CHECK-NEXT:    pushq %rbp
+; CHECK-NEXT:    pushq %r15
 ; CHECK-NEXT:    pushq %r14
 ; CHECK-NEXT:    pushq %rbx
-; CHECK-NEXT:    movl %edx, %ebx
-; CHECK-NEXT:    movl %esi, %ebp
+; CHECK-NEXT:    movl %esi, %ebx
 ; CHECK-NEXT:    movl %edi, %r14d
 ; CHECK-NEXT:    negl %r14d
-; CHECK-NEXT:    addl $-2, %ebx
+; CHECK-NEXT:    leal -2(%rdx), %r15d
 ; CHECK-NEXT:    .p2align 4
 ; CHECK-NEXT:  .LBB25_2: # %for.body
 ; CHECK-NEXT:    # =>This Inner Loop Header: Depth=1
-; CHECK-NEXT:    movl %ebx, %eax
+; CHECK-NEXT:    movl %r15d, %eax
 ; CHECK-NEXT:    xorl %edx, %edx
-; CHECK-NEXT:    divl %ebp
+; CHECK-NEXT:    divl %ebx
 ; CHECK-NEXT:    movl %edx, %edi
 ; CHECK-NEXT:    callq use.i32@PLT
-; CHECK-NEXT:    movl %ebx, %eax
-; CHECK-NEXT:    incl %ebx
-; CHECK-NEXT:    leal 1(%r14,%rax), %eax
+; CHECK-NEXT:    leal 1(%r14,%r15), %eax
+; CHECK-NEXT:    leal 1(%r15), %ecx
 ; CHECK-NEXT:    cmpl $-2, %eax
+; CHECK-NEXT:    movl %ecx, %r15d
 ; CHECK-NEXT:    jne .LBB25_2
 ; CHECK-NEXT:  # %bb.3:
 ; CHECK-NEXT:    popq %rbx
 ; CHECK-NEXT:    popq %r14
-; CHECK-NEXT:    popq %rbp
+; CHECK-NEXT:    popq %r15
 ; CHECK-NEXT:  .LBB25_4: # %for.cond.cleanup
 ; CHECK-NEXT:    retq
 entry:

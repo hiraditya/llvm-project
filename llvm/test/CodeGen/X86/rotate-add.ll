@@ -86,11 +86,11 @@ define i32 @test_invalid_rotl_var_and(i32 %x, i32 %y) {
 ; X86-LABEL: test_invalid_rotl_var_and:
 ; X86:       # %bb.0:
 ; X86-NEXT:    movzbl {{[0-9]+}}(%esp), %ecx
-; X86-NEXT:    movl {{[0-9]+}}(%esp), %eax
-; X86-NEXT:    movl %eax, %edx
-; X86-NEXT:    shll %cl, %edx
+; X86-NEXT:    movl {{[0-9]+}}(%esp), %edx
+; X86-NEXT:    movl %edx, %eax
+; X86-NEXT:    shll %cl, %eax
 ; X86-NEXT:    negb %cl
-; X86-NEXT:    shrl %cl, %eax
+; X86-NEXT:    shrl %cl, %edx
 ; X86-NEXT:    addl %edx, %eax
 ; X86-NEXT:    retl
 ;
@@ -128,11 +128,12 @@ define i32 @test_invalid_rotr_var_and(i32 %x, i32 %y) {
 ; X64:       # %bb.0:
 ; X64-NEXT:    movl %esi, %ecx
 ; X64-NEXT:    movl %edi, %eax
-; X64-NEXT:    shrl %cl, %eax
+; X64-NEXT:    movl %edi, %edx
+; X64-NEXT:    shrl %cl, %edx
 ; X64-NEXT:    negb %cl
 ; X64-NEXT:    # kill: def $cl killed $cl killed $ecx
-; X64-NEXT:    shll %cl, %edi
-; X64-NEXT:    addl %edi, %eax
+; X64-NEXT:    shll %cl, %eax
+; X64-NEXT:    addl %edx, %eax
 ; X64-NEXT:    retq
   %shr = lshr i32 %x, %y
   %sub = sub nsw i32 0, %y
@@ -217,14 +218,15 @@ define i64 @test_rotl_udiv_special_case(i64 %i) {
 ; X86-NEXT:    sbbl $0, %edi
 ; X86-NEXT:    movl %ecx, %eax
 ; X86-NEXT:    mull %ebx
-; X86-NEXT:    imull $-1431655766, %ecx, %ecx # imm = 0xAAAAAAAA
-; X86-NEXT:    addl %ecx, %edx
+; X86-NEXT:    movl %eax, %esi
+; X86-NEXT:    imull $-1431655766, %ecx, %eax # imm = 0xAAAAAAAA
+; X86-NEXT:    addl %edx, %eax
 ; X86-NEXT:    imull $-1431655765, %edi, %ecx # imm = 0xAAAAAAAB
-; X86-NEXT:    addl %ecx, %edx
-; X86-NEXT:    movl %edx, %ecx
-; X86-NEXT:    shldl $28, %eax, %ecx
-; X86-NEXT:    shrdl $4, %eax, %edx
+; X86-NEXT:    addl %eax, %ecx
 ; X86-NEXT:    movl %ecx, %eax
+; X86-NEXT:    shldl $28, %esi, %eax
+; X86-NEXT:    shldl $28, %ecx, %esi
+; X86-NEXT:    movl %esi, %edx
 ; X86-NEXT:    popl %esi
 ; X86-NEXT:    .cfi_def_cfa_offset 12
 ; X86-NEXT:    popl %edi
@@ -277,9 +279,9 @@ define i64 @test_rotl_mul_with_mask_special_case(i64 %i) {
 ; X86-NEXT:    leal (%eax,%eax,8), %ecx
 ; X86-NEXT:    movl $9, %eax
 ; X86-NEXT:    mull {{[0-9]+}}(%esp)
-; X86-NEXT:    addl %ecx, %edx
-; X86-NEXT:    shrdl $25, %eax, %edx
-; X86-NEXT:    movzbl %dl, %eax
+; X86-NEXT:    addl %edx, %ecx
+; X86-NEXT:    shrdl $25, %eax, %ecx
+; X86-NEXT:    movzbl %cl, %eax
 ; X86-NEXT:    xorl %edx, %edx
 ; X86-NEXT:    retl
 ;

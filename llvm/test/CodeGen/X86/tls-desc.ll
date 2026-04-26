@@ -14,7 +14,7 @@ define ptr @f1() nounwind {
 ; X86-NEXT:    pushl %ebx
 ; X86-NEXT:    pushl %edi
 ; X86-NEXT:    pushl %esi
-; X86-NEXT:    pushl %eax
+; X86-NEXT:    subl $8, %esp
 ; X86-NEXT:    calll .L0$pb
 ; X86-NEXT:  .L0$pb:
 ; X86-NEXT:    popl %ebx
@@ -22,14 +22,18 @@ define ptr @f1() nounwind {
 ; X86-NEXT:    addl $_GLOBAL_OFFSET_TABLE_+(.Ltmp0-.L0$pb), %ebx
 ; X86-NEXT:    #APP
 ; X86-NEXT:    #NO_APP
-; X86-NEXT:    movl %eax, (%esp) # 4-byte Spill
+; X86-NEXT:    movl %ecx, (%esp) # 4-byte Spill
+; X86-NEXT:    movl %eax, {{[-0-9]+}}(%e{{[sb]}}p) # 4-byte Spill
 ; X86-NEXT:    leal x@tlsdesc(%ebx), %eax
 ; X86-NEXT:    calll *x@tlscall(%eax)
-; X86-NEXT:    addl %gs:0, %eax
+; X86-NEXT:    movl %gs:0, %ecx
+; X86-NEXT:    addl %eax, %ecx
+; X86-NEXT:    movl {{[-0-9]+}}(%e{{[sb]}}p), %eax # 4-byte Reload
 ; X86-NEXT:    movl (%esp), %ebx # 4-byte Reload
 ; X86-NEXT:    #APP
 ; X86-NEXT:    #NO_APP
-; X86-NEXT:    addl $4, %esp
+; X86-NEXT:    movl %ecx, %eax
+; X86-NEXT:    addl $8, %esp
 ; X86-NEXT:    popl %esi
 ; X86-NEXT:    popl %edi
 ; X86-NEXT:    popl %ebx
@@ -43,10 +47,11 @@ define ptr @f1() nounwind {
 ; X32-NEXT:    #NO_APP
 ; X32-NEXT:    leal x@tlsdesc(%rip), %eax
 ; X32-NEXT:    callq *x@tlscall(%eax)
-; X32-NEXT:    # kill: def $eax killed $eax def $rax
-; X32-NEXT:    addl %fs:0, %eax
+; X32-NEXT:    movl %fs:0, %ecx
+; X32-NEXT:    addl %eax, %ecx
 ; X32-NEXT:    #APP
 ; X32-NEXT:    #NO_APP
+; X32-NEXT:    movq %rcx, %rax
 ; X32-NEXT:    popq %rcx
 ; X32-NEXT:    retq
 ;
@@ -57,9 +62,11 @@ define ptr @f1() nounwind {
 ; X64-NEXT:    #NO_APP
 ; X64-NEXT:    leaq x@tlsdesc(%rip), %rax
 ; X64-NEXT:    callq *x@tlscall(%rax)
-; X64-NEXT:    addq %fs:0, %rax
+; X64-NEXT:    movq %fs:0, %rcx
+; X64-NEXT:    addq %rax, %rcx
 ; X64-NEXT:    #APP
 ; X64-NEXT:    #NO_APP
+; X64-NEXT:    movq %rcx, %rax
 ; X64-NEXT:    popq %rcx
 ; X64-NEXT:    retq
   %a = call { i32, i32, i32, i32, i32, i32 } asm sideeffect "", "=r,=r,=r,=r,=r,=r,~{dirflag},~{fpsr},~{flags}"()
@@ -125,7 +132,9 @@ define ptr @f3() nounwind {
 ; X86-NEXT:    addl $_GLOBAL_OFFSET_TABLE_+(.Ltmp2-.L2$pb), %ebx
 ; X86-NEXT:    leal x@tlsdesc(%ebx), %eax
 ; X86-NEXT:    calll *x@tlscall(%eax)
-; X86-NEXT:    addl %gs:0, %eax
+; X86-NEXT:    movl %gs:0, %ecx
+; X86-NEXT:    addl %eax, %ecx
+; X86-NEXT:    movl %ecx, %eax
 ; X86-NEXT:    popl %ebx
 ; X86-NEXT:    retl
 ;
@@ -134,8 +143,9 @@ define ptr @f3() nounwind {
 ; X32-NEXT:    pushq %rax
 ; X32-NEXT:    leal x@tlsdesc(%rip), %eax
 ; X32-NEXT:    callq *x@tlscall(%eax)
-; X32-NEXT:    # kill: def $eax killed $eax def $rax
-; X32-NEXT:    addl %fs:0, %eax
+; X32-NEXT:    movl %fs:0, %ecx
+; X32-NEXT:    addl %eax, %ecx
+; X32-NEXT:    movq %rcx, %rax
 ; X32-NEXT:    popq %rcx
 ; X32-NEXT:    retq
 ;
@@ -144,7 +154,9 @@ define ptr @f3() nounwind {
 ; X64-NEXT:    pushq %rax
 ; X64-NEXT:    leaq x@tlsdesc(%rip), %rax
 ; X64-NEXT:    callq *x@tlscall(%rax)
-; X64-NEXT:    addq %fs:0, %rax
+; X64-NEXT:    movq %fs:0, %rcx
+; X64-NEXT:    addq %rax, %rcx
+; X64-NEXT:    movq %rcx, %rax
 ; X64-NEXT:    popq %rcx
 ; X64-NEXT:    retq
   %1 = tail call ptr @llvm.threadlocal.address.p0(ptr @x)
@@ -160,36 +172,36 @@ define i32 @f4() nounwind {
 ; X86-NEXT:    popl %ebx
 ; X86-NEXT:  .Ltmp3:
 ; X86-NEXT:    addl $_GLOBAL_OFFSET_TABLE_+(.Ltmp3-.L3$pb), %ebx
-; X86-NEXT:    movl %gs:0, %edx
+; X86-NEXT:    movl %gs:0, %ecx
 ; X86-NEXT:    leal _TLS_MODULE_BASE_@tlsdesc(%ebx), %eax
 ; X86-NEXT:    calll *_TLS_MODULE_BASE_@tlscall(%eax)
-; X86-NEXT:    movl y@DTPOFF(%eax,%edx), %ecx
-; X86-NEXT:    addl z@DTPOFF(%eax,%edx), %ecx
-; X86-NEXT:    movl %ecx, %eax
+; X86-NEXT:    movl y@DTPOFF(%eax,%ecx), %edx
+; X86-NEXT:    movl z@DTPOFF(%eax,%ecx), %eax
+; X86-NEXT:    addl %edx, %eax
 ; X86-NEXT:    popl %ebx
 ; X86-NEXT:    retl
 ;
 ; X32-LABEL: f4:
 ; X32:       # %bb.0:
 ; X32-NEXT:    pushq %rax
-; X32-NEXT:    movl %fs:0, %edx
+; X32-NEXT:    movl %fs:0, %ecx
 ; X32-NEXT:    leal _TLS_MODULE_BASE_@tlsdesc(%rip), %eax
 ; X32-NEXT:    callq *_TLS_MODULE_BASE_@tlscall(%eax)
-; X32-NEXT:    movl y@DTPOFF(%eax,%edx), %ecx
-; X32-NEXT:    addl z@DTPOFF(%eax,%edx), %ecx
-; X32-NEXT:    movl %ecx, %eax
+; X32-NEXT:    movl y@DTPOFF(%eax,%ecx), %edx
+; X32-NEXT:    movl z@DTPOFF(%eax,%ecx), %eax
+; X32-NEXT:    addl %edx, %eax
 ; X32-NEXT:    popq %rcx
 ; X32-NEXT:    retq
 ;
 ; X64-LABEL: f4:
 ; X64:       # %bb.0:
 ; X64-NEXT:    pushq %rax
-; X64-NEXT:    movq %fs:0, %rdx
+; X64-NEXT:    movq %fs:0, %rcx
 ; X64-NEXT:    leaq _TLS_MODULE_BASE_@tlsdesc(%rip), %rax
 ; X64-NEXT:    callq *_TLS_MODULE_BASE_@tlscall(%rax)
-; X64-NEXT:    movl y@DTPOFF(%rax,%rdx), %ecx
-; X64-NEXT:    addl z@DTPOFF(%rax,%rdx), %ecx
-; X64-NEXT:    movl %ecx, %eax
+; X64-NEXT:    movl y@DTPOFF(%rax,%rcx), %edx
+; X64-NEXT:    movl z@DTPOFF(%rax,%rcx), %eax
+; X64-NEXT:    addl %edx, %eax
 ; X64-NEXT:    popq %rcx
 ; X64-NEXT:    retq
   %1 = load i32, ptr @y, align 4

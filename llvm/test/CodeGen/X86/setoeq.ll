@@ -51,13 +51,14 @@ define zeroext i8 @oeq_f64_u32(double %x) nounwind readnone {
 ; SSE-NEXT:    movapd %xmm0, %xmm1
 ; SSE-NEXT:    subsd {{\.?LCPI[0-9]+_[0-9]+}}, %xmm1
 ; SSE-NEXT:    cvttsd2si %xmm1, %edx
-; SSE-NEXT:    andl %ecx, %edx
-; SSE-NEXT:    orl %eax, %edx
-; SSE-NEXT:    movd %edx, %xmm1
-; SSE-NEXT:    por {{\.?LCPI[0-9]+_[0-9]+}}, %xmm1
-; SSE-NEXT:    subsd {{\.?LCPI[0-9]+_[0-9]+}}, %xmm1
-; SSE-NEXT:    cmpeqsd %xmm0, %xmm1
-; SSE-NEXT:    movd %xmm1, %eax
+; SSE-NEXT:    andl %edx, %ecx
+; SSE-NEXT:    orl %eax, %ecx
+; SSE-NEXT:    movd %ecx, %xmm1
+; SSE-NEXT:    movdqa {{.*#+}} xmm2 = [4.503599627370496E+15,4.503599627370496E+15]
+; SSE-NEXT:    por %xmm1, %xmm2
+; SSE-NEXT:    subsd {{\.?LCPI[0-9]+_[0-9]+}}, %xmm2
+; SSE-NEXT:    cmpeqsd %xmm0, %xmm2
+; SSE-NEXT:    movd %xmm2, %eax
 ; SSE-NEXT:    andl $1, %eax
 ; SSE-NEXT:    # kill: def $al killed $al killed $eax
 ; SSE-NEXT:    retl
@@ -109,8 +110,9 @@ define zeroext i8 @oeq_f64_i64(double %x) nounwind readnone {
 ; SSE-NEXT:    movlps %xmm1, {{[0-9]+}}(%esp)
 ; SSE-NEXT:    fildll {{[0-9]+}}(%esp)
 ; SSE-NEXT:    fstpl {{[0-9]+}}(%esp)
-; SSE-NEXT:    cmpeqsd {{[0-9]+}}(%esp), %xmm0
-; SSE-NEXT:    movd %xmm0, %eax
+; SSE-NEXT:    movsd {{.*#+}} xmm1 = mem[0],zero
+; SSE-NEXT:    cmpeqsd %xmm0, %xmm1
+; SSE-NEXT:    movd %xmm1, %eax
 ; SSE-NEXT:    andl $1, %eax
 ; SSE-NEXT:    # kill: def $al killed $al killed $eax
 ; SSE-NEXT:    movl %ebp, %esp
@@ -171,8 +173,9 @@ define zeroext i8 @oeq_f64_u64(double %x) nounwind readnone {
 ; SSE-NEXT:    fldcw {{[0-9]+}}(%esp)
 ; SSE-NEXT:    movzbl %al, %eax
 ; SSE-NEXT:    shll $31, %eax
-; SSE-NEXT:    xorl {{[0-9]+}}(%esp), %eax
-; SSE-NEXT:    movd %eax, %xmm1
+; SSE-NEXT:    movl {{[0-9]+}}(%esp), %ecx
+; SSE-NEXT:    xorl %eax, %ecx
+; SSE-NEXT:    movd %ecx, %xmm1
 ; SSE-NEXT:    movd {{.*#+}} xmm2 = mem[0],zero,zero,zero
 ; SSE-NEXT:    punpckldq {{.*#+}} xmm2 = xmm2[0],xmm1[0],xmm2[1],xmm1[1]
 ; SSE-NEXT:    punpckldq {{.*#+}} xmm2 = xmm2[0],mem[0],xmm2[1],mem[1]
@@ -262,13 +265,14 @@ define zeroext i8 @une_f64_u32(double %x) nounwind readnone {
 ; SSE-NEXT:    movapd %xmm0, %xmm1
 ; SSE-NEXT:    subsd {{\.?LCPI[0-9]+_[0-9]+}}, %xmm1
 ; SSE-NEXT:    cvttsd2si %xmm1, %edx
-; SSE-NEXT:    andl %ecx, %edx
-; SSE-NEXT:    orl %eax, %edx
-; SSE-NEXT:    movd %edx, %xmm1
-; SSE-NEXT:    por {{\.?LCPI[0-9]+_[0-9]+}}, %xmm1
-; SSE-NEXT:    subsd {{\.?LCPI[0-9]+_[0-9]+}}, %xmm1
-; SSE-NEXT:    cmpneqsd %xmm0, %xmm1
-; SSE-NEXT:    movd %xmm1, %eax
+; SSE-NEXT:    andl %edx, %ecx
+; SSE-NEXT:    orl %eax, %ecx
+; SSE-NEXT:    movd %ecx, %xmm1
+; SSE-NEXT:    movdqa {{.*#+}} xmm2 = [4.503599627370496E+15,4.503599627370496E+15]
+; SSE-NEXT:    por %xmm1, %xmm2
+; SSE-NEXT:    subsd {{\.?LCPI[0-9]+_[0-9]+}}, %xmm2
+; SSE-NEXT:    cmpneqsd %xmm0, %xmm2
+; SSE-NEXT:    movd %xmm2, %eax
 ; SSE-NEXT:    andl $1, %eax
 ; SSE-NEXT:    # kill: def $al killed $al killed $eax
 ; SSE-NEXT:    retl
@@ -320,8 +324,9 @@ define zeroext i8 @une_f64_i64(double %x) nounwind readnone {
 ; SSE-NEXT:    movlps %xmm1, {{[0-9]+}}(%esp)
 ; SSE-NEXT:    fildll {{[0-9]+}}(%esp)
 ; SSE-NEXT:    fstpl {{[0-9]+}}(%esp)
-; SSE-NEXT:    cmpneqsd {{[0-9]+}}(%esp), %xmm0
-; SSE-NEXT:    movd %xmm0, %eax
+; SSE-NEXT:    movsd {{.*#+}} xmm1 = mem[0],zero
+; SSE-NEXT:    cmpneqsd %xmm0, %xmm1
+; SSE-NEXT:    movd %xmm1, %eax
 ; SSE-NEXT:    andl $1, %eax
 ; SSE-NEXT:    # kill: def $al killed $al killed $eax
 ; SSE-NEXT:    movl %ebp, %esp
@@ -382,8 +387,9 @@ define zeroext i8 @une_f64_u64(double %x) nounwind readnone {
 ; SSE-NEXT:    fldcw {{[0-9]+}}(%esp)
 ; SSE-NEXT:    movzbl %al, %eax
 ; SSE-NEXT:    shll $31, %eax
-; SSE-NEXT:    xorl {{[0-9]+}}(%esp), %eax
-; SSE-NEXT:    movd %eax, %xmm1
+; SSE-NEXT:    movl {{[0-9]+}}(%esp), %ecx
+; SSE-NEXT:    xorl %eax, %ecx
+; SSE-NEXT:    movd %ecx, %xmm1
 ; SSE-NEXT:    movd {{.*#+}} xmm2 = mem[0],zero,zero,zero
 ; SSE-NEXT:    punpckldq {{.*#+}} xmm2 = xmm2[0],xmm1[0],xmm2[1],xmm1[1]
 ; SSE-NEXT:    punpckldq {{.*#+}} xmm2 = xmm2[0],mem[0],xmm2[1],mem[1]

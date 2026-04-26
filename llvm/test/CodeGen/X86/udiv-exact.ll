@@ -108,16 +108,15 @@ define <4 x i32> @test6(<4 x i32> %x) {
 ; X86-NEXT:    movdqa %xmm0, %xmm1
 ; X86-NEXT:    psrld $3, %xmm1
 ; X86-NEXT:    psrld $1, %xmm0
-; X86-NEXT:    movsd {{.*#+}} xmm0 = xmm1[0],xmm0[1]
+; X86-NEXT:    shufps {{.*#+}} xmm1 = xmm1[0,1],xmm0[2,3]
 ; X86-NEXT:    movdqa {{.*#+}} xmm2 = [2863311531,2863311531,3303820997,3303820997]
-; X86-NEXT:    movapd %xmm0, %xmm1
-; X86-NEXT:    pmuludq %xmm2, %xmm1
-; X86-NEXT:    pshufd {{.*#+}} xmm1 = xmm1[0,2,2,3]
-; X86-NEXT:    shufps {{.*#+}} xmm0 = xmm0[1,1,3,3]
+; X86-NEXT:    movaps %xmm1, %xmm0
 ; X86-NEXT:    pmuludq %xmm2, %xmm0
 ; X86-NEXT:    pshufd {{.*#+}} xmm0 = xmm0[0,2,2,3]
-; X86-NEXT:    punpckldq {{.*#+}} xmm1 = xmm1[0],xmm0[0],xmm1[1],xmm0[1]
-; X86-NEXT:    movdqa %xmm1, %xmm0
+; X86-NEXT:    shufps {{.*#+}} xmm1 = xmm1[1,1,3,3]
+; X86-NEXT:    pmuludq %xmm2, %xmm1
+; X86-NEXT:    pshufd {{.*#+}} xmm1 = xmm1[0,2,2,3]
+; X86-NEXT:    punpckldq {{.*#+}} xmm0 = xmm0[0],xmm1[0],xmm0[1],xmm1[1]
 ; X86-NEXT:    retl
 ;
 ; X64-LABEL: test6:

@@ -4,8 +4,8 @@
 define <1 x float> @constrained_vector_fma_v1f32() #0 {
 ; CHECK-LABEL: constrained_vector_fma_v1f32:
 ; CHECK:       # %bb.0: # %entry
-; CHECK-NEXT:    vmovss {{.*#+}} xmm1 = [5.0E-1,0.0E+0,0.0E+0,0.0E+0]
-; CHECK-NEXT:    vmovss {{.*#+}} xmm0 = [2.5E+0,0.0E+0,0.0E+0,0.0E+0]
+; CHECK-NEXT:    vmovss {{.*#+}} xmm0 = [5.0E-1,0.0E+0,0.0E+0,0.0E+0]
+; CHECK-NEXT:    vmovss {{.*#+}} xmm1 = [2.5E+0,0.0E+0,0.0E+0,0.0E+0]
 ; CHECK-NEXT:    vfmadd213ss {{.*#+}} xmm0 = (xmm1 * xmm0) + mem
 ; CHECK-NEXT:    retq
 entry:
@@ -21,8 +21,8 @@ entry:
 define <2 x double> @constrained_vector_fma_v2f64() #0 {
 ; CHECK-LABEL: constrained_vector_fma_v2f64:
 ; CHECK:       # %bb.0: # %entry
-; CHECK-NEXT:    vmovapd {{.*#+}} xmm1 = [1.5E+0,5.0E-1]
-; CHECK-NEXT:    vmovapd {{.*#+}} xmm0 = [3.5E+0,2.5E+0]
+; CHECK-NEXT:    vmovapd {{.*#+}} xmm0 = [1.5E+0,5.0E-1]
+; CHECK-NEXT:    vmovapd {{.*#+}} xmm1 = [3.5E+0,2.5E+0]
 ; CHECK-NEXT:    vfmadd213pd {{.*#+}} xmm0 = (xmm1 * xmm0) + mem
 ; CHECK-NEXT:    retq
 entry:
@@ -40,15 +40,15 @@ define <3 x float> @constrained_vector_fma_v3f32() #0 {
 ; CHECK:       # %bb.0: # %entry
 ; CHECK-NEXT:    vmovss {{.*#+}} xmm0 = [5.0E-1,0.0E+0,0.0E+0,0.0E+0]
 ; CHECK-NEXT:    vmovss {{.*#+}} xmm1 = [3.5E+0,0.0E+0,0.0E+0,0.0E+0]
-; CHECK-NEXT:    vfmadd213ss {{.*#+}} xmm1 = (xmm0 * xmm1) + mem
-; CHECK-NEXT:    vmovss {{.*#+}} xmm0 = [2.5E+0,0.0E+0,0.0E+0,0.0E+0]
+; CHECK-NEXT:    vfmadd213ss {{.*#+}} xmm0 = (xmm1 * xmm0) + mem
+; CHECK-NEXT:    vmovss {{.*#+}} xmm1 = [2.5E+0,0.0E+0,0.0E+0,0.0E+0]
 ; CHECK-NEXT:    vmovss {{.*#+}} xmm2 = [5.5E+0,0.0E+0,0.0E+0,0.0E+0]
-; CHECK-NEXT:    vfmadd213ss {{.*#+}} xmm2 = (xmm0 * xmm2) + mem
-; CHECK-NEXT:    vmovss {{.*#+}} xmm0 = [1.5E+0,0.0E+0,0.0E+0,0.0E+0]
+; CHECK-NEXT:    vfmadd213ss {{.*#+}} xmm1 = (xmm2 * xmm1) + mem
+; CHECK-NEXT:    vmovss {{.*#+}} xmm2 = [1.5E+0,0.0E+0,0.0E+0,0.0E+0]
 ; CHECK-NEXT:    vmovss {{.*#+}} xmm3 = [4.5E+0,0.0E+0,0.0E+0,0.0E+0]
-; CHECK-NEXT:    vfmadd213ss {{.*#+}} xmm3 = (xmm0 * xmm3) + mem
-; CHECK-NEXT:    vinsertps {{.*#+}} xmm0 = xmm2[0],xmm3[0],xmm2[2,3]
-; CHECK-NEXT:    vinsertps {{.*#+}} xmm0 = xmm0[0,1],xmm1[0],xmm0[3]
+; CHECK-NEXT:    vfmadd213ss {{.*#+}} xmm2 = (xmm3 * xmm2) + mem
+; CHECK-NEXT:    vinsertps {{.*#+}} xmm1 = xmm1[0],xmm2[0],xmm1[2,3]
+; CHECK-NEXT:    vinsertps {{.*#+}} xmm0 = xmm1[0,1],xmm0[0],xmm1[3]
 ; CHECK-NEXT:    retq
 entry:
   %fma = call <3 x float> @llvm.experimental.constrained.fma.v3f32(
@@ -65,11 +65,11 @@ define <3 x double> @constrained_vector_fma_v3f64() #0 {
 ; CHECK:       # %bb.0: # %entry
 ; CHECK-NEXT:    vmovsd {{.*#+}} xmm0 = [5.0E-1,0.0E+0]
 ; CHECK-NEXT:    vmovsd {{.*#+}} xmm1 = [3.5E+0,0.0E+0]
-; CHECK-NEXT:    vfmadd213sd {{.*#+}} xmm1 = (xmm0 * xmm1) + mem
-; CHECK-NEXT:    vmovapd {{.*#+}} xmm0 = [2.5E+0,1.5E+0]
+; CHECK-NEXT:    vfmadd213sd {{.*#+}} xmm0 = (xmm1 * xmm0) + mem
+; CHECK-NEXT:    vmovapd {{.*#+}} xmm1 = [2.5E+0,1.5E+0]
 ; CHECK-NEXT:    vmovapd {{.*#+}} xmm2 = [5.5E+0,4.5E+0]
-; CHECK-NEXT:    vfmadd213pd {{.*#+}} xmm2 = (xmm0 * xmm2) + mem
-; CHECK-NEXT:    vinsertf128 $1, %xmm1, %ymm2, %ymm0
+; CHECK-NEXT:    vfmadd213pd {{.*#+}} xmm1 = (xmm2 * xmm1) + mem
+; CHECK-NEXT:    vinsertf128 $1, %xmm0, %ymm1, %ymm0
 ; CHECK-NEXT:    retq
 entry:
   %fma = call <3 x double> @llvm.experimental.constrained.fma.v3f64(
@@ -84,8 +84,8 @@ entry:
 define <4 x double> @constrained_vector_fma_v4f64() #0 {
 ; CHECK-LABEL: constrained_vector_fma_v4f64:
 ; CHECK:       # %bb.0: # %entry
-; CHECK-NEXT:    vmovapd {{.*#+}} ymm1 = [3.5E+0,2.5E+0,1.5E+0,5.0E-1]
-; CHECK-NEXT:    vmovapd {{.*#+}} ymm0 = [7.5E+0,6.5E+0,5.5E+0,4.5E+0]
+; CHECK-NEXT:    vmovapd {{.*#+}} ymm0 = [3.5E+0,2.5E+0,1.5E+0,5.0E-1]
+; CHECK-NEXT:    vmovapd {{.*#+}} ymm1 = [7.5E+0,6.5E+0,5.5E+0,4.5E+0]
 ; CHECK-NEXT:    vfmadd213pd {{.*#+}} ymm0 = (ymm1 * ymm0) + mem
 ; CHECK-NEXT:    retq
 entry:
@@ -101,8 +101,8 @@ entry:
 define <4 x float> @constrained_vector_fma_v4f32() #0 {
 ; CHECK-LABEL: constrained_vector_fma_v4f32:
 ; CHECK:       # %bb.0: # %entry
-; CHECK-NEXT:    vmovaps {{.*#+}} xmm1 = [3.5E+0,2.5E+0,1.5E+0,5.0E-1]
-; CHECK-NEXT:    vmovaps {{.*#+}} xmm0 = [7.5E+0,6.5E+0,5.5E+0,4.5E+0]
+; CHECK-NEXT:    vmovaps {{.*#+}} xmm0 = [3.5E+0,2.5E+0,1.5E+0,5.0E-1]
+; CHECK-NEXT:    vmovaps {{.*#+}} xmm1 = [7.5E+0,6.5E+0,5.5E+0,4.5E+0]
 ; CHECK-NEXT:    vfmadd213ps {{.*#+}} xmm0 = (xmm1 * xmm0) + mem
 ; CHECK-NEXT:    retq
 entry:
@@ -118,8 +118,8 @@ entry:
 define <8 x float> @constrained_vector_fma_v8f32() #0 {
 ; CHECK-LABEL: constrained_vector_fma_v8f32:
 ; CHECK:       # %bb.0: # %entry
-; CHECK-NEXT:    vmovaps {{.*#+}} ymm1 = [3.5E+0,2.5E+0,1.5E+0,5.0E-1,7.5E+0,6.5E+0,5.5E+0,4.5E+0]
-; CHECK-NEXT:    vmovaps {{.*#+}} ymm0 = [7.5E+0,6.5E+0,5.5E+0,4.5E+0,1.15E+1,1.05E+1,9.5E+0,8.5E+0]
+; CHECK-NEXT:    vmovaps {{.*#+}} ymm0 = [3.5E+0,2.5E+0,1.5E+0,5.0E-1,7.5E+0,6.5E+0,5.5E+0,4.5E+0]
+; CHECK-NEXT:    vmovaps {{.*#+}} ymm1 = [7.5E+0,6.5E+0,5.5E+0,4.5E+0,1.15E+1,1.05E+1,9.5E+0,8.5E+0]
 ; CHECK-NEXT:    vfmadd213ps {{.*#+}} ymm0 = (ymm1 * ymm0) + mem
 ; CHECK-NEXT:    retq
 entry:

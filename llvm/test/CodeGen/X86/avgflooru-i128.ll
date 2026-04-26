@@ -79,14 +79,14 @@ start:
 define i128 @avgflooru_i128_negative(i128 %x, i128 %y) {
 ; CHECK-LABEL: avgflooru_i128_negative:
 ; CHECK:       # %bb.0: # %start
-; CHECK-NEXT:    movq %rdi, %rax
+; CHECK-NEXT:    movq %rdx, %rax
 ; CHECK-NEXT:    andq %rsi, %rcx
 ; CHECK-NEXT:    notq %rsi
-; CHECK-NEXT:    andq %rdi, %rdx
-; CHECK-NEXT:    notq %rax
-; CHECK-NEXT:    addq %rdx, %rax
-; CHECK-NEXT:    adcq %rcx, %rsi
-; CHECK-NEXT:    movq %rsi, %rdx
+; CHECK-NEXT:    andq %rdi, %rax
+; CHECK-NEXT:    notq %rdi
+; CHECK-NEXT:    addq %rdi, %rax
+; CHECK-NEXT:    adcq %rsi, %rcx
+; CHECK-NEXT:    movq %rcx, %rdx
 ; CHECK-NEXT:    retq
 start:
   %xor = xor i128 %x, -1
@@ -101,8 +101,8 @@ start:
 define i32 @avgflooru_i128_negative2(i32 %x, i32 %y) {
 ; CHECK-LABEL: avgflooru_i128_negative2:
 ; CHECK:       # %bb.0: # %start
-; CHECK-NEXT:    movl %edi, %ecx
-; CHECK-NEXT:    movl %esi, %eax
+; CHECK-NEXT:    movl %edi, %eax
+; CHECK-NEXT:    movl %esi, %ecx
 ; CHECK-NEXT:    addq %rcx, %rax
 ; CHECK-NEXT:    shrq %rax
 ; CHECK-NEXT:    # kill: def $eax killed $eax killed $rax
@@ -120,21 +120,24 @@ define <2 x i128> @avgflooru_i128_vec(<2 x i128> %x, <2 x i128> %y) {
 ; CHECK:       # %bb.0: # %start
 ; CHECK-NEXT:    movq %rdi, %rax
 ; CHECK-NEXT:    addq %r9, %rsi
-; CHECK-NEXT:    adcq {{[0-9]+}}(%rsp), %rdx
-; CHECK-NEXT:    setb %dil
-; CHECK-NEXT:    movzbl %dil, %edi
-; CHECK-NEXT:    shldq $63, %rdx, %rdi
-; CHECK-NEXT:    addq {{[0-9]+}}(%rsp), %rcx
-; CHECK-NEXT:    adcq {{[0-9]+}}(%rsp), %r8
-; CHECK-NEXT:    setb %r9b
-; CHECK-NEXT:    movzbl %r9b, %r9d
-; CHECK-NEXT:    shldq $63, %r8, %r9
-; CHECK-NEXT:    shldq $63, %rsi, %rdx
+; CHECK-NEXT:    movq {{[0-9]+}}(%rsp), %rdi
+; CHECK-NEXT:    adcq %rdx, %rdi
+; CHECK-NEXT:    setb %dl
+; CHECK-NEXT:    movzbl %dl, %edx
+; CHECK-NEXT:    shldq $63, %rdi, %rdx
+; CHECK-NEXT:    movq {{[0-9]+}}(%rsp), %r9
+; CHECK-NEXT:    addq %rcx, %r9
+; CHECK-NEXT:    movq {{[0-9]+}}(%rsp), %rcx
+; CHECK-NEXT:    adcq %r8, %rcx
+; CHECK-NEXT:    setb %r8b
+; CHECK-NEXT:    movzbl %r8b, %r8d
 ; CHECK-NEXT:    shldq $63, %rcx, %r8
-; CHECK-NEXT:    movq %r8, 16(%rax)
-; CHECK-NEXT:    movq %rdx, (%rax)
-; CHECK-NEXT:    movq %r9, 24(%rax)
-; CHECK-NEXT:    movq %rdi, 8(%rax)
+; CHECK-NEXT:    shrdq $1, %rdi, %rsi
+; CHECK-NEXT:    shrdq $1, %rcx, %r9
+; CHECK-NEXT:    movq %r9, 16(%rax)
+; CHECK-NEXT:    movq %rsi, (%rax)
+; CHECK-NEXT:    movq %r8, 24(%rax)
+; CHECK-NEXT:    movq %rdx, 8(%rax)
 ; CHECK-NEXT:    retq
 start:
   %xor = xor <2 x i128> %y, %x

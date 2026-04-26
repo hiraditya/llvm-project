@@ -931,9 +931,9 @@ define i32 @diff_pow2_24_16(i32 signext %x) {
 ;
 ; RV32IXQCI-LABEL: diff_pow2_24_16:
 ; RV32IXQCI:       # %bb.0:
-; RV32IXQCI-NEXT:    li a2, 24
-; RV32IXQCI-NEXT:    li a1, 16
-; RV32IXQCI-NEXT:    qc.mvgei a1, a0, 0, a2
+; RV32IXQCI-NEXT:    li a1, 24
+; RV32IXQCI-NEXT:    li a2, 16
+; RV32IXQCI-NEXT:    qc.mvlti a1, a0, 0, a2
 ; RV32IXQCI-NEXT:    mv a0, a1
 ; RV32IXQCI-NEXT:    ret
 ;
@@ -958,9 +958,9 @@ define i32 @diff_pow2_16_24(i32 signext %x) {
 ;
 ; RV32IXQCI-LABEL: diff_pow2_16_24:
 ; RV32IXQCI:       # %bb.0:
-; RV32IXQCI-NEXT:    li a2, 16
-; RV32IXQCI-NEXT:    li a1, 24
-; RV32IXQCI-NEXT:    qc.mvgei a1, a0, 0, a2
+; RV32IXQCI-NEXT:    li a1, 16
+; RV32IXQCI-NEXT:    li a2, 24
+; RV32IXQCI-NEXT:    qc.mvlti a1, a0, 0, a2
 ; RV32IXQCI-NEXT:    mv a0, a1
 ; RV32IXQCI-NEXT:    ret
 ;

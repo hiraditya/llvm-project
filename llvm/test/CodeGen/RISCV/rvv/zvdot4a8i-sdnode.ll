@@ -309,12 +309,12 @@ define i32 @vdota4u_vv_accum(<vscale x 16 x i8> %a, <vscale x 16 x i8> %b, <vsca
 ; NODOT-LABEL: vdota4u_vv_accum:
 ; NODOT:       # %bb.0: # %entry
 ; NODOT-NEXT:    vsetvli a0, zero, e8, m2, ta, ma
-; NODOT-NEXT:    vwmulu.vv v12, v8, v10
+; NODOT-NEXT:    vwmulu.vv v24, v8, v10
 ; NODOT-NEXT:    vsetvli zero, zero, e16, m4, ta, ma
-; NODOT-NEXT:    vwaddu.wv v16, v16, v12
+; NODOT-NEXT:    vwaddu.wv v8, v16, v24
 ; NODOT-NEXT:    vsetvli zero, zero, e32, m8, ta, ma
-; NODOT-NEXT:    vmv.s.x v8, zero
-; NODOT-NEXT:    vredsum.vs v8, v16, v8
+; NODOT-NEXT:    vmv.s.x v16, zero
+; NODOT-NEXT:    vredsum.vs v8, v8, v16
 ; NODOT-NEXT:    vmv.x.s a0, v8
 ; NODOT-NEXT:    ret
 ;

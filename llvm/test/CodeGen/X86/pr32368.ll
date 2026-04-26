@@ -7,9 +7,11 @@
 define <4 x float> @PR32368_128(<4 x float>) {
 ; SSE-LABEL: PR32368_128:
 ; SSE:       # %bb.0:
-; SSE-NEXT:    andps {{\.?LCPI[0-9]+_[0-9]+}}(%rip), %xmm0
-; SSE-NEXT:    addps %xmm0, %xmm0
-; SSE-NEXT:    andps {{\.?LCPI[0-9]+_[0-9]+}}(%rip), %xmm0
+; SSE-NEXT:    movaps {{.*#+}} xmm1 = [4294967004,4294967004,4294967004,4294967004]
+; SSE-NEXT:    andps %xmm0, %xmm1
+; SSE-NEXT:    addps %xmm1, %xmm1
+; SSE-NEXT:    movaps {{.*#+}} xmm0 = [291,291,291,291]
+; SSE-NEXT:    andps %xmm1, %xmm0
 ; SSE-NEXT:    retq
 ;
 ; AVX1-LABEL: PR32368_128:

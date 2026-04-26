@@ -7,8 +7,9 @@
 define dso_local i32 @main() #0 {
 ; CHECK-LABEL: main:
 ; CHECK:       # %bb.0: # %entry
-; CHECK-NEXT:    movl $224, %ecx
-; CHECK-NEXT:    addl a(%rip), %ecx
+; CHECK-NEXT:    movl $224, %eax
+; CHECK-NEXT:    movl a(%rip), %ecx
+; CHECK-NEXT:    addl %eax, %ecx
 ; CHECK-NEXT:    negl %ecx
 ; CHECK-NEXT:    movl $2, %eax
 ; CHECK-NEXT:    # kill: def $cl killed $cl killed $ecx

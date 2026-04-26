@@ -81,9 +81,9 @@ define i32 @extract_extract23_v4i32_add_i32(<4 x i32> %x) {
 define i32 @extract_extract01_v4i32_add_i32_commute(<4 x i32> %x) {
 ; SSE3-SLOW-LABEL: extract_extract01_v4i32_add_i32_commute:
 ; SSE3-SLOW:       # %bb.0:
-; SSE3-SLOW-NEXT:    movd %xmm0, %ecx
-; SSE3-SLOW-NEXT:    pshufd {{.*#+}} xmm0 = xmm0[1,1,1,1]
 ; SSE3-SLOW-NEXT:    movd %xmm0, %eax
+; SSE3-SLOW-NEXT:    pshufd {{.*#+}} xmm0 = xmm0[1,1,1,1]
+; SSE3-SLOW-NEXT:    movd %xmm0, %ecx
 ; SSE3-SLOW-NEXT:    addl %ecx, %eax
 ; SSE3-SLOW-NEXT:    retq
 ;
@@ -95,8 +95,8 @@ define i32 @extract_extract01_v4i32_add_i32_commute(<4 x i32> %x) {
 ;
 ; AVX-SLOW-LABEL: extract_extract01_v4i32_add_i32_commute:
 ; AVX-SLOW:       # %bb.0:
-; AVX-SLOW-NEXT:    vmovd %xmm0, %ecx
-; AVX-SLOW-NEXT:    vpextrd $1, %xmm0, %eax
+; AVX-SLOW-NEXT:    vmovd %xmm0, %eax
+; AVX-SLOW-NEXT:    vpextrd $1, %xmm0, %ecx
 ; AVX-SLOW-NEXT:    addl %ecx, %eax
 ; AVX-SLOW-NEXT:    retq
 ;
@@ -115,9 +115,9 @@ define i32 @extract_extract23_v4i32_add_i32_commute(<4 x i32> %x) {
 ; SSE3-SLOW-LABEL: extract_extract23_v4i32_add_i32_commute:
 ; SSE3-SLOW:       # %bb.0:
 ; SSE3-SLOW-NEXT:    pshufd {{.*#+}} xmm1 = xmm0[2,3,2,3]
-; SSE3-SLOW-NEXT:    movd %xmm1, %ecx
+; SSE3-SLOW-NEXT:    movd %xmm1, %eax
 ; SSE3-SLOW-NEXT:    pshufd {{.*#+}} xmm0 = xmm0[3,3,3,3]
-; SSE3-SLOW-NEXT:    movd %xmm0, %eax
+; SSE3-SLOW-NEXT:    movd %xmm0, %ecx
 ; SSE3-SLOW-NEXT:    addl %ecx, %eax
 ; SSE3-SLOW-NEXT:    retq
 ;
@@ -130,8 +130,8 @@ define i32 @extract_extract23_v4i32_add_i32_commute(<4 x i32> %x) {
 ;
 ; AVX-SLOW-LABEL: extract_extract23_v4i32_add_i32_commute:
 ; AVX-SLOW:       # %bb.0:
-; AVX-SLOW-NEXT:    vextractps $2, %xmm0, %ecx
-; AVX-SLOW-NEXT:    vextractps $3, %xmm0, %eax
+; AVX-SLOW-NEXT:    vextractps $2, %xmm0, %eax
+; AVX-SLOW-NEXT:    vextractps $3, %xmm0, %ecx
 ; AVX-SLOW-NEXT:    addl %ecx, %eax
 ; AVX-SLOW-NEXT:    retq
 ;
@@ -221,8 +221,8 @@ define i16 @extract_extract45_v8i16_add_i16(<8 x i16> %x) {
 define i16 @extract_extract01_v8i16_add_i16_commute(<8 x i16> %x) {
 ; SSE3-SLOW-LABEL: extract_extract01_v8i16_add_i16_commute:
 ; SSE3-SLOW:       # %bb.0:
-; SSE3-SLOW-NEXT:    movd %xmm0, %ecx
-; SSE3-SLOW-NEXT:    pextrw $1, %xmm0, %eax
+; SSE3-SLOW-NEXT:    movd %xmm0, %eax
+; SSE3-SLOW-NEXT:    pextrw $1, %xmm0, %ecx
 ; SSE3-SLOW-NEXT:    addl %ecx, %eax
 ; SSE3-SLOW-NEXT:    # kill: def $ax killed $ax killed $eax
 ; SSE3-SLOW-NEXT:    retq
@@ -236,8 +236,8 @@ define i16 @extract_extract01_v8i16_add_i16_commute(<8 x i16> %x) {
 ;
 ; AVX-SLOW-LABEL: extract_extract01_v8i16_add_i16_commute:
 ; AVX-SLOW:       # %bb.0:
-; AVX-SLOW-NEXT:    vmovd %xmm0, %ecx
-; AVX-SLOW-NEXT:    vpextrw $1, %xmm0, %eax
+; AVX-SLOW-NEXT:    vmovd %xmm0, %eax
+; AVX-SLOW-NEXT:    vpextrw $1, %xmm0, %ecx
 ; AVX-SLOW-NEXT:    addl %ecx, %eax
 ; AVX-SLOW-NEXT:    # kill: def $ax killed $ax killed $eax
 ; AVX-SLOW-NEXT:    retq
@@ -257,8 +257,8 @@ define i16 @extract_extract01_v8i16_add_i16_commute(<8 x i16> %x) {
 define i16 @extract_extract45_v8i16_add_i16_commute(<8 x i16> %x) {
 ; SSE3-SLOW-LABEL: extract_extract45_v8i16_add_i16_commute:
 ; SSE3-SLOW:       # %bb.0:
-; SSE3-SLOW-NEXT:    pextrw $4, %xmm0, %ecx
-; SSE3-SLOW-NEXT:    pextrw $5, %xmm0, %eax
+; SSE3-SLOW-NEXT:    pextrw $4, %xmm0, %eax
+; SSE3-SLOW-NEXT:    pextrw $5, %xmm0, %ecx
 ; SSE3-SLOW-NEXT:    addl %ecx, %eax
 ; SSE3-SLOW-NEXT:    # kill: def $ax killed $ax killed $eax
 ; SSE3-SLOW-NEXT:    retq
@@ -272,8 +272,8 @@ define i16 @extract_extract45_v8i16_add_i16_commute(<8 x i16> %x) {
 ;
 ; AVX-SLOW-LABEL: extract_extract45_v8i16_add_i16_commute:
 ; AVX-SLOW:       # %bb.0:
-; AVX-SLOW-NEXT:    vpextrw $4, %xmm0, %ecx
-; AVX-SLOW-NEXT:    vpextrw $5, %xmm0, %eax
+; AVX-SLOW-NEXT:    vpextrw $4, %xmm0, %eax
+; AVX-SLOW-NEXT:    vpextrw $5, %xmm0, %ecx
 ; AVX-SLOW-NEXT:    addl %ecx, %eax
 ; AVX-SLOW-NEXT:    # kill: def $ax killed $ax killed $eax
 ; AVX-SLOW-NEXT:    retq
@@ -649,9 +649,9 @@ define i32 @extract_extract67_v8i32_add_i32(<8 x i32> %x) {
 define i32 @extract_extract01_v8i32_add_i32_commute(<8 x i32> %x) {
 ; SSE3-SLOW-LABEL: extract_extract01_v8i32_add_i32_commute:
 ; SSE3-SLOW:       # %bb.0:
-; SSE3-SLOW-NEXT:    movd %xmm0, %ecx
-; SSE3-SLOW-NEXT:    pshufd {{.*#+}} xmm0 = xmm0[1,1,1,1]
 ; SSE3-SLOW-NEXT:    movd %xmm0, %eax
+; SSE3-SLOW-NEXT:    pshufd {{.*#+}} xmm0 = xmm0[1,1,1,1]
+; SSE3-SLOW-NEXT:    movd %xmm0, %ecx
 ; SSE3-SLOW-NEXT:    addl %ecx, %eax
 ; SSE3-SLOW-NEXT:    retq
 ;
@@ -663,8 +663,8 @@ define i32 @extract_extract01_v8i32_add_i32_commute(<8 x i32> %x) {
 ;
 ; AVX-SLOW-LABEL: extract_extract01_v8i32_add_i32_commute:
 ; AVX-SLOW:       # %bb.0:
-; AVX-SLOW-NEXT:    vmovd %xmm0, %ecx
-; AVX-SLOW-NEXT:    vpextrd $1, %xmm0, %eax
+; AVX-SLOW-NEXT:    vmovd %xmm0, %eax
+; AVX-SLOW-NEXT:    vpextrd $1, %xmm0, %ecx
 ; AVX-SLOW-NEXT:    addl %ecx, %eax
 ; AVX-SLOW-NEXT:    vzeroupper
 ; AVX-SLOW-NEXT:    retq
@@ -685,9 +685,9 @@ define i32 @extract_extract23_v8i32_add_i32_commute(<8 x i32> %x) {
 ; SSE3-SLOW-LABEL: extract_extract23_v8i32_add_i32_commute:
 ; SSE3-SLOW:       # %bb.0:
 ; SSE3-SLOW-NEXT:    pshufd {{.*#+}} xmm1 = xmm0[2,3,2,3]
-; SSE3-SLOW-NEXT:    movd %xmm1, %ecx
+; SSE3-SLOW-NEXT:    movd %xmm1, %eax
 ; SSE3-SLOW-NEXT:    pshufd {{.*#+}} xmm0 = xmm0[3,3,3,3]
-; SSE3-SLOW-NEXT:    movd %xmm0, %eax
+; SSE3-SLOW-NEXT:    movd %xmm0, %ecx
 ; SSE3-SLOW-NEXT:    addl %ecx, %eax
 ; SSE3-SLOW-NEXT:    retq
 ;
@@ -700,8 +700,8 @@ define i32 @extract_extract23_v8i32_add_i32_commute(<8 x i32> %x) {
 ;
 ; AVX-SLOW-LABEL: extract_extract23_v8i32_add_i32_commute:
 ; AVX-SLOW:       # %bb.0:
-; AVX-SLOW-NEXT:    vextractps $2, %xmm0, %ecx
-; AVX-SLOW-NEXT:    vextractps $3, %xmm0, %eax
+; AVX-SLOW-NEXT:    vextractps $2, %xmm0, %eax
+; AVX-SLOW-NEXT:    vextractps $3, %xmm0, %ecx
 ; AVX-SLOW-NEXT:    addl %ecx, %eax
 ; AVX-SLOW-NEXT:    vzeroupper
 ; AVX-SLOW-NEXT:    retq
@@ -722,9 +722,9 @@ define i32 @extract_extract67_v8i32_add_i32_commute(<8 x i32> %x) {
 ; SSE3-SLOW-LABEL: extract_extract67_v8i32_add_i32_commute:
 ; SSE3-SLOW:       # %bb.0:
 ; SSE3-SLOW-NEXT:    pshufd {{.*#+}} xmm0 = xmm1[2,3,2,3]
-; SSE3-SLOW-NEXT:    movd %xmm0, %ecx
-; SSE3-SLOW-NEXT:    pshufd {{.*#+}} xmm0 = xmm1[3,3,3,3]
 ; SSE3-SLOW-NEXT:    movd %xmm0, %eax
+; SSE3-SLOW-NEXT:    pshufd {{.*#+}} xmm0 = xmm1[3,3,3,3]
+; SSE3-SLOW-NEXT:    movd %xmm0, %ecx
 ; SSE3-SLOW-NEXT:    addl %ecx, %eax
 ; SSE3-SLOW-NEXT:    retq
 ;
@@ -738,8 +738,8 @@ define i32 @extract_extract67_v8i32_add_i32_commute(<8 x i32> %x) {
 ; AVX-SLOW-LABEL: extract_extract67_v8i32_add_i32_commute:
 ; AVX-SLOW:       # %bb.0:
 ; AVX-SLOW-NEXT:    vextractf128 $1, %ymm0, %xmm0
-; AVX-SLOW-NEXT:    vextractps $2, %xmm0, %ecx
-; AVX-SLOW-NEXT:    vextractps $3, %xmm0, %eax
+; AVX-SLOW-NEXT:    vextractps $2, %xmm0, %eax
+; AVX-SLOW-NEXT:    vextractps $3, %xmm0, %ecx
 ; AVX-SLOW-NEXT:    addl %ecx, %eax
 ; AVX-SLOW-NEXT:    vzeroupper
 ; AVX-SLOW-NEXT:    retq
@@ -930,8 +930,8 @@ define i16 @extract_extract89_v16i16_add_i16(<16 x i16> %x) {
 define i16 @extract_extract01_v16i16_add_i16_commute(<16 x i16> %x) {
 ; SSE3-SLOW-LABEL: extract_extract01_v16i16_add_i16_commute:
 ; SSE3-SLOW:       # %bb.0:
-; SSE3-SLOW-NEXT:    movd %xmm0, %ecx
-; SSE3-SLOW-NEXT:    pextrw $1, %xmm0, %eax
+; SSE3-SLOW-NEXT:    movd %xmm0, %eax
+; SSE3-SLOW-NEXT:    pextrw $1, %xmm0, %ecx
 ; SSE3-SLOW-NEXT:    addl %ecx, %eax
 ; SSE3-SLOW-NEXT:    # kill: def $ax killed $ax killed $eax
 ; SSE3-SLOW-NEXT:    retq
@@ -945,8 +945,8 @@ define i16 @extract_extract01_v16i16_add_i16_commute(<16 x i16> %x) {
 ;
 ; AVX-SLOW-LABEL: extract_extract01_v16i16_add_i16_commute:
 ; AVX-SLOW:       # %bb.0:
-; AVX-SLOW-NEXT:    vmovd %xmm0, %ecx
-; AVX-SLOW-NEXT:    vpextrw $1, %xmm0, %eax
+; AVX-SLOW-NEXT:    vmovd %xmm0, %eax
+; AVX-SLOW-NEXT:    vpextrw $1, %xmm0, %ecx
 ; AVX-SLOW-NEXT:    addl %ecx, %eax
 ; AVX-SLOW-NEXT:    # kill: def $ax killed $ax killed $eax
 ; AVX-SLOW-NEXT:    vzeroupper
@@ -968,8 +968,8 @@ define i16 @extract_extract01_v16i16_add_i16_commute(<16 x i16> %x) {
 define i16 @extract_extract45_v16i16_add_i16_commute(<16 x i16> %x) {
 ; SSE3-SLOW-LABEL: extract_extract45_v16i16_add_i16_commute:
 ; SSE3-SLOW:       # %bb.0:
-; SSE3-SLOW-NEXT:    pextrw $4, %xmm0, %ecx
-; SSE3-SLOW-NEXT:    pextrw $5, %xmm0, %eax
+; SSE3-SLOW-NEXT:    pextrw $4, %xmm0, %eax
+; SSE3-SLOW-NEXT:    pextrw $5, %xmm0, %ecx
 ; SSE3-SLOW-NEXT:    addl %ecx, %eax
 ; SSE3-SLOW-NEXT:    # kill: def $ax killed $ax killed $eax
 ; SSE3-SLOW-NEXT:    retq
@@ -983,8 +983,8 @@ define i16 @extract_extract45_v16i16_add_i16_commute(<16 x i16> %x) {
 ;
 ; AVX-SLOW-LABEL: extract_extract45_v16i16_add_i16_commute:
 ; AVX-SLOW:       # %bb.0:
-; AVX-SLOW-NEXT:    vpextrw $4, %xmm0, %ecx
-; AVX-SLOW-NEXT:    vpextrw $5, %xmm0, %eax
+; AVX-SLOW-NEXT:    vpextrw $4, %xmm0, %eax
+; AVX-SLOW-NEXT:    vpextrw $5, %xmm0, %ecx
 ; AVX-SLOW-NEXT:    addl %ecx, %eax
 ; AVX-SLOW-NEXT:    # kill: def $ax killed $ax killed $eax
 ; AVX-SLOW-NEXT:    vzeroupper
@@ -1006,8 +1006,8 @@ define i16 @extract_extract45_v16i16_add_i16_commute(<16 x i16> %x) {
 define i16 @extract_extract89_v16i16_add_i16_commute(<16 x i16> %x) {
 ; SSE3-SLOW-LABEL: extract_extract89_v16i16_add_i16_commute:
 ; SSE3-SLOW:       # %bb.0:
-; SSE3-SLOW-NEXT:    movd %xmm1, %ecx
-; SSE3-SLOW-NEXT:    pextrw $1, %xmm1, %eax
+; SSE3-SLOW-NEXT:    movd %xmm1, %eax
+; SSE3-SLOW-NEXT:    pextrw $1, %xmm1, %ecx
 ; SSE3-SLOW-NEXT:    addl %ecx, %eax
 ; SSE3-SLOW-NEXT:    # kill: def $ax killed $ax killed $eax
 ; SSE3-SLOW-NEXT:    retq
@@ -1022,8 +1022,8 @@ define i16 @extract_extract89_v16i16_add_i16_commute(<16 x i16> %x) {
 ; AVX1-SLOW-LABEL: extract_extract89_v16i16_add_i16_commute:
 ; AVX1-SLOW:       # %bb.0:
 ; AVX1-SLOW-NEXT:    vextractf128 $1, %ymm0, %xmm0
-; AVX1-SLOW-NEXT:    vmovd %xmm0, %ecx
-; AVX1-SLOW-NEXT:    vpextrw $1, %xmm0, %eax
+; AVX1-SLOW-NEXT:    vmovd %xmm0, %eax
+; AVX1-SLOW-NEXT:    vpextrw $1, %xmm0, %ecx
 ; AVX1-SLOW-NEXT:    addl %ecx, %eax
 ; AVX1-SLOW-NEXT:    # kill: def $ax killed $ax killed $eax
 ; AVX1-SLOW-NEXT:    vzeroupper
@@ -1041,8 +1041,8 @@ define i16 @extract_extract89_v16i16_add_i16_commute(<16 x i16> %x) {
 ; AVX2-SLOW-LABEL: extract_extract89_v16i16_add_i16_commute:
 ; AVX2-SLOW:       # %bb.0:
 ; AVX2-SLOW-NEXT:    vextracti128 $1, %ymm0, %xmm0
-; AVX2-SLOW-NEXT:    vmovd %xmm0, %ecx
-; AVX2-SLOW-NEXT:    vpextrw $1, %xmm0, %eax
+; AVX2-SLOW-NEXT:    vmovd %xmm0, %eax
+; AVX2-SLOW-NEXT:    vpextrw $1, %xmm0, %ecx
 ; AVX2-SLOW-NEXT:    addl %ecx, %eax
 ; AVX2-SLOW-NEXT:    # kill: def $ax killed $ax killed $eax
 ; AVX2-SLOW-NEXT:    vzeroupper
@@ -1060,8 +1060,8 @@ define i16 @extract_extract89_v16i16_add_i16_commute(<16 x i16> %x) {
 ; AVX512-SLOW-LABEL: extract_extract89_v16i16_add_i16_commute:
 ; AVX512-SLOW:       # %bb.0:
 ; AVX512-SLOW-NEXT:    vextracti128 $1, %ymm0, %xmm0
-; AVX512-SLOW-NEXT:    vmovd %xmm0, %ecx
-; AVX512-SLOW-NEXT:    vpextrw $1, %xmm0, %eax
+; AVX512-SLOW-NEXT:    vmovd %xmm0, %eax
+; AVX512-SLOW-NEXT:    vpextrw $1, %xmm0, %ecx
 ; AVX512-SLOW-NEXT:    addl %ecx, %eax
 ; AVX512-SLOW-NEXT:    # kill: def $ax killed $ax killed $eax
 ; AVX512-SLOW-NEXT:    vzeroupper
@@ -1335,9 +1335,9 @@ define i32 @extract_extract01_v16i32_add_i32(<16 x i32> %x) {
 define i32 @extract_extract01_v16i32_add_i32_commute(<16 x i32> %x) {
 ; SSE3-SLOW-LABEL: extract_extract01_v16i32_add_i32_commute:
 ; SSE3-SLOW:       # %bb.0:
-; SSE3-SLOW-NEXT:    movd %xmm0, %ecx
-; SSE3-SLOW-NEXT:    pshufd {{.*#+}} xmm0 = xmm0[1,1,1,1]
 ; SSE3-SLOW-NEXT:    movd %xmm0, %eax
+; SSE3-SLOW-NEXT:    pshufd {{.*#+}} xmm0 = xmm0[1,1,1,1]
+; SSE3-SLOW-NEXT:    movd %xmm0, %ecx
 ; SSE3-SLOW-NEXT:    addl %ecx, %eax
 ; SSE3-SLOW-NEXT:    retq
 ;
@@ -1349,8 +1349,8 @@ define i32 @extract_extract01_v16i32_add_i32_commute(<16 x i32> %x) {
 ;
 ; AVX-SLOW-LABEL: extract_extract01_v16i32_add_i32_commute:
 ; AVX-SLOW:       # %bb.0:
-; AVX-SLOW-NEXT:    vmovd %xmm0, %ecx
-; AVX-SLOW-NEXT:    vpextrd $1, %xmm0, %eax
+; AVX-SLOW-NEXT:    vmovd %xmm0, %eax
+; AVX-SLOW-NEXT:    vpextrd $1, %xmm0, %ecx
 ; AVX-SLOW-NEXT:    addl %ecx, %eax
 ; AVX-SLOW-NEXT:    vzeroupper
 ; AVX-SLOW-NEXT:    retq
@@ -1408,8 +1408,8 @@ define i16 @extract_extract01_v32i16_add_i16(<32 x i16> %x) {
 define i16 @extract_extract01_v32i16_add_i16_commute(<32 x i16> %x) {
 ; SSE3-SLOW-LABEL: extract_extract01_v32i16_add_i16_commute:
 ; SSE3-SLOW:       # %bb.0:
-; SSE3-SLOW-NEXT:    movd %xmm0, %ecx
-; SSE3-SLOW-NEXT:    pextrw $1, %xmm0, %eax
+; SSE3-SLOW-NEXT:    movd %xmm0, %eax
+; SSE3-SLOW-NEXT:    pextrw $1, %xmm0, %ecx
 ; SSE3-SLOW-NEXT:    addl %ecx, %eax
 ; SSE3-SLOW-NEXT:    # kill: def $ax killed $ax killed $eax
 ; SSE3-SLOW-NEXT:    retq
@@ -1423,8 +1423,8 @@ define i16 @extract_extract01_v32i16_add_i16_commute(<32 x i16> %x) {
 ;
 ; AVX-SLOW-LABEL: extract_extract01_v32i16_add_i16_commute:
 ; AVX-SLOW:       # %bb.0:
-; AVX-SLOW-NEXT:    vmovd %xmm0, %ecx
-; AVX-SLOW-NEXT:    vpextrw $1, %xmm0, %eax
+; AVX-SLOW-NEXT:    vmovd %xmm0, %eax
+; AVX-SLOW-NEXT:    vpextrw $1, %xmm0, %ecx
 ; AVX-SLOW-NEXT:    addl %ecx, %eax
 ; AVX-SLOW-NEXT:    # kill: def $ax killed $ax killed $eax
 ; AVX-SLOW-NEXT:    vzeroupper

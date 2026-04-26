@@ -9,16 +9,16 @@
 define <32 x i8> @foo(ptr %x0) {
 ; SSE-LABEL: foo:
 ; SSE:       # %bb.0:
-; SSE-NEXT:    movdqu (%rdi), %xmm0
-; SSE-NEXT:    movdqu 16(%rdi), %xmm2
-; SSE-NEXT:    movdqu 32(%rdi), %xmm1
-; SSE-NEXT:    movdqa %xmm2, %xmm3
-; SSE-NEXT:    pshufb {{.*#+}} xmm3 = zero,zero,zero,zero,zero,zero,zero,zero,zero,zero,zero,xmm3[0,2,3,5,6]
-; SSE-NEXT:    pshufb {{.*#+}} xmm0 = xmm0[0,1,3,4,6,7,9,10,12,13,15],zero,zero,zero,zero,zero
-; SSE-NEXT:    por %xmm3, %xmm0
-; SSE-NEXT:    pshufb {{.*#+}} xmm2 = xmm2[8,9,11,12,14,15],zero,zero,zero,zero,zero,zero,zero,zero,zero,zero
-; SSE-NEXT:    pshufb {{.*#+}} xmm1 = zero,zero,zero,zero,zero,zero,xmm1[1,2,4,5,7,8,10,11,13,14]
-; SSE-NEXT:    por %xmm2, %xmm1
+; SSE-NEXT:    movdqu (%rdi), %xmm2
+; SSE-NEXT:    movdqu 16(%rdi), %xmm1
+; SSE-NEXT:    movdqu 32(%rdi), %xmm3
+; SSE-NEXT:    movdqa %xmm1, %xmm0
+; SSE-NEXT:    pshufb {{.*#+}} xmm0 = zero,zero,zero,zero,zero,zero,zero,zero,zero,zero,zero,xmm0[0,2,3,5,6]
+; SSE-NEXT:    pshufb {{.*#+}} xmm2 = xmm2[0,1,3,4,6,7,9,10,12,13,15],zero,zero,zero,zero,zero
+; SSE-NEXT:    por %xmm2, %xmm0
+; SSE-NEXT:    pshufb {{.*#+}} xmm1 = xmm1[8,9,11,12,14,15],zero,zero,zero,zero,zero,zero,zero,zero,zero,zero
+; SSE-NEXT:    pshufb {{.*#+}} xmm3 = zero,zero,zero,zero,zero,zero,xmm3[1,2,4,5,7,8,10,11,13,14]
+; SSE-NEXT:    por %xmm3, %xmm1
 ; SSE-NEXT:    retq
 ;
 ; XOP-LABEL: foo:
@@ -70,7 +70,7 @@ define <32 x i8> @foo(ptr %x0) {
 ; AVX512BW-NEXT:    vpshufb {{.*#+}} ymm1 = ymm1[0,1,3,4,6,7,9,10,12,13,15,u,u,u,u,u,24,25,27,28,30,31,u,u,u,u,u,u,u,u,u,u]
 ; AVX512BW-NEXT:    movl $63488, %eax # imm = 0xF800
 ; AVX512BW-NEXT:    kmovd %eax, %k1
-; AVX512BW-NEXT:    vmovdqu8 %ymm2, %ymm1 {%k1}
+; AVX512BW-NEXT:    vpblendmb %ymm2, %ymm1, %ymm1 {%k1}
 ; AVX512BW-NEXT:    vpshufb {{.*#+}} xmm0 = xmm0[u,u,u,u,u,u,1,2,4,5,7,8,10,11,13,14]
 ; AVX512BW-NEXT:    vinserti128 $1, %xmm0, %ymm0, %ymm0
 ; AVX512BW-NEXT:    vpblendw {{.*#+}} ymm0 = ymm1[0,1,2],ymm0[3,4,5,6,7],ymm1[8,9,10],ymm0[11,12,13,14,15]

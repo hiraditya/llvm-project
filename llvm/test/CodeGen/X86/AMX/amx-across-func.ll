@@ -256,7 +256,7 @@ define dso_local i32 @test_loop(i32 %0) nounwind {
 ; CHECK-NEXT:    cmpl $-7, %ebp
 ; CHECK-NEXT:    jne .LBB2_5
 ; CHECK-NEXT:  # %bb.7:
-; CHECK-NEXT:    incl %ebx
+; CHECK-NEXT:    leal 1(%rbx), %eax
 ; CHECK-NEXT:    jmp .LBB2_8
 ; CHECK-NEXT:  .LBB2_4:
 ; CHECK-NEXT:    callq foo
@@ -267,9 +267,8 @@ define dso_local i32 @test_loop(i32 %0) nounwind {
 ; CHECK-NEXT:    tileloadd (%rcx,%rax), %tmm0
 ; CHECK-NEXT:    tilestored %tmm0, (%rcx,%rax)
 ; CHECK-NEXT:  .LBB2_5:
-; CHECK-NEXT:    decl %ebx
+; CHECK-NEXT:    leal -1(%rbx), %eax
 ; CHECK-NEXT:  .LBB2_8:
-; CHECK-NEXT:    movl %ebx, %eax
 ; CHECK-NEXT:    addq $1096, %rsp # imm = 0x448
 ; CHECK-NEXT:    popq %rbx
 ; CHECK-NEXT:    popq %r12
@@ -283,7 +282,7 @@ define dso_local i32 @test_loop(i32 %0) nounwind {
 ; IPRA-LABEL: test_loop:
 ; IPRA:       # %bb.0:
 ; IPRA-NEXT:    subq $72, %rsp
-; IPRA-NEXT:    movl %edi, %eax
+; IPRA-NEXT:    # kill: def $edi killed $edi def $rdi
 ; IPRA-NEXT:    vxorps %xmm0, %xmm0, %xmm0
 ; IPRA-NEXT:    vmovups %zmm0, {{[0-9]+}}(%rsp)
 ; IPRA-NEXT:    movb $1, {{[0-9]+}}(%rsp)
@@ -294,37 +293,37 @@ define dso_local i32 @test_loop(i32 %0) nounwind {
 ; IPRA-NEXT:    testl %edi, %edi
 ; IPRA-NEXT:    jg .LBB2_4
 ; IPRA-NEXT:  # %bb.1: # %.preheader
-; IPRA-NEXT:    xorl %ecx, %ecx
-; IPRA-NEXT:    movl $buf, %edx
-; IPRA-NEXT:    movl $32, %esi
-; IPRA-NEXT:    movw $8, %di
+; IPRA-NEXT:    xorl %eax, %eax
+; IPRA-NEXT:    movl $buf, %ecx
+; IPRA-NEXT:    movl $32, %edx
+; IPRA-NEXT:    movw $8, %si
 ; IPRA-NEXT:    movl $buf+2048, %r8d
 ; IPRA-NEXT:    .p2align 4
 ; IPRA-NEXT:  .LBB2_2: # =>This Inner Loop Header: Depth=1
-; IPRA-NEXT:    tileloadd (%rdx,%rsi), %tmm0
+; IPRA-NEXT:    tileloadd (%rcx,%rdx), %tmm0
 ; IPRA-NEXT:    callq foo
-; IPRA-NEXT:    tilestored %tmm0, (%r8,%rsi)
+; IPRA-NEXT:    tilestored %tmm0, (%r8,%rdx)
 ; IPRA-NEXT:    callq foo
-; IPRA-NEXT:    decl %ecx
+; IPRA-NEXT:    decl %eax
 ; IPRA-NEXT:    jne .LBB2_2
 ; IPRA-NEXT:  # %bb.3:
-; IPRA-NEXT:    cmpl $3, %eax
+; IPRA-NEXT:    cmpl $3, %edi
 ; IPRA-NEXT:    jne .LBB2_4
 ; IPRA-NEXT:  # %bb.6:
-; IPRA-NEXT:    cmpl $-7, %ecx
+; IPRA-NEXT:    cmpl $-7, %eax
 ; IPRA-NEXT:    jne .LBB2_5
 ; IPRA-NEXT:  # %bb.7:
-; IPRA-NEXT:    incl %eax
+; IPRA-NEXT:    leal 1(%rdi), %eax
 ; IPRA-NEXT:    jmp .LBB2_8
 ; IPRA-NEXT:  .LBB2_4:
 ; IPRA-NEXT:    callq foo
-; IPRA-NEXT:    movl $32, %ecx
-; IPRA-NEXT:    movl $buf+1024, %edx
-; IPRA-NEXT:    movw $8, %si
-; IPRA-NEXT:    tileloadd (%rdx,%rcx), %tmm0
-; IPRA-NEXT:    tilestored %tmm0, (%rdx,%rcx)
+; IPRA-NEXT:    movl $32, %eax
+; IPRA-NEXT:    movl $buf+1024, %ecx
+; IPRA-NEXT:    movw $8, %dx
+; IPRA-NEXT:    tileloadd (%rcx,%rax), %tmm0
+; IPRA-NEXT:    tilestored %tmm0, (%rcx,%rax)
 ; IPRA-NEXT:  .LBB2_5:
-; IPRA-NEXT:    decl %eax
+; IPRA-NEXT:    leal -1(%rdi), %eax
 ; IPRA-NEXT:  .LBB2_8:
 ; IPRA-NEXT:    addq $72, %rsp
 ; IPRA-NEXT:    tilerelease

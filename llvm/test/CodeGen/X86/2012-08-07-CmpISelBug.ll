@@ -14,9 +14,9 @@ define void @foo(i8 %arg4, i32 %arg5, ptr %arg14) nounwind {
 ; CHECK-NEXT:    testl %esi, %edi
 ; CHECK-NEXT:    movzbl %al, %eax
 ; CHECK-NEXT:    movl $1, %ecx
-; CHECK-NEXT:    cmovnel %eax, %ecx
-; CHECK-NEXT:    xorb $81, %cl
-; CHECK-NEXT:    movzbl %cl, %eax
+; CHECK-NEXT:    cmovel %ecx, %eax
+; CHECK-NEXT:    xorb $81, %al
+; CHECK-NEXT:    movzbl %al, %eax
 ; CHECK-NEXT:    addl $2062143348, %eax ## imm = 0x7AE9CF74
 ; CHECK-NEXT:    movl %eax, (%rdx)
 ; CHECK-NEXT:    retq

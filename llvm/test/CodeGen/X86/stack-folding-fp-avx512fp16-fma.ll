@@ -13,10 +13,12 @@ define <32 x half> @stack_fold_fmadd123ph(<32 x half> %a0, <32 x half> %a1, <32 
 ; CHECK-LABEL: stack_fold_fmadd123ph:
 ; CHECK:       # %bb.0:
 ; CHECK-NEXT:    vmovups %zmm2, {{[-0-9]+}}(%r{{[sb]}}p) # 64-byte Spill
+; CHECK-NEXT:    vmovaps %zmm1, %zmm2
 ; CHECK-NEXT:    #APP
 ; CHECK-NEXT:    nop
 ; CHECK-NEXT:    #NO_APP
-; CHECK-NEXT:    vfmadd213ph {{[-0-9]+}}(%r{{[sb]}}p), %zmm1, %zmm0 # 64-byte Folded Reload
+; CHECK-NEXT:    vfmadd213ph {{[-0-9]+}}(%r{{[sb]}}p), %zmm0, %zmm2 # 64-byte Folded Reload
+; CHECK-NEXT:    vmovaps %zmm2, %zmm0
 ; CHECK-NEXT:    retq
   %1 = tail call <2 x i64> asm sideeffect "nop", "=x,~{xmm3},~{xmm4},~{xmm5},~{xmm6},~{xmm7},~{xmm8},~{xmm9},~{xmm10},~{xmm11},~{xmm12},~{xmm13},~{xmm14},~{xmm15},~{xmm16},~{xmm17},~{xmm18},~{xmm19},~{xmm20},~{xmm21},~{xmm22},~{xmm23},~{xmm24},~{xmm25},~{xmm26},~{xmm27},~{xmm28},~{xmm29},~{xmm30},~{xmm31},~{flags}"()
   %2 = call <32 x half> @llvm.fma.v32f16(<32 x half> %a0, <32 x half> %a1, <32 x half> %a2)
@@ -45,7 +47,9 @@ define <32 x half> @stack_fold_fmadd231ph(<32 x half> %a0, <32 x half> %a1, <32 
 ; CHECK-NEXT:    #APP
 ; CHECK-NEXT:    nop
 ; CHECK-NEXT:    #NO_APP
-; CHECK-NEXT:    vfmadd231ph {{[-0-9]+}}(%r{{[sb]}}p), %zmm1, %zmm0 # 64-byte Folded Reload
+; CHECK-NEXT:    vmovups {{[-0-9]+}}(%r{{[sb]}}p), %zmm2 # 64-byte Reload
+; CHECK-NEXT:    vfmadd213ph %zmm0, %zmm1, %zmm2
+; CHECK-NEXT:    vmovaps %zmm2, %zmm0
 ; CHECK-NEXT:    retq
   %1 = tail call <2 x i64> asm sideeffect "nop", "=x,~{xmm3},~{xmm4},~{xmm5},~{xmm6},~{xmm7},~{xmm8},~{xmm9},~{xmm10},~{xmm11},~{xmm12},~{xmm13},~{xmm14},~{xmm15},~{xmm16},~{xmm17},~{xmm18},~{xmm19},~{xmm20},~{xmm21},~{xmm22},~{xmm23},~{xmm24},~{xmm25},~{xmm26},~{xmm27},~{xmm28},~{xmm29},~{xmm30},~{xmm31},~{flags}"()
   %2 = call <32 x half> @llvm.fma.v32f16(<32 x half> %a1, <32 x half> %a2, <32 x half> %a0)
@@ -56,10 +60,12 @@ define <32 x half> @stack_fold_fmadd321ph(<32 x half> %a0, <32 x half> %a1, <32 
 ; CHECK-LABEL: stack_fold_fmadd321ph:
 ; CHECK:       # %bb.0:
 ; CHECK-NEXT:    vmovups %zmm2, {{[-0-9]+}}(%r{{[sb]}}p) # 64-byte Spill
+; CHECK-NEXT:    vmovaps %zmm1, %zmm2
 ; CHECK-NEXT:    #APP
 ; CHECK-NEXT:    nop
 ; CHECK-NEXT:    #NO_APP
-; CHECK-NEXT:    vfmadd231ph {{[-0-9]+}}(%r{{[sb]}}p), %zmm1, %zmm0 # 64-byte Folded Reload
+; CHECK-NEXT:    vfmadd132ph {{[-0-9]+}}(%r{{[sb]}}p), %zmm0, %zmm2 # 64-byte Folded Reload
+; CHECK-NEXT:    vmovaps %zmm2, %zmm0
 ; CHECK-NEXT:    retq
   %1 = tail call <2 x i64> asm sideeffect "nop", "=x,~{xmm3},~{xmm4},~{xmm5},~{xmm6},~{xmm7},~{xmm8},~{xmm9},~{xmm10},~{xmm11},~{xmm12},~{xmm13},~{xmm14},~{xmm15},~{xmm16},~{xmm17},~{xmm18},~{xmm19},~{xmm20},~{xmm21},~{xmm22},~{xmm23},~{xmm24},~{xmm25},~{xmm26},~{xmm27},~{xmm28},~{xmm29},~{xmm30},~{xmm31},~{flags}"()
   %2 = call <32 x half> @llvm.fma.v32f16(<32 x half> %a2, <32 x half> %a1, <32 x half> %a0)
@@ -73,7 +79,9 @@ define <32 x half> @stack_fold_fmadd132ph(<32 x half> %a0, <32 x half> %a1, <32 
 ; CHECK-NEXT:    #APP
 ; CHECK-NEXT:    nop
 ; CHECK-NEXT:    #NO_APP
-; CHECK-NEXT:    vfmadd132ph {{[-0-9]+}}(%r{{[sb]}}p), %zmm1, %zmm0 # 64-byte Folded Reload
+; CHECK-NEXT:    vmovups {{[-0-9]+}}(%r{{[sb]}}p), %zmm2 # 64-byte Reload
+; CHECK-NEXT:    vfmadd213ph %zmm1, %zmm0, %zmm2
+; CHECK-NEXT:    vmovaps %zmm2, %zmm0
 ; CHECK-NEXT:    retq
   %1 = tail call <2 x i64> asm sideeffect "nop", "=x,~{xmm3},~{xmm4},~{xmm5},~{xmm6},~{xmm7},~{xmm8},~{xmm9},~{xmm10},~{xmm11},~{xmm12},~{xmm13},~{xmm14},~{xmm15},~{xmm16},~{xmm17},~{xmm18},~{xmm19},~{xmm20},~{xmm21},~{xmm22},~{xmm23},~{xmm24},~{xmm25},~{xmm26},~{xmm27},~{xmm28},~{xmm29},~{xmm30},~{xmm31},~{flags}"()
   %2 = call <32 x half> @llvm.fma.v32f16(<32 x half> %a0, <32 x half> %a2, <32 x half> %a1)
@@ -218,11 +226,13 @@ define <32 x half> @stack_fold_fmadd123ph_maskz(<32 x half> %a0, <32 x half> %a1
 ; CHECK-LABEL: stack_fold_fmadd123ph_maskz:
 ; CHECK:       # %bb.0:
 ; CHECK-NEXT:    vmovups %zmm2, {{[-0-9]+}}(%r{{[sb]}}p) # 64-byte Spill
+; CHECK-NEXT:    vmovaps %zmm1, %zmm2
 ; CHECK-NEXT:    #APP
 ; CHECK-NEXT:    nop
 ; CHECK-NEXT:    #NO_APP
 ; CHECK-NEXT:    kmovd (%rdi), %k1
-; CHECK-NEXT:    vfmadd213ph {{[-0-9]+}}(%r{{[sb]}}p), %zmm1, %zmm0 {%k1} {z} # 64-byte Folded Reload
+; CHECK-NEXT:    vfmadd213ph {{[-0-9]+}}(%r{{[sb]}}p), %zmm0, %zmm2 {%k1} {z} # 64-byte Folded Reload
+; CHECK-NEXT:    vmovaps %zmm2, %zmm0
 ; CHECK-NEXT:    retq
   %1 = tail call <2 x i64> asm sideeffect "nop", "=x,~{xmm3},~{xmm4},~{xmm5},~{xmm6},~{xmm7},~{xmm8},~{xmm9},~{xmm10},~{xmm11},~{xmm12},~{xmm13},~{xmm14},~{xmm15},~{xmm16},~{xmm17},~{xmm18},~{xmm19},~{xmm20},~{xmm21},~{xmm22},~{xmm23},~{xmm24},~{xmm25},~{xmm26},~{xmm27},~{xmm28},~{xmm29},~{xmm30},~{xmm31},~{flags}"()
   %2 = call <32 x half> @llvm.fma.v32f16(<32 x half> %a0, <32 x half> %a1, <32 x half> %a2)
@@ -258,7 +268,9 @@ define <32 x half> @stack_fold_fmadd231ph_maskz(<32 x half> %a0, <32 x half> %a1
 ; CHECK-NEXT:    nop
 ; CHECK-NEXT:    #NO_APP
 ; CHECK-NEXT:    kmovd (%rdi), %k1
-; CHECK-NEXT:    vfmadd231ph {{[-0-9]+}}(%r{{[sb]}}p), %zmm1, %zmm0 {%k1} {z} # 64-byte Folded Reload
+; CHECK-NEXT:    vmovups {{[-0-9]+}}(%r{{[sb]}}p), %zmm2 # 64-byte Reload
+; CHECK-NEXT:    vfmadd213ph %zmm0, %zmm1, %zmm2 {%k1} {z}
+; CHECK-NEXT:    vmovaps %zmm2, %zmm0
 ; CHECK-NEXT:    retq
   %1 = tail call <2 x i64> asm sideeffect "nop", "=x,~{xmm3},~{xmm4},~{xmm5},~{xmm6},~{xmm7},~{xmm8},~{xmm9},~{xmm10},~{xmm11},~{xmm12},~{xmm13},~{xmm14},~{xmm15},~{xmm16},~{xmm17},~{xmm18},~{xmm19},~{xmm20},~{xmm21},~{xmm22},~{xmm23},~{xmm24},~{xmm25},~{xmm26},~{xmm27},~{xmm28},~{xmm29},~{xmm30},~{xmm31},~{flags}"()
   %2 = call <32 x half> @llvm.fma.v32f16(<32 x half> %a1, <32 x half> %a2, <32 x half> %a0)
@@ -272,11 +284,13 @@ define <32 x half> @stack_fold_fmadd321ph_maskz(<32 x half> %a0, <32 x half> %a1
 ; CHECK-LABEL: stack_fold_fmadd321ph_maskz:
 ; CHECK:       # %bb.0:
 ; CHECK-NEXT:    vmovups %zmm2, {{[-0-9]+}}(%r{{[sb]}}p) # 64-byte Spill
+; CHECK-NEXT:    vmovaps %zmm1, %zmm2
 ; CHECK-NEXT:    #APP
 ; CHECK-NEXT:    nop
 ; CHECK-NEXT:    #NO_APP
 ; CHECK-NEXT:    kmovd (%rdi), %k1
-; CHECK-NEXT:    vfmadd231ph {{[-0-9]+}}(%r{{[sb]}}p), %zmm1, %zmm0 {%k1} {z} # 64-byte Folded Reload
+; CHECK-NEXT:    vfmadd132ph {{[-0-9]+}}(%r{{[sb]}}p), %zmm0, %zmm2 {%k1} {z} # 64-byte Folded Reload
+; CHECK-NEXT:    vmovaps %zmm2, %zmm0
 ; CHECK-NEXT:    retq
   %1 = tail call <2 x i64> asm sideeffect "nop", "=x,~{xmm3},~{xmm4},~{xmm5},~{xmm6},~{xmm7},~{xmm8},~{xmm9},~{xmm10},~{xmm11},~{xmm12},~{xmm13},~{xmm14},~{xmm15},~{xmm16},~{xmm17},~{xmm18},~{xmm19},~{xmm20},~{xmm21},~{xmm22},~{xmm23},~{xmm24},~{xmm25},~{xmm26},~{xmm27},~{xmm28},~{xmm29},~{xmm30},~{xmm31},~{flags}"()
   %2 = call <32 x half> @llvm.fma.v32f16(<32 x half> %a2, <32 x half> %a1, <32 x half> %a0)
@@ -294,7 +308,9 @@ define <32 x half> @stack_fold_fmadd132ph_maskz(<32 x half> %a0, <32 x half> %a1
 ; CHECK-NEXT:    nop
 ; CHECK-NEXT:    #NO_APP
 ; CHECK-NEXT:    kmovd (%rdi), %k1
-; CHECK-NEXT:    vfmadd132ph {{[-0-9]+}}(%r{{[sb]}}p), %zmm1, %zmm0 {%k1} {z} # 64-byte Folded Reload
+; CHECK-NEXT:    vmovups {{[-0-9]+}}(%r{{[sb]}}p), %zmm2 # 64-byte Reload
+; CHECK-NEXT:    vfmadd213ph %zmm1, %zmm0, %zmm2 {%k1} {z}
+; CHECK-NEXT:    vmovaps %zmm2, %zmm0
 ; CHECK-NEXT:    retq
   %1 = tail call <2 x i64> asm sideeffect "nop", "=x,~{xmm3},~{xmm4},~{xmm5},~{xmm6},~{xmm7},~{xmm8},~{xmm9},~{xmm10},~{xmm11},~{xmm12},~{xmm13},~{xmm14},~{xmm15},~{xmm16},~{xmm17},~{xmm18},~{xmm19},~{xmm20},~{xmm21},~{xmm22},~{xmm23},~{xmm24},~{xmm25},~{xmm26},~{xmm27},~{xmm28},~{xmm29},~{xmm30},~{xmm31},~{flags}"()
   %2 = call <32 x half> @llvm.fma.v32f16(<32 x half> %a0, <32 x half> %a2, <32 x half> %a1)
@@ -326,10 +342,12 @@ define <32 x half> @stack_fold_fmsub123ph(<32 x half> %a0, <32 x half> %a1, <32 
 ; CHECK-LABEL: stack_fold_fmsub123ph:
 ; CHECK:       # %bb.0:
 ; CHECK-NEXT:    vmovups %zmm2, {{[-0-9]+}}(%r{{[sb]}}p) # 64-byte Spill
+; CHECK-NEXT:    vmovaps %zmm1, %zmm2
 ; CHECK-NEXT:    #APP
 ; CHECK-NEXT:    nop
 ; CHECK-NEXT:    #NO_APP
-; CHECK-NEXT:    vfmsub213ph {{[-0-9]+}}(%r{{[sb]}}p), %zmm1, %zmm0 # 64-byte Folded Reload
+; CHECK-NEXT:    vfmsub213ph {{[-0-9]+}}(%r{{[sb]}}p), %zmm0, %zmm2 # 64-byte Folded Reload
+; CHECK-NEXT:    vmovaps %zmm2, %zmm0
 ; CHECK-NEXT:    retq
   %1 = tail call <2 x i64> asm sideeffect "nop", "=x,~{xmm3},~{xmm4},~{xmm5},~{xmm6},~{xmm7},~{xmm8},~{xmm9},~{xmm10},~{xmm11},~{xmm12},~{xmm13},~{xmm14},~{xmm15},~{xmm16},~{xmm17},~{xmm18},~{xmm19},~{xmm20},~{xmm21},~{xmm22},~{xmm23},~{xmm24},~{xmm25},~{xmm26},~{xmm27},~{xmm28},~{xmm29},~{xmm30},~{xmm31},~{flags}"()
   %2 = fneg <32 x half> %a2
@@ -359,7 +377,9 @@ define <32 x half> @stack_fold_fmsub231ph(<32 x half> %a0, <32 x half> %a1, <32 
 ; CHECK-NEXT:    #APP
 ; CHECK-NEXT:    nop
 ; CHECK-NEXT:    #NO_APP
-; CHECK-NEXT:    vfmsub231ph {{[-0-9]+}}(%r{{[sb]}}p), %zmm1, %zmm0 # 64-byte Folded Reload
+; CHECK-NEXT:    vmovups {{[-0-9]+}}(%r{{[sb]}}p), %zmm2 # 64-byte Reload
+; CHECK-NEXT:    vfmsub213ph %zmm0, %zmm1, %zmm2
+; CHECK-NEXT:    vmovaps %zmm2, %zmm0
 ; CHECK-NEXT:    retq
   %1 = tail call <2 x i64> asm sideeffect "nop", "=x,~{xmm3},~{xmm4},~{xmm5},~{xmm6},~{xmm7},~{xmm8},~{xmm9},~{xmm10},~{xmm11},~{xmm12},~{xmm13},~{xmm14},~{xmm15},~{xmm16},~{xmm17},~{xmm18},~{xmm19},~{xmm20},~{xmm21},~{xmm22},~{xmm23},~{xmm24},~{xmm25},~{xmm26},~{xmm27},~{xmm28},~{xmm29},~{xmm30},~{xmm31},~{flags}"()
   %2 = fneg <32 x half> %a0
@@ -371,10 +391,12 @@ define <32 x half> @stack_fold_fmsub321ph(<32 x half> %a0, <32 x half> %a1, <32 
 ; CHECK-LABEL: stack_fold_fmsub321ph:
 ; CHECK:       # %bb.0:
 ; CHECK-NEXT:    vmovups %zmm2, {{[-0-9]+}}(%r{{[sb]}}p) # 64-byte Spill
+; CHECK-NEXT:    vmovaps %zmm1, %zmm2
 ; CHECK-NEXT:    #APP
 ; CHECK-NEXT:    nop
 ; CHECK-NEXT:    #NO_APP
-; CHECK-NEXT:    vfmsub231ph {{[-0-9]+}}(%r{{[sb]}}p), %zmm1, %zmm0 # 64-byte Folded Reload
+; CHECK-NEXT:    vfmsub132ph {{[-0-9]+}}(%r{{[sb]}}p), %zmm0, %zmm2 # 64-byte Folded Reload
+; CHECK-NEXT:    vmovaps %zmm2, %zmm0
 ; CHECK-NEXT:    retq
   %1 = tail call <2 x i64> asm sideeffect "nop", "=x,~{xmm3},~{xmm4},~{xmm5},~{xmm6},~{xmm7},~{xmm8},~{xmm9},~{xmm10},~{xmm11},~{xmm12},~{xmm13},~{xmm14},~{xmm15},~{xmm16},~{xmm17},~{xmm18},~{xmm19},~{xmm20},~{xmm21},~{xmm22},~{xmm23},~{xmm24},~{xmm25},~{xmm26},~{xmm27},~{xmm28},~{xmm29},~{xmm30},~{xmm31},~{flags}"()
   %2 = fneg <32 x half> %a0
@@ -389,7 +411,9 @@ define <32 x half> @stack_fold_fmsub132ph(<32 x half> %a0, <32 x half> %a1, <32 
 ; CHECK-NEXT:    #APP
 ; CHECK-NEXT:    nop
 ; CHECK-NEXT:    #NO_APP
-; CHECK-NEXT:    vfmsub132ph {{[-0-9]+}}(%r{{[sb]}}p), %zmm1, %zmm0 # 64-byte Folded Reload
+; CHECK-NEXT:    vmovups {{[-0-9]+}}(%r{{[sb]}}p), %zmm2 # 64-byte Reload
+; CHECK-NEXT:    vfmsub213ph %zmm1, %zmm0, %zmm2
+; CHECK-NEXT:    vmovaps %zmm2, %zmm0
 ; CHECK-NEXT:    retq
   %1 = tail call <2 x i64> asm sideeffect "nop", "=x,~{xmm3},~{xmm4},~{xmm5},~{xmm6},~{xmm7},~{xmm8},~{xmm9},~{xmm10},~{xmm11},~{xmm12},~{xmm13},~{xmm14},~{xmm15},~{xmm16},~{xmm17},~{xmm18},~{xmm19},~{xmm20},~{xmm21},~{xmm22},~{xmm23},~{xmm24},~{xmm25},~{xmm26},~{xmm27},~{xmm28},~{xmm29},~{xmm30},~{xmm31},~{flags}"()
   %2 = fneg <32 x half> %a1
@@ -542,11 +566,13 @@ define <32 x half> @stack_fold_fmsub123ph_maskz(<32 x half> %a0, <32 x half> %a1
 ; CHECK-LABEL: stack_fold_fmsub123ph_maskz:
 ; CHECK:       # %bb.0:
 ; CHECK-NEXT:    vmovups %zmm2, {{[-0-9]+}}(%r{{[sb]}}p) # 64-byte Spill
+; CHECK-NEXT:    vmovaps %zmm1, %zmm2
 ; CHECK-NEXT:    #APP
 ; CHECK-NEXT:    nop
 ; CHECK-NEXT:    #NO_APP
 ; CHECK-NEXT:    kmovd (%rdi), %k1
-; CHECK-NEXT:    vfmsub213ph {{[-0-9]+}}(%r{{[sb]}}p), %zmm1, %zmm0 {%k1} {z} # 64-byte Folded Reload
+; CHECK-NEXT:    vfmsub213ph {{[-0-9]+}}(%r{{[sb]}}p), %zmm0, %zmm2 {%k1} {z} # 64-byte Folded Reload
+; CHECK-NEXT:    vmovaps %zmm2, %zmm0
 ; CHECK-NEXT:    retq
   %1 = tail call <2 x i64> asm sideeffect "nop", "=x,~{xmm3},~{xmm4},~{xmm5},~{xmm6},~{xmm7},~{xmm8},~{xmm9},~{xmm10},~{xmm11},~{xmm12},~{xmm13},~{xmm14},~{xmm15},~{xmm16},~{xmm17},~{xmm18},~{xmm19},~{xmm20},~{xmm21},~{xmm22},~{xmm23},~{xmm24},~{xmm25},~{xmm26},~{xmm27},~{xmm28},~{xmm29},~{xmm30},~{xmm31},~{flags}"()
   %neg = fneg <32 x half> %a2
@@ -584,7 +610,9 @@ define <32 x half> @stack_fold_fmsub231ph_maskz(<32 x half> %a0, <32 x half> %a1
 ; CHECK-NEXT:    nop
 ; CHECK-NEXT:    #NO_APP
 ; CHECK-NEXT:    kmovd (%rdi), %k1
-; CHECK-NEXT:    vfmsub231ph {{[-0-9]+}}(%r{{[sb]}}p), %zmm1, %zmm0 {%k1} {z} # 64-byte Folded Reload
+; CHECK-NEXT:    vmovups {{[-0-9]+}}(%r{{[sb]}}p), %zmm2 # 64-byte Reload
+; CHECK-NEXT:    vfmsub213ph %zmm0, %zmm1, %zmm2 {%k1} {z}
+; CHECK-NEXT:    vmovaps %zmm2, %zmm0
 ; CHECK-NEXT:    retq
   %1 = tail call <2 x i64> asm sideeffect "nop", "=x,~{xmm3},~{xmm4},~{xmm5},~{xmm6},~{xmm7},~{xmm8},~{xmm9},~{xmm10},~{xmm11},~{xmm12},~{xmm13},~{xmm14},~{xmm15},~{xmm16},~{xmm17},~{xmm18},~{xmm19},~{xmm20},~{xmm21},~{xmm22},~{xmm23},~{xmm24},~{xmm25},~{xmm26},~{xmm27},~{xmm28},~{xmm29},~{xmm30},~{xmm31},~{flags}"()
   %neg = fneg <32 x half> %a0
@@ -599,11 +627,13 @@ define <32 x half> @stack_fold_fmsub321ph_maskz(<32 x half> %a0, <32 x half> %a1
 ; CHECK-LABEL: stack_fold_fmsub321ph_maskz:
 ; CHECK:       # %bb.0:
 ; CHECK-NEXT:    vmovups %zmm2, {{[-0-9]+}}(%r{{[sb]}}p) # 64-byte Spill
+; CHECK-NEXT:    vmovaps %zmm1, %zmm2
 ; CHECK-NEXT:    #APP
 ; CHECK-NEXT:    nop
 ; CHECK-NEXT:    #NO_APP
 ; CHECK-NEXT:    kmovd (%rdi), %k1
-; CHECK-NEXT:    vfmsub231ph {{[-0-9]+}}(%r{{[sb]}}p), %zmm1, %zmm0 {%k1} {z} # 64-byte Folded Reload
+; CHECK-NEXT:    vfmsub132ph {{[-0-9]+}}(%r{{[sb]}}p), %zmm0, %zmm2 {%k1} {z} # 64-byte Folded Reload
+; CHECK-NEXT:    vmovaps %zmm2, %zmm0
 ; CHECK-NEXT:    retq
   %1 = tail call <2 x i64> asm sideeffect "nop", "=x,~{xmm3},~{xmm4},~{xmm5},~{xmm6},~{xmm7},~{xmm8},~{xmm9},~{xmm10},~{xmm11},~{xmm12},~{xmm13},~{xmm14},~{xmm15},~{xmm16},~{xmm17},~{xmm18},~{xmm19},~{xmm20},~{xmm21},~{xmm22},~{xmm23},~{xmm24},~{xmm25},~{xmm26},~{xmm27},~{xmm28},~{xmm29},~{xmm30},~{xmm31},~{flags}"()
   %neg = fneg <32 x half> %a0
@@ -622,7 +652,9 @@ define <32 x half> @stack_fold_fmsub132ph_maskz(<32 x half> %a0, <32 x half> %a1
 ; CHECK-NEXT:    nop
 ; CHECK-NEXT:    #NO_APP
 ; CHECK-NEXT:    kmovd (%rdi), %k1
-; CHECK-NEXT:    vfmsub132ph {{[-0-9]+}}(%r{{[sb]}}p), %zmm1, %zmm0 {%k1} {z} # 64-byte Folded Reload
+; CHECK-NEXT:    vmovups {{[-0-9]+}}(%r{{[sb]}}p), %zmm2 # 64-byte Reload
+; CHECK-NEXT:    vfmsub213ph %zmm1, %zmm0, %zmm2 {%k1} {z}
+; CHECK-NEXT:    vmovaps %zmm2, %zmm0
 ; CHECK-NEXT:    retq
   %1 = tail call <2 x i64> asm sideeffect "nop", "=x,~{xmm3},~{xmm4},~{xmm5},~{xmm6},~{xmm7},~{xmm8},~{xmm9},~{xmm10},~{xmm11},~{xmm12},~{xmm13},~{xmm14},~{xmm15},~{xmm16},~{xmm17},~{xmm18},~{xmm19},~{xmm20},~{xmm21},~{xmm22},~{xmm23},~{xmm24},~{xmm25},~{xmm26},~{xmm27},~{xmm28},~{xmm29},~{xmm30},~{xmm31},~{flags}"()
   %neg = fneg <32 x half> %a1
@@ -656,10 +688,12 @@ define <32 x half> @stack_fold_fnmadd123ph(<32 x half> %a0, <32 x half> %a1, <32
 ; CHECK-LABEL: stack_fold_fnmadd123ph:
 ; CHECK:       # %bb.0:
 ; CHECK-NEXT:    vmovups %zmm2, {{[-0-9]+}}(%r{{[sb]}}p) # 64-byte Spill
+; CHECK-NEXT:    vmovaps %zmm1, %zmm2
 ; CHECK-NEXT:    #APP
 ; CHECK-NEXT:    nop
 ; CHECK-NEXT:    #NO_APP
-; CHECK-NEXT:    vfnmadd213ph {{[-0-9]+}}(%r{{[sb]}}p), %zmm1, %zmm0 # 64-byte Folded Reload
+; CHECK-NEXT:    vfnmadd213ph {{[-0-9]+}}(%r{{[sb]}}p), %zmm0, %zmm2 # 64-byte Folded Reload
+; CHECK-NEXT:    vmovaps %zmm2, %zmm0
 ; CHECK-NEXT:    retq
   %1 = tail call <2 x i64> asm sideeffect "nop", "=x,~{xmm3},~{xmm4},~{xmm5},~{xmm6},~{xmm7},~{xmm8},~{xmm9},~{xmm10},~{xmm11},~{xmm12},~{xmm13},~{xmm14},~{xmm15},~{xmm16},~{xmm17},~{xmm18},~{xmm19},~{xmm20},~{xmm21},~{xmm22},~{xmm23},~{xmm24},~{xmm25},~{xmm26},~{xmm27},~{xmm28},~{xmm29},~{xmm30},~{xmm31},~{flags}"()
   %2 = fneg <32 x half> %a0
@@ -689,7 +723,9 @@ define <32 x half> @stack_fold_fnmadd231ph(<32 x half> %a0, <32 x half> %a1, <32
 ; CHECK-NEXT:    #APP
 ; CHECK-NEXT:    nop
 ; CHECK-NEXT:    #NO_APP
-; CHECK-NEXT:    vfnmadd231ph {{[-0-9]+}}(%r{{[sb]}}p), %zmm1, %zmm0 # 64-byte Folded Reload
+; CHECK-NEXT:    vmovups {{[-0-9]+}}(%r{{[sb]}}p), %zmm2 # 64-byte Reload
+; CHECK-NEXT:    vfnmadd213ph %zmm0, %zmm1, %zmm2
+; CHECK-NEXT:    vmovaps %zmm2, %zmm0
 ; CHECK-NEXT:    retq
   %1 = tail call <2 x i64> asm sideeffect "nop", "=x,~{xmm3},~{xmm4},~{xmm5},~{xmm6},~{xmm7},~{xmm8},~{xmm9},~{xmm10},~{xmm11},~{xmm12},~{xmm13},~{xmm14},~{xmm15},~{xmm16},~{xmm17},~{xmm18},~{xmm19},~{xmm20},~{xmm21},~{xmm22},~{xmm23},~{xmm24},~{xmm25},~{xmm26},~{xmm27},~{xmm28},~{xmm29},~{xmm30},~{xmm31},~{flags}"()
   %2 = fneg <32 x half> %a1
@@ -701,10 +737,12 @@ define <32 x half> @stack_fold_fnmadd321ph(<32 x half> %a0, <32 x half> %a1, <32
 ; CHECK-LABEL: stack_fold_fnmadd321ph:
 ; CHECK:       # %bb.0:
 ; CHECK-NEXT:    vmovups %zmm2, {{[-0-9]+}}(%r{{[sb]}}p) # 64-byte Spill
+; CHECK-NEXT:    vmovaps %zmm1, %zmm2
 ; CHECK-NEXT:    #APP
 ; CHECK-NEXT:    nop
 ; CHECK-NEXT:    #NO_APP
-; CHECK-NEXT:    vfnmadd231ph {{[-0-9]+}}(%r{{[sb]}}p), %zmm1, %zmm0 # 64-byte Folded Reload
+; CHECK-NEXT:    vfnmadd132ph {{[-0-9]+}}(%r{{[sb]}}p), %zmm0, %zmm2 # 64-byte Folded Reload
+; CHECK-NEXT:    vmovaps %zmm2, %zmm0
 ; CHECK-NEXT:    retq
   %1 = tail call <2 x i64> asm sideeffect "nop", "=x,~{xmm3},~{xmm4},~{xmm5},~{xmm6},~{xmm7},~{xmm8},~{xmm9},~{xmm10},~{xmm11},~{xmm12},~{xmm13},~{xmm14},~{xmm15},~{xmm16},~{xmm17},~{xmm18},~{xmm19},~{xmm20},~{xmm21},~{xmm22},~{xmm23},~{xmm24},~{xmm25},~{xmm26},~{xmm27},~{xmm28},~{xmm29},~{xmm30},~{xmm31},~{flags}"()
   %2 = fneg <32 x half> %a2
@@ -719,7 +757,9 @@ define <32 x half> @stack_fold_fnmadd132ph(<32 x half> %a0, <32 x half> %a1, <32
 ; CHECK-NEXT:    #APP
 ; CHECK-NEXT:    nop
 ; CHECK-NEXT:    #NO_APP
-; CHECK-NEXT:    vfnmadd132ph {{[-0-9]+}}(%r{{[sb]}}p), %zmm1, %zmm0 # 64-byte Folded Reload
+; CHECK-NEXT:    vmovups {{[-0-9]+}}(%r{{[sb]}}p), %zmm2 # 64-byte Reload
+; CHECK-NEXT:    vfnmadd213ph %zmm1, %zmm0, %zmm2
+; CHECK-NEXT:    vmovaps %zmm2, %zmm0
 ; CHECK-NEXT:    retq
   %1 = tail call <2 x i64> asm sideeffect "nop", "=x,~{xmm3},~{xmm4},~{xmm5},~{xmm6},~{xmm7},~{xmm8},~{xmm9},~{xmm10},~{xmm11},~{xmm12},~{xmm13},~{xmm14},~{xmm15},~{xmm16},~{xmm17},~{xmm18},~{xmm19},~{xmm20},~{xmm21},~{xmm22},~{xmm23},~{xmm24},~{xmm25},~{xmm26},~{xmm27},~{xmm28},~{xmm29},~{xmm30},~{xmm31},~{flags}"()
   %2 = fneg <32 x half> %a0
@@ -872,11 +912,13 @@ define <32 x half> @stack_fold_fnmadd123ph_maskz(<32 x half> %a0, <32 x half> %a
 ; CHECK-LABEL: stack_fold_fnmadd123ph_maskz:
 ; CHECK:       # %bb.0:
 ; CHECK-NEXT:    vmovups %zmm2, {{[-0-9]+}}(%r{{[sb]}}p) # 64-byte Spill
+; CHECK-NEXT:    vmovaps %zmm1, %zmm2
 ; CHECK-NEXT:    #APP
 ; CHECK-NEXT:    nop
 ; CHECK-NEXT:    #NO_APP
 ; CHECK-NEXT:    kmovd (%rdi), %k1
-; CHECK-NEXT:    vfnmadd213ph {{[-0-9]+}}(%r{{[sb]}}p), %zmm1, %zmm0 {%k1} {z} # 64-byte Folded Reload
+; CHECK-NEXT:    vfnmadd213ph {{[-0-9]+}}(%r{{[sb]}}p), %zmm0, %zmm2 {%k1} {z} # 64-byte Folded Reload
+; CHECK-NEXT:    vmovaps %zmm2, %zmm0
 ; CHECK-NEXT:    retq
   %1 = tail call <2 x i64> asm sideeffect "nop", "=x,~{xmm3},~{xmm4},~{xmm5},~{xmm6},~{xmm7},~{xmm8},~{xmm9},~{xmm10},~{xmm11},~{xmm12},~{xmm13},~{xmm14},~{xmm15},~{xmm16},~{xmm17},~{xmm18},~{xmm19},~{xmm20},~{xmm21},~{xmm22},~{xmm23},~{xmm24},~{xmm25},~{xmm26},~{xmm27},~{xmm28},~{xmm29},~{xmm30},~{xmm31},~{flags}"()
   %neg = fneg <32 x half> %a0
@@ -914,7 +956,9 @@ define <32 x half> @stack_fold_fnmadd231ph_maskz(<32 x half> %a0, <32 x half> %a
 ; CHECK-NEXT:    nop
 ; CHECK-NEXT:    #NO_APP
 ; CHECK-NEXT:    kmovd (%rdi), %k1
-; CHECK-NEXT:    vfnmadd231ph {{[-0-9]+}}(%r{{[sb]}}p), %zmm1, %zmm0 {%k1} {z} # 64-byte Folded Reload
+; CHECK-NEXT:    vmovups {{[-0-9]+}}(%r{{[sb]}}p), %zmm2 # 64-byte Reload
+; CHECK-NEXT:    vfnmadd213ph %zmm0, %zmm1, %zmm2 {%k1} {z}
+; CHECK-NEXT:    vmovaps %zmm2, %zmm0
 ; CHECK-NEXT:    retq
   %1 = tail call <2 x i64> asm sideeffect "nop", "=x,~{xmm3},~{xmm4},~{xmm5},~{xmm6},~{xmm7},~{xmm8},~{xmm9},~{xmm10},~{xmm11},~{xmm12},~{xmm13},~{xmm14},~{xmm15},~{xmm16},~{xmm17},~{xmm18},~{xmm19},~{xmm20},~{xmm21},~{xmm22},~{xmm23},~{xmm24},~{xmm25},~{xmm26},~{xmm27},~{xmm28},~{xmm29},~{xmm30},~{xmm31},~{flags}"()
   %neg = fneg <32 x half> %a1
@@ -929,11 +973,13 @@ define <32 x half> @stack_fold_fnmadd321ph_maskz(<32 x half> %a0, <32 x half> %a
 ; CHECK-LABEL: stack_fold_fnmadd321ph_maskz:
 ; CHECK:       # %bb.0:
 ; CHECK-NEXT:    vmovups %zmm2, {{[-0-9]+}}(%r{{[sb]}}p) # 64-byte Spill
+; CHECK-NEXT:    vmovaps %zmm1, %zmm2
 ; CHECK-NEXT:    #APP
 ; CHECK-NEXT:    nop
 ; CHECK-NEXT:    #NO_APP
 ; CHECK-NEXT:    kmovd (%rdi), %k1
-; CHECK-NEXT:    vfnmadd231ph {{[-0-9]+}}(%r{{[sb]}}p), %zmm1, %zmm0 {%k1} {z} # 64-byte Folded Reload
+; CHECK-NEXT:    vfnmadd132ph {{[-0-9]+}}(%r{{[sb]}}p), %zmm0, %zmm2 {%k1} {z} # 64-byte Folded Reload
+; CHECK-NEXT:    vmovaps %zmm2, %zmm0
 ; CHECK-NEXT:    retq
   %1 = tail call <2 x i64> asm sideeffect "nop", "=x,~{xmm3},~{xmm4},~{xmm5},~{xmm6},~{xmm7},~{xmm8},~{xmm9},~{xmm10},~{xmm11},~{xmm12},~{xmm13},~{xmm14},~{xmm15},~{xmm16},~{xmm17},~{xmm18},~{xmm19},~{xmm20},~{xmm21},~{xmm22},~{xmm23},~{xmm24},~{xmm25},~{xmm26},~{xmm27},~{xmm28},~{xmm29},~{xmm30},~{xmm31},~{flags}"()
   %neg = fneg <32 x half> %a2
@@ -952,7 +998,9 @@ define <32 x half> @stack_fold_fnmadd132ph_maskz(<32 x half> %a0, <32 x half> %a
 ; CHECK-NEXT:    nop
 ; CHECK-NEXT:    #NO_APP
 ; CHECK-NEXT:    kmovd (%rdi), %k1
-; CHECK-NEXT:    vfnmadd132ph {{[-0-9]+}}(%r{{[sb]}}p), %zmm1, %zmm0 {%k1} {z} # 64-byte Folded Reload
+; CHECK-NEXT:    vmovups {{[-0-9]+}}(%r{{[sb]}}p), %zmm2 # 64-byte Reload
+; CHECK-NEXT:    vfnmadd213ph %zmm1, %zmm0, %zmm2 {%k1} {z}
+; CHECK-NEXT:    vmovaps %zmm2, %zmm0
 ; CHECK-NEXT:    retq
   %1 = tail call <2 x i64> asm sideeffect "nop", "=x,~{xmm3},~{xmm4},~{xmm5},~{xmm6},~{xmm7},~{xmm8},~{xmm9},~{xmm10},~{xmm11},~{xmm12},~{xmm13},~{xmm14},~{xmm15},~{xmm16},~{xmm17},~{xmm18},~{xmm19},~{xmm20},~{xmm21},~{xmm22},~{xmm23},~{xmm24},~{xmm25},~{xmm26},~{xmm27},~{xmm28},~{xmm29},~{xmm30},~{xmm31},~{flags}"()
   %neg = fneg <32 x half> %a0
@@ -986,10 +1034,12 @@ define <32 x half> @stack_fold_fnmsub123ph(<32 x half> %a0, <32 x half> %a1, <32
 ; CHECK-LABEL: stack_fold_fnmsub123ph:
 ; CHECK:       # %bb.0:
 ; CHECK-NEXT:    vmovups %zmm2, {{[-0-9]+}}(%r{{[sb]}}p) # 64-byte Spill
+; CHECK-NEXT:    vmovaps %zmm1, %zmm2
 ; CHECK-NEXT:    #APP
 ; CHECK-NEXT:    nop
 ; CHECK-NEXT:    #NO_APP
-; CHECK-NEXT:    vfnmsub213ph {{[-0-9]+}}(%r{{[sb]}}p), %zmm1, %zmm0 # 64-byte Folded Reload
+; CHECK-NEXT:    vfnmsub213ph {{[-0-9]+}}(%r{{[sb]}}p), %zmm0, %zmm2 # 64-byte Folded Reload
+; CHECK-NEXT:    vmovaps %zmm2, %zmm0
 ; CHECK-NEXT:    retq
   %1 = tail call <2 x i64> asm sideeffect "nop", "=x,~{xmm3},~{xmm4},~{xmm5},~{xmm6},~{xmm7},~{xmm8},~{xmm9},~{xmm10},~{xmm11},~{xmm12},~{xmm13},~{xmm14},~{xmm15},~{xmm16},~{xmm17},~{xmm18},~{xmm19},~{xmm20},~{xmm21},~{xmm22},~{xmm23},~{xmm24},~{xmm25},~{xmm26},~{xmm27},~{xmm28},~{xmm29},~{xmm30},~{xmm31},~{flags}"()
   %2 = fneg <32 x half> %a0
@@ -1021,7 +1071,9 @@ define <32 x half> @stack_fold_fnmsub231ph(<32 x half> %a0, <32 x half> %a1, <32
 ; CHECK-NEXT:    #APP
 ; CHECK-NEXT:    nop
 ; CHECK-NEXT:    #NO_APP
-; CHECK-NEXT:    vfnmsub231ph {{[-0-9]+}}(%r{{[sb]}}p), %zmm1, %zmm0 # 64-byte Folded Reload
+; CHECK-NEXT:    vmovups {{[-0-9]+}}(%r{{[sb]}}p), %zmm2 # 64-byte Reload
+; CHECK-NEXT:    vfnmsub213ph %zmm0, %zmm1, %zmm2
+; CHECK-NEXT:    vmovaps %zmm2, %zmm0
 ; CHECK-NEXT:    retq
   %1 = tail call <2 x i64> asm sideeffect "nop", "=x,~{xmm3},~{xmm4},~{xmm5},~{xmm6},~{xmm7},~{xmm8},~{xmm9},~{xmm10},~{xmm11},~{xmm12},~{xmm13},~{xmm14},~{xmm15},~{xmm16},~{xmm17},~{xmm18},~{xmm19},~{xmm20},~{xmm21},~{xmm22},~{xmm23},~{xmm24},~{xmm25},~{xmm26},~{xmm27},~{xmm28},~{xmm29},~{xmm30},~{xmm31},~{flags}"()
   %2 = fneg <32 x half> %a1
@@ -1034,10 +1086,12 @@ define <32 x half> @stack_fold_fnmsub321ph(<32 x half> %a0, <32 x half> %a1, <32
 ; CHECK-LABEL: stack_fold_fnmsub321ph:
 ; CHECK:       # %bb.0:
 ; CHECK-NEXT:    vmovups %zmm2, {{[-0-9]+}}(%r{{[sb]}}p) # 64-byte Spill
+; CHECK-NEXT:    vmovaps %zmm1, %zmm2
 ; CHECK-NEXT:    #APP
 ; CHECK-NEXT:    nop
 ; CHECK-NEXT:    #NO_APP
-; CHECK-NEXT:    vfnmsub231ph {{[-0-9]+}}(%r{{[sb]}}p), %zmm1, %zmm0 # 64-byte Folded Reload
+; CHECK-NEXT:    vfnmsub132ph {{[-0-9]+}}(%r{{[sb]}}p), %zmm0, %zmm2 # 64-byte Folded Reload
+; CHECK-NEXT:    vmovaps %zmm2, %zmm0
 ; CHECK-NEXT:    retq
   %1 = tail call <2 x i64> asm sideeffect "nop", "=x,~{xmm3},~{xmm4},~{xmm5},~{xmm6},~{xmm7},~{xmm8},~{xmm9},~{xmm10},~{xmm11},~{xmm12},~{xmm13},~{xmm14},~{xmm15},~{xmm16},~{xmm17},~{xmm18},~{xmm19},~{xmm20},~{xmm21},~{xmm22},~{xmm23},~{xmm24},~{xmm25},~{xmm26},~{xmm27},~{xmm28},~{xmm29},~{xmm30},~{xmm31},~{flags}"()
   %2 = fneg <32 x half> %a2
@@ -1053,7 +1107,9 @@ define <32 x half> @stack_fold_fnmsub132ph(<32 x half> %a0, <32 x half> %a1, <32
 ; CHECK-NEXT:    #APP
 ; CHECK-NEXT:    nop
 ; CHECK-NEXT:    #NO_APP
-; CHECK-NEXT:    vfnmsub132ph {{[-0-9]+}}(%r{{[sb]}}p), %zmm1, %zmm0 # 64-byte Folded Reload
+; CHECK-NEXT:    vmovups {{[-0-9]+}}(%r{{[sb]}}p), %zmm2 # 64-byte Reload
+; CHECK-NEXT:    vfnmsub213ph %zmm1, %zmm0, %zmm2
+; CHECK-NEXT:    vmovaps %zmm2, %zmm0
 ; CHECK-NEXT:    retq
   %1 = tail call <2 x i64> asm sideeffect "nop", "=x,~{xmm3},~{xmm4},~{xmm5},~{xmm6},~{xmm7},~{xmm8},~{xmm9},~{xmm10},~{xmm11},~{xmm12},~{xmm13},~{xmm14},~{xmm15},~{xmm16},~{xmm17},~{xmm18},~{xmm19},~{xmm20},~{xmm21},~{xmm22},~{xmm23},~{xmm24},~{xmm25},~{xmm26},~{xmm27},~{xmm28},~{xmm29},~{xmm30},~{xmm31},~{flags}"()
   %2 = fneg <32 x half> %a0
@@ -1214,11 +1270,13 @@ define <32 x half> @stack_fold_fnmsub123ph_maskz(<32 x half> %a0, <32 x half> %a
 ; CHECK-LABEL: stack_fold_fnmsub123ph_maskz:
 ; CHECK:       # %bb.0:
 ; CHECK-NEXT:    vmovups %zmm2, {{[-0-9]+}}(%r{{[sb]}}p) # 64-byte Spill
+; CHECK-NEXT:    vmovaps %zmm1, %zmm2
 ; CHECK-NEXT:    #APP
 ; CHECK-NEXT:    nop
 ; CHECK-NEXT:    #NO_APP
 ; CHECK-NEXT:    kmovd (%rdi), %k1
-; CHECK-NEXT:    vfnmsub213ph {{[-0-9]+}}(%r{{[sb]}}p), %zmm1, %zmm0 {%k1} {z} # 64-byte Folded Reload
+; CHECK-NEXT:    vfnmsub213ph {{[-0-9]+}}(%r{{[sb]}}p), %zmm0, %zmm2 {%k1} {z} # 64-byte Folded Reload
+; CHECK-NEXT:    vmovaps %zmm2, %zmm0
 ; CHECK-NEXT:    retq
   %1 = tail call <2 x i64> asm sideeffect "nop", "=x,~{xmm3},~{xmm4},~{xmm5},~{xmm6},~{xmm7},~{xmm8},~{xmm9},~{xmm10},~{xmm11},~{xmm12},~{xmm13},~{xmm14},~{xmm15},~{xmm16},~{xmm17},~{xmm18},~{xmm19},~{xmm20},~{xmm21},~{xmm22},~{xmm23},~{xmm24},~{xmm25},~{xmm26},~{xmm27},~{xmm28},~{xmm29},~{xmm30},~{xmm31},~{flags}"()
   %neg = fneg <32 x half> %a2
@@ -1258,7 +1316,9 @@ define <32 x half> @stack_fold_fnmsub231ph_maskz(<32 x half> %a0, <32 x half> %a
 ; CHECK-NEXT:    nop
 ; CHECK-NEXT:    #NO_APP
 ; CHECK-NEXT:    kmovd (%rdi), %k1
-; CHECK-NEXT:    vfnmsub231ph {{[-0-9]+}}(%r{{[sb]}}p), %zmm1, %zmm0 {%k1} {z} # 64-byte Folded Reload
+; CHECK-NEXT:    vmovups {{[-0-9]+}}(%r{{[sb]}}p), %zmm2 # 64-byte Reload
+; CHECK-NEXT:    vfnmsub213ph %zmm0, %zmm1, %zmm2 {%k1} {z}
+; CHECK-NEXT:    vmovaps %zmm2, %zmm0
 ; CHECK-NEXT:    retq
   %1 = tail call <2 x i64> asm sideeffect "nop", "=x,~{xmm3},~{xmm4},~{xmm5},~{xmm6},~{xmm7},~{xmm8},~{xmm9},~{xmm10},~{xmm11},~{xmm12},~{xmm13},~{xmm14},~{xmm15},~{xmm16},~{xmm17},~{xmm18},~{xmm19},~{xmm20},~{xmm21},~{xmm22},~{xmm23},~{xmm24},~{xmm25},~{xmm26},~{xmm27},~{xmm28},~{xmm29},~{xmm30},~{xmm31},~{flags}"()
   %neg = fneg <32 x half> %a0
@@ -1274,11 +1334,13 @@ define <32 x half> @stack_fold_fnmsub321ph_maskz(<32 x half> %a0, <32 x half> %a
 ; CHECK-LABEL: stack_fold_fnmsub321ph_maskz:
 ; CHECK:       # %bb.0:
 ; CHECK-NEXT:    vmovups %zmm2, {{[-0-9]+}}(%r{{[sb]}}p) # 64-byte Spill
+; CHECK-NEXT:    vmovaps %zmm1, %zmm2
 ; CHECK-NEXT:    #APP
 ; CHECK-NEXT:    nop
 ; CHECK-NEXT:    #NO_APP
 ; CHECK-NEXT:    kmovd (%rdi), %k1
-; CHECK-NEXT:    vfnmsub231ph {{[-0-9]+}}(%r{{[sb]}}p), %zmm1, %zmm0 {%k1} {z} # 64-byte Folded Reload
+; CHECK-NEXT:    vfnmsub132ph {{[-0-9]+}}(%r{{[sb]}}p), %zmm0, %zmm2 {%k1} {z} # 64-byte Folded Reload
+; CHECK-NEXT:    vmovaps %zmm2, %zmm0
 ; CHECK-NEXT:    retq
   %1 = tail call <2 x i64> asm sideeffect "nop", "=x,~{xmm3},~{xmm4},~{xmm5},~{xmm6},~{xmm7},~{xmm8},~{xmm9},~{xmm10},~{xmm11},~{xmm12},~{xmm13},~{xmm14},~{xmm15},~{xmm16},~{xmm17},~{xmm18},~{xmm19},~{xmm20},~{xmm21},~{xmm22},~{xmm23},~{xmm24},~{xmm25},~{xmm26},~{xmm27},~{xmm28},~{xmm29},~{xmm30},~{xmm31},~{flags}"()
   %neg = fneg <32 x half> %a0
@@ -1298,7 +1360,9 @@ define <32 x half> @stack_fold_fnmsub132ph_maskz(<32 x half> %a0, <32 x half> %a
 ; CHECK-NEXT:    nop
 ; CHECK-NEXT:    #NO_APP
 ; CHECK-NEXT:    kmovd (%rdi), %k1
-; CHECK-NEXT:    vfnmsub132ph {{[-0-9]+}}(%r{{[sb]}}p), %zmm1, %zmm0 {%k1} {z} # 64-byte Folded Reload
+; CHECK-NEXT:    vmovups {{[-0-9]+}}(%r{{[sb]}}p), %zmm2 # 64-byte Reload
+; CHECK-NEXT:    vfnmsub213ph %zmm1, %zmm0, %zmm2 {%k1} {z}
+; CHECK-NEXT:    vmovaps %zmm2, %zmm0
 ; CHECK-NEXT:    retq
   %1 = tail call <2 x i64> asm sideeffect "nop", "=x,~{xmm3},~{xmm4},~{xmm5},~{xmm6},~{xmm7},~{xmm8},~{xmm9},~{xmm10},~{xmm11},~{xmm12},~{xmm13},~{xmm14},~{xmm15},~{xmm16},~{xmm17},~{xmm18},~{xmm19},~{xmm20},~{xmm21},~{xmm22},~{xmm23},~{xmm24},~{xmm25},~{xmm26},~{xmm27},~{xmm28},~{xmm29},~{xmm30},~{xmm31},~{flags}"()
   %neg = fneg <32 x half> %a1
@@ -1334,10 +1398,12 @@ define half @stack_fold_fmadd123sh(half %a0, half %a1, half %a2) {
 ; CHECK-LABEL: stack_fold_fmadd123sh:
 ; CHECK:       # %bb.0:
 ; CHECK-NEXT:    vmovsh %xmm2, {{[-0-9]+}}(%r{{[sb]}}p) # 4-byte Spill
+; CHECK-NEXT:    vmovaps %xmm1, %xmm2
 ; CHECK-NEXT:    #APP
 ; CHECK-NEXT:    nop
 ; CHECK-NEXT:    #NO_APP
-; CHECK-NEXT:    vfmadd213sh {{[-0-9]+}}(%r{{[sb]}}p), %xmm1, %xmm0 # 4-byte Folded Reload
+; CHECK-NEXT:    vfmadd213sh {{[-0-9]+}}(%r{{[sb]}}p), %xmm0, %xmm2 # 4-byte Folded Reload
+; CHECK-NEXT:    vmovaps %xmm2, %xmm0
 ; CHECK-NEXT:    retq
   %1 = tail call <2 x i64> asm sideeffect "nop", "=x,~{xmm3},~{xmm4},~{xmm5},~{xmm6},~{xmm7},~{xmm8},~{xmm9},~{xmm10},~{xmm11},~{xmm12},~{xmm13},~{xmm14},~{xmm15},~{xmm16},~{xmm17},~{xmm18},~{xmm19},~{xmm20},~{xmm21},~{xmm22},~{xmm23},~{xmm24},~{xmm25},~{xmm26},~{xmm27},~{xmm28},~{xmm29},~{xmm30},~{xmm31},~{flags}"()
   %2 = call half @llvm.fma.f16(half %a0, half %a1, half %a2)
@@ -1366,7 +1432,10 @@ define half @stack_fold_fmadd231sh(half %a0, half %a1, half %a2) {
 ; CHECK-NEXT:    #APP
 ; CHECK-NEXT:    nop
 ; CHECK-NEXT:    #NO_APP
-; CHECK-NEXT:    vfmadd231sh {{[-0-9]+}}(%r{{[sb]}}p), %xmm1, %xmm0 # 4-byte Folded Reload
+; CHECK-NEXT:    vmovsh {{[-0-9]+}}(%r{{[sb]}}p), %xmm2 # 4-byte Reload
+; CHECK-NEXT:    # xmm2 = mem[0],zero,zero,zero,zero,zero,zero,zero
+; CHECK-NEXT:    vfmadd213sh %xmm0, %xmm1, %xmm2
+; CHECK-NEXT:    vmovaps %xmm2, %xmm0
 ; CHECK-NEXT:    retq
   %1 = tail call <2 x i64> asm sideeffect "nop", "=x,~{xmm3},~{xmm4},~{xmm5},~{xmm6},~{xmm7},~{xmm8},~{xmm9},~{xmm10},~{xmm11},~{xmm12},~{xmm13},~{xmm14},~{xmm15},~{xmm16},~{xmm17},~{xmm18},~{xmm19},~{xmm20},~{xmm21},~{xmm22},~{xmm23},~{xmm24},~{xmm25},~{xmm26},~{xmm27},~{xmm28},~{xmm29},~{xmm30},~{xmm31},~{flags}"()
   %2 = call half @llvm.fma.f16(half %a1, half %a2, half %a0)
@@ -1377,10 +1446,12 @@ define half @stack_fold_fmadd321sh(half %a0, half %a1, half %a2) {
 ; CHECK-LABEL: stack_fold_fmadd321sh:
 ; CHECK:       # %bb.0:
 ; CHECK-NEXT:    vmovsh %xmm2, {{[-0-9]+}}(%r{{[sb]}}p) # 4-byte Spill
+; CHECK-NEXT:    vmovaps %xmm1, %xmm2
 ; CHECK-NEXT:    #APP
 ; CHECK-NEXT:    nop
 ; CHECK-NEXT:    #NO_APP
-; CHECK-NEXT:    vfmadd231sh {{[-0-9]+}}(%r{{[sb]}}p), %xmm1, %xmm0 # 4-byte Folded Reload
+; CHECK-NEXT:    vfmadd132sh {{[-0-9]+}}(%r{{[sb]}}p), %xmm0, %xmm2 # 4-byte Folded Reload
+; CHECK-NEXT:    vmovaps %xmm2, %xmm0
 ; CHECK-NEXT:    retq
   %1 = tail call <2 x i64> asm sideeffect "nop", "=x,~{xmm3},~{xmm4},~{xmm5},~{xmm6},~{xmm7},~{xmm8},~{xmm9},~{xmm10},~{xmm11},~{xmm12},~{xmm13},~{xmm14},~{xmm15},~{xmm16},~{xmm17},~{xmm18},~{xmm19},~{xmm20},~{xmm21},~{xmm22},~{xmm23},~{xmm24},~{xmm25},~{xmm26},~{xmm27},~{xmm28},~{xmm29},~{xmm30},~{xmm31},~{flags}"()
   %2 = call half @llvm.fma.f16(half %a2, half %a1, half %a0)
@@ -1394,7 +1465,10 @@ define half @stack_fold_fmadd132sh(half %a0, half %a1, half %a2) {
 ; CHECK-NEXT:    #APP
 ; CHECK-NEXT:    nop
 ; CHECK-NEXT:    #NO_APP
-; CHECK-NEXT:    vfmadd132sh {{[-0-9]+}}(%r{{[sb]}}p), %xmm1, %xmm0 # 4-byte Folded Reload
+; CHECK-NEXT:    vmovsh {{[-0-9]+}}(%r{{[sb]}}p), %xmm2 # 4-byte Reload
+; CHECK-NEXT:    # xmm2 = mem[0],zero,zero,zero,zero,zero,zero,zero
+; CHECK-NEXT:    vfmadd213sh %xmm1, %xmm0, %xmm2
+; CHECK-NEXT:    vmovaps %xmm2, %xmm0
 ; CHECK-NEXT:    retq
   %1 = tail call <2 x i64> asm sideeffect "nop", "=x,~{xmm3},~{xmm4},~{xmm5},~{xmm6},~{xmm7},~{xmm8},~{xmm9},~{xmm10},~{xmm11},~{xmm12},~{xmm13},~{xmm14},~{xmm15},~{xmm16},~{xmm17},~{xmm18},~{xmm19},~{xmm20},~{xmm21},~{xmm22},~{xmm23},~{xmm24},~{xmm25},~{xmm26},~{xmm27},~{xmm28},~{xmm29},~{xmm30},~{xmm31},~{flags}"()
   %2 = call half @llvm.fma.f16(half %a0, half %a2, half %a1)
@@ -1419,10 +1493,12 @@ define half @stack_fold_fmsub123sh(half %a0, half %a1, half %a2) {
 ; CHECK-LABEL: stack_fold_fmsub123sh:
 ; CHECK:       # %bb.0:
 ; CHECK-NEXT:    vmovsh %xmm2, {{[-0-9]+}}(%r{{[sb]}}p) # 4-byte Spill
+; CHECK-NEXT:    vmovaps %xmm1, %xmm2
 ; CHECK-NEXT:    #APP
 ; CHECK-NEXT:    nop
 ; CHECK-NEXT:    #NO_APP
-; CHECK-NEXT:    vfmsub213sh {{[-0-9]+}}(%r{{[sb]}}p), %xmm1, %xmm0 # 4-byte Folded Reload
+; CHECK-NEXT:    vfmsub213sh {{[-0-9]+}}(%r{{[sb]}}p), %xmm0, %xmm2 # 4-byte Folded Reload
+; CHECK-NEXT:    vmovaps %xmm2, %xmm0
 ; CHECK-NEXT:    retq
   %1 = tail call <2 x i64> asm sideeffect "nop", "=x,~{xmm3},~{xmm4},~{xmm5},~{xmm6},~{xmm7},~{xmm8},~{xmm9},~{xmm10},~{xmm11},~{xmm12},~{xmm13},~{xmm14},~{xmm15},~{xmm16},~{xmm17},~{xmm18},~{xmm19},~{xmm20},~{xmm21},~{xmm22},~{xmm23},~{xmm24},~{xmm25},~{xmm26},~{xmm27},~{xmm28},~{xmm29},~{xmm30},~{xmm31},~{flags}"()
   %2 = fneg half %a2
@@ -1452,7 +1528,10 @@ define half @stack_fold_fmsub231sh(half %a0, half %a1, half %a2) {
 ; CHECK-NEXT:    #APP
 ; CHECK-NEXT:    nop
 ; CHECK-NEXT:    #NO_APP
-; CHECK-NEXT:    vfmsub231sh {{[-0-9]+}}(%r{{[sb]}}p), %xmm1, %xmm0 # 4-byte Folded Reload
+; CHECK-NEXT:    vmovsh {{[-0-9]+}}(%r{{[sb]}}p), %xmm2 # 4-byte Reload
+; CHECK-NEXT:    # xmm2 = mem[0],zero,zero,zero,zero,zero,zero,zero
+; CHECK-NEXT:    vfmsub213sh %xmm0, %xmm1, %xmm2
+; CHECK-NEXT:    vmovaps %xmm2, %xmm0
 ; CHECK-NEXT:    retq
   %1 = tail call <2 x i64> asm sideeffect "nop", "=x,~{xmm3},~{xmm4},~{xmm5},~{xmm6},~{xmm7},~{xmm8},~{xmm9},~{xmm10},~{xmm11},~{xmm12},~{xmm13},~{xmm14},~{xmm15},~{xmm16},~{xmm17},~{xmm18},~{xmm19},~{xmm20},~{xmm21},~{xmm22},~{xmm23},~{xmm24},~{xmm25},~{xmm26},~{xmm27},~{xmm28},~{xmm29},~{xmm30},~{xmm31},~{flags}"()
   %2 = fneg half %a0
@@ -1464,10 +1543,12 @@ define half @stack_fold_fmsub321sh(half %a0, half %a1, half %a2) {
 ; CHECK-LABEL: stack_fold_fmsub321sh:
 ; CHECK:       # %bb.0:
 ; CHECK-NEXT:    vmovsh %xmm2, {{[-0-9]+}}(%r{{[sb]}}p) # 4-byte Spill
+; CHECK-NEXT:    vmovaps %xmm1, %xmm2
 ; CHECK-NEXT:    #APP
 ; CHECK-NEXT:    nop
 ; CHECK-NEXT:    #NO_APP
-; CHECK-NEXT:    vfmsub231sh {{[-0-9]+}}(%r{{[sb]}}p), %xmm1, %xmm0 # 4-byte Folded Reload
+; CHECK-NEXT:    vfmsub132sh {{[-0-9]+}}(%r{{[sb]}}p), %xmm0, %xmm2 # 4-byte Folded Reload
+; CHECK-NEXT:    vmovaps %xmm2, %xmm0
 ; CHECK-NEXT:    retq
   %1 = tail call <2 x i64> asm sideeffect "nop", "=x,~{xmm3},~{xmm4},~{xmm5},~{xmm6},~{xmm7},~{xmm8},~{xmm9},~{xmm10},~{xmm11},~{xmm12},~{xmm13},~{xmm14},~{xmm15},~{xmm16},~{xmm17},~{xmm18},~{xmm19},~{xmm20},~{xmm21},~{xmm22},~{xmm23},~{xmm24},~{xmm25},~{xmm26},~{xmm27},~{xmm28},~{xmm29},~{xmm30},~{xmm31},~{flags}"()
   %2 = fneg half %a0
@@ -1482,7 +1563,10 @@ define half @stack_fold_fmsub132sh(half %a0, half %a1, half %a2) {
 ; CHECK-NEXT:    #APP
 ; CHECK-NEXT:    nop
 ; CHECK-NEXT:    #NO_APP
-; CHECK-NEXT:    vfmsub132sh {{[-0-9]+}}(%r{{[sb]}}p), %xmm1, %xmm0 # 4-byte Folded Reload
+; CHECK-NEXT:    vmovsh {{[-0-9]+}}(%r{{[sb]}}p), %xmm2 # 4-byte Reload
+; CHECK-NEXT:    # xmm2 = mem[0],zero,zero,zero,zero,zero,zero,zero
+; CHECK-NEXT:    vfmsub213sh %xmm1, %xmm0, %xmm2
+; CHECK-NEXT:    vmovaps %xmm2, %xmm0
 ; CHECK-NEXT:    retq
   %1 = tail call <2 x i64> asm sideeffect "nop", "=x,~{xmm3},~{xmm4},~{xmm5},~{xmm6},~{xmm7},~{xmm8},~{xmm9},~{xmm10},~{xmm11},~{xmm12},~{xmm13},~{xmm14},~{xmm15},~{xmm16},~{xmm17},~{xmm18},~{xmm19},~{xmm20},~{xmm21},~{xmm22},~{xmm23},~{xmm24},~{xmm25},~{xmm26},~{xmm27},~{xmm28},~{xmm29},~{xmm30},~{xmm31},~{flags}"()
   %2 = fneg half %a1
@@ -1509,10 +1593,12 @@ define half @stack_fold_fnmadd123sh(half %a0, half %a1, half %a2) {
 ; CHECK-LABEL: stack_fold_fnmadd123sh:
 ; CHECK:       # %bb.0:
 ; CHECK-NEXT:    vmovsh %xmm2, {{[-0-9]+}}(%r{{[sb]}}p) # 4-byte Spill
+; CHECK-NEXT:    vmovaps %xmm1, %xmm2
 ; CHECK-NEXT:    #APP
 ; CHECK-NEXT:    nop
 ; CHECK-NEXT:    #NO_APP
-; CHECK-NEXT:    vfnmadd213sh {{[-0-9]+}}(%r{{[sb]}}p), %xmm1, %xmm0 # 4-byte Folded Reload
+; CHECK-NEXT:    vfnmadd213sh {{[-0-9]+}}(%r{{[sb]}}p), %xmm0, %xmm2 # 4-byte Folded Reload
+; CHECK-NEXT:    vmovaps %xmm2, %xmm0
 ; CHECK-NEXT:    retq
   %1 = tail call <2 x i64> asm sideeffect "nop", "=x,~{xmm3},~{xmm4},~{xmm5},~{xmm6},~{xmm7},~{xmm8},~{xmm9},~{xmm10},~{xmm11},~{xmm12},~{xmm13},~{xmm14},~{xmm15},~{xmm16},~{xmm17},~{xmm18},~{xmm19},~{xmm20},~{xmm21},~{xmm22},~{xmm23},~{xmm24},~{xmm25},~{xmm26},~{xmm27},~{xmm28},~{xmm29},~{xmm30},~{xmm31},~{flags}"()
   %2 = fneg half %a0
@@ -1542,7 +1628,10 @@ define half @stack_fold_fnmadd231sh(half %a0, half %a1, half %a2) {
 ; CHECK-NEXT:    #APP
 ; CHECK-NEXT:    nop
 ; CHECK-NEXT:    #NO_APP
-; CHECK-NEXT:    vfnmadd231sh {{[-0-9]+}}(%r{{[sb]}}p), %xmm1, %xmm0 # 4-byte Folded Reload
+; CHECK-NEXT:    vmovsh {{[-0-9]+}}(%r{{[sb]}}p), %xmm2 # 4-byte Reload
+; CHECK-NEXT:    # xmm2 = mem[0],zero,zero,zero,zero,zero,zero,zero
+; CHECK-NEXT:    vfnmadd213sh %xmm0, %xmm1, %xmm2
+; CHECK-NEXT:    vmovaps %xmm2, %xmm0
 ; CHECK-NEXT:    retq
   %1 = tail call <2 x i64> asm sideeffect "nop", "=x,~{xmm3},~{xmm4},~{xmm5},~{xmm6},~{xmm7},~{xmm8},~{xmm9},~{xmm10},~{xmm11},~{xmm12},~{xmm13},~{xmm14},~{xmm15},~{xmm16},~{xmm17},~{xmm18},~{xmm19},~{xmm20},~{xmm21},~{xmm22},~{xmm23},~{xmm24},~{xmm25},~{xmm26},~{xmm27},~{xmm28},~{xmm29},~{xmm30},~{xmm31},~{flags}"()
   %2 = fneg half %a1
@@ -1554,10 +1643,12 @@ define half @stack_fold_fnmadd321sh(half %a0, half %a1, half %a2) {
 ; CHECK-LABEL: stack_fold_fnmadd321sh:
 ; CHECK:       # %bb.0:
 ; CHECK-NEXT:    vmovsh %xmm2, {{[-0-9]+}}(%r{{[sb]}}p) # 4-byte Spill
+; CHECK-NEXT:    vmovaps %xmm1, %xmm2
 ; CHECK-NEXT:    #APP
 ; CHECK-NEXT:    nop
 ; CHECK-NEXT:    #NO_APP
-; CHECK-NEXT:    vfnmadd231sh {{[-0-9]+}}(%r{{[sb]}}p), %xmm1, %xmm0 # 4-byte Folded Reload
+; CHECK-NEXT:    vfnmadd132sh {{[-0-9]+}}(%r{{[sb]}}p), %xmm0, %xmm2 # 4-byte Folded Reload
+; CHECK-NEXT:    vmovaps %xmm2, %xmm0
 ; CHECK-NEXT:    retq
   %1 = tail call <2 x i64> asm sideeffect "nop", "=x,~{xmm3},~{xmm4},~{xmm5},~{xmm6},~{xmm7},~{xmm8},~{xmm9},~{xmm10},~{xmm11},~{xmm12},~{xmm13},~{xmm14},~{xmm15},~{xmm16},~{xmm17},~{xmm18},~{xmm19},~{xmm20},~{xmm21},~{xmm22},~{xmm23},~{xmm24},~{xmm25},~{xmm26},~{xmm27},~{xmm28},~{xmm29},~{xmm30},~{xmm31},~{flags}"()
   %2 = fneg half %a2
@@ -1572,7 +1663,10 @@ define half @stack_fold_fnmadd132sh(half %a0, half %a1, half %a2) {
 ; CHECK-NEXT:    #APP
 ; CHECK-NEXT:    nop
 ; CHECK-NEXT:    #NO_APP
-; CHECK-NEXT:    vfnmadd132sh {{[-0-9]+}}(%r{{[sb]}}p), %xmm1, %xmm0 # 4-byte Folded Reload
+; CHECK-NEXT:    vmovsh {{[-0-9]+}}(%r{{[sb]}}p), %xmm2 # 4-byte Reload
+; CHECK-NEXT:    # xmm2 = mem[0],zero,zero,zero,zero,zero,zero,zero
+; CHECK-NEXT:    vfnmadd213sh %xmm1, %xmm0, %xmm2
+; CHECK-NEXT:    vmovaps %xmm2, %xmm0
 ; CHECK-NEXT:    retq
   %1 = tail call <2 x i64> asm sideeffect "nop", "=x,~{xmm3},~{xmm4},~{xmm5},~{xmm6},~{xmm7},~{xmm8},~{xmm9},~{xmm10},~{xmm11},~{xmm12},~{xmm13},~{xmm14},~{xmm15},~{xmm16},~{xmm17},~{xmm18},~{xmm19},~{xmm20},~{xmm21},~{xmm22},~{xmm23},~{xmm24},~{xmm25},~{xmm26},~{xmm27},~{xmm28},~{xmm29},~{xmm30},~{xmm31},~{flags}"()
   %2 = fneg half %a0
@@ -1599,10 +1693,12 @@ define half @stack_fold_fnmsub123sh(half %a0, half %a1, half %a2) {
 ; CHECK-LABEL: stack_fold_fnmsub123sh:
 ; CHECK:       # %bb.0:
 ; CHECK-NEXT:    vmovsh %xmm2, {{[-0-9]+}}(%r{{[sb]}}p) # 4-byte Spill
+; CHECK-NEXT:    vmovaps %xmm1, %xmm2
 ; CHECK-NEXT:    #APP
 ; CHECK-NEXT:    nop
 ; CHECK-NEXT:    #NO_APP
-; CHECK-NEXT:    vfnmsub213sh {{[-0-9]+}}(%r{{[sb]}}p), %xmm1, %xmm0 # 4-byte Folded Reload
+; CHECK-NEXT:    vfnmsub213sh {{[-0-9]+}}(%r{{[sb]}}p), %xmm0, %xmm2 # 4-byte Folded Reload
+; CHECK-NEXT:    vmovaps %xmm2, %xmm0
 ; CHECK-NEXT:    retq
   %1 = tail call <2 x i64> asm sideeffect "nop", "=x,~{xmm3},~{xmm4},~{xmm5},~{xmm6},~{xmm7},~{xmm8},~{xmm9},~{xmm10},~{xmm11},~{xmm12},~{xmm13},~{xmm14},~{xmm15},~{xmm16},~{xmm17},~{xmm18},~{xmm19},~{xmm20},~{xmm21},~{xmm22},~{xmm23},~{xmm24},~{xmm25},~{xmm26},~{xmm27},~{xmm28},~{xmm29},~{xmm30},~{xmm31},~{flags}"()
   %2 = fneg half %a0
@@ -1634,7 +1730,10 @@ define half @stack_fold_fnmsub231sh(half %a0, half %a1, half %a2) {
 ; CHECK-NEXT:    #APP
 ; CHECK-NEXT:    nop
 ; CHECK-NEXT:    #NO_APP
-; CHECK-NEXT:    vfnmsub231sh {{[-0-9]+}}(%r{{[sb]}}p), %xmm1, %xmm0 # 4-byte Folded Reload
+; CHECK-NEXT:    vmovsh {{[-0-9]+}}(%r{{[sb]}}p), %xmm2 # 4-byte Reload
+; CHECK-NEXT:    # xmm2 = mem[0],zero,zero,zero,zero,zero,zero,zero
+; CHECK-NEXT:    vfnmsub213sh %xmm0, %xmm1, %xmm2
+; CHECK-NEXT:    vmovaps %xmm2, %xmm0
 ; CHECK-NEXT:    retq
   %1 = tail call <2 x i64> asm sideeffect "nop", "=x,~{xmm3},~{xmm4},~{xmm5},~{xmm6},~{xmm7},~{xmm8},~{xmm9},~{xmm10},~{xmm11},~{xmm12},~{xmm13},~{xmm14},~{xmm15},~{xmm16},~{xmm17},~{xmm18},~{xmm19},~{xmm20},~{xmm21},~{xmm22},~{xmm23},~{xmm24},~{xmm25},~{xmm26},~{xmm27},~{xmm28},~{xmm29},~{xmm30},~{xmm31},~{flags}"()
   %2 = fneg half %a1
@@ -1647,10 +1746,12 @@ define half @stack_fold_fnmsub321sh(half %a0, half %a1, half %a2) {
 ; CHECK-LABEL: stack_fold_fnmsub321sh:
 ; CHECK:       # %bb.0:
 ; CHECK-NEXT:    vmovsh %xmm2, {{[-0-9]+}}(%r{{[sb]}}p) # 4-byte Spill
+; CHECK-NEXT:    vmovaps %xmm1, %xmm2
 ; CHECK-NEXT:    #APP
 ; CHECK-NEXT:    nop
 ; CHECK-NEXT:    #NO_APP
-; CHECK-NEXT:    vfnmsub231sh {{[-0-9]+}}(%r{{[sb]}}p), %xmm1, %xmm0 # 4-byte Folded Reload
+; CHECK-NEXT:    vfnmsub132sh {{[-0-9]+}}(%r{{[sb]}}p), %xmm0, %xmm2 # 4-byte Folded Reload
+; CHECK-NEXT:    vmovaps %xmm2, %xmm0
 ; CHECK-NEXT:    retq
   %1 = tail call <2 x i64> asm sideeffect "nop", "=x,~{xmm3},~{xmm4},~{xmm5},~{xmm6},~{xmm7},~{xmm8},~{xmm9},~{xmm10},~{xmm11},~{xmm12},~{xmm13},~{xmm14},~{xmm15},~{xmm16},~{xmm17},~{xmm18},~{xmm19},~{xmm20},~{xmm21},~{xmm22},~{xmm23},~{xmm24},~{xmm25},~{xmm26},~{xmm27},~{xmm28},~{xmm29},~{xmm30},~{xmm31},~{flags}"()
   %2 = fneg half %a2
@@ -1666,7 +1767,10 @@ define half @stack_fold_fnmsub132sh(half %a0, half %a1, half %a2) {
 ; CHECK-NEXT:    #APP
 ; CHECK-NEXT:    nop
 ; CHECK-NEXT:    #NO_APP
-; CHECK-NEXT:    vfnmsub132sh {{[-0-9]+}}(%r{{[sb]}}p), %xmm1, %xmm0 # 4-byte Folded Reload
+; CHECK-NEXT:    vmovsh {{[-0-9]+}}(%r{{[sb]}}p), %xmm2 # 4-byte Reload
+; CHECK-NEXT:    # xmm2 = mem[0],zero,zero,zero,zero,zero,zero,zero
+; CHECK-NEXT:    vfnmsub213sh %xmm1, %xmm0, %xmm2
+; CHECK-NEXT:    vmovaps %xmm2, %xmm0
 ; CHECK-NEXT:    retq
   %1 = tail call <2 x i64> asm sideeffect "nop", "=x,~{xmm3},~{xmm4},~{xmm5},~{xmm6},~{xmm7},~{xmm8},~{xmm9},~{xmm10},~{xmm11},~{xmm12},~{xmm13},~{xmm14},~{xmm15},~{xmm16},~{xmm17},~{xmm18},~{xmm19},~{xmm20},~{xmm21},~{xmm22},~{xmm23},~{xmm24},~{xmm25},~{xmm26},~{xmm27},~{xmm28},~{xmm29},~{xmm30},~{xmm31},~{flags}"()
   %2 = fneg half %a0
@@ -3351,10 +3455,12 @@ define <32 x half> @stack_fold_fmaddsub123ph(<32 x half> %a0, <32 x half> %a1, <
 ; CHECK-LABEL: stack_fold_fmaddsub123ph:
 ; CHECK:       # %bb.0:
 ; CHECK-NEXT:    vmovups %zmm2, {{[-0-9]+}}(%r{{[sb]}}p) # 64-byte Spill
+; CHECK-NEXT:    vmovaps %zmm1, %zmm2
 ; CHECK-NEXT:    #APP
 ; CHECK-NEXT:    nop
 ; CHECK-NEXT:    #NO_APP
-; CHECK-NEXT:    vfmaddsub213ph {{[-0-9]+}}(%r{{[sb]}}p), %zmm1, %zmm0 # 64-byte Folded Reload
+; CHECK-NEXT:    vfmaddsub213ph {{[-0-9]+}}(%r{{[sb]}}p), %zmm0, %zmm2 # 64-byte Folded Reload
+; CHECK-NEXT:    vmovaps %zmm2, %zmm0
 ; CHECK-NEXT:    retq
   %1 = tail call <2 x i64> asm sideeffect "nop", "=x,~{xmm3},~{xmm4},~{xmm5},~{xmm6},~{xmm7},~{xmm8},~{xmm9},~{xmm10},~{xmm11},~{xmm12},~{xmm13},~{xmm14},~{xmm15},~{xmm16},~{xmm17},~{xmm18},~{xmm19},~{xmm20},~{xmm21},~{xmm22},~{xmm23},~{xmm24},~{xmm25},~{xmm26},~{xmm27},~{xmm28},~{xmm29},~{xmm30},~{xmm31},~{flags}"()
   %2 = call <32 x half> @llvm.x86.avx512fp16.vfmaddsub.ph.512(<32 x half> %a0, <32 x half> %a1, <32 x half> %a2, i32 4)
@@ -3383,7 +3489,9 @@ define <32 x half> @stack_fold_fmaddsub231ph(<32 x half> %a0, <32 x half> %a1, <
 ; CHECK-NEXT:    #APP
 ; CHECK-NEXT:    nop
 ; CHECK-NEXT:    #NO_APP
-; CHECK-NEXT:    vfmaddsub231ph {{[-0-9]+}}(%r{{[sb]}}p), %zmm1, %zmm0 # 64-byte Folded Reload
+; CHECK-NEXT:    vmovups {{[-0-9]+}}(%r{{[sb]}}p), %zmm2 # 64-byte Reload
+; CHECK-NEXT:    vfmaddsub213ph %zmm0, %zmm1, %zmm2
+; CHECK-NEXT:    vmovaps %zmm2, %zmm0
 ; CHECK-NEXT:    retq
   %1 = tail call <2 x i64> asm sideeffect "nop", "=x,~{xmm3},~{xmm4},~{xmm5},~{xmm6},~{xmm7},~{xmm8},~{xmm9},~{xmm10},~{xmm11},~{xmm12},~{xmm13},~{xmm14},~{xmm15},~{xmm16},~{xmm17},~{xmm18},~{xmm19},~{xmm20},~{xmm21},~{xmm22},~{xmm23},~{xmm24},~{xmm25},~{xmm26},~{xmm27},~{xmm28},~{xmm29},~{xmm30},~{xmm31},~{flags}"()
   %2 = call <32 x half> @llvm.x86.avx512fp16.vfmaddsub.ph.512(<32 x half> %a1, <32 x half> %a2, <32 x half> %a0, i32 4)
@@ -3394,10 +3502,12 @@ define <32 x half> @stack_fold_fmaddsub321ph(<32 x half> %a0, <32 x half> %a1, <
 ; CHECK-LABEL: stack_fold_fmaddsub321ph:
 ; CHECK:       # %bb.0:
 ; CHECK-NEXT:    vmovups %zmm2, {{[-0-9]+}}(%r{{[sb]}}p) # 64-byte Spill
+; CHECK-NEXT:    vmovaps %zmm1, %zmm2
 ; CHECK-NEXT:    #APP
 ; CHECK-NEXT:    nop
 ; CHECK-NEXT:    #NO_APP
-; CHECK-NEXT:    vfmaddsub231ph {{[-0-9]+}}(%r{{[sb]}}p), %zmm1, %zmm0 # 64-byte Folded Reload
+; CHECK-NEXT:    vfmaddsub132ph {{[-0-9]+}}(%r{{[sb]}}p), %zmm0, %zmm2 # 64-byte Folded Reload
+; CHECK-NEXT:    vmovaps %zmm2, %zmm0
 ; CHECK-NEXT:    retq
   %1 = tail call <2 x i64> asm sideeffect "nop", "=x,~{xmm3},~{xmm4},~{xmm5},~{xmm6},~{xmm7},~{xmm8},~{xmm9},~{xmm10},~{xmm11},~{xmm12},~{xmm13},~{xmm14},~{xmm15},~{xmm16},~{xmm17},~{xmm18},~{xmm19},~{xmm20},~{xmm21},~{xmm22},~{xmm23},~{xmm24},~{xmm25},~{xmm26},~{xmm27},~{xmm28},~{xmm29},~{xmm30},~{xmm31},~{flags}"()
   %2 = call <32 x half> @llvm.x86.avx512fp16.vfmaddsub.ph.512(<32 x half> %a2, <32 x half> %a1, <32 x half> %a0, i32 4)
@@ -3411,7 +3521,9 @@ define <32 x half> @stack_fold_fmaddsub132ph(<32 x half> %a0, <32 x half> %a1, <
 ; CHECK-NEXT:    #APP
 ; CHECK-NEXT:    nop
 ; CHECK-NEXT:    #NO_APP
-; CHECK-NEXT:    vfmaddsub132ph {{[-0-9]+}}(%r{{[sb]}}p), %zmm1, %zmm0 # 64-byte Folded Reload
+; CHECK-NEXT:    vmovups {{[-0-9]+}}(%r{{[sb]}}p), %zmm2 # 64-byte Reload
+; CHECK-NEXT:    vfmaddsub213ph %zmm1, %zmm0, %zmm2
+; CHECK-NEXT:    vmovaps %zmm2, %zmm0
 ; CHECK-NEXT:    retq
   %1 = tail call <2 x i64> asm sideeffect "nop", "=x,~{xmm3},~{xmm4},~{xmm5},~{xmm6},~{xmm7},~{xmm8},~{xmm9},~{xmm10},~{xmm11},~{xmm12},~{xmm13},~{xmm14},~{xmm15},~{xmm16},~{xmm17},~{xmm18},~{xmm19},~{xmm20},~{xmm21},~{xmm22},~{xmm23},~{xmm24},~{xmm25},~{xmm26},~{xmm27},~{xmm28},~{xmm29},~{xmm30},~{xmm31},~{flags}"()
   %2 = call <32 x half> @llvm.x86.avx512fp16.vfmaddsub.ph.512(<32 x half> %a0, <32 x half> %a2, <32 x half> %a1, i32 4)
@@ -3556,11 +3668,13 @@ define <32 x half> @stack_fold_fmaddsub123ph_maskz(<32 x half> %a0, <32 x half> 
 ; CHECK-LABEL: stack_fold_fmaddsub123ph_maskz:
 ; CHECK:       # %bb.0:
 ; CHECK-NEXT:    vmovups %zmm2, {{[-0-9]+}}(%r{{[sb]}}p) # 64-byte Spill
+; CHECK-NEXT:    vmovaps %zmm1, %zmm2
 ; CHECK-NEXT:    #APP
 ; CHECK-NEXT:    nop
 ; CHECK-NEXT:    #NO_APP
 ; CHECK-NEXT:    kmovd (%rdi), %k1
-; CHECK-NEXT:    vfmaddsub213ph {{[-0-9]+}}(%r{{[sb]}}p), %zmm1, %zmm0 {%k1} {z} # 64-byte Folded Reload
+; CHECK-NEXT:    vfmaddsub213ph {{[-0-9]+}}(%r{{[sb]}}p), %zmm0, %zmm2 {%k1} {z} # 64-byte Folded Reload
+; CHECK-NEXT:    vmovaps %zmm2, %zmm0
 ; CHECK-NEXT:    retq
   %1 = tail call <2 x i64> asm sideeffect "nop", "=x,~{xmm3},~{xmm4},~{xmm5},~{xmm6},~{xmm7},~{xmm8},~{xmm9},~{xmm10},~{xmm11},~{xmm12},~{xmm13},~{xmm14},~{xmm15},~{xmm16},~{xmm17},~{xmm18},~{xmm19},~{xmm20},~{xmm21},~{xmm22},~{xmm23},~{xmm24},~{xmm25},~{xmm26},~{xmm27},~{xmm28},~{xmm29},~{xmm30},~{xmm31},~{flags}"()
   %2 = call <32 x half> @llvm.x86.avx512fp16.vfmaddsub.ph.512(<32 x half> %a0, <32 x half> %a1, <32 x half> %a2, i32 4)
@@ -3596,7 +3710,9 @@ define <32 x half> @stack_fold_fmaddsub231ph_maskz(<32 x half> %a0, <32 x half> 
 ; CHECK-NEXT:    nop
 ; CHECK-NEXT:    #NO_APP
 ; CHECK-NEXT:    kmovd (%rdi), %k1
-; CHECK-NEXT:    vfmaddsub231ph {{[-0-9]+}}(%r{{[sb]}}p), %zmm1, %zmm0 {%k1} {z} # 64-byte Folded Reload
+; CHECK-NEXT:    vmovups {{[-0-9]+}}(%r{{[sb]}}p), %zmm2 # 64-byte Reload
+; CHECK-NEXT:    vfmaddsub213ph %zmm0, %zmm1, %zmm2 {%k1} {z}
+; CHECK-NEXT:    vmovaps %zmm2, %zmm0
 ; CHECK-NEXT:    retq
   %1 = tail call <2 x i64> asm sideeffect "nop", "=x,~{xmm3},~{xmm4},~{xmm5},~{xmm6},~{xmm7},~{xmm8},~{xmm9},~{xmm10},~{xmm11},~{xmm12},~{xmm13},~{xmm14},~{xmm15},~{xmm16},~{xmm17},~{xmm18},~{xmm19},~{xmm20},~{xmm21},~{xmm22},~{xmm23},~{xmm24},~{xmm25},~{xmm26},~{xmm27},~{xmm28},~{xmm29},~{xmm30},~{xmm31},~{flags}"()
   %2 = call <32 x half> @llvm.x86.avx512fp16.vfmaddsub.ph.512(<32 x half> %a1, <32 x half> %a2, <32 x half> %a0, i32 4)
@@ -3610,11 +3726,13 @@ define <32 x half> @stack_fold_fmaddsub321ph_maskz(<32 x half> %a0, <32 x half> 
 ; CHECK-LABEL: stack_fold_fmaddsub321ph_maskz:
 ; CHECK:       # %bb.0:
 ; CHECK-NEXT:    vmovups %zmm2, {{[-0-9]+}}(%r{{[sb]}}p) # 64-byte Spill
+; CHECK-NEXT:    vmovaps %zmm1, %zmm2
 ; CHECK-NEXT:    #APP
 ; CHECK-NEXT:    nop
 ; CHECK-NEXT:    #NO_APP
 ; CHECK-NEXT:    kmovd (%rdi), %k1
-; CHECK-NEXT:    vfmaddsub231ph {{[-0-9]+}}(%r{{[sb]}}p), %zmm1, %zmm0 {%k1} {z} # 64-byte Folded Reload
+; CHECK-NEXT:    vfmaddsub132ph {{[-0-9]+}}(%r{{[sb]}}p), %zmm0, %zmm2 {%k1} {z} # 64-byte Folded Reload
+; CHECK-NEXT:    vmovaps %zmm2, %zmm0
 ; CHECK-NEXT:    retq
   %1 = tail call <2 x i64> asm sideeffect "nop", "=x,~{xmm3},~{xmm4},~{xmm5},~{xmm6},~{xmm7},~{xmm8},~{xmm9},~{xmm10},~{xmm11},~{xmm12},~{xmm13},~{xmm14},~{xmm15},~{xmm16},~{xmm17},~{xmm18},~{xmm19},~{xmm20},~{xmm21},~{xmm22},~{xmm23},~{xmm24},~{xmm25},~{xmm26},~{xmm27},~{xmm28},~{xmm29},~{xmm30},~{xmm31},~{flags}"()
   %2 = call <32 x half> @llvm.x86.avx512fp16.vfmaddsub.ph.512(<32 x half> %a2, <32 x half> %a1, <32 x half> %a0, i32 4)
@@ -3632,7 +3750,9 @@ define <32 x half> @stack_fold_fmaddsub132ph_maskz(<32 x half> %a0, <32 x half> 
 ; CHECK-NEXT:    nop
 ; CHECK-NEXT:    #NO_APP
 ; CHECK-NEXT:    kmovd (%rdi), %k1
-; CHECK-NEXT:    vfmaddsub132ph {{[-0-9]+}}(%r{{[sb]}}p), %zmm1, %zmm0 {%k1} {z} # 64-byte Folded Reload
+; CHECK-NEXT:    vmovups {{[-0-9]+}}(%r{{[sb]}}p), %zmm2 # 64-byte Reload
+; CHECK-NEXT:    vfmaddsub213ph %zmm1, %zmm0, %zmm2 {%k1} {z}
+; CHECK-NEXT:    vmovaps %zmm2, %zmm0
 ; CHECK-NEXT:    retq
   %1 = tail call <2 x i64> asm sideeffect "nop", "=x,~{xmm3},~{xmm4},~{xmm5},~{xmm6},~{xmm7},~{xmm8},~{xmm9},~{xmm10},~{xmm11},~{xmm12},~{xmm13},~{xmm14},~{xmm15},~{xmm16},~{xmm17},~{xmm18},~{xmm19},~{xmm20},~{xmm21},~{xmm22},~{xmm23},~{xmm24},~{xmm25},~{xmm26},~{xmm27},~{xmm28},~{xmm29},~{xmm30},~{xmm31},~{flags}"()
   %2 = call <32 x half> @llvm.x86.avx512fp16.vfmaddsub.ph.512(<32 x half> %a0, <32 x half> %a2, <32 x half> %a1, i32 4)
@@ -3664,10 +3784,12 @@ define <32 x half> @stack_fold_fmsubadd123ph(<32 x half> %a0, <32 x half> %a1, <
 ; CHECK-LABEL: stack_fold_fmsubadd123ph:
 ; CHECK:       # %bb.0:
 ; CHECK-NEXT:    vmovups %zmm2, {{[-0-9]+}}(%r{{[sb]}}p) # 64-byte Spill
+; CHECK-NEXT:    vmovaps %zmm1, %zmm2
 ; CHECK-NEXT:    #APP
 ; CHECK-NEXT:    nop
 ; CHECK-NEXT:    #NO_APP
-; CHECK-NEXT:    vfmsubadd213ph {{[-0-9]+}}(%r{{[sb]}}p), %zmm1, %zmm0 # 64-byte Folded Reload
+; CHECK-NEXT:    vfmsubadd213ph {{[-0-9]+}}(%r{{[sb]}}p), %zmm0, %zmm2 # 64-byte Folded Reload
+; CHECK-NEXT:    vmovaps %zmm2, %zmm0
 ; CHECK-NEXT:    retq
   %1 = tail call <2 x i64> asm sideeffect "nop", "=x,~{xmm3},~{xmm4},~{xmm5},~{xmm6},~{xmm7},~{xmm8},~{xmm9},~{xmm10},~{xmm11},~{xmm12},~{xmm13},~{xmm14},~{xmm15},~{xmm16},~{xmm17},~{xmm18},~{xmm19},~{xmm20},~{xmm21},~{xmm22},~{xmm23},~{xmm24},~{xmm25},~{xmm26},~{xmm27},~{xmm28},~{xmm29},~{xmm30},~{xmm31},~{flags}"()
   %2 = fneg <32 x half> %a2
@@ -3697,7 +3819,9 @@ define <32 x half> @stack_fold_fmsubadd231ph(<32 x half> %a0, <32 x half> %a1, <
 ; CHECK-NEXT:    #APP
 ; CHECK-NEXT:    nop
 ; CHECK-NEXT:    #NO_APP
-; CHECK-NEXT:    vfmsubadd231ph {{[-0-9]+}}(%r{{[sb]}}p), %zmm1, %zmm0 # 64-byte Folded Reload
+; CHECK-NEXT:    vmovups {{[-0-9]+}}(%r{{[sb]}}p), %zmm2 # 64-byte Reload
+; CHECK-NEXT:    vfmsubadd213ph %zmm0, %zmm1, %zmm2
+; CHECK-NEXT:    vmovaps %zmm2, %zmm0
 ; CHECK-NEXT:    retq
   %1 = tail call <2 x i64> asm sideeffect "nop", "=x,~{xmm3},~{xmm4},~{xmm5},~{xmm6},~{xmm7},~{xmm8},~{xmm9},~{xmm10},~{xmm11},~{xmm12},~{xmm13},~{xmm14},~{xmm15},~{xmm16},~{xmm17},~{xmm18},~{xmm19},~{xmm20},~{xmm21},~{xmm22},~{xmm23},~{xmm24},~{xmm25},~{xmm26},~{xmm27},~{xmm28},~{xmm29},~{xmm30},~{xmm31},~{flags}"()
   %2 = fneg <32 x half> %a0
@@ -3709,10 +3833,12 @@ define <32 x half> @stack_fold_fmsubadd321ph(<32 x half> %a0, <32 x half> %a1, <
 ; CHECK-LABEL: stack_fold_fmsubadd321ph:
 ; CHECK:       # %bb.0:
 ; CHECK-NEXT:    vmovups %zmm2, {{[-0-9]+}}(%r{{[sb]}}p) # 64-byte Spill
+; CHECK-NEXT:    vmovaps %zmm1, %zmm2
 ; CHECK-NEXT:    #APP
 ; CHECK-NEXT:    nop
 ; CHECK-NEXT:    #NO_APP
-; CHECK-NEXT:    vfmsubadd231ph {{[-0-9]+}}(%r{{[sb]}}p), %zmm1, %zmm0 # 64-byte Folded Reload
+; CHECK-NEXT:    vfmsubadd132ph {{[-0-9]+}}(%r{{[sb]}}p), %zmm0, %zmm2 # 64-byte Folded Reload
+; CHECK-NEXT:    vmovaps %zmm2, %zmm0
 ; CHECK-NEXT:    retq
   %1 = tail call <2 x i64> asm sideeffect "nop", "=x,~{xmm3},~{xmm4},~{xmm5},~{xmm6},~{xmm7},~{xmm8},~{xmm9},~{xmm10},~{xmm11},~{xmm12},~{xmm13},~{xmm14},~{xmm15},~{xmm16},~{xmm17},~{xmm18},~{xmm19},~{xmm20},~{xmm21},~{xmm22},~{xmm23},~{xmm24},~{xmm25},~{xmm26},~{xmm27},~{xmm28},~{xmm29},~{xmm30},~{xmm31},~{flags}"()
   %2 = fneg <32 x half> %a0
@@ -3727,7 +3853,9 @@ define <32 x half> @stack_fold_fmsubadd132ph(<32 x half> %a0, <32 x half> %a1, <
 ; CHECK-NEXT:    #APP
 ; CHECK-NEXT:    nop
 ; CHECK-NEXT:    #NO_APP
-; CHECK-NEXT:    vfmsubadd132ph {{[-0-9]+}}(%r{{[sb]}}p), %zmm1, %zmm0 # 64-byte Folded Reload
+; CHECK-NEXT:    vmovups {{[-0-9]+}}(%r{{[sb]}}p), %zmm2 # 64-byte Reload
+; CHECK-NEXT:    vfmsubadd213ph %zmm1, %zmm0, %zmm2
+; CHECK-NEXT:    vmovaps %zmm2, %zmm0
 ; CHECK-NEXT:    retq
   %1 = tail call <2 x i64> asm sideeffect "nop", "=x,~{xmm3},~{xmm4},~{xmm5},~{xmm6},~{xmm7},~{xmm8},~{xmm9},~{xmm10},~{xmm11},~{xmm12},~{xmm13},~{xmm14},~{xmm15},~{xmm16},~{xmm17},~{xmm18},~{xmm19},~{xmm20},~{xmm21},~{xmm22},~{xmm23},~{xmm24},~{xmm25},~{xmm26},~{xmm27},~{xmm28},~{xmm29},~{xmm30},~{xmm31},~{flags}"()
   %2 = fneg <32 x half> %a1
@@ -3880,11 +4008,13 @@ define <32 x half> @stack_fold_fmsubadd123ph_maskz(<32 x half> %a0, <32 x half> 
 ; CHECK-LABEL: stack_fold_fmsubadd123ph_maskz:
 ; CHECK:       # %bb.0:
 ; CHECK-NEXT:    vmovups %zmm2, {{[-0-9]+}}(%r{{[sb]}}p) # 64-byte Spill
+; CHECK-NEXT:    vmovaps %zmm1, %zmm2
 ; CHECK-NEXT:    #APP
 ; CHECK-NEXT:    nop
 ; CHECK-NEXT:    #NO_APP
 ; CHECK-NEXT:    kmovd (%rdi), %k1
-; CHECK-NEXT:    vfmsubadd213ph {{[-0-9]+}}(%r{{[sb]}}p), %zmm1, %zmm0 {%k1} {z} # 64-byte Folded Reload
+; CHECK-NEXT:    vfmsubadd213ph {{[-0-9]+}}(%r{{[sb]}}p), %zmm0, %zmm2 {%k1} {z} # 64-byte Folded Reload
+; CHECK-NEXT:    vmovaps %zmm2, %zmm0
 ; CHECK-NEXT:    retq
   %1 = tail call <2 x i64> asm sideeffect "nop", "=x,~{xmm3},~{xmm4},~{xmm5},~{xmm6},~{xmm7},~{xmm8},~{xmm9},~{xmm10},~{xmm11},~{xmm12},~{xmm13},~{xmm14},~{xmm15},~{xmm16},~{xmm17},~{xmm18},~{xmm19},~{xmm20},~{xmm21},~{xmm22},~{xmm23},~{xmm24},~{xmm25},~{xmm26},~{xmm27},~{xmm28},~{xmm29},~{xmm30},~{xmm31},~{flags}"()
   %neg = fneg <32 x half> %a2
@@ -3922,7 +4052,9 @@ define <32 x half> @stack_fold_fmsubadd231ph_maskz(<32 x half> %a0, <32 x half> 
 ; CHECK-NEXT:    nop
 ; CHECK-NEXT:    #NO_APP
 ; CHECK-NEXT:    kmovd (%rdi), %k1
-; CHECK-NEXT:    vfmsubadd231ph {{[-0-9]+}}(%r{{[sb]}}p), %zmm1, %zmm0 {%k1} {z} # 64-byte Folded Reload
+; CHECK-NEXT:    vmovups {{[-0-9]+}}(%r{{[sb]}}p), %zmm2 # 64-byte Reload
+; CHECK-NEXT:    vfmsubadd213ph %zmm0, %zmm1, %zmm2 {%k1} {z}
+; CHECK-NEXT:    vmovaps %zmm2, %zmm0
 ; CHECK-NEXT:    retq
   %1 = tail call <2 x i64> asm sideeffect "nop", "=x,~{xmm3},~{xmm4},~{xmm5},~{xmm6},~{xmm7},~{xmm8},~{xmm9},~{xmm10},~{xmm11},~{xmm12},~{xmm13},~{xmm14},~{xmm15},~{xmm16},~{xmm17},~{xmm18},~{xmm19},~{xmm20},~{xmm21},~{xmm22},~{xmm23},~{xmm24},~{xmm25},~{xmm26},~{xmm27},~{xmm28},~{xmm29},~{xmm30},~{xmm31},~{flags}"()
   %neg = fneg <32 x half> %a0
@@ -3937,11 +4069,13 @@ define <32 x half> @stack_fold_fmsubadd321ph_maskz(<32 x half> %a0, <32 x half> 
 ; CHECK-LABEL: stack_fold_fmsubadd321ph_maskz:
 ; CHECK:       # %bb.0:
 ; CHECK-NEXT:    vmovups %zmm2, {{[-0-9]+}}(%r{{[sb]}}p) # 64-byte Spill
+; CHECK-NEXT:    vmovaps %zmm1, %zmm2
 ; CHECK-NEXT:    #APP
 ; CHECK-NEXT:    nop
 ; CHECK-NEXT:    #NO_APP
 ; CHECK-NEXT:    kmovd (%rdi), %k1
-; CHECK-NEXT:    vfmsubadd231ph {{[-0-9]+}}(%r{{[sb]}}p), %zmm1, %zmm0 {%k1} {z} # 64-byte Folded Reload
+; CHECK-NEXT:    vfmsubadd132ph {{[-0-9]+}}(%r{{[sb]}}p), %zmm0, %zmm2 {%k1} {z} # 64-byte Folded Reload
+; CHECK-NEXT:    vmovaps %zmm2, %zmm0
 ; CHECK-NEXT:    retq
   %1 = tail call <2 x i64> asm sideeffect "nop", "=x,~{xmm3},~{xmm4},~{xmm5},~{xmm6},~{xmm7},~{xmm8},~{xmm9},~{xmm10},~{xmm11},~{xmm12},~{xmm13},~{xmm14},~{xmm15},~{xmm16},~{xmm17},~{xmm18},~{xmm19},~{xmm20},~{xmm21},~{xmm22},~{xmm23},~{xmm24},~{xmm25},~{xmm26},~{xmm27},~{xmm28},~{xmm29},~{xmm30},~{xmm31},~{flags}"()
   %neg = fneg <32 x half> %a0
@@ -3960,7 +4094,9 @@ define <32 x half> @stack_fold_fmsubadd132ph_maskz(<32 x half> %a0, <32 x half> 
 ; CHECK-NEXT:    nop
 ; CHECK-NEXT:    #NO_APP
 ; CHECK-NEXT:    kmovd (%rdi), %k1
-; CHECK-NEXT:    vfmsubadd132ph {{[-0-9]+}}(%r{{[sb]}}p), %zmm1, %zmm0 {%k1} {z} # 64-byte Folded Reload
+; CHECK-NEXT:    vmovups {{[-0-9]+}}(%r{{[sb]}}p), %zmm2 # 64-byte Reload
+; CHECK-NEXT:    vfmsubadd213ph %zmm1, %zmm0, %zmm2 {%k1} {z}
+; CHECK-NEXT:    vmovaps %zmm2, %zmm0
 ; CHECK-NEXT:    retq
   %1 = tail call <2 x i64> asm sideeffect "nop", "=x,~{xmm3},~{xmm4},~{xmm5},~{xmm6},~{xmm7},~{xmm8},~{xmm9},~{xmm10},~{xmm11},~{xmm12},~{xmm13},~{xmm14},~{xmm15},~{xmm16},~{xmm17},~{xmm18},~{xmm19},~{xmm20},~{xmm21},~{xmm22},~{xmm23},~{xmm24},~{xmm25},~{xmm26},~{xmm27},~{xmm28},~{xmm29},~{xmm30},~{xmm31},~{flags}"()
   %neg = fneg <32 x half> %a1

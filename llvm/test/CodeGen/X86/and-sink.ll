@@ -194,15 +194,17 @@ define i32 @and_sink5(i32 %a, i32 %b, i32 %a2, i32 %b2, i1 %c) {
 ; CHECK-NEXT:    testb $1, {{[0-9]+}}(%esp)
 ; CHECK-NEXT:    je .LBB4_4
 ; CHECK-NEXT:  # %bb.1: # %bb0
+; CHECK-NEXT:    movl {{[0-9]+}}(%esp), %ecx
 ; CHECK-NEXT:    movl {{[0-9]+}}(%esp), %eax
-; CHECK-NEXT:    andl {{[0-9]+}}(%esp), %eax
+; CHECK-NEXT:    andl %ecx, %eax
 ; CHECK-NEXT:    movl $0, A
 ; CHECK-NEXT:    jne .LBB4_4
 ; CHECK-NEXT:  # %bb.2: # %bb1
 ; CHECK-NEXT:    movl {{[0-9]+}}(%esp), %ecx
-; CHECK-NEXT:    addl {{[0-9]+}}(%esp), %ecx
+; CHECK-NEXT:    movl {{[0-9]+}}(%esp), %edx
+; CHECK-NEXT:    addl %ecx, %edx
 ; CHECK-NEXT:    testl %eax, %eax
-; CHECK-NEXT:    movl %ecx, B
+; CHECK-NEXT:    movl %edx, B
 ; CHECK-NEXT:    je .LBB4_3
 ; CHECK-NEXT:  .LBB4_4: # %bb3
 ; CHECK-NEXT:    xorl %eax, %eax

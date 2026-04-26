@@ -77,10 +77,12 @@ define void @test_half_copysign(half %a0, half %a1, ptr %p0) nounwind {
 ;
 ; X64-LABEL: test_half_copysign:
 ; X64:       # %bb.0:
-; X64-NEXT:    pand {{\.?LCPI[0-9]+_[0-9]+}}(%rip), %xmm1
-; X64-NEXT:    pand {{\.?LCPI[0-9]+_[0-9]+}}(%rip), %xmm0
-; X64-NEXT:    por %xmm1, %xmm0
-; X64-NEXT:    pextrw $0, %xmm0, %eax
+; X64-NEXT:    movdqa {{.*#+}} xmm2 = [-0.0E+0,-0.0E+0,-0.0E+0,-0.0E+0,-0.0E+0,-0.0E+0,-0.0E+0,-0.0E+0]
+; X64-NEXT:    pand %xmm1, %xmm2
+; X64-NEXT:    movdqa {{.*#+}} xmm1 = [NaN,NaN,NaN,NaN,NaN,NaN,NaN,NaN]
+; X64-NEXT:    pand %xmm0, %xmm1
+; X64-NEXT:    por %xmm1, %xmm2
+; X64-NEXT:    pextrw $0, %xmm2, %eax
 ; X64-NEXT:    movw %ax, (%rdi)
 ; X64-NEXT:    retq
 ;
@@ -89,10 +91,12 @@ define void @test_half_copysign(half %a0, half %a1, ptr %p0) nounwind {
 ; X86-NEXT:    pinsrw $0, {{[0-9]+}}(%esp), %xmm0
 ; X86-NEXT:    pinsrw $0, {{[0-9]+}}(%esp), %xmm1
 ; X86-NEXT:    movl {{[0-9]+}}(%esp), %eax
-; X86-NEXT:    pand {{\.?LCPI[0-9]+_[0-9]+}}, %xmm1
-; X86-NEXT:    pand {{\.?LCPI[0-9]+_[0-9]+}}, %xmm0
-; X86-NEXT:    por %xmm1, %xmm0
-; X86-NEXT:    pextrw $0, %xmm0, %ecx
+; X86-NEXT:    movdqa {{.*#+}} xmm2 = [-0.0E+0,-0.0E+0,-0.0E+0,-0.0E+0,-0.0E+0,-0.0E+0,-0.0E+0,-0.0E+0]
+; X86-NEXT:    pand %xmm1, %xmm2
+; X86-NEXT:    movdqa {{.*#+}} xmm1 = [NaN,NaN,NaN,NaN,NaN,NaN,NaN,NaN]
+; X86-NEXT:    pand %xmm0, %xmm1
+; X86-NEXT:    por %xmm1, %xmm2
+; X86-NEXT:    pextrw $0, %xmm2, %ecx
 ; X86-NEXT:    movw %cx, (%eax)
 ; X86-NEXT:    retl
   %res = call half @llvm.copysign.half(half %a0, half %a1)
@@ -348,8 +352,9 @@ define void @test_half_fabs(half %a0, ptr %p0) nounwind {
 ;
 ; X64-LABEL: test_half_fabs:
 ; X64:       # %bb.0:
-; X64-NEXT:    pand {{\.?LCPI[0-9]+_[0-9]+}}(%rip), %xmm0
-; X64-NEXT:    pextrw $0, %xmm0, %eax
+; X64-NEXT:    movdqa {{.*#+}} xmm1 = [NaN,NaN,NaN,NaN,NaN,NaN,NaN,NaN]
+; X64-NEXT:    pand %xmm0, %xmm1
+; X64-NEXT:    pextrw $0, %xmm1, %eax
 ; X64-NEXT:    movw %ax, (%rdi)
 ; X64-NEXT:    retq
 ;
@@ -434,8 +439,8 @@ define void @test_half_fma(half %a0, half %a1, half %a2, ptr %p0) nounwind {
 ;
 ; FP16-LABEL: test_half_fma:
 ; FP16:       # %bb.0:
-; FP16-NEXT:    vfmadd213sh %xmm2, %xmm1, %xmm0
-; FP16-NEXT:    vmovsh %xmm0, (%rdi)
+; FP16-NEXT:    vfmadd213sh %xmm2, %xmm0, %xmm1
+; FP16-NEXT:    vmovsh %xmm1, (%rdi)
 ; FP16-NEXT:    retq
 ;
 ; X64-LABEL: test_half_fma:
@@ -527,8 +532,9 @@ define void @test_half_fneg(half %a0, ptr %p0) nounwind {
 ;
 ; X64-LABEL: test_half_fneg:
 ; X64:       # %bb.0:
-; X64-NEXT:    pxor {{\.?LCPI[0-9]+_[0-9]+}}(%rip), %xmm0
-; X64-NEXT:    pextrw $0, %xmm0, %eax
+; X64-NEXT:    movdqa {{.*#+}} xmm1 = [-0.0E+0,-0.0E+0,-0.0E+0,-0.0E+0,-0.0E+0,-0.0E+0,-0.0E+0,-0.0E+0]
+; X64-NEXT:    pxor %xmm0, %xmm1
+; X64-NEXT:    pextrw $0, %xmm1, %eax
 ; X64-NEXT:    movw %ax, (%rdi)
 ; X64-NEXT:    retq
 ;
@@ -536,8 +542,9 @@ define void @test_half_fneg(half %a0, ptr %p0) nounwind {
 ; X86:       # %bb.0:
 ; X86-NEXT:    movl {{[0-9]+}}(%esp), %eax
 ; X86-NEXT:    movl $32768, %ecx # imm = 0x8000
-; X86-NEXT:    xorl {{[0-9]+}}(%esp), %ecx
-; X86-NEXT:    movw %cx, (%eax)
+; X86-NEXT:    movl {{[0-9]+}}(%esp), %edx
+; X86-NEXT:    xorl %ecx, %edx
+; X86-NEXT:    movw %dx, (%eax)
 ; X86-NEXT:    retl
   %res = fneg half %a0
   store half %res, ptr %p0, align 2

@@ -920,7 +920,8 @@ define <16 x i32> @combine_vpermi2var_vpermt2var_16i32_as_vpermd(<16 x i32> %x0,
 ; CHECK-LABEL: combine_vpermi2var_vpermt2var_16i32_as_vpermd:
 ; CHECK:       # %bb.0:
 ; CHECK-NEXT:    vpmovsxbd {{.*#+}} zmm2 = [0,31,2,2,4,29,6,27,8,25,10,23,12,21,14,19]
-; CHECK-NEXT:    vpermt2d %zmm1, %zmm2, %zmm0
+; CHECK-NEXT:    vpermi2d %zmm1, %zmm0, %zmm2
+; CHECK-NEXT:    vmovdqa64 %zmm2, %zmm0
 ; CHECK-NEXT:    ret{{[l|q]}}
   %res0 = call <16 x i32> @llvm.x86.avx512.mask.vpermi2var.d.512(<16 x i32> %x0, <16 x i32> <i32 0, i32 31, i32 2, i32 29, i32 4, i32 27, i32 6, i32 25, i32 8, i32 23, i32 10, i32 21, i32 12, i32 19, i32 14, i32 17>, <16 x i32> %x1, i16 -1)
   %res1 = call <16 x i32> @llvm.x86.avx512.maskz.vpermt2var.d.512(<16 x i32> <i32 0, i32 17, i32 2, i32 18, i32 4, i32 19, i32 6, i32 21, i32 8, i32 23, i32 10, i32 25, i32 12, i32 27, i32 14, i32 29>, <16 x i32> %res0, <16 x i32> %res0, i16 -1)
@@ -930,9 +931,10 @@ define <16 x i32> @combine_vpermi2var_vpermt2var_16i32_as_vpermd(<16 x i32> %x0,
 define <8 x double> @combine_vpermi2var_vpermvar_8f64_as_vperm2_zero(<8 x double> %x0) {
 ; CHECK-LABEL: combine_vpermi2var_vpermvar_8f64_as_vperm2_zero:
 ; CHECK:       # %bb.0:
-; CHECK-NEXT:    vxorpd %xmm1, %xmm1, %xmm1
-; CHECK-NEXT:    vpmovsxbq {{.*#+}} zmm2 = [8,3,10,11,1,7,14,5]
-; CHECK-NEXT:    vpermt2pd %zmm1, %zmm2, %zmm0
+; CHECK-NEXT:    vxorpd %xmm2, %xmm2, %xmm2
+; CHECK-NEXT:    vpmovsxbq {{.*#+}} zmm1 = [8,3,10,11,1,7,14,5]
+; CHECK-NEXT:    vpermi2pd %zmm2, %zmm0, %zmm1
+; CHECK-NEXT:    vmovapd %zmm1, %zmm0
 ; CHECK-NEXT:    ret{{[l|q]}}
   %res0 = shufflevector <8 x double> %x0, <8 x double> zeroinitializer, <8 x i32> <i32 1, i32 9, i32 3, i32 11, i32 5, i32 13, i32 7, i32 15>
   %1 = call <8 x double> @llvm.x86.avx512.permvar.df.512(<8 x double> %res0, <8 x i64> <i64 3, i64 2, i64 1, i64 7, i64 0, i64 6, i64 5, i64 4>)
@@ -942,9 +944,10 @@ define <8 x double> @combine_vpermi2var_vpermvar_8f64_as_vperm2_zero(<8 x double
 define <16 x float> @combine_vpermi2var_vpermvar_16f32_as_vperm2_zero(<16 x float> %x0) {
 ; CHECK-LABEL: combine_vpermi2var_vpermvar_16f32_as_vperm2_zero:
 ; CHECK:       # %bb.0:
-; CHECK-NEXT:    vxorps %xmm1, %xmm1, %xmm1
-; CHECK-NEXT:    vpmovsxbd {{.*#+}} zmm2 = [0,13,1,12,4,9,22,12,4,25,26,9,5,29,30,8]
-; CHECK-NEXT:    vpermt2ps %zmm1, %zmm2, %zmm0
+; CHECK-NEXT:    vxorps %xmm2, %xmm2, %xmm2
+; CHECK-NEXT:    vpmovsxbd {{.*#+}} zmm1 = [0,13,1,12,4,9,22,12,4,25,26,9,5,29,30,8]
+; CHECK-NEXT:    vpermi2ps %zmm2, %zmm0, %zmm1
+; CHECK-NEXT:    vmovaps %zmm1, %zmm0
 ; CHECK-NEXT:    ret{{[l|q]}}
   %res0 = shufflevector <16 x float> %x0, <16 x float> zeroinitializer, <16 x i32> <i32 0, i32 16, i32 1, i32 17, i32 4, i32 20, i32 5, i32 21, i32 8, i32 24, i32 9, i32 25, i32 12, i32 28, i32 13, i32 29>
   %res1 = call <16 x float> @llvm.x86.avx512.mask.vpermi2var.ps.512(<16 x float> %res0, <16 x i32> <i32 0, i32 14, i32 2, i32 12, i32 4, i32 10, i32 3, i32 12, i32 4, i32 11, i32 5, i32 10, i32 6, i32 9, i32 7, i32 8>, <16 x float> %res0, i16 -1)
@@ -970,7 +973,8 @@ define <16 x i32> @blend_of_permutes_v16i32(<8 x i64> %a0, <8x i64> %a1) {
 ; CHECK-LABEL: blend_of_permutes_v16i32:
 ; CHECK:       # %bb.0:
 ; CHECK-NEXT:    vpmovsxbd {{.*#+}} zmm2 = [4,21,6,23,16,1,2,19,12,29,14,31,24,9,10,27]
-; CHECK-NEXT:    vpermt2d %zmm1, %zmm2, %zmm0
+; CHECK-NEXT:    vpermi2d %zmm1, %zmm0, %zmm2
+; CHECK-NEXT:    vmovdqa64 %zmm2, %zmm0
 ; CHECK-NEXT:    ret{{[l|q]}}
   %s0 = shufflevector <8 x i64> %a0, <8 x i64> undef, <8 x i32> <i32 2, i32 3, i32 0, i32 1, i32 6, i32 7, i32 4, i32 5>
   %s1 = shufflevector <8 x i64> %a1, <8 x i64> undef, <8 x i32> <i32 2, i32 3, i32 0, i32 1, i32 6, i32 7, i32 4, i32 5>
@@ -1039,7 +1043,7 @@ define <16 x float> @combine_vexpandps_of_broadcast(float %x, <16 x float> %y, i
 ; X86-LABEL: combine_vexpandps_of_broadcast:
 ; X86:       # %bb.0:
 ; X86-NEXT:    kmovw {{[0-9]+}}(%esp), %k1
-; X86-NEXT:    vbroadcastss {{[0-9]+}}(%esp), %zmm0 {%k1}
+; X86-NEXT:    vblendmps {{[0-9]+}}(%esp){1to16}, %zmm0, %zmm0 {%k1}
 ; X86-NEXT:    retl
 ;
 ; X64-AVX512F-LABEL: combine_vexpandps_of_broadcast:

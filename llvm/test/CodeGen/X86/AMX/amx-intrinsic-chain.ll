@@ -21,16 +21,16 @@ define dso_local void @test_chain(ptr %A_mem, ptr %B_mem, ptr %C_mem) {
 ; CHECK-NEXT:    movl $64, %eax
 ; CHECK-NEXT:    movw $64, %cx
 ; CHECK-NEXT:    movw $16, %r8w
-; CHECK-NEXT:    tileloadd (%rdi,%rax), %tmm0
-; CHECK-NEXT:    addq $1024, %rdi # imm = 0x400
 ; CHECK-NEXT:    tileloadd (%rdi,%rax), %tmm1
+; CHECK-NEXT:    leaq 1024(%rdi), %rdi
+; CHECK-NEXT:    tileloadd (%rdi,%rax), %tmm0
 ; CHECK-NEXT:    tileloadd (%rdx,%rax), %tmm3
 ; CHECK-NEXT:    leaq 1024(%rdx), %rdi
 ; CHECK-NEXT:    tileloadd (%rdi,%rax), %tmm2
 ; CHECK-NEXT:    tileloadd (%rsi,%rax), %tmm4
-; CHECK-NEXT:    tdpbssd %tmm4, %tmm0, %tmm3
+; CHECK-NEXT:    tdpbssd %tmm4, %tmm1, %tmm3
 ; CHECK-NEXT:    tilestored %tmm3, (%rdx,%rax)
-; CHECK-NEXT:    tdpbssd %tmm4, %tmm1, %tmm2
+; CHECK-NEXT:    tdpbssd %tmm4, %tmm0, %tmm2
 ; CHECK-NEXT:    tilestored %tmm2, (%rdi,%rax)
 ; CHECK-NEXT:    tilerelease
 ; CHECK-NEXT:    vzeroupper

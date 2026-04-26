@@ -9,8 +9,9 @@ target triple = "i686-apple-darwin8"
 define i32 @foo(double %x) nounwind  {
 ; CHECK-LABEL: foo:
 ; CHECK:       ## %bb.0: ## %entry
-; CHECK-NEXT:    movl $2147483647, %eax ## imm = 0x7FFFFFFF
-; CHECK-NEXT:    andl {{[0-9]+}}(%esp), %eax
+; CHECK-NEXT:    movl $2147483647, %ecx ## imm = 0x7FFFFFFF
+; CHECK-NEXT:    movl {{[0-9]+}}(%esp), %eax
+; CHECK-NEXT:    andl %ecx, %eax
 ; CHECK-NEXT:    retl
 entry:
 	%x15 = bitcast double %x to i64		; <i64> [#uses=1]

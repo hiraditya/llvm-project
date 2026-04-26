@@ -5,8 +5,9 @@
 define void @t(<4 x float> %A) {
 ; SSE-LABEL: t:
 ; SSE:       # %bb.0:
-; SSE-NEXT:    xorps {{\.?LCPI[0-9]+_[0-9]+}}, %xmm0
-; SSE-NEXT:    movaps %xmm0, 0
+; SSE-NEXT:    movaps {{.*#+}} xmm1 = [-0.0E+0,-0.0E+0,-0.0E+0,-0.0E+0]
+; SSE-NEXT:    xorps %xmm0, %xmm1
+; SSE-NEXT:    movaps %xmm1, 0
 ; SSE-NEXT:    retl
 ;
 ; AVX-LABEL: t:
@@ -61,8 +62,9 @@ define void @t3(<4 x float> %a, <4 x float> %b, ptr %c, ptr %d) {
 ; SSE-NEXT:    movl {{[0-9]+}}(%esp), %eax
 ; SSE-NEXT:    movl {{[0-9]+}}(%esp), %ecx
 ; SSE-NEXT:    andnps %xmm1, %xmm0
-; SSE-NEXT:    orps (%ecx), %xmm0
-; SSE-NEXT:    movaps %xmm0, (%eax)
+; SSE-NEXT:    movaps (%ecx), %xmm1
+; SSE-NEXT:    orps %xmm0, %xmm1
+; SSE-NEXT:    movaps %xmm1, (%eax)
 ; SSE-NEXT:    retl
 ;
 ; AVX-LABEL: t3:

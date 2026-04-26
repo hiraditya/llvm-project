@@ -43,6 +43,7 @@ define i16 @func2(i8 %x, i8 %y) nounwind {
 ; X64-NEXT:    shll $14, %eax
 ; X64-NEXT:    xorl %edx, %edx
 ; X64-NEXT:    divl %ecx
+; X64-NEXT:    # kill: def $eax killed $eax def $rax
 ; X64-NEXT:    addl %eax, %eax
 ; X64-NEXT:    cwtl
 ; X64-NEXT:    shrl %eax
@@ -80,7 +81,7 @@ define i16 @func3(i15 %x, i8 %y) nounwind {
 ; X64-NEXT:    # kill: def $ax killed $ax killed $eax
 ; X64-NEXT:    xorl %edx, %edx
 ; X64-NEXT:    divw %cx
-; X64-NEXT:    # kill: def $ax killed $ax def $eax
+; X64-NEXT:    # kill: def $ax killed $ax def $rax
 ; X64-NEXT:    addl %eax, %eax
 ; X64-NEXT:    cwtl
 ; X64-NEXT:    shrl %eax
@@ -113,10 +114,11 @@ define i16 @func3(i15 %x, i8 %y) nounwind {
 define i4 @func4(i4 %x, i4 %y) nounwind {
 ; X64-LABEL: func4:
 ; X64:       # %bb.0:
+; X64-NEXT:    # kill: def $edi killed $edi def $rdi
 ; X64-NEXT:    andb $15, %sil
 ; X64-NEXT:    andb $15, %dil
-; X64-NEXT:    shlb $2, %dil
-; X64-NEXT:    movzbl %dil, %eax
+; X64-NEXT:    leal (,%rdi,4), %eax
+; X64-NEXT:    movzbl %al, %eax
 ; X64-NEXT:    divb %sil
 ; X64-NEXT:    retq
 ;

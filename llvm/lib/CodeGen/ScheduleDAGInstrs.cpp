@@ -851,12 +851,24 @@ void ScheduleDAGInstrs::buildSchedGraph(AAResults *AA,
         SlotIndex SlotIdx = LIS->getInstructionIndex(MI);
         RegOpers.adjustLaneLiveness(*LIS, MRI, SlotIdx);
       }
-      if (PDiffs != nullptr)
-        PDiffs->addInstruction(SU->NodeNum, RegOpers, MRI);
-
       if (RPTracker->getPos() == RegionEnd || &*RPTracker->getPos() != &MI)
         RPTracker->recedeSkipDebugValues();
       assert(&*RPTracker->getPos() == &MI && "RPTracker in sync");
+
+      const LiveRegSet &LiveRegs = RPTracker->getLiveRegs();
+      for (auto I = RegOpers.Defs.begin(); I != RegOpers.Defs.end();) {
+        if (!I->VRegOrUnit.isVirtualReg() &&
+            (LiveRegs.contains(I->VRegOrUnit) & I->LaneMask).none()) {
+          RegOpers.DeadDefs.push_back(*I);
+          I = RegOpers.Defs.erase(I);
+        } else {
+          ++I;
+        }
+      }
+
+      if (PDiffs != nullptr)
+        PDiffs->addInstruction(SU->NodeNum, RegOpers, MRI);
+
       RPTracker->recede(RegOpers);
     }
 

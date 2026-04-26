@@ -6,8 +6,10 @@
 define <16 x i8> @v16i8_icmp_uge(<16 x i8> %a, <16 x i8> %b) nounwind readnone ssp uwtable {
 ; SSE-LABEL: v16i8_icmp_uge:
 ; SSE:       # %bb.0:
-; SSE-NEXT:    pmaxub %xmm0, %xmm1
-; SSE-NEXT:    pcmpeqb %xmm1, %xmm0
+; SSE-NEXT:    movdqa %xmm0, %xmm2
+; SSE-NEXT:    pmaxub %xmm1, %xmm2
+; SSE-NEXT:    pcmpeqb %xmm0, %xmm2
+; SSE-NEXT:    movdqa %xmm2, %xmm0
 ; SSE-NEXT:    retq
 ;
 ; AVX-LABEL: v16i8_icmp_uge:
@@ -23,8 +25,10 @@ define <16 x i8> @v16i8_icmp_uge(<16 x i8> %a, <16 x i8> %b) nounwind readnone s
 define <16 x i8> @v16i8_icmp_ule(<16 x i8> %a, <16 x i8> %b) nounwind readnone ssp uwtable {
 ; SSE-LABEL: v16i8_icmp_ule:
 ; SSE:       # %bb.0:
-; SSE-NEXT:    pminub %xmm0, %xmm1
-; SSE-NEXT:    pcmpeqb %xmm1, %xmm0
+; SSE-NEXT:    movdqa %xmm0, %xmm2
+; SSE-NEXT:    pminub %xmm1, %xmm2
+; SSE-NEXT:    pcmpeqb %xmm0, %xmm2
+; SSE-NEXT:    movdqa %xmm2, %xmm0
 ; SSE-NEXT:    retq
 ;
 ; AVX-LABEL: v16i8_icmp_ule:
@@ -47,8 +51,10 @@ define <8 x i16> @v8i16_icmp_uge(<8 x i16> %a, <8 x i16> %b) nounwind readnone s
 ;
 ; SSE41-LABEL: v8i16_icmp_uge:
 ; SSE41:       # %bb.0:
-; SSE41-NEXT:    pmaxuw %xmm0, %xmm1
-; SSE41-NEXT:    pcmpeqw %xmm1, %xmm0
+; SSE41-NEXT:    movdqa %xmm0, %xmm2
+; SSE41-NEXT:    pmaxuw %xmm1, %xmm2
+; SSE41-NEXT:    pcmpeqw %xmm0, %xmm2
+; SSE41-NEXT:    movdqa %xmm2, %xmm0
 ; SSE41-NEXT:    retq
 ;
 ; AVX-LABEL: v8i16_icmp_uge:
@@ -66,13 +72,16 @@ define <8 x i16> @v8i16_icmp_ule(<8 x i16> %a, <8 x i16> %b) nounwind readnone s
 ; SSE2:       # %bb.0:
 ; SSE2-NEXT:    psubusw %xmm1, %xmm0
 ; SSE2-NEXT:    pxor %xmm1, %xmm1
-; SSE2-NEXT:    pcmpeqw %xmm1, %xmm0
+; SSE2-NEXT:    pcmpeqw %xmm0, %xmm1
+; SSE2-NEXT:    movdqa %xmm1, %xmm0
 ; SSE2-NEXT:    retq
 ;
 ; SSE41-LABEL: v8i16_icmp_ule:
 ; SSE41:       # %bb.0:
-; SSE41-NEXT:    pminuw %xmm0, %xmm1
-; SSE41-NEXT:    pcmpeqw %xmm1, %xmm0
+; SSE41-NEXT:    movdqa %xmm0, %xmm2
+; SSE41-NEXT:    pminuw %xmm1, %xmm2
+; SSE41-NEXT:    pcmpeqw %xmm0, %xmm2
+; SSE41-NEXT:    movdqa %xmm2, %xmm0
 ; SSE41-NEXT:    retq
 ;
 ; AVX-LABEL: v8i16_icmp_ule:
@@ -90,16 +99,18 @@ define <4 x i32> @v4i32_icmp_uge(<4 x i32> %a, <4 x i32> %b) nounwind readnone s
 ; SSE2:       # %bb.0:
 ; SSE2-NEXT:    movdqa {{.*#+}} xmm2 = [2147483648,2147483648,2147483648,2147483648]
 ; SSE2-NEXT:    pxor %xmm2, %xmm0
-; SSE2-NEXT:    pxor %xmm1, %xmm2
-; SSE2-NEXT:    pcmpgtd %xmm0, %xmm2
+; SSE2-NEXT:    pxor %xmm2, %xmm1
+; SSE2-NEXT:    pcmpgtd %xmm0, %xmm1
 ; SSE2-NEXT:    pcmpeqd %xmm0, %xmm0
-; SSE2-NEXT:    pxor %xmm2, %xmm0
+; SSE2-NEXT:    pxor %xmm1, %xmm0
 ; SSE2-NEXT:    retq
 ;
 ; SSE41-LABEL: v4i32_icmp_uge:
 ; SSE41:       # %bb.0:
-; SSE41-NEXT:    pmaxud %xmm0, %xmm1
-; SSE41-NEXT:    pcmpeqd %xmm1, %xmm0
+; SSE41-NEXT:    movdqa %xmm0, %xmm2
+; SSE41-NEXT:    pmaxud %xmm1, %xmm2
+; SSE41-NEXT:    pcmpeqd %xmm0, %xmm2
+; SSE41-NEXT:    movdqa %xmm2, %xmm0
 ; SSE41-NEXT:    retq
 ;
 ; AVX-LABEL: v4i32_icmp_uge:
@@ -120,13 +131,16 @@ define <4 x i32> @v4i32_icmp_ule(<4 x i32> %a, <4 x i32> %b) nounwind readnone s
 ; SSE2-NEXT:    pxor %xmm2, %xmm0
 ; SSE2-NEXT:    pcmpgtd %xmm1, %xmm0
 ; SSE2-NEXT:    pcmpeqd %xmm1, %xmm1
-; SSE2-NEXT:    pxor %xmm1, %xmm0
+; SSE2-NEXT:    pxor %xmm0, %xmm1
+; SSE2-NEXT:    movdqa %xmm1, %xmm0
 ; SSE2-NEXT:    retq
 ;
 ; SSE41-LABEL: v4i32_icmp_ule:
 ; SSE41:       # %bb.0:
-; SSE41-NEXT:    pminud %xmm0, %xmm1
-; SSE41-NEXT:    pcmpeqd %xmm1, %xmm0
+; SSE41-NEXT:    movdqa %xmm0, %xmm2
+; SSE41-NEXT:    pminud %xmm1, %xmm2
+; SSE41-NEXT:    pcmpeqd %xmm0, %xmm2
+; SSE41-NEXT:    movdqa %xmm2, %xmm0
 ; SSE41-NEXT:    retq
 ;
 ; AVX-LABEL: v4i32_icmp_ule:
@@ -142,10 +156,12 @@ define <4 x i32> @v4i32_icmp_ule(<4 x i32> %a, <4 x i32> %b) nounwind readnone s
 define <16 x i8> @or_icmp_eq_const_1bit_diff(<16 x i8> %x) {
 ; SSE-LABEL: or_icmp_eq_const_1bit_diff:
 ; SSE:       # %bb.0:
-; SSE-NEXT:    movdqa {{.*#+}} xmm1 = [43,43,43,43,43,43,43,43,43,43,43,43,43,43,43,43]
+; SSE-NEXT:    movdqa {{.*#+}} xmm2 = [43,43,43,43,43,43,43,43,43,43,43,43,43,43,43,43]
+; SSE-NEXT:    pcmpeqb %xmm0, %xmm2
+; SSE-NEXT:    movdqa {{.*#+}} xmm1 = [45,45,45,45,45,45,45,45,45,45,45,45,45,45,45,45]
 ; SSE-NEXT:    pcmpeqb %xmm0, %xmm1
-; SSE-NEXT:    pcmpeqb {{\.?LCPI[0-9]+_[0-9]+}}(%rip), %xmm0
-; SSE-NEXT:    por %xmm1, %xmm0
+; SSE-NEXT:    por %xmm2, %xmm1
+; SSE-NEXT:    movdqa %xmm1, %xmm0
 ; SSE-NEXT:    retq
 ;
 ; AVX-LABEL: or_icmp_eq_const_1bit_diff:
@@ -165,24 +181,28 @@ define <16 x i8> @or_icmp_eq_const_1bit_diff(<16 x i8> %x) {
 define <4 x i32> @or_icmp_ne_const_1bit_diff(<4 x i32> %x) {
 ; SSE2-LABEL: or_icmp_ne_const_1bit_diff:
 ; SSE2:       # %bb.0:
-; SSE2-NEXT:    movdqa {{.*#+}} xmm1 = [44,60,44,60]
+; SSE2-NEXT:    movdqa {{.*#+}} xmm2 = [44,60,44,60]
+; SSE2-NEXT:    pcmpeqd %xmm0, %xmm2
+; SSE2-NEXT:    pcmpeqd %xmm3, %xmm3
+; SSE2-NEXT:    pxor %xmm3, %xmm2
+; SSE2-NEXT:    movdqa {{.*#+}} xmm1 = [60,44,60,44]
 ; SSE2-NEXT:    pcmpeqd %xmm0, %xmm1
-; SSE2-NEXT:    pcmpeqd %xmm2, %xmm2
-; SSE2-NEXT:    pxor %xmm2, %xmm1
-; SSE2-NEXT:    pcmpeqd {{\.?LCPI[0-9]+_[0-9]+}}(%rip), %xmm0
-; SSE2-NEXT:    pxor %xmm2, %xmm0
-; SSE2-NEXT:    por %xmm1, %xmm0
+; SSE2-NEXT:    pxor %xmm3, %xmm1
+; SSE2-NEXT:    por %xmm2, %xmm1
+; SSE2-NEXT:    movdqa %xmm1, %xmm0
 ; SSE2-NEXT:    retq
 ;
 ; SSE41-LABEL: or_icmp_ne_const_1bit_diff:
 ; SSE41:       # %bb.0:
-; SSE41-NEXT:    pmovsxbd {{.*#+}} xmm1 = [44,60,44,60]
+; SSE41-NEXT:    pmovsxbd {{.*#+}} xmm2 = [44,60,44,60]
+; SSE41-NEXT:    pcmpeqd %xmm0, %xmm2
+; SSE41-NEXT:    pcmpeqd %xmm3, %xmm3
+; SSE41-NEXT:    pxor %xmm3, %xmm2
+; SSE41-NEXT:    pmovsxbd {{.*#+}} xmm1 = [60,44,60,44]
 ; SSE41-NEXT:    pcmpeqd %xmm0, %xmm1
-; SSE41-NEXT:    pcmpeqd %xmm2, %xmm2
-; SSE41-NEXT:    pxor %xmm2, %xmm1
-; SSE41-NEXT:    pcmpeqd {{\.?LCPI[0-9]+_[0-9]+}}(%rip), %xmm0
-; SSE41-NEXT:    pxor %xmm2, %xmm0
-; SSE41-NEXT:    por %xmm1, %xmm0
+; SSE41-NEXT:    pxor %xmm3, %xmm1
+; SSE41-NEXT:    por %xmm2, %xmm1
+; SSE41-NEXT:    movdqa %xmm1, %xmm0
 ; SSE41-NEXT:    retq
 ;
 ; AVX-LABEL: or_icmp_ne_const_1bit_diff:
@@ -205,10 +225,12 @@ define <4 x i32> @or_icmp_ne_const_1bit_diff(<4 x i32> %x) {
 define <16 x i8> @and_icmp_eq_const_1bit_diff(<16 x i8> %x) {
 ; SSE-LABEL: and_icmp_eq_const_1bit_diff:
 ; SSE:       # %bb.0:
-; SSE-NEXT:    movdqa {{.*#+}} xmm1 = [43,43,45,45,43,43,45,45,43,43,45,45,43,43,45,45]
+; SSE-NEXT:    movdqa {{.*#+}} xmm2 = [43,43,45,45,43,43,45,45,43,43,45,45,43,43,45,45]
+; SSE-NEXT:    pcmpeqb %xmm0, %xmm2
+; SSE-NEXT:    movdqa {{.*#+}} xmm1 = [45,45,43,43,45,45,43,43,45,45,43,43,45,45,43,43]
 ; SSE-NEXT:    pcmpeqb %xmm0, %xmm1
-; SSE-NEXT:    pcmpeqb {{\.?LCPI[0-9]+_[0-9]+}}(%rip), %xmm0
-; SSE-NEXT:    pand %xmm1, %xmm0
+; SSE-NEXT:    pand %xmm2, %xmm1
+; SSE-NEXT:    movdqa %xmm1, %xmm0
 ; SSE-NEXT:    retq
 ;
 ; AVX-LABEL: and_icmp_eq_const_1bit_diff:
@@ -228,24 +250,28 @@ define <16 x i8> @and_icmp_eq_const_1bit_diff(<16 x i8> %x) {
 define <4 x i32> @and_icmp_ne_const_1bit_diff(<4 x i32> %x) {
 ; SSE2-LABEL: and_icmp_ne_const_1bit_diff:
 ; SSE2:       # %bb.0:
-; SSE2-NEXT:    movdqa {{.*#+}} xmm1 = [44,60,54,44]
+; SSE2-NEXT:    movdqa {{.*#+}} xmm2 = [44,60,54,44]
+; SSE2-NEXT:    pcmpeqd %xmm0, %xmm2
+; SSE2-NEXT:    pcmpeqd %xmm3, %xmm3
+; SSE2-NEXT:    pxor %xmm3, %xmm2
+; SSE2-NEXT:    movdqa {{.*#+}} xmm1 = [60,52,50,60]
 ; SSE2-NEXT:    pcmpeqd %xmm0, %xmm1
-; SSE2-NEXT:    pcmpeqd %xmm2, %xmm2
-; SSE2-NEXT:    pxor %xmm2, %xmm1
-; SSE2-NEXT:    pcmpeqd {{\.?LCPI[0-9]+_[0-9]+}}(%rip), %xmm0
-; SSE2-NEXT:    pxor %xmm2, %xmm0
-; SSE2-NEXT:    por %xmm1, %xmm0
+; SSE2-NEXT:    pxor %xmm3, %xmm1
+; SSE2-NEXT:    por %xmm2, %xmm1
+; SSE2-NEXT:    movdqa %xmm1, %xmm0
 ; SSE2-NEXT:    retq
 ;
 ; SSE41-LABEL: and_icmp_ne_const_1bit_diff:
 ; SSE41:       # %bb.0:
-; SSE41-NEXT:    pmovsxbd {{.*#+}} xmm1 = [44,60,54,44]
+; SSE41-NEXT:    pmovsxbd {{.*#+}} xmm2 = [44,60,54,44]
+; SSE41-NEXT:    pcmpeqd %xmm0, %xmm2
+; SSE41-NEXT:    pcmpeqd %xmm3, %xmm3
+; SSE41-NEXT:    pxor %xmm3, %xmm2
+; SSE41-NEXT:    pmovsxbd {{.*#+}} xmm1 = [60,52,50,60]
 ; SSE41-NEXT:    pcmpeqd %xmm0, %xmm1
-; SSE41-NEXT:    pcmpeqd %xmm2, %xmm2
-; SSE41-NEXT:    pxor %xmm2, %xmm1
-; SSE41-NEXT:    pcmpeqd {{\.?LCPI[0-9]+_[0-9]+}}(%rip), %xmm0
-; SSE41-NEXT:    pxor %xmm2, %xmm0
-; SSE41-NEXT:    por %xmm1, %xmm0
+; SSE41-NEXT:    pxor %xmm3, %xmm1
+; SSE41-NEXT:    por %xmm2, %xmm1
+; SSE41-NEXT:    movdqa %xmm1, %xmm0
 ; SSE41-NEXT:    retq
 ;
 ; AVX-LABEL: and_icmp_ne_const_1bit_diff:

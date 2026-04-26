@@ -44,14 +44,14 @@ define <2 x i64> @test_mm_mask_cvtne2ps2bf16_128(<2 x i64> %C, i8 zeroext %U, <4
 ; X86-NEXT:    vcvtne2ps2bf16 %xmm2, %xmm1, %xmm1 # encoding: [0x62,0xf2,0x77,0x08,0x72,0xca]
 ; X86-NEXT:    movzbl {{[0-9]+}}(%esp), %eax # encoding: [0x0f,0xb6,0x44,0x24,0x04]
 ; X86-NEXT:    kmovd %eax, %k1 # encoding: [0xc5,0xfb,0x92,0xc8]
-; X86-NEXT:    vmovdqu16 %xmm1, %xmm0 {%k1} # encoding: [0x62,0xf1,0xff,0x09,0x6f,0xc1]
+; X86-NEXT:    vpblendmw %xmm1, %xmm0, %xmm0 {%k1} # encoding: [0x62,0xf2,0xfd,0x09,0x66,0xc1]
 ; X86-NEXT:    retl # encoding: [0xc3]
 ;
 ; X64-LABEL: test_mm_mask_cvtne2ps2bf16_128:
 ; X64:       # %bb.0: # %entry
 ; X64-NEXT:    vcvtne2ps2bf16 %xmm2, %xmm1, %xmm1 # encoding: [0x62,0xf2,0x77,0x08,0x72,0xca]
 ; X64-NEXT:    kmovd %edi, %k1 # encoding: [0xc5,0xfb,0x92,0xcf]
-; X64-NEXT:    vmovdqu16 %xmm1, %xmm0 {%k1} # encoding: [0x62,0xf1,0xff,0x09,0x6f,0xc1]
+; X64-NEXT:    vpblendmw %xmm1, %xmm0, %xmm0 {%k1} # encoding: [0x62,0xf2,0xfd,0x09,0x66,0xc1]
 ; X64-NEXT:    retq # encoding: [0xc3]
 entry:
   %0 = tail call <8 x i16> @llvm.x86.avx512bf16.cvtne2ps2bf16.128(<4 x float> %A, <4 x float> %B) #2
@@ -102,14 +102,14 @@ define <4 x i64> @test_mm256_mask_cvtne2ps2bf16_256(<4 x i64> %C, i16 zeroext %U
 ; X86:       # %bb.0: # %entry
 ; X86-NEXT:    vcvtne2ps2bf16 %ymm2, %ymm1, %ymm1 # encoding: [0x62,0xf2,0x77,0x28,0x72,0xca]
 ; X86-NEXT:    kmovw {{[0-9]+}}(%esp), %k1 # encoding: [0xc5,0xf8,0x90,0x4c,0x24,0x04]
-; X86-NEXT:    vmovdqu16 %ymm1, %ymm0 {%k1} # encoding: [0x62,0xf1,0xff,0x29,0x6f,0xc1]
+; X86-NEXT:    vpblendmw %ymm1, %ymm0, %ymm0 {%k1} # encoding: [0x62,0xf2,0xfd,0x29,0x66,0xc1]
 ; X86-NEXT:    retl # encoding: [0xc3]
 ;
 ; X64-LABEL: test_mm256_mask_cvtne2ps2bf16_256:
 ; X64:       # %bb.0: # %entry
 ; X64-NEXT:    vcvtne2ps2bf16 %ymm2, %ymm1, %ymm1 # encoding: [0x62,0xf2,0x77,0x28,0x72,0xca]
 ; X64-NEXT:    kmovd %edi, %k1 # encoding: [0xc5,0xfb,0x92,0xcf]
-; X64-NEXT:    vmovdqu16 %ymm1, %ymm0 {%k1} # encoding: [0x62,0xf1,0xff,0x29,0x6f,0xc1]
+; X64-NEXT:    vpblendmw %ymm1, %ymm0, %ymm0 {%k1} # encoding: [0x62,0xf2,0xfd,0x29,0x66,0xc1]
 ; X64-NEXT:    retq # encoding: [0xc3]
 entry:
   %0 = tail call <16 x i16> @llvm.x86.avx512bf16.cvtne2ps2bf16.256(<8 x float> %A, <8 x float> %B) #4
@@ -165,7 +165,7 @@ define <2 x i64> @test_mm256_mask_cvtneps2bf16_256(<2 x i64> %C, i8 zeroext %U, 
 ; X86-NEXT:    vcvtneps2bf16 %ymm1, %xmm1 # encoding: [0x62,0xf2,0x7e,0x28,0x72,0xc9]
 ; X86-NEXT:    movzbl {{[0-9]+}}(%esp), %eax # encoding: [0x0f,0xb6,0x44,0x24,0x04]
 ; X86-NEXT:    kmovd %eax, %k1 # encoding: [0xc5,0xfb,0x92,0xc8]
-; X86-NEXT:    vmovdqu16 %xmm1, %xmm0 {%k1} # encoding: [0x62,0xf1,0xff,0x09,0x6f,0xc1]
+; X86-NEXT:    vpblendmw %xmm1, %xmm0, %xmm0 {%k1} # encoding: [0x62,0xf2,0xfd,0x09,0x66,0xc1]
 ; X86-NEXT:    vzeroupper # encoding: [0xc5,0xf8,0x77]
 ; X86-NEXT:    retl # encoding: [0xc3]
 ;
@@ -173,7 +173,7 @@ define <2 x i64> @test_mm256_mask_cvtneps2bf16_256(<2 x i64> %C, i8 zeroext %U, 
 ; X64:       # %bb.0: # %entry
 ; X64-NEXT:    vcvtneps2bf16 %ymm1, %xmm1 # encoding: [0x62,0xf2,0x7e,0x28,0x72,0xc9]
 ; X64-NEXT:    kmovd %edi, %k1 # encoding: [0xc5,0xfb,0x92,0xcf]
-; X64-NEXT:    vmovdqu16 %xmm1, %xmm0 {%k1} # encoding: [0x62,0xf1,0xff,0x09,0x6f,0xc1]
+; X64-NEXT:    vpblendmw %xmm1, %xmm0, %xmm0 {%k1} # encoding: [0x62,0xf2,0xfd,0x09,0x66,0xc1]
 ; X64-NEXT:    vzeroupper # encoding: [0xc5,0xf8,0x77]
 ; X64-NEXT:    retq # encoding: [0xc3]
 entry:
@@ -249,14 +249,14 @@ define <2 x i64> @test_mm128_cvtneps2bf16_128_select(<2 x i64> %C, i8 zeroext %U
 ; X86-NEXT:    movzbl {{[0-9]+}}(%esp), %eax # encoding: [0x0f,0xb6,0x44,0x24,0x04]
 ; X86-NEXT:    kmovd %eax, %k1 # encoding: [0xc5,0xfb,0x92,0xc8]
 ; X86-NEXT:    vcvtneps2bf16 %xmm1, %xmm1 # encoding: [0x62,0xf2,0x7e,0x08,0x72,0xc9]
-; X86-NEXT:    vmovdqu16 %xmm1, %xmm0 {%k1} # encoding: [0x62,0xf1,0xff,0x09,0x6f,0xc1]
+; X86-NEXT:    vpblendmw %xmm1, %xmm0, %xmm0 {%k1} # encoding: [0x62,0xf2,0xfd,0x09,0x66,0xc1]
 ; X86-NEXT:    retl # encoding: [0xc3]
 ;
 ; X64-LABEL: test_mm128_cvtneps2bf16_128_select:
 ; X64:       # %bb.0: # %entry
 ; X64-NEXT:    kmovd %edi, %k1 # encoding: [0xc5,0xfb,0x92,0xcf]
 ; X64-NEXT:    vcvtneps2bf16 %xmm1, %xmm1 # encoding: [0x62,0xf2,0x7e,0x08,0x72,0xc9]
-; X64-NEXT:    vmovdqu16 %xmm1, %xmm0 {%k1} # encoding: [0x62,0xf1,0xff,0x09,0x6f,0xc1]
+; X64-NEXT:    vpblendmw %xmm1, %xmm0, %xmm0 {%k1} # encoding: [0x62,0xf2,0xfd,0x09,0x66,0xc1]
 ; X64-NEXT:    retq # encoding: [0xc3]
 entry:
   %0 = bitcast i8 %U to <8 x i1>

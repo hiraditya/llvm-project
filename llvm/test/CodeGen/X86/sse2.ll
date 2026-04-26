@@ -31,8 +31,9 @@ define void @test1(ptr %r, ptr %A, double %B) nounwind  {
 ;
 ; X64-SSE-LABEL: test1:
 ; X64-SSE:       # %bb.0:
-; X64-SSE-NEXT:    shufpd {{.*#+}} xmm0 = xmm0[0],mem[1]
-; X64-SSE-NEXT:    movapd %xmm0, (%rdi)
+; X64-SSE-NEXT:    movapd (%rsi), %xmm1
+; X64-SSE-NEXT:    movsd {{.*#+}} xmm1 = xmm0[0],xmm1[1]
+; X64-SSE-NEXT:    movapd %xmm1, (%rdi)
 ; X64-SSE-NEXT:    retq
 ;
 ; X64-AVX-LABEL: test1:
@@ -531,8 +532,9 @@ define <4 x float> @test15(ptr %x, ptr %y) nounwind {
 ; X86-SSE:       # %bb.0: # %entry
 ; X86-SSE-NEXT:    movl {{[0-9]+}}(%esp), %eax
 ; X86-SSE-NEXT:    movl {{[0-9]+}}(%esp), %ecx
-; X86-SSE-NEXT:    movaps (%ecx), %xmm0
-; X86-SSE-NEXT:    unpckhpd {{.*#+}} xmm0 = xmm0[1],mem[1]
+; X86-SSE-NEXT:    movaps (%ecx), %xmm1
+; X86-SSE-NEXT:    movaps (%eax), %xmm0
+; X86-SSE-NEXT:    movhlps {{.*#+}} xmm0 = xmm1[1],xmm0[1]
 ; X86-SSE-NEXT:    retl
 ;
 ; X86-AVX-LABEL: test15:
@@ -545,8 +547,9 @@ define <4 x float> @test15(ptr %x, ptr %y) nounwind {
 ;
 ; X64-SSE-LABEL: test15:
 ; X64-SSE:       # %bb.0: # %entry
-; X64-SSE-NEXT:    movaps (%rdi), %xmm0
-; X64-SSE-NEXT:    unpckhpd {{.*#+}} xmm0 = xmm0[1],mem[1]
+; X64-SSE-NEXT:    movaps (%rdi), %xmm1
+; X64-SSE-NEXT:    movaps (%rsi), %xmm0
+; X64-SSE-NEXT:    movhlps {{.*#+}} xmm0 = xmm1[1],xmm0[1]
 ; X64-SSE-NEXT:    retq
 ;
 ; X64-AVX-LABEL: test15:
@@ -662,21 +665,18 @@ define <2 x i64> @test_insert_64_zext(<2 x i64> %i) {
 }
 
 define <4 x i32> @PR19721(<4 x i32> %i) {
-; X86-SSE-LABEL: PR19721:
-; X86-SSE:       # %bb.0:
-; X86-SSE-NEXT:    andps {{\.?LCPI[0-9]+_[0-9]+}}, %xmm0
-; X86-SSE-NEXT:    retl
+; SSE-LABEL: PR19721:
+; SSE:       # %bb.0:
+; SSE-NEXT:    movaps {{.*#+}} xmm1 = [0,4294967295,4294967295,4294967295]
+; SSE-NEXT:    andps %xmm0, %xmm1
+; SSE-NEXT:    movaps %xmm1, %xmm0
+; SSE-NEXT:    ret{{[l|q]}}
 ;
 ; AVX-LABEL: PR19721:
 ; AVX:       # %bb.0:
 ; AVX-NEXT:    vxorps %xmm1, %xmm1, %xmm1
 ; AVX-NEXT:    vmovss {{.*#+}} xmm0 = xmm1[0],xmm0[1,2,3]
 ; AVX-NEXT:    ret{{[l|q]}}
-;
-; X64-SSE-LABEL: PR19721:
-; X64-SSE:       # %bb.0:
-; X64-SSE-NEXT:    andps {{\.?LCPI[0-9]+_[0-9]+}}(%rip), %xmm0
-; X64-SSE-NEXT:    retq
   %bc = bitcast <4 x i32> %i to i128
   %insert = and i128 %bc, -4294967296
   %bc2 = bitcast i128 %insert to <4 x i32>

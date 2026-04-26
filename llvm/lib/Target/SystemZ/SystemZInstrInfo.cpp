@@ -19,7 +19,6 @@
 #include "llvm/CodeGen/LiveInterval.h"
 #include "llvm/CodeGen/LiveIntervals.h"
 #include "llvm/CodeGen/LiveRegUnits.h"
-#include "llvm/CodeGen/LiveVariables.h"
 #include "llvm/CodeGen/MachineBasicBlock.h"
 #include "llvm/CodeGen/MachineFrameInfo.h"
 #include "llvm/CodeGen/MachineFunction.h"
@@ -1111,7 +1110,7 @@ static void transferMIFlag(MachineInstr *OldMI, MachineInstr *NewMI,
 }
 
 MachineInstr *
-SystemZInstrInfo::convertToThreeAddress(MachineInstr &MI, LiveVariables *LV,
+SystemZInstrInfo::convertToThreeAddress(MachineInstr &MI,
                                         LiveIntervals *LIS) const {
   MachineBasicBlock *MBB = MI.getParent();
 

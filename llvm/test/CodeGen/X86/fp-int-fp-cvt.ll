@@ -175,9 +175,9 @@ define double @ucvtf64_i64(double %a0) {
 ; SSE-NEXT:    subsd {{\.?LCPI[0-9]+_[0-9]+}}(%rip), %xmm0
 ; SSE-NEXT:    cvttsd2si %xmm0, %rdx
 ; SSE-NEXT:    sarq $63, %rcx
-; SSE-NEXT:    andq %rcx, %rdx
-; SSE-NEXT:    orq %rax, %rdx
-; SSE-NEXT:    movq %rdx, %xmm1
+; SSE-NEXT:    andq %rdx, %rcx
+; SSE-NEXT:    orq %rax, %rcx
+; SSE-NEXT:    movq %rcx, %xmm1
 ; SSE-NEXT:    punpckldq {{.*#+}} xmm1 = xmm1[0],mem[0],xmm1[1],mem[1]
 ; SSE-NEXT:    subpd {{\.?LCPI[0-9]+_[0-9]+}}(%rip), %xmm1
 ; SSE-NEXT:    movapd %xmm1, %xmm0
@@ -192,9 +192,9 @@ define double @ucvtf64_i64(double %a0) {
 ; AVX2-NEXT:    vsubsd {{\.?LCPI[0-9]+_[0-9]+}}(%rip), %xmm0, %xmm0
 ; AVX2-NEXT:    sarq $63, %rcx
 ; AVX2-NEXT:    vcvttsd2si %xmm0, %rdx
-; AVX2-NEXT:    andq %rcx, %rdx
-; AVX2-NEXT:    orq %rax, %rdx
-; AVX2-NEXT:    vmovq %rdx, %xmm0
+; AVX2-NEXT:    andq %rdx, %rcx
+; AVX2-NEXT:    orq %rax, %rcx
+; AVX2-NEXT:    vmovq %rcx, %xmm0
 ; AVX2-NEXT:    vpunpckldq {{.*#+}} xmm0 = xmm0[0],mem[0],xmm0[1],mem[1]
 ; AVX2-NEXT:    vsubpd {{\.?LCPI[0-9]+_[0-9]+}}(%rip), %xmm0, %xmm0
 ; AVX2-NEXT:    vshufpd {{.*#+}} xmm1 = xmm0[1,0]
@@ -271,10 +271,10 @@ define float @ucvtf32_i64(float %a0) {
 ; SSE-LABEL: ucvtf32_i64:
 ; SSE:       # %bb.0:
 ; SSE-NEXT:    cvttss2si %xmm0, %rcx
-; SSE-NEXT:    movq %rcx, %rdx
-; SSE-NEXT:    sarq $63, %rdx
+; SSE-NEXT:    movq %rcx, %rax
+; SSE-NEXT:    sarq $63, %rax
 ; SSE-NEXT:    subss {{\.?LCPI[0-9]+_[0-9]+}}(%rip), %xmm0
-; SSE-NEXT:    cvttss2si %xmm0, %rax
+; SSE-NEXT:    cvttss2si %xmm0, %rdx
 ; SSE-NEXT:    andq %rdx, %rax
 ; SSE-NEXT:    orq %rcx, %rax
 ; SSE-NEXT:    js .LBB7_1
@@ -295,10 +295,10 @@ define float @ucvtf32_i64(float %a0) {
 ; AVX2-LABEL: ucvtf32_i64:
 ; AVX2:       # %bb.0:
 ; AVX2-NEXT:    vcvttss2si %xmm0, %rcx
-; AVX2-NEXT:    movq %rcx, %rdx
-; AVX2-NEXT:    sarq $63, %rdx
+; AVX2-NEXT:    movq %rcx, %rax
+; AVX2-NEXT:    sarq $63, %rax
 ; AVX2-NEXT:    vsubss {{\.?LCPI[0-9]+_[0-9]+}}(%rip), %xmm0, %xmm0
-; AVX2-NEXT:    vcvttss2si %xmm0, %rax
+; AVX2-NEXT:    vcvttss2si %xmm0, %rdx
 ; AVX2-NEXT:    andq %rdx, %rax
 ; AVX2-NEXT:    orq %rcx, %rax
 ; AVX2-NEXT:    js .LBB7_1

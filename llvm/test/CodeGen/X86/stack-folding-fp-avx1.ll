@@ -622,8 +622,8 @@ define i32 @stack_fold_comisd_int(<2 x double> %a0, <2 x double> %a1) {
 ; CHECK-NEXT:    vcomisd {{[-0-9]+}}(%r{{[sb]}}p), %xmm0 # 16-byte Folded Reload
 ; CHECK-NEXT:    setnp %al
 ; CHECK-NEXT:    sete %cl
-; CHECK-NEXT:    andb %al, %cl
-; CHECK-NEXT:    movzbl %cl, %eax
+; CHECK-NEXT:    andb %cl, %al
+; CHECK-NEXT:    movzbl %al, %eax
 ; CHECK-NEXT:    retq
   %1 = tail call <2 x i64> asm sideeffect "nop", "=x,~{xmm2},~{xmm3},~{xmm4},~{xmm5},~{xmm6},~{xmm7},~{xmm8},~{xmm9},~{xmm10},~{xmm11},~{xmm12},~{xmm13},~{xmm14},~{xmm15},~{flags}"()
   %2 = call i32 @llvm.x86.sse2.comieq.sd(<2 x double> %a0, <2 x double> %a1)
@@ -643,8 +643,8 @@ define i32 @stack_fold_comiss_int(<4 x float> %a0, <4 x float> %a1) {
 ; CHECK-NEXT:    vcomiss {{[-0-9]+}}(%r{{[sb]}}p), %xmm0 # 16-byte Folded Reload
 ; CHECK-NEXT:    setnp %al
 ; CHECK-NEXT:    sete %cl
-; CHECK-NEXT:    andb %al, %cl
-; CHECK-NEXT:    movzbl %cl, %eax
+; CHECK-NEXT:    andb %cl, %al
+; CHECK-NEXT:    movzbl %al, %eax
 ; CHECK-NEXT:    retq
   %1 = tail call <2 x i64> asm sideeffect "nop", "=x,~{xmm2},~{xmm3},~{xmm4},~{xmm5},~{xmm6},~{xmm7},~{xmm8},~{xmm9},~{xmm10},~{xmm11},~{xmm12},~{xmm13},~{xmm14},~{xmm15},~{flags}"()
   %2 = call i32 @llvm.x86.sse.comieq.ss(<4 x float> %a0, <4 x float> %a1)
@@ -3351,8 +3351,8 @@ define i32 @stack_fold_ucomisd_int(<2 x double> %a0, <2 x double> %a1) {
 ; CHECK-NEXT:    vucomisd {{[-0-9]+}}(%r{{[sb]}}p), %xmm0 # 16-byte Folded Reload
 ; CHECK-NEXT:    setnp %al
 ; CHECK-NEXT:    sete %cl
-; CHECK-NEXT:    andb %al, %cl
-; CHECK-NEXT:    movzbl %cl, %eax
+; CHECK-NEXT:    andb %cl, %al
+; CHECK-NEXT:    movzbl %al, %eax
 ; CHECK-NEXT:    retq
   %1 = tail call <2 x i64> asm sideeffect "nop", "=x,~{xmm2},~{xmm3},~{xmm4},~{xmm5},~{xmm6},~{xmm7},~{xmm8},~{xmm9},~{xmm10},~{xmm11},~{xmm12},~{xmm13},~{xmm14},~{xmm15},~{flags}"()
   %2 = call i32 @llvm.x86.sse2.ucomieq.sd(<2 x double> %a0, <2 x double> %a1)
@@ -3388,8 +3388,8 @@ define i32 @stack_fold_ucomiss_int(<4 x float> %a0, <4 x float> %a1) {
 ; CHECK-NEXT:    vucomiss {{[-0-9]+}}(%r{{[sb]}}p), %xmm0 # 16-byte Folded Reload
 ; CHECK-NEXT:    setnp %al
 ; CHECK-NEXT:    sete %cl
-; CHECK-NEXT:    andb %al, %cl
-; CHECK-NEXT:    movzbl %cl, %eax
+; CHECK-NEXT:    andb %cl, %al
+; CHECK-NEXT:    movzbl %al, %eax
 ; CHECK-NEXT:    retq
   %1 = tail call <2 x i64> asm sideeffect "nop", "=x,~{xmm2},~{xmm3},~{xmm4},~{xmm5},~{xmm6},~{xmm7},~{xmm8},~{xmm9},~{xmm10},~{xmm11},~{xmm12},~{xmm13},~{xmm14},~{xmm15},~{flags}"()
   %2 = call i32 @llvm.x86.sse.ucomieq.ss(<4 x float> %a0, <4 x float> %a1)

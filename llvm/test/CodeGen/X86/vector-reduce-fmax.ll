@@ -23,12 +23,12 @@ define float @test_v2f32(<2 x float> %a0) {
 ; SSE2:       # %bb.0:
 ; SSE2-NEXT:    movaps %xmm0, %xmm2
 ; SSE2-NEXT:    shufps {{.*#+}} xmm2 = xmm2[1,1],xmm0[1,1]
-; SSE2-NEXT:    movaps %xmm0, %xmm1
-; SSE2-NEXT:    cmpunordss %xmm0, %xmm1
-; SSE2-NEXT:    movaps %xmm1, %xmm3
-; SSE2-NEXT:    andps %xmm2, %xmm3
+; SSE2-NEXT:    movaps %xmm0, %xmm3
+; SSE2-NEXT:    cmpunordss %xmm0, %xmm3
+; SSE2-NEXT:    movaps %xmm3, %xmm1
+; SSE2-NEXT:    andps %xmm2, %xmm1
 ; SSE2-NEXT:    maxss %xmm0, %xmm2
-; SSE2-NEXT:    andnps %xmm2, %xmm1
+; SSE2-NEXT:    andnps %xmm2, %xmm3
 ; SSE2-NEXT:    orps %xmm3, %xmm1
 ; SSE2-NEXT:    movaps %xmm1, %xmm0
 ; SSE2-NEXT:    retq
@@ -66,39 +66,41 @@ define float @test_v2f32(<2 x float> %a0) {
 define float @test_v3f32(<3 x float> %a0) {
 ; SSE2-LABEL: test_v3f32:
 ; SSE2:       # %bb.0:
-; SSE2-NEXT:    movaps %xmm0, %xmm1
-; SSE2-NEXT:    shufps {{.*#+}} xmm1 = xmm1[1,1],xmm0[1,1]
 ; SSE2-NEXT:    movaps %xmm0, %xmm2
-; SSE2-NEXT:    cmpunordss %xmm0, %xmm2
-; SSE2-NEXT:    movaps %xmm2, %xmm3
-; SSE2-NEXT:    andps %xmm1, %xmm3
-; SSE2-NEXT:    maxss %xmm0, %xmm1
-; SSE2-NEXT:    andnps %xmm1, %xmm2
-; SSE2-NEXT:    orps %xmm3, %xmm2
+; SSE2-NEXT:    shufps {{.*#+}} xmm2 = xmm2[1,1],xmm0[1,1]
+; SSE2-NEXT:    movaps %xmm0, %xmm3
+; SSE2-NEXT:    cmpunordss %xmm0, %xmm3
+; SSE2-NEXT:    movaps %xmm3, %xmm1
+; SSE2-NEXT:    andps %xmm2, %xmm1
+; SSE2-NEXT:    maxss %xmm0, %xmm2
+; SSE2-NEXT:    andnps %xmm2, %xmm3
+; SSE2-NEXT:    orps %xmm3, %xmm1
 ; SSE2-NEXT:    movhlps {{.*#+}} xmm0 = xmm0[1,1]
-; SSE2-NEXT:    movaps %xmm0, %xmm1
-; SSE2-NEXT:    maxss %xmm2, %xmm1
-; SSE2-NEXT:    cmpunordss %xmm2, %xmm2
-; SSE2-NEXT:    andps %xmm2, %xmm0
-; SSE2-NEXT:    andnps %xmm1, %xmm2
-; SSE2-NEXT:    orps %xmm2, %xmm0
+; SSE2-NEXT:    movaps %xmm0, %xmm2
+; SSE2-NEXT:    maxss %xmm1, %xmm2
+; SSE2-NEXT:    cmpunordss %xmm1, %xmm1
+; SSE2-NEXT:    movaps %xmm1, %xmm3
+; SSE2-NEXT:    andnps %xmm2, %xmm3
+; SSE2-NEXT:    andps %xmm0, %xmm1
+; SSE2-NEXT:    orps %xmm3, %xmm1
+; SSE2-NEXT:    movaps %xmm1, %xmm0
 ; SSE2-NEXT:    retq
 ;
 ; SSE41-LABEL: test_v3f32:
 ; SSE41:       # %bb.0:
 ; SSE41-NEXT:    movaps %xmm0, %xmm1
-; SSE41-NEXT:    movshdup {{.*#+}} xmm3 = xmm0[1,1,3,3]
-; SSE41-NEXT:    movaps %xmm3, %xmm2
-; SSE41-NEXT:    maxss %xmm0, %xmm2
+; SSE41-NEXT:    movshdup {{.*#+}} xmm2 = xmm0[1,1,3,3]
+; SSE41-NEXT:    movaps %xmm2, %xmm3
+; SSE41-NEXT:    maxss %xmm0, %xmm3
 ; SSE41-NEXT:    cmpunordss %xmm0, %xmm0
-; SSE41-NEXT:    blendvps %xmm0, %xmm3, %xmm2
+; SSE41-NEXT:    blendvps %xmm0, %xmm2, %xmm3
 ; SSE41-NEXT:    movhlps {{.*#+}} xmm1 = xmm1[1,1]
-; SSE41-NEXT:    movaps %xmm1, %xmm3
-; SSE41-NEXT:    maxss %xmm2, %xmm3
-; SSE41-NEXT:    cmpunordss %xmm2, %xmm2
-; SSE41-NEXT:    movaps %xmm2, %xmm0
-; SSE41-NEXT:    blendvps %xmm0, %xmm1, %xmm3
+; SSE41-NEXT:    movaps %xmm1, %xmm2
+; SSE41-NEXT:    maxss %xmm3, %xmm2
 ; SSE41-NEXT:    movaps %xmm3, %xmm0
+; SSE41-NEXT:    cmpunordss %xmm3, %xmm0
+; SSE41-NEXT:    blendvps %xmm0, %xmm1, %xmm2
+; SSE41-NEXT:    movaps %xmm2, %xmm0
 ; SSE41-NEXT:    retq
 ;
 ; AVX-LABEL: test_v3f32:
@@ -131,55 +133,56 @@ define float @test_v3f32(<3 x float> %a0) {
 define float @test_v4f32(<4 x float> %a0) {
 ; SSE2-LABEL: test_v4f32:
 ; SSE2:       # %bb.0:
-; SSE2-NEXT:    movaps %xmm0, %xmm1
 ; SSE2-NEXT:    movaps %xmm0, %xmm2
 ; SSE2-NEXT:    movaps %xmm0, %xmm3
 ; SSE2-NEXT:    shufps {{.*#+}} xmm3 = xmm3[1,1],xmm0[1,1]
-; SSE2-NEXT:    cmpunordss %xmm0, %xmm0
 ; SSE2-NEXT:    movaps %xmm0, %xmm4
-; SSE2-NEXT:    andps %xmm3, %xmm4
-; SSE2-NEXT:    maxss %xmm1, %xmm3
-; SSE2-NEXT:    shufps {{.*#+}} xmm1 = xmm1[3,3,3,3]
-; SSE2-NEXT:    movhlps {{.*#+}} xmm2 = xmm2[1,1]
-; SSE2-NEXT:    andnps %xmm3, %xmm0
-; SSE2-NEXT:    orps %xmm4, %xmm0
-; SSE2-NEXT:    movaps %xmm2, %xmm3
+; SSE2-NEXT:    cmpunordss %xmm0, %xmm4
+; SSE2-NEXT:    movaps %xmm4, %xmm1
+; SSE2-NEXT:    andps %xmm3, %xmm1
 ; SSE2-NEXT:    maxss %xmm0, %xmm3
-; SSE2-NEXT:    cmpunordss %xmm0, %xmm0
-; SSE2-NEXT:    movaps %xmm0, %xmm4
+; SSE2-NEXT:    shufps {{.*#+}} xmm0 = xmm0[3,3,3,3]
+; SSE2-NEXT:    movhlps {{.*#+}} xmm2 = xmm2[1,1]
 ; SSE2-NEXT:    andnps %xmm3, %xmm4
-; SSE2-NEXT:    andps %xmm2, %xmm0
-; SSE2-NEXT:    orps %xmm4, %xmm0
-; SSE2-NEXT:    movaps %xmm1, %xmm2
-; SSE2-NEXT:    maxss %xmm0, %xmm2
-; SSE2-NEXT:    cmpunordss %xmm0, %xmm0
-; SSE2-NEXT:    movaps %xmm0, %xmm3
+; SSE2-NEXT:    orps %xmm4, %xmm1
+; SSE2-NEXT:    movaps %xmm2, %xmm3
+; SSE2-NEXT:    maxss %xmm1, %xmm3
+; SSE2-NEXT:    cmpunordss %xmm1, %xmm1
+; SSE2-NEXT:    movaps %xmm1, %xmm4
+; SSE2-NEXT:    andnps %xmm3, %xmm4
+; SSE2-NEXT:    andps %xmm2, %xmm1
+; SSE2-NEXT:    orps %xmm4, %xmm1
+; SSE2-NEXT:    movaps %xmm0, %xmm2
+; SSE2-NEXT:    maxss %xmm1, %xmm2
+; SSE2-NEXT:    cmpunordss %xmm1, %xmm1
+; SSE2-NEXT:    movaps %xmm1, %xmm3
 ; SSE2-NEXT:    andnps %xmm2, %xmm3
-; SSE2-NEXT:    andps %xmm1, %xmm0
-; SSE2-NEXT:    orps %xmm3, %xmm0
+; SSE2-NEXT:    andps %xmm0, %xmm1
+; SSE2-NEXT:    orps %xmm3, %xmm1
+; SSE2-NEXT:    movaps %xmm1, %xmm0
 ; SSE2-NEXT:    retq
 ;
 ; SSE41-LABEL: test_v4f32:
 ; SSE41:       # %bb.0:
-; SSE41-NEXT:    movaps %xmm0, %xmm3
-; SSE41-NEXT:    shufps {{.*#+}} xmm3 = xmm3[3,3],xmm0[3,3]
-; SSE41-NEXT:    movaps %xmm0, %xmm4
-; SSE41-NEXT:    unpckhpd {{.*#+}} xmm4 = xmm4[1],xmm0[1]
-; SSE41-NEXT:    movshdup {{.*#+}} xmm2 = xmm0[1,1,3,3]
-; SSE41-NEXT:    movaps %xmm2, %xmm1
-; SSE41-NEXT:    maxss %xmm0, %xmm1
+; SSE41-NEXT:    movaps %xmm0, %xmm2
+; SSE41-NEXT:    shufps {{.*#+}} xmm2 = xmm2[3,3],xmm0[3,3]
+; SSE41-NEXT:    movaps %xmm0, %xmm1
+; SSE41-NEXT:    unpckhpd {{.*#+}} xmm1 = xmm1[1],xmm0[1]
+; SSE41-NEXT:    movshdup {{.*#+}} xmm3 = xmm0[1,1,3,3]
+; SSE41-NEXT:    movaps %xmm3, %xmm4
+; SSE41-NEXT:    maxss %xmm0, %xmm4
 ; SSE41-NEXT:    cmpunordss %xmm0, %xmm0
+; SSE41-NEXT:    blendvps %xmm0, %xmm3, %xmm4
+; SSE41-NEXT:    movaps %xmm1, %xmm3
+; SSE41-NEXT:    maxss %xmm4, %xmm3
+; SSE41-NEXT:    movaps %xmm4, %xmm0
+; SSE41-NEXT:    cmpunordss %xmm4, %xmm0
+; SSE41-NEXT:    blendvps %xmm0, %xmm1, %xmm3
+; SSE41-NEXT:    movaps %xmm2, %xmm1
+; SSE41-NEXT:    maxss %xmm3, %xmm1
+; SSE41-NEXT:    movaps %xmm3, %xmm0
+; SSE41-NEXT:    cmpunordss %xmm3, %xmm0
 ; SSE41-NEXT:    blendvps %xmm0, %xmm2, %xmm1
-; SSE41-NEXT:    movaps %xmm4, %xmm2
-; SSE41-NEXT:    maxss %xmm1, %xmm2
-; SSE41-NEXT:    cmpunordss %xmm1, %xmm1
-; SSE41-NEXT:    movaps %xmm1, %xmm0
-; SSE41-NEXT:    blendvps %xmm0, %xmm4, %xmm2
-; SSE41-NEXT:    movaps %xmm3, %xmm1
-; SSE41-NEXT:    maxss %xmm2, %xmm1
-; SSE41-NEXT:    cmpunordss %xmm2, %xmm2
-; SSE41-NEXT:    movaps %xmm2, %xmm0
-; SSE41-NEXT:    blendvps %xmm0, %xmm3, %xmm1
 ; SSE41-NEXT:    movaps %xmm1, %xmm0
 ; SSE41-NEXT:    retq
 ;
@@ -225,60 +228,60 @@ define float @test_v8f32(<8 x float> %a0) {
 ; SSE2-NEXT:    maxps %xmm0, %xmm2
 ; SSE2-NEXT:    cmpunordps %xmm0, %xmm0
 ; SSE2-NEXT:    andps %xmm0, %xmm1
-; SSE2-NEXT:    andnps %xmm2, %xmm0
-; SSE2-NEXT:    orps %xmm1, %xmm0
-; SSE2-NEXT:    pshufd {{.*#+}} xmm2 = xmm0[1,1,1,1]
-; SSE2-NEXT:    movaps %xmm0, %xmm1
-; SSE2-NEXT:    cmpunordss %xmm0, %xmm1
-; SSE2-NEXT:    movaps %xmm1, %xmm3
-; SSE2-NEXT:    andps %xmm2, %xmm3
-; SSE2-NEXT:    maxss %xmm0, %xmm2
-; SSE2-NEXT:    andnps %xmm2, %xmm1
-; SSE2-NEXT:    orps %xmm3, %xmm1
-; SSE2-NEXT:    pshufd {{.*#+}} xmm2 = xmm0[2,3,2,3]
-; SSE2-NEXT:    movdqa %xmm2, %xmm3
-; SSE2-NEXT:    maxss %xmm1, %xmm3
-; SSE2-NEXT:    cmpunordss %xmm1, %xmm1
-; SSE2-NEXT:    movaps %xmm1, %xmm4
-; SSE2-NEXT:    andnps %xmm3, %xmm4
-; SSE2-NEXT:    andps %xmm2, %xmm1
-; SSE2-NEXT:    orps %xmm4, %xmm1
-; SSE2-NEXT:    pshufd {{.*#+}} xmm0 = xmm0[3,3,3,3]
-; SSE2-NEXT:    movdqa %xmm0, %xmm2
-; SSE2-NEXT:    maxss %xmm1, %xmm2
-; SSE2-NEXT:    cmpunordss %xmm1, %xmm1
-; SSE2-NEXT:    movaps %xmm1, %xmm3
+; SSE2-NEXT:    movaps %xmm0, %xmm3
 ; SSE2-NEXT:    andnps %xmm2, %xmm3
-; SSE2-NEXT:    andps %xmm0, %xmm1
-; SSE2-NEXT:    orps %xmm3, %xmm1
-; SSE2-NEXT:    movaps %xmm1, %xmm0
+; SSE2-NEXT:    orps %xmm1, %xmm3
+; SSE2-NEXT:    pshufd {{.*#+}} xmm1 = xmm3[1,1,1,1]
+; SSE2-NEXT:    movaps %xmm3, %xmm2
+; SSE2-NEXT:    cmpunordss %xmm3, %xmm2
+; SSE2-NEXT:    movaps %xmm2, %xmm0
+; SSE2-NEXT:    andps %xmm1, %xmm0
+; SSE2-NEXT:    maxss %xmm3, %xmm1
+; SSE2-NEXT:    andnps %xmm1, %xmm2
+; SSE2-NEXT:    orps %xmm2, %xmm0
+; SSE2-NEXT:    pshufd {{.*#+}} xmm1 = xmm3[2,3,2,3]
+; SSE2-NEXT:    movdqa %xmm1, %xmm2
+; SSE2-NEXT:    maxss %xmm0, %xmm2
+; SSE2-NEXT:    cmpunordss %xmm0, %xmm0
+; SSE2-NEXT:    movaps %xmm0, %xmm4
+; SSE2-NEXT:    andnps %xmm2, %xmm4
+; SSE2-NEXT:    andps %xmm1, %xmm0
+; SSE2-NEXT:    orps %xmm4, %xmm0
+; SSE2-NEXT:    pshufd {{.*#+}} xmm1 = xmm3[3,3,3,3]
+; SSE2-NEXT:    movdqa %xmm1, %xmm2
+; SSE2-NEXT:    maxss %xmm0, %xmm2
+; SSE2-NEXT:    cmpunordss %xmm0, %xmm0
+; SSE2-NEXT:    movaps %xmm0, %xmm3
+; SSE2-NEXT:    andnps %xmm2, %xmm3
+; SSE2-NEXT:    andps %xmm1, %xmm0
+; SSE2-NEXT:    orps %xmm3, %xmm0
 ; SSE2-NEXT:    retq
 ;
 ; SSE41-LABEL: test_v8f32:
 ; SSE41:       # %bb.0:
-; SSE41-NEXT:    movaps %xmm1, %xmm3
-; SSE41-NEXT:    maxps %xmm0, %xmm3
+; SSE41-NEXT:    movaps %xmm1, %xmm2
+; SSE41-NEXT:    maxps %xmm0, %xmm2
 ; SSE41-NEXT:    cmpunordps %xmm0, %xmm0
+; SSE41-NEXT:    blendvps %xmm0, %xmm1, %xmm2
+; SSE41-NEXT:    movshdup {{.*#+}} xmm1 = xmm2[1,1,3,3]
+; SSE41-NEXT:    movaps %xmm1, %xmm3
+; SSE41-NEXT:    maxss %xmm2, %xmm3
+; SSE41-NEXT:    movaps %xmm2, %xmm0
+; SSE41-NEXT:    cmpunordss %xmm2, %xmm0
 ; SSE41-NEXT:    blendvps %xmm0, %xmm1, %xmm3
-; SSE41-NEXT:    movshdup {{.*#+}} xmm2 = xmm3[1,1,3,3]
 ; SSE41-NEXT:    movaps %xmm2, %xmm1
-; SSE41-NEXT:    maxss %xmm3, %xmm1
+; SSE41-NEXT:    unpckhpd {{.*#+}} xmm1 = xmm1[1],xmm2[1]
+; SSE41-NEXT:    movaps %xmm1, %xmm4
+; SSE41-NEXT:    maxss %xmm3, %xmm4
 ; SSE41-NEXT:    movaps %xmm3, %xmm0
 ; SSE41-NEXT:    cmpunordss %xmm3, %xmm0
+; SSE41-NEXT:    blendvps %xmm0, %xmm1, %xmm4
+; SSE41-NEXT:    shufps {{.*#+}} xmm2 = xmm2[3,3,3,3]
+; SSE41-NEXT:    movaps %xmm2, %xmm1
+; SSE41-NEXT:    maxss %xmm4, %xmm1
+; SSE41-NEXT:    movaps %xmm4, %xmm0
+; SSE41-NEXT:    cmpunordss %xmm4, %xmm0
 ; SSE41-NEXT:    blendvps %xmm0, %xmm2, %xmm1
-; SSE41-NEXT:    movaps %xmm3, %xmm4
-; SSE41-NEXT:    unpckhpd {{.*#+}} xmm4 = xmm4[1],xmm3[1]
-; SSE41-NEXT:    movaps %xmm4, %xmm2
-; SSE41-NEXT:    maxss %xmm1, %xmm2
-; SSE41-NEXT:    cmpunordss %xmm1, %xmm1
-; SSE41-NEXT:    movaps %xmm1, %xmm0
-; SSE41-NEXT:    blendvps %xmm0, %xmm4, %xmm2
-; SSE41-NEXT:    shufps {{.*#+}} xmm3 = xmm3[3,3,3,3]
-; SSE41-NEXT:    movaps %xmm3, %xmm1
-; SSE41-NEXT:    maxss %xmm2, %xmm1
-; SSE41-NEXT:    cmpunordss %xmm2, %xmm2
-; SSE41-NEXT:    movaps %xmm2, %xmm0
-; SSE41-NEXT:    blendvps %xmm0, %xmm3, %xmm1
 ; SSE41-NEXT:    movaps %xmm1, %xmm0
 ; SSE41-NEXT:    retq
 ;
@@ -403,33 +406,33 @@ define float @test_v16f32(<16 x float> %a0) {
 ; SSE2-NEXT:    maxps %xmm0, %xmm2
 ; SSE2-NEXT:    cmpunordps %xmm0, %xmm0
 ; SSE2-NEXT:    andps %xmm0, %xmm1
-; SSE2-NEXT:    andnps %xmm2, %xmm0
-; SSE2-NEXT:    orps %xmm1, %xmm0
-; SSE2-NEXT:    pshufd {{.*#+}} xmm2 = xmm0[1,1,1,1]
-; SSE2-NEXT:    movaps %xmm0, %xmm1
-; SSE2-NEXT:    cmpunordss %xmm0, %xmm1
-; SSE2-NEXT:    movaps %xmm1, %xmm3
-; SSE2-NEXT:    andps %xmm2, %xmm3
-; SSE2-NEXT:    maxss %xmm0, %xmm2
-; SSE2-NEXT:    andnps %xmm2, %xmm1
-; SSE2-NEXT:    orps %xmm3, %xmm1
-; SSE2-NEXT:    pshufd {{.*#+}} xmm2 = xmm0[2,3,2,3]
-; SSE2-NEXT:    movdqa %xmm2, %xmm3
-; SSE2-NEXT:    maxss %xmm1, %xmm3
-; SSE2-NEXT:    cmpunordss %xmm1, %xmm1
-; SSE2-NEXT:    movaps %xmm1, %xmm4
-; SSE2-NEXT:    andnps %xmm3, %xmm4
-; SSE2-NEXT:    andps %xmm2, %xmm1
-; SSE2-NEXT:    orps %xmm4, %xmm1
-; SSE2-NEXT:    pshufd {{.*#+}} xmm0 = xmm0[3,3,3,3]
-; SSE2-NEXT:    movdqa %xmm0, %xmm2
-; SSE2-NEXT:    maxss %xmm1, %xmm2
-; SSE2-NEXT:    cmpunordss %xmm1, %xmm1
-; SSE2-NEXT:    movaps %xmm1, %xmm3
+; SSE2-NEXT:    movaps %xmm0, %xmm3
 ; SSE2-NEXT:    andnps %xmm2, %xmm3
-; SSE2-NEXT:    andps %xmm0, %xmm1
-; SSE2-NEXT:    orps %xmm3, %xmm1
-; SSE2-NEXT:    movaps %xmm1, %xmm0
+; SSE2-NEXT:    orps %xmm1, %xmm3
+; SSE2-NEXT:    pshufd {{.*#+}} xmm1 = xmm3[1,1,1,1]
+; SSE2-NEXT:    movaps %xmm3, %xmm2
+; SSE2-NEXT:    cmpunordss %xmm3, %xmm2
+; SSE2-NEXT:    movaps %xmm2, %xmm0
+; SSE2-NEXT:    andps %xmm1, %xmm0
+; SSE2-NEXT:    maxss %xmm3, %xmm1
+; SSE2-NEXT:    andnps %xmm1, %xmm2
+; SSE2-NEXT:    orps %xmm2, %xmm0
+; SSE2-NEXT:    pshufd {{.*#+}} xmm1 = xmm3[2,3,2,3]
+; SSE2-NEXT:    movdqa %xmm1, %xmm2
+; SSE2-NEXT:    maxss %xmm0, %xmm2
+; SSE2-NEXT:    cmpunordss %xmm0, %xmm0
+; SSE2-NEXT:    movaps %xmm0, %xmm4
+; SSE2-NEXT:    andnps %xmm2, %xmm4
+; SSE2-NEXT:    andps %xmm1, %xmm0
+; SSE2-NEXT:    orps %xmm4, %xmm0
+; SSE2-NEXT:    pshufd {{.*#+}} xmm1 = xmm3[3,3,3,3]
+; SSE2-NEXT:    movdqa %xmm1, %xmm2
+; SSE2-NEXT:    maxss %xmm0, %xmm2
+; SSE2-NEXT:    cmpunordss %xmm0, %xmm0
+; SSE2-NEXT:    movaps %xmm0, %xmm3
+; SSE2-NEXT:    andnps %xmm2, %xmm3
+; SSE2-NEXT:    andps %xmm1, %xmm0
+; SSE2-NEXT:    orps %xmm3, %xmm0
 ; SSE2-NEXT:    retq
 ;
 ; SSE41-LABEL: test_v16f32:
@@ -438,35 +441,35 @@ define float @test_v16f32(<16 x float> %a0) {
 ; SSE41-NEXT:    maxps %xmm0, %xmm4
 ; SSE41-NEXT:    cmpunordps %xmm0, %xmm0
 ; SSE41-NEXT:    blendvps %xmm0, %xmm2, %xmm4
-; SSE41-NEXT:    movaps %xmm3, %xmm2
-; SSE41-NEXT:    maxps %xmm1, %xmm2
+; SSE41-NEXT:    movaps %xmm3, %xmm5
+; SSE41-NEXT:    maxps %xmm1, %xmm5
 ; SSE41-NEXT:    cmpunordps %xmm1, %xmm1
 ; SSE41-NEXT:    movaps %xmm1, %xmm0
-; SSE41-NEXT:    blendvps %xmm0, %xmm3, %xmm2
-; SSE41-NEXT:    movaps %xmm2, %xmm3
-; SSE41-NEXT:    maxps %xmm4, %xmm3
+; SSE41-NEXT:    blendvps %xmm0, %xmm3, %xmm5
+; SSE41-NEXT:    movaps %xmm5, %xmm2
+; SSE41-NEXT:    maxps %xmm4, %xmm2
 ; SSE41-NEXT:    cmpunordps %xmm4, %xmm4
 ; SSE41-NEXT:    movaps %xmm4, %xmm0
-; SSE41-NEXT:    blendvps %xmm0, %xmm2, %xmm3
-; SSE41-NEXT:    movshdup {{.*#+}} xmm2 = xmm3[1,1,3,3]
+; SSE41-NEXT:    blendvps %xmm0, %xmm5, %xmm2
+; SSE41-NEXT:    movshdup {{.*#+}} xmm1 = xmm2[1,1,3,3]
+; SSE41-NEXT:    movaps %xmm1, %xmm3
+; SSE41-NEXT:    maxss %xmm2, %xmm3
+; SSE41-NEXT:    movaps %xmm2, %xmm0
+; SSE41-NEXT:    cmpunordss %xmm2, %xmm0
+; SSE41-NEXT:    blendvps %xmm0, %xmm1, %xmm3
 ; SSE41-NEXT:    movaps %xmm2, %xmm1
-; SSE41-NEXT:    maxss %xmm3, %xmm1
+; SSE41-NEXT:    unpckhpd {{.*#+}} xmm1 = xmm1[1],xmm2[1]
+; SSE41-NEXT:    movaps %xmm1, %xmm4
+; SSE41-NEXT:    maxss %xmm3, %xmm4
 ; SSE41-NEXT:    movaps %xmm3, %xmm0
 ; SSE41-NEXT:    cmpunordss %xmm3, %xmm0
+; SSE41-NEXT:    blendvps %xmm0, %xmm1, %xmm4
+; SSE41-NEXT:    shufps {{.*#+}} xmm2 = xmm2[3,3,3,3]
+; SSE41-NEXT:    movaps %xmm2, %xmm1
+; SSE41-NEXT:    maxss %xmm4, %xmm1
+; SSE41-NEXT:    movaps %xmm4, %xmm0
+; SSE41-NEXT:    cmpunordss %xmm4, %xmm0
 ; SSE41-NEXT:    blendvps %xmm0, %xmm2, %xmm1
-; SSE41-NEXT:    movaps %xmm3, %xmm4
-; SSE41-NEXT:    unpckhpd {{.*#+}} xmm4 = xmm4[1],xmm3[1]
-; SSE41-NEXT:    movaps %xmm4, %xmm2
-; SSE41-NEXT:    maxss %xmm1, %xmm2
-; SSE41-NEXT:    cmpunordss %xmm1, %xmm1
-; SSE41-NEXT:    movaps %xmm1, %xmm0
-; SSE41-NEXT:    blendvps %xmm0, %xmm4, %xmm2
-; SSE41-NEXT:    shufps {{.*#+}} xmm3 = xmm3[3,3,3,3]
-; SSE41-NEXT:    movaps %xmm3, %xmm1
-; SSE41-NEXT:    maxss %xmm2, %xmm1
-; SSE41-NEXT:    cmpunordss %xmm2, %xmm2
-; SSE41-NEXT:    movaps %xmm2, %xmm0
-; SSE41-NEXT:    blendvps %xmm0, %xmm3, %xmm1
 ; SSE41-NEXT:    movaps %xmm1, %xmm0
 ; SSE41-NEXT:    retq
 ;
@@ -648,12 +651,12 @@ define double @test_v2f64(<2 x double> %a0) {
 ; SSE2:       # %bb.0:
 ; SSE2-NEXT:    movapd %xmm0, %xmm2
 ; SSE2-NEXT:    unpckhpd {{.*#+}} xmm2 = xmm2[1],xmm0[1]
-; SSE2-NEXT:    movapd %xmm0, %xmm1
-; SSE2-NEXT:    cmpunordsd %xmm0, %xmm1
-; SSE2-NEXT:    movapd %xmm1, %xmm3
-; SSE2-NEXT:    andpd %xmm2, %xmm3
+; SSE2-NEXT:    movapd %xmm0, %xmm3
+; SSE2-NEXT:    cmpunordsd %xmm0, %xmm3
+; SSE2-NEXT:    movapd %xmm3, %xmm1
+; SSE2-NEXT:    andpd %xmm2, %xmm1
 ; SSE2-NEXT:    maxsd %xmm0, %xmm2
-; SSE2-NEXT:    andnpd %xmm2, %xmm1
+; SSE2-NEXT:    andnpd %xmm2, %xmm3
 ; SSE2-NEXT:    orpd %xmm3, %xmm1
 ; SSE2-NEXT:    movapd %xmm1, %xmm0
 ; SSE2-NEXT:    retq
@@ -696,17 +699,17 @@ define double @test_v4f64(<4 x double> %a0) {
 ; SSE2-NEXT:    maxpd %xmm0, %xmm2
 ; SSE2-NEXT:    cmpunordpd %xmm0, %xmm0
 ; SSE2-NEXT:    andpd %xmm0, %xmm1
-; SSE2-NEXT:    andnpd %xmm2, %xmm0
-; SSE2-NEXT:    orpd %xmm1, %xmm0
-; SSE2-NEXT:    pshufd {{.*#+}} xmm2 = xmm0[2,3,2,3]
-; SSE2-NEXT:    movapd %xmm0, %xmm1
-; SSE2-NEXT:    cmpunordsd %xmm0, %xmm1
-; SSE2-NEXT:    movapd %xmm1, %xmm3
-; SSE2-NEXT:    andpd %xmm2, %xmm3
-; SSE2-NEXT:    maxsd %xmm0, %xmm2
-; SSE2-NEXT:    andnpd %xmm2, %xmm1
-; SSE2-NEXT:    orpd %xmm3, %xmm1
-; SSE2-NEXT:    movapd %xmm1, %xmm0
+; SSE2-NEXT:    movapd %xmm0, %xmm3
+; SSE2-NEXT:    andnpd %xmm2, %xmm3
+; SSE2-NEXT:    orpd %xmm1, %xmm3
+; SSE2-NEXT:    pshufd {{.*#+}} xmm1 = xmm3[2,3,2,3]
+; SSE2-NEXT:    movapd %xmm3, %xmm2
+; SSE2-NEXT:    cmpunordsd %xmm3, %xmm2
+; SSE2-NEXT:    movapd %xmm2, %xmm0
+; SSE2-NEXT:    andpd %xmm1, %xmm0
+; SSE2-NEXT:    maxsd %xmm3, %xmm1
+; SSE2-NEXT:    andnpd %xmm1, %xmm2
+; SSE2-NEXT:    orpd %xmm2, %xmm0
 ; SSE2-NEXT:    retq
 ;
 ; SSE41-LABEL: test_v4f64:
@@ -781,17 +784,17 @@ define double @test_v8f64(<8 x double> %a0) {
 ; SSE2-NEXT:    maxpd %xmm0, %xmm2
 ; SSE2-NEXT:    cmpunordpd %xmm0, %xmm0
 ; SSE2-NEXT:    andpd %xmm0, %xmm1
-; SSE2-NEXT:    andnpd %xmm2, %xmm0
-; SSE2-NEXT:    orpd %xmm1, %xmm0
-; SSE2-NEXT:    pshufd {{.*#+}} xmm2 = xmm0[2,3,2,3]
-; SSE2-NEXT:    movapd %xmm0, %xmm1
-; SSE2-NEXT:    cmpunordsd %xmm0, %xmm1
-; SSE2-NEXT:    movapd %xmm1, %xmm3
-; SSE2-NEXT:    andpd %xmm2, %xmm3
-; SSE2-NEXT:    maxsd %xmm0, %xmm2
-; SSE2-NEXT:    andnpd %xmm2, %xmm1
-; SSE2-NEXT:    orpd %xmm3, %xmm1
-; SSE2-NEXT:    movapd %xmm1, %xmm0
+; SSE2-NEXT:    movapd %xmm0, %xmm3
+; SSE2-NEXT:    andnpd %xmm2, %xmm3
+; SSE2-NEXT:    orpd %xmm1, %xmm3
+; SSE2-NEXT:    pshufd {{.*#+}} xmm1 = xmm3[2,3,2,3]
+; SSE2-NEXT:    movapd %xmm3, %xmm2
+; SSE2-NEXT:    cmpunordsd %xmm3, %xmm2
+; SSE2-NEXT:    movapd %xmm2, %xmm0
+; SSE2-NEXT:    andpd %xmm1, %xmm0
+; SSE2-NEXT:    maxsd %xmm3, %xmm1
+; SSE2-NEXT:    andnpd %xmm1, %xmm2
+; SSE2-NEXT:    orpd %xmm2, %xmm0
 ; SSE2-NEXT:    retq
 ;
 ; SSE41-LABEL: test_v8f64:
@@ -952,17 +955,17 @@ define double @test_v16f64(<16 x double> %a0) {
 ; SSE2-NEXT:    maxpd %xmm0, %xmm2
 ; SSE2-NEXT:    cmpunordpd %xmm0, %xmm0
 ; SSE2-NEXT:    andpd %xmm0, %xmm1
-; SSE2-NEXT:    andnpd %xmm2, %xmm0
-; SSE2-NEXT:    orpd %xmm1, %xmm0
-; SSE2-NEXT:    pshufd {{.*#+}} xmm2 = xmm0[2,3,2,3]
-; SSE2-NEXT:    movapd %xmm0, %xmm1
-; SSE2-NEXT:    cmpunordsd %xmm0, %xmm1
-; SSE2-NEXT:    movapd %xmm1, %xmm3
-; SSE2-NEXT:    andpd %xmm2, %xmm3
-; SSE2-NEXT:    maxsd %xmm0, %xmm2
-; SSE2-NEXT:    andnpd %xmm2, %xmm1
-; SSE2-NEXT:    orpd %xmm3, %xmm1
-; SSE2-NEXT:    movapd %xmm1, %xmm0
+; SSE2-NEXT:    movapd %xmm0, %xmm3
+; SSE2-NEXT:    andnpd %xmm2, %xmm3
+; SSE2-NEXT:    orpd %xmm1, %xmm3
+; SSE2-NEXT:    pshufd {{.*#+}} xmm1 = xmm3[2,3,2,3]
+; SSE2-NEXT:    movapd %xmm3, %xmm2
+; SSE2-NEXT:    cmpunordsd %xmm3, %xmm2
+; SSE2-NEXT:    movapd %xmm2, %xmm0
+; SSE2-NEXT:    andpd %xmm1, %xmm0
+; SSE2-NEXT:    maxsd %xmm3, %xmm1
+; SSE2-NEXT:    andnpd %xmm1, %xmm2
+; SSE2-NEXT:    orpd %xmm2, %xmm0
 ; SSE2-NEXT:    retq
 ;
 ; SSE41-LABEL: test_v16f64:
@@ -1041,30 +1044,30 @@ define double @test_v16f64(<16 x double> %a0) {
 ; AVX512:       # %bb.0:
 ; AVX512-NEXT:    vmaxpd %zmm0, %zmm1, %zmm2
 ; AVX512-NEXT:    vcmpunordpd %zmm0, %zmm0, %k1
-; AVX512-NEXT:    vmovapd %zmm1, %zmm2 {%k1}
-; AVX512-NEXT:    vshufpd {{.*#+}} xmm0 = xmm2[1,0]
-; AVX512-NEXT:    vmaxsd %xmm2, %xmm0, %xmm1
+; AVX512-NEXT:    vblendmpd %zmm1, %zmm2, %zmm0 {%k1}
+; AVX512-NEXT:    vshufpd {{.*#+}} xmm1 = xmm0[1,0]
+; AVX512-NEXT:    vmaxsd %xmm0, %xmm1, %xmm2
+; AVX512-NEXT:    vcmpunordsd %xmm0, %xmm0, %k1
+; AVX512-NEXT:    vmovsd %xmm1, %xmm2, %xmm2 {%k1}
 ; AVX512-NEXT:    vcmpunordsd %xmm2, %xmm2, %k1
-; AVX512-NEXT:    vmovsd %xmm0, %xmm1, %xmm1 {%k1}
-; AVX512-NEXT:    vcmpunordsd %xmm1, %xmm1, %k1
-; AVX512-NEXT:    vextractf128 $1, %ymm2, %xmm0
-; AVX512-NEXT:    vmaxsd %xmm1, %xmm0, %xmm1
-; AVX512-NEXT:    vmovsd %xmm0, %xmm1, %xmm1 {%k1}
-; AVX512-NEXT:    vcmpunordsd %xmm1, %xmm1, %k1
-; AVX512-NEXT:    vshufpd {{.*#+}} xmm0 = xmm0[1,0]
-; AVX512-NEXT:    vmaxsd %xmm1, %xmm0, %xmm1
-; AVX512-NEXT:    vmovsd %xmm0, %xmm1, %xmm1 {%k1}
-; AVX512-NEXT:    vcmpunordsd %xmm1, %xmm1, %k1
-; AVX512-NEXT:    vextractf32x4 $2, %zmm2, %xmm0
-; AVX512-NEXT:    vmaxsd %xmm1, %xmm0, %xmm1
-; AVX512-NEXT:    vmovsd %xmm0, %xmm1, %xmm1 {%k1}
-; AVX512-NEXT:    vcmpunordsd %xmm1, %xmm1, %k1
-; AVX512-NEXT:    vshufpd {{.*#+}} xmm0 = xmm0[1,0]
-; AVX512-NEXT:    vmaxsd %xmm1, %xmm0, %xmm1
-; AVX512-NEXT:    vmovsd %xmm0, %xmm1, %xmm1 {%k1}
-; AVX512-NEXT:    vcmpunordsd %xmm1, %xmm1, %k1
-; AVX512-NEXT:    vextractf32x4 $3, %zmm2, %xmm0
-; AVX512-NEXT:    vmaxsd %xmm1, %xmm0, %xmm1
+; AVX512-NEXT:    vextractf128 $1, %ymm0, %xmm1
+; AVX512-NEXT:    vmaxsd %xmm2, %xmm1, %xmm2
+; AVX512-NEXT:    vmovsd %xmm1, %xmm2, %xmm2 {%k1}
+; AVX512-NEXT:    vcmpunordsd %xmm2, %xmm2, %k1
+; AVX512-NEXT:    vshufpd {{.*#+}} xmm1 = xmm1[1,0]
+; AVX512-NEXT:    vmaxsd %xmm2, %xmm1, %xmm2
+; AVX512-NEXT:    vmovsd %xmm1, %xmm2, %xmm2 {%k1}
+; AVX512-NEXT:    vcmpunordsd %xmm2, %xmm2, %k1
+; AVX512-NEXT:    vextractf32x4 $2, %zmm0, %xmm1
+; AVX512-NEXT:    vmaxsd %xmm2, %xmm1, %xmm2
+; AVX512-NEXT:    vmovsd %xmm1, %xmm2, %xmm2 {%k1}
+; AVX512-NEXT:    vcmpunordsd %xmm2, %xmm2, %k1
+; AVX512-NEXT:    vshufpd {{.*#+}} xmm1 = xmm1[1,0]
+; AVX512-NEXT:    vmaxsd %xmm2, %xmm1, %xmm2
+; AVX512-NEXT:    vmovsd %xmm1, %xmm2, %xmm2 {%k1}
+; AVX512-NEXT:    vcmpunordsd %xmm2, %xmm2, %k1
+; AVX512-NEXT:    vextractf32x4 $3, %zmm0, %xmm0
+; AVX512-NEXT:    vmaxsd %xmm2, %xmm0, %xmm1
 ; AVX512-NEXT:    vmovsd %xmm0, %xmm1, %xmm1 {%k1}
 ; AVX512-NEXT:    vcmpunordsd %xmm1, %xmm1, %k1
 ; AVX512-NEXT:    vshufpd {{.*#+}} xmm2 = xmm0[1,0]

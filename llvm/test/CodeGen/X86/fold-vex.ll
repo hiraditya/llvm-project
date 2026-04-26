@@ -23,7 +23,8 @@ define <4 x i32> @test1(ptr %p0, <4 x i32> %in1) nounwind {
 ; SSE-LABEL: test1:
 ; SSE:       # %bb.0:
 ; SSE-NEXT:    movups (%rdi), %xmm1
-; SSE-NEXT:    andps %xmm1, %xmm0
+; SSE-NEXT:    andps %xmm0, %xmm1
+; SSE-NEXT:    movaps %xmm1, %xmm0
 ; SSE-NEXT:    retq
   %in0 = load <4 x i32>, ptr %p0, align 2
   %a = and <4 x i32> %in0, %in1

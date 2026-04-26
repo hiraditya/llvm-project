@@ -77,8 +77,9 @@ define void @store_i64_from_vector256(<16 x i16> %x, <16 x i16> %y, ptr %i) noun
 ; X86-NEXT:    andl $-16, %esp
 ; X86-NEXT:    subl $16, %esp
 ; X86-NEXT:    movl 24(%ebp), %eax
-; X86-NEXT:    paddw 8(%ebp), %xmm1
-; X86-NEXT:    movq %xmm1, (%eax)
+; X86-NEXT:    movdqa 8(%ebp), %xmm0
+; X86-NEXT:    paddw %xmm1, %xmm0
+; X86-NEXT:    movq %xmm0, (%eax)
 ; X86-NEXT:    movl %ebp, %esp
 ; X86-NEXT:    popl %ebp
 ; X86-NEXT:    retl

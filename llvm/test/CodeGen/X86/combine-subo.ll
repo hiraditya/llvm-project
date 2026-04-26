@@ -139,7 +139,8 @@ define <4 x i32> @combine_vec_usub_negone(<4 x i32> %a0, <4 x i32> %a1) {
 ; SSE-LABEL: combine_vec_usub_negone:
 ; SSE:       # %bb.0:
 ; SSE-NEXT:    pcmpeqd %xmm1, %xmm1
-; SSE-NEXT:    pxor %xmm1, %xmm0
+; SSE-NEXT:    pxor %xmm0, %xmm1
+; SSE-NEXT:    movdqa %xmm1, %xmm0
 ; SSE-NEXT:    retq
 ;
 ; AVX-LABEL: combine_vec_usub_negone:

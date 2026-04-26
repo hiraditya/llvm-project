@@ -18,9 +18,10 @@
 define void @test(double %vec.coerce) local_unnamed_addr {
 ; CHECK-LABEL: test:
 ; CHECK:       # %bb.0: # %entry
-; CHECK-NEXT:    pand {{\.?LCPI[0-9]+_[0-9]+}}(%rip), %xmm0
-; CHECK-NEXT:    packuswb %xmm0, %xmm0
-; CHECK-NEXT:    movd %xmm0, %eax
+; CHECK-NEXT:    movdqa {{.*#+}} xmm1 = [255,255,255,255,255,255,255,255]
+; CHECK-NEXT:    pand %xmm0, %xmm1
+; CHECK-NEXT:    packuswb %xmm1, %xmm1
+; CHECK-NEXT:    movd %xmm1, %eax
 ; CHECK-NEXT:    movw %ax, -{{[0-9]+}}(%rsp)
 ; CHECK-NEXT:    retq
 entry:

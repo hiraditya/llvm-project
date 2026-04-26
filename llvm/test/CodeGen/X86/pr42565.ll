@@ -13,8 +13,8 @@ define void @HUF_writeCTable_wksp()  {
 ; CHECK-NEXT:    leal 1(%rcx), %edx
 ; CHECK-NEXT:    movb %dl, (%rax)
 ; CHECK-NEXT:    movb %cl, (%rax)
-; CHECK-NEXT:    leaq 2(%rax), %rax
-; CHECK-NEXT:    addb $-2, %cl
+; CHECK-NEXT:    addq $2, %rax
+; CHECK-NEXT:    addl $-2, %ecx
 ; CHECK-NEXT:    jmp .LBB0_1
 entry:
   br label %for.body

@@ -88,9 +88,8 @@ define double @main(i224 %0) #0 {
 ; CHECK-NEXT:  .LBB0_3: # %itofp-if-then4
 ; CHECK-NEXT:    movl %r11d, %r8d
 ; CHECK-NEXT:    subl $55, %r8d
-; CHECK-NEXT:    jne .LBB0_5
-; CHECK-NEXT:  # %bb.11:
-; CHECK-NEXT:    jmp .LBB0_6
+; CHECK-NEXT:    je .LBB0_6
+; CHECK-NEXT:    jmp .LBB0_5
 ; CHECK-NEXT:  .LBB0_4: # %itofp-sw-bb
 ; CHECK-NEXT:    movq %rsi, %rax
 ; CHECK-NEXT:    shldq $1, %rdi, %rax

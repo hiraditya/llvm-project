@@ -8,28 +8,28 @@ define i64 @test_double_to_ui64(double %x) {
 ; SDAG-X64-LABEL: test_double_to_ui64:
 ; SDAG-X64:       # %bb.0: # %entry
 ; SDAG-X64-NEXT:    cvttsd2si %xmm0, %rcx
-; SDAG-X64-NEXT:    movq %rcx, %rdx
-; SDAG-X64-NEXT:    sarq $63, %rdx
+; SDAG-X64-NEXT:    movq %rcx, %rax
+; SDAG-X64-NEXT:    sarq $63, %rax
 ; SDAG-X64-NEXT:    subsd {{\.?LCPI[0-9]+_[0-9]+}}(%rip), %xmm0
-; SDAG-X64-NEXT:    cvttsd2si %xmm0, %rax
+; SDAG-X64-NEXT:    cvttsd2si %xmm0, %rdx
 ; SDAG-X64-NEXT:    andq %rdx, %rax
 ; SDAG-X64-NEXT:    orq %rcx, %rax
 ; SDAG-X64-NEXT:    retq
 ;
 ; GISEL-X64-LABEL: test_double_to_ui64:
 ; GISEL-X64:       # %bb.0: # %entry
-; GISEL-X64-NEXT:    cvttsd2si %xmm0, %rcx
+; GISEL-X64-NEXT:    cvttsd2si %xmm0, %rax
 ; GISEL-X64-NEXT:    movsd {{.*#+}} xmm1 = [9.2233720368547758E+18,0.0E+0]
 ; GISEL-X64-NEXT:    movapd %xmm0, %xmm2
 ; GISEL-X64-NEXT:    subsd %xmm1, %xmm2
-; GISEL-X64-NEXT:    cvttsd2si %xmm2, %rdx
-; GISEL-X64-NEXT:    movabsq $-9223372036854775808, %rax # imm = 0x8000000000000000
-; GISEL-X64-NEXT:    xorq %rdx, %rax
+; GISEL-X64-NEXT:    cvttsd2si %xmm2, %rcx
+; GISEL-X64-NEXT:    movabsq $-9223372036854775808, %rdx # imm = 0x8000000000000000
+; GISEL-X64-NEXT:    xorq %rdx, %rcx
 ; GISEL-X64-NEXT:    xorl %edx, %edx
 ; GISEL-X64-NEXT:    ucomisd %xmm1, %xmm0
 ; GISEL-X64-NEXT:    setb %dl
 ; GISEL-X64-NEXT:    andl $1, %edx
-; GISEL-X64-NEXT:    cmovneq %rcx, %rax
+; GISEL-X64-NEXT:    cmoveq %rcx, %rax
 ; GISEL-X64-NEXT:    retq
 ;
 ; AVX512-LABEL: test_double_to_ui64:
@@ -107,28 +107,28 @@ define i64 @test_float_to_ui64(float %x) {
 ; SDAG-X64-LABEL: test_float_to_ui64:
 ; SDAG-X64:       # %bb.0: # %entry
 ; SDAG-X64-NEXT:    cvttss2si %xmm0, %rcx
-; SDAG-X64-NEXT:    movq %rcx, %rdx
-; SDAG-X64-NEXT:    sarq $63, %rdx
+; SDAG-X64-NEXT:    movq %rcx, %rax
+; SDAG-X64-NEXT:    sarq $63, %rax
 ; SDAG-X64-NEXT:    subss {{\.?LCPI[0-9]+_[0-9]+}}(%rip), %xmm0
-; SDAG-X64-NEXT:    cvttss2si %xmm0, %rax
+; SDAG-X64-NEXT:    cvttss2si %xmm0, %rdx
 ; SDAG-X64-NEXT:    andq %rdx, %rax
 ; SDAG-X64-NEXT:    orq %rcx, %rax
 ; SDAG-X64-NEXT:    retq
 ;
 ; GISEL-X64-LABEL: test_float_to_ui64:
 ; GISEL-X64:       # %bb.0: # %entry
-; GISEL-X64-NEXT:    cvttss2si %xmm0, %rcx
+; GISEL-X64-NEXT:    cvttss2si %xmm0, %rax
 ; GISEL-X64-NEXT:    movss {{.*#+}} xmm1 = [9.22337203E+18,0.0E+0,0.0E+0,0.0E+0]
 ; GISEL-X64-NEXT:    movaps %xmm0, %xmm2
 ; GISEL-X64-NEXT:    subss %xmm1, %xmm2
-; GISEL-X64-NEXT:    cvttss2si %xmm2, %rdx
-; GISEL-X64-NEXT:    movabsq $-9223372036854775808, %rax # imm = 0x8000000000000000
-; GISEL-X64-NEXT:    xorq %rdx, %rax
+; GISEL-X64-NEXT:    cvttss2si %xmm2, %rcx
+; GISEL-X64-NEXT:    movabsq $-9223372036854775808, %rdx # imm = 0x8000000000000000
+; GISEL-X64-NEXT:    xorq %rdx, %rcx
 ; GISEL-X64-NEXT:    xorl %edx, %edx
 ; GISEL-X64-NEXT:    ucomiss %xmm1, %xmm0
 ; GISEL-X64-NEXT:    setb %dl
 ; GISEL-X64-NEXT:    andl $1, %edx
-; GISEL-X64-NEXT:    cmovneq %rcx, %rax
+; GISEL-X64-NEXT:    cmoveq %rcx, %rax
 ; GISEL-X64-NEXT:    retq
 ;
 ; AVX512-LABEL: test_float_to_ui64:

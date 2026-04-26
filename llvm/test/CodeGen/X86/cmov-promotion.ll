@@ -6,9 +6,9 @@ define i16 @cmov_zpromotion_8_to_16(i1 %c) {
 ; CMOV-LABEL: cmov_zpromotion_8_to_16:
 ; CMOV:       # %bb.0:
 ; CMOV-NEXT:    testb $1, %dil
-; CMOV-NEXT:    movl $117, %ecx
-; CMOV-NEXT:    movl $237, %eax
-; CMOV-NEXT:    cmovnel %ecx, %eax
+; CMOV-NEXT:    movl $117, %eax
+; CMOV-NEXT:    movl $237, %ecx
+; CMOV-NEXT:    cmovel %ecx, %eax
 ; CMOV-NEXT:    # kill: def $ax killed $ax killed $eax
 ; CMOV-NEXT:    retq
 ;
@@ -30,9 +30,9 @@ define i32 @cmov_zpromotion_8_to_32(i1 %c) {
 ; CMOV-LABEL: cmov_zpromotion_8_to_32:
 ; CMOV:       # %bb.0:
 ; CMOV-NEXT:    testb $1, %dil
-; CMOV-NEXT:    movl $126, %ecx
-; CMOV-NEXT:    movl $255, %eax
-; CMOV-NEXT:    cmovnel %ecx, %eax
+; CMOV-NEXT:    movl $126, %eax
+; CMOV-NEXT:    movl $255, %ecx
+; CMOV-NEXT:    cmovel %ecx, %eax
 ; CMOV-NEXT:    retq
 ;
 ; NO_CMOV-LABEL: cmov_zpromotion_8_to_32:
@@ -52,9 +52,9 @@ define i64 @cmov_zpromotion_8_to_64(i1 %c) {
 ; CMOV-LABEL: cmov_zpromotion_8_to_64:
 ; CMOV:       # %bb.0:
 ; CMOV-NEXT:    testb $1, %dil
-; CMOV-NEXT:    movl $126, %ecx
-; CMOV-NEXT:    movl $255, %eax
-; CMOV-NEXT:    cmovneq %rcx, %rax
+; CMOV-NEXT:    movl $126, %eax
+; CMOV-NEXT:    movl $255, %ecx
+; CMOV-NEXT:    cmoveq %rcx, %rax
 ; CMOV-NEXT:    retq
 ;
 ; NO_CMOV-LABEL: cmov_zpromotion_8_to_64:
@@ -75,9 +75,9 @@ define i32 @cmov_zpromotion_16_to_32(i1 %c) {
 ; CMOV-LABEL: cmov_zpromotion_16_to_32:
 ; CMOV:       # %bb.0:
 ; CMOV-NEXT:    testb $1, %dil
-; CMOV-NEXT:    movl $12414, %ecx # imm = 0x307E
-; CMOV-NEXT:    movl $65535, %eax # imm = 0xFFFF
-; CMOV-NEXT:    cmovnel %ecx, %eax
+; CMOV-NEXT:    movl $12414, %eax # imm = 0x307E
+; CMOV-NEXT:    movl $65535, %ecx # imm = 0xFFFF
+; CMOV-NEXT:    cmovel %ecx, %eax
 ; CMOV-NEXT:    retq
 ;
 ; NO_CMOV-LABEL: cmov_zpromotion_16_to_32:
@@ -97,9 +97,9 @@ define i64 @cmov_zpromotion_16_to_64(i1 %c) {
 ; CMOV-LABEL: cmov_zpromotion_16_to_64:
 ; CMOV:       # %bb.0:
 ; CMOV-NEXT:    testb $1, %dil
-; CMOV-NEXT:    movl $12414, %ecx # imm = 0x307E
-; CMOV-NEXT:    movl $65535, %eax # imm = 0xFFFF
-; CMOV-NEXT:    cmovneq %rcx, %rax
+; CMOV-NEXT:    movl $12414, %eax # imm = 0x307E
+; CMOV-NEXT:    movl $65535, %ecx # imm = 0xFFFF
+; CMOV-NEXT:    cmoveq %rcx, %rax
 ; CMOV-NEXT:    retq
 ;
 ; NO_CMOV-LABEL: cmov_zpromotion_16_to_64:
@@ -120,9 +120,9 @@ define i64 @cmov_zpromotion_32_to_64(i1 %c) {
 ; CMOV-LABEL: cmov_zpromotion_32_to_64:
 ; CMOV:       # %bb.0:
 ; CMOV-NEXT:    testb $1, %dil
-; CMOV-NEXT:    movl $12414, %ecx # imm = 0x307E
-; CMOV-NEXT:    movl $43107, %eax # imm = 0xA863
-; CMOV-NEXT:    cmovnel %ecx, %eax
+; CMOV-NEXT:    movl $12414, %eax # imm = 0x307E
+; CMOV-NEXT:    movl $43107, %ecx # imm = 0xA863
+; CMOV-NEXT:    cmovel %ecx, %eax
 ; CMOV-NEXT:    retq
 ;
 ; NO_CMOV-LABEL: cmov_zpromotion_32_to_64:
@@ -143,9 +143,9 @@ define i16 @cmov_spromotion_8_to_16(i1 %c) {
 ; CMOV-LABEL: cmov_spromotion_8_to_16:
 ; CMOV:       # %bb.0:
 ; CMOV-NEXT:    testb $1, %dil
-; CMOV-NEXT:    movl $117, %ecx
-; CMOV-NEXT:    movl $65517, %eax # imm = 0xFFED
-; CMOV-NEXT:    cmovnel %ecx, %eax
+; CMOV-NEXT:    movl $117, %eax
+; CMOV-NEXT:    movl $65517, %ecx # imm = 0xFFED
+; CMOV-NEXT:    cmovel %ecx, %eax
 ; CMOV-NEXT:    # kill: def $ax killed $ax killed $eax
 ; CMOV-NEXT:    retq
 ;
@@ -167,9 +167,9 @@ define i32 @cmov_spromotion_8_to_32(i1 %c) {
 ; CMOV-LABEL: cmov_spromotion_8_to_32:
 ; CMOV:       # %bb.0:
 ; CMOV-NEXT:    testb $1, %dil
-; CMOV-NEXT:    movl $126, %ecx
-; CMOV-NEXT:    movl $99, %eax
-; CMOV-NEXT:    cmovnel %ecx, %eax
+; CMOV-NEXT:    movl $126, %eax
+; CMOV-NEXT:    movl $99, %ecx
+; CMOV-NEXT:    cmovel %ecx, %eax
 ; CMOV-NEXT:    retq
 ;
 ; NO_CMOV-LABEL: cmov_spromotion_8_to_32:
@@ -189,9 +189,9 @@ define i64 @cmov_spromotion_8_to_64(i1 %c) {
 ; CMOV-LABEL: cmov_spromotion_8_to_64:
 ; CMOV:       # %bb.0:
 ; CMOV-NEXT:    testb $1, %dil
-; CMOV-NEXT:    movl $126, %ecx
-; CMOV-NEXT:    movl $99, %eax
-; CMOV-NEXT:    cmovneq %rcx, %rax
+; CMOV-NEXT:    movl $126, %eax
+; CMOV-NEXT:    movl $99, %ecx
+; CMOV-NEXT:    cmoveq %rcx, %rax
 ; CMOV-NEXT:    retq
 ;
 ; NO_CMOV-LABEL: cmov_spromotion_8_to_64:
@@ -212,9 +212,9 @@ define i32 @cmov_spromotion_16_to_32(i1 %c) {
 ; CMOV-LABEL: cmov_spromotion_16_to_32:
 ; CMOV:       # %bb.0:
 ; CMOV-NEXT:    testb $1, %dil
-; CMOV-NEXT:    movl $12414, %ecx # imm = 0x307E
-; CMOV-NEXT:    movl $-22429, %eax # imm = 0xA863
-; CMOV-NEXT:    cmovnel %ecx, %eax
+; CMOV-NEXT:    movl $12414, %eax # imm = 0x307E
+; CMOV-NEXT:    movl $-22429, %ecx # imm = 0xA863
+; CMOV-NEXT:    cmovel %ecx, %eax
 ; CMOV-NEXT:    retq
 ;
 ; NO_CMOV-LABEL: cmov_spromotion_16_to_32:
@@ -234,9 +234,9 @@ define i64 @cmov_spromotion_16_to_64(i1 %c) {
 ; CMOV-LABEL: cmov_spromotion_16_to_64:
 ; CMOV:       # %bb.0:
 ; CMOV-NEXT:    testb $1, %dil
-; CMOV-NEXT:    movl $12414, %ecx # imm = 0x307E
-; CMOV-NEXT:    movq $-22429, %rax # imm = 0xA863
-; CMOV-NEXT:    cmovneq %rcx, %rax
+; CMOV-NEXT:    movl $12414, %eax # imm = 0x307E
+; CMOV-NEXT:    movq $-22429, %rcx # imm = 0xA863
+; CMOV-NEXT:    cmoveq %rcx, %rax
 ; CMOV-NEXT:    retq
 ;
 ; NO_CMOV-LABEL: cmov_spromotion_16_to_64:
@@ -257,9 +257,9 @@ define i64 @cmov_spromotion_32_to_64(i1 %c) {
 ; CMOV-LABEL: cmov_spromotion_32_to_64:
 ; CMOV:       # %bb.0:
 ; CMOV-NEXT:    testb $1, %dil
-; CMOV-NEXT:    movl $12414, %ecx # imm = 0x307E
-; CMOV-NEXT:    movl $43107, %eax # imm = 0xA863
-; CMOV-NEXT:    cmovneq %rcx, %rax
+; CMOV-NEXT:    movl $12414, %eax # imm = 0x307E
+; CMOV-NEXT:    movl $43107, %ecx # imm = 0xA863
+; CMOV-NEXT:    cmoveq %rcx, %rax
 ; CMOV-NEXT:    retq
 ;
 ; NO_CMOV-LABEL: cmov_spromotion_32_to_64:

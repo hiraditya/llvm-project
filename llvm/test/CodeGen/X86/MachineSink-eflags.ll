@@ -16,8 +16,9 @@ define void @foo(ptr nocapture %_stubArgs) nounwind {
 ; CHECK:       # %bb.0: # %entry
 ; CHECK-NEXT:    movq 48(%rdi), %rax
 ; CHECK-NEXT:    movl 64(%rdi), %ecx
-; CHECK-NEXT:    movl $200, %esi
-; CHECK-NEXT:    addl 68(%rdi), %esi
+; CHECK-NEXT:    movl $200, %edx
+; CHECK-NEXT:    movl 68(%rdi), %esi
+; CHECK-NEXT:    addl %edx, %esi
 ; CHECK-NEXT:    imull $46, %ecx, %edx
 ; CHECK-NEXT:    addq %rsi, %rdx
 ; CHECK-NEXT:    shlq $4, %rdx

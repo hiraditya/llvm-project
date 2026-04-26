@@ -11,11 +11,12 @@
 define void @test1(i64 %x) nounwind {
 ; ENABLED-LABEL: test1:
 ; ENABLED:       # %bb.0: # %entry
-; ENABLED-NEXT:    shlq $2, %rdi
-; ENABLED-NEXT:    movl arr1(%rdi,%rdi,2), %ecx
-; ENABLED-NEXT:    leaq arr1+4(%rdi,%rdi,2), %rax
-; ENABLED-NEXT:    subl arr1+4(%rdi,%rdi,2), %ecx
-; ENABLED-NEXT:    addl arr1+8(%rdi,%rdi,2), %ecx
+; ENABLED-NEXT:    leaq (,%rdi,4), %rcx
+; ENABLED-NEXT:    movl arr1(%rcx,%rcx,2), %edx
+; ENABLED-NEXT:    leaq arr1+4(%rcx,%rcx,2), %rax
+; ENABLED-NEXT:    subl arr1+4(%rcx,%rcx,2), %edx
+; ENABLED-NEXT:    movl arr1+8(%rcx,%rcx,2), %ecx
+; ENABLED-NEXT:    addl %edx, %ecx
 ; ENABLED-NEXT:    cmpl $2, %ecx
 ; ENABLED-NEXT:    je .LBB0_3
 ; ENABLED-NEXT:  # %bb.1: # %entry
@@ -33,12 +34,13 @@ define void @test1(i64 %x) nounwind {
 ;
 ; DISABLED-LABEL: test1:
 ; DISABLED:       # %bb.0: # %entry
-; DISABLED-NEXT:    shlq $2, %rdi
-; DISABLED-NEXT:    movl arr1(%rdi,%rdi,2), %edx
-; DISABLED-NEXT:    leaq arr1+4(%rdi,%rdi,2), %rax
-; DISABLED-NEXT:    subl arr1+4(%rdi,%rdi,2), %edx
-; DISABLED-NEXT:    leaq arr1+8(%rdi,%rdi,2), %rcx
-; DISABLED-NEXT:    addl arr1+8(%rdi,%rdi,2), %edx
+; DISABLED-NEXT:    leaq (,%rdi,4), %rdx
+; DISABLED-NEXT:    movl arr1(%rdx,%rdx,2), %esi
+; DISABLED-NEXT:    leaq arr1+4(%rdx,%rdx,2), %rax
+; DISABLED-NEXT:    subl arr1+4(%rdx,%rdx,2), %esi
+; DISABLED-NEXT:    leaq arr1+8(%rdx,%rdx,2), %rcx
+; DISABLED-NEXT:    movl arr1+8(%rdx,%rdx,2), %edx
+; DISABLED-NEXT:    addl %esi, %edx
 ; DISABLED-NEXT:    cmpl $2, %edx
 ; DISABLED-NEXT:    je .LBB0_3
 ; DISABLED-NEXT:  # %bb.1: # %entry
@@ -84,11 +86,12 @@ sw.epilog:                                        ; preds = %sw.bb.2, %sw.bb.1, 
 define void @test2(i64 %x) nounwind optsize {
 ; ENABLED-LABEL: test2:
 ; ENABLED:       # %bb.0: # %entry
-; ENABLED-NEXT:    shlq $2, %rdi
-; ENABLED-NEXT:    leaq arr1+4(%rdi,%rdi,2), %rax
-; ENABLED-NEXT:    movl -4(%rax), %ecx
-; ENABLED-NEXT:    subl (%rax), %ecx
-; ENABLED-NEXT:    addl 4(%rax), %ecx
+; ENABLED-NEXT:    leaq (,%rdi,4), %rax
+; ENABLED-NEXT:    leaq arr1+4(%rax,%rax,2), %rax
+; ENABLED-NEXT:    movl -4(%rax), %edx
+; ENABLED-NEXT:    subl (%rax), %edx
+; ENABLED-NEXT:    movl 4(%rax), %ecx
+; ENABLED-NEXT:    addl %edx, %ecx
 ; ENABLED-NEXT:    cmpl $2, %ecx
 ; ENABLED-NEXT:    je .LBB1_3
 ; ENABLED-NEXT:  # %bb.1: # %entry
@@ -106,12 +109,13 @@ define void @test2(i64 %x) nounwind optsize {
 ;
 ; DISABLED-LABEL: test2:
 ; DISABLED:       # %bb.0: # %entry
-; DISABLED-NEXT:    shlq $2, %rdi
-; DISABLED-NEXT:    movl arr1(%rdi,%rdi,2), %edx
-; DISABLED-NEXT:    leaq arr1+4(%rdi,%rdi,2), %rax
-; DISABLED-NEXT:    subl arr1+4(%rdi,%rdi,2), %edx
-; DISABLED-NEXT:    leaq arr1+8(%rdi,%rdi,2), %rcx
-; DISABLED-NEXT:    addl arr1+8(%rdi,%rdi,2), %edx
+; DISABLED-NEXT:    leaq (,%rdi,4), %rdx
+; DISABLED-NEXT:    movl arr1(%rdx,%rdx,2), %esi
+; DISABLED-NEXT:    leaq arr1+4(%rdx,%rdx,2), %rax
+; DISABLED-NEXT:    subl arr1+4(%rdx,%rdx,2), %esi
+; DISABLED-NEXT:    leaq arr1+8(%rdx,%rdx,2), %rcx
+; DISABLED-NEXT:    movl arr1+8(%rdx,%rdx,2), %edx
+; DISABLED-NEXT:    addl %esi, %edx
 ; DISABLED-NEXT:    cmpl $2, %edx
 ; DISABLED-NEXT:    je .LBB1_3
 ; DISABLED-NEXT:  # %bb.1: # %entry
@@ -165,8 +169,9 @@ define void @test3(i64 %x) nounwind optsize {
 ; ENABLED-NEXT:    shlq $7, %rax
 ; ENABLED-NEXT:    leaq arr2+132(%rax,%rdi,8), %rcx
 ; ENABLED-NEXT:    leaq arr2(%rax,%rdi,8), %rax
-; ENABLED-NEXT:    movl (%rcx), %edx
-; ENABLED-NEXT:    addl (%rax), %edx
+; ENABLED-NEXT:    movl (%rcx), %esi
+; ENABLED-NEXT:    movl (%rax), %edx
+; ENABLED-NEXT:    addl %esi, %edx
 ; ENABLED-NEXT:    cmpl $2, %edx
 ; ENABLED-NEXT:    je .LBB2_3
 ; ENABLED-NEXT:  # %bb.1: # %entry
@@ -184,12 +189,13 @@ define void @test3(i64 %x) nounwind optsize {
 ;
 ; DISABLED-LABEL: test3:
 ; DISABLED:       # %bb.0: # %entry
-; DISABLED-NEXT:    movq %rdi, %rsi
-; DISABLED-NEXT:    shlq $7, %rsi
-; DISABLED-NEXT:    leaq arr2+132(%rsi,%rdi,8), %rcx
-; DISABLED-NEXT:    leaq arr2(%rsi,%rdi,8), %rax
-; DISABLED-NEXT:    movl arr2+132(%rsi,%rdi,8), %edx
-; DISABLED-NEXT:    addl arr2(%rsi,%rdi,8), %edx
+; DISABLED-NEXT:    movq %rdi, %rdx
+; DISABLED-NEXT:    shlq $7, %rdx
+; DISABLED-NEXT:    leaq arr2+132(%rdx,%rdi,8), %rcx
+; DISABLED-NEXT:    leaq arr2(%rdx,%rdi,8), %rax
+; DISABLED-NEXT:    movl arr2+132(%rdx,%rdi,8), %esi
+; DISABLED-NEXT:    movl arr2(%rdx,%rdi,8), %edx
+; DISABLED-NEXT:    addl %esi, %edx
 ; DISABLED-NEXT:    cmpl $2, %edx
 ; DISABLED-NEXT:    je .LBB2_3
 ; DISABLED-NEXT:  # %bb.1: # %entry
@@ -240,9 +246,10 @@ define void @test4(i64 %x) nounwind minsize {
 ; ENABLED:       # %bb.0: # %entry
 ; ENABLED-NEXT:    imulq $12, %rdi, %rax
 ; ENABLED-NEXT:    leaq arr1+4(%rax), %rax
-; ENABLED-NEXT:    movl -4(%rax), %ecx
-; ENABLED-NEXT:    subl (%rax), %ecx
-; ENABLED-NEXT:    addl 4(%rax), %ecx
+; ENABLED-NEXT:    movl -4(%rax), %edx
+; ENABLED-NEXT:    subl (%rax), %edx
+; ENABLED-NEXT:    movl 4(%rax), %ecx
+; ENABLED-NEXT:    addl %edx, %ecx
 ; ENABLED-NEXT:    cmpl $2, %ecx
 ; ENABLED-NEXT:    je .LBB3_3
 ; ENABLED-NEXT:  # %bb.1: # %entry
@@ -260,12 +267,13 @@ define void @test4(i64 %x) nounwind minsize {
 ;
 ; DISABLED-LABEL: test4:
 ; DISABLED:       # %bb.0: # %entry
-; DISABLED-NEXT:    imulq $12, %rdi, %rsi
-; DISABLED-NEXT:    movl arr1(%rsi), %edx
-; DISABLED-NEXT:    leaq arr1+4(%rsi), %rax
-; DISABLED-NEXT:    subl arr1+4(%rsi), %edx
-; DISABLED-NEXT:    leaq arr1+8(%rsi), %rcx
-; DISABLED-NEXT:    addl arr1+8(%rsi), %edx
+; DISABLED-NEXT:    imulq $12, %rdi, %rdx
+; DISABLED-NEXT:    movl arr1(%rdx), %esi
+; DISABLED-NEXT:    leaq arr1+4(%rdx), %rax
+; DISABLED-NEXT:    subl arr1+4(%rdx), %esi
+; DISABLED-NEXT:    leaq arr1+8(%rdx), %rcx
+; DISABLED-NEXT:    movl arr1+8(%rdx), %edx
+; DISABLED-NEXT:    addl %esi, %edx
 ; DISABLED-NEXT:    cmpl $2, %edx
 ; DISABLED-NEXT:    je .LBB3_3
 ; DISABLED-NEXT:  # %bb.1: # %entry
@@ -311,8 +319,9 @@ sw.epilog:                                        ; preds = %sw.bb.2, %sw.bb.1, 
 define  i32 @test5(i32 %x, i32 %y)  #0 {
 ; CHECK-LABEL: test5:
 ; CHECK:       # %bb.0: # %entry
+; CHECK-NEXT:    # kill: def $esi killed $esi def $rsi
 ; CHECK-NEXT:    movl %edi, %eax
-; CHECK-NEXT:    addl %esi, %esi
+; CHECK-NEXT:    subl %esi, %eax
 ; CHECK-NEXT:    subl %esi, %eax
 ; CHECK-NEXT:    retq
 entry:
@@ -338,9 +347,10 @@ entry:
 define  i32 @test7(i32 %x, i32 %y)  #0 {
 ; CHECK-LABEL: test7:
 ; CHECK:       # %bb.0: # %entry
+; CHECK-NEXT:    # kill: def $esi killed $esi def $rsi
 ; CHECK-NEXT:    movl %edi, %eax
-; CHECK-NEXT:    shll $2, %esi
-; CHECK-NEXT:    subl %esi, %eax
+; CHECK-NEXT:    leal (,%rsi,4), %ecx
+; CHECK-NEXT:    subl %ecx, %eax
 ; CHECK-NEXT:    retq
 entry:
   %mul = mul nsw i32 %y, -4
@@ -365,8 +375,9 @@ entry:
 define  i32 @test9(i32 %x, i32 %y) #0 {
 ; CHECK-LABEL: test9:
 ; CHECK:       # %bb.0: # %entry
+; CHECK-NEXT:    # kill: def $esi killed $esi def $rsi
 ; CHECK-NEXT:    movl %edi, %eax
-; CHECK-NEXT:    addl %esi, %esi
+; CHECK-NEXT:    subl %esi, %eax
 ; CHECK-NEXT:    subl %esi, %eax
 ; CHECK-NEXT:    retq
 entry:
@@ -392,9 +403,10 @@ entry:
 define  i32 @test11(i32 %x, i32 %y) #0 {
 ; CHECK-LABEL: test11:
 ; CHECK:       # %bb.0: # %entry
+; CHECK-NEXT:    # kill: def $esi killed $esi def $rsi
 ; CHECK-NEXT:    movl %edi, %eax
-; CHECK-NEXT:    shll $2, %esi
-; CHECK-NEXT:    subl %esi, %eax
+; CHECK-NEXT:    leal (,%rsi,4), %ecx
+; CHECK-NEXT:    subl %ecx, %eax
 ; CHECK-NEXT:    retq
 entry:
   %mul = mul nsw i32 -4, %y
@@ -419,8 +431,8 @@ define  i64 @test13(i64 %x, i64 %y) #0 {
 ; CHECK-LABEL: test13:
 ; CHECK:       # %bb.0: # %entry
 ; CHECK-NEXT:    movq %rdi, %rax
-; CHECK-NEXT:    shlq $2, %rsi
-; CHECK-NEXT:    subq %rsi, %rax
+; CHECK-NEXT:    leaq (,%rsi,4), %rcx
+; CHECK-NEXT:    subq %rcx, %rax
 ; CHECK-NEXT:    retq
 entry:
   %mul = mul nsw i64 -4, %y
@@ -444,9 +456,10 @@ entry:
 define  zeroext i16 @test15(i16 zeroext %x, i16 zeroext %y) #0 {
 ; CHECK-LABEL: test15:
 ; CHECK:       # %bb.0: # %entry
+; CHECK-NEXT:    # kill: def $esi killed $esi def $rsi
 ; CHECK-NEXT:    movl %edi, %eax
-; CHECK-NEXT:    shll $3, %esi
-; CHECK-NEXT:    subl %esi, %eax
+; CHECK-NEXT:    leal (,%rsi,8), %ecx
+; CHECK-NEXT:    subl %ecx, %eax
 ; CHECK-NEXT:    # kill: def $ax killed $ax killed $eax
 ; CHECK-NEXT:    retq
 entry:

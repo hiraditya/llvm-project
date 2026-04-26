@@ -247,13 +247,14 @@ define void @test_18446744073709551615(ptr, ptr) {
 define i1 @illegal_type(i17 %x, ptr %p) {
 ; CHECK-LABEL: illegal_type:
 ; CHECK:       # %bb.0:
-; CHECK-NEXT:    addl $29, %edi
-; CHECK-NEXT:    movw %di, (%rsi)
-; CHECK-NEXT:    andl $131071, %edi # imm = 0x1FFFF
-; CHECK-NEXT:    movl %edi, %eax
-; CHECK-NEXT:    shrl $16, %eax
-; CHECK-NEXT:    movb %al, 2(%rsi)
-; CHECK-NEXT:    cmpl $29, %edi
+; CHECK-NEXT:    # kill: def $edi killed $edi def $rdi
+; CHECK-NEXT:    leal 29(%rdi), %eax
+; CHECK-NEXT:    movw %ax, (%rsi)
+; CHECK-NEXT:    andl $131071, %eax # imm = 0x1FFFF
+; CHECK-NEXT:    movl %eax, %ecx
+; CHECK-NEXT:    shrl $16, %ecx
+; CHECK-NEXT:    movb %cl, 2(%rsi)
+; CHECK-NEXT:    cmpl $29, %eax
 ; CHECK-NEXT:    setb %al
 ; CHECK-NEXT:    retq
   %a = add i17 %x, 29

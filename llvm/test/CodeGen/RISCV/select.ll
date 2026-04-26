@@ -2539,9 +2539,9 @@ define i32 @select_cst_diff2(i1 zeroext %cond) {
 ;
 ; RV32IXQCI-LABEL: select_cst_diff2:
 ; RV32IXQCI:       # %bb.0:
-; RV32IXQCI-NEXT:    li a2, 120
-; RV32IXQCI-NEXT:    li a1, 122
-; RV32IXQCI-NEXT:    qc.mvnei a1, a0, 0, a2
+; RV32IXQCI-NEXT:    li a1, 120
+; RV32IXQCI-NEXT:    li a2, 122
+; RV32IXQCI-NEXT:    qc.mveqi a1, a0, 0, a2
 ; RV32IXQCI-NEXT:    mv a0, a1
 ; RV32IXQCI-NEXT:    ret
   %ret = select i1 %cond, i32 120, i32 122
@@ -2589,9 +2589,9 @@ define i32 @select_cst_diff2_invert(i1 zeroext %cond) {
 ;
 ; RV32IXQCI-LABEL: select_cst_diff2_invert:
 ; RV32IXQCI:       # %bb.0:
-; RV32IXQCI-NEXT:    li a2, 122
-; RV32IXQCI-NEXT:    li a1, 120
-; RV32IXQCI-NEXT:    qc.mvnei a1, a0, 0, a2
+; RV32IXQCI-NEXT:    li a1, 122
+; RV32IXQCI-NEXT:    li a2, 120
+; RV32IXQCI-NEXT:    qc.mveqi a1, a0, 0, a2
 ; RV32IXQCI-NEXT:    mv a0, a1
 ; RV32IXQCI-NEXT:    ret
   %ret = select i1 %cond, i32 122, i32 120

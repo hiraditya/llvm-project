@@ -5,8 +5,8 @@ define <1 x i1> @test_oeq_q_v1f64(<1 x double> %a, <1 x double> %b) {
 ; CHECK-LABEL: test_oeq_q_v1f64:
 ; CHECK:       # %bb.0:
 ; CHECK-NEXT:    vucomisd %xmm1, %xmm0
-; CHECK-NEXT:    setnp %cl
-; CHECK-NEXT:    sete %al
+; CHECK-NEXT:    setnp %al
+; CHECK-NEXT:    sete %cl
 ; CHECK-NEXT:    andb %cl, %al
 ; CHECK-NEXT:    retq
   %cond = tail call <1 x i1> @llvm.experimental.constrained.fcmp.v1f64(<1 x double> %a, <1 x double> %b, metadata !"oeq", metadata !"fpexcept.strict")
@@ -127,8 +127,8 @@ define <1 x i1> @test_une_q_v1f64(<1 x double> %a, <1 x double> %b) {
 ; CHECK-LABEL: test_une_q_v1f64:
 ; CHECK:       # %bb.0:
 ; CHECK-NEXT:    vucomisd %xmm1, %xmm0
-; CHECK-NEXT:    setp %cl
-; CHECK-NEXT:    setne %al
+; CHECK-NEXT:    setp %al
+; CHECK-NEXT:    setne %cl
 ; CHECK-NEXT:    orb %cl, %al
 ; CHECK-NEXT:    retq
   %cond = tail call <1 x i1> @llvm.experimental.constrained.fcmp.v1f64(<1 x double> %a, <1 x double> %b, metadata !"une", metadata !"fpexcept.strict")
@@ -149,8 +149,8 @@ define <1 x i1> @test_oeq_s_v1f64(<1 x double> %a, <1 x double> %b) {
 ; CHECK-LABEL: test_oeq_s_v1f64:
 ; CHECK:       # %bb.0:
 ; CHECK-NEXT:    vcomisd %xmm1, %xmm0
-; CHECK-NEXT:    setnp %cl
-; CHECK-NEXT:    sete %al
+; CHECK-NEXT:    setnp %al
+; CHECK-NEXT:    sete %cl
 ; CHECK-NEXT:    andb %cl, %al
 ; CHECK-NEXT:    retq
   %cond = tail call <1 x i1> @llvm.experimental.constrained.fcmps.v1f64(<1 x double> %a, <1 x double> %b, metadata !"oeq", metadata !"fpexcept.strict")
@@ -271,8 +271,8 @@ define <1 x i1> @test_une_s_v1f64(<1 x double> %a, <1 x double> %b) {
 ; CHECK-LABEL: test_une_s_v1f64:
 ; CHECK:       # %bb.0:
 ; CHECK-NEXT:    vcomisd %xmm1, %xmm0
-; CHECK-NEXT:    setp %cl
-; CHECK-NEXT:    setne %al
+; CHECK-NEXT:    setp %al
+; CHECK-NEXT:    setne %cl
 ; CHECK-NEXT:    orb %cl, %al
 ; CHECK-NEXT:    retq
   %cond = tail call <1 x i1> @llvm.experimental.constrained.fcmps.v1f64(<1 x double> %a, <1 x double> %b, metadata !"une", metadata !"fpexcept.strict")

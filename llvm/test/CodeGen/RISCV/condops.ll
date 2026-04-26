@@ -1634,8 +1634,8 @@ define i64 @setge(i64 %a, i64 %b, i64 %rs1, i64 %rs2) {
 ; RV64XTHEADCONDMOV-LABEL: setge:
 ; RV64XTHEADCONDMOV:       # %bb.0:
 ; RV64XTHEADCONDMOV-NEXT:    slt a0, a0, a1
-; RV64XTHEADCONDMOV-NEXT:    th.mvnez a2, a3, a0
-; RV64XTHEADCONDMOV-NEXT:    mv a0, a2
+; RV64XTHEADCONDMOV-NEXT:    th.mveqz a3, a2, a0
+; RV64XTHEADCONDMOV-NEXT:    mv a0, a3
 ; RV64XTHEADCONDMOV-NEXT:    ret
 ;
 ; RV32ZICOND-LABEL: setge:
@@ -1804,8 +1804,8 @@ define i64 @setle(i64 %a, i64 %b, i64 %rs1, i64 %rs2) {
 ; RV64XTHEADCONDMOV-LABEL: setle:
 ; RV64XTHEADCONDMOV:       # %bb.0:
 ; RV64XTHEADCONDMOV-NEXT:    slt a0, a1, a0
-; RV64XTHEADCONDMOV-NEXT:    th.mvnez a2, a3, a0
-; RV64XTHEADCONDMOV-NEXT:    mv a0, a2
+; RV64XTHEADCONDMOV-NEXT:    th.mveqz a3, a2, a0
+; RV64XTHEADCONDMOV-NEXT:    mv a0, a3
 ; RV64XTHEADCONDMOV-NEXT:    ret
 ;
 ; RV32ZICOND-LABEL: setle:
@@ -1974,8 +1974,8 @@ define i64 @setuge(i64 %a, i64 %b, i64 %rs1, i64 %rs2) {
 ; RV64XTHEADCONDMOV-LABEL: setuge:
 ; RV64XTHEADCONDMOV:       # %bb.0:
 ; RV64XTHEADCONDMOV-NEXT:    sltu a0, a0, a1
-; RV64XTHEADCONDMOV-NEXT:    th.mvnez a2, a3, a0
-; RV64XTHEADCONDMOV-NEXT:    mv a0, a2
+; RV64XTHEADCONDMOV-NEXT:    th.mveqz a3, a2, a0
+; RV64XTHEADCONDMOV-NEXT:    mv a0, a3
 ; RV64XTHEADCONDMOV-NEXT:    ret
 ;
 ; RV32ZICOND-LABEL: setuge:
@@ -2144,8 +2144,8 @@ define i64 @setule(i64 %a, i64 %b, i64 %rs1, i64 %rs2) {
 ; RV64XTHEADCONDMOV-LABEL: setule:
 ; RV64XTHEADCONDMOV:       # %bb.0:
 ; RV64XTHEADCONDMOV-NEXT:    sltu a0, a1, a0
-; RV64XTHEADCONDMOV-NEXT:    th.mvnez a2, a3, a0
-; RV64XTHEADCONDMOV-NEXT:    mv a0, a2
+; RV64XTHEADCONDMOV-NEXT:    th.mveqz a3, a2, a0
+; RV64XTHEADCONDMOV-NEXT:    mv a0, a3
 ; RV64XTHEADCONDMOV-NEXT:    ret
 ;
 ; RV32ZICOND-LABEL: setule:
@@ -4005,7 +4005,8 @@ define i32 @setune_32(float %a, float %b, i32 %rs1, i32 %rs2) {
 ; RV64XTHEADCONDMOV-LABEL: setune_32:
 ; RV64XTHEADCONDMOV:       # %bb.0:
 ; RV64XTHEADCONDMOV-NEXT:    feq.s a2, fa0, fa1
-; RV64XTHEADCONDMOV-NEXT:    th.mvnez a0, a1, a2
+; RV64XTHEADCONDMOV-NEXT:    th.mveqz a1, a0, a2
+; RV64XTHEADCONDMOV-NEXT:    mv a0, a1
 ; RV64XTHEADCONDMOV-NEXT:    ret
 ;
 ; RV32ZICOND-LABEL: setune_32:
@@ -4070,7 +4071,8 @@ define i64 @setune_64(float %a, float %b, i64 %rs1, i64 %rs2) {
 ; RV64XTHEADCONDMOV-LABEL: setune_64:
 ; RV64XTHEADCONDMOV:       # %bb.0:
 ; RV64XTHEADCONDMOV-NEXT:    feq.s a2, fa0, fa1
-; RV64XTHEADCONDMOV-NEXT:    th.mvnez a0, a1, a2
+; RV64XTHEADCONDMOV-NEXT:    th.mveqz a1, a0, a2
+; RV64XTHEADCONDMOV-NEXT:    mv a0, a1
 ; RV64XTHEADCONDMOV-NEXT:    ret
 ;
 ; RV32ZICOND-LABEL: setune_64:
@@ -4184,8 +4186,8 @@ define signext i16 @numsignbits(i16 signext %0, i16 signext %1, i16 signext %2, 
 ; RV64XTHEADCONDMOV-NEXT:    addi sp, sp, -16
 ; RV64XTHEADCONDMOV-NEXT:    sd ra, 8(sp) # 8-byte Folded Spill
 ; RV64XTHEADCONDMOV-NEXT:    sd s0, 0(sp) # 8-byte Folded Spill
-; RV64XTHEADCONDMOV-NEXT:    mv s0, a2
-; RV64XTHEADCONDMOV-NEXT:    th.mveqz s0, a3, a0
+; RV64XTHEADCONDMOV-NEXT:    mv s0, a3
+; RV64XTHEADCONDMOV-NEXT:    th.mvnez s0, a2, a0
 ; RV64XTHEADCONDMOV-NEXT:    beqz a1, .LBB60_2
 ; RV64XTHEADCONDMOV-NEXT:  # %bb.1:
 ; RV64XTHEADCONDMOV-NEXT:    mv a0, s0

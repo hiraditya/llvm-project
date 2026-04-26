@@ -25,15 +25,15 @@ declare <4 x bfloat> @llvm.maximum.v4bf16(<4 x bfloat>, <4 x bfloat>)
 define float @test_fmaximum(float %x, float %y) nounwind {
 ; SSE2-LABEL: test_fmaximum:
 ; SSE2:       # %bb.0:
-; SSE2-NEXT:    movaps %xmm0, %xmm2
-; SSE2-NEXT:    cmpunordss %xmm0, %xmm2
-; SSE2-NEXT:    movaps %xmm2, %xmm3
-; SSE2-NEXT:    andps %xmm0, %xmm3
-; SSE2-NEXT:    movaps %xmm0, %xmm4
-; SSE2-NEXT:    maxss %xmm1, %xmm4
-; SSE2-NEXT:    orps {{\.?LCPI[0-9]+_[0-9]+}}(%rip), %xmm0
-; SSE2-NEXT:    andps %xmm4, %xmm0
-; SSE2-NEXT:    andnps %xmm0, %xmm2
+; SSE2-NEXT:    movaps %xmm0, %xmm3
+; SSE2-NEXT:    cmpunordss %xmm0, %xmm3
+; SSE2-NEXT:    movaps %xmm3, %xmm2
+; SSE2-NEXT:    andps %xmm0, %xmm2
+; SSE2-NEXT:    movaps {{.*#+}} xmm4 = [NaN,NaN,NaN,NaN]
+; SSE2-NEXT:    orps %xmm0, %xmm4
+; SSE2-NEXT:    maxss %xmm1, %xmm0
+; SSE2-NEXT:    andps %xmm0, %xmm4
+; SSE2-NEXT:    andnps %xmm4, %xmm3
 ; SSE2-NEXT:    orps %xmm3, %xmm2
 ; SSE2-NEXT:    movaps %xmm2, %xmm0
 ; SSE2-NEXT:    retq
@@ -71,8 +71,9 @@ define float @test_fmaximum(float %x, float %y) nounwind {
 ;
 ; AVX512BF16-LABEL: test_fmaximum:
 ; AVX512BF16:       # %bb.0:
-; AVX512BF16-NEXT:    vmaxss %xmm1, %xmm0, %xmm1
-; AVX512BF16-NEXT:    vpternlogd {{.*#+}} xmm1 = xmm1 & (xmm0 | m32bcst)
+; AVX512BF16-NEXT:    vmaxss %xmm1, %xmm0, %xmm2
+; AVX512BF16-NEXT:    vpbroadcastd {{.*#+}} xmm1 = [NaN,NaN,NaN,NaN]
+; AVX512BF16-NEXT:    vpternlogd {{.*#+}} xmm1 = xmm2 & (xmm1 | xmm0)
 ; AVX512BF16-NEXT:    vcmpunordss %xmm0, %xmm0, %k1
 ; AVX512BF16-NEXT:    vmovss %xmm0, %xmm1, %xmm1 {%k1}
 ; AVX512BF16-NEXT:    vmovaps %xmm1, %xmm0
@@ -178,11 +179,11 @@ define float @test_fmaximum_nnan(float %x, float %y) nounwind {
 ; SSE2-NEXT:    movaps %xmm0, %xmm2
 ; SSE2-NEXT:    addss %xmm1, %xmm2
 ; SSE2-NEXT:    subss %xmm1, %xmm0
-; SSE2-NEXT:    movaps %xmm2, %xmm1
-; SSE2-NEXT:    maxss %xmm0, %xmm1
-; SSE2-NEXT:    orps {{\.?LCPI[0-9]+_[0-9]+}}(%rip), %xmm2
-; SSE2-NEXT:    andps %xmm1, %xmm2
-; SSE2-NEXT:    movaps %xmm2, %xmm0
+; SSE2-NEXT:    movaps {{.*#+}} xmm1 = [NaN,NaN,NaN,NaN]
+; SSE2-NEXT:    orps %xmm2, %xmm1
+; SSE2-NEXT:    maxss %xmm0, %xmm2
+; SSE2-NEXT:    andps %xmm2, %xmm1
+; SSE2-NEXT:    movaps %xmm1, %xmm0
 ; SSE2-NEXT:    retq
 ;
 ; AVX1-LABEL: test_fmaximum_nnan:
@@ -220,8 +221,9 @@ define float @test_fmaximum_nnan(float %x, float %y) nounwind {
 ; AVX512BF16:       # %bb.0:
 ; AVX512BF16-NEXT:    vaddss %xmm1, %xmm0, %xmm2
 ; AVX512BF16-NEXT:    vsubss %xmm1, %xmm0, %xmm0
-; AVX512BF16-NEXT:    vmaxss %xmm0, %xmm2, %xmm0
-; AVX512BF16-NEXT:    vpternlogd {{.*#+}} xmm0 = xmm0 & (xmm2 | m32bcst)
+; AVX512BF16-NEXT:    vmaxss %xmm0, %xmm2, %xmm1
+; AVX512BF16-NEXT:    vpbroadcastd {{.*#+}} xmm0 = [NaN,NaN,NaN,NaN]
+; AVX512BF16-NEXT:    vpternlogd {{.*#+}} xmm0 = xmm1 & (xmm0 | xmm2)
 ; AVX512BF16-NEXT:    retq
 ;
 ; AVX10_2-LABEL: test_fmaximum_nnan:
@@ -254,13 +256,13 @@ define float @test_fmaximum_nnan(float %x, float %y) nounwind {
 define double @test_fmaximum_zero0(double %x, double %y) nounwind {
 ; SSE2-LABEL: test_fmaximum_zero0:
 ; SSE2:       # %bb.0:
-; SSE2-NEXT:    movapd %xmm1, %xmm0
-; SSE2-NEXT:    cmpunordsd %xmm1, %xmm0
-; SSE2-NEXT:    movapd %xmm0, %xmm2
-; SSE2-NEXT:    andpd %xmm1, %xmm2
+; SSE2-NEXT:    movapd %xmm1, %xmm2
+; SSE2-NEXT:    cmpunordsd %xmm1, %xmm2
+; SSE2-NEXT:    movapd %xmm2, %xmm0
+; SSE2-NEXT:    andpd %xmm1, %xmm0
 ; SSE2-NEXT:    xorpd %xmm3, %xmm3
 ; SSE2-NEXT:    maxsd %xmm3, %xmm1
-; SSE2-NEXT:    andnpd %xmm1, %xmm0
+; SSE2-NEXT:    andnpd %xmm1, %xmm2
 ; SSE2-NEXT:    orpd %xmm2, %xmm0
 ; SSE2-NEXT:    retq
 ;
@@ -309,13 +311,13 @@ define double @test_fmaximum_zero0(double %x, double %y) nounwind {
 define double @test_fmaximum_zero1(double %x, double %y) nounwind {
 ; SSE2-LABEL: test_fmaximum_zero1:
 ; SSE2:       # %bb.0:
-; SSE2-NEXT:    movapd %xmm0, %xmm1
-; SSE2-NEXT:    cmpunordsd %xmm0, %xmm1
-; SSE2-NEXT:    movapd %xmm1, %xmm2
-; SSE2-NEXT:    andpd %xmm0, %xmm2
+; SSE2-NEXT:    movapd %xmm0, %xmm2
+; SSE2-NEXT:    cmpunordsd %xmm0, %xmm2
+; SSE2-NEXT:    movapd %xmm2, %xmm1
+; SSE2-NEXT:    andpd %xmm0, %xmm1
 ; SSE2-NEXT:    xorpd %xmm3, %xmm3
 ; SSE2-NEXT:    maxsd %xmm3, %xmm0
-; SSE2-NEXT:    andnpd %xmm0, %xmm1
+; SSE2-NEXT:    andnpd %xmm0, %xmm2
 ; SSE2-NEXT:    orpd %xmm2, %xmm1
 ; SSE2-NEXT:    movapd %xmm1, %xmm0
 ; SSE2-NEXT:    retq
@@ -390,12 +392,12 @@ define double @test_fmaximum_zero2(double %x, double %y) {
 define float @test_fmaximum_nsz(float %x, float %y) nounwind {
 ; SSE2-LABEL: test_fmaximum_nsz:
 ; SSE2:       # %bb.0:
-; SSE2-NEXT:    movaps %xmm0, %xmm2
-; SSE2-NEXT:    cmpunordss %xmm0, %xmm2
-; SSE2-NEXT:    movaps %xmm2, %xmm3
-; SSE2-NEXT:    andps %xmm0, %xmm3
+; SSE2-NEXT:    movaps %xmm0, %xmm3
+; SSE2-NEXT:    cmpunordss %xmm0, %xmm3
+; SSE2-NEXT:    movaps %xmm3, %xmm2
+; SSE2-NEXT:    andps %xmm0, %xmm2
 ; SSE2-NEXT:    maxss %xmm1, %xmm0
-; SSE2-NEXT:    andnps %xmm0, %xmm2
+; SSE2-NEXT:    andnps %xmm0, %xmm3
 ; SSE2-NEXT:    orps %xmm3, %xmm2
 ; SSE2-NEXT:    movaps %xmm2, %xmm0
 ; SSE2-NEXT:    retq
@@ -439,15 +441,15 @@ define float @test_fmaximum_combine_cmps(float %x, float %y) nounwind {
 ; SSE2-LABEL: test_fmaximum_combine_cmps:
 ; SSE2:       # %bb.0:
 ; SSE2-NEXT:    divss %xmm0, %xmm1
-; SSE2-NEXT:    movaps %xmm0, %xmm2
-; SSE2-NEXT:    cmpunordss %xmm0, %xmm2
-; SSE2-NEXT:    movaps %xmm2, %xmm3
-; SSE2-NEXT:    andps %xmm0, %xmm3
-; SSE2-NEXT:    movaps %xmm0, %xmm4
-; SSE2-NEXT:    maxss %xmm1, %xmm4
-; SSE2-NEXT:    orps {{\.?LCPI[0-9]+_[0-9]+}}(%rip), %xmm0
-; SSE2-NEXT:    andps %xmm4, %xmm0
-; SSE2-NEXT:    andnps %xmm0, %xmm2
+; SSE2-NEXT:    movaps %xmm0, %xmm3
+; SSE2-NEXT:    cmpunordss %xmm0, %xmm3
+; SSE2-NEXT:    movaps %xmm3, %xmm2
+; SSE2-NEXT:    andps %xmm0, %xmm2
+; SSE2-NEXT:    movaps {{.*#+}} xmm4 = [NaN,NaN,NaN,NaN]
+; SSE2-NEXT:    orps %xmm0, %xmm4
+; SSE2-NEXT:    maxss %xmm1, %xmm0
+; SSE2-NEXT:    andps %xmm0, %xmm4
+; SSE2-NEXT:    andnps %xmm4, %xmm3
 ; SSE2-NEXT:    orps %xmm3, %xmm2
 ; SSE2-NEXT:    movaps %xmm2, %xmm0
 ; SSE2-NEXT:    retq
@@ -488,8 +490,9 @@ define float @test_fmaximum_combine_cmps(float %x, float %y) nounwind {
 ; AVX512BF16-LABEL: test_fmaximum_combine_cmps:
 ; AVX512BF16:       # %bb.0:
 ; AVX512BF16-NEXT:    vdivss %xmm0, %xmm1, %xmm1
-; AVX512BF16-NEXT:    vmaxss %xmm1, %xmm0, %xmm1
-; AVX512BF16-NEXT:    vpternlogd {{.*#+}} xmm1 = xmm1 & (xmm0 | m32bcst)
+; AVX512BF16-NEXT:    vmaxss %xmm1, %xmm0, %xmm2
+; AVX512BF16-NEXT:    vpbroadcastd {{.*#+}} xmm1 = [NaN,NaN,NaN,NaN]
+; AVX512BF16-NEXT:    vpternlogd {{.*#+}} xmm1 = xmm2 & (xmm1 | xmm0)
 ; AVX512BF16-NEXT:    vcmpunordss %xmm0, %xmm0, %k1
 ; AVX512BF16-NEXT:    vmovss %xmm0, %xmm1, %xmm1 {%k1}
 ; AVX512BF16-NEXT:    vmovaps %xmm1, %xmm0
@@ -528,15 +531,15 @@ define float @test_fmaximum_combine_cmps(float %x, float %y) nounwind {
 define float @test_fminimum(float %x, float %y) nounwind {
 ; SSE2-LABEL: test_fminimum:
 ; SSE2:       # %bb.0:
-; SSE2-NEXT:    movaps %xmm0, %xmm2
-; SSE2-NEXT:    cmpunordss %xmm0, %xmm2
-; SSE2-NEXT:    movaps %xmm2, %xmm3
-; SSE2-NEXT:    andps %xmm0, %xmm3
-; SSE2-NEXT:    movaps %xmm0, %xmm4
-; SSE2-NEXT:    minss %xmm1, %xmm4
-; SSE2-NEXT:    andps {{\.?LCPI[0-9]+_[0-9]+}}(%rip), %xmm0
-; SSE2-NEXT:    orps %xmm4, %xmm0
-; SSE2-NEXT:    andnps %xmm0, %xmm2
+; SSE2-NEXT:    movaps %xmm0, %xmm3
+; SSE2-NEXT:    cmpunordss %xmm0, %xmm3
+; SSE2-NEXT:    movaps %xmm3, %xmm2
+; SSE2-NEXT:    andps %xmm0, %xmm2
+; SSE2-NEXT:    movaps {{.*#+}} xmm4 = [-0.0E+0,-0.0E+0,-0.0E+0,-0.0E+0]
+; SSE2-NEXT:    andps %xmm0, %xmm4
+; SSE2-NEXT:    minss %xmm1, %xmm0
+; SSE2-NEXT:    orps %xmm0, %xmm4
+; SSE2-NEXT:    andnps %xmm4, %xmm3
 ; SSE2-NEXT:    orps %xmm3, %xmm2
 ; SSE2-NEXT:    movaps %xmm2, %xmm0
 ; SSE2-NEXT:    retq
@@ -574,8 +577,9 @@ define float @test_fminimum(float %x, float %y) nounwind {
 ;
 ; AVX512BF16-LABEL: test_fminimum:
 ; AVX512BF16:       # %bb.0:
-; AVX512BF16-NEXT:    vminss %xmm1, %xmm0, %xmm1
-; AVX512BF16-NEXT:    vpternlogd {{.*#+}} xmm1 = xmm1 | (xmm0 & m32bcst)
+; AVX512BF16-NEXT:    vminss %xmm1, %xmm0, %xmm2
+; AVX512BF16-NEXT:    vpbroadcastd {{.*#+}} xmm1 = [-0.0E+0,-0.0E+0,-0.0E+0,-0.0E+0]
+; AVX512BF16-NEXT:    vpternlogd {{.*#+}} xmm1 = (xmm1 & xmm0) | xmm2
 ; AVX512BF16-NEXT:    vcmpunordss %xmm0, %xmm0, %k1
 ; AVX512BF16-NEXT:    vmovss %xmm0, %xmm1, %xmm1 {%k1}
 ; AVX512BF16-NEXT:    vmovaps %xmm1, %xmm0
@@ -678,10 +682,11 @@ define float @test_fminimum_nan1(float %x, float %y) {
 define double @test_fminimum_nnan(double %x, double %y) nounwind {
 ; SSE2-LABEL: test_fminimum_nnan:
 ; SSE2:       # %bb.0:
-; SSE2-NEXT:    movapd %xmm0, %xmm2
-; SSE2-NEXT:    minsd %xmm1, %xmm2
-; SSE2-NEXT:    andpd {{\.?LCPI[0-9]+_[0-9]+}}(%rip), %xmm0
-; SSE2-NEXT:    orpd %xmm2, %xmm0
+; SSE2-NEXT:    movapd {{.*#+}} xmm2 = [-0.0E+0,-0.0E+0]
+; SSE2-NEXT:    andpd %xmm0, %xmm2
+; SSE2-NEXT:    minsd %xmm1, %xmm0
+; SSE2-NEXT:    orpd %xmm0, %xmm2
+; SSE2-NEXT:    movapd %xmm2, %xmm0
 ; SSE2-NEXT:    retq
 ;
 ; AVX1-LABEL: test_fminimum_nnan:
@@ -710,8 +715,10 @@ define double @test_fminimum_nnan(double %x, double %y) nounwind {
 ;
 ; AVX512BF16-LABEL: test_fminimum_nnan:
 ; AVX512BF16:       # %bb.0:
-; AVX512BF16-NEXT:    vminsd %xmm1, %xmm0, %xmm1
-; AVX512BF16-NEXT:    vpternlogq {{.*#+}} xmm0 = (xmm0 & m64bcst) | xmm1
+; AVX512BF16-NEXT:    vminsd %xmm1, %xmm0, %xmm2
+; AVX512BF16-NEXT:    vpbroadcastq {{.*#+}} xmm1 = [-0.0E+0,-0.0E+0]
+; AVX512BF16-NEXT:    vpternlogq {{.*#+}} xmm1 = (xmm1 & xmm0) | xmm2
+; AVX512BF16-NEXT:    vmovdqa %xmm1, %xmm0
 ; AVX512BF16-NEXT:    retq
 ;
 ; AVX10_2-LABEL: test_fminimum_nnan:
@@ -741,12 +748,12 @@ define double @test_fminimum_nnan(double %x, double %y) nounwind {
 define double @test_fminimum_zero0(double %x, double %y) nounwind {
 ; SSE2-LABEL: test_fminimum_zero0:
 ; SSE2:       # %bb.0:
-; SSE2-NEXT:    movapd %xmm1, %xmm0
-; SSE2-NEXT:    cmpunordsd %xmm1, %xmm0
-; SSE2-NEXT:    movapd %xmm0, %xmm2
-; SSE2-NEXT:    andpd %xmm1, %xmm2
+; SSE2-NEXT:    movapd %xmm1, %xmm2
+; SSE2-NEXT:    cmpunordsd %xmm1, %xmm2
+; SSE2-NEXT:    movapd %xmm2, %xmm0
+; SSE2-NEXT:    andpd %xmm1, %xmm0
 ; SSE2-NEXT:    minsd {{\.?LCPI[0-9]+_[0-9]+}}(%rip), %xmm1
-; SSE2-NEXT:    andnpd %xmm1, %xmm0
+; SSE2-NEXT:    andnpd %xmm1, %xmm2
 ; SSE2-NEXT:    orpd %xmm2, %xmm0
 ; SSE2-NEXT:    retq
 ;
@@ -791,12 +798,12 @@ define double @test_fminimum_zero0(double %x, double %y) nounwind {
 define double @test_fminimum_zero1(double %x, double %y) nounwind {
 ; SSE2-LABEL: test_fminimum_zero1:
 ; SSE2:       # %bb.0:
-; SSE2-NEXT:    movapd %xmm0, %xmm1
-; SSE2-NEXT:    cmpunordsd %xmm0, %xmm1
-; SSE2-NEXT:    movapd %xmm1, %xmm2
-; SSE2-NEXT:    andpd %xmm0, %xmm2
+; SSE2-NEXT:    movapd %xmm0, %xmm2
+; SSE2-NEXT:    cmpunordsd %xmm0, %xmm2
+; SSE2-NEXT:    movapd %xmm2, %xmm1
+; SSE2-NEXT:    andpd %xmm0, %xmm1
 ; SSE2-NEXT:    minsd {{\.?LCPI[0-9]+_[0-9]+}}(%rip), %xmm0
-; SSE2-NEXT:    andnpd %xmm0, %xmm1
+; SSE2-NEXT:    andnpd %xmm0, %xmm2
 ; SSE2-NEXT:    orpd %xmm2, %xmm1
 ; SSE2-NEXT:    movapd %xmm1, %xmm0
 ; SSE2-NEXT:    retq
@@ -868,12 +875,12 @@ define double @test_fminimum_zero2(double %x, double %y) {
 define float @test_fminimum_nsz(float %x, float %y) nounwind {
 ; SSE2-LABEL: test_fminimum_nsz:
 ; SSE2:       # %bb.0:
-; SSE2-NEXT:    movaps %xmm0, %xmm2
-; SSE2-NEXT:    cmpunordss %xmm0, %xmm2
-; SSE2-NEXT:    movaps %xmm2, %xmm3
-; SSE2-NEXT:    andps %xmm0, %xmm3
+; SSE2-NEXT:    movaps %xmm0, %xmm3
+; SSE2-NEXT:    cmpunordss %xmm0, %xmm3
+; SSE2-NEXT:    movaps %xmm3, %xmm2
+; SSE2-NEXT:    andps %xmm0, %xmm2
 ; SSE2-NEXT:    minss %xmm1, %xmm0
-; SSE2-NEXT:    andnps %xmm0, %xmm2
+; SSE2-NEXT:    andnps %xmm0, %xmm3
 ; SSE2-NEXT:    orps %xmm3, %xmm2
 ; SSE2-NEXT:    movaps %xmm2, %xmm0
 ; SSE2-NEXT:    retq
@@ -917,15 +924,15 @@ define float @test_fminimum_combine_cmps(float %x, float %y) nounwind {
 ; SSE2-LABEL: test_fminimum_combine_cmps:
 ; SSE2:       # %bb.0:
 ; SSE2-NEXT:    divss %xmm0, %xmm1
-; SSE2-NEXT:    movaps %xmm0, %xmm2
-; SSE2-NEXT:    cmpunordss %xmm0, %xmm2
-; SSE2-NEXT:    movaps %xmm2, %xmm3
-; SSE2-NEXT:    andps %xmm0, %xmm3
-; SSE2-NEXT:    movaps %xmm0, %xmm4
-; SSE2-NEXT:    minss %xmm1, %xmm4
-; SSE2-NEXT:    andps {{\.?LCPI[0-9]+_[0-9]+}}(%rip), %xmm0
-; SSE2-NEXT:    orps %xmm4, %xmm0
-; SSE2-NEXT:    andnps %xmm0, %xmm2
+; SSE2-NEXT:    movaps %xmm0, %xmm3
+; SSE2-NEXT:    cmpunordss %xmm0, %xmm3
+; SSE2-NEXT:    movaps %xmm3, %xmm2
+; SSE2-NEXT:    andps %xmm0, %xmm2
+; SSE2-NEXT:    movaps {{.*#+}} xmm4 = [-0.0E+0,-0.0E+0,-0.0E+0,-0.0E+0]
+; SSE2-NEXT:    andps %xmm0, %xmm4
+; SSE2-NEXT:    minss %xmm1, %xmm0
+; SSE2-NEXT:    orps %xmm0, %xmm4
+; SSE2-NEXT:    andnps %xmm4, %xmm3
 ; SSE2-NEXT:    orps %xmm3, %xmm2
 ; SSE2-NEXT:    movaps %xmm2, %xmm0
 ; SSE2-NEXT:    retq
@@ -966,8 +973,9 @@ define float @test_fminimum_combine_cmps(float %x, float %y) nounwind {
 ; AVX512BF16-LABEL: test_fminimum_combine_cmps:
 ; AVX512BF16:       # %bb.0:
 ; AVX512BF16-NEXT:    vdivss %xmm0, %xmm1, %xmm1
-; AVX512BF16-NEXT:    vminss %xmm1, %xmm0, %xmm1
-; AVX512BF16-NEXT:    vpternlogd {{.*#+}} xmm1 = xmm1 | (xmm0 & m32bcst)
+; AVX512BF16-NEXT:    vminss %xmm1, %xmm0, %xmm2
+; AVX512BF16-NEXT:    vpbroadcastd {{.*#+}} xmm1 = [-0.0E+0,-0.0E+0,-0.0E+0,-0.0E+0]
+; AVX512BF16-NEXT:    vpternlogd {{.*#+}} xmm1 = (xmm1 & xmm0) | xmm2
 ; AVX512BF16-NEXT:    vcmpunordss %xmm0, %xmm0, %k1
 ; AVX512BF16-NEXT:    vmovss %xmm0, %xmm1, %xmm1 {%k1}
 ; AVX512BF16-NEXT:    vmovaps %xmm1, %xmm0
@@ -1003,16 +1011,15 @@ define <2 x double> @test_fminimum_vector(<2 x double> %x, <2 x double> %y) {
 ; SSE2-LABEL: test_fminimum_vector:
 ; SSE2:       # %bb.0:
 ; SSE2-NEXT:    movapd %xmm0, %xmm2
-; SSE2-NEXT:    cmpunordpd %xmm0, %xmm2
 ; SSE2-NEXT:    movapd %xmm0, %xmm3
-; SSE2-NEXT:    andpd %xmm2, %xmm3
-; SSE2-NEXT:    movapd %xmm0, %xmm4
-; SSE2-NEXT:    minpd %xmm1, %xmm4
-; SSE2-NEXT:    andpd {{\.?LCPI[0-9]+_[0-9]+}}(%rip), %xmm0
-; SSE2-NEXT:    orpd %xmm4, %xmm0
-; SSE2-NEXT:    andnpd %xmm0, %xmm2
-; SSE2-NEXT:    orpd %xmm3, %xmm2
-; SSE2-NEXT:    movapd %xmm2, %xmm0
+; SSE2-NEXT:    movapd {{.*#+}} xmm4 = [-0.0E+0,-0.0E+0]
+; SSE2-NEXT:    andpd %xmm0, %xmm4
+; SSE2-NEXT:    cmpunordpd %xmm0, %xmm0
+; SSE2-NEXT:    andpd %xmm0, %xmm2
+; SSE2-NEXT:    minpd %xmm1, %xmm3
+; SSE2-NEXT:    orpd %xmm4, %xmm3
+; SSE2-NEXT:    andnpd %xmm3, %xmm0
+; SSE2-NEXT:    orpd %xmm2, %xmm0
 ; SSE2-NEXT:    retq
 ;
 ; AVX1-LABEL: test_fminimum_vector:
@@ -1045,10 +1052,10 @@ define <2 x double> @test_fminimum_vector(<2 x double> %x, <2 x double> %y) {
 ; AVX512BF16-LABEL: test_fminimum_vector:
 ; AVX512BF16:       # %bb.0:
 ; AVX512BF16-NEXT:    vminpd %xmm1, %xmm0, %xmm1
-; AVX512BF16-NEXT:    vpternlogq {{.*#+}} xmm1 = xmm1 | (xmm0 & m64bcst)
+; AVX512BF16-NEXT:    vpbroadcastq {{.*#+}} xmm2 = [-0.0E+0,-0.0E+0]
+; AVX512BF16-NEXT:    vpternlogq {{.*#+}} xmm2 = (xmm2 & xmm0) | xmm1
 ; AVX512BF16-NEXT:    vcmpunordpd %xmm0, %xmm0, %k1
-; AVX512BF16-NEXT:    vmovapd %xmm0, %xmm1 {%k1}
-; AVX512BF16-NEXT:    vmovapd %xmm1, %xmm0
+; AVX512BF16-NEXT:    vblendmpd %xmm0, %xmm2, %xmm0 {%k1}
 ; AVX512BF16-NEXT:    retq
 ;
 ; AVX10_2-LABEL: test_fminimum_vector:
@@ -1186,18 +1193,17 @@ define <2 x double> @test_fminimum_vector_different_zeros(<2 x double> %x) {
 ; SSE2-LABEL: test_fminimum_vector_different_zeros:
 ; SSE2:       # %bb.0:
 ; SSE2-NEXT:    movapd %xmm0, %xmm1
-; SSE2-NEXT:    cmpunordpd %xmm0, %xmm1
 ; SSE2-NEXT:    movapd %xmm0, %xmm2
-; SSE2-NEXT:    andpd %xmm1, %xmm2
-; SSE2-NEXT:    xorpd %xmm3, %xmm3
-; SSE2-NEXT:    movhpd {{.*#+}} xmm3 = xmm3[0],mem[0]
-; SSE2-NEXT:    movapd %xmm0, %xmm4
-; SSE2-NEXT:    minpd %xmm3, %xmm4
-; SSE2-NEXT:    andpd {{\.?LCPI[0-9]+_[0-9]+}}(%rip), %xmm0
-; SSE2-NEXT:    orpd %xmm4, %xmm0
-; SSE2-NEXT:    andnpd %xmm0, %xmm1
-; SSE2-NEXT:    orpd %xmm2, %xmm1
-; SSE2-NEXT:    movapd %xmm1, %xmm0
+; SSE2-NEXT:    movapd {{.*#+}} xmm3 = [-0.0E+0,-0.0E+0]
+; SSE2-NEXT:    andpd %xmm0, %xmm3
+; SSE2-NEXT:    cmpunordpd %xmm0, %xmm0
+; SSE2-NEXT:    andpd %xmm0, %xmm1
+; SSE2-NEXT:    xorpd %xmm4, %xmm4
+; SSE2-NEXT:    movhpd {{.*#+}} xmm4 = xmm4[0],mem[0]
+; SSE2-NEXT:    minpd %xmm4, %xmm2
+; SSE2-NEXT:    orpd %xmm3, %xmm2
+; SSE2-NEXT:    andnpd %xmm2, %xmm0
+; SSE2-NEXT:    orpd %xmm1, %xmm0
 ; SSE2-NEXT:    retq
 ;
 ; AVX1-LABEL: test_fminimum_vector_different_zeros:
@@ -1238,10 +1244,10 @@ define <2 x double> @test_fminimum_vector_different_zeros(<2 x double> %x) {
 ; AVX512BF16-NEXT:    vxorpd %xmm1, %xmm1, %xmm1
 ; AVX512BF16-NEXT:    vmovhpd {{.*#+}} xmm1 = xmm1[0],mem[0]
 ; AVX512BF16-NEXT:    vminpd %xmm1, %xmm0, %xmm1
-; AVX512BF16-NEXT:    vpternlogq {{.*#+}} xmm1 = xmm1 | (xmm0 & m64bcst)
+; AVX512BF16-NEXT:    vpbroadcastq {{.*#+}} xmm2 = [-0.0E+0,-0.0E+0]
+; AVX512BF16-NEXT:    vpternlogq {{.*#+}} xmm2 = (xmm2 & xmm0) | xmm1
 ; AVX512BF16-NEXT:    vcmpunordpd %xmm0, %xmm0, %k1
-; AVX512BF16-NEXT:    vmovapd %xmm0, %xmm1 {%k1}
-; AVX512BF16-NEXT:    vmovapd %xmm1, %xmm0
+; AVX512BF16-NEXT:    vblendmpd %xmm0, %xmm2, %xmm0 {%k1}
 ; AVX512BF16-NEXT:    retq
 ;
 ; AVX10_2-LABEL: test_fminimum_vector_different_zeros:
@@ -1364,13 +1370,14 @@ define <2 x double> @test_fminimum_vector_zero_first(<2 x double> %x) {
 define <2 x double> @test_fminimum_vector_signed_zero(<2 x double> %x) {
 ; SSE2-LABEL: test_fminimum_vector_signed_zero:
 ; SSE2:       # %bb.0:
-; SSE2-NEXT:    movapd %xmm0, %xmm1
-; SSE2-NEXT:    minpd {{\.?LCPI[0-9]+_[0-9]+}}(%rip), %xmm1
 ; SSE2-NEXT:    movapd %xmm0, %xmm2
-; SSE2-NEXT:    cmpunordpd %xmm0, %xmm2
-; SSE2-NEXT:    andpd %xmm2, %xmm0
-; SSE2-NEXT:    andnpd %xmm1, %xmm2
-; SSE2-NEXT:    orpd %xmm2, %xmm0
+; SSE2-NEXT:    minpd {{\.?LCPI[0-9]+_[0-9]+}}(%rip), %xmm2
+; SSE2-NEXT:    movapd %xmm0, %xmm1
+; SSE2-NEXT:    cmpunordpd %xmm0, %xmm1
+; SSE2-NEXT:    andpd %xmm1, %xmm0
+; SSE2-NEXT:    andnpd %xmm2, %xmm1
+; SSE2-NEXT:    orpd %xmm0, %xmm1
+; SSE2-NEXT:    movapd %xmm1, %xmm0
 ; SSE2-NEXT:    retq
 ;
 ; AVX1-LABEL: test_fminimum_vector_signed_zero:
@@ -1398,8 +1405,7 @@ define <2 x double> @test_fminimum_vector_signed_zero(<2 x double> %x) {
 ; AVX512BF16:       # %bb.0:
 ; AVX512BF16-NEXT:    vcmpunordpd %xmm0, %xmm0, %k1
 ; AVX512BF16-NEXT:    vminpd {{\.?LCPI[0-9]+_[0-9]+}}(%rip){1to2}, %xmm0, %xmm1
-; AVX512BF16-NEXT:    vmovapd %xmm0, %xmm1 {%k1}
-; AVX512BF16-NEXT:    vmovapd %xmm1, %xmm0
+; AVX512BF16-NEXT:    vblendmpd %xmm0, %xmm1, %xmm0 {%k1}
 ; AVX512BF16-NEXT:    retq
 ;
 ; AVX10_2-LABEL: test_fminimum_vector_signed_zero:
@@ -1455,7 +1461,8 @@ define <4 x float> @test_fmaximum_vector_zero(<4 x float> %x) {
 ; SSE2-NEXT:    cmpunordps %xmm0, %xmm1
 ; SSE2-NEXT:    andps %xmm1, %xmm0
 ; SSE2-NEXT:    andnps %xmm2, %xmm1
-; SSE2-NEXT:    orps %xmm1, %xmm0
+; SSE2-NEXT:    orps %xmm0, %xmm1
+; SSE2-NEXT:    movaps %xmm1, %xmm0
 ; SSE2-NEXT:    retq
 ;
 ; AVX1-LABEL: test_fmaximum_vector_zero:
@@ -1487,8 +1494,7 @@ define <4 x float> @test_fmaximum_vector_zero(<4 x float> %x) {
 ; AVX512BF16-NEXT:    vxorps %xmm1, %xmm1, %xmm1
 ; AVX512BF16-NEXT:    vmaxps %xmm1, %xmm0, %xmm1
 ; AVX512BF16-NEXT:    vcmpunordps %xmm0, %xmm0, %k1
-; AVX512BF16-NEXT:    vmovaps %xmm0, %xmm1 {%k1}
-; AVX512BF16-NEXT:    vmovaps %xmm1, %xmm0
+; AVX512BF16-NEXT:    vblendmps %xmm0, %xmm1, %xmm0 {%k1}
 ; AVX512BF16-NEXT:    retq
 ;
 ; AVX10_2-LABEL: test_fmaximum_vector_zero:
@@ -1514,16 +1520,15 @@ define <4 x float> @test_fmaximum_v4f32_splat(<4 x float> %x, float %y) {
 ; SSE2:       # %bb.0:
 ; SSE2-NEXT:    shufps {{.*#+}} xmm1 = xmm1[0,0,0,0]
 ; SSE2-NEXT:    movaps %xmm0, %xmm2
-; SSE2-NEXT:    cmpunordps %xmm0, %xmm2
 ; SSE2-NEXT:    movaps %xmm0, %xmm3
-; SSE2-NEXT:    andps %xmm2, %xmm3
-; SSE2-NEXT:    movaps %xmm0, %xmm4
-; SSE2-NEXT:    maxps %xmm1, %xmm4
-; SSE2-NEXT:    orps {{\.?LCPI[0-9]+_[0-9]+}}(%rip), %xmm0
-; SSE2-NEXT:    andps %xmm4, %xmm0
-; SSE2-NEXT:    andnps %xmm0, %xmm2
-; SSE2-NEXT:    orps %xmm3, %xmm2
-; SSE2-NEXT:    movaps %xmm2, %xmm0
+; SSE2-NEXT:    movaps {{.*#+}} xmm4 = [NaN,NaN,NaN,NaN]
+; SSE2-NEXT:    orps %xmm0, %xmm4
+; SSE2-NEXT:    cmpunordps %xmm0, %xmm0
+; SSE2-NEXT:    andps %xmm0, %xmm2
+; SSE2-NEXT:    maxps %xmm1, %xmm3
+; SSE2-NEXT:    andps %xmm4, %xmm3
+; SSE2-NEXT:    andnps %xmm3, %xmm0
+; SSE2-NEXT:    orps %xmm2, %xmm0
 ; SSE2-NEXT:    retq
 ;
 ; AVX1-LABEL: test_fmaximum_v4f32_splat:
@@ -1562,10 +1567,10 @@ define <4 x float> @test_fmaximum_v4f32_splat(<4 x float> %x, float %y) {
 ; AVX512BF16:       # %bb.0:
 ; AVX512BF16-NEXT:    vbroadcastss %xmm1, %xmm1
 ; AVX512BF16-NEXT:    vmaxps %xmm1, %xmm0, %xmm1
-; AVX512BF16-NEXT:    vpternlogd {{.*#+}} xmm1 = xmm1 & (xmm0 | m32bcst)
+; AVX512BF16-NEXT:    vpbroadcastd {{.*#+}} xmm2 = [NaN,NaN,NaN,NaN]
+; AVX512BF16-NEXT:    vpternlogd {{.*#+}} xmm2 = xmm1 & (xmm2 | xmm0)
 ; AVX512BF16-NEXT:    vcmpunordps %xmm0, %xmm0, %k1
-; AVX512BF16-NEXT:    vmovaps %xmm0, %xmm1 {%k1}
-; AVX512BF16-NEXT:    vmovaps %xmm1, %xmm0
+; AVX512BF16-NEXT:    vblendmps %xmm0, %xmm2, %xmm0 {%k1}
 ; AVX512BF16-NEXT:    retq
 ;
 ; AVX10_2-LABEL: test_fmaximum_v4f32_splat:
@@ -1592,7 +1597,7 @@ define <4 x float> @test_fmaximum_v4f32_splat(<4 x float> %x, float %y) {
 define <4 x half> @test_fmaximum_v4f16(<4 x half> %x, <4 x half> %y) nounwind {
 ; SSE2-LABEL: test_fmaximum_v4f16:
 ; SSE2:       # %bb.0:
-; SSE2-NEXT:    subq $168, %rsp
+; SSE2-NEXT:    subq $152, %rsp
 ; SSE2-NEXT:    movdqa %xmm1, {{[-0-9]+}}(%r{{[sb]}}p) # 16-byte Spill
 ; SSE2-NEXT:    movdqa %xmm0, (%rsp) # 16-byte Spill
 ; SSE2-NEXT:    movdqa %xmm1, %xmm2
@@ -1612,24 +1617,22 @@ define <4 x half> @test_fmaximum_v4f16(<4 x half> %x, <4 x half> %y) nounwind {
 ; SSE2-NEXT:    psrld $16, %xmm0
 ; SSE2-NEXT:    callq __extendhfsf2@PLT
 ; SSE2-NEXT:    movdqa %xmm0, {{[-0-9]+}}(%r{{[sb]}}p) # 16-byte Spill
-; SSE2-NEXT:    movdqa {{.*#+}} xmm2 = [NaN,NaN,NaN,NaN]
-; SSE2-NEXT:    movdqa %xmm2, {{[-0-9]+}}(%r{{[sb]}}p) # 16-byte Spill
 ; SSE2-NEXT:    movdqa %xmm0, %xmm1
-; SSE2-NEXT:    por %xmm2, %xmm1
+; SSE2-NEXT:    por {{\.?LCPI[0-9]+_[0-9]+}}(%rip), %xmm1
 ; SSE2-NEXT:    movdqa %xmm1, {{[-0-9]+}}(%r{{[sb]}}p) # 16-byte Spill
 ; SSE2-NEXT:    movaps {{[-0-9]+}}(%r{{[sb]}}p), %xmm0 # 16-byte Reload
 ; SSE2-NEXT:    callq __extendhfsf2@PLT
 ; SSE2-NEXT:    movaps {{[-0-9]+}}(%r{{[sb]}}p), %xmm2 # 16-byte Reload
 ; SSE2-NEXT:    movaps %xmm2, %xmm1
 ; SSE2-NEXT:    maxss %xmm0, %xmm1
-; SSE2-NEXT:    andps {{[-0-9]+}}(%r{{[sb]}}p), %xmm1 # 16-byte Folded Reload
+; SSE2-NEXT:    movaps {{[-0-9]+}}(%r{{[sb]}}p), %xmm3 # 16-byte Reload
+; SSE2-NEXT:    andps %xmm1, %xmm3
 ; SSE2-NEXT:    movaps %xmm2, %xmm0
-; SSE2-NEXT:    movaps %xmm2, %xmm3
 ; SSE2-NEXT:    cmpunordss %xmm2, %xmm0
-; SSE2-NEXT:    movaps %xmm0, %xmm2
-; SSE2-NEXT:    andnps %xmm1, %xmm2
-; SSE2-NEXT:    andps %xmm3, %xmm0
-; SSE2-NEXT:    orps %xmm2, %xmm0
+; SSE2-NEXT:    movaps %xmm0, %xmm1
+; SSE2-NEXT:    andnps %xmm3, %xmm1
+; SSE2-NEXT:    andps %xmm2, %xmm0
+; SSE2-NEXT:    orps %xmm1, %xmm0
 ; SSE2-NEXT:    callq __truncsfhf2@PLT
 ; SSE2-NEXT:    movaps %xmm0, {{[-0-9]+}}(%r{{[sb]}}p) # 16-byte Spill
 ; SSE2-NEXT:    movaps (%rsp), %xmm0 # 16-byte Reload
@@ -1643,14 +1646,14 @@ define <4 x half> @test_fmaximum_v4f16(<4 x half> %x, <4 x half> %y) nounwind {
 ; SSE2-NEXT:    movaps {{[-0-9]+}}(%r{{[sb]}}p), %xmm2 # 16-byte Reload
 ; SSE2-NEXT:    movaps %xmm2, %xmm1
 ; SSE2-NEXT:    maxss %xmm0, %xmm1
-; SSE2-NEXT:    andps (%rsp), %xmm1 # 16-byte Folded Reload
+; SSE2-NEXT:    movaps (%rsp), %xmm3 # 16-byte Reload
+; SSE2-NEXT:    andps %xmm1, %xmm3
 ; SSE2-NEXT:    movaps %xmm2, %xmm0
-; SSE2-NEXT:    movaps %xmm2, %xmm3
 ; SSE2-NEXT:    cmpunordss %xmm2, %xmm0
-; SSE2-NEXT:    movaps %xmm0, %xmm2
-; SSE2-NEXT:    andnps %xmm1, %xmm2
-; SSE2-NEXT:    andps %xmm3, %xmm0
-; SSE2-NEXT:    orps %xmm2, %xmm0
+; SSE2-NEXT:    movaps %xmm0, %xmm1
+; SSE2-NEXT:    andnps %xmm3, %xmm1
+; SSE2-NEXT:    andps %xmm2, %xmm0
+; SSE2-NEXT:    orps %xmm1, %xmm0
 ; SSE2-NEXT:    callq __truncsfhf2@PLT
 ; SSE2-NEXT:    movaps %xmm0, {{[-0-9]+}}(%r{{[sb]}}p) # 16-byte Spill
 ; SSE2-NEXT:    movaps {{[-0-9]+}}(%r{{[sb]}}p), %xmm0 # 16-byte Reload
@@ -1664,36 +1667,35 @@ define <4 x half> @test_fmaximum_v4f16(<4 x half> %x, <4 x half> %y) nounwind {
 ; SSE2-NEXT:    movaps (%rsp), %xmm2 # 16-byte Reload
 ; SSE2-NEXT:    movaps %xmm2, %xmm1
 ; SSE2-NEXT:    maxss %xmm0, %xmm1
-; SSE2-NEXT:    andps {{[-0-9]+}}(%r{{[sb]}}p), %xmm1 # 16-byte Folded Reload
+; SSE2-NEXT:    movaps {{[-0-9]+}}(%r{{[sb]}}p), %xmm3 # 16-byte Reload
+; SSE2-NEXT:    andps %xmm1, %xmm3
 ; SSE2-NEXT:    movaps %xmm2, %xmm0
-; SSE2-NEXT:    movaps %xmm2, %xmm3
 ; SSE2-NEXT:    cmpunordss %xmm2, %xmm0
-; SSE2-NEXT:    movaps %xmm0, %xmm2
-; SSE2-NEXT:    andnps %xmm1, %xmm2
-; SSE2-NEXT:    andps %xmm3, %xmm0
-; SSE2-NEXT:    orps %xmm2, %xmm0
+; SSE2-NEXT:    movaps %xmm0, %xmm1
+; SSE2-NEXT:    andnps %xmm3, %xmm1
+; SSE2-NEXT:    andps %xmm2, %xmm0
+; SSE2-NEXT:    orps %xmm1, %xmm0
 ; SSE2-NEXT:    callq __truncsfhf2@PLT
 ; SSE2-NEXT:    movaps %xmm0, {{[-0-9]+}}(%r{{[sb]}}p) # 16-byte Spill
 ; SSE2-NEXT:    movaps {{[-0-9]+}}(%r{{[sb]}}p), %xmm0 # 16-byte Reload
 ; SSE2-NEXT:    callq __extendhfsf2@PLT
+; SSE2-NEXT:    movaps %xmm0, {{[-0-9]+}}(%r{{[sb]}}p) # 16-byte Spill
 ; SSE2-NEXT:    movaps %xmm0, %xmm1
-; SSE2-NEXT:    movaps %xmm0, {{[-0-9]+}}(%r{{[sb]}}p) # 16-byte Spill
-; SSE2-NEXT:    movaps {{[-0-9]+}}(%r{{[sb]}}p), %xmm0 # 16-byte Reload
-; SSE2-NEXT:    orps %xmm1, %xmm0
-; SSE2-NEXT:    movaps %xmm0, {{[-0-9]+}}(%r{{[sb]}}p) # 16-byte Spill
+; SSE2-NEXT:    orps {{\.?LCPI[0-9]+_[0-9]+}}(%rip), %xmm1
+; SSE2-NEXT:    movaps %xmm1, {{[-0-9]+}}(%r{{[sb]}}p) # 16-byte Spill
 ; SSE2-NEXT:    movaps {{[-0-9]+}}(%r{{[sb]}}p), %xmm0 # 16-byte Reload
 ; SSE2-NEXT:    callq __extendhfsf2@PLT
 ; SSE2-NEXT:    movaps {{[-0-9]+}}(%r{{[sb]}}p), %xmm2 # 16-byte Reload
 ; SSE2-NEXT:    movaps %xmm2, %xmm1
 ; SSE2-NEXT:    maxss %xmm0, %xmm1
-; SSE2-NEXT:    andps {{[-0-9]+}}(%r{{[sb]}}p), %xmm1 # 16-byte Folded Reload
+; SSE2-NEXT:    movaps {{[-0-9]+}}(%r{{[sb]}}p), %xmm3 # 16-byte Reload
+; SSE2-NEXT:    andps %xmm1, %xmm3
 ; SSE2-NEXT:    movaps %xmm2, %xmm0
-; SSE2-NEXT:    movaps %xmm2, %xmm3
 ; SSE2-NEXT:    cmpunordss %xmm2, %xmm0
-; SSE2-NEXT:    movaps %xmm0, %xmm2
-; SSE2-NEXT:    andnps %xmm1, %xmm2
-; SSE2-NEXT:    andps %xmm3, %xmm0
-; SSE2-NEXT:    orps %xmm2, %xmm0
+; SSE2-NEXT:    movaps %xmm0, %xmm1
+; SSE2-NEXT:    andnps %xmm3, %xmm1
+; SSE2-NEXT:    andps %xmm2, %xmm0
+; SSE2-NEXT:    orps %xmm1, %xmm0
 ; SSE2-NEXT:    callq __truncsfhf2@PLT
 ; SSE2-NEXT:    movdqa {{[-0-9]+}}(%r{{[sb]}}p), %xmm1 # 16-byte Reload
 ; SSE2-NEXT:    punpcklwd {{.*#+}} xmm1 = xmm1[0],xmm0[0],xmm1[1],xmm0[1],xmm1[2],xmm0[2],xmm1[3],xmm0[3]
@@ -1701,7 +1703,7 @@ define <4 x half> @test_fmaximum_v4f16(<4 x half> %x, <4 x half> %y) nounwind {
 ; SSE2-NEXT:    punpcklwd {{[-0-9]+}}(%r{{[sb]}}p), %xmm0 # 16-byte Folded Reload
 ; SSE2-NEXT:    # xmm0 = xmm0[0],mem[0],xmm0[1],mem[1],xmm0[2],mem[2],xmm0[3],mem[3]
 ; SSE2-NEXT:    punpckldq {{.*#+}} xmm0 = xmm0[0],xmm1[0],xmm0[1],xmm1[1]
-; SSE2-NEXT:    addq $168, %rsp
+; SSE2-NEXT:    addq $152, %rsp
 ; SSE2-NEXT:    retq
 ;
 ; AVX1-LABEL: test_fmaximum_v4f16:
@@ -2122,22 +2124,21 @@ define <4 x half> @test_fmaximum_v4f16(<4 x half> %x, <4 x half> %y) nounwind {
 ;
 ; AVX512BF16-LABEL: test_fmaximum_v4f16:
 ; AVX512BF16:       # %bb.0:
-; AVX512BF16-NEXT:    vcvtph2ps %xmm0, %ymm3
-; AVX512BF16-NEXT:    vcvtph2ps %xmm1, %ymm4
-; AVX512BF16-NEXT:    vcmpltps %ymm3, %ymm4, %k1
-; AVX512BF16-NEXT:    vpblendmw %xmm0, %xmm1, %xmm2 {%k1}
-; AVX512BF16-NEXT:    vcmpunordps %ymm4, %ymm3, %k1
-; AVX512BF16-NEXT:    vpbroadcastw {{.*#+}} xmm3 = [NaN,NaN,NaN,NaN,NaN,NaN,NaN,NaN]
-; AVX512BF16-NEXT:    vmovdqu16 %xmm3, %xmm2 {%k1}
+; AVX512BF16-NEXT:    vcvtph2ps %xmm0, %ymm2
+; AVX512BF16-NEXT:    vcvtph2ps %xmm1, %ymm3
+; AVX512BF16-NEXT:    vcmpltps %ymm2, %ymm3, %k1
+; AVX512BF16-NEXT:    vpblendmw %xmm0, %xmm1, %xmm4 {%k1}
+; AVX512BF16-NEXT:    vcmpunordps %ymm3, %ymm2, %k1
+; AVX512BF16-NEXT:    vpbroadcastw {{.*#+}} xmm2 = [NaN,NaN,NaN,NaN,NaN,NaN,NaN,NaN]
+; AVX512BF16-NEXT:    vpblendmw %xmm2, %xmm4, %xmm2 {%k1}
 ; AVX512BF16-NEXT:    vptestnmw %xmm0, %xmm0, %k1
 ; AVX512BF16-NEXT:    vpblendmw %xmm0, %xmm2, %xmm0 {%k1}
 ; AVX512BF16-NEXT:    vptestnmw %xmm1, %xmm1, %k1
-; AVX512BF16-NEXT:    vmovdqu16 %xmm1, %xmm0 {%k1}
+; AVX512BF16-NEXT:    vpblendmw %xmm1, %xmm0, %xmm0 {%k1}
 ; AVX512BF16-NEXT:    vcvtph2ps %xmm2, %ymm1
-; AVX512BF16-NEXT:    vpxor %xmm3, %xmm3, %xmm3
+; AVX512BF16-NEXT:    vxorps %xmm3, %xmm3, %xmm3
 ; AVX512BF16-NEXT:    vcmpeqps %ymm3, %ymm1, %k1
-; AVX512BF16-NEXT:    vmovdqu16 %xmm0, %xmm2 {%k1}
-; AVX512BF16-NEXT:    vmovdqa %xmm2, %xmm0
+; AVX512BF16-NEXT:    vpblendmw %xmm0, %xmm2, %xmm0 {%k1}
 ; AVX512BF16-NEXT:    vzeroupper
 ; AVX512BF16-NEXT:    retq
 ;
@@ -2265,17 +2266,17 @@ define bfloat @test_fmaximum_bf16(bfloat %x, bfloat %y) nounwind {
 ; SSE2-NEXT:    pextrw $0, %xmm0, %ecx
 ; SSE2-NEXT:    shll $16, %ecx
 ; SSE2-NEXT:    movd %ecx, %xmm1
-; SSE2-NEXT:    movdqa %xmm1, %xmm0
-; SSE2-NEXT:    cmpunordss %xmm1, %xmm0
-; SSE2-NEXT:    movaps %xmm0, %xmm2
-; SSE2-NEXT:    andps %xmm1, %xmm2
+; SSE2-NEXT:    movdqa %xmm1, %xmm2
+; SSE2-NEXT:    cmpunordss %xmm1, %xmm2
+; SSE2-NEXT:    movaps %xmm2, %xmm0
+; SSE2-NEXT:    andps %xmm1, %xmm0
 ; SSE2-NEXT:    shll $16, %eax
 ; SSE2-NEXT:    movd %eax, %xmm3
-; SSE2-NEXT:    movaps %xmm1, %xmm4
-; SSE2-NEXT:    maxss %xmm3, %xmm4
-; SSE2-NEXT:    orps {{\.?LCPI[0-9]+_[0-9]+}}(%rip), %xmm1
-; SSE2-NEXT:    andps %xmm4, %xmm1
-; SSE2-NEXT:    andnps %xmm1, %xmm0
+; SSE2-NEXT:    movaps {{.*#+}} xmm4 = [NaN,NaN,NaN,NaN]
+; SSE2-NEXT:    orps %xmm1, %xmm4
+; SSE2-NEXT:    maxss %xmm3, %xmm1
+; SSE2-NEXT:    andps %xmm1, %xmm4
+; SSE2-NEXT:    andnps %xmm4, %xmm2
 ; SSE2-NEXT:    orps %xmm2, %xmm0
 ; SSE2-NEXT:    callq __truncsfbf2@PLT
 ; SSE2-NEXT:    popq %rax
@@ -2346,10 +2347,11 @@ define bfloat @test_fmaximum_bf16(bfloat %x, bfloat %y) nounwind {
 ; AVX512BF16-NEXT:    shll $16, %eax
 ; AVX512BF16-NEXT:    vmovd %eax, %xmm1
 ; AVX512BF16-NEXT:    vmaxss %xmm0, %xmm1, %xmm0
-; AVX512BF16-NEXT:    vpternlogd {{.*#+}} xmm0 = xmm0 & (xmm1 | m32bcst)
+; AVX512BF16-NEXT:    vpbroadcastd {{.*#+}} xmm2 = [NaN,NaN,NaN,NaN]
+; AVX512BF16-NEXT:    vpternlogd {{.*#+}} xmm2 = xmm0 & (xmm2 | xmm1)
 ; AVX512BF16-NEXT:    vcmpunordss %xmm1, %xmm1, %k1
-; AVX512BF16-NEXT:    vmovss %xmm1, %xmm0, %xmm0 {%k1}
-; AVX512BF16-NEXT:    vcvtneps2bf16 %xmm0, %xmm0
+; AVX512BF16-NEXT:    vmovss %xmm1, %xmm2, %xmm2 {%k1}
+; AVX512BF16-NEXT:    vcvtneps2bf16 %xmm2, %xmm0
 ; AVX512BF16-NEXT:    retq
 ;
 ; AVX10_2-LABEL: test_fmaximum_bf16:
@@ -2429,65 +2431,65 @@ define <4 x bfloat> @test_fmaximum_v4bf16(<4 x bfloat> %x, <4 x bfloat> %y) {
 ; SSE2-NEXT:    pextrw $0, %xmm0, %ecx
 ; SSE2-NEXT:    shll $16, %ecx
 ; SSE2-NEXT:    movd %ecx, %xmm1
-; SSE2-NEXT:    movdqa %xmm1, %xmm0
-; SSE2-NEXT:    cmpunordss %xmm1, %xmm0
-; SSE2-NEXT:    movaps %xmm0, %xmm2
-; SSE2-NEXT:    andps %xmm1, %xmm2
+; SSE2-NEXT:    movdqa %xmm1, %xmm2
+; SSE2-NEXT:    cmpunordss %xmm1, %xmm2
+; SSE2-NEXT:    movaps %xmm2, %xmm0
+; SSE2-NEXT:    andps %xmm1, %xmm0
 ; SSE2-NEXT:    shll $16, %eax
 ; SSE2-NEXT:    movd %eax, %xmm3
 ; SSE2-NEXT:    movaps %xmm1, %xmm4
 ; SSE2-NEXT:    maxss %xmm3, %xmm4
 ; SSE2-NEXT:    orps {{\.?LCPI[0-9]+_[0-9]+}}(%rip), %xmm1
 ; SSE2-NEXT:    andps %xmm4, %xmm1
-; SSE2-NEXT:    andnps %xmm1, %xmm0
+; SSE2-NEXT:    andnps %xmm1, %xmm2
 ; SSE2-NEXT:    orps %xmm2, %xmm0
 ; SSE2-NEXT:    callq __truncsfbf2@PLT
 ; SSE2-NEXT:    movaps %xmm0, {{[-0-9]+}}(%r{{[sb]}}p) # 16-byte Spill
 ; SSE2-NEXT:    shll $16, %r13d
 ; SSE2-NEXT:    movd %r13d, %xmm1
-; SSE2-NEXT:    movdqa %xmm1, %xmm0
-; SSE2-NEXT:    cmpunordss %xmm1, %xmm0
-; SSE2-NEXT:    movaps %xmm0, %xmm2
-; SSE2-NEXT:    andps %xmm1, %xmm2
+; SSE2-NEXT:    movdqa %xmm1, %xmm2
+; SSE2-NEXT:    cmpunordss %xmm1, %xmm2
+; SSE2-NEXT:    movaps %xmm2, %xmm0
+; SSE2-NEXT:    andps %xmm1, %xmm0
 ; SSE2-NEXT:    shll $16, %r12d
 ; SSE2-NEXT:    movd %r12d, %xmm3
 ; SSE2-NEXT:    movaps %xmm1, %xmm4
 ; SSE2-NEXT:    maxss %xmm3, %xmm4
 ; SSE2-NEXT:    orps {{\.?LCPI[0-9]+_[0-9]+}}(%rip), %xmm1
 ; SSE2-NEXT:    andps %xmm4, %xmm1
-; SSE2-NEXT:    andnps %xmm1, %xmm0
+; SSE2-NEXT:    andnps %xmm1, %xmm2
 ; SSE2-NEXT:    orps %xmm2, %xmm0
 ; SSE2-NEXT:    callq __truncsfbf2@PLT
 ; SSE2-NEXT:    movaps %xmm0, {{[-0-9]+}}(%r{{[sb]}}p) # 16-byte Spill
 ; SSE2-NEXT:    shll $16, %r15d
 ; SSE2-NEXT:    movd %r15d, %xmm1
-; SSE2-NEXT:    movdqa %xmm1, %xmm0
-; SSE2-NEXT:    cmpunordss %xmm1, %xmm0
-; SSE2-NEXT:    movaps %xmm0, %xmm2
-; SSE2-NEXT:    andps %xmm1, %xmm2
+; SSE2-NEXT:    movdqa %xmm1, %xmm2
+; SSE2-NEXT:    cmpunordss %xmm1, %xmm2
+; SSE2-NEXT:    movaps %xmm2, %xmm0
+; SSE2-NEXT:    andps %xmm1, %xmm0
 ; SSE2-NEXT:    shll $16, %r14d
 ; SSE2-NEXT:    movd %r14d, %xmm3
 ; SSE2-NEXT:    movaps %xmm1, %xmm4
 ; SSE2-NEXT:    maxss %xmm3, %xmm4
 ; SSE2-NEXT:    orps {{\.?LCPI[0-9]+_[0-9]+}}(%rip), %xmm1
 ; SSE2-NEXT:    andps %xmm4, %xmm1
-; SSE2-NEXT:    andnps %xmm1, %xmm0
+; SSE2-NEXT:    andnps %xmm1, %xmm2
 ; SSE2-NEXT:    orps %xmm2, %xmm0
 ; SSE2-NEXT:    callq __truncsfbf2@PLT
 ; SSE2-NEXT:    movaps %xmm0, (%rsp) # 16-byte Spill
 ; SSE2-NEXT:    shll $16, %ebp
 ; SSE2-NEXT:    movd %ebp, %xmm1
-; SSE2-NEXT:    movdqa %xmm1, %xmm0
-; SSE2-NEXT:    cmpunordss %xmm1, %xmm0
-; SSE2-NEXT:    movaps %xmm0, %xmm2
-; SSE2-NEXT:    andps %xmm1, %xmm2
+; SSE2-NEXT:    movdqa %xmm1, %xmm2
+; SSE2-NEXT:    cmpunordss %xmm1, %xmm2
+; SSE2-NEXT:    movaps %xmm2, %xmm0
+; SSE2-NEXT:    andps %xmm1, %xmm0
 ; SSE2-NEXT:    shll $16, %ebx
 ; SSE2-NEXT:    movd %ebx, %xmm3
 ; SSE2-NEXT:    movaps %xmm1, %xmm4
 ; SSE2-NEXT:    maxss %xmm3, %xmm4
 ; SSE2-NEXT:    orps {{\.?LCPI[0-9]+_[0-9]+}}(%rip), %xmm1
 ; SSE2-NEXT:    andps %xmm4, %xmm1
-; SSE2-NEXT:    andnps %xmm1, %xmm0
+; SSE2-NEXT:    andnps %xmm1, %xmm2
 ; SSE2-NEXT:    orps %xmm2, %xmm0
 ; SSE2-NEXT:    callq __truncsfbf2@PLT
 ; SSE2-NEXT:    movdqa (%rsp), %xmm1 # 16-byte Reload
@@ -2814,23 +2816,22 @@ define <4 x bfloat> @test_fmaximum_v4bf16(<4 x bfloat> %x, <4 x bfloat> %y) {
 ; AVX512BF16-LABEL: test_fmaximum_v4bf16:
 ; AVX512BF16:       # %bb.0:
 ; AVX512BF16-NEXT:    vpmovzxwd {{.*#+}} ymm2 = xmm0[0],zero,xmm0[1],zero,xmm0[2],zero,xmm0[3],zero,xmm0[4],zero,xmm0[5],zero,xmm0[6],zero,xmm0[7],zero
-; AVX512BF16-NEXT:    vpslld $16, %ymm2, %ymm3
-; AVX512BF16-NEXT:    vpmovzxwd {{.*#+}} ymm2 = xmm1[0],zero,xmm1[1],zero,xmm1[2],zero,xmm1[3],zero,xmm1[4],zero,xmm1[5],zero,xmm1[6],zero,xmm1[7],zero
-; AVX512BF16-NEXT:    vpslld $16, %ymm2, %ymm4
-; AVX512BF16-NEXT:    vcmpltps %ymm3, %ymm4, %k1
-; AVX512BF16-NEXT:    vpblendmw %xmm0, %xmm1, %xmm2 {%k1}
-; AVX512BF16-NEXT:    vcmpunordps %ymm4, %ymm3, %k1
-; AVX512BF16-NEXT:    vmovdqu16 {{.*#+}} xmm2 {%k1} = [32704,32704,32704,32704,32704,32704,32704,32704]
+; AVX512BF16-NEXT:    vpslld $16, %ymm2, %ymm2
+; AVX512BF16-NEXT:    vpmovzxwd {{.*#+}} ymm3 = xmm1[0],zero,xmm1[1],zero,xmm1[2],zero,xmm1[3],zero,xmm1[4],zero,xmm1[5],zero,xmm1[6],zero,xmm1[7],zero
+; AVX512BF16-NEXT:    vpslld $16, %ymm3, %ymm3
+; AVX512BF16-NEXT:    vcmpltps %ymm2, %ymm3, %k1
+; AVX512BF16-NEXT:    vpblendmw %xmm0, %xmm1, %xmm4 {%k1}
+; AVX512BF16-NEXT:    vcmpunordps %ymm3, %ymm2, %k1
+; AVX512BF16-NEXT:    vpblendmw {{\.?LCPI[0-9]+_[0-9]+}}(%rip), %xmm4, %xmm2 {%k1}
 ; AVX512BF16-NEXT:    vptestnmw %xmm0, %xmm0, %k1
 ; AVX512BF16-NEXT:    vpblendmw %xmm0, %xmm2, %xmm0 {%k1}
 ; AVX512BF16-NEXT:    vptestnmw %xmm1, %xmm1, %k1
-; AVX512BF16-NEXT:    vmovdqu16 %xmm1, %xmm0 {%k1}
+; AVX512BF16-NEXT:    vpblendmw %xmm1, %xmm0, %xmm0 {%k1}
 ; AVX512BF16-NEXT:    vpmovzxwd {{.*#+}} ymm1 = xmm2[0],zero,xmm2[1],zero,xmm2[2],zero,xmm2[3],zero,xmm2[4],zero,xmm2[5],zero,xmm2[6],zero,xmm2[7],zero
 ; AVX512BF16-NEXT:    vpslld $16, %ymm1, %ymm1
 ; AVX512BF16-NEXT:    vxorps %xmm3, %xmm3, %xmm3
 ; AVX512BF16-NEXT:    vcmpeqps %ymm3, %ymm1, %k1
-; AVX512BF16-NEXT:    vmovdqu16 %xmm0, %xmm2 {%k1}
-; AVX512BF16-NEXT:    vmovdqa %xmm2, %xmm0
+; AVX512BF16-NEXT:    vpblendmw %xmm0, %xmm2, %xmm0 {%k1}
 ; AVX512BF16-NEXT:    vzeroupper
 ; AVX512BF16-NEXT:    retq
 ;
@@ -2952,17 +2953,17 @@ define bfloat @test_fminimum_bf16(bfloat %x, bfloat %y) nounwind {
 ; SSE2-NEXT:    pextrw $0, %xmm0, %ecx
 ; SSE2-NEXT:    shll $16, %ecx
 ; SSE2-NEXT:    movd %ecx, %xmm1
-; SSE2-NEXT:    movdqa %xmm1, %xmm0
-; SSE2-NEXT:    cmpunordss %xmm1, %xmm0
-; SSE2-NEXT:    movaps %xmm0, %xmm2
-; SSE2-NEXT:    andps %xmm1, %xmm2
+; SSE2-NEXT:    movdqa %xmm1, %xmm2
+; SSE2-NEXT:    cmpunordss %xmm1, %xmm2
+; SSE2-NEXT:    movaps %xmm2, %xmm0
+; SSE2-NEXT:    andps %xmm1, %xmm0
 ; SSE2-NEXT:    shll $16, %eax
 ; SSE2-NEXT:    movd %eax, %xmm3
-; SSE2-NEXT:    movaps %xmm1, %xmm4
-; SSE2-NEXT:    minss %xmm3, %xmm4
-; SSE2-NEXT:    andps {{\.?LCPI[0-9]+_[0-9]+}}(%rip), %xmm1
-; SSE2-NEXT:    orps %xmm4, %xmm1
-; SSE2-NEXT:    andnps %xmm1, %xmm0
+; SSE2-NEXT:    movaps {{.*#+}} xmm4 = [-0.0E+0,-0.0E+0,-0.0E+0,-0.0E+0]
+; SSE2-NEXT:    andps %xmm1, %xmm4
+; SSE2-NEXT:    minss %xmm3, %xmm1
+; SSE2-NEXT:    orps %xmm1, %xmm4
+; SSE2-NEXT:    andnps %xmm4, %xmm2
 ; SSE2-NEXT:    orps %xmm2, %xmm0
 ; SSE2-NEXT:    callq __truncsfbf2@PLT
 ; SSE2-NEXT:    popq %rax
@@ -3033,10 +3034,11 @@ define bfloat @test_fminimum_bf16(bfloat %x, bfloat %y) nounwind {
 ; AVX512BF16-NEXT:    shll $16, %eax
 ; AVX512BF16-NEXT:    vmovd %eax, %xmm1
 ; AVX512BF16-NEXT:    vminss %xmm0, %xmm1, %xmm0
-; AVX512BF16-NEXT:    vpternlogd {{.*#+}} xmm0 = xmm0 | (xmm1 & m32bcst)
+; AVX512BF16-NEXT:    vpbroadcastd {{.*#+}} xmm2 = [-0.0E+0,-0.0E+0,-0.0E+0,-0.0E+0]
+; AVX512BF16-NEXT:    vpternlogd {{.*#+}} xmm2 = (xmm2 & xmm1) | xmm0
 ; AVX512BF16-NEXT:    vcmpunordss %xmm1, %xmm1, %k1
-; AVX512BF16-NEXT:    vmovss %xmm1, %xmm0, %xmm0 {%k1}
-; AVX512BF16-NEXT:    vcvtneps2bf16 %xmm0, %xmm0
+; AVX512BF16-NEXT:    vmovss %xmm1, %xmm2, %xmm2 {%k1}
+; AVX512BF16-NEXT:    vcvtneps2bf16 %xmm2, %xmm0
 ; AVX512BF16-NEXT:    retq
 ;
 ; AVX10_2-LABEL: test_fminimum_bf16:
@@ -3205,10 +3207,11 @@ define float @test_fmaximum_ieee(float %x) nounwind {
 define float @test_fmaximum_daz(float %x) #0 {
 ; SSE2-LABEL: test_fmaximum_daz:
 ; SSE2:       # %bb.0:
-; SSE2-NEXT:    movaps %xmm0, %xmm1
-; SSE2-NEXT:    maxss {{\.?LCPI[0-9]+_[0-9]+}}(%rip), %xmm1
-; SSE2-NEXT:    orps {{\.?LCPI[0-9]+_[0-9]+}}(%rip), %xmm0
-; SSE2-NEXT:    andps %xmm1, %xmm0
+; SSE2-NEXT:    movaps {{.*#+}} xmm1 = [NaN,NaN,NaN,NaN]
+; SSE2-NEXT:    orps %xmm0, %xmm1
+; SSE2-NEXT:    maxss {{\.?LCPI[0-9]+_[0-9]+}}(%rip), %xmm0
+; SSE2-NEXT:    andps %xmm0, %xmm1
+; SSE2-NEXT:    movaps %xmm1, %xmm0
 ; SSE2-NEXT:    retq
 ;
 ; AVX1-LABEL: test_fmaximum_daz:
@@ -3239,8 +3242,10 @@ define float @test_fmaximum_daz(float %x) #0 {
 ;
 ; AVX512BF16-LABEL: test_fmaximum_daz:
 ; AVX512BF16:       # %bb.0:
-; AVX512BF16-NEXT:    vmaxss {{\.?LCPI[0-9]+_[0-9]+}}(%rip), %xmm0, %xmm1
-; AVX512BF16-NEXT:    vpternlogd {{.*#+}} xmm0 = xmm1 & (xmm0 | m32bcst)
+; AVX512BF16-NEXT:    vmaxss {{\.?LCPI[0-9]+_[0-9]+}}(%rip), %xmm0, %xmm2
+; AVX512BF16-NEXT:    vpbroadcastd {{.*#+}} xmm1 = [NaN,NaN,NaN,NaN]
+; AVX512BF16-NEXT:    vpternlogd {{.*#+}} xmm1 = xmm2 & (xmm1 | xmm0)
+; AVX512BF16-NEXT:    vmovdqa %xmm1, %xmm0
 ; AVX512BF16-NEXT:    retq
 ;
 ; AVX10_2-LABEL: test_fmaximum_daz:
@@ -3297,10 +3302,11 @@ define float @test_fminimum_ieee(float %x) nounwind {
 define float @test_fminimum_daz(float %x) #0 {
 ; SSE2-LABEL: test_fminimum_daz:
 ; SSE2:       # %bb.0:
-; SSE2-NEXT:    movaps %xmm0, %xmm1
-; SSE2-NEXT:    minss {{\.?LCPI[0-9]+_[0-9]+}}(%rip), %xmm1
-; SSE2-NEXT:    andps {{\.?LCPI[0-9]+_[0-9]+}}(%rip), %xmm0
-; SSE2-NEXT:    orps %xmm1, %xmm0
+; SSE2-NEXT:    movaps {{.*#+}} xmm1 = [-0.0E+0,-0.0E+0,-0.0E+0,-0.0E+0]
+; SSE2-NEXT:    andps %xmm0, %xmm1
+; SSE2-NEXT:    minss {{\.?LCPI[0-9]+_[0-9]+}}(%rip), %xmm0
+; SSE2-NEXT:    orps %xmm0, %xmm1
+; SSE2-NEXT:    movaps %xmm1, %xmm0
 ; SSE2-NEXT:    retq
 ;
 ; AVX1-LABEL: test_fminimum_daz:
@@ -3331,8 +3337,10 @@ define float @test_fminimum_daz(float %x) #0 {
 ;
 ; AVX512BF16-LABEL: test_fminimum_daz:
 ; AVX512BF16:       # %bb.0:
-; AVX512BF16-NEXT:    vminss {{\.?LCPI[0-9]+_[0-9]+}}(%rip), %xmm0, %xmm1
-; AVX512BF16-NEXT:    vpternlogd {{.*#+}} xmm0 = (xmm0 & m32bcst) | xmm1
+; AVX512BF16-NEXT:    vminss {{\.?LCPI[0-9]+_[0-9]+}}(%rip), %xmm0, %xmm2
+; AVX512BF16-NEXT:    vpbroadcastd {{.*#+}} xmm1 = [-0.0E+0,-0.0E+0,-0.0E+0,-0.0E+0]
+; AVX512BF16-NEXT:    vpternlogd {{.*#+}} xmm1 = (xmm1 & xmm0) | xmm2
+; AVX512BF16-NEXT:    vmovdqa %xmm1, %xmm0
 ; AVX512BF16-NEXT:    retq
 ;
 ; AVX10_2-LABEL: test_fminimum_daz:

@@ -7,18 +7,19 @@
 define void @translate(ptr %ptr) nounwind {
 ; CHECK-LABEL: translate:
 ; CHECK:       # %bb.0:
-; CHECK-NEXT:    pushq %rbp
+; CHECK-NEXT:    pushq %r14
 ; CHECK-NEXT:    pushq %rbx
 ; CHECK-NEXT:    pushq %rax
 ; CHECK-NEXT:    movq %rdi, %rbx
-; CHECK-NEXT:    movl $-32707, %ebp # imm = 0x803D
-; CHECK-NEXT:    andl (%rdi), %ebp
+; CHECK-NEXT:    movl $-32707, %eax # imm = 0x803D
+; CHECK-NEXT:    movl (%rdi), %r14d
+; CHECK-NEXT:    andl %eax, %r14d
 ; CHECK-NEXT:    callq maybe_mutate@PLT
-; CHECK-NEXT:    orl $514, %ebp # imm = 0x202
-; CHECK-NEXT:    movw %bp, (%rbx)
+; CHECK-NEXT:    leal 514(%r14), %eax
+; CHECK-NEXT:    movw %ax, (%rbx)
 ; CHECK-NEXT:    addq $8, %rsp
 ; CHECK-NEXT:    popq %rbx
-; CHECK-NEXT:    popq %rbp
+; CHECK-NEXT:    popq %r14
 ; CHECK-NEXT:    retq
   %i0 = load i16, ptr %ptr, align 4
   call void @maybe_mutate(ptr %ptr)

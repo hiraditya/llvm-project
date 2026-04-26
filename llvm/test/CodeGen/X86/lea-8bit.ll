@@ -7,7 +7,7 @@ define i8 @lea8bit(i8 %in) {
 ; NO-NDD:       # %bb.0:
 ; NO-NDD-NEXT:    # kill: def $edi killed $edi def $rdi
 ; NO-NDD-NEXT:    leal (%rdi,%rdi), %eax
-; NO-NDD-NEXT:    incb %al
+; NO-NDD-NEXT:    incl %eax
 ; NO-NDD-NEXT:    # kill: def $al killed $al killed $eax
 ; NO-NDD-NEXT:    retq
 ;

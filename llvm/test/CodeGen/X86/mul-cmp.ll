@@ -10,9 +10,9 @@ define i1 @mul_nsw_eq0_i8(i8 %x, i8 %y) {
 ; CHECK-LABEL: mul_nsw_eq0_i8:
 ; CHECK:       # %bb.0:
 ; CHECK-NEXT:    testb %sil, %sil
-; CHECK-NEXT:    sete %cl
-; CHECK-NEXT:    testb %dil, %dil
 ; CHECK-NEXT:    sete %al
+; CHECK-NEXT:    testb %dil, %dil
+; CHECK-NEXT:    sete %cl
 ; CHECK-NEXT:    orb %cl, %al
 ; CHECK-NEXT:    retq
   %m = mul nsw i8 %x, %y
@@ -56,9 +56,9 @@ define i1 @mul_nsw_ne0_i16(i16 %x, i16 %y) {
 ; CHECK-LABEL: mul_nsw_ne0_i16:
 ; CHECK:       # %bb.0:
 ; CHECK-NEXT:    testw %si, %si
-; CHECK-NEXT:    setne %cl
-; CHECK-NEXT:    testw %di, %di
 ; CHECK-NEXT:    setne %al
+; CHECK-NEXT:    testw %di, %di
+; CHECK-NEXT:    setne %cl
 ; CHECK-NEXT:    andb %cl, %al
 ; CHECK-NEXT:    retq
   %m = mul nsw i16 %x, %y
@@ -70,9 +70,9 @@ define i1 @mul_nuw_eq0_i32(i32 %x, i32 %y) {
 ; CHECK-LABEL: mul_nuw_eq0_i32:
 ; CHECK:       # %bb.0:
 ; CHECK-NEXT:    testl %esi, %esi
-; CHECK-NEXT:    sete %cl
-; CHECK-NEXT:    testl %edi, %edi
 ; CHECK-NEXT:    sete %al
+; CHECK-NEXT:    testl %edi, %edi
+; CHECK-NEXT:    sete %cl
 ; CHECK-NEXT:    orb %cl, %al
 ; CHECK-NEXT:    retq
   %m = mul nuw i32 %x, %y
@@ -84,9 +84,9 @@ define i1 @mul_nsw_nuw_ne0_i64(i64 %x, i64 %y) {
 ; CHECK-LABEL: mul_nsw_nuw_ne0_i64:
 ; CHECK:       # %bb.0:
 ; CHECK-NEXT:    testq %rsi, %rsi
-; CHECK-NEXT:    setne %cl
-; CHECK-NEXT:    testq %rdi, %rdi
 ; CHECK-NEXT:    setne %al
+; CHECK-NEXT:    testq %rdi, %rdi
+; CHECK-NEXT:    setne %cl
 ; CHECK-NEXT:    andb %cl, %al
 ; CHECK-NEXT:    retq
   %m = mul nsw nuw i64 %x, %y
@@ -100,7 +100,8 @@ define <16 x i1> @mul_nuw_eq0_v16i8(<16 x i8> %x, <16 x i8> %y) {
 ; SSE-NEXT:    pxor %xmm2, %xmm2
 ; SSE-NEXT:    pcmpeqb %xmm2, %xmm1
 ; SSE-NEXT:    pcmpeqb %xmm2, %xmm0
-; SSE-NEXT:    por %xmm1, %xmm0
+; SSE-NEXT:    por %xmm0, %xmm1
+; SSE-NEXT:    movdqa %xmm1, %xmm0
 ; SSE-NEXT:    retq
 ;
 ; AVX-LABEL: mul_nuw_eq0_v16i8:
@@ -121,8 +122,8 @@ define <4 x i1> @mul_nsw_ne0_v4i32(<4 x i32> %x, <4 x i32> %y) {
 ; SSE-NEXT:    pxor %xmm2, %xmm2
 ; SSE-NEXT:    pcmpeqd %xmm2, %xmm1
 ; SSE-NEXT:    pcmpeqd %xmm2, %xmm0
-; SSE-NEXT:    por %xmm1, %xmm0
-; SSE-NEXT:    pcmpeqd %xmm1, %xmm1
+; SSE-NEXT:    por %xmm0, %xmm1
+; SSE-NEXT:    pcmpeqd %xmm0, %xmm0
 ; SSE-NEXT:    pxor %xmm1, %xmm0
 ; SSE-NEXT:    retq
 ;

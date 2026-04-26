@@ -525,7 +525,7 @@ void PPCPassConfig::addPreRegAlloc() {
     // PPCTLSDynamicCallPass uses LiveIntervals which previously dependent on
     // LiveVariables. This (unnecessary) dependency has been removed now,
     // however a stage-2 clang build fails without LiveVariables computed here.
-    addPass(&LiveVariablesID);
+    addPass(&SparseLiveVariablesID);
     addPass(createPPCTLSDynamicCallPass());
   }
   if (EnableExtraTOCRegDeps)

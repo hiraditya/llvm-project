@@ -34,15 +34,15 @@ define fastcc void @mp_sqrt(i32 %n, i32 %radix, ptr %in, ptr %out, ptr %tmp1, pt
 ; CHECK-NEXT:    andl $1, %ebp
 ; CHECK-NEXT:    xorpd %xmm0, %xmm0
 ; CHECK-NEXT:    xorl %eax, %eax
-; CHECK-NEXT:    xorl %ecx, %ecx
 ; CHECK-NEXT:    xorpd %xmm1, %xmm1
 ; CHECK-NEXT:    .p2align 4
 ; CHECK-NEXT:  .LBB0_7: # %bb.i28.i
 ; CHECK-NEXT:    # =>This Inner Loop Header: Depth=1
-; CHECK-NEXT:    cvttsd2si %xmm1, %edi
-; CHECK-NEXT:    cmpl %edx, %edi
-; CHECK-NEXT:    cmovgel %eax, %edi
-; CHECK-NEXT:    addl $2, %ecx
+; CHECK-NEXT:    cvttsd2si %xmm1, %ecx
+; CHECK-NEXT:    cmpl %edx, %ecx
+; CHECK-NEXT:    movl $0, %edi
+; CHECK-NEXT:    cmovll %ecx, %edi
+; CHECK-NEXT:    addl $2, %eax
 ; CHECK-NEXT:    xorps %xmm2, %xmm2
 ; CHECK-NEXT:    cvtsi2sd %edi, %xmm2
 ; CHECK-NEXT:    xorpd %xmm1, %xmm1

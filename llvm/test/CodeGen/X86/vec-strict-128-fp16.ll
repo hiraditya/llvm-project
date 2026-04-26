@@ -105,7 +105,8 @@ define <2 x double> @f12(<2 x double> %a0, <8 x half> %a1) #0 {
 define <8 x half> @f13(<8 x half> %a, <8 x half> %b, <8 x half> %c) #0 {
 ; CHECK-LABEL: f13:
 ; CHECK:       # %bb.0:
-; CHECK-NEXT:    vfmadd213ph %xmm2, %xmm1, %xmm0
+; CHECK-NEXT:    vfmadd213ph %xmm2, %xmm0, %xmm1
+; CHECK-NEXT:    vmovaps %xmm1, %xmm0
 ; CHECK-NEXT:    ret{{[l|q]}}
   %res = call <8 x half> @llvm.experimental.constrained.fma.v8f16(<8 x half> %a, <8 x half> %b, <8 x half> %c,
                                                                   metadata !"round.dynamic",

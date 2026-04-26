@@ -110,35 +110,35 @@ define float @from_f8e5m2_dynamic(i8 %x) {
 ; CHECK-NEXT:    andl $31, %edi
 ; CHECK-NEXT:    movl %edi, %esi
 ; CHECK-NEXT:    shll $23, %esi
-; CHECK-NEXT:    orl %eax, %esi
-; CHECK-NEXT:    leal 939524096(%rcx,%rsi), %esi
-; CHECK-NEXT:    bsrl %edx, %r8d
-; CHECK-NEXT:    movl %edx, %r9d
-; CHECK-NEXT:    btcl %r8d, %r9d
-; CHECK-NEXT:    xorl $31, %r8d
-; CHECK-NEXT:    leal -8(%r8), %ecx
+; CHECK-NEXT:    addl %eax, %esi
+; CHECK-NEXT:    leal 939524096(%rcx,%rsi), %r8d
+; CHECK-NEXT:    bsrl %edx, %r9d
+; CHECK-NEXT:    movl %edx, %esi
+; CHECK-NEXT:    btcl %r9d, %esi
+; CHECK-NEXT:    xorl $31, %r9d
+; CHECK-NEXT:    leal -8(%r9), %ecx
 ; CHECK-NEXT:    # kill: def $cl killed $cl killed $ecx
-; CHECK-NEXT:    shll %cl, %r9d
+; CHECK-NEXT:    shll %cl, %esi
 ; CHECK-NEXT:    movl $142, %ecx
-; CHECK-NEXT:    subl %r8d, %ecx
+; CHECK-NEXT:    subl %r9d, %ecx
 ; CHECK-NEXT:    shll $23, %ecx
 ; CHECK-NEXT:    orl %eax, %ecx
-; CHECK-NEXT:    orl %r9d, %ecx
+; CHECK-NEXT:    orl %ecx, %esi
 ; CHECK-NEXT:    testl %edx, %edx
-; CHECK-NEXT:    sete %dl
-; CHECK-NEXT:    setne %r8b
+; CHECK-NEXT:    sete %cl
+; CHECK-NEXT:    setne %dl
 ; CHECK-NEXT:    testl %edi, %edi
 ; CHECK-NEXT:    sete %r9b
-; CHECK-NEXT:    testb %r8b, %r9b
-; CHECK-NEXT:    cmovel %esi, %ecx
 ; CHECK-NEXT:    testb %dl, %r9b
-; CHECK-NEXT:    cmovnel %eax, %ecx
-; CHECK-NEXT:    orl $2139095040, %eax # imm = 0x7F800000
+; CHECK-NEXT:    cmovel %r8d, %esi
+; CHECK-NEXT:    testb %cl, %r9b
+; CHECK-NEXT:    cmovnel %eax, %esi
+; CHECK-NEXT:    addl $2139095040, %eax # imm = 0x7F800000
 ; CHECK-NEXT:    cmpl $31, %edi
-; CHECK-NEXT:    sete %sil
-; CHECK-NEXT:    testb %dl, %sil
-; CHECK-NEXT:    cmovel %ecx, %eax
-; CHECK-NEXT:    testb %r8b, %sil
+; CHECK-NEXT:    sete %dil
+; CHECK-NEXT:    testb %cl, %dil
+; CHECK-NEXT:    cmovel %esi, %eax
+; CHECK-NEXT:    testb %dl, %dil
 ; CHECK-NEXT:    movl $2143289344, %ecx # imm = 0x7FC00000
 ; CHECK-NEXT:    cmovel %eax, %ecx
 ; CHECK-NEXT:    movd %ecx, %xmm0
@@ -228,36 +228,36 @@ define float @from_f8e4m3fn_dynamic(i8 %x) {
 ; CHECK-NEXT:    andl $15, %edi
 ; CHECK-NEXT:    movl %edi, %esi
 ; CHECK-NEXT:    shll $23, %esi
-; CHECK-NEXT:    orl %edx, %esi
-; CHECK-NEXT:    leal 1006632960(%rcx,%rsi), %esi
-; CHECK-NEXT:    bsrl %eax, %r8d
-; CHECK-NEXT:    movl %eax, %r9d
-; CHECK-NEXT:    btcl %r8d, %r9d
-; CHECK-NEXT:    xorl $31, %r8d
-; CHECK-NEXT:    leal -8(%r8), %ecx
+; CHECK-NEXT:    addl %edx, %esi
+; CHECK-NEXT:    leal 1006632960(%rcx,%rsi), %r8d
+; CHECK-NEXT:    bsrl %eax, %r9d
+; CHECK-NEXT:    movl %eax, %esi
+; CHECK-NEXT:    btcl %r9d, %esi
+; CHECK-NEXT:    xorl $31, %r9d
+; CHECK-NEXT:    leal -8(%r9), %ecx
 ; CHECK-NEXT:    # kill: def $cl killed $cl killed $ecx
-; CHECK-NEXT:    shll %cl, %r9d
+; CHECK-NEXT:    shll %cl, %esi
 ; CHECK-NEXT:    movl $149, %ecx
-; CHECK-NEXT:    subl %r8d, %ecx
+; CHECK-NEXT:    subl %r9d, %ecx
 ; CHECK-NEXT:    shll $23, %ecx
 ; CHECK-NEXT:    orl %edx, %ecx
-; CHECK-NEXT:    orl %r9d, %ecx
+; CHECK-NEXT:    orl %ecx, %esi
 ; CHECK-NEXT:    testl %eax, %eax
-; CHECK-NEXT:    sete %r8b
+; CHECK-NEXT:    sete %cl
 ; CHECK-NEXT:    setne %r9b
 ; CHECK-NEXT:    testl %edi, %edi
 ; CHECK-NEXT:    sete %r10b
 ; CHECK-NEXT:    testb %r9b, %r10b
-; CHECK-NEXT:    cmovel %esi, %ecx
-; CHECK-NEXT:    testb %r8b, %r10b
-; CHECK-NEXT:    cmovnel %edx, %ecx
+; CHECK-NEXT:    cmovel %r8d, %esi
+; CHECK-NEXT:    testb %cl, %r10b
+; CHECK-NEXT:    cmovnel %edx, %esi
 ; CHECK-NEXT:    cmpl $7, %eax
 ; CHECK-NEXT:    sete %al
 ; CHECK-NEXT:    cmpl $15, %edi
-; CHECK-NEXT:    sete %dl
-; CHECK-NEXT:    testb %al, %dl
+; CHECK-NEXT:    sete %cl
+; CHECK-NEXT:    testb %al, %cl
 ; CHECK-NEXT:    movl $2143289344, %eax # imm = 0x7FC00000
-; CHECK-NEXT:    cmovel %ecx, %eax
+; CHECK-NEXT:    cmovel %esi, %eax
 ; CHECK-NEXT:    movd %eax, %xmm0
 ; CHECK-NEXT:    retq
   %r = call float @llvm.convert.from.arbitrary.fp.f32.i8(i8 %x, metadata !"Float8E4M3FN")
@@ -333,7 +333,7 @@ define float @from_f6e3m2fn_dynamic(i6 %x) {
 ; CHECK-NEXT:    andl $7, %edi
 ; CHECK-NEXT:    movl %edi, %esi
 ; CHECK-NEXT:    shll $23, %esi
-; CHECK-NEXT:    orl %eax, %esi
+; CHECK-NEXT:    addl %eax, %esi
 ; CHECK-NEXT:    leal 1040187392(%rcx,%rsi), %esi
 ; CHECK-NEXT:    bsrl %edx, %r8d
 ; CHECK-NEXT:    movl %edx, %r9d
@@ -346,17 +346,17 @@ define float @from_f6e3m2fn_dynamic(i6 %x) {
 ; CHECK-NEXT:    subl %r8d, %ecx
 ; CHECK-NEXT:    shll $23, %ecx
 ; CHECK-NEXT:    orl %eax, %ecx
-; CHECK-NEXT:    orl %r9d, %ecx
+; CHECK-NEXT:    orl %ecx, %r9d
 ; CHECK-NEXT:    testl %edx, %edx
-; CHECK-NEXT:    sete %dl
-; CHECK-NEXT:    setne %r8b
+; CHECK-NEXT:    sete %cl
+; CHECK-NEXT:    setne %dl
 ; CHECK-NEXT:    testl %edi, %edi
 ; CHECK-NEXT:    sete %dil
-; CHECK-NEXT:    testb %r8b, %dil
-; CHECK-NEXT:    cmovel %esi, %ecx
 ; CHECK-NEXT:    testb %dl, %dil
-; CHECK-NEXT:    cmovnel %eax, %ecx
-; CHECK-NEXT:    movd %ecx, %xmm0
+; CHECK-NEXT:    cmovel %esi, %r9d
+; CHECK-NEXT:    testb %cl, %dil
+; CHECK-NEXT:    cmovnel %eax, %r9d
+; CHECK-NEXT:    movd %r9d, %xmm0
 ; CHECK-NEXT:    retq
   %r = call float @llvm.convert.from.arbitrary.fp.f32.i6(i6 %x, metadata !"Float6E3M2FN")
   ret float %r
@@ -421,7 +421,7 @@ define float @from_f6e2m3fn_dynamic(i6 %x) {
 ; CHECK-NEXT:    andl $3, %edi
 ; CHECK-NEXT:    movl %edi, %esi
 ; CHECK-NEXT:    shll $23, %esi
-; CHECK-NEXT:    orl %eax, %esi
+; CHECK-NEXT:    addl %eax, %esi
 ; CHECK-NEXT:    leal 1056964608(%rcx,%rsi), %esi
 ; CHECK-NEXT:    bsrl %edx, %r8d
 ; CHECK-NEXT:    movl %edx, %r9d
@@ -434,17 +434,17 @@ define float @from_f6e2m3fn_dynamic(i6 %x) {
 ; CHECK-NEXT:    subl %r8d, %ecx
 ; CHECK-NEXT:    shll $23, %ecx
 ; CHECK-NEXT:    orl %eax, %ecx
-; CHECK-NEXT:    orl %r9d, %ecx
+; CHECK-NEXT:    orl %ecx, %r9d
 ; CHECK-NEXT:    testl %edx, %edx
-; CHECK-NEXT:    sete %dl
-; CHECK-NEXT:    setne %r8b
+; CHECK-NEXT:    sete %cl
+; CHECK-NEXT:    setne %dl
 ; CHECK-NEXT:    testl %edi, %edi
 ; CHECK-NEXT:    sete %dil
-; CHECK-NEXT:    testb %r8b, %dil
-; CHECK-NEXT:    cmovel %esi, %ecx
 ; CHECK-NEXT:    testb %dl, %dil
-; CHECK-NEXT:    cmovnel %eax, %ecx
-; CHECK-NEXT:    movd %ecx, %xmm0
+; CHECK-NEXT:    cmovel %esi, %r9d
+; CHECK-NEXT:    testb %cl, %dil
+; CHECK-NEXT:    cmovnel %eax, %r9d
+; CHECK-NEXT:    movd %r9d, %xmm0
 ; CHECK-NEXT:    retq
   %r = call float @llvm.convert.from.arbitrary.fp.f32.i6(i6 %x, metadata !"Float6E2M3FN")
   ret float %r
@@ -499,7 +499,7 @@ define float @from_f4e2m1fn_dynamic(i4 %x) {
 ; CHECK-NEXT:    andl $3, %edi
 ; CHECK-NEXT:    movl %edi, %esi
 ; CHECK-NEXT:    shll $23, %esi
-; CHECK-NEXT:    orl %eax, %esi
+; CHECK-NEXT:    addl %eax, %esi
 ; CHECK-NEXT:    leal 1056964608(%rcx,%rsi), %esi
 ; CHECK-NEXT:    bsrl %edx, %r8d
 ; CHECK-NEXT:    movl %edx, %r9d
@@ -512,17 +512,17 @@ define float @from_f4e2m1fn_dynamic(i4 %x) {
 ; CHECK-NEXT:    subl %r8d, %ecx
 ; CHECK-NEXT:    shll $23, %ecx
 ; CHECK-NEXT:    orl %eax, %ecx
-; CHECK-NEXT:    orl %r9d, %ecx
+; CHECK-NEXT:    orl %ecx, %r9d
 ; CHECK-NEXT:    testl %edx, %edx
-; CHECK-NEXT:    sete %dl
-; CHECK-NEXT:    setne %r8b
+; CHECK-NEXT:    sete %cl
+; CHECK-NEXT:    setne %dl
 ; CHECK-NEXT:    testl %edi, %edi
 ; CHECK-NEXT:    sete %dil
-; CHECK-NEXT:    testb %r8b, %dil
-; CHECK-NEXT:    cmovel %esi, %ecx
 ; CHECK-NEXT:    testb %dl, %dil
-; CHECK-NEXT:    cmovnel %eax, %ecx
-; CHECK-NEXT:    movd %ecx, %xmm0
+; CHECK-NEXT:    cmovel %esi, %r9d
+; CHECK-NEXT:    testb %cl, %dil
+; CHECK-NEXT:    cmovnel %eax, %r9d
+; CHECK-NEXT:    movd %r9d, %xmm0
 ; CHECK-NEXT:    retq
   %r = call float @llvm.convert.from.arbitrary.fp.f32.i4(i4 %x, metadata !"Float4E2M1FN")
   ret float %r
@@ -583,7 +583,7 @@ define <4 x float> @fp4_to_f32_vec(<4 x i4> %x) {
 ; CHECK-NEXT:    andl $3, %esi
 ; CHECK-NEXT:    movl %esi, %ecx
 ; CHECK-NEXT:    shll $23, %ecx
-; CHECK-NEXT:    orl %edx, %ecx
+; CHECK-NEXT:    addl %edx, %ecx
 ; CHECK-NEXT:    leal 1056964608(%rax,%rcx), %r8d
 ; CHECK-NEXT:    bsrl %edi, %r9d
 ; CHECK-NEXT:    movl %edi, %r10d
@@ -597,17 +597,17 @@ define <4 x float> @fp4_to_f32_vec(<4 x i4> %x) {
 ; CHECK-NEXT:    subl %r9d, %ecx
 ; CHECK-NEXT:    shll $23, %ecx
 ; CHECK-NEXT:    orl %edx, %ecx
-; CHECK-NEXT:    orl %r10d, %ecx
+; CHECK-NEXT:    orl %ecx, %r10d
 ; CHECK-NEXT:    testl %edi, %edi
-; CHECK-NEXT:    sete %dil
-; CHECK-NEXT:    setne %r9b
+; CHECK-NEXT:    sete %cl
+; CHECK-NEXT:    setne %dil
 ; CHECK-NEXT:    testl %esi, %esi
 ; CHECK-NEXT:    sete %sil
-; CHECK-NEXT:    testb %r9b, %sil
-; CHECK-NEXT:    cmovel %r8d, %ecx
 ; CHECK-NEXT:    testb %dil, %sil
-; CHECK-NEXT:    cmovnel %edx, %ecx
-; CHECK-NEXT:    movd %ecx, %xmm1
+; CHECK-NEXT:    cmovel %r8d, %r10d
+; CHECK-NEXT:    testb %cl, %sil
+; CHECK-NEXT:    cmovnel %edx, %r10d
+; CHECK-NEXT:    movd %r10d, %xmm1
 ; CHECK-NEXT:    pshufd {{.*#+}} xmm2 = xmm0[2,3,2,3]
 ; CHECK-NEXT:    movd %xmm2, %esi
 ; CHECK-NEXT:    movl %esi, %edi
@@ -621,7 +621,7 @@ define <4 x float> @fp4_to_f32_vec(<4 x i4> %x) {
 ; CHECK-NEXT:    andl $3, %esi
 ; CHECK-NEXT:    movl %esi, %r8d
 ; CHECK-NEXT:    shll $23, %r8d
-; CHECK-NEXT:    orl %edx, %r8d
+; CHECK-NEXT:    addl %edx, %r8d
 ; CHECK-NEXT:    leal 1056964608(%rcx,%r8), %r8d
 ; CHECK-NEXT:    bsrl %edi, %r9d
 ; CHECK-NEXT:    movl %edi, %r10d
@@ -634,17 +634,17 @@ define <4 x float> @fp4_to_f32_vec(<4 x i4> %x) {
 ; CHECK-NEXT:    subl %r9d, %ecx
 ; CHECK-NEXT:    shll $23, %ecx
 ; CHECK-NEXT:    orl %edx, %ecx
-; CHECK-NEXT:    orl %r10d, %ecx
+; CHECK-NEXT:    orl %ecx, %r10d
 ; CHECK-NEXT:    testl %edi, %edi
-; CHECK-NEXT:    sete %dil
-; CHECK-NEXT:    setne %r9b
+; CHECK-NEXT:    sete %cl
+; CHECK-NEXT:    setne %dil
 ; CHECK-NEXT:    testl %esi, %esi
 ; CHECK-NEXT:    sete %sil
-; CHECK-NEXT:    testb %r9b, %sil
-; CHECK-NEXT:    cmovel %r8d, %ecx
 ; CHECK-NEXT:    testb %dil, %sil
-; CHECK-NEXT:    cmovnel %edx, %ecx
-; CHECK-NEXT:    movd %ecx, %xmm2
+; CHECK-NEXT:    cmovel %r8d, %r10d
+; CHECK-NEXT:    testb %cl, %sil
+; CHECK-NEXT:    cmovnel %edx, %r10d
+; CHECK-NEXT:    movd %r10d, %xmm2
 ; CHECK-NEXT:    punpckldq {{.*#+}} xmm2 = xmm2[0],xmm1[0],xmm2[1],xmm1[1]
 ; CHECK-NEXT:    movd %xmm0, %esi
 ; CHECK-NEXT:    movl %esi, %edi
@@ -658,7 +658,7 @@ define <4 x float> @fp4_to_f32_vec(<4 x i4> %x) {
 ; CHECK-NEXT:    andl $3, %esi
 ; CHECK-NEXT:    movl %esi, %r8d
 ; CHECK-NEXT:    shll $23, %r8d
-; CHECK-NEXT:    orl %edx, %r8d
+; CHECK-NEXT:    addl %edx, %r8d
 ; CHECK-NEXT:    leal 1056964608(%rcx,%r8), %r8d
 ; CHECK-NEXT:    bsrl %edi, %r9d
 ; CHECK-NEXT:    movl %edi, %r10d
@@ -671,17 +671,17 @@ define <4 x float> @fp4_to_f32_vec(<4 x i4> %x) {
 ; CHECK-NEXT:    subl %r9d, %ecx
 ; CHECK-NEXT:    shll $23, %ecx
 ; CHECK-NEXT:    orl %edx, %ecx
-; CHECK-NEXT:    orl %r10d, %ecx
+; CHECK-NEXT:    orl %ecx, %r10d
 ; CHECK-NEXT:    testl %edi, %edi
-; CHECK-NEXT:    sete %dil
-; CHECK-NEXT:    setne %r9b
+; CHECK-NEXT:    sete %cl
+; CHECK-NEXT:    setne %dil
 ; CHECK-NEXT:    testl %esi, %esi
 ; CHECK-NEXT:    sete %sil
-; CHECK-NEXT:    testb %r9b, %sil
-; CHECK-NEXT:    cmovel %r8d, %ecx
 ; CHECK-NEXT:    testb %dil, %sil
-; CHECK-NEXT:    cmovnel %edx, %ecx
-; CHECK-NEXT:    movd %ecx, %xmm1
+; CHECK-NEXT:    cmovel %r8d, %r10d
+; CHECK-NEXT:    testb %cl, %sil
+; CHECK-NEXT:    cmovnel %edx, %r10d
+; CHECK-NEXT:    movd %r10d, %xmm1
 ; CHECK-NEXT:    pshufd {{.*#+}} xmm0 = xmm0[1,1,1,1]
 ; CHECK-NEXT:    movd %xmm0, %esi
 ; CHECK-NEXT:    movl %esi, %edi
@@ -695,7 +695,7 @@ define <4 x float> @fp4_to_f32_vec(<4 x i4> %x) {
 ; CHECK-NEXT:    andl $3, %esi
 ; CHECK-NEXT:    movl %esi, %r8d
 ; CHECK-NEXT:    shll $23, %r8d
-; CHECK-NEXT:    orl %edx, %r8d
+; CHECK-NEXT:    addl %edx, %r8d
 ; CHECK-NEXT:    leal 1056964608(%rcx,%r8), %r8d
 ; CHECK-NEXT:    bsrl %edi, %r9d
 ; CHECK-NEXT:    movl %edi, %r10d
@@ -707,17 +707,17 @@ define <4 x float> @fp4_to_f32_vec(<4 x i4> %x) {
 ; CHECK-NEXT:    subl %r9d, %eax
 ; CHECK-NEXT:    shll $23, %eax
 ; CHECK-NEXT:    orl %edx, %eax
-; CHECK-NEXT:    orl %r10d, %eax
+; CHECK-NEXT:    orl %eax, %r10d
 ; CHECK-NEXT:    testl %edi, %edi
-; CHECK-NEXT:    sete %cl
-; CHECK-NEXT:    setne %dil
+; CHECK-NEXT:    sete %al
+; CHECK-NEXT:    setne %cl
 ; CHECK-NEXT:    testl %esi, %esi
 ; CHECK-NEXT:    sete %sil
-; CHECK-NEXT:    testb %dil, %sil
-; CHECK-NEXT:    cmovel %r8d, %eax
 ; CHECK-NEXT:    testb %cl, %sil
-; CHECK-NEXT:    cmovnel %edx, %eax
-; CHECK-NEXT:    movd %eax, %xmm0
+; CHECK-NEXT:    cmovel %r8d, %r10d
+; CHECK-NEXT:    testb %al, %sil
+; CHECK-NEXT:    cmovnel %edx, %r10d
+; CHECK-NEXT:    movd %r10d, %xmm0
 ; CHECK-NEXT:    punpckldq {{.*#+}} xmm1 = xmm1[0],xmm0[0],xmm1[1],xmm0[1]
 ; CHECK-NEXT:    punpcklqdq {{.*#+}} xmm1 = xmm1[0],xmm2[0]
 ; CHECK-NEXT:    movdqa %xmm1, %xmm0

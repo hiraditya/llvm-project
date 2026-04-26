@@ -73,8 +73,9 @@ define float @f4(float %a, float %b) nounwind {
 ; SSE-NOX87-LABEL: f4:
 ; SSE-NOX87:       # %bb.0: # %entry
 ; SSE-NOX87-NEXT:    movss {{.*#+}} xmm0 = mem[0],zero,zero,zero
-; SSE-NOX87-NEXT:    addss {{[0-9]+}}(%esp), %xmm0
-; SSE-NOX87-NEXT:    movd %xmm0, %eax
+; SSE-NOX87-NEXT:    movss {{.*#+}} xmm1 = mem[0],zero,zero,zero
+; SSE-NOX87-NEXT:    addss %xmm0, %xmm1
+; SSE-NOX87-NEXT:    movd %xmm1, %eax
 ; SSE-NOX87-NEXT:    retl
 entry:
   %0 = fadd float %a, %b
@@ -105,8 +106,9 @@ define double @f5(double %a, double %b) nounwind {
 ; SSE-NOX87-NEXT:    andl $-8, %esp
 ; SSE-NOX87-NEXT:    subl $8, %esp
 ; SSE-NOX87-NEXT:    movsd {{.*#+}} xmm0 = mem[0],zero
-; SSE-NOX87-NEXT:    addsd 16(%ebp), %xmm0
-; SSE-NOX87-NEXT:    movsd %xmm0, (%esp)
+; SSE-NOX87-NEXT:    movsd {{.*#+}} xmm1 = mem[0],zero
+; SSE-NOX87-NEXT:    addsd %xmm0, %xmm1
+; SSE-NOX87-NEXT:    movsd %xmm1, (%esp)
 ; SSE-NOX87-NEXT:    movl (%esp), %eax
 ; SSE-NOX87-NEXT:    movl {{[0-9]+}}(%esp), %edx
 ; SSE-NOX87-NEXT:    movl %ebp, %esp

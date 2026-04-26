@@ -132,11 +132,10 @@ define i32 @or_shift4_and1(i32 %x, i32 %y) {
 ;
 ; X64-LABEL: or_shift4_and1:
 ; X64:       # %bb.0:
-; X64-NEXT:    # kill: def $esi killed $esi def $rsi
-; X64-NEXT:    # kill: def $edi killed $edi def $rdi
+; X64-NEXT:    movl %esi, %eax
 ; X64-NEXT:    shll $4, %edi
-; X64-NEXT:    andl $1, %esi
-; X64-NEXT:    leal (%rsi,%rdi), %eax
+; X64-NEXT:    andl $1, %eax
+; X64-NEXT:    orl %edi, %eax
 ; X64-NEXT:    retq
   %shl = shl i32 %x, 4
   %and = and i32 %y, 1
@@ -151,17 +150,18 @@ define i32 @or_shift3_and8(i32 %x, i32 %y) {
 ; X86:       # %bb.0:
 ; X86-NEXT:    movl {{[0-9]+}}(%esp), %eax
 ; X86-NEXT:    movl {{[0-9]+}}(%esp), %ecx
-; X86-NEXT:    shll $3, %ecx
+; X86-NEXT:    leal (,%ecx,8), %ecx
 ; X86-NEXT:    andl $8, %eax
 ; X86-NEXT:    orl %ecx, %eax
 ; X86-NEXT:    retl
 ;
 ; X64-LABEL: or_shift3_and8:
 ; X64:       # %bb.0:
+; X64-NEXT:    movl %esi, %eax
 ; X64-NEXT:    # kill: def $edi killed $edi def $rdi
-; X64-NEXT:    leal (,%rdi,8), %eax
-; X64-NEXT:    andl $8, %esi
-; X64-NEXT:    orl %esi, %eax
+; X64-NEXT:    leal (,%rdi,8), %ecx
+; X64-NEXT:    andl $8, %eax
+; X64-NEXT:    orl %ecx, %eax
 ; X64-NEXT:    retq
   %shl = shl i32 %x, 3
   %and = and i32 %y, 8
@@ -198,12 +198,13 @@ define i64 @or_shift1_and1_64(i64 %x, i64 %y) {
 define i32 @or_and_and_rhs_neg_i32(i32 %x, i32 %y, i32 %z) {
 ; X86-LABEL: or_and_and_rhs_neg_i32:
 ; X86:       # %bb.0: # %entry
-; X86-NEXT:    movl {{[0-9]+}}(%esp), %ecx
 ; X86-NEXT:    movl {{[0-9]+}}(%esp), %eax
-; X86-NEXT:    xorl %ecx, %eax
-; X86-NEXT:    andl {{[0-9]+}}(%esp), %eax
-; X86-NEXT:    xorl %ecx, %eax
-; X86-NEXT:    incl %eax
+; X86-NEXT:    movl {{[0-9]+}}(%esp), %ecx
+; X86-NEXT:    xorl %eax, %ecx
+; X86-NEXT:    movl {{[0-9]+}}(%esp), %edx
+; X86-NEXT:    andl %ecx, %edx
+; X86-NEXT:    xorl %eax, %edx
+; X86-NEXT:    leal 1(%edx), %eax
 ; X86-NEXT:    retl
 ;
 ; NOBMI-LABEL: or_and_and_rhs_neg_i32:
@@ -234,12 +235,13 @@ entry:
 define i32 @or_and_and_lhs_neg_i32(i32 %x, i32 %y, i32 %z) {
 ; X86-LABEL: or_and_and_lhs_neg_i32:
 ; X86:       # %bb.0: # %entry
-; X86-NEXT:    movl {{[0-9]+}}(%esp), %ecx
 ; X86-NEXT:    movl {{[0-9]+}}(%esp), %eax
-; X86-NEXT:    xorl %ecx, %eax
-; X86-NEXT:    andl {{[0-9]+}}(%esp), %eax
-; X86-NEXT:    xorl %ecx, %eax
-; X86-NEXT:    incl %eax
+; X86-NEXT:    movl {{[0-9]+}}(%esp), %ecx
+; X86-NEXT:    xorl %eax, %ecx
+; X86-NEXT:    movl {{[0-9]+}}(%esp), %edx
+; X86-NEXT:    andl %ecx, %edx
+; X86-NEXT:    xorl %eax, %edx
+; X86-NEXT:    leal 1(%edx), %eax
 ; X86-NEXT:    retl
 ;
 ; NOBMI-LABEL: or_and_and_lhs_neg_i32:
@@ -270,12 +272,13 @@ entry:
 define i32 @or_and_rhs_neg_and_i32(i32 %x, i32 %y, i32 %z) {
 ; X86-LABEL: or_and_rhs_neg_and_i32:
 ; X86:       # %bb.0: # %entry
-; X86-NEXT:    movl {{[0-9]+}}(%esp), %ecx
 ; X86-NEXT:    movl {{[0-9]+}}(%esp), %eax
-; X86-NEXT:    xorl %ecx, %eax
-; X86-NEXT:    andl {{[0-9]+}}(%esp), %eax
-; X86-NEXT:    xorl %ecx, %eax
-; X86-NEXT:    incl %eax
+; X86-NEXT:    movl {{[0-9]+}}(%esp), %ecx
+; X86-NEXT:    xorl %eax, %ecx
+; X86-NEXT:    movl {{[0-9]+}}(%esp), %edx
+; X86-NEXT:    andl %ecx, %edx
+; X86-NEXT:    xorl %eax, %edx
+; X86-NEXT:    leal 1(%edx), %eax
 ; X86-NEXT:    retl
 ;
 ; NOBMI-LABEL: or_and_rhs_neg_and_i32:
@@ -306,12 +309,13 @@ entry:
 define i32 @or_and_lhs_neg_and_i32(i32 %x, i32 %y, i32 %z) {
 ; X86-LABEL: or_and_lhs_neg_and_i32:
 ; X86:       # %bb.0: # %entry
-; X86-NEXT:    movl {{[0-9]+}}(%esp), %ecx
 ; X86-NEXT:    movl {{[0-9]+}}(%esp), %eax
-; X86-NEXT:    xorl %ecx, %eax
-; X86-NEXT:    andl {{[0-9]+}}(%esp), %eax
-; X86-NEXT:    xorl %ecx, %eax
-; X86-NEXT:    incl %eax
+; X86-NEXT:    movl {{[0-9]+}}(%esp), %ecx
+; X86-NEXT:    xorl %eax, %ecx
+; X86-NEXT:    movl {{[0-9]+}}(%esp), %edx
+; X86-NEXT:    andl %ecx, %edx
+; X86-NEXT:    xorl %eax, %edx
+; X86-NEXT:    leal 1(%edx), %eax
 ; X86-NEXT:    retl
 ;
 ; NOBMI-LABEL: or_and_lhs_neg_and_i32:
@@ -342,18 +346,25 @@ entry:
 define i64 @or_and_and_rhs_neg_i64(i64 %x, i64 %y, i64 %z) {
 ; X86-LABEL: or_and_and_rhs_neg_i64:
 ; X86:       # %bb.0: # %entry
+; X86-NEXT:    pushl %esi
+; X86-NEXT:    .cfi_def_cfa_offset 8
+; X86-NEXT:    .cfi_offset %esi, -8
 ; X86-NEXT:    movl {{[0-9]+}}(%esp), %ecx
 ; X86-NEXT:    movl {{[0-9]+}}(%esp), %eax
+; X86-NEXT:    movl {{[0-9]+}}(%esp), %esi
+; X86-NEXT:    xorl %eax, %esi
 ; X86-NEXT:    movl {{[0-9]+}}(%esp), %edx
+; X86-NEXT:    andl %esi, %edx
 ; X86-NEXT:    xorl %eax, %edx
-; X86-NEXT:    andl {{[0-9]+}}(%esp), %edx
-; X86-NEXT:    xorl %eax, %edx
+; X86-NEXT:    movl {{[0-9]+}}(%esp), %esi
+; X86-NEXT:    xorl %ecx, %esi
 ; X86-NEXT:    movl {{[0-9]+}}(%esp), %eax
-; X86-NEXT:    xorl %ecx, %eax
-; X86-NEXT:    andl {{[0-9]+}}(%esp), %eax
+; X86-NEXT:    andl %esi, %eax
 ; X86-NEXT:    xorl %ecx, %eax
 ; X86-NEXT:    addl $1, %eax
 ; X86-NEXT:    adcl $0, %edx
+; X86-NEXT:    popl %esi
+; X86-NEXT:    .cfi_def_cfa_offset 4
 ; X86-NEXT:    retl
 ;
 ; NOBMI-LABEL: or_and_and_rhs_neg_i64:
@@ -382,18 +393,25 @@ entry:
 define i64 @or_and_and_lhs_neg_i64(i64 %x, i64 %y, i64 %z) {
 ; X86-LABEL: or_and_and_lhs_neg_i64:
 ; X86:       # %bb.0: # %entry
+; X86-NEXT:    pushl %esi
+; X86-NEXT:    .cfi_def_cfa_offset 8
+; X86-NEXT:    .cfi_offset %esi, -8
 ; X86-NEXT:    movl {{[0-9]+}}(%esp), %ecx
 ; X86-NEXT:    movl {{[0-9]+}}(%esp), %eax
+; X86-NEXT:    movl {{[0-9]+}}(%esp), %esi
+; X86-NEXT:    xorl %eax, %esi
 ; X86-NEXT:    movl {{[0-9]+}}(%esp), %edx
+; X86-NEXT:    andl %esi, %edx
 ; X86-NEXT:    xorl %eax, %edx
-; X86-NEXT:    andl {{[0-9]+}}(%esp), %edx
-; X86-NEXT:    xorl %eax, %edx
+; X86-NEXT:    movl {{[0-9]+}}(%esp), %esi
+; X86-NEXT:    xorl %ecx, %esi
 ; X86-NEXT:    movl {{[0-9]+}}(%esp), %eax
-; X86-NEXT:    xorl %ecx, %eax
-; X86-NEXT:    andl {{[0-9]+}}(%esp), %eax
+; X86-NEXT:    andl %esi, %eax
 ; X86-NEXT:    xorl %ecx, %eax
 ; X86-NEXT:    addl $1, %eax
 ; X86-NEXT:    adcl $0, %edx
+; X86-NEXT:    popl %esi
+; X86-NEXT:    .cfi_def_cfa_offset 4
 ; X86-NEXT:    retl
 ;
 ; NOBMI-LABEL: or_and_and_lhs_neg_i64:
@@ -422,18 +440,25 @@ entry:
 define i64 @or_and_rhs_neg_and_i64(i64 %x, i64 %y, i64 %z) {
 ; X86-LABEL: or_and_rhs_neg_and_i64:
 ; X86:       # %bb.0: # %entry
+; X86-NEXT:    pushl %esi
+; X86-NEXT:    .cfi_def_cfa_offset 8
+; X86-NEXT:    .cfi_offset %esi, -8
 ; X86-NEXT:    movl {{[0-9]+}}(%esp), %ecx
 ; X86-NEXT:    movl {{[0-9]+}}(%esp), %eax
+; X86-NEXT:    movl {{[0-9]+}}(%esp), %esi
+; X86-NEXT:    xorl %eax, %esi
 ; X86-NEXT:    movl {{[0-9]+}}(%esp), %edx
+; X86-NEXT:    andl %esi, %edx
 ; X86-NEXT:    xorl %eax, %edx
-; X86-NEXT:    andl {{[0-9]+}}(%esp), %edx
-; X86-NEXT:    xorl %eax, %edx
+; X86-NEXT:    movl {{[0-9]+}}(%esp), %esi
+; X86-NEXT:    xorl %ecx, %esi
 ; X86-NEXT:    movl {{[0-9]+}}(%esp), %eax
-; X86-NEXT:    xorl %ecx, %eax
-; X86-NEXT:    andl {{[0-9]+}}(%esp), %eax
+; X86-NEXT:    andl %esi, %eax
 ; X86-NEXT:    xorl %ecx, %eax
 ; X86-NEXT:    addl $1, %eax
 ; X86-NEXT:    adcl $0, %edx
+; X86-NEXT:    popl %esi
+; X86-NEXT:    .cfi_def_cfa_offset 4
 ; X86-NEXT:    retl
 ;
 ; NOBMI-LABEL: or_and_rhs_neg_and_i64:
@@ -462,18 +487,25 @@ entry:
 define i64 @or_and_lhs_neg_and_i64(i64 %x, i64 %y, i64 %z) {
 ; X86-LABEL: or_and_lhs_neg_and_i64:
 ; X86:       # %bb.0: # %entry
+; X86-NEXT:    pushl %esi
+; X86-NEXT:    .cfi_def_cfa_offset 8
+; X86-NEXT:    .cfi_offset %esi, -8
 ; X86-NEXT:    movl {{[0-9]+}}(%esp), %ecx
 ; X86-NEXT:    movl {{[0-9]+}}(%esp), %eax
+; X86-NEXT:    movl {{[0-9]+}}(%esp), %esi
+; X86-NEXT:    xorl %eax, %esi
 ; X86-NEXT:    movl {{[0-9]+}}(%esp), %edx
+; X86-NEXT:    andl %esi, %edx
 ; X86-NEXT:    xorl %eax, %edx
-; X86-NEXT:    andl {{[0-9]+}}(%esp), %edx
-; X86-NEXT:    xorl %eax, %edx
+; X86-NEXT:    movl {{[0-9]+}}(%esp), %esi
+; X86-NEXT:    xorl %ecx, %esi
 ; X86-NEXT:    movl {{[0-9]+}}(%esp), %eax
-; X86-NEXT:    xorl %ecx, %eax
-; X86-NEXT:    andl {{[0-9]+}}(%esp), %eax
+; X86-NEXT:    andl %esi, %eax
 ; X86-NEXT:    xorl %ecx, %eax
 ; X86-NEXT:    addl $1, %eax
 ; X86-NEXT:    adcl $0, %edx
+; X86-NEXT:    popl %esi
+; X86-NEXT:    .cfi_def_cfa_offset 4
 ; X86-NEXT:    retl
 ;
 ; NOBMI-LABEL: or_and_lhs_neg_and_i64:
@@ -830,8 +862,9 @@ define i32 @or_shift1_disjoint(i32 %x, i32 %y) {
 ; X86-LABEL: or_shift1_disjoint:
 ; X86:       # %bb.0:
 ; X86-NEXT:    movl {{[0-9]+}}(%esp), %eax
-; X86-NEXT:    addl %eax, %eax
-; X86-NEXT:    orl {{[0-9]+}}(%esp), %eax
+; X86-NEXT:    leal (%eax,%eax), %ecx
+; X86-NEXT:    movl {{[0-9]+}}(%esp), %eax
+; X86-NEXT:    orl %ecx, %eax
 ; X86-NEXT:    retl
 ;
 ; X64-LABEL: or_shift1_disjoint:

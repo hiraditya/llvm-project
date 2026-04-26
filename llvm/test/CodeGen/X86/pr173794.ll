@@ -7,20 +7,24 @@
 define <2 x double> @PR173794(<2 x i64> %a0) {
 ; SSE2-LABEL: PR173794:
 ; SSE2:       # %bb.0:
-; SSE2-NEXT:    pand {{\.?LCPI[0-9]+_[0-9]+}}(%rip), %xmm0
-; SSE2-NEXT:    pxor %xmm1, %xmm1
+; SSE2-NEXT:    movdqa {{.*#+}} xmm1 = [1,2]
+; SSE2-NEXT:    pand %xmm0, %xmm1
+; SSE2-NEXT:    pxor %xmm0, %xmm0
 ; SSE2-NEXT:    pcmpeqd %xmm1, %xmm0
 ; SSE2-NEXT:    pshufd {{.*#+}} xmm1 = xmm0[1,0,3,2]
+; SSE2-NEXT:    pand %xmm0, %xmm1
+; SSE2-NEXT:    movdqa {{.*#+}} xmm0 = [1.0E+0,1.0E+0]
 ; SSE2-NEXT:    pand %xmm1, %xmm0
-; SSE2-NEXT:    pand {{\.?LCPI[0-9]+_[0-9]+}}(%rip), %xmm0
 ; SSE2-NEXT:    retq
 ;
 ; SSE42-LABEL: PR173794:
 ; SSE42:       # %bb.0:
-; SSE42-NEXT:    pand {{\.?LCPI[0-9]+_[0-9]+}}(%rip), %xmm0
-; SSE42-NEXT:    pxor %xmm1, %xmm1
-; SSE42-NEXT:    pcmpeqq %xmm1, %xmm0
-; SSE42-NEXT:    pand {{\.?LCPI[0-9]+_[0-9]+}}(%rip), %xmm0
+; SSE42-NEXT:    movdqa {{.*#+}} xmm1 = [1,2]
+; SSE42-NEXT:    pand %xmm0, %xmm1
+; SSE42-NEXT:    pxor %xmm2, %xmm2
+; SSE42-NEXT:    pcmpeqq %xmm1, %xmm2
+; SSE42-NEXT:    movdqa {{.*#+}} xmm0 = [1.0E+0,1.0E+0]
+; SSE42-NEXT:    pand %xmm2, %xmm0
 ; SSE42-NEXT:    retq
 ;
 ; AVX2-LABEL: PR173794:

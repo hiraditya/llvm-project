@@ -15,15 +15,16 @@ define void @PR118934(i1 %b, ptr %f, ptr %k) {
 ; X86-NEXT:    addl $-6, %edx
 ; X86-NEXT:    addl $6, %edx
 ; X86-NEXT:    movl %edx, (%ecx)
-; X86-NEXT:    addl %edx, %edx
-; X86-NEXT:    movl %edx, (%eax)
+; X86-NEXT:    leal (%edx,%edx), %ecx
+; X86-NEXT:    movl %ecx, (%eax)
 ;
 ; X64-LABEL: PR118934:
 ; X64:       # %bb.0: # %entry
+; X64-NEXT:    # kill: def $edi killed $edi def $rdi
 ; X64-NEXT:    andb $1, %dil
-; X64-NEXT:    addb %dil, %dil
-; X64-NEXT:    addb $-2, %dil
-; X64-NEXT:    movsbl %dil, %eax
+; X64-NEXT:    leal (%rdi,%rdi), %eax
+; X64-NEXT:    addl $-2, %eax
+; X64-NEXT:    movsbl %al, %eax
 ; X64-NEXT:    addl $-6, %eax
 ; X64-NEXT:    addl $6, %eax
 ; X64-NEXT:    movl %eax, (%rsi)

@@ -59,15 +59,15 @@ define i32 @_rdrand32_step(ptr %random_val) {
 define i32 @CSE() nounwind {
 ; X86-LABEL: CSE:
 ; X86:       # %bb.0:
-; X86-NEXT:    rdrandl %ecx
 ; X86-NEXT:    rdrandl %eax
+; X86-NEXT:    rdrandl %ecx
 ; X86-NEXT:    addl %ecx, %eax
 ; X86-NEXT:    retl
 ;
 ; X64-LABEL: CSE:
 ; X64:       # %bb.0:
-; X64-NEXT:    rdrandl %ecx
 ; X64-NEXT:    rdrandl %eax
+; X64-NEXT:    rdrandl %ecx
 ; X64-NEXT:    addl %ecx, %eax
 ; X64-NEXT:    retq
  %rand1 = tail call { i32, i32 } @llvm.x86.rdrand.32() nounwind

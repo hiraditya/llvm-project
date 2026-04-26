@@ -52,7 +52,7 @@ define void @foo_sext_nsw(i1 zeroext, i32) nounwind {
 ; X64-NEXT:    .p2align 4
 ; X64-NEXT:  .LBB0_2: # =>This Inner Loop Header: Depth=1
 ; X64-NEXT:    cltq
-; X64-NEXT:    shlq $2, %rax
+; X64-NEXT:    leaq (,%rax,4), %rax
 ; X64-NEXT:    leaq 20(%rax,%rax,4), %rdi
 ; X64-NEXT:    callq bar@PLT
 ; X64-NEXT:    jmp .LBB0_2
@@ -100,9 +100,10 @@ define void @foo_sext_nuw(i1 zeroext, i32) nounwind {
 ; X64-NEXT:  .LBB1_2: # =>This Inner Loop Header: Depth=1
 ; X64-NEXT:    incl %eax
 ; X64-NEXT:    cltq
-; X64-NEXT:    shlq $2, %rax
+; X64-NEXT:    leaq (,%rax,4), %rax
 ; X64-NEXT:    leaq (%rax,%rax,4), %rdi
 ; X64-NEXT:    callq bar@PLT
+; X64-NEXT:    # kill: def $eax killed $eax def $rax
 ; X64-NEXT:    jmp .LBB1_2
   br i1 %0, label %9, label %3
 
@@ -147,7 +148,7 @@ define void @foo_zext_nsw(i1 zeroext, i32) nounwind {
 ; X64-NEXT:    .p2align 4
 ; X64-NEXT:  .LBB2_2: # =>This Inner Loop Header: Depth=1
 ; X64-NEXT:    incl %eax
-; X64-NEXT:    shlq $2, %rax
+; X64-NEXT:    leaq (,%rax,4), %rax
 ; X64-NEXT:    leaq (%rax,%rax,4), %rdi
 ; X64-NEXT:    callq bar@PLT
 ; X64-NEXT:    # kill: def $eax killed $eax def $rax
@@ -195,7 +196,7 @@ define void @foo_zext_nuw(i1 zeroext, i32) nounwind {
 ; X64-NEXT:    .p2align 4
 ; X64-NEXT:  .LBB3_2: # =>This Inner Loop Header: Depth=1
 ; X64-NEXT:    movl %eax, %eax
-; X64-NEXT:    shlq $2, %rax
+; X64-NEXT:    leaq (,%rax,4), %rax
 ; X64-NEXT:    leaq 20(%rax,%rax,4), %rdi
 ; X64-NEXT:    callq bar@PLT
 ; X64-NEXT:    jmp .LBB3_2
@@ -243,9 +244,10 @@ define void @foo_sext(i1 zeroext, i32) nounwind {
 ; X64-NEXT:  .LBB4_2: # =>This Inner Loop Header: Depth=1
 ; X64-NEXT:    incl %eax
 ; X64-NEXT:    cltq
-; X64-NEXT:    shlq $2, %rax
+; X64-NEXT:    leaq (,%rax,4), %rax
 ; X64-NEXT:    leaq (%rax,%rax,4), %rdi
 ; X64-NEXT:    callq bar@PLT
+; X64-NEXT:    # kill: def $eax killed $eax def $rax
 ; X64-NEXT:    jmp .LBB4_2
   br i1 %0, label %9, label %3
 
@@ -290,7 +292,7 @@ define void @foo_zext(i1 zeroext, i32) nounwind {
 ; X64-NEXT:    .p2align 4
 ; X64-NEXT:  .LBB5_2: # =>This Inner Loop Header: Depth=1
 ; X64-NEXT:    incl %eax
-; X64-NEXT:    shlq $2, %rax
+; X64-NEXT:    leaq (,%rax,4), %rax
 ; X64-NEXT:    leaq (%rax,%rax,4), %rdi
 ; X64-NEXT:    callq bar@PLT
 ; X64-NEXT:    # kill: def $eax killed $eax def $rax

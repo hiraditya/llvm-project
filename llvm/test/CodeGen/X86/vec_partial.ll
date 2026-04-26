@@ -6,12 +6,16 @@
 define <3 x float> @addf3(<3 x float> %x) {
 ; X86-LABEL: addf3:
 ; X86:       # %bb.0: # %entry
-; X86-NEXT:    addps {{\.?LCPI[0-9]+_[0-9]+}}, %xmm0
+; X86-NEXT:    movaps {{.*#+}} xmm1 = [1.0E+0,1.0E+0,1.0E+0,u]
+; X86-NEXT:    addps %xmm0, %xmm1
+; X86-NEXT:    movaps %xmm1, %xmm0
 ; X86-NEXT:    retl
 ;
 ; X64-LABEL: addf3:
 ; X64:       # %bb.0: # %entry
-; X64-NEXT:    addps {{\.?LCPI[0-9]+_[0-9]+}}(%rip), %xmm0
+; X64-NEXT:    movaps {{.*#+}} xmm1 = [1.0E+0,1.0E+0,1.0E+0,u]
+; X64-NEXT:    addps %xmm0, %xmm1
+; X64-NEXT:    movaps %xmm1, %xmm0
 ; X64-NEXT:    retq
 entry:
   %add = fadd <3 x float> %x, <float 1.000000e+00, float 1.000000e+00, float 1.000000e+00>

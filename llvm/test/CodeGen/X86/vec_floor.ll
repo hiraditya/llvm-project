@@ -906,9 +906,9 @@ define <4 x float> @floor_mask_128_ps(<4 x float> %x, <4 x float> %y) nounwind {
 define <4 x float> @floor_maskz_128_ps(<4 x float> %x, <4 x float> %y) nounwind {
 ; SSE41-LABEL: floor_maskz_128_ps:
 ; SSE41:       ## %bb.0:
-; SSE41-NEXT:    cmpeqps %xmm0, %xmm1
-; SSE41-NEXT:    roundps $9, %xmm0, %xmm0
-; SSE41-NEXT:    andps %xmm1, %xmm0
+; SSE41-NEXT:    roundps $9, %xmm0, %xmm2
+; SSE41-NEXT:    cmpeqps %xmm1, %xmm0
+; SSE41-NEXT:    andps %xmm2, %xmm0
 ; SSE41-NEXT:    retq
 ;
 ; AVX-LABEL: floor_maskz_128_ps:
@@ -982,9 +982,9 @@ define <2 x double> @floor_mask_128_pd(<2 x double> %x, <2 x double> %y) nounwin
 define <2 x double> @floor_maskz_128_pd(<2 x double> %x, <2 x double> %y) nounwind {
 ; SSE41-LABEL: floor_maskz_128_pd:
 ; SSE41:       ## %bb.0:
-; SSE41-NEXT:    cmpeqpd %xmm0, %xmm1
-; SSE41-NEXT:    roundpd $9, %xmm0, %xmm0
-; SSE41-NEXT:    andpd %xmm1, %xmm0
+; SSE41-NEXT:    roundpd $9, %xmm0, %xmm2
+; SSE41-NEXT:    cmpeqpd %xmm1, %xmm0
+; SSE41-NEXT:    andpd %xmm2, %xmm0
 ; SSE41-NEXT:    retq
 ;
 ; AVX-LABEL: floor_maskz_128_pd:
@@ -1062,12 +1062,12 @@ define <8 x float> @floor_mask_256_ps(<8 x float> %x, <8 x float> %y) nounwind {
 define <8 x float> @floor_maskz_256_ps(<8 x float> %x, <8 x float> %y) nounwind {
 ; SSE41-LABEL: floor_maskz_256_ps:
 ; SSE41:       ## %bb.0:
-; SSE41-NEXT:    cmpeqps %xmm1, %xmm3
-; SSE41-NEXT:    cmpeqps %xmm0, %xmm2
-; SSE41-NEXT:    roundps $9, %xmm1, %xmm1
-; SSE41-NEXT:    andps %xmm3, %xmm1
-; SSE41-NEXT:    roundps $9, %xmm0, %xmm0
-; SSE41-NEXT:    andps %xmm2, %xmm0
+; SSE41-NEXT:    roundps $9, %xmm1, %xmm4
+; SSE41-NEXT:    cmpeqps %xmm3, %xmm1
+; SSE41-NEXT:    roundps $9, %xmm0, %xmm3
+; SSE41-NEXT:    cmpeqps %xmm2, %xmm0
+; SSE41-NEXT:    andps %xmm4, %xmm1
+; SSE41-NEXT:    andps %xmm3, %xmm0
 ; SSE41-NEXT:    retq
 ;
 ; AVX-LABEL: floor_maskz_256_ps:
@@ -1144,12 +1144,12 @@ define <4 x double> @floor_mask_256_pd(<4 x double> %x, <4 x double> %y) nounwin
 define <4 x double> @floor_maskz_256_pd(<4 x double> %x, <4 x double> %y) nounwind {
 ; SSE41-LABEL: floor_maskz_256_pd:
 ; SSE41:       ## %bb.0:
-; SSE41-NEXT:    cmpeqpd %xmm1, %xmm3
-; SSE41-NEXT:    cmpeqpd %xmm0, %xmm2
-; SSE41-NEXT:    roundpd $9, %xmm1, %xmm1
-; SSE41-NEXT:    andpd %xmm3, %xmm1
-; SSE41-NEXT:    roundpd $9, %xmm0, %xmm0
-; SSE41-NEXT:    andpd %xmm2, %xmm0
+; SSE41-NEXT:    roundpd $9, %xmm1, %xmm4
+; SSE41-NEXT:    cmpeqpd %xmm3, %xmm1
+; SSE41-NEXT:    roundpd $9, %xmm0, %xmm3
+; SSE41-NEXT:    cmpeqpd %xmm2, %xmm0
+; SSE41-NEXT:    andpd %xmm4, %xmm1
+; SSE41-NEXT:    andpd %xmm3, %xmm0
 ; SSE41-NEXT:    retq
 ;
 ; AVX-LABEL: floor_maskz_256_pd:
@@ -1229,18 +1229,18 @@ define <16 x float> @floor_mask_512_ps(<16 x float> %x, <16 x float> %y) nounwin
 define <16 x float> @floor_maskz_512_ps(<16 x float> %x, <16 x float> %y) nounwind {
 ; SSE41-LABEL: floor_maskz_512_ps:
 ; SSE41:       ## %bb.0:
-; SSE41-NEXT:    cmpeqps %xmm3, %xmm7
-; SSE41-NEXT:    cmpeqps %xmm2, %xmm6
-; SSE41-NEXT:    cmpeqps %xmm1, %xmm5
-; SSE41-NEXT:    cmpeqps %xmm0, %xmm4
-; SSE41-NEXT:    roundps $9, %xmm3, %xmm3
-; SSE41-NEXT:    andps %xmm7, %xmm3
-; SSE41-NEXT:    roundps $9, %xmm2, %xmm2
-; SSE41-NEXT:    andps %xmm6, %xmm2
-; SSE41-NEXT:    roundps $9, %xmm1, %xmm1
-; SSE41-NEXT:    andps %xmm5, %xmm1
-; SSE41-NEXT:    roundps $9, %xmm0, %xmm0
-; SSE41-NEXT:    andps %xmm4, %xmm0
+; SSE41-NEXT:    roundps $9, %xmm3, %xmm8
+; SSE41-NEXT:    cmpeqps %xmm7, %xmm3
+; SSE41-NEXT:    roundps $9, %xmm2, %xmm7
+; SSE41-NEXT:    cmpeqps %xmm6, %xmm2
+; SSE41-NEXT:    roundps $9, %xmm1, %xmm6
+; SSE41-NEXT:    cmpeqps %xmm5, %xmm1
+; SSE41-NEXT:    roundps $9, %xmm0, %xmm5
+; SSE41-NEXT:    cmpeqps %xmm4, %xmm0
+; SSE41-NEXT:    andps %xmm8, %xmm3
+; SSE41-NEXT:    andps %xmm7, %xmm2
+; SSE41-NEXT:    andps %xmm6, %xmm1
+; SSE41-NEXT:    andps %xmm5, %xmm0
 ; SSE41-NEXT:    retq
 ;
 ; AVX-LABEL: floor_maskz_512_ps:
@@ -1313,18 +1313,18 @@ define <8 x double> @floor_mask_512_pd(<8 x double> %x, <8 x double> %y) nounwin
 define <8 x double> @floor_maskz_512_pd(<8 x double> %x, <8 x double> %y) nounwind {
 ; SSE41-LABEL: floor_maskz_512_pd:
 ; SSE41:       ## %bb.0:
-; SSE41-NEXT:    cmpeqpd %xmm3, %xmm7
-; SSE41-NEXT:    cmpeqpd %xmm2, %xmm6
-; SSE41-NEXT:    cmpeqpd %xmm1, %xmm5
-; SSE41-NEXT:    cmpeqpd %xmm0, %xmm4
-; SSE41-NEXT:    roundpd $9, %xmm3, %xmm3
-; SSE41-NEXT:    andpd %xmm7, %xmm3
-; SSE41-NEXT:    roundpd $9, %xmm2, %xmm2
-; SSE41-NEXT:    andpd %xmm6, %xmm2
-; SSE41-NEXT:    roundpd $9, %xmm1, %xmm1
-; SSE41-NEXT:    andpd %xmm5, %xmm1
-; SSE41-NEXT:    roundpd $9, %xmm0, %xmm0
-; SSE41-NEXT:    andpd %xmm4, %xmm0
+; SSE41-NEXT:    roundpd $9, %xmm3, %xmm8
+; SSE41-NEXT:    cmpeqpd %xmm7, %xmm3
+; SSE41-NEXT:    roundpd $9, %xmm2, %xmm7
+; SSE41-NEXT:    cmpeqpd %xmm6, %xmm2
+; SSE41-NEXT:    roundpd $9, %xmm1, %xmm6
+; SSE41-NEXT:    cmpeqpd %xmm5, %xmm1
+; SSE41-NEXT:    roundpd $9, %xmm0, %xmm5
+; SSE41-NEXT:    cmpeqpd %xmm4, %xmm0
+; SSE41-NEXT:    andpd %xmm8, %xmm3
+; SSE41-NEXT:    andpd %xmm7, %xmm2
+; SSE41-NEXT:    andpd %xmm6, %xmm1
+; SSE41-NEXT:    andpd %xmm5, %xmm0
 ; SSE41-NEXT:    retq
 ;
 ; AVX-LABEL: floor_maskz_512_pd:
@@ -1711,7 +1711,8 @@ define <4 x float> @floor_maskz_ss_mask8(<4 x float> %x, <4 x float> %y) nounwin
 ; SSE41-NEXT:    roundss $9, %xmm0, %xmm2
 ; SSE41-NEXT:    cmpeqss %xmm1, %xmm0
 ; SSE41-NEXT:    andps %xmm2, %xmm0
-; SSE41-NEXT:    blendps {{.*#+}} xmm0 = xmm0[0],xmm1[1,2,3]
+; SSE41-NEXT:    movss {{.*#+}} xmm1 = xmm0[0],xmm1[1,2,3]
+; SSE41-NEXT:    movaps %xmm1, %xmm0
 ; SSE41-NEXT:    retq
 ;
 ; AVX-LABEL: floor_maskz_ss_mask8:
@@ -1778,7 +1779,8 @@ define <2 x double> @floor_maskz_sd_mask8(<2 x double> %x, <2 x double> %y) noun
 ; SSE41-NEXT:    roundsd $9, %xmm0, %xmm2
 ; SSE41-NEXT:    cmpeqsd %xmm1, %xmm0
 ; SSE41-NEXT:    andpd %xmm2, %xmm0
-; SSE41-NEXT:    blendpd {{.*#+}} xmm0 = xmm0[0],xmm1[1]
+; SSE41-NEXT:    movsd {{.*#+}} xmm1 = xmm0[0],xmm1[1]
+; SSE41-NEXT:    movapd %xmm1, %xmm0
 ; SSE41-NEXT:    retq
 ;
 ; AVX-LABEL: floor_maskz_sd_mask8:
@@ -1841,7 +1843,7 @@ define <2 x double> @ceil_sd(<2 x double> %x, <2 x double> %y) nounwind {
 ;
 ; AVX512-LABEL: ceil_sd:
 ; AVX512:       ## %bb.0:
-; AVX512-NEXT:    vroundsd $10, %xmm0, %xmm1, %xmm0
+; AVX512-NEXT:    vroundsd $10, %xmm0, %xmm1, %xmm0
 ; AVX512-NEXT:    retq
   %s = extractelement <2 x double> %x, i32 0
   %call = call double @llvm.ceil.f64(double %s)
@@ -1892,9 +1894,9 @@ define <4 x float> @ceil_mask_128_ps(<4 x float> %x, <4 x float> %y) nounwind {
 define <4 x float> @ceil_maskz_128_ps(<4 x float> %x, <4 x float> %y) nounwind {
 ; SSE41-LABEL: ceil_maskz_128_ps:
 ; SSE41:       ## %bb.0:
-; SSE41-NEXT:    cmpeqps %xmm0, %xmm1
-; SSE41-NEXT:    roundps $10, %xmm0, %xmm0
-; SSE41-NEXT:    andps %xmm1, %xmm0
+; SSE41-NEXT:    roundps $10, %xmm0, %xmm2
+; SSE41-NEXT:    cmpeqps %xmm1, %xmm0
+; SSE41-NEXT:    andps %xmm2, %xmm0
 ; SSE41-NEXT:    retq
 ;
 ; AVX-LABEL: ceil_maskz_128_ps:
@@ -1968,9 +1970,9 @@ define <2 x double> @ceil_mask_128_pd(<2 x double> %x, <2 x double> %y) nounwind
 define <2 x double> @ceil_maskz_128_pd(<2 x double> %x, <2 x double> %y) nounwind {
 ; SSE41-LABEL: ceil_maskz_128_pd:
 ; SSE41:       ## %bb.0:
-; SSE41-NEXT:    cmpeqpd %xmm0, %xmm1
-; SSE41-NEXT:    roundpd $10, %xmm0, %xmm0
-; SSE41-NEXT:    andpd %xmm1, %xmm0
+; SSE41-NEXT:    roundpd $10, %xmm0, %xmm2
+; SSE41-NEXT:    cmpeqpd %xmm1, %xmm0
+; SSE41-NEXT:    andpd %xmm2, %xmm0
 ; SSE41-NEXT:    retq
 ;
 ; AVX-LABEL: ceil_maskz_128_pd:
@@ -2048,12 +2050,12 @@ define <8 x float> @ceil_mask_256_ps(<8 x float> %x, <8 x float> %y) nounwind {
 define <8 x float> @ceil_maskz_256_ps(<8 x float> %x, <8 x float> %y) nounwind {
 ; SSE41-LABEL: ceil_maskz_256_ps:
 ; SSE41:       ## %bb.0:
-; SSE41-NEXT:    cmpeqps %xmm1, %xmm3
-; SSE41-NEXT:    cmpeqps %xmm0, %xmm2
-; SSE41-NEXT:    roundps $10, %xmm1, %xmm1
-; SSE41-NEXT:    andps %xmm3, %xmm1
-; SSE41-NEXT:    roundps $10, %xmm0, %xmm0
-; SSE41-NEXT:    andps %xmm2, %xmm0
+; SSE41-NEXT:    roundps $10, %xmm1, %xmm4
+; SSE41-NEXT:    cmpeqps %xmm3, %xmm1
+; SSE41-NEXT:    roundps $10, %xmm0, %xmm3
+; SSE41-NEXT:    cmpeqps %xmm2, %xmm0
+; SSE41-NEXT:    andps %xmm4, %xmm1
+; SSE41-NEXT:    andps %xmm3, %xmm0
 ; SSE41-NEXT:    retq
 ;
 ; AVX-LABEL: ceil_maskz_256_ps:
@@ -2130,12 +2132,12 @@ define <4 x double> @ceil_mask_256_pd(<4 x double> %x, <4 x double> %y) nounwind
 define <4 x double> @ceil_maskz_256_pd(<4 x double> %x, <4 x double> %y) nounwind {
 ; SSE41-LABEL: ceil_maskz_256_pd:
 ; SSE41:       ## %bb.0:
-; SSE41-NEXT:    cmpeqpd %xmm1, %xmm3
-; SSE41-NEXT:    cmpeqpd %xmm0, %xmm2
-; SSE41-NEXT:    roundpd $10, %xmm1, %xmm1
-; SSE41-NEXT:    andpd %xmm3, %xmm1
-; SSE41-NEXT:    roundpd $10, %xmm0, %xmm0
-; SSE41-NEXT:    andpd %xmm2, %xmm0
+; SSE41-NEXT:    roundpd $10, %xmm1, %xmm4
+; SSE41-NEXT:    cmpeqpd %xmm3, %xmm1
+; SSE41-NEXT:    roundpd $10, %xmm0, %xmm3
+; SSE41-NEXT:    cmpeqpd %xmm2, %xmm0
+; SSE41-NEXT:    andpd %xmm4, %xmm1
+; SSE41-NEXT:    andpd %xmm3, %xmm0
 ; SSE41-NEXT:    retq
 ;
 ; AVX-LABEL: ceil_maskz_256_pd:
@@ -2215,18 +2217,18 @@ define <16 x float> @ceil_mask_512_ps(<16 x float> %x, <16 x float> %y) nounwind
 define <16 x float> @ceil_maskz_512_ps(<16 x float> %x, <16 x float> %y) nounwind {
 ; SSE41-LABEL: ceil_maskz_512_ps:
 ; SSE41:       ## %bb.0:
-; SSE41-NEXT:    cmpeqps %xmm3, %xmm7
-; SSE41-NEXT:    cmpeqps %xmm2, %xmm6
-; SSE41-NEXT:    cmpeqps %xmm1, %xmm5
-; SSE41-NEXT:    cmpeqps %xmm0, %xmm4
-; SSE41-NEXT:    roundps $10, %xmm3, %xmm3
-; SSE41-NEXT:    andps %xmm7, %xmm3
-; SSE41-NEXT:    roundps $10, %xmm2, %xmm2
-; SSE41-NEXT:    andps %xmm6, %xmm2
-; SSE41-NEXT:    roundps $10, %xmm1, %xmm1
-; SSE41-NEXT:    andps %xmm5, %xmm1
-; SSE41-NEXT:    roundps $10, %xmm0, %xmm0
-; SSE41-NEXT:    andps %xmm4, %xmm0
+; SSE41-NEXT:    roundps $10, %xmm3, %xmm8
+; SSE41-NEXT:    cmpeqps %xmm7, %xmm3
+; SSE41-NEXT:    roundps $10, %xmm2, %xmm7
+; SSE41-NEXT:    cmpeqps %xmm6, %xmm2
+; SSE41-NEXT:    roundps $10, %xmm1, %xmm6
+; SSE41-NEXT:    cmpeqps %xmm5, %xmm1
+; SSE41-NEXT:    roundps $10, %xmm0, %xmm5
+; SSE41-NEXT:    cmpeqps %xmm4, %xmm0
+; SSE41-NEXT:    andps %xmm8, %xmm3
+; SSE41-NEXT:    andps %xmm7, %xmm2
+; SSE41-NEXT:    andps %xmm6, %xmm1
+; SSE41-NEXT:    andps %xmm5, %xmm0
 ; SSE41-NEXT:    retq
 ;
 ; AVX-LABEL: ceil_maskz_512_ps:
@@ -2299,18 +2301,18 @@ define <8 x double> @ceil_mask_512_pd(<8 x double> %x, <8 x double> %y) nounwind
 define <8 x double> @ceil_maskz_512_pd(<8 x double> %x, <8 x double> %y) nounwind {
 ; SSE41-LABEL: ceil_maskz_512_pd:
 ; SSE41:       ## %bb.0:
-; SSE41-NEXT:    cmpeqpd %xmm3, %xmm7
-; SSE41-NEXT:    cmpeqpd %xmm2, %xmm6
-; SSE41-NEXT:    cmpeqpd %xmm1, %xmm5
-; SSE41-NEXT:    cmpeqpd %xmm0, %xmm4
-; SSE41-NEXT:    roundpd $10, %xmm3, %xmm3
-; SSE41-NEXT:    andpd %xmm7, %xmm3
-; SSE41-NEXT:    roundpd $10, %xmm2, %xmm2
-; SSE41-NEXT:    andpd %xmm6, %xmm2
-; SSE41-NEXT:    roundpd $10, %xmm1, %xmm1
-; SSE41-NEXT:    andpd %xmm5, %xmm1
-; SSE41-NEXT:    roundpd $10, %xmm0, %xmm0
-; SSE41-NEXT:    andpd %xmm4, %xmm0
+; SSE41-NEXT:    roundpd $10, %xmm3, %xmm8
+; SSE41-NEXT:    cmpeqpd %xmm7, %xmm3
+; SSE41-NEXT:    roundpd $10, %xmm2, %xmm7
+; SSE41-NEXT:    cmpeqpd %xmm6, %xmm2
+; SSE41-NEXT:    roundpd $10, %xmm1, %xmm6
+; SSE41-NEXT:    cmpeqpd %xmm5, %xmm1
+; SSE41-NEXT:    roundpd $10, %xmm0, %xmm5
+; SSE41-NEXT:    cmpeqpd %xmm4, %xmm0
+; SSE41-NEXT:    andpd %xmm8, %xmm3
+; SSE41-NEXT:    andpd %xmm7, %xmm2
+; SSE41-NEXT:    andpd %xmm6, %xmm1
+; SSE41-NEXT:    andpd %xmm5, %xmm0
 ; SSE41-NEXT:    retq
 ;
 ; AVX-LABEL: ceil_maskz_512_pd:
@@ -2697,7 +2699,8 @@ define <4 x float> @ceil_maskz_ss_mask8(<4 x float> %x, <4 x float> %y) nounwind
 ; SSE41-NEXT:    roundss $10, %xmm0, %xmm2
 ; SSE41-NEXT:    cmpeqss %xmm1, %xmm0
 ; SSE41-NEXT:    andps %xmm2, %xmm0
-; SSE41-NEXT:    blendps {{.*#+}} xmm0 = xmm0[0],xmm1[1,2,3]
+; SSE41-NEXT:    movss {{.*#+}} xmm1 = xmm0[0],xmm1[1,2,3]
+; SSE41-NEXT:    movaps %xmm1, %xmm0
 ; SSE41-NEXT:    retq
 ;
 ; AVX-LABEL: ceil_maskz_ss_mask8:
@@ -2764,7 +2767,8 @@ define <2 x double> @ceil_maskz_sd_mask8(<2 x double> %x, <2 x double> %y) nounw
 ; SSE41-NEXT:    roundsd $10, %xmm0, %xmm2
 ; SSE41-NEXT:    cmpeqsd %xmm1, %xmm0
 ; SSE41-NEXT:    andpd %xmm2, %xmm0
-; SSE41-NEXT:    blendpd {{.*#+}} xmm0 = xmm0[0],xmm1[1]
+; SSE41-NEXT:    movsd {{.*#+}} xmm1 = xmm0[0],xmm1[1]
+; SSE41-NEXT:    movapd %xmm1, %xmm0
 ; SSE41-NEXT:    retq
 ;
 ; AVX-LABEL: ceil_maskz_sd_mask8:

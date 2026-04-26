@@ -329,7 +329,8 @@ define half @fcopysign(half %x, half %y) {
 ; CHECK-LABEL: fcopysign:
 ; CHECK:       ## %bb.0:
 ; CHECK-NEXT:    vpbroadcastw {{.*#+}} xmm2 = [NaN,NaN,NaN,NaN,NaN,NaN,NaN,NaN]
-; CHECK-NEXT:    vpternlogd {{.*#+}} xmm0 = xmm1 ^ (xmm2 & (xmm0 ^ xmm1))
+; CHECK-NEXT:    vpternlogd {{.*#+}} xmm2 = xmm1 ^ (xmm2 & (xmm0 ^ xmm1))
+; CHECK-NEXT:    vmovdqa %xmm2, %xmm0
 ; CHECK-NEXT:    retq
   %a = call half @llvm.copysign.f16(half %x, half %y)
   ret half %a
@@ -341,8 +342,8 @@ define half @fround(half %x) {
 ; CHECK:       ## %bb.0:
 ; CHECK-NEXT:    vpbroadcastw {{.*#+}} xmm1 = [-0.0E+0,-0.0E+0,-0.0E+0,-0.0E+0,-0.0E+0,-0.0E+0,-0.0E+0,-0.0E+0]
 ; CHECK-NEXT:    vpbroadcastw {{.*#+}} xmm2 = [4.9976E-1,4.9976E-1,4.9976E-1,4.9976E-1,4.9976E-1,4.9976E-1,4.9976E-1,4.9976E-1]
-; CHECK-NEXT:    vpternlogq {{.*#+}} xmm2 = xmm2 | (xmm0 & xmm1)
-; CHECK-NEXT:    vaddsh %xmm2, %xmm0, %xmm0
+; CHECK-NEXT:    vpternlogq {{.*#+}} xmm1 = (xmm1 & xmm0) | xmm2
+; CHECK-NEXT:    vaddsh %xmm1, %xmm0, %xmm0
 ; CHECK-NEXT:    vrndscalesh $11, %xmm0, %xmm0, %xmm0
 ; CHECK-NEXT:    retq
   %a = call half @llvm.round.f16(half %x)
@@ -384,7 +385,9 @@ declare <8 x half> @llvm.fabs.v8f16(<8 x half>)
 define <8 x half> @fcopysignv8f16(<8 x half> %x, <8 x half> %y) {
 ; CHECK-LABEL: fcopysignv8f16:
 ; CHECK:       ## %bb.0:
-; CHECK-NEXT:    vpternlogd {{.*#+}} xmm0 = xmm1 ^ (m32bcst & (xmm0 ^ xmm1))
+; CHECK-NEXT:    vpbroadcastd {{.*#+}} xmm2 = [2147450879,2147450879,2147450879,2147450879]
+; CHECK-NEXT:    vpternlogd {{.*#+}} xmm2 = xmm1 ^ (xmm2 & (xmm0 ^ xmm1))
+; CHECK-NEXT:    vmovdqa %xmm2, %xmm0
 ; CHECK-NEXT:    retq
   %a = call <8 x half> @llvm.copysign.v8f16(<8 x half> %x, <8 x half> %y)
   ret <8 x half> %a
@@ -396,8 +399,8 @@ define <8 x half> @roundv8f16(<8 x half> %x) {
 ; CHECK:       ## %bb.0:
 ; CHECK-NEXT:    vpbroadcastw {{.*#+}} xmm1 = [-0.0E+0,-0.0E+0,-0.0E+0,-0.0E+0,-0.0E+0,-0.0E+0,-0.0E+0,-0.0E+0]
 ; CHECK-NEXT:    vpbroadcastw {{.*#+}} xmm2 = [4.9976E-1,4.9976E-1,4.9976E-1,4.9976E-1,4.9976E-1,4.9976E-1,4.9976E-1,4.9976E-1]
-; CHECK-NEXT:    vpternlogq {{.*#+}} xmm2 = xmm2 | (xmm0 & xmm1)
-; CHECK-NEXT:    vaddph %xmm2, %xmm0, %xmm0
+; CHECK-NEXT:    vpternlogq {{.*#+}} xmm1 = (xmm1 & xmm0) | xmm2
+; CHECK-NEXT:    vaddph %xmm1, %xmm0, %xmm0
 ; CHECK-NEXT:    vrndscaleph $11, %xmm0, %xmm0
 ; CHECK-NEXT:    retq
   %a = call <8 x half> @llvm.round.v8f16(<8 x half> %x)
@@ -439,7 +442,9 @@ declare <16 x half> @llvm.fabs.v16f16(<16 x half>)
 define <16 x half> @fcopysignv16f16(<16 x half> %x, <16 x half> %y) {
 ; CHECK-LABEL: fcopysignv16f16:
 ; CHECK:       ## %bb.0:
-; CHECK-NEXT:    vpternlogd {{.*#+}} ymm0 = ymm1 ^ (m32bcst & (ymm0 ^ ymm1))
+; CHECK-NEXT:    vpbroadcastd {{.*#+}} ymm2 = [2147450879,2147450879,2147450879,2147450879,2147450879,2147450879,2147450879,2147450879]
+; CHECK-NEXT:    vpternlogd {{.*#+}} ymm2 = ymm1 ^ (ymm2 & (ymm0 ^ ymm1))
+; CHECK-NEXT:    vmovdqa %ymm2, %ymm0
 ; CHECK-NEXT:    retq
   %a = call <16 x half> @llvm.copysign.v16f16(<16 x half> %x, <16 x half> %y)
   ret <16 x half> %a
@@ -451,8 +456,8 @@ define <16 x half> @roundv16f16(<16 x half> %x) {
 ; CHECK:       ## %bb.0:
 ; CHECK-NEXT:    vpbroadcastw {{.*#+}} ymm1 = [-0.0E+0,-0.0E+0,-0.0E+0,-0.0E+0,-0.0E+0,-0.0E+0,-0.0E+0,-0.0E+0,-0.0E+0,-0.0E+0,-0.0E+0,-0.0E+0,-0.0E+0,-0.0E+0,-0.0E+0,-0.0E+0]
 ; CHECK-NEXT:    vpbroadcastw {{.*#+}} ymm2 = [4.9976E-1,4.9976E-1,4.9976E-1,4.9976E-1,4.9976E-1,4.9976E-1,4.9976E-1,4.9976E-1,4.9976E-1,4.9976E-1,4.9976E-1,4.9976E-1,4.9976E-1,4.9976E-1,4.9976E-1,4.9976E-1]
-; CHECK-NEXT:    vpternlogq {{.*#+}} ymm2 = ymm2 | (ymm0 & ymm1)
-; CHECK-NEXT:    vaddph %ymm2, %ymm0, %ymm0
+; CHECK-NEXT:    vpternlogq {{.*#+}} ymm1 = (ymm1 & ymm0) | ymm2
+; CHECK-NEXT:    vaddph %ymm1, %ymm0, %ymm0
 ; CHECK-NEXT:    vrndscaleph $11, %ymm0, %ymm0
 ; CHECK-NEXT:    retq
   %a = call <16 x half> @llvm.round.v16f16(<16 x half> %x)
@@ -494,7 +499,9 @@ declare <32 x half> @llvm.fabs.v32f16(<32 x half>)
 define <32 x half> @fcopysignv32f16(<32 x half> %x, <32 x half> %y) {
 ; CHECK-LABEL: fcopysignv32f16:
 ; CHECK:       ## %bb.0:
-; CHECK-NEXT:    vpternlogd {{.*#+}} zmm0 = zmm1 ^ (m32bcst & (zmm0 ^ zmm1))
+; CHECK-NEXT:    vpbroadcastd {{.*#+}} zmm2 = [2147450879,2147450879,2147450879,2147450879,2147450879,2147450879,2147450879,2147450879,2147450879,2147450879,2147450879,2147450879,2147450879,2147450879,2147450879,2147450879]
+; CHECK-NEXT:    vpternlogd {{.*#+}} zmm2 = zmm1 ^ (zmm2 & (zmm0 ^ zmm1))
+; CHECK-NEXT:    vmovdqa64 %zmm2, %zmm0
 ; CHECK-NEXT:    retq
   %a = call <32 x half> @llvm.copysign.v32f16(<32 x half> %x, <32 x half> %y)
   ret <32 x half> %a
@@ -506,8 +513,8 @@ define <32 x half> @roundv32f16(<32 x half> %x) {
 ; CHECK:       ## %bb.0:
 ; CHECK-NEXT:    vpbroadcastw {{.*#+}} zmm1 = [-0.0E+0,-0.0E+0,-0.0E+0,-0.0E+0,-0.0E+0,-0.0E+0,-0.0E+0,-0.0E+0,-0.0E+0,-0.0E+0,-0.0E+0,-0.0E+0,-0.0E+0,-0.0E+0,-0.0E+0,-0.0E+0,-0.0E+0,-0.0E+0,-0.0E+0,-0.0E+0,-0.0E+0,-0.0E+0,-0.0E+0,-0.0E+0,-0.0E+0,-0.0E+0,-0.0E+0,-0.0E+0,-0.0E+0,-0.0E+0,-0.0E+0,-0.0E+0]
 ; CHECK-NEXT:    vpbroadcastw {{.*#+}} zmm2 = [4.9976E-1,4.9976E-1,4.9976E-1,4.9976E-1,4.9976E-1,4.9976E-1,4.9976E-1,4.9976E-1,4.9976E-1,4.9976E-1,4.9976E-1,4.9976E-1,4.9976E-1,4.9976E-1,4.9976E-1,4.9976E-1,4.9976E-1,4.9976E-1,4.9976E-1,4.9976E-1,4.9976E-1,4.9976E-1,4.9976E-1,4.9976E-1,4.9976E-1,4.9976E-1,4.9976E-1,4.9976E-1,4.9976E-1,4.9976E-1,4.9976E-1,4.9976E-1]
-; CHECK-NEXT:    vpternlogq {{.*#+}} zmm2 = zmm2 | (zmm0 & zmm1)
-; CHECK-NEXT:    vaddph %zmm2, %zmm0, %zmm0
+; CHECK-NEXT:    vpternlogq {{.*#+}} zmm1 = (zmm1 & zmm0) | zmm2
+; CHECK-NEXT:    vaddph %zmm1, %zmm0, %zmm0
 ; CHECK-NEXT:    vrndscaleph $11, %zmm0, %zmm0
 ; CHECK-NEXT:    retq
   %a = call <32 x half> @llvm.round.v32f16(<32 x half> %x)
@@ -659,7 +666,7 @@ entry:
 define <8 x half> @ceil_sh(<8 x half> %x, <8 x half> %y) nounwind {
 ; CHECK-LABEL: ceil_sh:
 ; CHECK:       ## %bb.0:
-; CHECK-NEXT:    vrndscalesh $10, %xmm0, %xmm1, %xmm0 
+; CHECK-NEXT:    vrndscalesh $10, %xmm0, %xmm1, %xmm0
 ; CHECK-NEXT:    retq
   %s = extractelement <8 x half> %x, i32 0
   %call = call half @llvm.ceil.f16(half %s)
@@ -695,7 +702,7 @@ declare half @llvm.rint.f16(half %s)
 define <8 x half> @nearbyint_sh(<8 x half> %x, <8 x half> %y) nounwind {
 ; CHECK-LABEL: nearbyint_sh:
 ; CHECK:       ## %bb.0:
-; CHECK-NEXT:    vrndscalesh $12, %xmm0, %xmm1, %xmm0 
+; CHECK-NEXT:    vrndscalesh $12, %xmm0, %xmm1, %xmm0
 ; CHECK-NEXT:    retq
   %s = extractelement <8 x half> %x, i32 0
   %call = call half @llvm.nearbyint.f16(half %s)

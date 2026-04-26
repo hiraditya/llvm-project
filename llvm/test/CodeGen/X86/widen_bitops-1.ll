@@ -9,8 +9,9 @@
 define i32 @and_i32_as_v4i8(i32 %a, i32 %b) nounwind {
 ; X86-LABEL: and_i32_as_v4i8:
 ; X86:       # %bb.0:
+; X86-NEXT:    movl {{[0-9]+}}(%esp), %ecx
 ; X86-NEXT:    movl {{[0-9]+}}(%esp), %eax
-; X86-NEXT:    andl {{[0-9]+}}(%esp), %eax
+; X86-NEXT:    andl %ecx, %eax
 ; X86-NEXT:    retl
 ;
 ; X64-LABEL: and_i32_as_v4i8:
@@ -28,8 +29,9 @@ define i32 @and_i32_as_v4i8(i32 %a, i32 %b) nounwind {
 define i32 @xor_i32_as_v4i8(i32 %a, i32 %b) nounwind {
 ; X86-LABEL: xor_i32_as_v4i8:
 ; X86:       # %bb.0:
+; X86-NEXT:    movl {{[0-9]+}}(%esp), %ecx
 ; X86-NEXT:    movl {{[0-9]+}}(%esp), %eax
-; X86-NEXT:    xorl {{[0-9]+}}(%esp), %eax
+; X86-NEXT:    xorl %ecx, %eax
 ; X86-NEXT:    retl
 ;
 ; X64-LABEL: xor_i32_as_v4i8:
@@ -47,8 +49,9 @@ define i32 @xor_i32_as_v4i8(i32 %a, i32 %b) nounwind {
 define i32 @or_i32_as_v4i8(i32 %a, i32 %b) nounwind {
 ; X86-LABEL: or_i32_as_v4i8:
 ; X86:       # %bb.0:
+; X86-NEXT:    movl {{[0-9]+}}(%esp), %ecx
 ; X86-NEXT:    movl {{[0-9]+}}(%esp), %eax
-; X86-NEXT:    orl {{[0-9]+}}(%esp), %eax
+; X86-NEXT:    orl %ecx, %eax
 ; X86-NEXT:    retl
 ;
 ; X64-LABEL: or_i32_as_v4i8:
@@ -70,8 +73,9 @@ define i32 @or_i32_as_v4i8(i32 %a, i32 %b) nounwind {
 define i32 @and_i32_as_v8i4(i32 %a, i32 %b) nounwind {
 ; X86-LABEL: and_i32_as_v8i4:
 ; X86:       # %bb.0:
+; X86-NEXT:    movl {{[0-9]+}}(%esp), %ecx
 ; X86-NEXT:    movl {{[0-9]+}}(%esp), %eax
-; X86-NEXT:    andl {{[0-9]+}}(%esp), %eax
+; X86-NEXT:    andl %ecx, %eax
 ; X86-NEXT:    retl
 ;
 ; X64-LABEL: and_i32_as_v8i4:
@@ -89,8 +93,9 @@ define i32 @and_i32_as_v8i4(i32 %a, i32 %b) nounwind {
 define i32 @xor_i32_as_v8i4(i32 %a, i32 %b) nounwind {
 ; X86-LABEL: xor_i32_as_v8i4:
 ; X86:       # %bb.0:
+; X86-NEXT:    movl {{[0-9]+}}(%esp), %ecx
 ; X86-NEXT:    movl {{[0-9]+}}(%esp), %eax
-; X86-NEXT:    xorl {{[0-9]+}}(%esp), %eax
+; X86-NEXT:    xorl %ecx, %eax
 ; X86-NEXT:    retl
 ;
 ; X64-LABEL: xor_i32_as_v8i4:
@@ -108,8 +113,9 @@ define i32 @xor_i32_as_v8i4(i32 %a, i32 %b) nounwind {
 define i32 @or_i32_as_v8i4(i32 %a, i32 %b) nounwind {
 ; X86-LABEL: or_i32_as_v8i4:
 ; X86:       # %bb.0:
+; X86-NEXT:    movl {{[0-9]+}}(%esp), %ecx
 ; X86-NEXT:    movl {{[0-9]+}}(%esp), %eax
-; X86-NEXT:    orl {{[0-9]+}}(%esp), %eax
+; X86-NEXT:    orl %ecx, %eax
 ; X86-NEXT:    retl
 ;
 ; X64-LABEL: or_i32_as_v8i4:

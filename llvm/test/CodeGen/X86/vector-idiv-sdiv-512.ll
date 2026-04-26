@@ -16,15 +16,15 @@ define <8 x i64> @test_div7_8i64(<8 x i64> %a) nounwind {
 ; AVX-NEXT:    movq %rdx, %rax
 ; AVX-NEXT:    shrq $63, %rax
 ; AVX-NEXT:    sarq %rdx
-; AVX-NEXT:    addq %rax, %rdx
-; AVX-NEXT:    vmovq %rdx, %xmm2
+; AVX-NEXT:    addq %rdx, %rax
+; AVX-NEXT:    vmovq %rax, %xmm2
 ; AVX-NEXT:    vmovq %xmm1, %rax
 ; AVX-NEXT:    imulq %rcx
 ; AVX-NEXT:    movq %rdx, %rax
 ; AVX-NEXT:    shrq $63, %rax
 ; AVX-NEXT:    sarq %rdx
-; AVX-NEXT:    addq %rax, %rdx
-; AVX-NEXT:    vmovq %rdx, %xmm1
+; AVX-NEXT:    addq %rdx, %rax
+; AVX-NEXT:    vmovq %rax, %xmm1
 ; AVX-NEXT:    vpunpcklqdq {{.*#+}} xmm1 = xmm1[0],xmm2[0]
 ; AVX-NEXT:    vextracti32x4 $2, %zmm0, %xmm2
 ; AVX-NEXT:    vpextrq $1, %xmm2, %rax
@@ -32,15 +32,15 @@ define <8 x i64> @test_div7_8i64(<8 x i64> %a) nounwind {
 ; AVX-NEXT:    movq %rdx, %rax
 ; AVX-NEXT:    shrq $63, %rax
 ; AVX-NEXT:    sarq %rdx
-; AVX-NEXT:    addq %rax, %rdx
-; AVX-NEXT:    vmovq %rdx, %xmm3
+; AVX-NEXT:    addq %rdx, %rax
+; AVX-NEXT:    vmovq %rax, %xmm3
 ; AVX-NEXT:    vmovq %xmm2, %rax
 ; AVX-NEXT:    imulq %rcx
 ; AVX-NEXT:    movq %rdx, %rax
 ; AVX-NEXT:    shrq $63, %rax
 ; AVX-NEXT:    sarq %rdx
-; AVX-NEXT:    addq %rax, %rdx
-; AVX-NEXT:    vmovq %rdx, %xmm2
+; AVX-NEXT:    addq %rdx, %rax
+; AVX-NEXT:    vmovq %rax, %xmm2
 ; AVX-NEXT:    vpunpcklqdq {{.*#+}} xmm2 = xmm2[0],xmm3[0]
 ; AVX-NEXT:    vinserti128 $1, %xmm1, %ymm2, %ymm1
 ; AVX-NEXT:    vextracti128 $1, %ymm0, %xmm2
@@ -49,30 +49,30 @@ define <8 x i64> @test_div7_8i64(<8 x i64> %a) nounwind {
 ; AVX-NEXT:    movq %rdx, %rax
 ; AVX-NEXT:    shrq $63, %rax
 ; AVX-NEXT:    sarq %rdx
-; AVX-NEXT:    addq %rax, %rdx
-; AVX-NEXT:    vmovq %rdx, %xmm3
+; AVX-NEXT:    addq %rdx, %rax
+; AVX-NEXT:    vmovq %rax, %xmm3
 ; AVX-NEXT:    vmovq %xmm2, %rax
 ; AVX-NEXT:    imulq %rcx
 ; AVX-NEXT:    movq %rdx, %rax
 ; AVX-NEXT:    shrq $63, %rax
 ; AVX-NEXT:    sarq %rdx
-; AVX-NEXT:    addq %rax, %rdx
-; AVX-NEXT:    vmovq %rdx, %xmm2
+; AVX-NEXT:    addq %rdx, %rax
+; AVX-NEXT:    vmovq %rax, %xmm2
 ; AVX-NEXT:    vpunpcklqdq {{.*#+}} xmm2 = xmm2[0],xmm3[0]
 ; AVX-NEXT:    vpextrq $1, %xmm0, %rax
 ; AVX-NEXT:    imulq %rcx
 ; AVX-NEXT:    movq %rdx, %rax
 ; AVX-NEXT:    shrq $63, %rax
 ; AVX-NEXT:    sarq %rdx
-; AVX-NEXT:    addq %rax, %rdx
-; AVX-NEXT:    vmovq %rdx, %xmm3
+; AVX-NEXT:    addq %rdx, %rax
+; AVX-NEXT:    vmovq %rax, %xmm3
 ; AVX-NEXT:    vmovq %xmm0, %rax
 ; AVX-NEXT:    imulq %rcx
 ; AVX-NEXT:    movq %rdx, %rax
 ; AVX-NEXT:    shrq $63, %rax
 ; AVX-NEXT:    sarq %rdx
-; AVX-NEXT:    addq %rax, %rdx
-; AVX-NEXT:    vmovq %rdx, %xmm0
+; AVX-NEXT:    addq %rdx, %rax
+; AVX-NEXT:    vmovq %rax, %xmm0
 ; AVX-NEXT:    vpunpcklqdq {{.*#+}} xmm0 = xmm0[0],xmm3[0]
 ; AVX-NEXT:    vinserti128 $1, %xmm2, %ymm0, %ymm0
 ; AVX-NEXT:    vinserti64x4 $1, %ymm1, %zmm0, %zmm0
@@ -285,22 +285,22 @@ define <8 x i64> @test_rem7_8i64(<8 x i64> %a) nounwind {
 ; AVX-NEXT:    movq %rdx, %rax
 ; AVX-NEXT:    shrq $63, %rax
 ; AVX-NEXT:    sarq %rdx
-; AVX-NEXT:    addq %rax, %rdx
-; AVX-NEXT:    leaq (,%rdx,8), %rax
-; AVX-NEXT:    subq %rax, %rdx
-; AVX-NEXT:    addq %rcx, %rdx
-; AVX-NEXT:    vmovq %rdx, %xmm2
+; AVX-NEXT:    addq %rdx, %rax
+; AVX-NEXT:    leaq (,%rax,8), %rdx
+; AVX-NEXT:    subq %rdx, %rax
+; AVX-NEXT:    addq %rcx, %rax
+; AVX-NEXT:    vmovq %rax, %xmm2
 ; AVX-NEXT:    vmovq %xmm1, %rcx
 ; AVX-NEXT:    movq %rcx, %rax
 ; AVX-NEXT:    imulq %rsi
 ; AVX-NEXT:    movq %rdx, %rax
 ; AVX-NEXT:    shrq $63, %rax
 ; AVX-NEXT:    sarq %rdx
-; AVX-NEXT:    addq %rax, %rdx
-; AVX-NEXT:    leaq (,%rdx,8), %rax
-; AVX-NEXT:    subq %rax, %rdx
-; AVX-NEXT:    addq %rcx, %rdx
-; AVX-NEXT:    vmovq %rdx, %xmm1
+; AVX-NEXT:    addq %rdx, %rax
+; AVX-NEXT:    leaq (,%rax,8), %rdx
+; AVX-NEXT:    subq %rdx, %rax
+; AVX-NEXT:    addq %rcx, %rax
+; AVX-NEXT:    vmovq %rax, %xmm1
 ; AVX-NEXT:    vpunpcklqdq {{.*#+}} xmm1 = xmm1[0],xmm2[0]
 ; AVX-NEXT:    vextracti32x4 $2, %zmm0, %xmm2
 ; AVX-NEXT:    vpextrq $1, %xmm2, %rcx
@@ -309,22 +309,22 @@ define <8 x i64> @test_rem7_8i64(<8 x i64> %a) nounwind {
 ; AVX-NEXT:    movq %rdx, %rax
 ; AVX-NEXT:    shrq $63, %rax
 ; AVX-NEXT:    sarq %rdx
-; AVX-NEXT:    addq %rax, %rdx
-; AVX-NEXT:    leaq (,%rdx,8), %rax
-; AVX-NEXT:    subq %rax, %rdx
-; AVX-NEXT:    addq %rcx, %rdx
-; AVX-NEXT:    vmovq %rdx, %xmm3
+; AVX-NEXT:    addq %rdx, %rax
+; AVX-NEXT:    leaq (,%rax,8), %rdx
+; AVX-NEXT:    subq %rdx, %rax
+; AVX-NEXT:    addq %rcx, %rax
+; AVX-NEXT:    vmovq %rax, %xmm3
 ; AVX-NEXT:    vmovq %xmm2, %rcx
 ; AVX-NEXT:    movq %rcx, %rax
 ; AVX-NEXT:    imulq %rsi
 ; AVX-NEXT:    movq %rdx, %rax
 ; AVX-NEXT:    shrq $63, %rax
 ; AVX-NEXT:    sarq %rdx
-; AVX-NEXT:    addq %rax, %rdx
-; AVX-NEXT:    leaq (,%rdx,8), %rax
-; AVX-NEXT:    subq %rax, %rdx
-; AVX-NEXT:    addq %rcx, %rdx
-; AVX-NEXT:    vmovq %rdx, %xmm2
+; AVX-NEXT:    addq %rdx, %rax
+; AVX-NEXT:    leaq (,%rax,8), %rdx
+; AVX-NEXT:    subq %rdx, %rax
+; AVX-NEXT:    addq %rcx, %rax
+; AVX-NEXT:    vmovq %rax, %xmm2
 ; AVX-NEXT:    vpunpcklqdq {{.*#+}} xmm2 = xmm2[0],xmm3[0]
 ; AVX-NEXT:    vinserti128 $1, %xmm1, %ymm2, %ymm1
 ; AVX-NEXT:    vextracti128 $1, %ymm0, %xmm2
@@ -334,22 +334,22 @@ define <8 x i64> @test_rem7_8i64(<8 x i64> %a) nounwind {
 ; AVX-NEXT:    movq %rdx, %rax
 ; AVX-NEXT:    shrq $63, %rax
 ; AVX-NEXT:    sarq %rdx
-; AVX-NEXT:    addq %rax, %rdx
-; AVX-NEXT:    leaq (,%rdx,8), %rax
-; AVX-NEXT:    subq %rax, %rdx
-; AVX-NEXT:    addq %rcx, %rdx
-; AVX-NEXT:    vmovq %rdx, %xmm3
+; AVX-NEXT:    addq %rdx, %rax
+; AVX-NEXT:    leaq (,%rax,8), %rdx
+; AVX-NEXT:    subq %rdx, %rax
+; AVX-NEXT:    addq %rcx, %rax
+; AVX-NEXT:    vmovq %rax, %xmm3
 ; AVX-NEXT:    vmovq %xmm2, %rcx
 ; AVX-NEXT:    movq %rcx, %rax
 ; AVX-NEXT:    imulq %rsi
 ; AVX-NEXT:    movq %rdx, %rax
 ; AVX-NEXT:    shrq $63, %rax
 ; AVX-NEXT:    sarq %rdx
-; AVX-NEXT:    addq %rax, %rdx
-; AVX-NEXT:    leaq (,%rdx,8), %rax
-; AVX-NEXT:    subq %rax, %rdx
-; AVX-NEXT:    addq %rcx, %rdx
-; AVX-NEXT:    vmovq %rdx, %xmm2
+; AVX-NEXT:    addq %rdx, %rax
+; AVX-NEXT:    leaq (,%rax,8), %rdx
+; AVX-NEXT:    subq %rdx, %rax
+; AVX-NEXT:    addq %rcx, %rax
+; AVX-NEXT:    vmovq %rax, %xmm2
 ; AVX-NEXT:    vpunpcklqdq {{.*#+}} xmm2 = xmm2[0],xmm3[0]
 ; AVX-NEXT:    vpextrq $1, %xmm0, %rcx
 ; AVX-NEXT:    movq %rcx, %rax
@@ -357,22 +357,22 @@ define <8 x i64> @test_rem7_8i64(<8 x i64> %a) nounwind {
 ; AVX-NEXT:    movq %rdx, %rax
 ; AVX-NEXT:    shrq $63, %rax
 ; AVX-NEXT:    sarq %rdx
-; AVX-NEXT:    addq %rax, %rdx
-; AVX-NEXT:    leaq (,%rdx,8), %rax
-; AVX-NEXT:    subq %rax, %rdx
-; AVX-NEXT:    addq %rcx, %rdx
-; AVX-NEXT:    vmovq %rdx, %xmm3
+; AVX-NEXT:    addq %rdx, %rax
+; AVX-NEXT:    leaq (,%rax,8), %rdx
+; AVX-NEXT:    subq %rdx, %rax
+; AVX-NEXT:    addq %rcx, %rax
+; AVX-NEXT:    vmovq %rax, %xmm3
 ; AVX-NEXT:    vmovq %xmm0, %rcx
 ; AVX-NEXT:    movq %rcx, %rax
 ; AVX-NEXT:    imulq %rsi
 ; AVX-NEXT:    movq %rdx, %rax
 ; AVX-NEXT:    shrq $63, %rax
 ; AVX-NEXT:    sarq %rdx
-; AVX-NEXT:    addq %rax, %rdx
-; AVX-NEXT:    leaq (,%rdx,8), %rax
-; AVX-NEXT:    subq %rax, %rdx
-; AVX-NEXT:    addq %rcx, %rdx
-; AVX-NEXT:    vmovq %rdx, %xmm0
+; AVX-NEXT:    addq %rdx, %rax
+; AVX-NEXT:    leaq (,%rax,8), %rdx
+; AVX-NEXT:    subq %rdx, %rax
+; AVX-NEXT:    addq %rcx, %rax
+; AVX-NEXT:    vmovq %rax, %xmm0
 ; AVX-NEXT:    vpunpcklqdq {{.*#+}} xmm0 = xmm0[0],xmm3[0]
 ; AVX-NEXT:    vinserti128 $1, %xmm2, %ymm0, %ymm0
 ; AVX-NEXT:    vinserti64x4 $1, %ymm1, %zmm0, %zmm0
@@ -606,8 +606,8 @@ define <64 x i8> @test_remconstant_64i8(<64 x i8> %a) nounwind {
 ; AVX512BW-NEXT:    vpmullw {{\.?LCPI[0-9]+_[0-9]+}}(%rip), %zmm1, %zmm2 # [7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,38,37,36,35,34,33,32,31,30,29,28,27,26,25,24,23,22,21,20,19,18,17,16,15,14,13,12,11,10,9,8,7]
 ; AVX512BW-NEXT:    vpmaddubsw {{\.?LCPI[0-9]+_[0-9]+}}(%rip), %zmm1, %zmm1 # [0,8,0,10,0,12,0,14,0,16,0,18,0,20,0,22,0,24,0,26,0,28,0,30,0,32,0,34,0,36,0,38,0,37,0,35,0,33,0,31,0,29,0,27,0,25,0,23,0,21,0,19,0,17,0,15,0,13,0,11,0,9,0,7]
 ; AVX512BW-NEXT:    vpsllw $8, %zmm1, %zmm1
-; AVX512BW-NEXT:    vpternlogd {{.*#+}} zmm1 = zmm1 | (zmm2 & m32bcst)
-; AVX512BW-NEXT:    vpsubb %zmm1, %zmm0, %zmm0
+; AVX512BW-NEXT:    vpternlogd {{.*#+}} zmm2 = (zmm2 & m32bcst) | zmm1
+; AVX512BW-NEXT:    vpsubb %zmm2, %zmm0, %zmm0
 ; AVX512BW-NEXT:    retq
   %res = srem <64 x i8> %a, <i8 7, i8 8, i8 9, i8 10, i8 11, i8 12, i8 13, i8 14, i8 15, i8 16, i8 17, i8 18, i8 19, i8 20, i8 21, i8 22, i8 23, i8 24, i8 25, i8 26, i8 27, i8 28, i8 29, i8 30, i8 31, i8 32, i8 33, i8 34, i8 35, i8 36, i8 37, i8 38, i8 38, i8 37, i8 36, i8 35, i8 34, i8 33, i8 32, i8 31, i8 30, i8 29, i8 28, i8 27, i8 26, i8 25, i8 24, i8 23, i8 22, i8 21, i8 20, i8 19, i8 18, i8 17, i8 16, i8 15, i8 14, i8 13, i8 12, i8 11, i8 10, i8 9, i8 8, i8 7>
   ret <64 x i8> %res

@@ -43,8 +43,7 @@ define i32 @main(i1 %arg.1, i64 %arg.2, i1 %arg.3, i64 %arg.4, i1 %arg.5, <vscal
 ; CHECK-NEXT:    ld s2, 112(sp)
 ; CHECK-NEXT:    vsetivli zero, 8, e32, m2, ta, ma
 ; CHECK-NEXT:    vmv.v.i v8, 0
-; CHECK-NEXT:    andi s11, a0, 1
-; CHECK-NEXT:    andi s5, a2, 1
+; CHECK-NEXT:    andi s10, a0, 1
 ; CHECK-NEXT:    andi t3, a4, 1
 ; CHECK-NEXT:    li t2, 4
 ; CHECK-NEXT:  .LBB0_1: # %for.cond1.preheader.i
@@ -64,58 +63,59 @@ define i32 @main(i1 %arg.1, i64 %arg.2, i1 %arg.3, i64 %arg.4, i1 %arg.5, <vscal
 ; CHECK-NEXT:    # Child Loop BB0_3 Depth 3
 ; CHECK-NEXT:    # Child Loop BB0_4 Depth 4
 ; CHECK-NEXT:    # Child Loop BB0_5 Depth 5
-; CHECK-NEXT:    mv s6, t4
-; CHECK-NEXT:    mv s7, t5
-; CHECK-NEXT:    mv s8, t6
-; CHECK-NEXT:    mv s9, s3
-; CHECK-NEXT:    mv s10, s4
+; CHECK-NEXT:    mv s5, t4
+; CHECK-NEXT:    mv s6, t5
+; CHECK-NEXT:    mv s7, t6
+; CHECK-NEXT:    mv s8, s3
+; CHECK-NEXT:    mv s9, s4
 ; CHECK-NEXT:  .LBB0_3: # %for.cond9.preheader.i
 ; CHECK-NEXT:    # Parent Loop BB0_1 Depth=1
 ; CHECK-NEXT:    # Parent Loop BB0_2 Depth=2
 ; CHECK-NEXT:    # => This Loop Header: Depth=3
 ; CHECK-NEXT:    # Child Loop BB0_4 Depth 4
 ; CHECK-NEXT:    # Child Loop BB0_5 Depth 5
-; CHECK-NEXT:    mv ra, s6
-; CHECK-NEXT:    mv a0, s7
+; CHECK-NEXT:    mv s11, s5
+; CHECK-NEXT:    mv a0, s6
+; CHECK-NEXT:    mv ra, s7
 ; CHECK-NEXT:    mv a3, s8
-; CHECK-NEXT:    mv a1, s9
-; CHECK-NEXT:    mv a4, s10
+; CHECK-NEXT:    mv a4, s9
 ; CHECK-NEXT:  .LBB0_4: # %vector.ph.i
 ; CHECK-NEXT:    # Parent Loop BB0_1 Depth=1
 ; CHECK-NEXT:    # Parent Loop BB0_2 Depth=2
 ; CHECK-NEXT:    # Parent Loop BB0_3 Depth=3
 ; CHECK-NEXT:    # => This Loop Header: Depth=4
 ; CHECK-NEXT:    # Child Loop BB0_5 Depth 5
-; CHECK-NEXT:    li a2, 0
+; CHECK-NEXT:    li s1, 0
 ; CHECK-NEXT:  .LBB0_5: # %vector.body.i
 ; CHECK-NEXT:    # Parent Loop BB0_1 Depth=1
 ; CHECK-NEXT:    # Parent Loop BB0_2 Depth=2
 ; CHECK-NEXT:    # Parent Loop BB0_3 Depth=3
 ; CHECK-NEXT:    # Parent Loop BB0_4 Depth=4
 ; CHECK-NEXT:    # => This Inner Loop Header: Depth=5
-; CHECK-NEXT:    addi s1, a2, 4
-; CHECK-NEXT:    add a5, a1, a2
-; CHECK-NEXT:    add a2, a2, a0
+; CHECK-NEXT:    addi a1, s1, 4
+; CHECK-NEXT:    add a5, a3, s1
+; CHECK-NEXT:    add s1, s1, a0
 ; CHECK-NEXT:    vse32.v v8, (a5), v0.t
-; CHECK-NEXT:    vse32.v v8, (a2), v0.t
-; CHECK-NEXT:    mv a2, s1
-; CHECK-NEXT:    bne s1, s0, .LBB0_5
+; CHECK-NEXT:    vse32.v v8, (s1), v0.t
+; CHECK-NEXT:    mv s1, a1
+; CHECK-NEXT:    bne a1, s0, .LBB0_5
 ; CHECK-NEXT:  # %bb.6: # %for.cond.cleanup15.i
 ; CHECK-NEXT:    # in Loop: Header=BB0_4 Depth=4
 ; CHECK-NEXT:    addi a4, a4, 4
-; CHECK-NEXT:    addi a1, a1, 4
 ; CHECK-NEXT:    addi a3, a3, 4
-; CHECK-NEXT:    addi a0, a0, 4
 ; CHECK-NEXT:    addi ra, ra, 4
-; CHECK-NEXT:    beqz s11, .LBB0_4
+; CHECK-NEXT:    addi a0, a0, 4
+; CHECK-NEXT:    addi s11, s11, 4
+; CHECK-NEXT:    beqz s10, .LBB0_4
 ; CHECK-NEXT:  # %bb.7: # %for.cond.cleanup11.i
 ; CHECK-NEXT:    # in Loop: Header=BB0_3 Depth=3
-; CHECK-NEXT:    addi s10, s10, 4
 ; CHECK-NEXT:    addi s9, s9, 4
 ; CHECK-NEXT:    addi s8, s8, 4
 ; CHECK-NEXT:    addi s7, s7, 4
 ; CHECK-NEXT:    addi s6, s6, 4
-; CHECK-NEXT:    beqz s5, .LBB0_3
+; CHECK-NEXT:    andi a0, a2, 1
+; CHECK-NEXT:    addi s5, s5, 4
+; CHECK-NEXT:    beqz a0, .LBB0_3
 ; CHECK-NEXT:  # %bb.8: # %for.cond.cleanup7.i
 ; CHECK-NEXT:    # in Loop: Header=BB0_2 Depth=2
 ; CHECK-NEXT:    addi s4, s4, 4
@@ -131,11 +131,11 @@ define i32 @main(i1 %arg.1, i64 %arg.2, i1 %arg.3, i64 %arg.4, i1 %arg.5, <vscal
 ; CHECK-NEXT:    addi t0, t0, 4
 ; CHECK-NEXT:    addi t2, t2, 4
 ; CHECK-NEXT:    addi t1, t1, 4
-; CHECK-NEXT:    beqz s5, .LBB0_1
+; CHECK-NEXT:    beqz a0, .LBB0_1
 ; CHECK-NEXT:  # %bb.10: # %l.exit
 ; CHECK-NEXT:    li a0, 0
 ; CHECK-NEXT:    jalr a0
-; CHECK-NEXT:    beqz s11, .LBB0_12
+; CHECK-NEXT:    beqz s10, .LBB0_12
 ; CHECK-NEXT:  .LBB0_11: # %for.body7.us.14
 ; CHECK-NEXT:    # =>This Inner Loop Header: Depth=1
 ; CHECK-NEXT:    j .LBB0_11

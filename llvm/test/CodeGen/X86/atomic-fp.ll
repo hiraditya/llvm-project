@@ -32,8 +32,9 @@ define dso_local void @fadd_32r(ptr %loc, float %val) nounwind {
 ; X86-SSE1-NEXT:    movl (%eax), %ecx
 ; X86-SSE1-NEXT:    movl %ecx, (%esp)
 ; X86-SSE1-NEXT:    movss {{.*#+}} xmm0 = mem[0],zero,zero,zero
-; X86-SSE1-NEXT:    addss {{[0-9]+}}(%esp), %xmm0
-; X86-SSE1-NEXT:    movss %xmm0, {{[0-9]+}}(%esp)
+; X86-SSE1-NEXT:    movss {{.*#+}} xmm1 = mem[0],zero,zero,zero
+; X86-SSE1-NEXT:    addss %xmm0, %xmm1
+; X86-SSE1-NEXT:    movss %xmm1, {{[0-9]+}}(%esp)
 ; X86-SSE1-NEXT:    movl {{[0-9]+}}(%esp), %ecx
 ; X86-SSE1-NEXT:    movl %ecx, (%eax)
 ; X86-SSE1-NEXT:    addl $8, %esp
@@ -43,8 +44,9 @@ define dso_local void @fadd_32r(ptr %loc, float %val) nounwind {
 ; X86-SSE2:       # %bb.0:
 ; X86-SSE2-NEXT:    movl {{[0-9]+}}(%esp), %eax
 ; X86-SSE2-NEXT:    movss {{.*#+}} xmm0 = mem[0],zero,zero,zero
-; X86-SSE2-NEXT:    addss (%eax), %xmm0
-; X86-SSE2-NEXT:    movss %xmm0, (%eax)
+; X86-SSE2-NEXT:    movss {{.*#+}} xmm1 = mem[0],zero,zero,zero
+; X86-SSE2-NEXT:    addss %xmm0, %xmm1
+; X86-SSE2-NEXT:    movss %xmm1, (%eax)
 ; X86-SSE2-NEXT:    retl
 ;
 ; X86-AVX-LABEL: fadd_32r:
@@ -57,8 +59,9 @@ define dso_local void @fadd_32r(ptr %loc, float %val) nounwind {
 ;
 ; X64-SSE-LABEL: fadd_32r:
 ; X64-SSE:       # %bb.0:
-; X64-SSE-NEXT:    addss (%rdi), %xmm0
-; X64-SSE-NEXT:    movss %xmm0, (%rdi)
+; X64-SSE-NEXT:    movss {{.*#+}} xmm1 = mem[0],zero,zero,zero
+; X64-SSE-NEXT:    addss %xmm0, %xmm1
+; X64-SSE-NEXT:    movss %xmm1, (%rdi)
 ; X64-SSE-NEXT:    retq
 ;
 ; X64-AVX-LABEL: fadd_32r:
@@ -122,8 +125,9 @@ define dso_local void @fadd_64r(ptr %loc, double %val) nounwind {
 ; X86-SSE2-NEXT:    subl $8, %esp
 ; X86-SSE2-NEXT:    movl 8(%ebp), %eax
 ; X86-SSE2-NEXT:    movsd {{.*#+}} xmm0 = mem[0],zero
-; X86-SSE2-NEXT:    addsd 12(%ebp), %xmm0
-; X86-SSE2-NEXT:    movsd %xmm0, (%eax)
+; X86-SSE2-NEXT:    movsd {{.*#+}} xmm1 = mem[0],zero
+; X86-SSE2-NEXT:    addsd %xmm0, %xmm1
+; X86-SSE2-NEXT:    movsd %xmm1, (%eax)
 ; X86-SSE2-NEXT:    movl %ebp, %esp
 ; X86-SSE2-NEXT:    popl %ebp
 ; X86-SSE2-NEXT:    retl
@@ -144,8 +148,9 @@ define dso_local void @fadd_64r(ptr %loc, double %val) nounwind {
 ;
 ; X64-SSE-LABEL: fadd_64r:
 ; X64-SSE:       # %bb.0:
-; X64-SSE-NEXT:    addsd (%rdi), %xmm0
-; X64-SSE-NEXT:    movsd %xmm0, (%rdi)
+; X64-SSE-NEXT:    movsd {{.*#+}} xmm1 = mem[0],zero
+; X64-SSE-NEXT:    addsd %xmm0, %xmm1
+; X64-SSE-NEXT:    movsd %xmm1, (%rdi)
 ; X64-SSE-NEXT:    retq
 ;
 ; X64-AVX-LABEL: fadd_64r:
@@ -185,8 +190,9 @@ define dso_local void @fadd_32g() nounwind {
 ; X86-SSE1-NEXT:    movl glob32, %eax
 ; X86-SSE1-NEXT:    movl %eax, (%esp)
 ; X86-SSE1-NEXT:    movss {{.*#+}} xmm0 = mem[0],zero,zero,zero
-; X86-SSE1-NEXT:    addss {{\.?LCPI[0-9]+_[0-9]+}}, %xmm0
-; X86-SSE1-NEXT:    movss %xmm0, {{[0-9]+}}(%esp)
+; X86-SSE1-NEXT:    movss {{.*#+}} xmm1 = [1.0E+0,0.0E+0,0.0E+0,0.0E+0]
+; X86-SSE1-NEXT:    addss %xmm0, %xmm1
+; X86-SSE1-NEXT:    movss %xmm1, {{[0-9]+}}(%esp)
 ; X86-SSE1-NEXT:    movl {{[0-9]+}}(%esp), %eax
 ; X86-SSE1-NEXT:    movl %eax, glob32
 ; X86-SSE1-NEXT:    addl $8, %esp
@@ -195,8 +201,9 @@ define dso_local void @fadd_32g() nounwind {
 ; X86-SSE2-LABEL: fadd_32g:
 ; X86-SSE2:       # %bb.0:
 ; X86-SSE2-NEXT:    movss {{.*#+}} xmm0 = [1.0E+0,0.0E+0,0.0E+0,0.0E+0]
-; X86-SSE2-NEXT:    addss glob32, %xmm0
-; X86-SSE2-NEXT:    movss %xmm0, glob32
+; X86-SSE2-NEXT:    movss {{.*#+}} xmm1 = mem[0],zero,zero,zero
+; X86-SSE2-NEXT:    addss %xmm0, %xmm1
+; X86-SSE2-NEXT:    movss %xmm1, glob32
 ; X86-SSE2-NEXT:    retl
 ;
 ; X86-AVX-LABEL: fadd_32g:
@@ -209,8 +216,9 @@ define dso_local void @fadd_32g() nounwind {
 ; X64-SSE-LABEL: fadd_32g:
 ; X64-SSE:       # %bb.0:
 ; X64-SSE-NEXT:    movss {{.*#+}} xmm0 = [1.0E+0,0.0E+0,0.0E+0,0.0E+0]
-; X64-SSE-NEXT:    addss glob32(%rip), %xmm0
-; X64-SSE-NEXT:    movss %xmm0, glob32(%rip)
+; X64-SSE-NEXT:    movss {{.*#+}} xmm1 = mem[0],zero,zero,zero
+; X64-SSE-NEXT:    addss %xmm0, %xmm1
+; X64-SSE-NEXT:    movss %xmm1, glob32(%rip)
 ; X64-SSE-NEXT:    retq
 ;
 ; X64-AVX-LABEL: fadd_32g:
@@ -272,8 +280,9 @@ define dso_local void @fadd_64g() nounwind {
 ; X86-SSE2-NEXT:    andl $-8, %esp
 ; X86-SSE2-NEXT:    subl $8, %esp
 ; X86-SSE2-NEXT:    movsd {{.*#+}} xmm0 = mem[0],zero
-; X86-SSE2-NEXT:    addsd {{\.?LCPI[0-9]+_[0-9]+}}, %xmm0
-; X86-SSE2-NEXT:    movsd %xmm0, glob64
+; X86-SSE2-NEXT:    movsd {{.*#+}} xmm1 = [1.0E+0,0.0E+0]
+; X86-SSE2-NEXT:    addsd %xmm0, %xmm1
+; X86-SSE2-NEXT:    movsd %xmm1, glob64
 ; X86-SSE2-NEXT:    movl %ebp, %esp
 ; X86-SSE2-NEXT:    popl %ebp
 ; X86-SSE2-NEXT:    retl
@@ -294,8 +303,9 @@ define dso_local void @fadd_64g() nounwind {
 ; X64-SSE-LABEL: fadd_64g:
 ; X64-SSE:       # %bb.0:
 ; X64-SSE-NEXT:    movsd {{.*#+}} xmm0 = [1.0E+0,0.0E+0]
-; X64-SSE-NEXT:    addsd glob64(%rip), %xmm0
-; X64-SSE-NEXT:    movsd %xmm0, glob64(%rip)
+; X64-SSE-NEXT:    movsd {{.*#+}} xmm1 = mem[0],zero
+; X64-SSE-NEXT:    addsd %xmm0, %xmm1
+; X64-SSE-NEXT:    movsd %xmm1, glob64(%rip)
 ; X64-SSE-NEXT:    retq
 ;
 ; X64-AVX-LABEL: fadd_64g:
@@ -333,8 +343,9 @@ define dso_local void @fadd_32imm() nounwind {
 ; X86-SSE1-NEXT:    movl -559038737, %eax
 ; X86-SSE1-NEXT:    movl %eax, (%esp)
 ; X86-SSE1-NEXT:    movss {{.*#+}} xmm0 = mem[0],zero,zero,zero
-; X86-SSE1-NEXT:    addss {{\.?LCPI[0-9]+_[0-9]+}}, %xmm0
-; X86-SSE1-NEXT:    movss %xmm0, {{[0-9]+}}(%esp)
+; X86-SSE1-NEXT:    movss {{.*#+}} xmm1 = [1.0E+0,0.0E+0,0.0E+0,0.0E+0]
+; X86-SSE1-NEXT:    addss %xmm0, %xmm1
+; X86-SSE1-NEXT:    movss %xmm1, {{[0-9]+}}(%esp)
 ; X86-SSE1-NEXT:    movl {{[0-9]+}}(%esp), %eax
 ; X86-SSE1-NEXT:    movl %eax, -559038737
 ; X86-SSE1-NEXT:    addl $8, %esp
@@ -343,8 +354,9 @@ define dso_local void @fadd_32imm() nounwind {
 ; X86-SSE2-LABEL: fadd_32imm:
 ; X86-SSE2:       # %bb.0:
 ; X86-SSE2-NEXT:    movss {{.*#+}} xmm0 = [1.0E+0,0.0E+0,0.0E+0,0.0E+0]
-; X86-SSE2-NEXT:    addss -559038737, %xmm0
-; X86-SSE2-NEXT:    movss %xmm0, -559038737
+; X86-SSE2-NEXT:    movss {{.*#+}} xmm1 = mem[0],zero,zero,zero
+; X86-SSE2-NEXT:    addss %xmm0, %xmm1
+; X86-SSE2-NEXT:    movss %xmm1, -559038737
 ; X86-SSE2-NEXT:    retl
 ;
 ; X86-AVX-LABEL: fadd_32imm:
@@ -358,8 +370,9 @@ define dso_local void @fadd_32imm() nounwind {
 ; X64-SSE:       # %bb.0:
 ; X64-SSE-NEXT:    movl $3735928559, %eax # imm = 0xDEADBEEF
 ; X64-SSE-NEXT:    movss {{.*#+}} xmm0 = [1.0E+0,0.0E+0,0.0E+0,0.0E+0]
-; X64-SSE-NEXT:    addss (%rax), %xmm0
-; X64-SSE-NEXT:    movss %xmm0, (%rax)
+; X64-SSE-NEXT:    movss {{.*#+}} xmm1 = mem[0],zero,zero,zero
+; X64-SSE-NEXT:    addss %xmm0, %xmm1
+; X64-SSE-NEXT:    movss %xmm1, (%rax)
 ; X64-SSE-NEXT:    retq
 ;
 ; X64-AVX-LABEL: fadd_32imm:
@@ -422,8 +435,9 @@ define dso_local void @fadd_64imm() nounwind {
 ; X86-SSE2-NEXT:    andl $-8, %esp
 ; X86-SSE2-NEXT:    subl $8, %esp
 ; X86-SSE2-NEXT:    movsd {{.*#+}} xmm0 = mem[0],zero
-; X86-SSE2-NEXT:    addsd {{\.?LCPI[0-9]+_[0-9]+}}, %xmm0
-; X86-SSE2-NEXT:    movsd %xmm0, -559038737
+; X86-SSE2-NEXT:    movsd {{.*#+}} xmm1 = [1.0E+0,0.0E+0]
+; X86-SSE2-NEXT:    addsd %xmm0, %xmm1
+; X86-SSE2-NEXT:    movsd %xmm1, -559038737
 ; X86-SSE2-NEXT:    movl %ebp, %esp
 ; X86-SSE2-NEXT:    popl %ebp
 ; X86-SSE2-NEXT:    retl
@@ -445,8 +459,9 @@ define dso_local void @fadd_64imm() nounwind {
 ; X64-SSE:       # %bb.0:
 ; X64-SSE-NEXT:    movl $3735928559, %eax # imm = 0xDEADBEEF
 ; X64-SSE-NEXT:    movsd {{.*#+}} xmm0 = [1.0E+0,0.0E+0]
-; X64-SSE-NEXT:    addsd (%rax), %xmm0
-; X64-SSE-NEXT:    movsd %xmm0, (%rax)
+; X64-SSE-NEXT:    movsd {{.*#+}} xmm1 = mem[0],zero
+; X64-SSE-NEXT:    addsd %xmm0, %xmm1
+; X64-SSE-NEXT:    movsd %xmm1, (%rax)
 ; X64-SSE-NEXT:    retq
 ;
 ; X64-AVX-LABEL: fadd_64imm:
@@ -485,8 +500,9 @@ define dso_local void @fadd_32stack() nounwind {
 ; X86-SSE1-NEXT:    movl {{[0-9]+}}(%esp), %eax
 ; X86-SSE1-NEXT:    movl %eax, (%esp)
 ; X86-SSE1-NEXT:    movss {{.*#+}} xmm0 = mem[0],zero,zero,zero
-; X86-SSE1-NEXT:    addss {{\.?LCPI[0-9]+_[0-9]+}}, %xmm0
-; X86-SSE1-NEXT:    movss %xmm0, {{[0-9]+}}(%esp)
+; X86-SSE1-NEXT:    movss {{.*#+}} xmm1 = [1.0E+0,0.0E+0,0.0E+0,0.0E+0]
+; X86-SSE1-NEXT:    addss %xmm0, %xmm1
+; X86-SSE1-NEXT:    movss %xmm1, {{[0-9]+}}(%esp)
 ; X86-SSE1-NEXT:    movl {{[0-9]+}}(%esp), %eax
 ; X86-SSE1-NEXT:    movl %eax, {{[0-9]+}}(%esp)
 ; X86-SSE1-NEXT:    addl $12, %esp
@@ -496,8 +512,9 @@ define dso_local void @fadd_32stack() nounwind {
 ; X86-SSE2:       # %bb.0:
 ; X86-SSE2-NEXT:    pushl %eax
 ; X86-SSE2-NEXT:    movss {{.*#+}} xmm0 = [1.0E+0,0.0E+0,0.0E+0,0.0E+0]
-; X86-SSE2-NEXT:    addss (%esp), %xmm0
-; X86-SSE2-NEXT:    movss %xmm0, (%esp)
+; X86-SSE2-NEXT:    movss {{.*#+}} xmm1 = mem[0],zero,zero,zero
+; X86-SSE2-NEXT:    addss %xmm0, %xmm1
+; X86-SSE2-NEXT:    movss %xmm1, (%esp)
 ; X86-SSE2-NEXT:    popl %eax
 ; X86-SSE2-NEXT:    retl
 ;
@@ -513,8 +530,9 @@ define dso_local void @fadd_32stack() nounwind {
 ; X64-SSE-LABEL: fadd_32stack:
 ; X64-SSE:       # %bb.0:
 ; X64-SSE-NEXT:    movss {{.*#+}} xmm0 = [1.0E+0,0.0E+0,0.0E+0,0.0E+0]
-; X64-SSE-NEXT:    addss -{{[0-9]+}}(%rsp), %xmm0
-; X64-SSE-NEXT:    movss %xmm0, -{{[0-9]+}}(%rsp)
+; X64-SSE-NEXT:    movss {{.*#+}} xmm1 = mem[0],zero,zero,zero
+; X64-SSE-NEXT:    addss %xmm0, %xmm1
+; X64-SSE-NEXT:    movss %xmm1, -{{[0-9]+}}(%rsp)
 ; X64-SSE-NEXT:    retq
 ;
 ; X64-AVX-LABEL: fadd_32stack:
@@ -577,8 +595,9 @@ define dso_local void @fadd_64stack() nounwind {
 ; X86-SSE2-NEXT:    andl $-8, %esp
 ; X86-SSE2-NEXT:    subl $16, %esp
 ; X86-SSE2-NEXT:    movsd {{.*#+}} xmm0 = mem[0],zero
-; X86-SSE2-NEXT:    addsd {{\.?LCPI[0-9]+_[0-9]+}}, %xmm0
-; X86-SSE2-NEXT:    movsd %xmm0, (%esp)
+; X86-SSE2-NEXT:    movsd {{.*#+}} xmm1 = [1.0E+0,0.0E+0]
+; X86-SSE2-NEXT:    addsd %xmm0, %xmm1
+; X86-SSE2-NEXT:    movsd %xmm1, (%esp)
 ; X86-SSE2-NEXT:    movl %ebp, %esp
 ; X86-SSE2-NEXT:    popl %ebp
 ; X86-SSE2-NEXT:    retl
@@ -599,8 +618,9 @@ define dso_local void @fadd_64stack() nounwind {
 ; X64-SSE-LABEL: fadd_64stack:
 ; X64-SSE:       # %bb.0:
 ; X64-SSE-NEXT:    movsd {{.*#+}} xmm0 = [1.0E+0,0.0E+0]
-; X64-SSE-NEXT:    addsd -{{[0-9]+}}(%rsp), %xmm0
-; X64-SSE-NEXT:    movsd %xmm0, -{{[0-9]+}}(%rsp)
+; X64-SSE-NEXT:    movsd {{.*#+}} xmm1 = mem[0],zero
+; X64-SSE-NEXT:    addsd %xmm0, %xmm1
+; X64-SSE-NEXT:    movsd %xmm1, -{{[0-9]+}}(%rsp)
 ; X64-SSE-NEXT:    retq
 ;
 ; X64-AVX-LABEL: fadd_64stack:
@@ -671,8 +691,9 @@ define dso_local void @fadd_array(ptr %arg, double %arg1, i64 %arg2) nounwind {
 ; X86-SSE2-NEXT:    movl 20(%ebp), %eax
 ; X86-SSE2-NEXT:    movl 8(%ebp), %ecx
 ; X86-SSE2-NEXT:    movsd {{.*#+}} xmm0 = mem[0],zero
-; X86-SSE2-NEXT:    addsd 12(%ebp), %xmm0
-; X86-SSE2-NEXT:    movsd %xmm0, (%ecx,%eax,8)
+; X86-SSE2-NEXT:    movsd {{.*#+}} xmm1 = mem[0],zero
+; X86-SSE2-NEXT:    addsd %xmm0, %xmm1
+; X86-SSE2-NEXT:    movsd %xmm1, (%ecx,%eax,8)
 ; X86-SSE2-NEXT:    movl %ebp, %esp
 ; X86-SSE2-NEXT:    popl %ebp
 ; X86-SSE2-NEXT:    retl
@@ -694,8 +715,9 @@ define dso_local void @fadd_array(ptr %arg, double %arg1, i64 %arg2) nounwind {
 ;
 ; X64-SSE-LABEL: fadd_array:
 ; X64-SSE:       # %bb.0: # %bb
-; X64-SSE-NEXT:    addsd (%rdi,%rsi,8), %xmm0
-; X64-SSE-NEXT:    movsd %xmm0, (%rdi,%rsi,8)
+; X64-SSE-NEXT:    movsd {{.*#+}} xmm1 = mem[0],zero
+; X64-SSE-NEXT:    addsd %xmm0, %xmm1
+; X64-SSE-NEXT:    movsd %xmm1, (%rdi,%rsi,8)
 ; X64-SSE-NEXT:    retq
 ;
 ; X64-AVX-LABEL: fadd_array:
@@ -892,8 +914,9 @@ define dso_local void @fsub_32g() nounwind {
 ; X86-SSE1-NEXT:    movl glob32, %eax
 ; X86-SSE1-NEXT:    movl %eax, (%esp)
 ; X86-SSE1-NEXT:    movss {{.*#+}} xmm0 = mem[0],zero,zero,zero
-; X86-SSE1-NEXT:    addss {{\.?LCPI[0-9]+_[0-9]+}}, %xmm0
-; X86-SSE1-NEXT:    movss %xmm0, {{[0-9]+}}(%esp)
+; X86-SSE1-NEXT:    movss {{.*#+}} xmm1 = [-1.0E+0,0.0E+0,0.0E+0,0.0E+0]
+; X86-SSE1-NEXT:    addss %xmm0, %xmm1
+; X86-SSE1-NEXT:    movss %xmm1, {{[0-9]+}}(%esp)
 ; X86-SSE1-NEXT:    movl {{[0-9]+}}(%esp), %eax
 ; X86-SSE1-NEXT:    movl %eax, glob32
 ; X86-SSE1-NEXT:    addl $8, %esp
@@ -902,8 +925,9 @@ define dso_local void @fsub_32g() nounwind {
 ; X86-SSE2-LABEL: fsub_32g:
 ; X86-SSE2:       # %bb.0:
 ; X86-SSE2-NEXT:    movss {{.*#+}} xmm0 = [-1.0E+0,0.0E+0,0.0E+0,0.0E+0]
-; X86-SSE2-NEXT:    addss glob32, %xmm0
-; X86-SSE2-NEXT:    movss %xmm0, glob32
+; X86-SSE2-NEXT:    movss {{.*#+}} xmm1 = mem[0],zero,zero,zero
+; X86-SSE2-NEXT:    addss %xmm0, %xmm1
+; X86-SSE2-NEXT:    movss %xmm1, glob32
 ; X86-SSE2-NEXT:    retl
 ;
 ; X86-AVX-LABEL: fsub_32g:
@@ -916,8 +940,9 @@ define dso_local void @fsub_32g() nounwind {
 ; X64-SSE-LABEL: fsub_32g:
 ; X64-SSE:       # %bb.0:
 ; X64-SSE-NEXT:    movss {{.*#+}} xmm0 = [-1.0E+0,0.0E+0,0.0E+0,0.0E+0]
-; X64-SSE-NEXT:    addss glob32(%rip), %xmm0
-; X64-SSE-NEXT:    movss %xmm0, glob32(%rip)
+; X64-SSE-NEXT:    movss {{.*#+}} xmm1 = mem[0],zero,zero,zero
+; X64-SSE-NEXT:    addss %xmm0, %xmm1
+; X64-SSE-NEXT:    movss %xmm1, glob32(%rip)
 ; X64-SSE-NEXT:    retq
 ;
 ; X64-AVX-LABEL: fsub_32g:
@@ -981,8 +1006,9 @@ define dso_local void @fsub_64g() nounwind {
 ; X86-SSE2-NEXT:    andl $-8, %esp
 ; X86-SSE2-NEXT:    subl $8, %esp
 ; X86-SSE2-NEXT:    movsd {{.*#+}} xmm0 = mem[0],zero
-; X86-SSE2-NEXT:    addsd {{\.?LCPI[0-9]+_[0-9]+}}, %xmm0
-; X86-SSE2-NEXT:    movsd %xmm0, glob64
+; X86-SSE2-NEXT:    movsd {{.*#+}} xmm1 = [-1.0E+0,0.0E+0]
+; X86-SSE2-NEXT:    addsd %xmm0, %xmm1
+; X86-SSE2-NEXT:    movsd %xmm1, glob64
 ; X86-SSE2-NEXT:    movl %ebp, %esp
 ; X86-SSE2-NEXT:    popl %ebp
 ; X86-SSE2-NEXT:    retl
@@ -1003,8 +1029,9 @@ define dso_local void @fsub_64g() nounwind {
 ; X64-SSE-LABEL: fsub_64g:
 ; X64-SSE:       # %bb.0:
 ; X64-SSE-NEXT:    movsd {{.*#+}} xmm0 = [-1.0E+0,0.0E+0]
-; X64-SSE-NEXT:    addsd glob64(%rip), %xmm0
-; X64-SSE-NEXT:    movsd %xmm0, glob64(%rip)
+; X64-SSE-NEXT:    movsd {{.*#+}} xmm1 = mem[0],zero
+; X64-SSE-NEXT:    addsd %xmm0, %xmm1
+; X64-SSE-NEXT:    movsd %xmm1, glob64(%rip)
 ; X64-SSE-NEXT:    retq
 ;
 ; X64-AVX-LABEL: fsub_64g:
@@ -1043,8 +1070,9 @@ define dso_local void @fsub_32imm() nounwind {
 ; X86-SSE1-NEXT:    movl -559038737, %eax
 ; X86-SSE1-NEXT:    movl %eax, (%esp)
 ; X86-SSE1-NEXT:    movss {{.*#+}} xmm0 = mem[0],zero,zero,zero
-; X86-SSE1-NEXT:    addss {{\.?LCPI[0-9]+_[0-9]+}}, %xmm0
-; X86-SSE1-NEXT:    movss %xmm0, {{[0-9]+}}(%esp)
+; X86-SSE1-NEXT:    movss {{.*#+}} xmm1 = [-1.0E+0,0.0E+0,0.0E+0,0.0E+0]
+; X86-SSE1-NEXT:    addss %xmm0, %xmm1
+; X86-SSE1-NEXT:    movss %xmm1, {{[0-9]+}}(%esp)
 ; X86-SSE1-NEXT:    movl {{[0-9]+}}(%esp), %eax
 ; X86-SSE1-NEXT:    movl %eax, -559038737
 ; X86-SSE1-NEXT:    addl $8, %esp
@@ -1053,8 +1081,9 @@ define dso_local void @fsub_32imm() nounwind {
 ; X86-SSE2-LABEL: fsub_32imm:
 ; X86-SSE2:       # %bb.0:
 ; X86-SSE2-NEXT:    movss {{.*#+}} xmm0 = [-1.0E+0,0.0E+0,0.0E+0,0.0E+0]
-; X86-SSE2-NEXT:    addss -559038737, %xmm0
-; X86-SSE2-NEXT:    movss %xmm0, -559038737
+; X86-SSE2-NEXT:    movss {{.*#+}} xmm1 = mem[0],zero,zero,zero
+; X86-SSE2-NEXT:    addss %xmm0, %xmm1
+; X86-SSE2-NEXT:    movss %xmm1, -559038737
 ; X86-SSE2-NEXT:    retl
 ;
 ; X86-AVX-LABEL: fsub_32imm:
@@ -1068,8 +1097,9 @@ define dso_local void @fsub_32imm() nounwind {
 ; X64-SSE:       # %bb.0:
 ; X64-SSE-NEXT:    movl $3735928559, %eax # imm = 0xDEADBEEF
 ; X64-SSE-NEXT:    movss {{.*#+}} xmm0 = [-1.0E+0,0.0E+0,0.0E+0,0.0E+0]
-; X64-SSE-NEXT:    addss (%rax), %xmm0
-; X64-SSE-NEXT:    movss %xmm0, (%rax)
+; X64-SSE-NEXT:    movss {{.*#+}} xmm1 = mem[0],zero,zero,zero
+; X64-SSE-NEXT:    addss %xmm0, %xmm1
+; X64-SSE-NEXT:    movss %xmm1, (%rax)
 ; X64-SSE-NEXT:    retq
 ;
 ; X64-AVX-LABEL: fsub_32imm:
@@ -1134,8 +1164,9 @@ define dso_local void @fsub_64imm() nounwind {
 ; X86-SSE2-NEXT:    andl $-8, %esp
 ; X86-SSE2-NEXT:    subl $8, %esp
 ; X86-SSE2-NEXT:    movsd {{.*#+}} xmm0 = mem[0],zero
-; X86-SSE2-NEXT:    addsd {{\.?LCPI[0-9]+_[0-9]+}}, %xmm0
-; X86-SSE2-NEXT:    movsd %xmm0, -559038737
+; X86-SSE2-NEXT:    movsd {{.*#+}} xmm1 = [-1.0E+0,0.0E+0]
+; X86-SSE2-NEXT:    addsd %xmm0, %xmm1
+; X86-SSE2-NEXT:    movsd %xmm1, -559038737
 ; X86-SSE2-NEXT:    movl %ebp, %esp
 ; X86-SSE2-NEXT:    popl %ebp
 ; X86-SSE2-NEXT:    retl
@@ -1157,8 +1188,9 @@ define dso_local void @fsub_64imm() nounwind {
 ; X64-SSE:       # %bb.0:
 ; X64-SSE-NEXT:    movl $3735928559, %eax # imm = 0xDEADBEEF
 ; X64-SSE-NEXT:    movsd {{.*#+}} xmm0 = [-1.0E+0,0.0E+0]
-; X64-SSE-NEXT:    addsd (%rax), %xmm0
-; X64-SSE-NEXT:    movsd %xmm0, (%rax)
+; X64-SSE-NEXT:    movsd {{.*#+}} xmm1 = mem[0],zero
+; X64-SSE-NEXT:    addsd %xmm0, %xmm1
+; X64-SSE-NEXT:    movsd %xmm1, (%rax)
 ; X64-SSE-NEXT:    retq
 ;
 ; X64-AVX-LABEL: fsub_64imm:
@@ -1453,8 +1485,9 @@ define dso_local void @fmul_32r(ptr %loc, float %val) nounwind {
 ; X86-SSE1-NEXT:    movl (%eax), %ecx
 ; X86-SSE1-NEXT:    movl %ecx, (%esp)
 ; X86-SSE1-NEXT:    movss {{.*#+}} xmm0 = mem[0],zero,zero,zero
-; X86-SSE1-NEXT:    mulss {{[0-9]+}}(%esp), %xmm0
-; X86-SSE1-NEXT:    movss %xmm0, {{[0-9]+}}(%esp)
+; X86-SSE1-NEXT:    movss {{.*#+}} xmm1 = mem[0],zero,zero,zero
+; X86-SSE1-NEXT:    mulss %xmm0, %xmm1
+; X86-SSE1-NEXT:    movss %xmm1, {{[0-9]+}}(%esp)
 ; X86-SSE1-NEXT:    movl {{[0-9]+}}(%esp), %ecx
 ; X86-SSE1-NEXT:    movl %ecx, (%eax)
 ; X86-SSE1-NEXT:    addl $8, %esp
@@ -1464,8 +1497,9 @@ define dso_local void @fmul_32r(ptr %loc, float %val) nounwind {
 ; X86-SSE2:       # %bb.0:
 ; X86-SSE2-NEXT:    movl {{[0-9]+}}(%esp), %eax
 ; X86-SSE2-NEXT:    movss {{.*#+}} xmm0 = mem[0],zero,zero,zero
-; X86-SSE2-NEXT:    mulss (%eax), %xmm0
-; X86-SSE2-NEXT:    movss %xmm0, (%eax)
+; X86-SSE2-NEXT:    movss {{.*#+}} xmm1 = mem[0],zero,zero,zero
+; X86-SSE2-NEXT:    mulss %xmm0, %xmm1
+; X86-SSE2-NEXT:    movss %xmm1, (%eax)
 ; X86-SSE2-NEXT:    retl
 ;
 ; X86-AVX-LABEL: fmul_32r:
@@ -1478,8 +1512,9 @@ define dso_local void @fmul_32r(ptr %loc, float %val) nounwind {
 ;
 ; X64-SSE-LABEL: fmul_32r:
 ; X64-SSE:       # %bb.0:
-; X64-SSE-NEXT:    mulss (%rdi), %xmm0
-; X64-SSE-NEXT:    movss %xmm0, (%rdi)
+; X64-SSE-NEXT:    movss {{.*#+}} xmm1 = mem[0],zero,zero,zero
+; X64-SSE-NEXT:    mulss %xmm0, %xmm1
+; X64-SSE-NEXT:    movss %xmm1, (%rdi)
 ; X64-SSE-NEXT:    retq
 ;
 ; X64-AVX-LABEL: fmul_32r:
@@ -1543,8 +1578,9 @@ define dso_local void @fmul_64r(ptr %loc, double %val) nounwind {
 ; X86-SSE2-NEXT:    subl $8, %esp
 ; X86-SSE2-NEXT:    movl 8(%ebp), %eax
 ; X86-SSE2-NEXT:    movsd {{.*#+}} xmm0 = mem[0],zero
-; X86-SSE2-NEXT:    mulsd 12(%ebp), %xmm0
-; X86-SSE2-NEXT:    movsd %xmm0, (%eax)
+; X86-SSE2-NEXT:    movsd {{.*#+}} xmm1 = mem[0],zero
+; X86-SSE2-NEXT:    mulsd %xmm0, %xmm1
+; X86-SSE2-NEXT:    movsd %xmm1, (%eax)
 ; X86-SSE2-NEXT:    movl %ebp, %esp
 ; X86-SSE2-NEXT:    popl %ebp
 ; X86-SSE2-NEXT:    retl
@@ -1565,8 +1601,9 @@ define dso_local void @fmul_64r(ptr %loc, double %val) nounwind {
 ;
 ; X64-SSE-LABEL: fmul_64r:
 ; X64-SSE:       # %bb.0:
-; X64-SSE-NEXT:    mulsd (%rdi), %xmm0
-; X64-SSE-NEXT:    movsd %xmm0, (%rdi)
+; X64-SSE-NEXT:    movsd {{.*#+}} xmm1 = mem[0],zero
+; X64-SSE-NEXT:    mulsd %xmm0, %xmm1
+; X64-SSE-NEXT:    movsd %xmm1, (%rdi)
 ; X64-SSE-NEXT:    retq
 ;
 ; X64-AVX-LABEL: fmul_64r:
@@ -1603,8 +1640,9 @@ define dso_local void @fmul_32g() nounwind {
 ; X86-SSE1-NEXT:    movl glob32, %eax
 ; X86-SSE1-NEXT:    movl %eax, (%esp)
 ; X86-SSE1-NEXT:    movss {{.*#+}} xmm0 = mem[0],zero,zero,zero
-; X86-SSE1-NEXT:    mulss {{\.?LCPI[0-9]+_[0-9]+}}, %xmm0
-; X86-SSE1-NEXT:    movss %xmm0, {{[0-9]+}}(%esp)
+; X86-SSE1-NEXT:    movss {{.*#+}} xmm1 = [3.14159012E+0,0.0E+0,0.0E+0,0.0E+0]
+; X86-SSE1-NEXT:    mulss %xmm0, %xmm1
+; X86-SSE1-NEXT:    movss %xmm1, {{[0-9]+}}(%esp)
 ; X86-SSE1-NEXT:    movl {{[0-9]+}}(%esp), %eax
 ; X86-SSE1-NEXT:    movl %eax, glob32
 ; X86-SSE1-NEXT:    addl $8, %esp
@@ -1613,8 +1651,9 @@ define dso_local void @fmul_32g() nounwind {
 ; X86-SSE2-LABEL: fmul_32g:
 ; X86-SSE2:       # %bb.0:
 ; X86-SSE2-NEXT:    movss {{.*#+}} xmm0 = [3.14159012E+0,0.0E+0,0.0E+0,0.0E+0]
-; X86-SSE2-NEXT:    mulss glob32, %xmm0
-; X86-SSE2-NEXT:    movss %xmm0, glob32
+; X86-SSE2-NEXT:    movss {{.*#+}} xmm1 = mem[0],zero,zero,zero
+; X86-SSE2-NEXT:    mulss %xmm0, %xmm1
+; X86-SSE2-NEXT:    movss %xmm1, glob32
 ; X86-SSE2-NEXT:    retl
 ;
 ; X86-AVX-LABEL: fmul_32g:
@@ -1627,8 +1666,9 @@ define dso_local void @fmul_32g() nounwind {
 ; X64-SSE-LABEL: fmul_32g:
 ; X64-SSE:       # %bb.0:
 ; X64-SSE-NEXT:    movss {{.*#+}} xmm0 = [3.14159012E+0,0.0E+0,0.0E+0,0.0E+0]
-; X64-SSE-NEXT:    mulss glob32(%rip), %xmm0
-; X64-SSE-NEXT:    movss %xmm0, glob32(%rip)
+; X64-SSE-NEXT:    movss {{.*#+}} xmm1 = mem[0],zero,zero,zero
+; X64-SSE-NEXT:    mulss %xmm0, %xmm1
+; X64-SSE-NEXT:    movss %xmm1, glob32(%rip)
 ; X64-SSE-NEXT:    retq
 ;
 ; X64-AVX-LABEL: fmul_32g:
@@ -1690,8 +1730,9 @@ define dso_local void @fmul_64g() nounwind {
 ; X86-SSE2-NEXT:    andl $-8, %esp
 ; X86-SSE2-NEXT:    subl $8, %esp
 ; X86-SSE2-NEXT:    movsd {{.*#+}} xmm0 = mem[0],zero
-; X86-SSE2-NEXT:    mulsd {{\.?LCPI[0-9]+_[0-9]+}}, %xmm0
-; X86-SSE2-NEXT:    movsd %xmm0, glob64
+; X86-SSE2-NEXT:    movsd {{.*#+}} xmm1 = [3.1415901184082031E+0,0.0E+0]
+; X86-SSE2-NEXT:    mulsd %xmm0, %xmm1
+; X86-SSE2-NEXT:    movsd %xmm1, glob64
 ; X86-SSE2-NEXT:    movl %ebp, %esp
 ; X86-SSE2-NEXT:    popl %ebp
 ; X86-SSE2-NEXT:    retl
@@ -1712,8 +1753,9 @@ define dso_local void @fmul_64g() nounwind {
 ; X64-SSE-LABEL: fmul_64g:
 ; X64-SSE:       # %bb.0:
 ; X64-SSE-NEXT:    movsd {{.*#+}} xmm0 = [3.1415901184082031E+0,0.0E+0]
-; X64-SSE-NEXT:    mulsd glob64(%rip), %xmm0
-; X64-SSE-NEXT:    movsd %xmm0, glob64(%rip)
+; X64-SSE-NEXT:    movsd {{.*#+}} xmm1 = mem[0],zero
+; X64-SSE-NEXT:    mulsd %xmm0, %xmm1
+; X64-SSE-NEXT:    movsd %xmm1, glob64(%rip)
 ; X64-SSE-NEXT:    retq
 ;
 ; X64-AVX-LABEL: fmul_64g:
@@ -1751,8 +1793,9 @@ define dso_local void @fmul_32imm() nounwind {
 ; X86-SSE1-NEXT:    movl -559038737, %eax
 ; X86-SSE1-NEXT:    movl %eax, (%esp)
 ; X86-SSE1-NEXT:    movss {{.*#+}} xmm0 = mem[0],zero,zero,zero
-; X86-SSE1-NEXT:    mulss {{\.?LCPI[0-9]+_[0-9]+}}, %xmm0
-; X86-SSE1-NEXT:    movss %xmm0, {{[0-9]+}}(%esp)
+; X86-SSE1-NEXT:    movss {{.*#+}} xmm1 = [3.14159012E+0,0.0E+0,0.0E+0,0.0E+0]
+; X86-SSE1-NEXT:    mulss %xmm0, %xmm1
+; X86-SSE1-NEXT:    movss %xmm1, {{[0-9]+}}(%esp)
 ; X86-SSE1-NEXT:    movl {{[0-9]+}}(%esp), %eax
 ; X86-SSE1-NEXT:    movl %eax, -559038737
 ; X86-SSE1-NEXT:    addl $8, %esp
@@ -1761,8 +1804,9 @@ define dso_local void @fmul_32imm() nounwind {
 ; X86-SSE2-LABEL: fmul_32imm:
 ; X86-SSE2:       # %bb.0:
 ; X86-SSE2-NEXT:    movss {{.*#+}} xmm0 = [3.14159012E+0,0.0E+0,0.0E+0,0.0E+0]
-; X86-SSE2-NEXT:    mulss -559038737, %xmm0
-; X86-SSE2-NEXT:    movss %xmm0, -559038737
+; X86-SSE2-NEXT:    movss {{.*#+}} xmm1 = mem[0],zero,zero,zero
+; X86-SSE2-NEXT:    mulss %xmm0, %xmm1
+; X86-SSE2-NEXT:    movss %xmm1, -559038737
 ; X86-SSE2-NEXT:    retl
 ;
 ; X86-AVX-LABEL: fmul_32imm:
@@ -1776,8 +1820,9 @@ define dso_local void @fmul_32imm() nounwind {
 ; X64-SSE:       # %bb.0:
 ; X64-SSE-NEXT:    movl $3735928559, %eax # imm = 0xDEADBEEF
 ; X64-SSE-NEXT:    movss {{.*#+}} xmm0 = [3.14159012E+0,0.0E+0,0.0E+0,0.0E+0]
-; X64-SSE-NEXT:    mulss (%rax), %xmm0
-; X64-SSE-NEXT:    movss %xmm0, (%rax)
+; X64-SSE-NEXT:    movss {{.*#+}} xmm1 = mem[0],zero,zero,zero
+; X64-SSE-NEXT:    mulss %xmm0, %xmm1
+; X64-SSE-NEXT:    movss %xmm1, (%rax)
 ; X64-SSE-NEXT:    retq
 ;
 ; X64-AVX-LABEL: fmul_32imm:
@@ -1840,8 +1885,9 @@ define dso_local void @fmul_64imm() nounwind {
 ; X86-SSE2-NEXT:    andl $-8, %esp
 ; X86-SSE2-NEXT:    subl $8, %esp
 ; X86-SSE2-NEXT:    movsd {{.*#+}} xmm0 = mem[0],zero
-; X86-SSE2-NEXT:    mulsd {{\.?LCPI[0-9]+_[0-9]+}}, %xmm0
-; X86-SSE2-NEXT:    movsd %xmm0, -559038737
+; X86-SSE2-NEXT:    movsd {{.*#+}} xmm1 = [3.1415901184082031E+0,0.0E+0]
+; X86-SSE2-NEXT:    mulsd %xmm0, %xmm1
+; X86-SSE2-NEXT:    movsd %xmm1, -559038737
 ; X86-SSE2-NEXT:    movl %ebp, %esp
 ; X86-SSE2-NEXT:    popl %ebp
 ; X86-SSE2-NEXT:    retl
@@ -1863,8 +1909,9 @@ define dso_local void @fmul_64imm() nounwind {
 ; X64-SSE:       # %bb.0:
 ; X64-SSE-NEXT:    movl $3735928559, %eax # imm = 0xDEADBEEF
 ; X64-SSE-NEXT:    movsd {{.*#+}} xmm0 = [3.1415901184082031E+0,0.0E+0]
-; X64-SSE-NEXT:    mulsd (%rax), %xmm0
-; X64-SSE-NEXT:    movsd %xmm0, (%rax)
+; X64-SSE-NEXT:    movsd {{.*#+}} xmm1 = mem[0],zero
+; X64-SSE-NEXT:    mulsd %xmm0, %xmm1
+; X64-SSE-NEXT:    movsd %xmm1, (%rax)
 ; X64-SSE-NEXT:    retq
 ;
 ; X64-AVX-LABEL: fmul_64imm:
@@ -1903,8 +1950,9 @@ define dso_local void @fmul_32stack() nounwind {
 ; X86-SSE1-NEXT:    movl {{[0-9]+}}(%esp), %eax
 ; X86-SSE1-NEXT:    movl %eax, (%esp)
 ; X86-SSE1-NEXT:    movss {{.*#+}} xmm0 = mem[0],zero,zero,zero
-; X86-SSE1-NEXT:    mulss {{\.?LCPI[0-9]+_[0-9]+}}, %xmm0
-; X86-SSE1-NEXT:    movss %xmm0, {{[0-9]+}}(%esp)
+; X86-SSE1-NEXT:    movss {{.*#+}} xmm1 = [3.14159012E+0,0.0E+0,0.0E+0,0.0E+0]
+; X86-SSE1-NEXT:    mulss %xmm0, %xmm1
+; X86-SSE1-NEXT:    movss %xmm1, {{[0-9]+}}(%esp)
 ; X86-SSE1-NEXT:    movl {{[0-9]+}}(%esp), %eax
 ; X86-SSE1-NEXT:    movl %eax, {{[0-9]+}}(%esp)
 ; X86-SSE1-NEXT:    addl $12, %esp
@@ -1914,8 +1962,9 @@ define dso_local void @fmul_32stack() nounwind {
 ; X86-SSE2:       # %bb.0:
 ; X86-SSE2-NEXT:    pushl %eax
 ; X86-SSE2-NEXT:    movss {{.*#+}} xmm0 = [3.14159012E+0,0.0E+0,0.0E+0,0.0E+0]
-; X86-SSE2-NEXT:    mulss (%esp), %xmm0
-; X86-SSE2-NEXT:    movss %xmm0, (%esp)
+; X86-SSE2-NEXT:    movss {{.*#+}} xmm1 = mem[0],zero,zero,zero
+; X86-SSE2-NEXT:    mulss %xmm0, %xmm1
+; X86-SSE2-NEXT:    movss %xmm1, (%esp)
 ; X86-SSE2-NEXT:    popl %eax
 ; X86-SSE2-NEXT:    retl
 ;
@@ -1931,8 +1980,9 @@ define dso_local void @fmul_32stack() nounwind {
 ; X64-SSE-LABEL: fmul_32stack:
 ; X64-SSE:       # %bb.0:
 ; X64-SSE-NEXT:    movss {{.*#+}} xmm0 = [3.14159012E+0,0.0E+0,0.0E+0,0.0E+0]
-; X64-SSE-NEXT:    mulss -{{[0-9]+}}(%rsp), %xmm0
-; X64-SSE-NEXT:    movss %xmm0, -{{[0-9]+}}(%rsp)
+; X64-SSE-NEXT:    movss {{.*#+}} xmm1 = mem[0],zero,zero,zero
+; X64-SSE-NEXT:    mulss %xmm0, %xmm1
+; X64-SSE-NEXT:    movss %xmm1, -{{[0-9]+}}(%rsp)
 ; X64-SSE-NEXT:    retq
 ;
 ; X64-AVX-LABEL: fmul_32stack:
@@ -1995,8 +2045,9 @@ define dso_local void @fmul_64stack() nounwind {
 ; X86-SSE2-NEXT:    andl $-8, %esp
 ; X86-SSE2-NEXT:    subl $16, %esp
 ; X86-SSE2-NEXT:    movsd {{.*#+}} xmm0 = mem[0],zero
-; X86-SSE2-NEXT:    mulsd {{\.?LCPI[0-9]+_[0-9]+}}, %xmm0
-; X86-SSE2-NEXT:    movsd %xmm0, (%esp)
+; X86-SSE2-NEXT:    movsd {{.*#+}} xmm1 = [3.1415901184082031E+0,0.0E+0]
+; X86-SSE2-NEXT:    mulsd %xmm0, %xmm1
+; X86-SSE2-NEXT:    movsd %xmm1, (%esp)
 ; X86-SSE2-NEXT:    movl %ebp, %esp
 ; X86-SSE2-NEXT:    popl %ebp
 ; X86-SSE2-NEXT:    retl
@@ -2017,8 +2068,9 @@ define dso_local void @fmul_64stack() nounwind {
 ; X64-SSE-LABEL: fmul_64stack:
 ; X64-SSE:       # %bb.0:
 ; X64-SSE-NEXT:    movsd {{.*#+}} xmm0 = [3.1415901184082031E+0,0.0E+0]
-; X64-SSE-NEXT:    mulsd -{{[0-9]+}}(%rsp), %xmm0
-; X64-SSE-NEXT:    movsd %xmm0, -{{[0-9]+}}(%rsp)
+; X64-SSE-NEXT:    movsd {{.*#+}} xmm1 = mem[0],zero
+; X64-SSE-NEXT:    mulsd %xmm0, %xmm1
+; X64-SSE-NEXT:    movsd %xmm1, -{{[0-9]+}}(%rsp)
 ; X64-SSE-NEXT:    retq
 ;
 ; X64-AVX-LABEL: fmul_64stack:
@@ -2089,8 +2141,9 @@ define dso_local void @fmul_array(ptr %arg, double %arg1, i64 %arg2) nounwind {
 ; X86-SSE2-NEXT:    movl 20(%ebp), %eax
 ; X86-SSE2-NEXT:    movl 8(%ebp), %ecx
 ; X86-SSE2-NEXT:    movsd {{.*#+}} xmm0 = mem[0],zero
-; X86-SSE2-NEXT:    mulsd 12(%ebp), %xmm0
-; X86-SSE2-NEXT:    movsd %xmm0, (%ecx,%eax,8)
+; X86-SSE2-NEXT:    movsd {{.*#+}} xmm1 = mem[0],zero
+; X86-SSE2-NEXT:    mulsd %xmm0, %xmm1
+; X86-SSE2-NEXT:    movsd %xmm1, (%ecx,%eax,8)
 ; X86-SSE2-NEXT:    movl %ebp, %esp
 ; X86-SSE2-NEXT:    popl %ebp
 ; X86-SSE2-NEXT:    retl
@@ -2112,8 +2165,9 @@ define dso_local void @fmul_array(ptr %arg, double %arg1, i64 %arg2) nounwind {
 ;
 ; X64-SSE-LABEL: fmul_array:
 ; X64-SSE:       # %bb.0: # %bb
-; X64-SSE-NEXT:    mulsd (%rdi,%rsi,8), %xmm0
-; X64-SSE-NEXT:    movsd %xmm0, (%rdi,%rsi,8)
+; X64-SSE-NEXT:    movsd {{.*#+}} xmm1 = mem[0],zero
+; X64-SSE-NEXT:    mulsd %xmm0, %xmm1
+; X64-SSE-NEXT:    movsd %xmm1, (%rdi,%rsi,8)
 ; X64-SSE-NEXT:    retq
 ;
 ; X64-AVX-LABEL: fmul_array:

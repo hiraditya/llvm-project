@@ -41,7 +41,8 @@ define <8 x i16> @signbit_sel_v8i16(<8 x i16> %x, <8 x i16> %y, <8 x i16> %mask)
 ; AVX512VL:       # %bb.0:
 ; AVX512VL-NEXT:    vpxor %xmm3, %xmm3, %xmm3
 ; AVX512VL-NEXT:    vpcmpgtw %xmm2, %xmm3, %xmm2
-; AVX512VL-NEXT:    vpternlogq {{.*#+}} xmm0 = xmm1 ^ (xmm2 & (xmm0 ^ xmm1))
+; AVX512VL-NEXT:    vpternlogq {{.*#+}} xmm2 = xmm1 ^ (xmm2 & (xmm0 ^ xmm1))
+; AVX512VL-NEXT:    vmovdqa %xmm2, %xmm0
 ; AVX512VL-NEXT:    retq
 ;
 ; XOP-LABEL: signbit_sel_v8i16:
@@ -263,7 +264,8 @@ define <16 x i16> @signbit_sel_v16i16(<16 x i16> %x, <16 x i16> %y, <16 x i16> %
 ; AVX512VL:       # %bb.0:
 ; AVX512VL-NEXT:    vpxor %xmm3, %xmm3, %xmm3
 ; AVX512VL-NEXT:    vpcmpgtw %ymm2, %ymm3, %ymm2
-; AVX512VL-NEXT:    vpternlogq {{.*#+}} ymm0 = ymm1 ^ (ymm2 & (ymm0 ^ ymm1))
+; AVX512VL-NEXT:    vpternlogq {{.*#+}} ymm2 = ymm1 ^ (ymm2 & (ymm0 ^ ymm1))
+; AVX512VL-NEXT:    vmovdqa %ymm2, %ymm0
 ; AVX512VL-NEXT:    retq
 ;
 ; XOP-LABEL: signbit_sel_v16i16:
@@ -1438,8 +1440,8 @@ define void @store_blend_load_v4i64(ptr %a0, ptr %a1, ptr %a2) {
 ; AVX512F-NEXT:    vmovdqa (%rdi), %ymm0
 ; AVX512F-NEXT:    vmovdqa (%rsi), %ymm1
 ; AVX512F-NEXT:    vpcmpnleuq {{\.?LCPI[0-9]+_[0-9]+}}(%rip){1to8}, %zmm0, %k1
-; AVX512F-NEXT:    vmovdqa64 %zmm0, %zmm1 {%k1}
-; AVX512F-NEXT:    vmovdqa %ymm1, (%rdx)
+; AVX512F-NEXT:    vpblendmq %zmm0, %zmm1, %zmm0 {%k1}
+; AVX512F-NEXT:    vmovdqa %ymm0, (%rdx)
 ; AVX512F-NEXT:    vzeroupper
 ; AVX512F-NEXT:    retq
 ;
@@ -1448,8 +1450,8 @@ define void @store_blend_load_v4i64(ptr %a0, ptr %a1, ptr %a2) {
 ; AVX512VL-NEXT:    vmovdqa (%rdi), %ymm0
 ; AVX512VL-NEXT:    vmovdqa (%rsi), %ymm1
 ; AVX512VL-NEXT:    vpcmpnleuq {{\.?LCPI[0-9]+_[0-9]+}}(%rip){1to4}, %ymm0, %k1
-; AVX512VL-NEXT:    vmovdqa64 %ymm0, %ymm1 {%k1}
-; AVX512VL-NEXT:    vmovdqa %ymm1, (%rdx)
+; AVX512VL-NEXT:    vpblendmq %ymm0, %ymm1, %ymm0 {%k1}
+; AVX512VL-NEXT:    vmovdqa %ymm0, (%rdx)
 ; AVX512VL-NEXT:    vzeroupper
 ; AVX512VL-NEXT:    retq
 ;
@@ -1506,8 +1508,8 @@ define void @store_blend_load_v8i32(ptr %a0, ptr %a1, ptr %a2) {
 ; AVX512F-NEXT:    vmovdqa (%rdi), %ymm0
 ; AVX512F-NEXT:    vmovdqa (%rsi), %ymm1
 ; AVX512F-NEXT:    vpcmpnleud {{\.?LCPI[0-9]+_[0-9]+}}(%rip){1to16}, %zmm0, %k1
-; AVX512F-NEXT:    vmovdqa32 %zmm0, %zmm1 {%k1}
-; AVX512F-NEXT:    vmovdqa %ymm1, (%rdx)
+; AVX512F-NEXT:    vpblendmd %zmm0, %zmm1, %zmm0 {%k1}
+; AVX512F-NEXT:    vmovdqa %ymm0, (%rdx)
 ; AVX512F-NEXT:    vzeroupper
 ; AVX512F-NEXT:    retq
 ;
@@ -1516,8 +1518,8 @@ define void @store_blend_load_v8i32(ptr %a0, ptr %a1, ptr %a2) {
 ; AVX512VL-NEXT:    vmovdqa (%rdi), %ymm0
 ; AVX512VL-NEXT:    vmovdqa (%rsi), %ymm1
 ; AVX512VL-NEXT:    vpcmpnleud {{\.?LCPI[0-9]+_[0-9]+}}(%rip){1to8}, %ymm0, %k1
-; AVX512VL-NEXT:    vmovdqa32 %ymm0, %ymm1 {%k1}
-; AVX512VL-NEXT:    vmovdqa %ymm1, (%rdx)
+; AVX512VL-NEXT:    vpblendmd %ymm0, %ymm1, %ymm0 {%k1}
+; AVX512VL-NEXT:    vmovdqa %ymm0, (%rdx)
 ; AVX512VL-NEXT:    vzeroupper
 ; AVX512VL-NEXT:    retq
 ;
@@ -1585,8 +1587,9 @@ define void @store_blend_load_v16i16(ptr %a0, ptr %a1, ptr %a2) {
 ; AVX512VL-NEXT:    vmovdqa (%rdi), %ymm0
 ; AVX512VL-NEXT:    vpmaxuw {{\.?LCPI[0-9]+_[0-9]+}}(%rip), %ymm0, %ymm1
 ; AVX512VL-NEXT:    vpcmpeqw %ymm1, %ymm0, %ymm1
-; AVX512VL-NEXT:    vpternlogq {{.*#+}} ymm1 = mem ^ (ymm1 & (ymm0 ^ mem))
-; AVX512VL-NEXT:    vmovdqa %ymm1, (%rdx)
+; AVX512VL-NEXT:    vmovdqa (%rsi), %ymm2
+; AVX512VL-NEXT:    vpternlogq {{.*#+}} ymm2 = ymm2 ^ (ymm1 & (ymm2 ^ ymm0))
+; AVX512VL-NEXT:    vmovdqa %ymm2, (%rdx)
 ; AVX512VL-NEXT:    vzeroupper
 ; AVX512VL-NEXT:    retq
 ;
@@ -1654,8 +1657,9 @@ define void @store_blend_load_v32i8(ptr %a0, ptr %a1, ptr %a2) {
 ; AVX512VL-NEXT:    vmovdqa (%rdi), %ymm0
 ; AVX512VL-NEXT:    vpmaxub {{\.?LCPI[0-9]+_[0-9]+}}(%rip), %ymm0, %ymm1
 ; AVX512VL-NEXT:    vpcmpeqb %ymm1, %ymm0, %ymm1
-; AVX512VL-NEXT:    vpternlogq {{.*#+}} ymm1 = mem ^ (ymm1 & (ymm0 ^ mem))
-; AVX512VL-NEXT:    vmovdqa %ymm1, (%rdx)
+; AVX512VL-NEXT:    vmovdqa (%rsi), %ymm2
+; AVX512VL-NEXT:    vpternlogq {{.*#+}} ymm2 = ymm2 ^ (ymm1 & (ymm2 ^ ymm0))
+; AVX512VL-NEXT:    vmovdqa %ymm2, (%rdx)
 ; AVX512VL-NEXT:    vzeroupper
 ; AVX512VL-NEXT:    retq
 ;
@@ -1697,7 +1701,7 @@ define void @PR46531(ptr %x, ptr %y, ptr %z) {
 ; AVX512F-NEXT:    vpor %xmm0, %xmm1, %xmm2
 ; AVX512F-NEXT:    vptestnmd {{\.?LCPI[0-9]+_[0-9]+}}(%rip){1to16}, %zmm1, %k1
 ; AVX512F-NEXT:    vpxor %xmm0, %xmm1, %xmm0
-; AVX512F-NEXT:    vmovdqa32 %zmm2, %zmm0 {%k1}
+; AVX512F-NEXT:    vpblendmd %zmm2, %zmm0, %zmm0 {%k1}
 ; AVX512F-NEXT:    vmovdqu %xmm0, (%rdi)
 ; AVX512F-NEXT:    vzeroupper
 ; AVX512F-NEXT:    retq
@@ -1788,36 +1792,36 @@ define <64 x i8> @PR110875(<32 x i8> %a0, <32 x i8> %a1, i64 %a2) {
 ; AVX512F-LABEL: PR110875:
 ; AVX512F:       # %bb.0:
 ; AVX512F-NEXT:    # kill: def $ymm0 killed $ymm0 def $zmm0
-; AVX512F-NEXT:    vinserti64x4 $1, %ymm1, %zmm0, %zmm1
-; AVX512F-NEXT:    vmovq %rdi, %xmm0
-; AVX512F-NEXT:    vpbroadcastq %xmm0, %ymm0
-; AVX512F-NEXT:    vpshufb {{.*#+}} ymm2 = ymm0[0,0,0,0,0,0,0,0,1,1,1,1,1,1,1,1,18,18,18,18,18,18,18,18,19,19,19,19,19,19,19,19]
-; AVX512F-NEXT:    vpshufb {{.*#+}} ymm0 = ymm0[4,4,4,4,4,4,4,4,5,5,5,5,5,5,5,5,22,22,22,22,22,22,22,22,23,23,23,23,23,23,23,23]
-; AVX512F-NEXT:    vinserti64x4 $1, %ymm0, %zmm2, %zmm0
-; AVX512F-NEXT:    vpandq {{\.?LCPI[0-9]+_[0-9]+}}(%rip){1to8}, %zmm0, %zmm0
-; AVX512F-NEXT:    vextracti64x4 $1, %zmm0, %ymm2
+; AVX512F-NEXT:    vinserti64x4 $1, %ymm1, %zmm0, %zmm0
+; AVX512F-NEXT:    vmovq %rdi, %xmm1
+; AVX512F-NEXT:    vpbroadcastq %xmm1, %ymm1
+; AVX512F-NEXT:    vpshufb {{.*#+}} ymm2 = ymm1[0,0,0,0,0,0,0,0,1,1,1,1,1,1,1,1,18,18,18,18,18,18,18,18,19,19,19,19,19,19,19,19]
+; AVX512F-NEXT:    vpshufb {{.*#+}} ymm1 = ymm1[4,4,4,4,4,4,4,4,5,5,5,5,5,5,5,5,22,22,22,22,22,22,22,22,23,23,23,23,23,23,23,23]
+; AVX512F-NEXT:    vinserti64x4 $1, %ymm1, %zmm2, %zmm1
+; AVX512F-NEXT:    vpandq {{\.?LCPI[0-9]+_[0-9]+}}(%rip){1to8}, %zmm1, %zmm1
+; AVX512F-NEXT:    vextracti64x4 $1, %zmm1, %ymm2
 ; AVX512F-NEXT:    vpxor %xmm3, %xmm3, %xmm3
 ; AVX512F-NEXT:    vpcmpeqb %ymm3, %ymm2, %ymm2
-; AVX512F-NEXT:    vpcmpeqb %ymm3, %ymm0, %ymm0
-; AVX512F-NEXT:    vinserti64x4 $1, %ymm2, %zmm0, %zmm0
-; AVX512F-NEXT:    vpternlogd {{.*#+}} zmm0 = m32bcst ^ (zmm0 & (zmm1 ^ m32bcst))
+; AVX512F-NEXT:    vpcmpeqb %ymm3, %ymm1, %ymm1
+; AVX512F-NEXT:    vinserti64x4 $1, %ymm2, %zmm1, %zmm1
+; AVX512F-NEXT:    vpternlogd {{.*#+}} zmm0 = m32bcst ^ (zmm1 & (zmm0 ^ m32bcst))
 ; AVX512F-NEXT:    retq
 ;
 ; AVX512VL-LABEL: PR110875:
 ; AVX512VL:       # %bb.0:
 ; AVX512VL-NEXT:    # kill: def $ymm0 killed $ymm0 def $zmm0
-; AVX512VL-NEXT:    vinserti64x4 $1, %ymm1, %zmm0, %zmm1
-; AVX512VL-NEXT:    vpbroadcastq %rdi, %ymm0
-; AVX512VL-NEXT:    vpshufb {{.*#+}} ymm2 = ymm0[0,0,0,0,0,0,0,0,1,1,1,1,1,1,1,1,18,18,18,18,18,18,18,18,19,19,19,19,19,19,19,19]
-; AVX512VL-NEXT:    vpshufb {{.*#+}} ymm0 = ymm0[4,4,4,4,4,4,4,4,5,5,5,5,5,5,5,5,22,22,22,22,22,22,22,22,23,23,23,23,23,23,23,23]
-; AVX512VL-NEXT:    vinserti64x4 $1, %ymm0, %zmm2, %zmm0
-; AVX512VL-NEXT:    vpandq {{\.?LCPI[0-9]+_[0-9]+}}(%rip){1to8}, %zmm0, %zmm0
-; AVX512VL-NEXT:    vextracti64x4 $1, %zmm0, %ymm2
+; AVX512VL-NEXT:    vinserti64x4 $1, %ymm1, %zmm0, %zmm0
+; AVX512VL-NEXT:    vpbroadcastq %rdi, %ymm1
+; AVX512VL-NEXT:    vpshufb {{.*#+}} ymm2 = ymm1[0,0,0,0,0,0,0,0,1,1,1,1,1,1,1,1,18,18,18,18,18,18,18,18,19,19,19,19,19,19,19,19]
+; AVX512VL-NEXT:    vpshufb {{.*#+}} ymm1 = ymm1[4,4,4,4,4,4,4,4,5,5,5,5,5,5,5,5,22,22,22,22,22,22,22,22,23,23,23,23,23,23,23,23]
+; AVX512VL-NEXT:    vinserti64x4 $1, %ymm1, %zmm2, %zmm1
+; AVX512VL-NEXT:    vpandq {{\.?LCPI[0-9]+_[0-9]+}}(%rip){1to8}, %zmm1, %zmm1
+; AVX512VL-NEXT:    vextracti64x4 $1, %zmm1, %ymm2
 ; AVX512VL-NEXT:    vpxor %xmm3, %xmm3, %xmm3
 ; AVX512VL-NEXT:    vpcmpeqb %ymm3, %ymm2, %ymm2
-; AVX512VL-NEXT:    vpcmpeqb %ymm3, %ymm0, %ymm0
-; AVX512VL-NEXT:    vinserti64x4 $1, %ymm2, %zmm0, %zmm0
-; AVX512VL-NEXT:    vpternlogd {{.*#+}} zmm0 = m32bcst ^ (zmm0 & (zmm1 ^ m32bcst))
+; AVX512VL-NEXT:    vpcmpeqb %ymm3, %ymm1, %ymm1
+; AVX512VL-NEXT:    vinserti64x4 $1, %ymm2, %zmm1, %zmm1
+; AVX512VL-NEXT:    vpternlogd {{.*#+}} zmm0 = m32bcst ^ (zmm1 & (zmm0 ^ m32bcst))
 ; AVX512VL-NEXT:    retq
 ;
 ; XOP-LABEL: PR110875:

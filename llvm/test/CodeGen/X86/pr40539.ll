@@ -16,8 +16,9 @@ define zeroext i1 @_Z9test_log2v() {
 ; CHECK-NEXT:    #NO_APP
 ; CHECK-NEXT:    fstps (%esp)
 ; CHECK-NEXT:    xorps %xmm0, %xmm0
-; CHECK-NEXT:    cmpeqss (%esp), %xmm0
-; CHECK-NEXT:    movd %xmm0, %eax
+; CHECK-NEXT:    movss {{.*#+}} xmm1 = mem[0],zero,zero,zero
+; CHECK-NEXT:    cmpeqss %xmm0, %xmm1
+; CHECK-NEXT:    movd %xmm1, %eax
 ; CHECK-NEXT:    andl $1, %eax
 ; CHECK-NEXT:    # kill: def $al killed $al killed $eax
 ; CHECK-NEXT:    popl %ecx

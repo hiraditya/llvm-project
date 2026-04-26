@@ -20,8 +20,9 @@ define float @foo(ptr %x, ptr %y, i32 %c) nounwind  {
 ; CHECK-NEXT:    ## =>This Inner Loop Header: Depth=1
 ; CHECK-NEXT:    xorps %xmm1, %xmm1
 ; CHECK-NEXT:    cvtsi2ssl (%edx,%esi,4), %xmm1
-; CHECK-NEXT:    mulss (%ecx,%esi,4), %xmm1
-; CHECK-NEXT:    addss %xmm1, %xmm0
+; CHECK-NEXT:    movss {{.*#+}} xmm2 = mem[0],zero,zero,zero
+; CHECK-NEXT:    mulss %xmm1, %xmm2
+; CHECK-NEXT:    addss %xmm2, %xmm0
 ; CHECK-NEXT:    incl %esi
 ; CHECK-NEXT:    cmpl %eax, %esi
 ; CHECK-NEXT:    jb LBB0_3

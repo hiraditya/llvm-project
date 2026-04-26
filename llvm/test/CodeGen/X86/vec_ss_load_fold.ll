@@ -10,25 +10,31 @@ define i16 @test1(float %f) nounwind {
 ; X86-LABEL: test1:
 ; X86:       ## %bb.0:
 ; X86-NEXT:    movss {{.*#+}} xmm0 = mem[0],zero,zero,zero
-; X86-NEXT:    addss {{\.?LCPI[0-9]+_[0-9]+}}, %xmm0
-; X86-NEXT:    mulss {{\.?LCPI[0-9]+_[0-9]+}}, %xmm0
+; X86-NEXT:    movss {{.*#+}} xmm1 = [-1.0E+0,0.0E+0,0.0E+0,0.0E+0]
+; X86-NEXT:    addss %xmm0, %xmm1
+; X86-NEXT:    movss {{.*#+}} xmm0 = [5.0E-1,0.0E+0,0.0E+0,0.0E+0]
+; X86-NEXT:    mulss %xmm1, %xmm0
 ; X86-NEXT:    xorps %xmm1, %xmm1
-; X86-NEXT:    blendps {{.*#+}} xmm0 = xmm0[0],xmm1[1,2,3]
-; X86-NEXT:    minss {{\.?LCPI[0-9]+_[0-9]+}}, %xmm0
-; X86-NEXT:    maxss %xmm1, %xmm0
-; X86-NEXT:    cvttss2si %xmm0, %eax
+; X86-NEXT:    xorps %xmm2, %xmm2
+; X86-NEXT:    movss {{.*#+}} xmm2 = xmm0[0],xmm2[1,2,3]
+; X86-NEXT:    minss {{\.?LCPI[0-9]+_[0-9]+}}, %xmm2
+; X86-NEXT:    maxss %xmm1, %xmm2
+; X86-NEXT:    cvttss2si %xmm2, %eax
 ; X86-NEXT:    ## kill: def $ax killed $ax killed $eax
 ; X86-NEXT:    retl
 ;
 ; X64-LABEL: test1:
 ; X64:       ## %bb.0:
-; X64-NEXT:    addss {{\.?LCPI[0-9]+_[0-9]+}}(%rip), %xmm0
-; X64-NEXT:    mulss {{\.?LCPI[0-9]+_[0-9]+}}(%rip), %xmm0
+; X64-NEXT:    movss {{.*#+}} xmm1 = [-1.0E+0,0.0E+0,0.0E+0,0.0E+0]
+; X64-NEXT:    addss %xmm0, %xmm1
+; X64-NEXT:    movss {{.*#+}} xmm0 = [5.0E-1,0.0E+0,0.0E+0,0.0E+0]
+; X64-NEXT:    mulss %xmm1, %xmm0
 ; X64-NEXT:    xorps %xmm1, %xmm1
-; X64-NEXT:    blendps {{.*#+}} xmm0 = xmm0[0],xmm1[1,2,3]
-; X64-NEXT:    minss {{\.?LCPI[0-9]+_[0-9]+}}(%rip), %xmm0
-; X64-NEXT:    maxss %xmm1, %xmm0
-; X64-NEXT:    cvttss2si %xmm0, %eax
+; X64-NEXT:    xorps %xmm2, %xmm2
+; X64-NEXT:    movss {{.*#+}} xmm2 = xmm0[0],xmm2[1,2,3]
+; X64-NEXT:    minss {{\.?LCPI[0-9]+_[0-9]+}}(%rip), %xmm2
+; X64-NEXT:    maxss %xmm1, %xmm2
+; X64-NEXT:    cvttss2si %xmm2, %eax
 ; X64-NEXT:    ## kill: def $ax killed $ax killed $eax
 ; X64-NEXT:    retq
 ;
@@ -100,8 +106,10 @@ define i16 @test2(float %f) nounwind {
 ; X86-LABEL: test2:
 ; X86:       ## %bb.0:
 ; X86-NEXT:    movss {{.*#+}} xmm0 = mem[0],zero,zero,zero
-; X86-NEXT:    addss {{\.?LCPI[0-9]+_[0-9]+}}, %xmm0
-; X86-NEXT:    mulss {{\.?LCPI[0-9]+_[0-9]+}}, %xmm0
+; X86-NEXT:    movss {{.*#+}} xmm1 = [-1.0E+0,0.0E+0,0.0E+0,0.0E+0]
+; X86-NEXT:    addss %xmm0, %xmm1
+; X86-NEXT:    movss {{.*#+}} xmm0 = [5.0E-1,0.0E+0,0.0E+0,0.0E+0]
+; X86-NEXT:    mulss %xmm1, %xmm0
 ; X86-NEXT:    minss {{\.?LCPI[0-9]+_[0-9]+}}, %xmm0
 ; X86-NEXT:    xorps %xmm1, %xmm1
 ; X86-NEXT:    maxss %xmm1, %xmm0
@@ -111,8 +119,10 @@ define i16 @test2(float %f) nounwind {
 ;
 ; X64-LABEL: test2:
 ; X64:       ## %bb.0:
-; X64-NEXT:    addss {{\.?LCPI[0-9]+_[0-9]+}}(%rip), %xmm0
-; X64-NEXT:    mulss {{\.?LCPI[0-9]+_[0-9]+}}(%rip), %xmm0
+; X64-NEXT:    movss {{.*#+}} xmm1 = [-1.0E+0,0.0E+0,0.0E+0,0.0E+0]
+; X64-NEXT:    addss %xmm0, %xmm1
+; X64-NEXT:    movss {{.*#+}} xmm0 = [5.0E-1,0.0E+0,0.0E+0,0.0E+0]
+; X64-NEXT:    mulss %xmm1, %xmm0
 ; X64-NEXT:    minss {{\.?LCPI[0-9]+_[0-9]+}}(%rip), %xmm0
 ; X64-NEXT:    xorps %xmm1, %xmm1
 ; X64-NEXT:    maxss %xmm1, %xmm0

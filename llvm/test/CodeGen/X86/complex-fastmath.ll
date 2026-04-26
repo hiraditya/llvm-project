@@ -111,12 +111,14 @@ define <2 x float> @complex_mul_f32(<2 x float>, <2 x float>) #0 {
 ; SSE-NEXT:    movshdup {{.*#+}} xmm3 = xmm1[1,1,3,3]
 ; SSE-NEXT:    movaps %xmm3, %xmm4
 ; SSE-NEXT:    mulss %xmm0, %xmm4
-; SSE-NEXT:    mulss %xmm1, %xmm0
-; SSE-NEXT:    mulss %xmm2, %xmm1
-; SSE-NEXT:    addss %xmm4, %xmm1
+; SSE-NEXT:    movaps %xmm1, %xmm5
+; SSE-NEXT:    mulss %xmm2, %xmm5
+; SSE-NEXT:    addss %xmm4, %xmm5
+; SSE-NEXT:    mulss %xmm0, %xmm1
 ; SSE-NEXT:    mulss %xmm2, %xmm3
-; SSE-NEXT:    subss %xmm3, %xmm0
-; SSE-NEXT:    insertps {{.*#+}} xmm0 = xmm0[0],xmm1[0],xmm0[2,3]
+; SSE-NEXT:    subss %xmm3, %xmm1
+; SSE-NEXT:    insertps {{.*#+}} xmm1 = xmm1[0],xmm5[0],xmm1[2,3]
+; SSE-NEXT:    movaps %xmm1, %xmm0
 ; SSE-NEXT:    retq
 ;
 ; AVX1-LABEL: complex_mul_f32:
@@ -160,18 +162,19 @@ define <2 x float> @complex_mul_f32(<2 x float>, <2 x float>) #0 {
 define <2 x double> @complex_mul_f64(<2 x double>, <2 x double>) #0 {
 ; SSE-LABEL: complex_mul_f64:
 ; SSE:       # %bb.0:
-; SSE-NEXT:    movapd %xmm0, %xmm2
-; SSE-NEXT:    unpckhpd {{.*#+}} xmm2 = xmm2[1],xmm0[1]
-; SSE-NEXT:    movapd %xmm1, %xmm3
-; SSE-NEXT:    unpckhpd {{.*#+}} xmm3 = xmm3[1],xmm1[1]
-; SSE-NEXT:    movapd %xmm3, %xmm4
+; SSE-NEXT:    movapd %xmm1, %xmm2
+; SSE-NEXT:    unpckhpd {{.*#+}} xmm2 = xmm2[1],xmm1[1]
+; SSE-NEXT:    movapd %xmm2, %xmm3
+; SSE-NEXT:    mulsd %xmm0, %xmm3
+; SSE-NEXT:    movapd %xmm1, %xmm4
+; SSE-NEXT:    mulsd %xmm0, %xmm1
+; SSE-NEXT:    unpckhpd {{.*#+}} xmm0 = xmm0[1,1]
 ; SSE-NEXT:    mulsd %xmm0, %xmm4
-; SSE-NEXT:    mulsd %xmm1, %xmm0
-; SSE-NEXT:    mulsd %xmm2, %xmm1
-; SSE-NEXT:    addsd %xmm4, %xmm1
-; SSE-NEXT:    mulsd %xmm2, %xmm3
-; SSE-NEXT:    subsd %xmm3, %xmm0
-; SSE-NEXT:    unpcklpd {{.*#+}} xmm0 = xmm0[0],xmm1[0]
+; SSE-NEXT:    addsd %xmm3, %xmm4
+; SSE-NEXT:    mulsd %xmm0, %xmm2
+; SSE-NEXT:    subsd %xmm2, %xmm1
+; SSE-NEXT:    unpcklpd {{.*#+}} xmm1 = xmm1[0],xmm4[0]
+; SSE-NEXT:    movapd %xmm1, %xmm0
 ; SSE-NEXT:    retq
 ;
 ; AVX1-LABEL: complex_mul_f64:

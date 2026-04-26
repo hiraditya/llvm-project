@@ -10,8 +10,9 @@ define float @negfp(float %a, float %b) nounwind {
 ; CHECK-NEXT:    pushl %eax
 ; CHECK-NEXT:    movss {{.*#+}} xmm0 = mem[0],zero,zero,zero
 ; CHECK-NEXT:    subss {{[0-9]+}}(%esp), %xmm0
-; CHECK-NEXT:    xorps {{\.?LCPI[0-9]+_[0-9]+}}, %xmm0
-; CHECK-NEXT:    movss %xmm0, (%esp)
+; CHECK-NEXT:    movaps {{.*#+}} xmm1 = [-0.0E+0,-0.0E+0,-0.0E+0,-0.0E+0]
+; CHECK-NEXT:    xorps %xmm0, %xmm1
+; CHECK-NEXT:    movss %xmm1, (%esp)
 ; CHECK-NEXT:    flds (%esp)
 ; CHECK-NEXT:    popl %eax
 ; CHECK-NEXT:    retl
@@ -87,8 +88,10 @@ define float @fdiv_extra_use_changes_cost(float %a0, float %a1, float %a2) nounw
 define <2 x i64> @fneg_mismatched_sizes(<4 x float> %x) {
 ; CHECK-LABEL: fneg_mismatched_sizes:
 ; CHECK:       # %bb.0:
-; CHECK-NEXT:    xorps {{\.?LCPI[0-9]+_[0-9]+}}, %xmm0
-; CHECK-NEXT:    xorps {{\.?LCPI[0-9]+_[0-9]+}}, %xmm0
+; CHECK-NEXT:    movaps {{.*#+}} xmm1 = [-0.0E+0,-0.0E+0,-0.0E+0,-0.0E+0]
+; CHECK-NEXT:    xorps %xmm0, %xmm1
+; CHECK-NEXT:    movaps {{.*#+}} xmm0 = [0,2147483648,0,2147483648]
+; CHECK-NEXT:    xorps %xmm1, %xmm0
 ; CHECK-NEXT:    retl
   %n = fneg <4 x float> %x
   %b = bitcast <4 x float> %n to <2 x i64>

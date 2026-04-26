@@ -287,12 +287,13 @@ define i1 @pmovmskb_noneof_v16i8_positive(<16 x i8> %a0) {
 define i32 @movmskpd_pow2_mask(<2 x i64> %a0) {
 ; SSE2-LABEL: movmskpd_pow2_mask:
 ; SSE2:       # %bb.0:
-; SSE2-NEXT:    pand {{\.?LCPI[0-9]+_[0-9]+}}(%rip), %xmm0
-; SSE2-NEXT:    pxor %xmm1, %xmm1
-; SSE2-NEXT:    pcmpeqd %xmm0, %xmm1
-; SSE2-NEXT:    pshufd {{.*#+}} xmm0 = xmm1[1,0,3,2]
-; SSE2-NEXT:    pand %xmm1, %xmm0
-; SSE2-NEXT:    movmskpd %xmm0, %eax
+; SSE2-NEXT:    movdqa {{.*#+}} xmm1 = [9223372036854775808,9223372036854775808]
+; SSE2-NEXT:    pand %xmm0, %xmm1
+; SSE2-NEXT:    pxor %xmm0, %xmm0
+; SSE2-NEXT:    pcmpeqd %xmm1, %xmm0
+; SSE2-NEXT:    pshufd {{.*#+}} xmm1 = xmm0[1,0,3,2]
+; SSE2-NEXT:    pand %xmm0, %xmm1
+; SSE2-NEXT:    movmskpd %xmm1, %eax
 ; SSE2-NEXT:    retq
 ;
 ; SSE42-LABEL: movmskpd_pow2_mask:

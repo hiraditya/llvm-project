@@ -9,19 +9,29 @@ define void @goo(ptr %r, ptr %p, ptr %q) nounwind {
 ; none-LABEL: goo:
 ; none:       # %bb.0: # %entry
 ; none-NEXT:    movsd {{.*#+}} xmm0 = mem[0],zero
-; none-NEXT:    addsd {{\.?LCPI[0-9]+_[0-9]+}}(%rip), %xmm0
-; none-NEXT:    mulsd {{\.?LCPI[0-9]+_[0-9]+}}(%rip), %xmm0
-; none-NEXT:    addsd {{\.?LCPI[0-9]+_[0-9]+}}(%rip), %xmm0
-; none-NEXT:    mulsd {{\.?LCPI[0-9]+_[0-9]+}}(%rip), %xmm0
-; none-NEXT:    addsd {{\.?LCPI[0-9]+_[0-9]+}}(%rip), %xmm0
-; none-NEXT:    cvttsd2si %xmm0, %eax
+; none-NEXT:    movsd {{.*#+}} xmm1 = [7.0999999999999996E+0,0.0E+0]
+; none-NEXT:    addsd %xmm0, %xmm1
+; none-NEXT:    movsd {{.*#+}} xmm0 = [7.2000000000000002E+0,0.0E+0]
+; none-NEXT:    mulsd %xmm1, %xmm0
+; none-NEXT:    movsd {{.*#+}} xmm1 = [7.2999999999999998E+0,0.0E+0]
+; none-NEXT:    addsd %xmm0, %xmm1
+; none-NEXT:    movsd {{.*#+}} xmm0 = [7.4000000000000004E+0,0.0E+0]
+; none-NEXT:    mulsd %xmm1, %xmm0
+; none-NEXT:    movsd {{.*#+}} xmm1 = [7.5E+0,0.0E+0]
+; none-NEXT:    addsd %xmm0, %xmm1
 ; none-NEXT:    movsd {{.*#+}} xmm0 = mem[0],zero
-; none-NEXT:    addsd {{\.?LCPI[0-9]+_[0-9]+}}(%rip), %xmm0
-; none-NEXT:    mulsd {{\.?LCPI[0-9]+_[0-9]+}}(%rip), %xmm0
-; none-NEXT:    addsd {{\.?LCPI[0-9]+_[0-9]+}}(%rip), %xmm0
-; none-NEXT:    mulsd {{\.?LCPI[0-9]+_[0-9]+}}(%rip), %xmm0
-; none-NEXT:    addsd {{\.?LCPI[0-9]+_[0-9]+}}(%rip), %xmm0
-; none-NEXT:    cvttsd2si %xmm0, %ecx
+; none-NEXT:    cvttsd2si %xmm1, %eax
+; none-NEXT:    movsd {{.*#+}} xmm1 = [1.1000000000000001E+0,0.0E+0]
+; none-NEXT:    addsd %xmm0, %xmm1
+; none-NEXT:    movsd {{.*#+}} xmm0 = [1.2E+0,0.0E+0]
+; none-NEXT:    mulsd %xmm1, %xmm0
+; none-NEXT:    movsd {{.*#+}} xmm1 = [1.3E+0,0.0E+0]
+; none-NEXT:    addsd %xmm0, %xmm1
+; none-NEXT:    movsd {{.*#+}} xmm0 = [1.3999999999999999E+0,0.0E+0]
+; none-NEXT:    mulsd %xmm1, %xmm0
+; none-NEXT:    movsd {{.*#+}} xmm1 = [1.5E+0,0.0E+0]
+; none-NEXT:    addsd %xmm0, %xmm1
+; none-NEXT:    cvttsd2si %xmm1, %ecx
 ; none-NEXT:    cmpl %eax, %ecx
 ; none-NEXT:    jge .LBB0_2
 ; none-NEXT:  # %bb.1: # %bb
@@ -33,19 +43,29 @@ define void @goo(ptr %r, ptr %p, ptr %q) nounwind {
 ; critical-LABEL: goo:
 ; critical:       # %bb.0: # %entry
 ; critical-NEXT:    movsd {{.*#+}} xmm0 = mem[0],zero
-; critical-NEXT:    movsd {{.*#+}} xmm1 = mem[0],zero
-; critical-NEXT:    addsd {{\.?LCPI[0-9]+_[0-9]+}}(%rip), %xmm0
-; critical-NEXT:    addsd {{\.?LCPI[0-9]+_[0-9]+}}(%rip), %xmm1
-; critical-NEXT:    mulsd {{\.?LCPI[0-9]+_[0-9]+}}(%rip), %xmm0
-; critical-NEXT:    mulsd {{\.?LCPI[0-9]+_[0-9]+}}(%rip), %xmm1
-; critical-NEXT:    addsd {{\.?LCPI[0-9]+_[0-9]+}}(%rip), %xmm0
-; critical-NEXT:    addsd {{\.?LCPI[0-9]+_[0-9]+}}(%rip), %xmm1
-; critical-NEXT:    mulsd {{\.?LCPI[0-9]+_[0-9]+}}(%rip), %xmm0
-; critical-NEXT:    mulsd {{\.?LCPI[0-9]+_[0-9]+}}(%rip), %xmm1
-; critical-NEXT:    addsd {{\.?LCPI[0-9]+_[0-9]+}}(%rip), %xmm0
-; critical-NEXT:    addsd {{\.?LCPI[0-9]+_[0-9]+}}(%rip), %xmm1
+; critical-NEXT:    movsd {{.*#+}} xmm1 = [1.1000000000000001E+0,0.0E+0]
+; critical-NEXT:    movsd {{.*#+}} xmm2 = [7.0999999999999996E+0,0.0E+0]
+; critical-NEXT:    movsd {{.*#+}} xmm3 = [7.5E+0,0.0E+0]
+; critical-NEXT:    addsd %xmm0, %xmm1
+; critical-NEXT:    movsd {{.*#+}} xmm0 = mem[0],zero
+; critical-NEXT:    addsd %xmm0, %xmm2
+; critical-NEXT:    movsd {{.*#+}} xmm0 = [1.2E+0,0.0E+0]
+; critical-NEXT:    mulsd %xmm1, %xmm0
+; critical-NEXT:    movsd {{.*#+}} xmm1 = [7.2000000000000002E+0,0.0E+0]
+; critical-NEXT:    mulsd %xmm2, %xmm1
+; critical-NEXT:    movsd {{.*#+}} xmm2 = [1.3E+0,0.0E+0]
+; critical-NEXT:    addsd %xmm0, %xmm2
+; critical-NEXT:    movsd {{.*#+}} xmm0 = [7.2999999999999998E+0,0.0E+0]
+; critical-NEXT:    addsd %xmm1, %xmm0
+; critical-NEXT:    movsd {{.*#+}} xmm1 = [1.3999999999999999E+0,0.0E+0]
+; critical-NEXT:    mulsd %xmm2, %xmm1
+; critical-NEXT:    movsd {{.*#+}} xmm2 = [7.4000000000000004E+0,0.0E+0]
+; critical-NEXT:    mulsd %xmm0, %xmm2
+; critical-NEXT:    movsd {{.*#+}} xmm0 = [1.5E+0,0.0E+0]
+; critical-NEXT:    addsd %xmm1, %xmm0
+; critical-NEXT:    addsd %xmm2, %xmm3
 ; critical-NEXT:    cvttsd2si %xmm0, %eax
-; critical-NEXT:    cvttsd2si %xmm1, %ecx
+; critical-NEXT:    cvttsd2si %xmm3, %ecx
 ; critical-NEXT:    cmpl %ecx, %eax
 ; critical-NEXT:    jge .LBB0_2
 ; critical-NEXT:  # %bb.1: # %bb

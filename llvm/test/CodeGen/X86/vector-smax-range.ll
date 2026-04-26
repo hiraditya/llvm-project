@@ -11,14 +11,16 @@ define <4 x i32> @smax_v4i32_as_umax_v4i8(<4 x i32> %a0, <4 x i32> %a1) nounwind
 ; SSE2:       # %bb.0:
 ; SSE2-NEXT:    psrld $30, %xmm0
 ; SSE2-NEXT:    psrld $29, %xmm1
-; SSE2-NEXT:    pmaxub %xmm1, %xmm0
+; SSE2-NEXT:    pmaxub %xmm0, %xmm1
+; SSE2-NEXT:    movdqa %xmm1, %xmm0
 ; SSE2-NEXT:    retq
 ;
 ; SSE42-LABEL: smax_v4i32_as_umax_v4i8:
 ; SSE42:       # %bb.0:
 ; SSE42-NEXT:    psrld $30, %xmm0
 ; SSE42-NEXT:    psrld $29, %xmm1
-; SSE42-NEXT:    pmaxsd %xmm1, %xmm0
+; SSE42-NEXT:    pmaxsd %xmm0, %xmm1
+; SSE42-NEXT:    movdqa %xmm1, %xmm0
 ; SSE42-NEXT:    retq
 ;
 ; AVX-LABEL: smax_v4i32_as_umax_v4i8:
@@ -38,14 +40,16 @@ define <4 x i32> @smax_v4i32_as_smax_v4i16(<4 x i32> %a0, <4 x i32> %a1) nounwin
 ; SSE2:       # %bb.0:
 ; SSE2-NEXT:    psrad $16, %xmm0
 ; SSE2-NEXT:    psrad $16, %xmm1
-; SSE2-NEXT:    pmaxsw %xmm1, %xmm0
+; SSE2-NEXT:    pmaxsw %xmm0, %xmm1
+; SSE2-NEXT:    movdqa %xmm1, %xmm0
 ; SSE2-NEXT:    retq
 ;
 ; SSE42-LABEL: smax_v4i32_as_smax_v4i16:
 ; SSE42:       # %bb.0:
 ; SSE42-NEXT:    psrad $16, %xmm0
 ; SSE42-NEXT:    psrad $16, %xmm1
-; SSE42-NEXT:    pmaxsd %xmm1, %xmm0
+; SSE42-NEXT:    pmaxsd %xmm0, %xmm1
+; SSE42-NEXT:    movdqa %xmm1, %xmm0
 ; SSE42-NEXT:    retq
 ;
 ; AVX-LABEL: smax_v4i32_as_smax_v4i16:
@@ -72,15 +76,16 @@ define <2 x i64> @smax_v2i64_as_smax_v2i16(<2 x i64> %a0, <2 x i64> %a1) nounwin
 ; SSE2-NEXT:    movdqa {{.*#+}} xmm0 = [2147483648,2147483648]
 ; SSE2-NEXT:    movdqa %xmm1, %xmm3
 ; SSE2-NEXT:    por %xmm0, %xmm3
-; SSE2-NEXT:    pxor %xmm2, %xmm0
-; SSE2-NEXT:    movdqa %xmm0, %xmm4
-; SSE2-NEXT:    pcmpgtd %xmm3, %xmm4
-; SSE2-NEXT:    pshufd {{.*#+}} xmm5 = xmm4[0,0,2,2]
-; SSE2-NEXT:    pcmpeqd %xmm3, %xmm0
-; SSE2-NEXT:    pshufd {{.*#+}} xmm3 = xmm0[1,1,3,3]
-; SSE2-NEXT:    pand %xmm5, %xmm3
-; SSE2-NEXT:    pshufd {{.*#+}} xmm0 = xmm4[1,1,3,3]
-; SSE2-NEXT:    por %xmm3, %xmm0
+; SSE2-NEXT:    movdqa %xmm2, %xmm4
+; SSE2-NEXT:    pxor %xmm0, %xmm4
+; SSE2-NEXT:    movdqa %xmm4, %xmm0
+; SSE2-NEXT:    pcmpgtd %xmm3, %xmm0
+; SSE2-NEXT:    pshufd {{.*#+}} xmm5 = xmm0[0,0,2,2]
+; SSE2-NEXT:    pcmpeqd %xmm3, %xmm4
+; SSE2-NEXT:    pshufd {{.*#+}} xmm3 = xmm4[1,1,3,3]
+; SSE2-NEXT:    pand %xmm3, %xmm5
+; SSE2-NEXT:    pshufd {{.*#+}} xmm0 = xmm0[1,1,3,3]
+; SSE2-NEXT:    por %xmm5, %xmm0
 ; SSE2-NEXT:    pand %xmm0, %xmm2
 ; SSE2-NEXT:    pandn %xmm1, %xmm0
 ; SSE2-NEXT:    por %xmm2, %xmm0
@@ -89,13 +94,14 @@ define <2 x i64> @smax_v2i64_as_smax_v2i16(<2 x i64> %a0, <2 x i64> %a1) nounwin
 ; SSE42-LABEL: smax_v2i64_as_smax_v2i16:
 ; SSE42:       # %bb.0:
 ; SSE42-NEXT:    pshufd {{.*#+}} xmm2 = xmm0[1,1,3,3]
-; SSE42-NEXT:    psrad $31, %xmm0
+; SSE42-NEXT:    movdqa %xmm0, %xmm3
+; SSE42-NEXT:    psrad $31, %xmm3
 ; SSE42-NEXT:    psrad $17, %xmm2
-; SSE42-NEXT:    pblendw {{.*#+}} xmm2 = xmm2[0,1],xmm0[2,3],xmm2[4,5],xmm0[6,7]
+; SSE42-NEXT:    pblendw {{.*#+}} xmm3 = xmm2[0,1],xmm3[2,3],xmm2[4,5],xmm3[6,7]
 ; SSE42-NEXT:    psrlq $63, %xmm1
-; SSE42-NEXT:    movdqa %xmm2, %xmm0
+; SSE42-NEXT:    movdqa %xmm3, %xmm0
 ; SSE42-NEXT:    pcmpgtq %xmm1, %xmm0
-; SSE42-NEXT:    blendvpd %xmm0, %xmm2, %xmm1
+; SSE42-NEXT:    blendvpd %xmm0, %xmm3, %xmm1
 ; SSE42-NEXT:    movapd %xmm1, %xmm0
 ; SSE42-NEXT:    retq
 ;
@@ -154,15 +160,16 @@ define <2 x i64> @smax_v2i64_as_smax_v2i32(<2 x i64> %a0, <2 x i64> %a1) nounwin
 ; SSE2-NEXT:    movdqa {{.*#+}} xmm0 = [2147483648,2147483648]
 ; SSE2-NEXT:    movdqa %xmm1, %xmm3
 ; SSE2-NEXT:    por %xmm0, %xmm3
-; SSE2-NEXT:    pxor %xmm2, %xmm0
-; SSE2-NEXT:    movdqa %xmm0, %xmm4
-; SSE2-NEXT:    pcmpgtd %xmm3, %xmm4
-; SSE2-NEXT:    pshufd {{.*#+}} xmm5 = xmm4[0,0,2,2]
-; SSE2-NEXT:    pcmpeqd %xmm3, %xmm0
-; SSE2-NEXT:    pshufd {{.*#+}} xmm3 = xmm0[1,1,3,3]
-; SSE2-NEXT:    pand %xmm5, %xmm3
-; SSE2-NEXT:    pshufd {{.*#+}} xmm0 = xmm4[1,1,3,3]
-; SSE2-NEXT:    por %xmm3, %xmm0
+; SSE2-NEXT:    movdqa %xmm2, %xmm4
+; SSE2-NEXT:    pxor %xmm0, %xmm4
+; SSE2-NEXT:    movdqa %xmm4, %xmm0
+; SSE2-NEXT:    pcmpgtd %xmm3, %xmm0
+; SSE2-NEXT:    pshufd {{.*#+}} xmm5 = xmm0[0,0,2,2]
+; SSE2-NEXT:    pcmpeqd %xmm3, %xmm4
+; SSE2-NEXT:    pshufd {{.*#+}} xmm3 = xmm4[1,1,3,3]
+; SSE2-NEXT:    pand %xmm3, %xmm5
+; SSE2-NEXT:    pshufd {{.*#+}} xmm0 = xmm0[1,1,3,3]
+; SSE2-NEXT:    por %xmm5, %xmm0
 ; SSE2-NEXT:    pand %xmm0, %xmm2
 ; SSE2-NEXT:    pandn %xmm1, %xmm0
 ; SSE2-NEXT:    por %xmm2, %xmm0
@@ -171,13 +178,14 @@ define <2 x i64> @smax_v2i64_as_smax_v2i32(<2 x i64> %a0, <2 x i64> %a1) nounwin
 ; SSE42-LABEL: smax_v2i64_as_smax_v2i32:
 ; SSE42:       # %bb.0:
 ; SSE42-NEXT:    pshufd {{.*#+}} xmm2 = xmm0[1,1,3,3]
-; SSE42-NEXT:    psrad $31, %xmm0
+; SSE42-NEXT:    movdqa %xmm0, %xmm3
+; SSE42-NEXT:    psrad $31, %xmm3
 ; SSE42-NEXT:    psrad $1, %xmm2
-; SSE42-NEXT:    pblendw {{.*#+}} xmm2 = xmm2[0,1],xmm0[2,3],xmm2[4,5],xmm0[6,7]
+; SSE42-NEXT:    pblendw {{.*#+}} xmm3 = xmm2[0,1],xmm3[2,3],xmm2[4,5],xmm3[6,7]
 ; SSE42-NEXT:    psrlq $43, %xmm1
-; SSE42-NEXT:    movdqa %xmm2, %xmm0
+; SSE42-NEXT:    movdqa %xmm3, %xmm0
 ; SSE42-NEXT:    pcmpgtq %xmm1, %xmm0
-; SSE42-NEXT:    blendvpd %xmm0, %xmm2, %xmm1
+; SSE42-NEXT:    blendvpd %xmm0, %xmm3, %xmm1
 ; SSE42-NEXT:    movapd %xmm1, %xmm0
 ; SSE42-NEXT:    retq
 ;
@@ -253,19 +261,21 @@ define <4 x i64> @smax_v4i64_as_smax_v4i16(<4 x i64> %a0) nounwind {
 ; SSE42-LABEL: smax_v4i64_as_smax_v4i16:
 ; SSE42:       # %bb.0:
 ; SSE42-NEXT:    pshufd {{.*#+}} xmm2 = xmm1[1,1,3,3]
-; SSE42-NEXT:    psrad $31, %xmm1
+; SSE42-NEXT:    movdqa %xmm1, %xmm3
+; SSE42-NEXT:    psrad $31, %xmm3
 ; SSE42-NEXT:    psrad $18, %xmm2
-; SSE42-NEXT:    pblendw {{.*#+}} xmm1 = xmm2[0,1],xmm1[2,3],xmm2[4,5],xmm1[6,7]
-; SSE42-NEXT:    pshufd {{.*#+}} xmm2 = xmm0[1,1,3,3]
-; SSE42-NEXT:    psrad $31, %xmm0
-; SSE42-NEXT:    psrad $18, %xmm2
-; SSE42-NEXT:    pblendw {{.*#+}} xmm0 = xmm2[0,1],xmm0[2,3],xmm2[4,5],xmm0[6,7]
-; SSE42-NEXT:    pxor %xmm2, %xmm2
-; SSE42-NEXT:    pxor %xmm3, %xmm3
-; SSE42-NEXT:    pcmpgtq %xmm0, %xmm3
-; SSE42-NEXT:    por %xmm3, %xmm0
-; SSE42-NEXT:    pcmpgtq %xmm1, %xmm2
-; SSE42-NEXT:    por %xmm2, %xmm1
+; SSE42-NEXT:    pblendw {{.*#+}} xmm3 = xmm2[0,1],xmm3[2,3],xmm2[4,5],xmm3[6,7]
+; SSE42-NEXT:    pshufd {{.*#+}} xmm1 = xmm0[1,1,3,3]
+; SSE42-NEXT:    movdqa %xmm0, %xmm2
+; SSE42-NEXT:    psrad $31, %xmm2
+; SSE42-NEXT:    psrad $18, %xmm1
+; SSE42-NEXT:    pblendw {{.*#+}} xmm2 = xmm1[0,1],xmm2[2,3],xmm1[4,5],xmm2[6,7]
+; SSE42-NEXT:    pxor %xmm1, %xmm1
+; SSE42-NEXT:    pxor %xmm0, %xmm0
+; SSE42-NEXT:    pcmpgtq %xmm2, %xmm0
+; SSE42-NEXT:    por %xmm2, %xmm0
+; SSE42-NEXT:    pcmpgtq %xmm3, %xmm1
+; SSE42-NEXT:    por %xmm3, %xmm1
 ; SSE42-NEXT:    retq
 ;
 ; AVX1-LABEL: smax_v4i64_as_smax_v4i16:

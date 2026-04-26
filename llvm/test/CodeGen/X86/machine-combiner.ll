@@ -17,7 +17,8 @@ define float @reassociate_adds1(float %x0, float %x1, float %x2, float %x3) {
 ; SSE:       # %bb.0:
 ; SSE-NEXT:    addss %xmm1, %xmm0
 ; SSE-NEXT:    addss %xmm3, %xmm2
-; SSE-NEXT:    addss %xmm2, %xmm0
+; SSE-NEXT:    addss %xmm0, %xmm2
+; SSE-NEXT:    movaps %xmm2, %xmm0
 ; SSE-NEXT:    retq
 ;
 ; AVX-LABEL: reassociate_adds1:
@@ -37,7 +38,8 @@ define float @reassociate_adds2(float %x0, float %x1, float %x2, float %x3) {
 ; SSE:       # %bb.0:
 ; SSE-NEXT:    addss %xmm1, %xmm0
 ; SSE-NEXT:    addss %xmm3, %xmm2
-; SSE-NEXT:    addss %xmm2, %xmm0
+; SSE-NEXT:    addss %xmm0, %xmm2
+; SSE-NEXT:    movaps %xmm2, %xmm0
 ; SSE-NEXT:    retq
 ;
 ; AVX-LABEL: reassociate_adds2:
@@ -56,8 +58,9 @@ define float @reassociate_adds3(float %x0, float %x1, float %x2, float %x3) {
 ; SSE-LABEL: reassociate_adds3:
 ; SSE:       # %bb.0:
 ; SSE-NEXT:    addss %xmm1, %xmm0
-; SSE-NEXT:    addss %xmm3, %xmm2
-; SSE-NEXT:    addss %xmm2, %xmm0
+; SSE-NEXT:    addss %xmm2, %xmm3
+; SSE-NEXT:    addss %xmm0, %xmm3
+; SSE-NEXT:    movaps %xmm3, %xmm0
 ; SSE-NEXT:    retq
 ;
 ; AVX-LABEL: reassociate_adds3:
@@ -76,8 +79,9 @@ define float @reassociate_adds4(float %x0, float %x1, float %x2, float %x3) {
 ; SSE-LABEL: reassociate_adds4:
 ; SSE:       # %bb.0:
 ; SSE-NEXT:    addss %xmm1, %xmm0
-; SSE-NEXT:    addss %xmm3, %xmm2
-; SSE-NEXT:    addss %xmm2, %xmm0
+; SSE-NEXT:    addss %xmm2, %xmm3
+; SSE-NEXT:    addss %xmm0, %xmm3
+; SSE-NEXT:    movaps %xmm3, %xmm0
 ; SSE-NEXT:    retq
 ;
 ; AVX-LABEL: reassociate_adds4:
@@ -100,11 +104,12 @@ define float @reassociate_adds5(float %x0, float %x1, float %x2, float %x3, floa
 ; SSE:       # %bb.0:
 ; SSE-NEXT:    addss %xmm1, %xmm0
 ; SSE-NEXT:    addss %xmm3, %xmm2
-; SSE-NEXT:    addss %xmm2, %xmm0
+; SSE-NEXT:    addss %xmm0, %xmm2
 ; SSE-NEXT:    addss %xmm5, %xmm4
 ; SSE-NEXT:    addss %xmm6, %xmm4
-; SSE-NEXT:    addss %xmm4, %xmm0
-; SSE-NEXT:    addss %xmm7, %xmm0
+; SSE-NEXT:    addss %xmm2, %xmm4
+; SSE-NEXT:    addss %xmm7, %xmm4
+; SSE-NEXT:    movaps %xmm4, %xmm0
 ; SSE-NEXT:    retq
 ;
 ; AVX-LABEL: reassociate_adds5:
@@ -136,8 +141,9 @@ define float @reassociate_adds6(float %x0, float %x1, float %x2, float %x3) {
 ; SSE-LABEL: reassociate_adds6:
 ; SSE:       # %bb.0:
 ; SSE-NEXT:    divss %xmm1, %xmm0
-; SSE-NEXT:    addss %xmm3, %xmm2
-; SSE-NEXT:    addss %xmm2, %xmm0
+; SSE-NEXT:    addss %xmm2, %xmm3
+; SSE-NEXT:    addss %xmm0, %xmm3
+; SSE-NEXT:    movaps %xmm3, %xmm0
 ; SSE-NEXT:    retq
 ;
 ; AVX-LABEL: reassociate_adds6:
@@ -158,8 +164,9 @@ define float @reassociate_muls1(float %x0, float %x1, float %x2, float %x3) {
 ; SSE-LABEL: reassociate_muls1:
 ; SSE:       # %bb.0:
 ; SSE-NEXT:    divss %xmm1, %xmm0
-; SSE-NEXT:    mulss %xmm3, %xmm2
-; SSE-NEXT:    mulss %xmm2, %xmm0
+; SSE-NEXT:    mulss %xmm2, %xmm3
+; SSE-NEXT:    mulss %xmm0, %xmm3
+; SSE-NEXT:    movaps %xmm3, %xmm0
 ; SSE-NEXT:    retq
 ;
 ; AVX-LABEL: reassociate_muls1:
@@ -180,8 +187,9 @@ define double @reassociate_adds_double(double %x0, double %x1, double %x2, doubl
 ; SSE-LABEL: reassociate_adds_double:
 ; SSE:       # %bb.0:
 ; SSE-NEXT:    divsd %xmm1, %xmm0
-; SSE-NEXT:    addsd %xmm3, %xmm2
-; SSE-NEXT:    addsd %xmm2, %xmm0
+; SSE-NEXT:    addsd %xmm2, %xmm3
+; SSE-NEXT:    addsd %xmm0, %xmm3
+; SSE-NEXT:    movapd %xmm3, %xmm0
 ; SSE-NEXT:    retq
 ;
 ; AVX-LABEL: reassociate_adds_double:
@@ -202,8 +210,9 @@ define double @reassociate_muls_double(double %x0, double %x1, double %x2, doubl
 ; SSE-LABEL: reassociate_muls_double:
 ; SSE:       # %bb.0:
 ; SSE-NEXT:    divsd %xmm1, %xmm0
-; SSE-NEXT:    mulsd %xmm3, %xmm2
-; SSE-NEXT:    mulsd %xmm2, %xmm0
+; SSE-NEXT:    mulsd %xmm2, %xmm3
+; SSE-NEXT:    mulsd %xmm0, %xmm3
+; SSE-NEXT:    movapd %xmm3, %xmm0
 ; SSE-NEXT:    retq
 ;
 ; AVX-LABEL: reassociate_muls_double:
@@ -224,8 +233,9 @@ define <4 x float> @reassociate_adds_v4f32(<4 x float> %x0, <4 x float> %x1, <4 
 ; SSE-LABEL: reassociate_adds_v4f32:
 ; SSE:       # %bb.0:
 ; SSE-NEXT:    mulps %xmm1, %xmm0
-; SSE-NEXT:    addps %xmm3, %xmm2
-; SSE-NEXT:    addps %xmm2, %xmm0
+; SSE-NEXT:    addps %xmm2, %xmm3
+; SSE-NEXT:    addps %xmm0, %xmm3
+; SSE-NEXT:    movaps %xmm3, %xmm0
 ; SSE-NEXT:    retq
 ;
 ; AVX1-LABEL: reassociate_adds_v4f32:
@@ -237,8 +247,8 @@ define <4 x float> @reassociate_adds_v4f32(<4 x float> %x0, <4 x float> %x1, <4 
 ;
 ; AVX512-LABEL: reassociate_adds_v4f32:
 ; AVX512:       # %bb.0:
-; AVX512-NEXT:    vfmadd213ps {{.*#+}} xmm0 = (xmm1 * xmm0) + xmm2
-; AVX512-NEXT:    vaddps %xmm0, %xmm3, %xmm0
+; AVX512-NEXT:    vfmadd213ps {{.*#+}} xmm1 = (xmm0 * xmm1) + xmm2
+; AVX512-NEXT:    vaddps %xmm1, %xmm3, %xmm0
 ; AVX512-NEXT:    retq
   %t0 = fmul contract reassoc nsz <4 x float> %x0, %x1
   %t1 = fadd contract reassoc nsz <4 x float> %x2, %t0
@@ -252,8 +262,9 @@ define <2 x double> @reassociate_adds_v2f64(<2 x double> %x0, <2 x double> %x1, 
 ; SSE-LABEL: reassociate_adds_v2f64:
 ; SSE:       # %bb.0:
 ; SSE-NEXT:    mulpd %xmm1, %xmm0
-; SSE-NEXT:    addpd %xmm3, %xmm2
-; SSE-NEXT:    addpd %xmm2, %xmm0
+; SSE-NEXT:    addpd %xmm2, %xmm3
+; SSE-NEXT:    addpd %xmm0, %xmm3
+; SSE-NEXT:    movapd %xmm3, %xmm0
 ; SSE-NEXT:    retq
 ;
 ; AVX1-LABEL: reassociate_adds_v2f64:
@@ -265,8 +276,8 @@ define <2 x double> @reassociate_adds_v2f64(<2 x double> %x0, <2 x double> %x1, 
 ;
 ; AVX512-LABEL: reassociate_adds_v2f64:
 ; AVX512:       # %bb.0:
-; AVX512-NEXT:    vfmadd213pd {{.*#+}} xmm0 = (xmm1 * xmm0) + xmm2
-; AVX512-NEXT:    vaddpd %xmm0, %xmm3, %xmm0
+; AVX512-NEXT:    vfmadd213pd {{.*#+}} xmm1 = (xmm0 * xmm1) + xmm2
+; AVX512-NEXT:    vaddpd %xmm1, %xmm3, %xmm0
 ; AVX512-NEXT:    retq
   %t0 = fmul contract reassoc nsz <2 x double> %x0, %x1
   %t1 = fadd contract reassoc nsz <2 x double> %x2, %t0
@@ -280,8 +291,9 @@ define <4 x float> @reassociate_muls_v4f32(<4 x float> %x0, <4 x float> %x1, <4 
 ; SSE-LABEL: reassociate_muls_v4f32:
 ; SSE:       # %bb.0:
 ; SSE-NEXT:    addps %xmm1, %xmm0
-; SSE-NEXT:    mulps %xmm3, %xmm2
-; SSE-NEXT:    mulps %xmm2, %xmm0
+; SSE-NEXT:    mulps %xmm2, %xmm3
+; SSE-NEXT:    mulps %xmm0, %xmm3
+; SSE-NEXT:    movaps %xmm3, %xmm0
 ; SSE-NEXT:    retq
 ;
 ; AVX-LABEL: reassociate_muls_v4f32:
@@ -302,8 +314,9 @@ define <2 x double> @reassociate_muls_v2f64(<2 x double> %x0, <2 x double> %x1, 
 ; SSE-LABEL: reassociate_muls_v2f64:
 ; SSE:       # %bb.0:
 ; SSE-NEXT:    addpd %xmm1, %xmm0
-; SSE-NEXT:    mulpd %xmm3, %xmm2
-; SSE-NEXT:    mulpd %xmm2, %xmm0
+; SSE-NEXT:    mulpd %xmm2, %xmm3
+; SSE-NEXT:    mulpd %xmm0, %xmm3
+; SSE-NEXT:    movapd %xmm3, %xmm0
 ; SSE-NEXT:    retq
 ;
 ; AVX-LABEL: reassociate_muls_v2f64:
@@ -325,10 +338,12 @@ define <8 x float> @reassociate_adds_v8f32(<8 x float> %x0, <8 x float> %x1, <8 
 ; SSE:       # %bb.0:
 ; SSE-NEXT:    mulps %xmm2, %xmm0
 ; SSE-NEXT:    mulps %xmm3, %xmm1
-; SSE-NEXT:    addps %xmm6, %xmm4
-; SSE-NEXT:    addps %xmm4, %xmm0
-; SSE-NEXT:    addps %xmm7, %xmm5
-; SSE-NEXT:    addps %xmm5, %xmm1
+; SSE-NEXT:    addps %xmm4, %xmm6
+; SSE-NEXT:    addps %xmm0, %xmm6
+; SSE-NEXT:    addps %xmm5, %xmm7
+; SSE-NEXT:    addps %xmm1, %xmm7
+; SSE-NEXT:    movaps %xmm6, %xmm0
+; SSE-NEXT:    movaps %xmm7, %xmm1
 ; SSE-NEXT:    retq
 ;
 ; AVX1-LABEL: reassociate_adds_v8f32:
@@ -340,8 +355,8 @@ define <8 x float> @reassociate_adds_v8f32(<8 x float> %x0, <8 x float> %x1, <8 
 ;
 ; AVX512-LABEL: reassociate_adds_v8f32:
 ; AVX512:       # %bb.0:
-; AVX512-NEXT:    vfmadd213ps {{.*#+}} ymm0 = (ymm1 * ymm0) + ymm2
-; AVX512-NEXT:    vaddps %ymm0, %ymm3, %ymm0
+; AVX512-NEXT:    vfmadd213ps {{.*#+}} ymm1 = (ymm0 * ymm1) + ymm2
+; AVX512-NEXT:    vaddps %ymm1, %ymm3, %ymm0
 ; AVX512-NEXT:    retq
   %t0 = fmul contract reassoc nsz <8 x float> %x0, %x1
   %t1 = fadd contract reassoc nsz <8 x float> %x2, %t0
@@ -356,10 +371,12 @@ define <4 x double> @reassociate_adds_v4f64(<4 x double> %x0, <4 x double> %x1, 
 ; SSE:       # %bb.0:
 ; SSE-NEXT:    mulpd %xmm2, %xmm0
 ; SSE-NEXT:    mulpd %xmm3, %xmm1
-; SSE-NEXT:    addpd %xmm6, %xmm4
-; SSE-NEXT:    addpd %xmm4, %xmm0
-; SSE-NEXT:    addpd %xmm7, %xmm5
-; SSE-NEXT:    addpd %xmm5, %xmm1
+; SSE-NEXT:    addpd %xmm4, %xmm6
+; SSE-NEXT:    addpd %xmm0, %xmm6
+; SSE-NEXT:    addpd %xmm5, %xmm7
+; SSE-NEXT:    addpd %xmm1, %xmm7
+; SSE-NEXT:    movapd %xmm6, %xmm0
+; SSE-NEXT:    movapd %xmm7, %xmm1
 ; SSE-NEXT:    retq
 ;
 ; AVX1-LABEL: reassociate_adds_v4f64:
@@ -371,8 +388,8 @@ define <4 x double> @reassociate_adds_v4f64(<4 x double> %x0, <4 x double> %x1, 
 ;
 ; AVX512-LABEL: reassociate_adds_v4f64:
 ; AVX512:       # %bb.0:
-; AVX512-NEXT:    vfmadd213pd {{.*#+}} ymm0 = (ymm1 * ymm0) + ymm2
-; AVX512-NEXT:    vaddpd %ymm0, %ymm3, %ymm0
+; AVX512-NEXT:    vfmadd213pd {{.*#+}} ymm1 = (ymm0 * ymm1) + ymm2
+; AVX512-NEXT:    vaddpd %ymm1, %ymm3, %ymm0
 ; AVX512-NEXT:    retq
   %t0 = fmul contract reassoc nsz <4 x double> %x0, %x1
   %t1 = fadd contract reassoc nsz <4 x double> %x2, %t0
@@ -387,10 +404,12 @@ define <8 x float> @reassociate_muls_v8f32(<8 x float> %x0, <8 x float> %x1, <8 
 ; SSE:       # %bb.0:
 ; SSE-NEXT:    addps %xmm2, %xmm0
 ; SSE-NEXT:    addps %xmm3, %xmm1
-; SSE-NEXT:    mulps %xmm6, %xmm4
-; SSE-NEXT:    mulps %xmm4, %xmm0
-; SSE-NEXT:    mulps %xmm7, %xmm5
-; SSE-NEXT:    mulps %xmm5, %xmm1
+; SSE-NEXT:    mulps %xmm4, %xmm6
+; SSE-NEXT:    mulps %xmm0, %xmm6
+; SSE-NEXT:    mulps %xmm5, %xmm7
+; SSE-NEXT:    mulps %xmm1, %xmm7
+; SSE-NEXT:    movaps %xmm6, %xmm0
+; SSE-NEXT:    movaps %xmm7, %xmm1
 ; SSE-NEXT:    retq
 ;
 ; AVX-LABEL: reassociate_muls_v8f32:
@@ -412,10 +431,12 @@ define <4 x double> @reassociate_muls_v4f64(<4 x double> %x0, <4 x double> %x1, 
 ; SSE:       # %bb.0:
 ; SSE-NEXT:    addpd %xmm2, %xmm0
 ; SSE-NEXT:    addpd %xmm3, %xmm1
-; SSE-NEXT:    mulpd %xmm6, %xmm4
-; SSE-NEXT:    mulpd %xmm4, %xmm0
-; SSE-NEXT:    mulpd %xmm7, %xmm5
-; SSE-NEXT:    mulpd %xmm5, %xmm1
+; SSE-NEXT:    mulpd %xmm4, %xmm6
+; SSE-NEXT:    mulpd %xmm0, %xmm6
+; SSE-NEXT:    mulpd %xmm5, %xmm7
+; SSE-NEXT:    mulpd %xmm1, %xmm7
+; SSE-NEXT:    movapd %xmm6, %xmm0
+; SSE-NEXT:    movapd %xmm7, %xmm1
 ; SSE-NEXT:    retq
 ;
 ; AVX-LABEL: reassociate_muls_v4f64:
@@ -439,14 +460,22 @@ define <16 x float> @reassociate_adds_v16f32(<16 x float> %x0, <16 x float> %x1,
 ; SSE-NEXT:    mulps %xmm5, %xmm1
 ; SSE-NEXT:    mulps %xmm6, %xmm2
 ; SSE-NEXT:    mulps %xmm7, %xmm3
-; SSE-NEXT:    addps {{[0-9]+}}(%rsp), %xmm3
-; SSE-NEXT:    addps {{[0-9]+}}(%rsp), %xmm2
-; SSE-NEXT:    addps {{[0-9]+}}(%rsp), %xmm1
-; SSE-NEXT:    addps {{[0-9]+}}(%rsp), %xmm0
-; SSE-NEXT:    addps {{[0-9]+}}(%rsp), %xmm0
-; SSE-NEXT:    addps {{[0-9]+}}(%rsp), %xmm1
-; SSE-NEXT:    addps {{[0-9]+}}(%rsp), %xmm2
-; SSE-NEXT:    addps {{[0-9]+}}(%rsp), %xmm3
+; SSE-NEXT:    movaps {{[0-9]+}}(%rsp), %xmm4
+; SSE-NEXT:    addps %xmm3, %xmm4
+; SSE-NEXT:    movaps {{[0-9]+}}(%rsp), %xmm3
+; SSE-NEXT:    addps %xmm2, %xmm3
+; SSE-NEXT:    movaps {{[0-9]+}}(%rsp), %xmm2
+; SSE-NEXT:    addps %xmm1, %xmm2
+; SSE-NEXT:    movaps {{[0-9]+}}(%rsp), %xmm1
+; SSE-NEXT:    addps %xmm0, %xmm1
+; SSE-NEXT:    movaps {{[0-9]+}}(%rsp), %xmm0
+; SSE-NEXT:    addps %xmm1, %xmm0
+; SSE-NEXT:    movaps {{[0-9]+}}(%rsp), %xmm1
+; SSE-NEXT:    addps %xmm2, %xmm1
+; SSE-NEXT:    movaps {{[0-9]+}}(%rsp), %xmm2
+; SSE-NEXT:    addps %xmm3, %xmm2
+; SSE-NEXT:    movaps {{[0-9]+}}(%rsp), %xmm3
+; SSE-NEXT:    addps %xmm4, %xmm3
 ; SSE-NEXT:    retq
 ;
 ; AVX1-LABEL: reassociate_adds_v16f32:
@@ -461,8 +490,8 @@ define <16 x float> @reassociate_adds_v16f32(<16 x float> %x0, <16 x float> %x1,
 ;
 ; AVX512-LABEL: reassociate_adds_v16f32:
 ; AVX512:       # %bb.0:
-; AVX512-NEXT:    vfmadd213ps {{.*#+}} zmm0 = (zmm1 * zmm0) + zmm2
-; AVX512-NEXT:    vaddps %zmm0, %zmm3, %zmm0
+; AVX512-NEXT:    vfmadd213ps {{.*#+}} zmm1 = (zmm0 * zmm1) + zmm2
+; AVX512-NEXT:    vaddps %zmm1, %zmm3, %zmm0
 ; AVX512-NEXT:    retq
   %t0 = fmul contract reassoc nsz <16 x float> %x0, %x1
   %t1 = fadd contract reassoc nsz <16 x float> %x2, %t0
@@ -479,14 +508,22 @@ define <8 x double> @reassociate_adds_v8f64(<8 x double> %x0, <8 x double> %x1, 
 ; SSE-NEXT:    mulpd %xmm5, %xmm1
 ; SSE-NEXT:    mulpd %xmm6, %xmm2
 ; SSE-NEXT:    mulpd %xmm7, %xmm3
-; SSE-NEXT:    addpd {{[0-9]+}}(%rsp), %xmm3
-; SSE-NEXT:    addpd {{[0-9]+}}(%rsp), %xmm2
-; SSE-NEXT:    addpd {{[0-9]+}}(%rsp), %xmm1
-; SSE-NEXT:    addpd {{[0-9]+}}(%rsp), %xmm0
-; SSE-NEXT:    addpd {{[0-9]+}}(%rsp), %xmm0
-; SSE-NEXT:    addpd {{[0-9]+}}(%rsp), %xmm1
-; SSE-NEXT:    addpd {{[0-9]+}}(%rsp), %xmm2
-; SSE-NEXT:    addpd {{[0-9]+}}(%rsp), %xmm3
+; SSE-NEXT:    movapd {{[0-9]+}}(%rsp), %xmm4
+; SSE-NEXT:    addpd %xmm3, %xmm4
+; SSE-NEXT:    movapd {{[0-9]+}}(%rsp), %xmm3
+; SSE-NEXT:    addpd %xmm2, %xmm3
+; SSE-NEXT:    movapd {{[0-9]+}}(%rsp), %xmm2
+; SSE-NEXT:    addpd %xmm1, %xmm2
+; SSE-NEXT:    movapd {{[0-9]+}}(%rsp), %xmm1
+; SSE-NEXT:    addpd %xmm0, %xmm1
+; SSE-NEXT:    movapd {{[0-9]+}}(%rsp), %xmm0
+; SSE-NEXT:    addpd %xmm1, %xmm0
+; SSE-NEXT:    movapd {{[0-9]+}}(%rsp), %xmm1
+; SSE-NEXT:    addpd %xmm2, %xmm1
+; SSE-NEXT:    movapd {{[0-9]+}}(%rsp), %xmm2
+; SSE-NEXT:    addpd %xmm3, %xmm2
+; SSE-NEXT:    movapd {{[0-9]+}}(%rsp), %xmm3
+; SSE-NEXT:    addpd %xmm4, %xmm3
 ; SSE-NEXT:    retq
 ;
 ; AVX1-LABEL: reassociate_adds_v8f64:
@@ -501,8 +538,8 @@ define <8 x double> @reassociate_adds_v8f64(<8 x double> %x0, <8 x double> %x1, 
 ;
 ; AVX512-LABEL: reassociate_adds_v8f64:
 ; AVX512:       # %bb.0:
-; AVX512-NEXT:    vfmadd213pd {{.*#+}} zmm0 = (zmm1 * zmm0) + zmm2
-; AVX512-NEXT:    vaddpd %zmm0, %zmm3, %zmm0
+; AVX512-NEXT:    vfmadd213pd {{.*#+}} zmm1 = (zmm0 * zmm1) + zmm2
+; AVX512-NEXT:    vaddpd %zmm1, %zmm3, %zmm0
 ; AVX512-NEXT:    retq
   %t0 = fmul contract reassoc nsz <8 x double> %x0, %x1
   %t1 = fadd contract reassoc nsz <8 x double> %x2, %t0
@@ -519,14 +556,22 @@ define <16 x float> @reassociate_muls_v16f32(<16 x float> %x0, <16 x float> %x1,
 ; SSE-NEXT:    addps %xmm5, %xmm1
 ; SSE-NEXT:    addps %xmm6, %xmm2
 ; SSE-NEXT:    addps %xmm7, %xmm3
-; SSE-NEXT:    mulps {{[0-9]+}}(%rsp), %xmm3
-; SSE-NEXT:    mulps {{[0-9]+}}(%rsp), %xmm2
-; SSE-NEXT:    mulps {{[0-9]+}}(%rsp), %xmm1
-; SSE-NEXT:    mulps {{[0-9]+}}(%rsp), %xmm0
-; SSE-NEXT:    mulps {{[0-9]+}}(%rsp), %xmm0
-; SSE-NEXT:    mulps {{[0-9]+}}(%rsp), %xmm1
-; SSE-NEXT:    mulps {{[0-9]+}}(%rsp), %xmm2
-; SSE-NEXT:    mulps {{[0-9]+}}(%rsp), %xmm3
+; SSE-NEXT:    movaps {{[0-9]+}}(%rsp), %xmm4
+; SSE-NEXT:    mulps %xmm3, %xmm4
+; SSE-NEXT:    movaps {{[0-9]+}}(%rsp), %xmm3
+; SSE-NEXT:    mulps %xmm2, %xmm3
+; SSE-NEXT:    movaps {{[0-9]+}}(%rsp), %xmm2
+; SSE-NEXT:    mulps %xmm1, %xmm2
+; SSE-NEXT:    movaps {{[0-9]+}}(%rsp), %xmm1
+; SSE-NEXT:    mulps %xmm0, %xmm1
+; SSE-NEXT:    movaps {{[0-9]+}}(%rsp), %xmm0
+; SSE-NEXT:    mulps %xmm1, %xmm0
+; SSE-NEXT:    movaps {{[0-9]+}}(%rsp), %xmm1
+; SSE-NEXT:    mulps %xmm2, %xmm1
+; SSE-NEXT:    movaps {{[0-9]+}}(%rsp), %xmm2
+; SSE-NEXT:    mulps %xmm3, %xmm2
+; SSE-NEXT:    movaps {{[0-9]+}}(%rsp), %xmm3
+; SSE-NEXT:    mulps %xmm4, %xmm3
 ; SSE-NEXT:    retq
 ;
 ; AVX1-LABEL: reassociate_muls_v16f32:
@@ -560,14 +605,22 @@ define <8 x double> @reassociate_muls_v8f64(<8 x double> %x0, <8 x double> %x1, 
 ; SSE-NEXT:    addpd %xmm5, %xmm1
 ; SSE-NEXT:    addpd %xmm6, %xmm2
 ; SSE-NEXT:    addpd %xmm7, %xmm3
-; SSE-NEXT:    mulpd {{[0-9]+}}(%rsp), %xmm3
-; SSE-NEXT:    mulpd {{[0-9]+}}(%rsp), %xmm2
-; SSE-NEXT:    mulpd {{[0-9]+}}(%rsp), %xmm1
-; SSE-NEXT:    mulpd {{[0-9]+}}(%rsp), %xmm0
-; SSE-NEXT:    mulpd {{[0-9]+}}(%rsp), %xmm0
-; SSE-NEXT:    mulpd {{[0-9]+}}(%rsp), %xmm1
-; SSE-NEXT:    mulpd {{[0-9]+}}(%rsp), %xmm2
-; SSE-NEXT:    mulpd {{[0-9]+}}(%rsp), %xmm3
+; SSE-NEXT:    movapd {{[0-9]+}}(%rsp), %xmm4
+; SSE-NEXT:    mulpd %xmm3, %xmm4
+; SSE-NEXT:    movapd {{[0-9]+}}(%rsp), %xmm3
+; SSE-NEXT:    mulpd %xmm2, %xmm3
+; SSE-NEXT:    movapd {{[0-9]+}}(%rsp), %xmm2
+; SSE-NEXT:    mulpd %xmm1, %xmm2
+; SSE-NEXT:    movapd {{[0-9]+}}(%rsp), %xmm1
+; SSE-NEXT:    mulpd %xmm0, %xmm1
+; SSE-NEXT:    movapd {{[0-9]+}}(%rsp), %xmm0
+; SSE-NEXT:    mulpd %xmm1, %xmm0
+; SSE-NEXT:    movapd {{[0-9]+}}(%rsp), %xmm1
+; SSE-NEXT:    mulpd %xmm2, %xmm1
+; SSE-NEXT:    movapd {{[0-9]+}}(%rsp), %xmm2
+; SSE-NEXT:    mulpd %xmm3, %xmm2
+; SSE-NEXT:    movapd {{[0-9]+}}(%rsp), %xmm3
+; SSE-NEXT:    mulpd %xmm4, %xmm3
 ; SSE-NEXT:    retq
 ;
 ; AVX1-LABEL: reassociate_muls_v8f64:
@@ -598,8 +651,9 @@ define float @reassociate_mins_single(float %x0, float %x1, float %x2, float %x3
 ; SSE-LABEL: reassociate_mins_single:
 ; SSE:       # %bb.0:
 ; SSE-NEXT:    divss %xmm1, %xmm0
-; SSE-NEXT:    minss %xmm3, %xmm2
-; SSE-NEXT:    minss %xmm2, %xmm0
+; SSE-NEXT:    minss %xmm2, %xmm3
+; SSE-NEXT:    minss %xmm0, %xmm3
+; SSE-NEXT:    movaps %xmm3, %xmm0
 ; SSE-NEXT:    retq
 ;
 ; AVX-LABEL: reassociate_mins_single:
@@ -622,8 +676,9 @@ define float @reassociate_maxs_single(float %x0, float %x1, float %x2, float %x3
 ; SSE-LABEL: reassociate_maxs_single:
 ; SSE:       # %bb.0:
 ; SSE-NEXT:    divss %xmm1, %xmm0
-; SSE-NEXT:    maxss %xmm3, %xmm2
-; SSE-NEXT:    maxss %xmm2, %xmm0
+; SSE-NEXT:    maxss %xmm2, %xmm3
+; SSE-NEXT:    maxss %xmm0, %xmm3
+; SSE-NEXT:    movaps %xmm3, %xmm0
 ; SSE-NEXT:    retq
 ;
 ; AVX-LABEL: reassociate_maxs_single:
@@ -646,8 +701,9 @@ define double @reassociate_mins_double(double %x0, double %x1, double %x2, doubl
 ; SSE-LABEL: reassociate_mins_double:
 ; SSE:       # %bb.0:
 ; SSE-NEXT:    divsd %xmm1, %xmm0
-; SSE-NEXT:    minsd %xmm3, %xmm2
-; SSE-NEXT:    minsd %xmm2, %xmm0
+; SSE-NEXT:    minsd %xmm2, %xmm3
+; SSE-NEXT:    minsd %xmm0, %xmm3
+; SSE-NEXT:    movapd %xmm3, %xmm0
 ; SSE-NEXT:    retq
 ;
 ; AVX-LABEL: reassociate_mins_double:
@@ -670,8 +726,9 @@ define double @reassociate_maxs_double(double %x0, double %x1, double %x2, doubl
 ; SSE-LABEL: reassociate_maxs_double:
 ; SSE:       # %bb.0:
 ; SSE-NEXT:    divsd %xmm1, %xmm0
-; SSE-NEXT:    maxsd %xmm3, %xmm2
-; SSE-NEXT:    maxsd %xmm2, %xmm0
+; SSE-NEXT:    maxsd %xmm2, %xmm3
+; SSE-NEXT:    maxsd %xmm0, %xmm3
+; SSE-NEXT:    movapd %xmm3, %xmm0
 ; SSE-NEXT:    retq
 ;
 ; AVX-LABEL: reassociate_maxs_double:
@@ -694,8 +751,9 @@ define <4 x float> @reassociate_mins_v4f32(<4 x float> %x0, <4 x float> %x1, <4 
 ; SSE-LABEL: reassociate_mins_v4f32:
 ; SSE:       # %bb.0:
 ; SSE-NEXT:    addps %xmm1, %xmm0
-; SSE-NEXT:    minps %xmm3, %xmm2
-; SSE-NEXT:    minps %xmm2, %xmm0
+; SSE-NEXT:    minps %xmm2, %xmm3
+; SSE-NEXT:    minps %xmm0, %xmm3
+; SSE-NEXT:    movaps %xmm3, %xmm0
 ; SSE-NEXT:    retq
 ;
 ; AVX-LABEL: reassociate_mins_v4f32:
@@ -718,8 +776,9 @@ define <4 x float> @reassociate_maxs_v4f32(<4 x float> %x0, <4 x float> %x1, <4 
 ; SSE-LABEL: reassociate_maxs_v4f32:
 ; SSE:       # %bb.0:
 ; SSE-NEXT:    addps %xmm1, %xmm0
-; SSE-NEXT:    maxps %xmm3, %xmm2
-; SSE-NEXT:    maxps %xmm2, %xmm0
+; SSE-NEXT:    maxps %xmm2, %xmm3
+; SSE-NEXT:    maxps %xmm0, %xmm3
+; SSE-NEXT:    movaps %xmm3, %xmm0
 ; SSE-NEXT:    retq
 ;
 ; AVX-LABEL: reassociate_maxs_v4f32:
@@ -742,8 +801,9 @@ define <2 x double> @reassociate_mins_v2f64(<2 x double> %x0, <2 x double> %x1, 
 ; SSE-LABEL: reassociate_mins_v2f64:
 ; SSE:       # %bb.0:
 ; SSE-NEXT:    addpd %xmm1, %xmm0
-; SSE-NEXT:    minpd %xmm3, %xmm2
-; SSE-NEXT:    minpd %xmm2, %xmm0
+; SSE-NEXT:    minpd %xmm2, %xmm3
+; SSE-NEXT:    minpd %xmm0, %xmm3
+; SSE-NEXT:    movapd %xmm3, %xmm0
 ; SSE-NEXT:    retq
 ;
 ; AVX-LABEL: reassociate_mins_v2f64:
@@ -766,8 +826,9 @@ define <2 x double> @reassociate_maxs_v2f64(<2 x double> %x0, <2 x double> %x1, 
 ; SSE-LABEL: reassociate_maxs_v2f64:
 ; SSE:       # %bb.0:
 ; SSE-NEXT:    addpd %xmm1, %xmm0
-; SSE-NEXT:    maxpd %xmm3, %xmm2
-; SSE-NEXT:    maxpd %xmm2, %xmm0
+; SSE-NEXT:    maxpd %xmm2, %xmm3
+; SSE-NEXT:    maxpd %xmm0, %xmm3
+; SSE-NEXT:    movapd %xmm3, %xmm0
 ; SSE-NEXT:    retq
 ;
 ; AVX-LABEL: reassociate_maxs_v2f64:
@@ -791,10 +852,12 @@ define <8 x float> @reassociate_mins_v8f32(<8 x float> %x0, <8 x float> %x1, <8 
 ; SSE:       # %bb.0:
 ; SSE-NEXT:    addps %xmm2, %xmm0
 ; SSE-NEXT:    addps %xmm3, %xmm1
-; SSE-NEXT:    minps %xmm6, %xmm4
-; SSE-NEXT:    minps %xmm4, %xmm0
-; SSE-NEXT:    minps %xmm7, %xmm5
-; SSE-NEXT:    minps %xmm5, %xmm1
+; SSE-NEXT:    minps %xmm4, %xmm6
+; SSE-NEXT:    minps %xmm0, %xmm6
+; SSE-NEXT:    minps %xmm5, %xmm7
+; SSE-NEXT:    minps %xmm1, %xmm7
+; SSE-NEXT:    movaps %xmm6, %xmm0
+; SSE-NEXT:    movaps %xmm7, %xmm1
 ; SSE-NEXT:    retq
 ;
 ; AVX-LABEL: reassociate_mins_v8f32:
@@ -818,10 +881,12 @@ define <8 x float> @reassociate_maxs_v8f32(<8 x float> %x0, <8 x float> %x1, <8 
 ; SSE:       # %bb.0:
 ; SSE-NEXT:    addps %xmm2, %xmm0
 ; SSE-NEXT:    addps %xmm3, %xmm1
-; SSE-NEXT:    maxps %xmm6, %xmm4
-; SSE-NEXT:    maxps %xmm4, %xmm0
-; SSE-NEXT:    maxps %xmm7, %xmm5
-; SSE-NEXT:    maxps %xmm5, %xmm1
+; SSE-NEXT:    maxps %xmm4, %xmm6
+; SSE-NEXT:    maxps %xmm0, %xmm6
+; SSE-NEXT:    maxps %xmm5, %xmm7
+; SSE-NEXT:    maxps %xmm1, %xmm7
+; SSE-NEXT:    movaps %xmm6, %xmm0
+; SSE-NEXT:    movaps %xmm7, %xmm1
 ; SSE-NEXT:    retq
 ;
 ; AVX-LABEL: reassociate_maxs_v8f32:
@@ -845,10 +910,12 @@ define <4 x double> @reassociate_mins_v4f64(<4 x double> %x0, <4 x double> %x1, 
 ; SSE:       # %bb.0:
 ; SSE-NEXT:    addpd %xmm2, %xmm0
 ; SSE-NEXT:    addpd %xmm3, %xmm1
-; SSE-NEXT:    minpd %xmm6, %xmm4
-; SSE-NEXT:    minpd %xmm4, %xmm0
-; SSE-NEXT:    minpd %xmm7, %xmm5
-; SSE-NEXT:    minpd %xmm5, %xmm1
+; SSE-NEXT:    minpd %xmm4, %xmm6
+; SSE-NEXT:    minpd %xmm0, %xmm6
+; SSE-NEXT:    minpd %xmm5, %xmm7
+; SSE-NEXT:    minpd %xmm1, %xmm7
+; SSE-NEXT:    movapd %xmm6, %xmm0
+; SSE-NEXT:    movapd %xmm7, %xmm1
 ; SSE-NEXT:    retq
 ;
 ; AVX-LABEL: reassociate_mins_v4f64:
@@ -872,10 +939,12 @@ define <4 x double> @reassociate_maxs_v4f64(<4 x double> %x0, <4 x double> %x1, 
 ; SSE:       # %bb.0:
 ; SSE-NEXT:    addpd %xmm2, %xmm0
 ; SSE-NEXT:    addpd %xmm3, %xmm1
-; SSE-NEXT:    maxpd %xmm6, %xmm4
-; SSE-NEXT:    maxpd %xmm4, %xmm0
-; SSE-NEXT:    maxpd %xmm7, %xmm5
-; SSE-NEXT:    maxpd %xmm5, %xmm1
+; SSE-NEXT:    maxpd %xmm4, %xmm6
+; SSE-NEXT:    maxpd %xmm0, %xmm6
+; SSE-NEXT:    maxpd %xmm5, %xmm7
+; SSE-NEXT:    maxpd %xmm1, %xmm7
+; SSE-NEXT:    movapd %xmm6, %xmm0
+; SSE-NEXT:    movapd %xmm7, %xmm1
 ; SSE-NEXT:    retq
 ;
 ; AVX-LABEL: reassociate_maxs_v4f64:
@@ -901,14 +970,22 @@ define <16 x float> @reassociate_mins_v16f32(<16 x float> %x0, <16 x float> %x1,
 ; SSE-NEXT:    addps %xmm5, %xmm1
 ; SSE-NEXT:    addps %xmm6, %xmm2
 ; SSE-NEXT:    addps %xmm7, %xmm3
-; SSE-NEXT:    minps {{[0-9]+}}(%rsp), %xmm3
-; SSE-NEXT:    minps {{[0-9]+}}(%rsp), %xmm2
-; SSE-NEXT:    minps {{[0-9]+}}(%rsp), %xmm1
-; SSE-NEXT:    minps {{[0-9]+}}(%rsp), %xmm0
-; SSE-NEXT:    minps {{[0-9]+}}(%rsp), %xmm0
-; SSE-NEXT:    minps {{[0-9]+}}(%rsp), %xmm1
-; SSE-NEXT:    minps {{[0-9]+}}(%rsp), %xmm2
-; SSE-NEXT:    minps {{[0-9]+}}(%rsp), %xmm3
+; SSE-NEXT:    movaps {{[0-9]+}}(%rsp), %xmm4
+; SSE-NEXT:    minps %xmm3, %xmm4
+; SSE-NEXT:    movaps {{[0-9]+}}(%rsp), %xmm3
+; SSE-NEXT:    minps %xmm2, %xmm3
+; SSE-NEXT:    movaps {{[0-9]+}}(%rsp), %xmm2
+; SSE-NEXT:    minps %xmm1, %xmm2
+; SSE-NEXT:    movaps {{[0-9]+}}(%rsp), %xmm1
+; SSE-NEXT:    minps %xmm0, %xmm1
+; SSE-NEXT:    movaps {{[0-9]+}}(%rsp), %xmm0
+; SSE-NEXT:    minps %xmm1, %xmm0
+; SSE-NEXT:    movaps {{[0-9]+}}(%rsp), %xmm1
+; SSE-NEXT:    minps %xmm2, %xmm1
+; SSE-NEXT:    movaps {{[0-9]+}}(%rsp), %xmm2
+; SSE-NEXT:    minps %xmm3, %xmm2
+; SSE-NEXT:    movaps {{[0-9]+}}(%rsp), %xmm3
+; SSE-NEXT:    minps %xmm4, %xmm3
 ; SSE-NEXT:    retq
 ;
 ; AVX1-LABEL: reassociate_mins_v16f32:
@@ -944,14 +1021,22 @@ define <16 x float> @reassociate_maxs_v16f32(<16 x float> %x0, <16 x float> %x1,
 ; SSE-NEXT:    addps %xmm5, %xmm1
 ; SSE-NEXT:    addps %xmm6, %xmm2
 ; SSE-NEXT:    addps %xmm7, %xmm3
-; SSE-NEXT:    maxps {{[0-9]+}}(%rsp), %xmm3
-; SSE-NEXT:    maxps {{[0-9]+}}(%rsp), %xmm2
-; SSE-NEXT:    maxps {{[0-9]+}}(%rsp), %xmm1
-; SSE-NEXT:    maxps {{[0-9]+}}(%rsp), %xmm0
-; SSE-NEXT:    maxps {{[0-9]+}}(%rsp), %xmm0
-; SSE-NEXT:    maxps {{[0-9]+}}(%rsp), %xmm1
-; SSE-NEXT:    maxps {{[0-9]+}}(%rsp), %xmm2
-; SSE-NEXT:    maxps {{[0-9]+}}(%rsp), %xmm3
+; SSE-NEXT:    movaps {{[0-9]+}}(%rsp), %xmm4
+; SSE-NEXT:    maxps %xmm3, %xmm4
+; SSE-NEXT:    movaps {{[0-9]+}}(%rsp), %xmm3
+; SSE-NEXT:    maxps %xmm2, %xmm3
+; SSE-NEXT:    movaps {{[0-9]+}}(%rsp), %xmm2
+; SSE-NEXT:    maxps %xmm1, %xmm2
+; SSE-NEXT:    movaps {{[0-9]+}}(%rsp), %xmm1
+; SSE-NEXT:    maxps %xmm0, %xmm1
+; SSE-NEXT:    movaps {{[0-9]+}}(%rsp), %xmm0
+; SSE-NEXT:    maxps %xmm1, %xmm0
+; SSE-NEXT:    movaps {{[0-9]+}}(%rsp), %xmm1
+; SSE-NEXT:    maxps %xmm2, %xmm1
+; SSE-NEXT:    movaps {{[0-9]+}}(%rsp), %xmm2
+; SSE-NEXT:    maxps %xmm3, %xmm2
+; SSE-NEXT:    movaps {{[0-9]+}}(%rsp), %xmm3
+; SSE-NEXT:    maxps %xmm4, %xmm3
 ; SSE-NEXT:    retq
 ;
 ; AVX1-LABEL: reassociate_maxs_v16f32:
@@ -987,14 +1072,22 @@ define <8 x double> @reassociate_mins_v8f64(<8 x double> %x0, <8 x double> %x1, 
 ; SSE-NEXT:    addpd %xmm5, %xmm1
 ; SSE-NEXT:    addpd %xmm6, %xmm2
 ; SSE-NEXT:    addpd %xmm7, %xmm3
-; SSE-NEXT:    minpd {{[0-9]+}}(%rsp), %xmm3
-; SSE-NEXT:    minpd {{[0-9]+}}(%rsp), %xmm2
-; SSE-NEXT:    minpd {{[0-9]+}}(%rsp), %xmm1
-; SSE-NEXT:    minpd {{[0-9]+}}(%rsp), %xmm0
-; SSE-NEXT:    minpd {{[0-9]+}}(%rsp), %xmm0
-; SSE-NEXT:    minpd {{[0-9]+}}(%rsp), %xmm1
-; SSE-NEXT:    minpd {{[0-9]+}}(%rsp), %xmm2
-; SSE-NEXT:    minpd {{[0-9]+}}(%rsp), %xmm3
+; SSE-NEXT:    movapd {{[0-9]+}}(%rsp), %xmm4
+; SSE-NEXT:    minpd %xmm3, %xmm4
+; SSE-NEXT:    movapd {{[0-9]+}}(%rsp), %xmm3
+; SSE-NEXT:    minpd %xmm2, %xmm3
+; SSE-NEXT:    movapd {{[0-9]+}}(%rsp), %xmm2
+; SSE-NEXT:    minpd %xmm1, %xmm2
+; SSE-NEXT:    movapd {{[0-9]+}}(%rsp), %xmm1
+; SSE-NEXT:    minpd %xmm0, %xmm1
+; SSE-NEXT:    movapd {{[0-9]+}}(%rsp), %xmm0
+; SSE-NEXT:    minpd %xmm1, %xmm0
+; SSE-NEXT:    movapd {{[0-9]+}}(%rsp), %xmm1
+; SSE-NEXT:    minpd %xmm2, %xmm1
+; SSE-NEXT:    movapd {{[0-9]+}}(%rsp), %xmm2
+; SSE-NEXT:    minpd %xmm3, %xmm2
+; SSE-NEXT:    movapd {{[0-9]+}}(%rsp), %xmm3
+; SSE-NEXT:    minpd %xmm4, %xmm3
 ; SSE-NEXT:    retq
 ;
 ; AVX1-LABEL: reassociate_mins_v8f64:
@@ -1030,14 +1123,22 @@ define <8 x double> @reassociate_maxs_v8f64(<8 x double> %x0, <8 x double> %x1, 
 ; SSE-NEXT:    addpd %xmm5, %xmm1
 ; SSE-NEXT:    addpd %xmm6, %xmm2
 ; SSE-NEXT:    addpd %xmm7, %xmm3
-; SSE-NEXT:    maxpd {{[0-9]+}}(%rsp), %xmm3
-; SSE-NEXT:    maxpd {{[0-9]+}}(%rsp), %xmm2
-; SSE-NEXT:    maxpd {{[0-9]+}}(%rsp), %xmm1
-; SSE-NEXT:    maxpd {{[0-9]+}}(%rsp), %xmm0
-; SSE-NEXT:    maxpd {{[0-9]+}}(%rsp), %xmm0
-; SSE-NEXT:    maxpd {{[0-9]+}}(%rsp), %xmm1
-; SSE-NEXT:    maxpd {{[0-9]+}}(%rsp), %xmm2
-; SSE-NEXT:    maxpd {{[0-9]+}}(%rsp), %xmm3
+; SSE-NEXT:    movapd {{[0-9]+}}(%rsp), %xmm4
+; SSE-NEXT:    maxpd %xmm3, %xmm4
+; SSE-NEXT:    movapd {{[0-9]+}}(%rsp), %xmm3
+; SSE-NEXT:    maxpd %xmm2, %xmm3
+; SSE-NEXT:    movapd {{[0-9]+}}(%rsp), %xmm2
+; SSE-NEXT:    maxpd %xmm1, %xmm2
+; SSE-NEXT:    movapd {{[0-9]+}}(%rsp), %xmm1
+; SSE-NEXT:    maxpd %xmm0, %xmm1
+; SSE-NEXT:    movapd {{[0-9]+}}(%rsp), %xmm0
+; SSE-NEXT:    maxpd %xmm1, %xmm0
+; SSE-NEXT:    movapd {{[0-9]+}}(%rsp), %xmm1
+; SSE-NEXT:    maxpd %xmm2, %xmm1
+; SSE-NEXT:    movapd {{[0-9]+}}(%rsp), %xmm2
+; SSE-NEXT:    maxpd %xmm3, %xmm2
+; SSE-NEXT:    movapd {{[0-9]+}}(%rsp), %xmm3
+; SSE-NEXT:    maxpd %xmm4, %xmm3
 ; SSE-NEXT:    retq
 ;
 ; AVX1-LABEL: reassociate_maxs_v8f64:
@@ -1084,8 +1185,11 @@ define double @reassociate_adds_from_calls() {
 ; SSE-NEXT:    movsd {{[-0-9]+}}(%r{{[sb]}}p), %xmm1 # 8-byte Reload
 ; SSE-NEXT:    # xmm1 = mem[0],zero
 ; SSE-NEXT:    addsd {{[-0-9]+}}(%r{{[sb]}}p), %xmm1 # 8-byte Folded Reload
-; SSE-NEXT:    addsd (%rsp), %xmm0 # 8-byte Folded Reload
-; SSE-NEXT:    addsd %xmm1, %xmm0
+; SSE-NEXT:    movsd (%rsp), %xmm2 # 8-byte Reload
+; SSE-NEXT:    # xmm2 = mem[0],zero
+; SSE-NEXT:    addsd %xmm0, %xmm2
+; SSE-NEXT:    addsd %xmm1, %xmm2
+; SSE-NEXT:    movapd %xmm2, %xmm0
 ; SSE-NEXT:    addq $24, %rsp
 ; SSE-NEXT:    .cfi_def_cfa_offset 8
 ; SSE-NEXT:    retq
@@ -1135,8 +1239,11 @@ define double @already_reassociated() {
 ; SSE-NEXT:    movsd {{[-0-9]+}}(%r{{[sb]}}p), %xmm1 # 8-byte Reload
 ; SSE-NEXT:    # xmm1 = mem[0],zero
 ; SSE-NEXT:    addsd {{[-0-9]+}}(%r{{[sb]}}p), %xmm1 # 8-byte Folded Reload
-; SSE-NEXT:    addsd (%rsp), %xmm0 # 8-byte Folded Reload
-; SSE-NEXT:    addsd %xmm1, %xmm0
+; SSE-NEXT:    movsd (%rsp), %xmm2 # 8-byte Reload
+; SSE-NEXT:    # xmm2 = mem[0],zero
+; SSE-NEXT:    addsd %xmm0, %xmm2
+; SSE-NEXT:    addsd %xmm1, %xmm2
+; SSE-NEXT:    movapd %xmm2, %xmm0
 ; SSE-NEXT:    addq $24, %rsp
 ; SSE-NEXT:    .cfi_def_cfa_offset 8
 ; SSE-NEXT:    retq

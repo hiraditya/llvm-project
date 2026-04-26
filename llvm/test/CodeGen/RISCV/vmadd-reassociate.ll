@@ -21,8 +21,9 @@ define <8 x i32> @vmadd_non_constant(<8 x i32> %m00, <8 x i32> %m01, <8 x i32> %
 ; CHECK-LABEL: vmadd_non_constant:
 ; CHECK:       # %bb.0: # %entry
 ; CHECK-NEXT:    vsetivli zero, 8, e32, m2, ta, ma
-; CHECK-NEXT:    vmadd.vv v8, v10, v16
-; CHECK-NEXT:    vmacc.vv v8, v14, v12
+; CHECK-NEXT:    vmadd.vv v10, v8, v16
+; CHECK-NEXT:    vmacc.vv v10, v12, v14
+; CHECK-NEXT:    vmv.v.v v8, v10
 ; CHECK-NEXT:    ret
 entry:
   %mul0 = mul <8 x i32> %m00, %m01
@@ -38,7 +39,8 @@ define <vscale x 1 x i32> @vmadd_vscale_no_chain(<vscale x 1 x i32> %m00, <vscal
 ; CHECK-NEXT:    li a0, 32
 ; CHECK-NEXT:    vsetvli a1, zero, e32, mf2, ta, ma
 ; CHECK-NEXT:    vmv.v.x v10, a0
-; CHECK-NEXT:    vmadd.vv v8, v9, v10
+; CHECK-NEXT:    vmacc.vv v10, v8, v9
+; CHECK-NEXT:    vmv1r.v v8, v10
 ; CHECK-NEXT:    ret
 entry:
   %mul = mul <vscale x 1 x i32> %m00, %m01
@@ -52,7 +54,8 @@ define <8 x i32> @vmadd_fixed_no_chain(<8 x i32> %m00, <8 x i32> %m01) {
 ; CHECK-NEXT:    li a0, 32
 ; CHECK-NEXT:    vsetivli zero, 8, e32, m2, ta, ma
 ; CHECK-NEXT:    vmv.v.x v12, a0
-; CHECK-NEXT:    vmadd.vv v8, v10, v12
+; CHECK-NEXT:    vmacc.vv v12, v8, v10
+; CHECK-NEXT:    vmv.v.v v8, v12
 ; CHECK-NEXT:    ret
 entry:
   %mul = mul <8 x i32> %m00, %m01
@@ -66,8 +69,9 @@ define <vscale x 1 x i32> @vmadd_vscale(<vscale x 1 x i32> %m00, <vscale x 1 x i
 ; CHECK-NEXT:    li a0, 32
 ; CHECK-NEXT:    vsetvli a1, zero, e32, mf2, ta, ma
 ; CHECK-NEXT:    vmv.v.x v12, a0
-; CHECK-NEXT:    vmadd.vv v8, v9, v12
-; CHECK-NEXT:    vmacc.vv v8, v11, v10
+; CHECK-NEXT:    vmacc.vv v12, v8, v9
+; CHECK-NEXT:    vmacc.vv v12, v10, v11
+; CHECK-NEXT:    vmv1r.v v8, v12
 ; CHECK-NEXT:    ret
 entry:
   %mul0 = mul <vscale x 1 x i32> %m00, %m01
@@ -83,8 +87,9 @@ define <8 x i32> @vmadd_fixed(<8 x i32> %m00, <8 x i32> %m01, <8 x i32> %m10, <8
 ; CHECK-NEXT:    li a0, 32
 ; CHECK-NEXT:    vsetivli zero, 8, e32, m2, ta, ma
 ; CHECK-NEXT:    vmv.v.x v16, a0
-; CHECK-NEXT:    vmadd.vv v8, v10, v16
-; CHECK-NEXT:    vmacc.vv v8, v14, v12
+; CHECK-NEXT:    vmacc.vv v16, v8, v10
+; CHECK-NEXT:    vmacc.vv v16, v12, v14
+; CHECK-NEXT:    vmv.v.v v8, v16
 ; CHECK-NEXT:    ret
 entry:
   %mul0 = mul <8 x i32> %m00, %m01
@@ -100,10 +105,11 @@ define <vscale x 1 x i32> @vmadd_vscale_long(<vscale x 1 x i32> %m00, <vscale x 
 ; CHECK-NEXT:    li a0, 32
 ; CHECK-NEXT:    vsetvli a1, zero, e32, mf2, ta, ma
 ; CHECK-NEXT:    vmv.v.x v16, a0
-; CHECK-NEXT:    vmadd.vv v8, v9, v16
-; CHECK-NEXT:    vmacc.vv v8, v11, v10
-; CHECK-NEXT:    vmacc.vv v8, v13, v12
-; CHECK-NEXT:    vmacc.vv v8, v15, v14
+; CHECK-NEXT:    vmacc.vv v16, v8, v9
+; CHECK-NEXT:    vmacc.vv v16, v10, v11
+; CHECK-NEXT:    vmacc.vv v16, v12, v13
+; CHECK-NEXT:    vmacc.vv v16, v14, v15
+; CHECK-NEXT:    vmv1r.v v8, v16
 ; CHECK-NEXT:    ret
                                              <vscale x 1 x i32> %m20, <vscale x 1 x i32> %m21, <vscale x 1 x i32> %m30, <vscale x 1 x i32> %m31) {
 entry:
@@ -124,10 +130,11 @@ define <8 x i32> @vmadd_fixed_long(<8 x i32> %m00, <8 x i32> %m01, <8 x i32> %m1
 ; CHECK-NEXT:    li a0, 32
 ; CHECK-NEXT:    vsetivli zero, 8, e32, m2, ta, ma
 ; CHECK-NEXT:    vmv.v.x v24, a0
-; CHECK-NEXT:    vmadd.vv v8, v10, v24
-; CHECK-NEXT:    vmacc.vv v8, v14, v12
-; CHECK-NEXT:    vmacc.vv v8, v18, v16
-; CHECK-NEXT:    vmacc.vv v8, v22, v20
+; CHECK-NEXT:    vmacc.vv v24, v8, v10
+; CHECK-NEXT:    vmacc.vv v24, v12, v14
+; CHECK-NEXT:    vmacc.vv v24, v16, v18
+; CHECK-NEXT:    vmacc.vv v24, v20, v22
+; CHECK-NEXT:    vmv.v.v v8, v24
 ; CHECK-NEXT:    ret
                                    <8 x i32> %m20, <8 x i32> %m21, <8 x i32> %m30, <8 x i32> %m31) {
 entry:

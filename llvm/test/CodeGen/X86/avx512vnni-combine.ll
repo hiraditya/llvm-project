@@ -72,14 +72,14 @@ define <8 x i64> @foo_512(i32 %0, <8 x i64> %1, <8 x i64> %2, ptr %3) {
 ; CHECK-NEXT:    je .LBB1_6
 ; CHECK-NEXT:  # %bb.4: # %.preheader
 ; CHECK-NEXT:    shlq $6, %rcx
-; CHECK-NEXT:    addq %rcx, %rsi
+; CHECK-NEXT:    addq %rsi, %rcx
 ; CHECK-NEXT:    shll $6, %eax
-; CHECK-NEXT:    xorl %ecx, %ecx
+; CHECK-NEXT:    xorl %edx, %edx
 ; CHECK-NEXT:    .p2align 4
 ; CHECK-NEXT:  .LBB1_5: # =>This Inner Loop Header: Depth=1
-; CHECK-NEXT:    vpdpwssd (%rsi,%rcx), %zmm1, %zmm0
-; CHECK-NEXT:    addq $64, %rcx
-; CHECK-NEXT:    cmpq %rcx, %rax
+; CHECK-NEXT:    vpdpwssd (%rcx,%rdx), %zmm1, %zmm0
+; CHECK-NEXT:    addq $64, %rdx
+; CHECK-NEXT:    cmpq %rdx, %rax
 ; CHECK-NEXT:    jne .LBB1_5
 ; CHECK-NEXT:  .LBB1_6:
 ; CHECK-NEXT:    retq
@@ -189,7 +189,7 @@ define void @bar_512(i32 %0, ptr %1, <8 x i64> %2, ptr %3) {
 ; CHECK-NEXT:    vpaddd %zmm2, %zmm1, %zmm1
 ; CHECK-NEXT:    vmovdqa64 %zmm1, (%rsi,%r8)
 ; CHECK-NEXT:    addq $2, %rcx
-; CHECK-NEXT:    subq $-128, %r8
+; CHECK-NEXT:    addq $128, %r8
 ; CHECK-NEXT:    cmpq %rcx, %rdi
 ; CHECK-NEXT:    jne .LBB2_7
 ; CHECK-NEXT:  .LBB2_3:

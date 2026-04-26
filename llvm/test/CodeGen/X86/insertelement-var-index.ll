@@ -1009,17 +1009,17 @@ define <2 x i64> @arg_i64_v2i64(<2 x i64> %v, i64 %x, i32 %y) nounwind {
 ; X86AVX2-NEXT:    pushl %esi
 ; X86AVX2-NEXT:    andl $-16, %esp
 ; X86AVX2-NEXT:    subl $48, %esp
-; X86AVX2-NEXT:    movl 16(%ebp), %eax
-; X86AVX2-NEXT:    movl 8(%ebp), %ecx
-; X86AVX2-NEXT:    movl 12(%ebp), %edx
+; X86AVX2-NEXT:    movl 16(%ebp), %ecx
+; X86AVX2-NEXT:    movl 8(%ebp), %edx
+; X86AVX2-NEXT:    movl 12(%ebp), %eax
 ; X86AVX2-NEXT:    vmovaps %xmm0, (%esp)
-; X86AVX2-NEXT:    leal 1(%eax,%eax), %esi
-; X86AVX2-NEXT:    andl $1, %eax
-; X86AVX2-NEXT:    movl %ecx, (%esp,%eax,8)
+; X86AVX2-NEXT:    leal 1(%ecx,%ecx), %esi
+; X86AVX2-NEXT:    andl $1, %ecx
+; X86AVX2-NEXT:    movl %edx, (%esp,%ecx,8)
 ; X86AVX2-NEXT:    vmovaps (%esp), %xmm0
 ; X86AVX2-NEXT:    vmovaps %xmm0, {{[0-9]+}}(%esp)
 ; X86AVX2-NEXT:    andl $3, %esi
-; X86AVX2-NEXT:    movl %edx, 16(%esp,%esi,4)
+; X86AVX2-NEXT:    movl %eax, 16(%esp,%esi,4)
 ; X86AVX2-NEXT:    vmovaps {{[0-9]+}}(%esp), %xmm0
 ; X86AVX2-NEXT:    leal -4(%ebp), %esp
 ; X86AVX2-NEXT:    popl %esi
@@ -1044,8 +1044,9 @@ define <4 x float> @arg_f32_v4f32(<4 x float> %v, float %x, i32 %y) nounwind {
 ; SSE41-NEXT:    movaps %xmm0, %xmm2
 ; SSE41-NEXT:    shufps {{.*#+}} xmm1 = xmm1[0,0,0,0]
 ; SSE41-NEXT:    movd %edi, %xmm0
-; SSE41-NEXT:    pshufd {{.*#+}} xmm0 = xmm0[0,0,0,0]
-; SSE41-NEXT:    pcmpeqd {{\.?LCPI[0-9]+_[0-9]+}}(%rip), %xmm0
+; SSE41-NEXT:    pshufd {{.*#+}} xmm3 = xmm0[0,0,0,0]
+; SSE41-NEXT:    pmovsxbd {{.*#+}} xmm0 = [0,1,2,3]
+; SSE41-NEXT:    pcmpeqd %xmm3, %xmm0
 ; SSE41-NEXT:    blendvps %xmm0, %xmm1, %xmm2
 ; SSE41-NEXT:    movaps %xmm2, %xmm0
 ; SSE41-NEXT:    retq
@@ -1101,8 +1102,9 @@ define <2 x double> @arg_f64_v2f64(<2 x double> %v, double %x, i32 %y) nounwind 
 ; SSE41-NEXT:    movapd %xmm0, %xmm2
 ; SSE41-NEXT:    movddup {{.*#+}} xmm1 = xmm1[0,0]
 ; SSE41-NEXT:    movd %edi, %xmm0
-; SSE41-NEXT:    pshufd {{.*#+}} xmm0 = xmm0[0,1,0,1]
-; SSE41-NEXT:    pcmpeqq {{\.?LCPI[0-9]+_[0-9]+}}(%rip), %xmm0
+; SSE41-NEXT:    pshufd {{.*#+}} xmm3 = xmm0[0,1,0,1]
+; SSE41-NEXT:    pmovsxbq {{.*#+}} xmm0 = [0,1]
+; SSE41-NEXT:    pcmpeqq %xmm3, %xmm0
 ; SSE41-NEXT:    blendvpd %xmm0, %xmm1, %xmm2
 ; SSE41-NEXT:    movapd %xmm2, %xmm0
 ; SSE41-NEXT:    retq
@@ -1296,7 +1298,7 @@ define <4 x i32> @load_i32_v4i32(<4 x i32> %v, ptr %p, i32 %y) nounwind {
 ; AVX512:       # %bb.0:
 ; AVX512-NEXT:    vpbroadcastd %esi, %xmm1
 ; AVX512-NEXT:    vpcmpeqd {{\.?LCPI[0-9]+_[0-9]+}}(%rip), %xmm1, %k1
-; AVX512-NEXT:    vpbroadcastd (%rdi), %xmm0 {%k1}
+; AVX512-NEXT:    vpblendmd (%rdi){1to4}, %xmm0, %xmm0 {%k1}
 ; AVX512-NEXT:    retq
 ;
 ; X86AVX2-LABEL: load_i32_v4i32:
@@ -1346,7 +1348,7 @@ define <2 x i64> @load_i64_v2i64(<2 x i64> %v, ptr %p, i32 %y) nounwind {
 ; AVX512-NEXT:    movl %esi, %eax
 ; AVX512-NEXT:    vpbroadcastq %rax, %xmm1
 ; AVX512-NEXT:    vpcmpeqq {{\.?LCPI[0-9]+_[0-9]+}}(%rip), %xmm1, %k1
-; AVX512-NEXT:    vpbroadcastq (%rdi), %xmm0 {%k1}
+; AVX512-NEXT:    vpblendmq (%rdi){1to2}, %xmm0, %xmm0 {%k1}
 ; AVX512-NEXT:    retq
 ;
 ; X86AVX2-LABEL: load_i64_v2i64:
@@ -1356,18 +1358,18 @@ define <2 x i64> @load_i64_v2i64(<2 x i64> %v, ptr %p, i32 %y) nounwind {
 ; X86AVX2-NEXT:    pushl %esi
 ; X86AVX2-NEXT:    andl $-16, %esp
 ; X86AVX2-NEXT:    subl $48, %esp
-; X86AVX2-NEXT:    movl 12(%ebp), %eax
-; X86AVX2-NEXT:    movl 8(%ebp), %ecx
-; X86AVX2-NEXT:    movl (%ecx), %edx
-; X86AVX2-NEXT:    movl 4(%ecx), %ecx
+; X86AVX2-NEXT:    movl 12(%ebp), %ecx
+; X86AVX2-NEXT:    movl 8(%ebp), %eax
+; X86AVX2-NEXT:    movl (%eax), %edx
+; X86AVX2-NEXT:    movl 4(%eax), %eax
 ; X86AVX2-NEXT:    vmovaps %xmm0, (%esp)
-; X86AVX2-NEXT:    leal 1(%eax,%eax), %esi
-; X86AVX2-NEXT:    andl $1, %eax
-; X86AVX2-NEXT:    movl %edx, (%esp,%eax,8)
+; X86AVX2-NEXT:    leal 1(%ecx,%ecx), %esi
+; X86AVX2-NEXT:    andl $1, %ecx
+; X86AVX2-NEXT:    movl %edx, (%esp,%ecx,8)
 ; X86AVX2-NEXT:    vmovaps (%esp), %xmm0
 ; X86AVX2-NEXT:    vmovaps %xmm0, {{[0-9]+}}(%esp)
 ; X86AVX2-NEXT:    andl $3, %esi
-; X86AVX2-NEXT:    movl %ecx, 16(%esp,%esi,4)
+; X86AVX2-NEXT:    movl %eax, 16(%esp,%esi,4)
 ; X86AVX2-NEXT:    vmovaps {{[0-9]+}}(%esp), %xmm0
 ; X86AVX2-NEXT:    leal -4(%ebp), %esp
 ; X86AVX2-NEXT:    popl %esi
@@ -1395,8 +1397,9 @@ define <4 x float> @load_f32_v4f32(<4 x float> %v, ptr %p, i32 %y) nounwind {
 ; SSE41-NEXT:    movss {{.*#+}} xmm2 = mem[0],zero,zero,zero
 ; SSE41-NEXT:    shufps {{.*#+}} xmm2 = xmm2[0,0,0,0]
 ; SSE41-NEXT:    movd %esi, %xmm0
-; SSE41-NEXT:    pshufd {{.*#+}} xmm0 = xmm0[0,0,0,0]
-; SSE41-NEXT:    pcmpeqd {{\.?LCPI[0-9]+_[0-9]+}}(%rip), %xmm0
+; SSE41-NEXT:    pshufd {{.*#+}} xmm3 = xmm0[0,0,0,0]
+; SSE41-NEXT:    pmovsxbd {{.*#+}} xmm0 = [0,1,2,3]
+; SSE41-NEXT:    pcmpeqd %xmm3, %xmm0
 ; SSE41-NEXT:    blendvps %xmm0, %xmm2, %xmm1
 ; SSE41-NEXT:    movaps %xmm1, %xmm0
 ; SSE41-NEXT:    retq
@@ -1423,7 +1426,7 @@ define <4 x float> @load_f32_v4f32(<4 x float> %v, ptr %p, i32 %y) nounwind {
 ; AVX512:       # %bb.0:
 ; AVX512-NEXT:    vpbroadcastd %esi, %xmm1
 ; AVX512-NEXT:    vpcmpeqd {{\.?LCPI[0-9]+_[0-9]+}}(%rip), %xmm1, %k1
-; AVX512-NEXT:    vbroadcastss (%rdi), %xmm0 {%k1}
+; AVX512-NEXT:    vblendmps (%rdi){1to4}, %xmm0, %xmm0 {%k1}
 ; AVX512-NEXT:    retq
 ;
 ; X86AVX2-LABEL: load_f32_v4f32:
@@ -1455,8 +1458,9 @@ define <2 x double> @load_f64_v2f64(<2 x double> %v, ptr %p, i32 %y) nounwind {
 ; SSE41-NEXT:    movapd %xmm0, %xmm1
 ; SSE41-NEXT:    movddup {{.*#+}} xmm2 = mem[0,0]
 ; SSE41-NEXT:    movd %esi, %xmm0
-; SSE41-NEXT:    pshufd {{.*#+}} xmm0 = xmm0[0,1,0,1]
-; SSE41-NEXT:    pcmpeqq {{\.?LCPI[0-9]+_[0-9]+}}(%rip), %xmm0
+; SSE41-NEXT:    pshufd {{.*#+}} xmm3 = xmm0[0,1,0,1]
+; SSE41-NEXT:    pmovsxbq {{.*#+}} xmm0 = [0,1]
+; SSE41-NEXT:    pcmpeqq %xmm3, %xmm0
 ; SSE41-NEXT:    blendvpd %xmm0, %xmm2, %xmm1
 ; SSE41-NEXT:    movapd %xmm1, %xmm0
 ; SSE41-NEXT:    retq
@@ -1740,17 +1744,17 @@ define <4 x i64> @arg_i64_v4i64(<4 x i64> %v, i64 %x, i32 %y) nounwind {
 ; X86AVX2-NEXT:    pushl %esi
 ; X86AVX2-NEXT:    andl $-32, %esp
 ; X86AVX2-NEXT:    subl $96, %esp
-; X86AVX2-NEXT:    movl 16(%ebp), %eax
-; X86AVX2-NEXT:    movl 8(%ebp), %ecx
-; X86AVX2-NEXT:    movl 12(%ebp), %edx
+; X86AVX2-NEXT:    movl 16(%ebp), %ecx
+; X86AVX2-NEXT:    movl 8(%ebp), %edx
+; X86AVX2-NEXT:    movl 12(%ebp), %eax
 ; X86AVX2-NEXT:    vmovaps %ymm0, (%esp)
-; X86AVX2-NEXT:    leal 1(%eax,%eax), %esi
-; X86AVX2-NEXT:    andl $3, %eax
-; X86AVX2-NEXT:    movl %ecx, (%esp,%eax,8)
+; X86AVX2-NEXT:    leal 1(%ecx,%ecx), %esi
+; X86AVX2-NEXT:    andl $3, %ecx
+; X86AVX2-NEXT:    movl %edx, (%esp,%ecx,8)
 ; X86AVX2-NEXT:    vmovaps (%esp), %ymm0
 ; X86AVX2-NEXT:    vmovaps %ymm0, {{[0-9]+}}(%esp)
 ; X86AVX2-NEXT:    andl $7, %esi
-; X86AVX2-NEXT:    movl %edx, 32(%esp,%esi,4)
+; X86AVX2-NEXT:    movl %eax, 32(%esp,%esi,4)
 ; X86AVX2-NEXT:    vmovaps {{[0-9]+}}(%esp), %ymm0
 ; X86AVX2-NEXT:    leal -4(%ebp), %esp
 ; X86AVX2-NEXT:    popl %esi
@@ -2052,7 +2056,7 @@ define <8 x i32> @load_i32_v8i32(<8 x i32> %v, ptr %p, i32 %y) nounwind {
 ; AVX512:       # %bb.0:
 ; AVX512-NEXT:    vpbroadcastd %esi, %ymm1
 ; AVX512-NEXT:    vpcmpeqd {{\.?LCPI[0-9]+_[0-9]+}}(%rip), %ymm1, %k1
-; AVX512-NEXT:    vpbroadcastd (%rdi), %ymm0 {%k1}
+; AVX512-NEXT:    vpblendmd (%rdi){1to8}, %ymm0, %ymm0 {%k1}
 ; AVX512-NEXT:    retq
 ;
 ; X86AVX2-LABEL: load_i32_v8i32:
@@ -2110,7 +2114,7 @@ define <4 x i64> @load_i64_v4i64(<4 x i64> %v, ptr %p, i32 %y) nounwind {
 ; AVX512-NEXT:    movl %esi, %eax
 ; AVX512-NEXT:    vpbroadcastq %rax, %ymm1
 ; AVX512-NEXT:    vpcmpeqq {{\.?LCPI[0-9]+_[0-9]+}}(%rip), %ymm1, %k1
-; AVX512-NEXT:    vpbroadcastq (%rdi), %ymm0 {%k1}
+; AVX512-NEXT:    vpblendmq (%rdi){1to4}, %ymm0, %ymm0 {%k1}
 ; AVX512-NEXT:    retq
 ;
 ; X86AVX2-LABEL: load_i64_v4i64:
@@ -2120,18 +2124,18 @@ define <4 x i64> @load_i64_v4i64(<4 x i64> %v, ptr %p, i32 %y) nounwind {
 ; X86AVX2-NEXT:    pushl %esi
 ; X86AVX2-NEXT:    andl $-32, %esp
 ; X86AVX2-NEXT:    subl $96, %esp
-; X86AVX2-NEXT:    movl 12(%ebp), %eax
-; X86AVX2-NEXT:    movl 8(%ebp), %ecx
-; X86AVX2-NEXT:    movl (%ecx), %edx
-; X86AVX2-NEXT:    movl 4(%ecx), %ecx
+; X86AVX2-NEXT:    movl 12(%ebp), %ecx
+; X86AVX2-NEXT:    movl 8(%ebp), %eax
+; X86AVX2-NEXT:    movl (%eax), %edx
+; X86AVX2-NEXT:    movl 4(%eax), %eax
 ; X86AVX2-NEXT:    vmovaps %ymm0, (%esp)
-; X86AVX2-NEXT:    leal 1(%eax,%eax), %esi
-; X86AVX2-NEXT:    andl $3, %eax
-; X86AVX2-NEXT:    movl %edx, (%esp,%eax,8)
+; X86AVX2-NEXT:    leal 1(%ecx,%ecx), %esi
+; X86AVX2-NEXT:    andl $3, %ecx
+; X86AVX2-NEXT:    movl %edx, (%esp,%ecx,8)
 ; X86AVX2-NEXT:    vmovaps (%esp), %ymm0
 ; X86AVX2-NEXT:    vmovaps %ymm0, {{[0-9]+}}(%esp)
 ; X86AVX2-NEXT:    andl $7, %esi
-; X86AVX2-NEXT:    movl %ecx, 32(%esp,%esi,4)
+; X86AVX2-NEXT:    movl %eax, 32(%esp,%esi,4)
 ; X86AVX2-NEXT:    vmovaps {{[0-9]+}}(%esp), %ymm0
 ; X86AVX2-NEXT:    leal -4(%ebp), %esp
 ; X86AVX2-NEXT:    popl %esi
@@ -2179,7 +2183,7 @@ define <8 x float> @load_f32_v8f32(<8 x float> %v, ptr %p, i32 %y) nounwind {
 ; AVX512:       # %bb.0:
 ; AVX512-NEXT:    vpbroadcastd %esi, %ymm1
 ; AVX512-NEXT:    vpcmpeqd {{\.?LCPI[0-9]+_[0-9]+}}(%rip), %ymm1, %k1
-; AVX512-NEXT:    vbroadcastss (%rdi), %ymm0 {%k1}
+; AVX512-NEXT:    vblendmps (%rdi){1to8}, %ymm0, %ymm0 {%k1}
 ; AVX512-NEXT:    retq
 ;
 ; X86AVX2-LABEL: load_f32_v8f32:
@@ -2235,7 +2239,7 @@ define <4 x double> @load_f64_v4f64(<4 x double> %v, ptr %p, i32 %y) nounwind {
 ; AVX512-NEXT:    movl %esi, %eax
 ; AVX512-NEXT:    vpbroadcastq %rax, %ymm1
 ; AVX512-NEXT:    vpcmpeqq {{\.?LCPI[0-9]+_[0-9]+}}(%rip), %ymm1, %k1
-; AVX512-NEXT:    vbroadcastsd (%rdi), %ymm0 {%k1}
+; AVX512-NEXT:    vblendmpd (%rdi){1to4}, %ymm0, %ymm0 {%k1}
 ; AVX512-NEXT:    retq
 ;
 ; X86AVX2-LABEL: load_f64_v4f64:

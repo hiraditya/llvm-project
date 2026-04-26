@@ -3549,8 +3549,8 @@ define i64 @cmp(i64 %a, i64 %b, fp128 %x, fp128 %y) #0 {
 ; ANDROID-NEXT:    movq %rdi, %r14
 ; ANDROID-NEXT:    callq __eqtf2@PLT
 ; ANDROID-NEXT:    testl %eax, %eax
-; ANDROID-NEXT:    cmovneq %rbx, %r14
-; ANDROID-NEXT:    movq %r14, %rax
+; ANDROID-NEXT:    cmoveq %r14, %rbx
+; ANDROID-NEXT:    movq %rbx, %rax
 ; ANDROID-NEXT:    addq $8, %rsp
 ; ANDROID-NEXT:    popq %rbx
 ; ANDROID-NEXT:    popq %r14
@@ -3565,8 +3565,8 @@ define i64 @cmp(i64 %a, i64 %b, fp128 %x, fp128 %y) #0 {
 ; GNU-NEXT:    movq %rdi, %r14
 ; GNU-NEXT:    callq __eqtf2@PLT
 ; GNU-NEXT:    testl %eax, %eax
-; GNU-NEXT:    cmovneq %rbx, %r14
-; GNU-NEXT:    movq %r14, %rax
+; GNU-NEXT:    cmoveq %r14, %rbx
+; GNU-NEXT:    movq %rbx, %rax
 ; GNU-NEXT:    addq $8, %rsp
 ; GNU-NEXT:    popq %rbx
 ; GNU-NEXT:    popq %r14
@@ -3586,9 +3586,9 @@ define i64 @cmp(i64 %a, i64 %b, fp128 %x, fp128 %y) #0 {
 ; X86-NEXT:    calll __eqtf2
 ; X86-NEXT:    addl $32, %esp
 ; X86-NEXT:    testl %eax, %eax
-; X86-NEXT:    leal {{[0-9]+}}(%esp), %eax
 ; X86-NEXT:    leal {{[0-9]+}}(%esp), %ecx
-; X86-NEXT:    cmovel %eax, %ecx
+; X86-NEXT:    leal {{[0-9]+}}(%esp), %eax
+; X86-NEXT:    cmovnel %eax, %ecx
 ; X86-NEXT:    movl (%ecx), %eax
 ; X86-NEXT:    movl 4(%ecx), %edx
 ; X86-NEXT:    addl $12, %esp
@@ -3609,8 +3609,8 @@ define i64 @cmp(i64 %a, i64 %b, fp128 %x, fp128 %y) #0 {
 ; WIN-NEXT:    leaq {{[0-9]+}}(%rsp), %rdx
 ; WIN-NEXT:    callq __eqtf2
 ; WIN-NEXT:    testl %eax, %eax
-; WIN-NEXT:    cmovneq %rsi, %rdi
-; WIN-NEXT:    movq %rdi, %rax
+; WIN-NEXT:    cmoveq %rdi, %rsi
+; WIN-NEXT:    movq %rsi, %rax
 ; WIN-NEXT:    addq $72, %rsp
 ; WIN-NEXT:    popq %rdi
 ; WIN-NEXT:    popq %rsi
@@ -3679,8 +3679,8 @@ define i64 @cmps(i64 %a, i64 %b, fp128 %x, fp128 %y) #0 {
 ; ANDROID-NEXT:    movq %rdi, %r14
 ; ANDROID-NEXT:    callq __eqtf2@PLT
 ; ANDROID-NEXT:    testl %eax, %eax
-; ANDROID-NEXT:    cmovneq %rbx, %r14
-; ANDROID-NEXT:    movq %r14, %rax
+; ANDROID-NEXT:    cmoveq %r14, %rbx
+; ANDROID-NEXT:    movq %rbx, %rax
 ; ANDROID-NEXT:    addq $8, %rsp
 ; ANDROID-NEXT:    popq %rbx
 ; ANDROID-NEXT:    popq %r14
@@ -3695,8 +3695,8 @@ define i64 @cmps(i64 %a, i64 %b, fp128 %x, fp128 %y) #0 {
 ; GNU-NEXT:    movq %rdi, %r14
 ; GNU-NEXT:    callq __eqtf2@PLT
 ; GNU-NEXT:    testl %eax, %eax
-; GNU-NEXT:    cmovneq %rbx, %r14
-; GNU-NEXT:    movq %r14, %rax
+; GNU-NEXT:    cmoveq %r14, %rbx
+; GNU-NEXT:    movq %rbx, %rax
 ; GNU-NEXT:    addq $8, %rsp
 ; GNU-NEXT:    popq %rbx
 ; GNU-NEXT:    popq %r14
@@ -3716,9 +3716,9 @@ define i64 @cmps(i64 %a, i64 %b, fp128 %x, fp128 %y) #0 {
 ; X86-NEXT:    calll __eqtf2
 ; X86-NEXT:    addl $32, %esp
 ; X86-NEXT:    testl %eax, %eax
-; X86-NEXT:    leal {{[0-9]+}}(%esp), %eax
 ; X86-NEXT:    leal {{[0-9]+}}(%esp), %ecx
-; X86-NEXT:    cmovel %eax, %ecx
+; X86-NEXT:    leal {{[0-9]+}}(%esp), %eax
+; X86-NEXT:    cmovnel %eax, %ecx
 ; X86-NEXT:    movl (%ecx), %eax
 ; X86-NEXT:    movl 4(%ecx), %edx
 ; X86-NEXT:    addl $12, %esp
@@ -3739,8 +3739,8 @@ define i64 @cmps(i64 %a, i64 %b, fp128 %x, fp128 %y) #0 {
 ; WIN-NEXT:    leaq {{[0-9]+}}(%rsp), %rdx
 ; WIN-NEXT:    callq __eqtf2
 ; WIN-NEXT:    testl %eax, %eax
-; WIN-NEXT:    cmovneq %rsi, %rdi
-; WIN-NEXT:    movq %rdi, %rax
+; WIN-NEXT:    cmoveq %rdi, %rsi
+; WIN-NEXT:    movq %rsi, %rax
 ; WIN-NEXT:    addq $72, %rsp
 ; WIN-NEXT:    popq %rdi
 ; WIN-NEXT:    popq %rsi
@@ -3829,9 +3829,9 @@ define i64 @cmp_ueq_q(i64 %a, i64 %b, fp128 %x, fp128 %y) #0 {
 ; ANDROID-NEXT:    callq __unordtf2@PLT
 ; ANDROID-NEXT:    testl %eax, %eax
 ; ANDROID-NEXT:    setne %al
-; ANDROID-NEXT:    orb %bpl, %al
-; ANDROID-NEXT:    cmoveq %rbx, %r14
-; ANDROID-NEXT:    movq %r14, %rax
+; ANDROID-NEXT:    orb %al, %bpl
+; ANDROID-NEXT:    cmovneq %r14, %rbx
+; ANDROID-NEXT:    movq %rbx, %rax
 ; ANDROID-NEXT:    addq $32, %rsp
 ; ANDROID-NEXT:    popq %rbx
 ; ANDROID-NEXT:    popq %r14
@@ -3856,9 +3856,9 @@ define i64 @cmp_ueq_q(i64 %a, i64 %b, fp128 %x, fp128 %y) #0 {
 ; GNU-NEXT:    callq __unordtf2@PLT
 ; GNU-NEXT:    testl %eax, %eax
 ; GNU-NEXT:    setne %al
-; GNU-NEXT:    orb %bpl, %al
-; GNU-NEXT:    cmoveq %rbx, %r14
-; GNU-NEXT:    movq %r14, %rax
+; GNU-NEXT:    orb %al, %bpl
+; GNU-NEXT:    cmovneq %r14, %rbx
+; GNU-NEXT:    movq %rbx, %rax
 ; GNU-NEXT:    addq $32, %rsp
 ; GNU-NEXT:    popq %rbx
 ; GNU-NEXT:    popq %r14
@@ -3897,10 +3897,10 @@ define i64 @cmp_ueq_q(i64 %a, i64 %b, fp128 %x, fp128 %y) #0 {
 ; X86-NEXT:    pushl {{[0-9]+}}(%esp)
 ; X86-NEXT:    calll __unordtf2
 ; X86-NEXT:    addl $32, %esp
-; X86-NEXT:    orb %bl, %al
-; X86-NEXT:    leal {{[0-9]+}}(%esp), %eax
+; X86-NEXT:    orb %al, %bl
 ; X86-NEXT:    leal {{[0-9]+}}(%esp), %ecx
-; X86-NEXT:    cmovnel %eax, %ecx
+; X86-NEXT:    leal {{[0-9]+}}(%esp), %eax
+; X86-NEXT:    cmovel %eax, %ecx
 ; X86-NEXT:    movl (%ecx), %eax
 ; X86-NEXT:    movl 4(%ecx), %edx
 ; X86-NEXT:    addl $12, %esp
@@ -3936,9 +3936,9 @@ define i64 @cmp_ueq_q(i64 %a, i64 %b, fp128 %x, fp128 %y) #0 {
 ; WIN-NEXT:    callq __unordtf2
 ; WIN-NEXT:    testl %eax, %eax
 ; WIN-NEXT:    setne %al
-; WIN-NEXT:    orb %bl, %al
-; WIN-NEXT:    cmoveq %rsi, %rdi
-; WIN-NEXT:    movq %rdi, %rax
+; WIN-NEXT:    orb %al, %bl
+; WIN-NEXT:    cmovneq %rdi, %rsi
+; WIN-NEXT:    movq %rsi, %rax
 ; WIN-NEXT:    movaps {{[-0-9]+}}(%r{{[sb]}}p), %xmm6 # 16-byte Reload
 ; WIN-NEXT:    movaps {{[-0-9]+}}(%r{{[sb]}}p), %xmm7 # 16-byte Reload
 ; WIN-NEXT:    addq $128, %rsp
@@ -3980,7 +3980,7 @@ define i64 @cmp_ueq_q(i64 %a, i64 %b, fp128 %x, fp128 %y) #0 {
 ; WIN-X86-NEXT:    pushl 24(%ebp)
 ; WIN-X86-NEXT:    calll ___unordtf2
 ; WIN-X86-NEXT:    addl $32, %esp
-; WIN-X86-NEXT:    orb %bl, %al
+; WIN-X86-NEXT:    orb %al, %bl
 ; WIN-X86-NEXT:    jne LBB39_1
 ; WIN-X86-NEXT:  # %bb.2:
 ; WIN-X86-NEXT:    leal 16(%ebp), %ecx
@@ -4051,8 +4051,8 @@ define i64 @cmp_one_q(i64 %a, i64 %b, fp128 %x, fp128 %y) #0 {
 ; ANDROID-NEXT:    testl %eax, %eax
 ; ANDROID-NEXT:    sete %al
 ; ANDROID-NEXT:    testb %bpl, %al
-; ANDROID-NEXT:    cmoveq %rbx, %r14
-; ANDROID-NEXT:    movq %r14, %rax
+; ANDROID-NEXT:    cmovneq %r14, %rbx
+; ANDROID-NEXT:    movq %rbx, %rax
 ; ANDROID-NEXT:    addq $32, %rsp
 ; ANDROID-NEXT:    popq %rbx
 ; ANDROID-NEXT:    popq %r14
@@ -4078,8 +4078,8 @@ define i64 @cmp_one_q(i64 %a, i64 %b, fp128 %x, fp128 %y) #0 {
 ; GNU-NEXT:    testl %eax, %eax
 ; GNU-NEXT:    sete %al
 ; GNU-NEXT:    testb %bpl, %al
-; GNU-NEXT:    cmoveq %rbx, %r14
-; GNU-NEXT:    movq %r14, %rax
+; GNU-NEXT:    cmovneq %r14, %rbx
+; GNU-NEXT:    movq %rbx, %rax
 ; GNU-NEXT:    addq $32, %rsp
 ; GNU-NEXT:    popq %rbx
 ; GNU-NEXT:    popq %r14
@@ -4121,9 +4121,9 @@ define i64 @cmp_one_q(i64 %a, i64 %b, fp128 %x, fp128 %y) #0 {
 ; X86-NEXT:    testl %eax, %eax
 ; X86-NEXT:    sete %al
 ; X86-NEXT:    testb %bl, %al
-; X86-NEXT:    leal {{[0-9]+}}(%esp), %eax
 ; X86-NEXT:    leal {{[0-9]+}}(%esp), %ecx
-; X86-NEXT:    cmovnel %eax, %ecx
+; X86-NEXT:    leal {{[0-9]+}}(%esp), %eax
+; X86-NEXT:    cmovel %eax, %ecx
 ; X86-NEXT:    movl (%ecx), %eax
 ; X86-NEXT:    movl 4(%ecx), %edx
 ; X86-NEXT:    addl $12, %esp
@@ -4160,8 +4160,8 @@ define i64 @cmp_one_q(i64 %a, i64 %b, fp128 %x, fp128 %y) #0 {
 ; WIN-NEXT:    testl %eax, %eax
 ; WIN-NEXT:    sete %al
 ; WIN-NEXT:    testb %bl, %al
-; WIN-NEXT:    cmoveq %rsi, %rdi
-; WIN-NEXT:    movq %rdi, %rax
+; WIN-NEXT:    cmovneq %rdi, %rsi
+; WIN-NEXT:    movq %rsi, %rax
 ; WIN-NEXT:    movaps {{[-0-9]+}}(%r{{[sb]}}p), %xmm6 # 16-byte Reload
 ; WIN-NEXT:    movaps {{[-0-9]+}}(%r{{[sb]}}p), %xmm7 # 16-byte Reload
 ; WIN-NEXT:    addq $128, %rsp

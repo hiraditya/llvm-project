@@ -27,10 +27,10 @@ define noundef i32 @test(i1 %tobool1.not, i32 %sh.012, i1 %cmp, i64 %sh_prom, i6
 ; CHECK-NEXT:    .p2align 4
 ; CHECK-NEXT:  .LBB0_4: # %if.end
 ; CHECK-NEXT:    # in Loop: Header=BB0_1 Depth=1
-; CHECK-NEXT:    orl %ecx, %ebx
-; CHECK-NEXT:    orl %eax, %ebp
-; CHECK-NEXT:    movl %ebx, %esi
-; CHECK-NEXT:    movl %ebp, %edi
+; CHECK-NEXT:    movl %ecx, %esi
+; CHECK-NEXT:    orl %ebx, %esi
+; CHECK-NEXT:    movl %eax, %edi
+; CHECK-NEXT:    orl %ebp, %edi
 ; CHECK-NEXT:  .LBB0_1: # %for.body
 ; CHECK-NEXT:    # =>This Inner Loop Header: Depth=1
 ; CHECK-NEXT:    testb $1, %dh

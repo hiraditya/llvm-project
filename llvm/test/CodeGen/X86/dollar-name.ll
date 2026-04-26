@@ -13,8 +13,10 @@ define i32 @"$foo"() nounwind {
 ; STATIC:       # %bb.0:
 ; STATIC-NEXT:    movl ($arr), %eax
 ; STATIC-NEXT:    movl %gs:0, %ecx
-; STATIC-NEXT:    addl ($arr+4), %eax
-; STATIC-NEXT:    addl ($tls@NTPOFF)(%ecx), %eax
+; STATIC-NEXT:    movl ($arr+4), %edx
+; STATIC-NEXT:    addl %eax, %edx
+; STATIC-NEXT:    movl ($tls@NTPOFF)(%ecx), %eax
+; STATIC-NEXT:    addl %edx, %eax
 ; STATIC-NEXT:    pushl ($arr_h)
 ; STATIC-NEXT:    pushl %eax
 ; STATIC-NEXT:    calll ($hen@PLT)
@@ -27,14 +29,15 @@ define i32 @"$foo"() nounwind {
 ; PIC-NEXT:    pushq %r14
 ; PIC-NEXT:    pushq %rbx
 ; PIC-NEXT:    movq ($arr@GOTPCREL)(%rip), %r14
-; PIC-NEXT:    movl (%r14), %ebx
-; PIC-NEXT:    movl ($arr_h)(%rip), %ebp
+; PIC-NEXT:    movl (%r14), %ebp
+; PIC-NEXT:    movl ($arr_h)(%rip), %ebx
 ; PIC-NEXT:    leaq ($tls@TLSLD)(%rip), %rdi
 ; PIC-NEXT:    callq __tls_get_addr@PLT
-; PIC-NEXT:    addl 4(%r14), %ebx
-; PIC-NEXT:    addl ($tls@DTPOFF)(%rax), %ebx
-; PIC-NEXT:    movl %ebx, %edi
-; PIC-NEXT:    movl %ebp, %esi
+; PIC-NEXT:    movl 4(%r14), %ecx
+; PIC-NEXT:    addl %ebp, %ecx
+; PIC-NEXT:    movl ($tls@DTPOFF)(%rax), %edi
+; PIC-NEXT:    addl %ecx, %edi
+; PIC-NEXT:    movl %ebx, %esi
 ; PIC-NEXT:    callq ($hen@PLT)
 ; PIC-NEXT:    popq %rbx
 ; PIC-NEXT:    popq %r14
@@ -47,14 +50,15 @@ define i32 @"$foo"() nounwind {
 ; INTEL-PIC-NEXT:    push r14
 ; INTEL-PIC-NEXT:    push rbx
 ; INTEL-PIC-NEXT:    mov r14, qword ptr [rip + $arr@GOTPCREL]
-; INTEL-PIC-NEXT:    mov ebx, dword ptr [r14]
-; INTEL-PIC-NEXT:    mov ebp, dword ptr [rip + $arr_h]
+; INTEL-PIC-NEXT:    mov ebp, dword ptr [r14]
+; INTEL-PIC-NEXT:    mov ebx, dword ptr [rip + $arr_h]
 ; INTEL-PIC-NEXT:    lea rdi, [rip + $tls@TLSLD]
 ; INTEL-PIC-NEXT:    call __tls_get_addr@PLT
-; INTEL-PIC-NEXT:    add ebx, dword ptr [r14 + 4]
-; INTEL-PIC-NEXT:    add ebx, dword ptr [rax + $tls@DTPOFF]
-; INTEL-PIC-NEXT:    mov edi, ebx
-; INTEL-PIC-NEXT:    mov esi, ebp
+; INTEL-PIC-NEXT:    mov ecx, dword ptr [r14 + 4]
+; INTEL-PIC-NEXT:    add ecx, ebp
+; INTEL-PIC-NEXT:    mov edi, dword ptr [rax + $tls@DTPOFF]
+; INTEL-PIC-NEXT:    add edi, ecx
+; INTEL-PIC-NEXT:    mov esi, ebx
 ; INTEL-PIC-NEXT:    call $hen@PLT
 ; INTEL-PIC-NEXT:    pop rbx
 ; INTEL-PIC-NEXT:    pop r14

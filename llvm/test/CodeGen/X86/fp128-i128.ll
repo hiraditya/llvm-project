@@ -54,9 +54,9 @@ define dso_local void @TestUnionLD1(fp128 %s, i64 %n) #0 {
 ; SSE-NEXT:    movq -{{[0-9]+}}(%rsp), %rcx
 ; SSE-NEXT:    movabsq $281474976710655, %rdx # imm = 0xFFFFFFFFFFFF
 ; SSE-NEXT:    andq %rdi, %rdx
-; SSE-NEXT:    orq %rax, %rdx
+; SSE-NEXT:    orq %rdx, %rax
 ; SSE-NEXT:    movq %rcx, -{{[0-9]+}}(%rsp)
-; SSE-NEXT:    movq %rdx, -{{[0-9]+}}(%rsp)
+; SSE-NEXT:    movq %rax, -{{[0-9]+}}(%rsp)
 ; SSE-NEXT:    movaps -{{[0-9]+}}(%rsp), %xmm0
 ; SSE-NEXT:    jmp foo # TAILCALL
 ;
@@ -68,9 +68,9 @@ define dso_local void @TestUnionLD1(fp128 %s, i64 %n) #0 {
 ; AVX-NEXT:    movq -{{[0-9]+}}(%rsp), %rcx
 ; AVX-NEXT:    movabsq $281474976710655, %rdx # imm = 0xFFFFFFFFFFFF
 ; AVX-NEXT:    andq %rdi, %rdx
-; AVX-NEXT:    orq %rax, %rdx
+; AVX-NEXT:    orq %rdx, %rax
 ; AVX-NEXT:    movq %rcx, -{{[0-9]+}}(%rsp)
-; AVX-NEXT:    movq %rdx, -{{[0-9]+}}(%rsp)
+; AVX-NEXT:    movq %rax, -{{[0-9]+}}(%rsp)
 ; AVX-NEXT:    vmovaps -{{[0-9]+}}(%rsp), %xmm0
 ; AVX-NEXT:    jmp foo # TAILCALL
 entry:
@@ -131,8 +131,10 @@ define fp128 @TestI128_1(fp128 %x) #0 {
 ; SSE-LABEL: TestI128_1:
 ; SSE:       # %bb.0: # %entry
 ; SSE-NEXT:    pushq %rax
-; SSE-NEXT:    andps {{\.?LCPI[0-9]+_[0-9]+}}(%rip), %xmm0
+; SSE-NEXT:    movaps {{.*#+}} xmm2 = [NaN]
+; SSE-NEXT:    andps %xmm0, %xmm2
 ; SSE-NEXT:    movaps {{.*#+}} xmm1 = [1.00000000000000000000000000000000005E-1]
+; SSE-NEXT:    movaps %xmm2, %xmm0
 ; SSE-NEXT:    callq __lttf2@PLT
 ; SSE-NEXT:    xorl %ecx, %ecx
 ; SSE-NEXT:    testl %eax, %eax
@@ -228,8 +230,9 @@ define fp128 @TestI128_3(fp128 %x, ptr nocapture readnone %ex) #0 {
 ; SSE-NEXT:    callq __multf3@PLT
 ; SSE-NEXT:    movaps %xmm0, {{[0-9]+}}(%rsp)
 ; SSE-NEXT:    movq {{[0-9]+}}(%rsp), %rcx
-; SSE-NEXT:    movabsq $-9223090561878065153, %rdx # imm = 0x8000FFFFFFFFFFFF
-; SSE-NEXT:    andq {{[0-9]+}}(%rsp), %rdx
+; SSE-NEXT:    movabsq $-9223090561878065153, %rax # imm = 0x8000FFFFFFFFFFFF
+; SSE-NEXT:    movq {{[0-9]+}}(%rsp), %rdx
+; SSE-NEXT:    andq %rax, %rdx
 ; SSE-NEXT:    movabsq $4611123068473966592, %rax # imm = 0x3FFE000000000000
 ; SSE-NEXT:    orq %rdx, %rax
 ; SSE-NEXT:  .LBB4_3: # %if.end
@@ -255,8 +258,9 @@ define fp128 @TestI128_3(fp128 %x, ptr nocapture readnone %ex) #0 {
 ; AVX-NEXT:    callq __multf3@PLT
 ; AVX-NEXT:    vmovaps %xmm0, {{[0-9]+}}(%rsp)
 ; AVX-NEXT:    movq {{[0-9]+}}(%rsp), %rcx
-; AVX-NEXT:    movabsq $-9223090561878065153, %rdx # imm = 0x8000FFFFFFFFFFFF
-; AVX-NEXT:    andq {{[0-9]+}}(%rsp), %rdx
+; AVX-NEXT:    movabsq $-9223090561878065153, %rax # imm = 0x8000FFFFFFFFFFFF
+; AVX-NEXT:    movq {{[0-9]+}}(%rsp), %rdx
+; AVX-NEXT:    andq %rax, %rdx
 ; AVX-NEXT:    movabsq $4611123068473966592, %rax # imm = 0x3FFE000000000000
 ; AVX-NEXT:    orq %rdx, %rax
 ; AVX-NEXT:  .LBB4_3: # %if.end
@@ -336,9 +340,10 @@ define dso_local void @TestShift128_2() #2 {
 ; CHECK-NEXT:    movq v128(%rip), %rax
 ; CHECK-NEXT:    shlq $32, %rax
 ; CHECK-NEXT:    movq v128_2(%rip), %rcx
-; CHECK-NEXT:    orq v128_2+8(%rip), %rax
+; CHECK-NEXT:    movq v128_2+8(%rip), %rdx
+; CHECK-NEXT:    orq %rax, %rdx
 ; CHECK-NEXT:    movq %rcx, v128(%rip)
-; CHECK-NEXT:    movq %rax, v128+8(%rip)
+; CHECK-NEXT:    movq %rdx, v128+8(%rip)
 ; CHECK-NEXT:    retq
 entry:
   %0 = load i128, ptr @v128, align 16
@@ -411,7 +416,9 @@ declare dso_local void @foo(fp128) #1
 define fp128 @TestFABS_LD(fp128 %x) #0 {
 ; SSE-LABEL: TestFABS_LD:
 ; SSE:       # %bb.0: # %entry
-; SSE-NEXT:    andps {{\.?LCPI[0-9]+_[0-9]+}}(%rip), %xmm0
+; SSE-NEXT:    movaps {{.*#+}} xmm1 = [NaN]
+; SSE-NEXT:    andps %xmm0, %xmm1
+; SSE-NEXT:    movaps %xmm1, %xmm0
 ; SSE-NEXT:    retq
 ;
 ; AVX-LABEL: TestFABS_LD:
@@ -436,30 +443,30 @@ define dso_local void @TestCopySign(ptr noalias nocapture sret({ fp128, fp128 })
 ; SSE-NEXT:    subq $40, %rsp
 ; SSE-NEXT:    movq %rdi, %rbx
 ; SSE-NEXT:    movaps {{[0-9]+}}(%rsp), %xmm0
+; SSE-NEXT:    movaps %xmm0, {{[-0-9]+}}(%r{{[sb]}}p) # 16-byte Spill
 ; SSE-NEXT:    movaps {{[0-9]+}}(%rsp), %xmm1
-; SSE-NEXT:    movaps %xmm1, {{[-0-9]+}}(%r{{[sb]}}p) # 16-byte Spill
-; SSE-NEXT:    movaps %xmm0, (%rsp) # 16-byte Spill
+; SSE-NEXT:    movaps %xmm1, (%rsp) # 16-byte Spill
 ; SSE-NEXT:    callq __gttf2@PLT
 ; SSE-NEXT:    movl %eax, %ebp
-; SSE-NEXT:    movaps {{[-0-9]+}}(%r{{[sb]}}p), %xmm0 # 16-byte Reload
+; SSE-NEXT:    movaps (%rsp), %xmm0 # 16-byte Reload
 ; SSE-NEXT:    movaps %xmm0, %xmm1
 ; SSE-NEXT:    callq __subtf3@PLT
+; SSE-NEXT:    movaps {{[-0-9]+}}(%r{{[sb]}}p), %xmm3 # 16-byte Reload
 ; SSE-NEXT:    testl %ebp, %ebp
-; SSE-NEXT:    jle .LBB10_1
-; SSE-NEXT:  # %bb.2: # %if.then
-; SSE-NEXT:    movaps %xmm0, %xmm1
-; SSE-NEXT:    andps {{\.?LCPI[0-9]+_[0-9]+}}(%rip), %xmm1
-; SSE-NEXT:    movaps (%rsp), %xmm0 # 16-byte Reload
-; SSE-NEXT:    jmp .LBB10_3
-; SSE-NEXT:  .LBB10_1:
-; SSE-NEXT:    movaps (%rsp), %xmm1 # 16-byte Reload
-; SSE-NEXT:  .LBB10_3: # %cleanup
-; SSE-NEXT:    movaps {{[-0-9]+}}(%r{{[sb]}}p), %xmm2 # 16-byte Reload
-; SSE-NEXT:    andps {{\.?LCPI[0-9]+_[0-9]+}}(%rip), %xmm2
-; SSE-NEXT:    andps {{\.?LCPI[0-9]+_[0-9]+}}(%rip), %xmm0
-; SSE-NEXT:    orps %xmm2, %xmm0
-; SSE-NEXT:    movaps %xmm1, (%rbx)
-; SSE-NEXT:    movaps %xmm0, 16(%rbx)
+; SSE-NEXT:    jle .LBB10_2
+; SSE-NEXT:  # %bb.1: # %if.then
+; SSE-NEXT:    movaps {{.*#+}} xmm1 = [NaN]
+; SSE-NEXT:    andps %xmm0, %xmm1
+; SSE-NEXT:    movaps %xmm3, %xmm0
+; SSE-NEXT:    movaps %xmm1, %xmm3
+; SSE-NEXT:  .LBB10_2: # %cleanup
+; SSE-NEXT:    movaps {{.*#+}} xmm1 = [-0.0E+0]
+; SSE-NEXT:    andps (%rsp), %xmm1 # 16-byte Folded Reload
+; SSE-NEXT:    movaps {{.*#+}} xmm2 = [NaN]
+; SSE-NEXT:    andps %xmm0, %xmm2
+; SSE-NEXT:    orps %xmm2, %xmm1
+; SSE-NEXT:    movaps %xmm3, (%rbx)
+; SSE-NEXT:    movaps %xmm1, 16(%rbx)
 ; SSE-NEXT:    movq %rbx, %rax
 ; SSE-NEXT:    addq $40, %rsp
 ; SSE-NEXT:    popq %rbx
@@ -473,24 +480,23 @@ define dso_local void @TestCopySign(ptr noalias nocapture sret({ fp128, fp128 })
 ; AVX-NEXT:    subq $40, %rsp
 ; AVX-NEXT:    movq %rdi, %rbx
 ; AVX-NEXT:    vmovaps {{[0-9]+}}(%rsp), %xmm0
+; AVX-NEXT:    vmovaps %xmm0, {{[-0-9]+}}(%r{{[sb]}}p) # 16-byte Spill
 ; AVX-NEXT:    vmovaps {{[0-9]+}}(%rsp), %xmm1
-; AVX-NEXT:    vmovaps %xmm1, {{[-0-9]+}}(%r{{[sb]}}p) # 16-byte Spill
-; AVX-NEXT:    vmovaps %xmm0, (%rsp) # 16-byte Spill
+; AVX-NEXT:    vmovaps %xmm1, (%rsp) # 16-byte Spill
 ; AVX-NEXT:    callq __gttf2@PLT
 ; AVX-NEXT:    movl %eax, %ebp
-; AVX-NEXT:    vmovaps {{[-0-9]+}}(%r{{[sb]}}p), %xmm0 # 16-byte Reload
+; AVX-NEXT:    vmovaps (%rsp), %xmm0 # 16-byte Reload
 ; AVX-NEXT:    vmovaps %xmm0, %xmm1
 ; AVX-NEXT:    callq __subtf3@PLT
+; AVX-NEXT:    vmovaps {{[-0-9]+}}(%r{{[sb]}}p), %xmm2 # 16-byte Reload
 ; AVX-NEXT:    testl %ebp, %ebp
-; AVX-NEXT:    jle .LBB10_1
-; AVX-NEXT:  # %bb.2: # %if.then
-; AVX-NEXT:    vandps {{\.?LCPI[0-9]+_[0-9]+}}(%rip), %xmm0, %xmm2
-; AVX-NEXT:    vmovaps (%rsp), %xmm0 # 16-byte Reload
-; AVX-NEXT:    jmp .LBB10_3
-; AVX-NEXT:  .LBB10_1:
-; AVX-NEXT:    vmovaps (%rsp), %xmm2 # 16-byte Reload
-; AVX-NEXT:  .LBB10_3: # %cleanup
-; AVX-NEXT:    vmovaps {{[-0-9]+}}(%r{{[sb]}}p), %xmm1 # 16-byte Reload
+; AVX-NEXT:    jle .LBB10_2
+; AVX-NEXT:  # %bb.1: # %if.then
+; AVX-NEXT:    vandps {{\.?LCPI[0-9]+_[0-9]+}}(%rip), %xmm0, %xmm1
+; AVX-NEXT:    vmovaps %xmm2, %xmm0
+; AVX-NEXT:    vmovaps %xmm1, %xmm2
+; AVX-NEXT:  .LBB10_2: # %cleanup
+; AVX-NEXT:    vmovaps (%rsp), %xmm1 # 16-byte Reload
 ; AVX-NEXT:    vandps {{\.?LCPI[0-9]+_[0-9]+}}(%rip), %xmm1, %xmm1
 ; AVX-NEXT:    vandps {{\.?LCPI[0-9]+_[0-9]+}}(%rip), %xmm0, %xmm0
 ; AVX-NEXT:    vorps %xmm1, %xmm0, %xmm0

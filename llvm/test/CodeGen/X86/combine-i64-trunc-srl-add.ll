@@ -7,8 +7,8 @@ define i1 @test_ult_trunc_add(i64 %x) {
 ; X64-LABEL: test_ult_trunc_add:
 ; X64:       # %bb.0:
 ; X64-NEXT:    shrq $48, %rdi
-; X64-NEXT:    addl $14, %edi
-; X64-NEXT:    movzwl %di, %eax
+; X64-NEXT:    leal 14(%rdi), %eax
+; X64-NEXT:    movzwl %ax, %eax
 ; X64-NEXT:    cmpl $3, %eax
 ; X64-NEXT:    setb %al
 ; X64-NEXT:    retq
@@ -23,8 +23,8 @@ define i1 @test_ult_add(i64 %x) {
 ; X64-LABEL: test_ult_add:
 ; X64:       # %bb.0:
 ; X64-NEXT:    shrq $48, %rdi
-; X64-NEXT:    addl $14, %edi
-; X64-NEXT:    movzwl %di, %eax
+; X64-NEXT:    leal 14(%rdi), %eax
+; X64-NEXT:    movzwl %ax, %eax
 ; X64-NEXT:    cmpl $3, %eax
 ; X64-NEXT:    setb %al
 ; X64-NEXT:    retq
@@ -37,8 +37,8 @@ define i1 @test_ugt_trunc_add(i64 %x) {
 ; X64-LABEL: test_ugt_trunc_add:
 ; X64:       # %bb.0:
 ; X64-NEXT:    shrq $48, %rdi
-; X64-NEXT:    addl $14, %edi
-; X64-NEXT:    movzwl %di, %eax
+; X64-NEXT:    leal 14(%rdi), %eax
+; X64-NEXT:    movzwl %ax, %eax
 ; X64-NEXT:    cmpl $4, %eax
 ; X64-NEXT:    setae %al
 ; X64-NEXT:    retq
@@ -119,8 +119,8 @@ define i32 @test_trunc_add(i64 %x) {
 ; X64-LABEL: test_trunc_add:
 ; X64:       # %bb.0:
 ; X64-NEXT:    shrq $48, %rdi
-; X64-NEXT:    addl $14, %edi
-; X64-NEXT:    movzwl %di, %eax
+; X64-NEXT:    leal 14(%rdi), %eax
+; X64-NEXT:    movzwl %ax, %eax
 ; X64-NEXT:    retq
   %add = add i64 %x, 3940649673949184
   %shr = lshr i64 %add, 48

@@ -10,9 +10,9 @@ define i32 @foo(ptr %x, i32 %y) nounwind {
 ; CHECK-NEXT:    movl {{[0-9]+}}(%esp), %ecx
 ; CHECK-NEXT:    movl {{[0-9]+}}(%esp), %eax
 ; CHECK-NEXT:    imull %eax, %eax
-; CHECK-NEXT:    movzbl %ah, %eax
-; CHECK-NEXT:    movb $77, (%ecx,%eax,8)
-; CHECK-NEXT:    shll $3, %eax
+; CHECK-NEXT:    movzbl %ah, %edx
+; CHECK-NEXT:    leal (,%edx,8), %eax
+; CHECK-NEXT:    movb $77, (%ecx,%edx,8)
 ; CHECK-NEXT:    retl
 
 	%t4 = mul i32 %y, %y

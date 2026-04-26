@@ -11,8 +11,8 @@ define i32 @fold_srem_positive_odd(i32 %x) {
 ; CHECK-NEXT:    movl %ecx, %edx
 ; CHECK-NEXT:    shrl $31, %edx
 ; CHECK-NEXT:    sarl $6, %ecx
-; CHECK-NEXT:    addl %edx, %ecx
-; CHECK-NEXT:    imull $95, %ecx, %ecx
+; CHECK-NEXT:    addl %ecx, %edx
+; CHECK-NEXT:    imull $95, %edx, %ecx
 ; CHECK-NEXT:    subl %ecx, %eax
 ; CHECK-NEXT:    # kill: def $eax killed $eax killed $rax
 ; CHECK-NEXT:    retq
@@ -86,11 +86,10 @@ define i32 @combine_srem_sdiv(i32 %x) {
 ; CHECK-NEXT:    movl %ecx, %edx
 ; CHECK-NEXT:    shrl $31, %edx
 ; CHECK-NEXT:    sarl $6, %ecx
-; CHECK-NEXT:    addl %edx, %ecx
-; CHECK-NEXT:    imull $95, %ecx, %edx
-; CHECK-NEXT:    subl %edx, %eax
-; CHECK-NEXT:    addl %ecx, %eax
-; CHECK-NEXT:    # kill: def $eax killed $eax killed $rax
+; CHECK-NEXT:    addl %ecx, %edx
+; CHECK-NEXT:    imull $95, %edx, %ecx
+; CHECK-NEXT:    subl %ecx, %eax
+; CHECK-NEXT:    addl %edx, %eax
 ; CHECK-NEXT:    retq
   %1 = srem i32 %x, 95
   %2 = sdiv i32 %x, 95
@@ -149,8 +148,8 @@ define i64 @dont_fold_srem_i64(i64 %x) {
 ; CHECK-NEXT:    movq %rdx, %rax
 ; CHECK-NEXT:    shrq $63, %rax
 ; CHECK-NEXT:    sarq $5, %rdx
-; CHECK-NEXT:    addq %rax, %rdx
-; CHECK-NEXT:    imulq $98, %rdx, %rax
+; CHECK-NEXT:    addq %rdx, %rax
+; CHECK-NEXT:    imulq $98, %rax, %rax
 ; CHECK-NEXT:    subq %rax, %rdi
 ; CHECK-NEXT:    movq %rdi, %rax
 ; CHECK-NEXT:    retq

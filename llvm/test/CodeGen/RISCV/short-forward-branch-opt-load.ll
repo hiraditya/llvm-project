@@ -3260,13 +3260,12 @@ define i64 @test_i8_s_1_op(ptr %base, i1 zeroext %x, i64 %b) nounwind {
 ; RV32I-SFB-NEXT:    lb a0, 4(a0)
 ; RV32I-SFB-NEXT:    bnez a1, .LBB43_2
 ; RV32I-SFB-NEXT:  # %bb.1: # %entry
-; RV32I-SFB-NEXT:    mv a2, a0
-; RV32I-SFB-NEXT:  .LBB43_2: # %entry
-; RV32I-SFB-NEXT:    bnez a1, .LBB43_4
-; RV32I-SFB-NEXT:  # %bb.3: # %entry
 ; RV32I-SFB-NEXT:    srai a3, a0, 31
-; RV32I-SFB-NEXT:  .LBB43_4: # %entry
+; RV32I-SFB-NEXT:  .LBB43_2: # %entry
+; RV32I-SFB-NEXT:    beqz a1, .LBB43_4
+; RV32I-SFB-NEXT:  # %bb.3: # %entry
 ; RV32I-SFB-NEXT:    mv a0, a2
+; RV32I-SFB-NEXT:  .LBB43_4: # %entry
 ; RV32I-SFB-NEXT:    mv a1, a3
 ; RV32I-SFB-NEXT:    ret
 ;
@@ -3284,13 +3283,12 @@ define i64 @test_i8_s_1_op(ptr %base, i1 zeroext %x, i64 %b) nounwind {
 ; RV32I-SFBILOAD-NEXT:    lb a0, 4(a0)
 ; RV32I-SFBILOAD-NEXT:    bnez a1, .LBB43_2
 ; RV32I-SFBILOAD-NEXT:  # %bb.1: # %entry
-; RV32I-SFBILOAD-NEXT:    mv a2, a0
-; RV32I-SFBILOAD-NEXT:  .LBB43_2: # %entry
-; RV32I-SFBILOAD-NEXT:    bnez a1, .LBB43_4
-; RV32I-SFBILOAD-NEXT:  # %bb.3: # %entry
 ; RV32I-SFBILOAD-NEXT:    srai a3, a0, 31
-; RV32I-SFBILOAD-NEXT:  .LBB43_4: # %entry
+; RV32I-SFBILOAD-NEXT:  .LBB43_2: # %entry
+; RV32I-SFBILOAD-NEXT:    beqz a1, .LBB43_4
+; RV32I-SFBILOAD-NEXT:  # %bb.3: # %entry
 ; RV32I-SFBILOAD-NEXT:    mv a0, a2
+; RV32I-SFBILOAD-NEXT:  .LBB43_4: # %entry
 ; RV32I-SFBILOAD-NEXT:    mv a1, a3
 ; RV32I-SFBILOAD-NEXT:    ret
 ;
@@ -3333,16 +3331,17 @@ define i64 @test_i8_z_1_op(ptr %base, i1 zeroext %x, i64 %b) nounwind {
 ;
 ; RV32I-SFB-LABEL: test_i8_z_1_op:
 ; RV32I-SFB:       # %bb.0: # %entry
+; RV32I-SFB-NEXT:    li a4, 0
 ; RV32I-SFB-NEXT:    lbu a0, 4(a0)
-; RV32I-SFB-NEXT:    bnez a1, .LBB44_2
+; RV32I-SFB-NEXT:    beqz a1, .LBB44_2
 ; RV32I-SFB-NEXT:  # %bb.1: # %entry
-; RV32I-SFB-NEXT:    li a3, 0
+; RV32I-SFB-NEXT:    mv a4, a3
 ; RV32I-SFB-NEXT:  .LBB44_2: # %entry
 ; RV32I-SFB-NEXT:    beqz a1, .LBB44_4
 ; RV32I-SFB-NEXT:  # %bb.3: # %entry
 ; RV32I-SFB-NEXT:    mv a0, a2
 ; RV32I-SFB-NEXT:  .LBB44_4: # %entry
-; RV32I-SFB-NEXT:    mv a1, a3
+; RV32I-SFB-NEXT:    mv a1, a4
 ; RV32I-SFB-NEXT:    ret
 ;
 ; RV64I-SFB-LABEL: test_i8_z_1_op:
@@ -3360,12 +3359,13 @@ define i64 @test_i8_z_1_op(ptr %base, i1 zeroext %x, i64 %b) nounwind {
 ; RV32I-SFBILOAD-NEXT:  # %bb.1: # %entry
 ; RV32I-SFBILOAD-NEXT:    lbu a2, 4(a0)
 ; RV32I-SFBILOAD-NEXT:  .LBB44_2: # %entry
-; RV32I-SFBILOAD-NEXT:    bnez a1, .LBB44_4
+; RV32I-SFBILOAD-NEXT:    li a4, 0
+; RV32I-SFBILOAD-NEXT:    beqz a1, .LBB44_4
 ; RV32I-SFBILOAD-NEXT:  # %bb.3: # %entry
-; RV32I-SFBILOAD-NEXT:    li a3, 0
+; RV32I-SFBILOAD-NEXT:    mv a4, a3
 ; RV32I-SFBILOAD-NEXT:  .LBB44_4: # %entry
 ; RV32I-SFBILOAD-NEXT:    mv a0, a2
-; RV32I-SFBILOAD-NEXT:    mv a1, a3
+; RV32I-SFBILOAD-NEXT:    mv a1, a4
 ; RV32I-SFBILOAD-NEXT:    ret
 ;
 ; RV64I-SFBILOAD-LABEL: test_i8_z_1_op:
@@ -3410,13 +3410,12 @@ define i64 @test_i16_s_1_op(ptr %base, i1 zeroext %x, i64 %b) nounwind {
 ; RV32I-SFB-NEXT:    lh a0, 8(a0)
 ; RV32I-SFB-NEXT:    bnez a1, .LBB45_2
 ; RV32I-SFB-NEXT:  # %bb.1: # %entry
-; RV32I-SFB-NEXT:    mv a2, a0
-; RV32I-SFB-NEXT:  .LBB45_2: # %entry
-; RV32I-SFB-NEXT:    bnez a1, .LBB45_4
-; RV32I-SFB-NEXT:  # %bb.3: # %entry
 ; RV32I-SFB-NEXT:    srai a3, a0, 31
-; RV32I-SFB-NEXT:  .LBB45_4: # %entry
+; RV32I-SFB-NEXT:  .LBB45_2: # %entry
+; RV32I-SFB-NEXT:    beqz a1, .LBB45_4
+; RV32I-SFB-NEXT:  # %bb.3: # %entry
 ; RV32I-SFB-NEXT:    mv a0, a2
+; RV32I-SFB-NEXT:  .LBB45_4: # %entry
 ; RV32I-SFB-NEXT:    mv a1, a3
 ; RV32I-SFB-NEXT:    ret
 ;
@@ -3434,13 +3433,12 @@ define i64 @test_i16_s_1_op(ptr %base, i1 zeroext %x, i64 %b) nounwind {
 ; RV32I-SFBILOAD-NEXT:    lh a0, 8(a0)
 ; RV32I-SFBILOAD-NEXT:    bnez a1, .LBB45_2
 ; RV32I-SFBILOAD-NEXT:  # %bb.1: # %entry
-; RV32I-SFBILOAD-NEXT:    mv a2, a0
-; RV32I-SFBILOAD-NEXT:  .LBB45_2: # %entry
-; RV32I-SFBILOAD-NEXT:    bnez a1, .LBB45_4
-; RV32I-SFBILOAD-NEXT:  # %bb.3: # %entry
 ; RV32I-SFBILOAD-NEXT:    srai a3, a0, 31
-; RV32I-SFBILOAD-NEXT:  .LBB45_4: # %entry
+; RV32I-SFBILOAD-NEXT:  .LBB45_2: # %entry
+; RV32I-SFBILOAD-NEXT:    beqz a1, .LBB45_4
+; RV32I-SFBILOAD-NEXT:  # %bb.3: # %entry
 ; RV32I-SFBILOAD-NEXT:    mv a0, a2
+; RV32I-SFBILOAD-NEXT:  .LBB45_4: # %entry
 ; RV32I-SFBILOAD-NEXT:    mv a1, a3
 ; RV32I-SFBILOAD-NEXT:    ret
 ;
@@ -3483,16 +3481,17 @@ define i64 @test_i16_z_1_op(ptr %base, i1 zeroext %x, i64 %b) nounwind {
 ;
 ; RV32I-SFB-LABEL: test_i16_z_1_op:
 ; RV32I-SFB:       # %bb.0: # %entry
+; RV32I-SFB-NEXT:    li a4, 0
 ; RV32I-SFB-NEXT:    lhu a0, 8(a0)
-; RV32I-SFB-NEXT:    bnez a1, .LBB46_2
+; RV32I-SFB-NEXT:    beqz a1, .LBB46_2
 ; RV32I-SFB-NEXT:  # %bb.1: # %entry
-; RV32I-SFB-NEXT:    li a3, 0
+; RV32I-SFB-NEXT:    mv a4, a3
 ; RV32I-SFB-NEXT:  .LBB46_2: # %entry
 ; RV32I-SFB-NEXT:    beqz a1, .LBB46_4
 ; RV32I-SFB-NEXT:  # %bb.3: # %entry
 ; RV32I-SFB-NEXT:    mv a0, a2
 ; RV32I-SFB-NEXT:  .LBB46_4: # %entry
-; RV32I-SFB-NEXT:    mv a1, a3
+; RV32I-SFB-NEXT:    mv a1, a4
 ; RV32I-SFB-NEXT:    ret
 ;
 ; RV64I-SFB-LABEL: test_i16_z_1_op:
@@ -3510,12 +3509,13 @@ define i64 @test_i16_z_1_op(ptr %base, i1 zeroext %x, i64 %b) nounwind {
 ; RV32I-SFBILOAD-NEXT:  # %bb.1: # %entry
 ; RV32I-SFBILOAD-NEXT:    lhu a2, 8(a0)
 ; RV32I-SFBILOAD-NEXT:  .LBB46_2: # %entry
-; RV32I-SFBILOAD-NEXT:    bnez a1, .LBB46_4
+; RV32I-SFBILOAD-NEXT:    li a4, 0
+; RV32I-SFBILOAD-NEXT:    beqz a1, .LBB46_4
 ; RV32I-SFBILOAD-NEXT:  # %bb.3: # %entry
-; RV32I-SFBILOAD-NEXT:    li a3, 0
+; RV32I-SFBILOAD-NEXT:    mv a4, a3
 ; RV32I-SFBILOAD-NEXT:  .LBB46_4: # %entry
 ; RV32I-SFBILOAD-NEXT:    mv a0, a2
-; RV32I-SFBILOAD-NEXT:    mv a1, a3
+; RV32I-SFBILOAD-NEXT:    mv a1, a4
 ; RV32I-SFBILOAD-NEXT:    ret
 ;
 ; RV64I-SFBILOAD-LABEL: test_i16_z_1_op:
@@ -3557,16 +3557,17 @@ define i64 @test_i32_z_1_op(ptr %base, i1 zeroext %x, i64 %b) nounwind {
 ;
 ; RV32I-SFB-LABEL: test_i32_z_1_op:
 ; RV32I-SFB:       # %bb.0: # %entry
+; RV32I-SFB-NEXT:    li a4, 0
 ; RV32I-SFB-NEXT:    lw a0, 16(a0)
-; RV32I-SFB-NEXT:    bnez a1, .LBB47_2
+; RV32I-SFB-NEXT:    beqz a1, .LBB47_2
 ; RV32I-SFB-NEXT:  # %bb.1: # %entry
-; RV32I-SFB-NEXT:    li a3, 0
+; RV32I-SFB-NEXT:    mv a4, a3
 ; RV32I-SFB-NEXT:  .LBB47_2: # %entry
 ; RV32I-SFB-NEXT:    beqz a1, .LBB47_4
 ; RV32I-SFB-NEXT:  # %bb.3: # %entry
 ; RV32I-SFB-NEXT:    mv a0, a2
 ; RV32I-SFB-NEXT:  .LBB47_4: # %entry
-; RV32I-SFB-NEXT:    mv a1, a3
+; RV32I-SFB-NEXT:    mv a1, a4
 ; RV32I-SFB-NEXT:    ret
 ;
 ; RV64I-SFB-LABEL: test_i32_z_1_op:
@@ -3584,12 +3585,13 @@ define i64 @test_i32_z_1_op(ptr %base, i1 zeroext %x, i64 %b) nounwind {
 ; RV32I-SFBILOAD-NEXT:  # %bb.1: # %entry
 ; RV32I-SFBILOAD-NEXT:    lw a2, 16(a0)
 ; RV32I-SFBILOAD-NEXT:  .LBB47_2: # %entry
-; RV32I-SFBILOAD-NEXT:    bnez a1, .LBB47_4
+; RV32I-SFBILOAD-NEXT:    li a4, 0
+; RV32I-SFBILOAD-NEXT:    beqz a1, .LBB47_4
 ; RV32I-SFBILOAD-NEXT:  # %bb.3: # %entry
-; RV32I-SFBILOAD-NEXT:    li a3, 0
+; RV32I-SFBILOAD-NEXT:    mv a4, a3
 ; RV32I-SFBILOAD-NEXT:  .LBB47_4: # %entry
 ; RV32I-SFBILOAD-NEXT:    mv a0, a2
-; RV32I-SFBILOAD-NEXT:    mv a1, a3
+; RV32I-SFBILOAD-NEXT:    mv a1, a4
 ; RV32I-SFBILOAD-NEXT:    ret
 ;
 ; RV64I-SFBILOAD-LABEL: test_i32_z_1_op:
@@ -3715,14 +3717,13 @@ define i64 @test_i8_s_store_64_op(ptr %base, i1 zeroext %x, i64 %b, ptr %base1, 
 ; RV32I-SFB-NEXT:    sw a5, 0(a4)
 ; RV32I-SFB-NEXT:    bnez a1, .LBB49_2
 ; RV32I-SFB-NEXT:  # %bb.1: # %entry
-; RV32I-SFB-NEXT:    mv a2, a0
-; RV32I-SFB-NEXT:  .LBB49_2: # %entry
-; RV32I-SFB-NEXT:    bnez a1, .LBB49_4
-; RV32I-SFB-NEXT:  # %bb.3: # %entry
 ; RV32I-SFB-NEXT:    srai a3, a0, 31
+; RV32I-SFB-NEXT:  .LBB49_2: # %entry
+; RV32I-SFB-NEXT:    beqz a1, .LBB49_4
+; RV32I-SFB-NEXT:  # %bb.3: # %entry
+; RV32I-SFB-NEXT:    mv a0, a2
 ; RV32I-SFB-NEXT:  .LBB49_4: # %entry
 ; RV32I-SFB-NEXT:    sw a6, 4(a4)
-; RV32I-SFB-NEXT:    mv a0, a2
 ; RV32I-SFB-NEXT:    mv a1, a3
 ; RV32I-SFB-NEXT:    ret
 ;
@@ -3742,14 +3743,13 @@ define i64 @test_i8_s_store_64_op(ptr %base, i1 zeroext %x, i64 %b, ptr %base1, 
 ; RV32I-SFBILOAD-NEXT:    sw a5, 0(a4)
 ; RV32I-SFBILOAD-NEXT:    bnez a1, .LBB49_2
 ; RV32I-SFBILOAD-NEXT:  # %bb.1: # %entry
-; RV32I-SFBILOAD-NEXT:    mv a2, a0
-; RV32I-SFBILOAD-NEXT:  .LBB49_2: # %entry
-; RV32I-SFBILOAD-NEXT:    bnez a1, .LBB49_4
-; RV32I-SFBILOAD-NEXT:  # %bb.3: # %entry
 ; RV32I-SFBILOAD-NEXT:    srai a3, a0, 31
+; RV32I-SFBILOAD-NEXT:  .LBB49_2: # %entry
+; RV32I-SFBILOAD-NEXT:    beqz a1, .LBB49_4
+; RV32I-SFBILOAD-NEXT:  # %bb.3: # %entry
+; RV32I-SFBILOAD-NEXT:    mv a0, a2
 ; RV32I-SFBILOAD-NEXT:  .LBB49_4: # %entry
 ; RV32I-SFBILOAD-NEXT:    sw a6, 4(a4)
-; RV32I-SFBILOAD-NEXT:    mv a0, a2
 ; RV32I-SFBILOAD-NEXT:    mv a1, a3
 ; RV32I-SFBILOAD-NEXT:    ret
 ;
@@ -3799,10 +3799,11 @@ define i64 @test_i8_z_store_64_op(ptr %base, i1 zeroext %x, i64 %b, ptr %base1, 
 ;
 ; RV32I-SFB-LABEL: test_i8_z_store_64_op:
 ; RV32I-SFB:       # %bb.0: # %entry
+; RV32I-SFB-NEXT:    li a7, 0
 ; RV32I-SFB-NEXT:    lbu a0, 4(a0)
-; RV32I-SFB-NEXT:    bnez a1, .LBB50_2
+; RV32I-SFB-NEXT:    beqz a1, .LBB50_2
 ; RV32I-SFB-NEXT:  # %bb.1: # %entry
-; RV32I-SFB-NEXT:    li a3, 0
+; RV32I-SFB-NEXT:    mv a7, a3
 ; RV32I-SFB-NEXT:  .LBB50_2: # %entry
 ; RV32I-SFB-NEXT:    beqz a1, .LBB50_4
 ; RV32I-SFB-NEXT:  # %bb.3: # %entry
@@ -3810,7 +3811,7 @@ define i64 @test_i8_z_store_64_op(ptr %base, i1 zeroext %x, i64 %b, ptr %base1, 
 ; RV32I-SFB-NEXT:  .LBB50_4: # %entry
 ; RV32I-SFB-NEXT:    sw a5, 0(a4)
 ; RV32I-SFB-NEXT:    sw a6, 4(a4)
-; RV32I-SFB-NEXT:    mv a1, a3
+; RV32I-SFB-NEXT:    mv a1, a7
 ; RV32I-SFB-NEXT:    ret
 ;
 ; RV64I-SFB-LABEL: test_i8_z_store_64_op:
@@ -3825,10 +3826,11 @@ define i64 @test_i8_z_store_64_op(ptr %base, i1 zeroext %x, i64 %b, ptr %base1, 
 ;
 ; RV32I-SFBILOAD-LABEL: test_i8_z_store_64_op:
 ; RV32I-SFBILOAD:       # %bb.0: # %entry
+; RV32I-SFBILOAD-NEXT:    li a7, 0
 ; RV32I-SFBILOAD-NEXT:    lbu a0, 4(a0)
-; RV32I-SFBILOAD-NEXT:    bnez a1, .LBB50_2
+; RV32I-SFBILOAD-NEXT:    beqz a1, .LBB50_2
 ; RV32I-SFBILOAD-NEXT:  # %bb.1: # %entry
-; RV32I-SFBILOAD-NEXT:    li a3, 0
+; RV32I-SFBILOAD-NEXT:    mv a7, a3
 ; RV32I-SFBILOAD-NEXT:  .LBB50_2: # %entry
 ; RV32I-SFBILOAD-NEXT:    beqz a1, .LBB50_4
 ; RV32I-SFBILOAD-NEXT:  # %bb.3: # %entry
@@ -3836,7 +3838,7 @@ define i64 @test_i8_z_store_64_op(ptr %base, i1 zeroext %x, i64 %b, ptr %base1, 
 ; RV32I-SFBILOAD-NEXT:  .LBB50_4: # %entry
 ; RV32I-SFBILOAD-NEXT:    sw a5, 0(a4)
 ; RV32I-SFBILOAD-NEXT:    sw a6, 4(a4)
-; RV32I-SFBILOAD-NEXT:    mv a1, a3
+; RV32I-SFBILOAD-NEXT:    mv a1, a7
 ; RV32I-SFBILOAD-NEXT:    ret
 ;
 ; RV64I-SFBILOAD-LABEL: test_i8_z_store_64_op:
@@ -3889,14 +3891,13 @@ define i64 @test_i16_s_store_64_op(ptr %base, i1 zeroext %x, i64 %b, ptr %base1,
 ; RV32I-SFB-NEXT:    sw a5, 0(a4)
 ; RV32I-SFB-NEXT:    bnez a1, .LBB51_2
 ; RV32I-SFB-NEXT:  # %bb.1: # %entry
-; RV32I-SFB-NEXT:    mv a2, a0
-; RV32I-SFB-NEXT:  .LBB51_2: # %entry
-; RV32I-SFB-NEXT:    bnez a1, .LBB51_4
-; RV32I-SFB-NEXT:  # %bb.3: # %entry
 ; RV32I-SFB-NEXT:    srai a3, a0, 31
+; RV32I-SFB-NEXT:  .LBB51_2: # %entry
+; RV32I-SFB-NEXT:    beqz a1, .LBB51_4
+; RV32I-SFB-NEXT:  # %bb.3: # %entry
+; RV32I-SFB-NEXT:    mv a0, a2
 ; RV32I-SFB-NEXT:  .LBB51_4: # %entry
 ; RV32I-SFB-NEXT:    sw a6, 4(a4)
-; RV32I-SFB-NEXT:    mv a0, a2
 ; RV32I-SFB-NEXT:    mv a1, a3
 ; RV32I-SFB-NEXT:    ret
 ;
@@ -3916,14 +3917,13 @@ define i64 @test_i16_s_store_64_op(ptr %base, i1 zeroext %x, i64 %b, ptr %base1,
 ; RV32I-SFBILOAD-NEXT:    sw a5, 0(a4)
 ; RV32I-SFBILOAD-NEXT:    bnez a1, .LBB51_2
 ; RV32I-SFBILOAD-NEXT:  # %bb.1: # %entry
-; RV32I-SFBILOAD-NEXT:    mv a2, a0
-; RV32I-SFBILOAD-NEXT:  .LBB51_2: # %entry
-; RV32I-SFBILOAD-NEXT:    bnez a1, .LBB51_4
-; RV32I-SFBILOAD-NEXT:  # %bb.3: # %entry
 ; RV32I-SFBILOAD-NEXT:    srai a3, a0, 31
+; RV32I-SFBILOAD-NEXT:  .LBB51_2: # %entry
+; RV32I-SFBILOAD-NEXT:    beqz a1, .LBB51_4
+; RV32I-SFBILOAD-NEXT:  # %bb.3: # %entry
+; RV32I-SFBILOAD-NEXT:    mv a0, a2
 ; RV32I-SFBILOAD-NEXT:  .LBB51_4: # %entry
 ; RV32I-SFBILOAD-NEXT:    sw a6, 4(a4)
-; RV32I-SFBILOAD-NEXT:    mv a0, a2
 ; RV32I-SFBILOAD-NEXT:    mv a1, a3
 ; RV32I-SFBILOAD-NEXT:    ret
 ;
@@ -3973,10 +3973,11 @@ define i64 @test_i16_z_store_64_op(ptr %base, i1 zeroext %x, i64 %b, ptr %base1,
 ;
 ; RV32I-SFB-LABEL: test_i16_z_store_64_op:
 ; RV32I-SFB:       # %bb.0: # %entry
+; RV32I-SFB-NEXT:    li a7, 0
 ; RV32I-SFB-NEXT:    lhu a0, 8(a0)
-; RV32I-SFB-NEXT:    bnez a1, .LBB52_2
+; RV32I-SFB-NEXT:    beqz a1, .LBB52_2
 ; RV32I-SFB-NEXT:  # %bb.1: # %entry
-; RV32I-SFB-NEXT:    li a3, 0
+; RV32I-SFB-NEXT:    mv a7, a3
 ; RV32I-SFB-NEXT:  .LBB52_2: # %entry
 ; RV32I-SFB-NEXT:    beqz a1, .LBB52_4
 ; RV32I-SFB-NEXT:  # %bb.3: # %entry
@@ -3984,7 +3985,7 @@ define i64 @test_i16_z_store_64_op(ptr %base, i1 zeroext %x, i64 %b, ptr %base1,
 ; RV32I-SFB-NEXT:  .LBB52_4: # %entry
 ; RV32I-SFB-NEXT:    sw a5, 0(a4)
 ; RV32I-SFB-NEXT:    sw a6, 4(a4)
-; RV32I-SFB-NEXT:    mv a1, a3
+; RV32I-SFB-NEXT:    mv a1, a7
 ; RV32I-SFB-NEXT:    ret
 ;
 ; RV64I-SFB-LABEL: test_i16_z_store_64_op:
@@ -3999,10 +4000,11 @@ define i64 @test_i16_z_store_64_op(ptr %base, i1 zeroext %x, i64 %b, ptr %base1,
 ;
 ; RV32I-SFBILOAD-LABEL: test_i16_z_store_64_op:
 ; RV32I-SFBILOAD:       # %bb.0: # %entry
+; RV32I-SFBILOAD-NEXT:    li a7, 0
 ; RV32I-SFBILOAD-NEXT:    lhu a0, 8(a0)
-; RV32I-SFBILOAD-NEXT:    bnez a1, .LBB52_2
+; RV32I-SFBILOAD-NEXT:    beqz a1, .LBB52_2
 ; RV32I-SFBILOAD-NEXT:  # %bb.1: # %entry
-; RV32I-SFBILOAD-NEXT:    li a3, 0
+; RV32I-SFBILOAD-NEXT:    mv a7, a3
 ; RV32I-SFBILOAD-NEXT:  .LBB52_2: # %entry
 ; RV32I-SFBILOAD-NEXT:    beqz a1, .LBB52_4
 ; RV32I-SFBILOAD-NEXT:  # %bb.3: # %entry
@@ -4010,7 +4012,7 @@ define i64 @test_i16_z_store_64_op(ptr %base, i1 zeroext %x, i64 %b, ptr %base1,
 ; RV32I-SFBILOAD-NEXT:  .LBB52_4: # %entry
 ; RV32I-SFBILOAD-NEXT:    sw a5, 0(a4)
 ; RV32I-SFBILOAD-NEXT:    sw a6, 4(a4)
-; RV32I-SFBILOAD-NEXT:    mv a1, a3
+; RV32I-SFBILOAD-NEXT:    mv a1, a7
 ; RV32I-SFBILOAD-NEXT:    ret
 ;
 ; RV64I-SFBILOAD-LABEL: test_i16_z_store_64_op:
@@ -4059,10 +4061,11 @@ define i64 @test_i32_z_store_64_op(ptr %base, i1 zeroext %x, i64 %b, ptr %base1,
 ;
 ; RV32I-SFB-LABEL: test_i32_z_store_64_op:
 ; RV32I-SFB:       # %bb.0: # %entry
+; RV32I-SFB-NEXT:    li a7, 0
 ; RV32I-SFB-NEXT:    lw a0, 16(a0)
-; RV32I-SFB-NEXT:    bnez a1, .LBB53_2
+; RV32I-SFB-NEXT:    beqz a1, .LBB53_2
 ; RV32I-SFB-NEXT:  # %bb.1: # %entry
-; RV32I-SFB-NEXT:    li a3, 0
+; RV32I-SFB-NEXT:    mv a7, a3
 ; RV32I-SFB-NEXT:  .LBB53_2: # %entry
 ; RV32I-SFB-NEXT:    beqz a1, .LBB53_4
 ; RV32I-SFB-NEXT:  # %bb.3: # %entry
@@ -4070,7 +4073,7 @@ define i64 @test_i32_z_store_64_op(ptr %base, i1 zeroext %x, i64 %b, ptr %base1,
 ; RV32I-SFB-NEXT:  .LBB53_4: # %entry
 ; RV32I-SFB-NEXT:    sw a5, 0(a4)
 ; RV32I-SFB-NEXT:    sw a6, 4(a4)
-; RV32I-SFB-NEXT:    mv a1, a3
+; RV32I-SFB-NEXT:    mv a1, a7
 ; RV32I-SFB-NEXT:    ret
 ;
 ; RV64I-SFB-LABEL: test_i32_z_store_64_op:
@@ -4085,10 +4088,11 @@ define i64 @test_i32_z_store_64_op(ptr %base, i1 zeroext %x, i64 %b, ptr %base1,
 ;
 ; RV32I-SFBILOAD-LABEL: test_i32_z_store_64_op:
 ; RV32I-SFBILOAD:       # %bb.0: # %entry
+; RV32I-SFBILOAD-NEXT:    li a7, 0
 ; RV32I-SFBILOAD-NEXT:    lw a0, 16(a0)
-; RV32I-SFBILOAD-NEXT:    bnez a1, .LBB53_2
+; RV32I-SFBILOAD-NEXT:    beqz a1, .LBB53_2
 ; RV32I-SFBILOAD-NEXT:  # %bb.1: # %entry
-; RV32I-SFBILOAD-NEXT:    li a3, 0
+; RV32I-SFBILOAD-NEXT:    mv a7, a3
 ; RV32I-SFBILOAD-NEXT:  .LBB53_2: # %entry
 ; RV32I-SFBILOAD-NEXT:    beqz a1, .LBB53_4
 ; RV32I-SFBILOAD-NEXT:  # %bb.3: # %entry
@@ -4096,7 +4100,7 @@ define i64 @test_i32_z_store_64_op(ptr %base, i1 zeroext %x, i64 %b, ptr %base1,
 ; RV32I-SFBILOAD-NEXT:  .LBB53_4: # %entry
 ; RV32I-SFBILOAD-NEXT:    sw a5, 0(a4)
 ; RV32I-SFBILOAD-NEXT:    sw a6, 4(a4)
-; RV32I-SFBILOAD-NEXT:    mv a1, a3
+; RV32I-SFBILOAD-NEXT:    mv a1, a7
 ; RV32I-SFBILOAD-NEXT:    ret
 ;
 ; RV64I-SFBILOAD-LABEL: test_i32_z_store_64_op:
@@ -4607,20 +4611,20 @@ define i64 @test_i8_s_1_volatile_op(ptr %base, i1 zeroext %x, i64 %b, ptr %base1
 ;
 ; RV32I-SFB-LABEL: test_i8_s_1_volatile_op:
 ; RV32I-SFB:       # %bb.0: # %entry
-; RV32I-SFB-NEXT:    lb a0, 4(a0)
-; RV32I-SFB-NEXT:    lw a5, 4(a4)
-; RV32I-SFB-NEXT:    lw a4, 0(a4)
+; RV32I-SFB-NEXT:    lb a5, 4(a0)
+; RV32I-SFB-NEXT:    lw a6, 4(a4)
+; RV32I-SFB-NEXT:    lw a0, 0(a4)
 ; RV32I-SFB-NEXT:    bnez a1, .LBB60_2
 ; RV32I-SFB-NEXT:  # %bb.1: # %entry
-; RV32I-SFB-NEXT:    srai a3, a0, 31
+; RV32I-SFB-NEXT:    srai a3, a5, 31
 ; RV32I-SFB-NEXT:  .LBB60_2: # %entry
-; RV32I-SFB-NEXT:    bnez a1, .LBB60_4
+; RV32I-SFB-NEXT:    beqz a1, .LBB60_4
 ; RV32I-SFB-NEXT:  # %bb.3: # %entry
-; RV32I-SFB-NEXT:    mv a2, a0
+; RV32I-SFB-NEXT:    mv a5, a2
 ; RV32I-SFB-NEXT:  .LBB60_4: # %entry
-; RV32I-SFB-NEXT:    add a0, a2, a4
-; RV32I-SFB-NEXT:    sltu a1, a0, a2
-; RV32I-SFB-NEXT:    add a3, a3, a5
+; RV32I-SFB-NEXT:    add a0, a5, a0
+; RV32I-SFB-NEXT:    sltu a1, a0, a5
+; RV32I-SFB-NEXT:    add a3, a3, a6
 ; RV32I-SFB-NEXT:    add a1, a3, a1
 ; RV32I-SFB-NEXT:    ret
 ;
@@ -4637,20 +4641,20 @@ define i64 @test_i8_s_1_volatile_op(ptr %base, i1 zeroext %x, i64 %b, ptr %base1
 ;
 ; RV32I-SFBILOAD-LABEL: test_i8_s_1_volatile_op:
 ; RV32I-SFBILOAD:       # %bb.0: # %entry
-; RV32I-SFBILOAD-NEXT:    lb a0, 4(a0)
-; RV32I-SFBILOAD-NEXT:    lw a5, 4(a4)
-; RV32I-SFBILOAD-NEXT:    lw a4, 0(a4)
+; RV32I-SFBILOAD-NEXT:    lb a5, 4(a0)
+; RV32I-SFBILOAD-NEXT:    lw a6, 4(a4)
+; RV32I-SFBILOAD-NEXT:    lw a0, 0(a4)
 ; RV32I-SFBILOAD-NEXT:    bnez a1, .LBB60_2
 ; RV32I-SFBILOAD-NEXT:  # %bb.1: # %entry
-; RV32I-SFBILOAD-NEXT:    srai a3, a0, 31
+; RV32I-SFBILOAD-NEXT:    srai a3, a5, 31
 ; RV32I-SFBILOAD-NEXT:  .LBB60_2: # %entry
-; RV32I-SFBILOAD-NEXT:    bnez a1, .LBB60_4
+; RV32I-SFBILOAD-NEXT:    beqz a1, .LBB60_4
 ; RV32I-SFBILOAD-NEXT:  # %bb.3: # %entry
-; RV32I-SFBILOAD-NEXT:    mv a2, a0
+; RV32I-SFBILOAD-NEXT:    mv a5, a2
 ; RV32I-SFBILOAD-NEXT:  .LBB60_4: # %entry
-; RV32I-SFBILOAD-NEXT:    add a0, a2, a4
-; RV32I-SFBILOAD-NEXT:    sltu a1, a0, a2
-; RV32I-SFBILOAD-NEXT:    add a3, a3, a5
+; RV32I-SFBILOAD-NEXT:    add a0, a5, a0
+; RV32I-SFBILOAD-NEXT:    sltu a1, a0, a5
+; RV32I-SFBILOAD-NEXT:    add a3, a3, a6
 ; RV32I-SFBILOAD-NEXT:    add a1, a3, a1
 ; RV32I-SFBILOAD-NEXT:    ret
 ;
@@ -4797,20 +4801,20 @@ define i64 @test_i16_s_1_volatile_op(ptr %base, i1 zeroext %x, i64 %b, ptr %base
 ;
 ; RV32I-SFB-LABEL: test_i16_s_1_volatile_op:
 ; RV32I-SFB:       # %bb.0: # %entry
-; RV32I-SFB-NEXT:    lh a0, 8(a0)
-; RV32I-SFB-NEXT:    lw a5, 4(a4)
-; RV32I-SFB-NEXT:    lw a4, 0(a4)
+; RV32I-SFB-NEXT:    lh a5, 8(a0)
+; RV32I-SFB-NEXT:    lw a6, 4(a4)
+; RV32I-SFB-NEXT:    lw a0, 0(a4)
 ; RV32I-SFB-NEXT:    bnez a1, .LBB62_2
 ; RV32I-SFB-NEXT:  # %bb.1: # %entry
-; RV32I-SFB-NEXT:    srai a3, a0, 31
+; RV32I-SFB-NEXT:    srai a3, a5, 31
 ; RV32I-SFB-NEXT:  .LBB62_2: # %entry
-; RV32I-SFB-NEXT:    bnez a1, .LBB62_4
+; RV32I-SFB-NEXT:    beqz a1, .LBB62_4
 ; RV32I-SFB-NEXT:  # %bb.3: # %entry
-; RV32I-SFB-NEXT:    mv a2, a0
+; RV32I-SFB-NEXT:    mv a5, a2
 ; RV32I-SFB-NEXT:  .LBB62_4: # %entry
-; RV32I-SFB-NEXT:    add a0, a2, a4
-; RV32I-SFB-NEXT:    sltu a1, a0, a2
-; RV32I-SFB-NEXT:    add a3, a3, a5
+; RV32I-SFB-NEXT:    add a0, a5, a0
+; RV32I-SFB-NEXT:    sltu a1, a0, a5
+; RV32I-SFB-NEXT:    add a3, a3, a6
 ; RV32I-SFB-NEXT:    add a1, a3, a1
 ; RV32I-SFB-NEXT:    ret
 ;
@@ -4827,20 +4831,20 @@ define i64 @test_i16_s_1_volatile_op(ptr %base, i1 zeroext %x, i64 %b, ptr %base
 ;
 ; RV32I-SFBILOAD-LABEL: test_i16_s_1_volatile_op:
 ; RV32I-SFBILOAD:       # %bb.0: # %entry
-; RV32I-SFBILOAD-NEXT:    lh a0, 8(a0)
-; RV32I-SFBILOAD-NEXT:    lw a5, 4(a4)
-; RV32I-SFBILOAD-NEXT:    lw a4, 0(a4)
+; RV32I-SFBILOAD-NEXT:    lh a5, 8(a0)
+; RV32I-SFBILOAD-NEXT:    lw a6, 4(a4)
+; RV32I-SFBILOAD-NEXT:    lw a0, 0(a4)
 ; RV32I-SFBILOAD-NEXT:    bnez a1, .LBB62_2
 ; RV32I-SFBILOAD-NEXT:  # %bb.1: # %entry
-; RV32I-SFBILOAD-NEXT:    srai a3, a0, 31
+; RV32I-SFBILOAD-NEXT:    srai a3, a5, 31
 ; RV32I-SFBILOAD-NEXT:  .LBB62_2: # %entry
-; RV32I-SFBILOAD-NEXT:    bnez a1, .LBB62_4
+; RV32I-SFBILOAD-NEXT:    beqz a1, .LBB62_4
 ; RV32I-SFBILOAD-NEXT:  # %bb.3: # %entry
-; RV32I-SFBILOAD-NEXT:    mv a2, a0
+; RV32I-SFBILOAD-NEXT:    mv a5, a2
 ; RV32I-SFBILOAD-NEXT:  .LBB62_4: # %entry
-; RV32I-SFBILOAD-NEXT:    add a0, a2, a4
-; RV32I-SFBILOAD-NEXT:    sltu a1, a0, a2
-; RV32I-SFBILOAD-NEXT:    add a3, a3, a5
+; RV32I-SFBILOAD-NEXT:    add a0, a5, a0
+; RV32I-SFBILOAD-NEXT:    sltu a1, a0, a5
+; RV32I-SFBILOAD-NEXT:    add a3, a3, a6
 ; RV32I-SFBILOAD-NEXT:    add a1, a3, a1
 ; RV32I-SFBILOAD-NEXT:    ret
 ;
@@ -6224,14 +6228,16 @@ define i64 @test_i64_1_2(ptr %base, i1 zeroext %x, i64 %b) nounwind {
 ; RV32I-SFB-NEXT:    addi a0, a0, 32
 ; RV32I-SFB-NEXT:    li a1, 0
 ; RV32I-SFB-NEXT:    call __atomic_load_8
-; RV32I-SFB-NEXT:    bnez s2, .LBB81_2
+; RV32I-SFB-NEXT:    beqz s2, .LBB81_2
 ; RV32I-SFB-NEXT:  # %bb.1: # %entry
-; RV32I-SFB-NEXT:    mv a0, s1
+; RV32I-SFB-NEXT:    mv s1, a0
 ; RV32I-SFB-NEXT:  .LBB81_2: # %entry
-; RV32I-SFB-NEXT:    bnez s2, .LBB81_4
+; RV32I-SFB-NEXT:    beqz s2, .LBB81_4
 ; RV32I-SFB-NEXT:  # %bb.3: # %entry
-; RV32I-SFB-NEXT:    mv a1, s0
+; RV32I-SFB-NEXT:    mv s0, a1
 ; RV32I-SFB-NEXT:  .LBB81_4: # %entry
+; RV32I-SFB-NEXT:    mv a0, s1
+; RV32I-SFB-NEXT:    mv a1, s0
 ; RV32I-SFB-NEXT:    lw ra, 12(sp) # 4-byte Folded Reload
 ; RV32I-SFB-NEXT:    lw s0, 8(sp) # 4-byte Folded Reload
 ; RV32I-SFB-NEXT:    lw s1, 4(sp) # 4-byte Folded Reload
@@ -6261,14 +6267,16 @@ define i64 @test_i64_1_2(ptr %base, i1 zeroext %x, i64 %b) nounwind {
 ; RV32I-SFBILOAD-NEXT:    addi a0, a0, 32
 ; RV32I-SFBILOAD-NEXT:    li a1, 0
 ; RV32I-SFBILOAD-NEXT:    call __atomic_load_8
-; RV32I-SFBILOAD-NEXT:    bnez s2, .LBB81_2
+; RV32I-SFBILOAD-NEXT:    beqz s2, .LBB81_2
 ; RV32I-SFBILOAD-NEXT:  # %bb.1: # %entry
-; RV32I-SFBILOAD-NEXT:    mv a0, s1
+; RV32I-SFBILOAD-NEXT:    mv s1, a0
 ; RV32I-SFBILOAD-NEXT:  .LBB81_2: # %entry
-; RV32I-SFBILOAD-NEXT:    bnez s2, .LBB81_4
+; RV32I-SFBILOAD-NEXT:    beqz s2, .LBB81_4
 ; RV32I-SFBILOAD-NEXT:  # %bb.3: # %entry
-; RV32I-SFBILOAD-NEXT:    mv a1, s0
+; RV32I-SFBILOAD-NEXT:    mv s0, a1
 ; RV32I-SFBILOAD-NEXT:  .LBB81_4: # %entry
+; RV32I-SFBILOAD-NEXT:    mv a0, s1
+; RV32I-SFBILOAD-NEXT:    mv a1, s0
 ; RV32I-SFBILOAD-NEXT:    lw ra, 12(sp) # 4-byte Folded Reload
 ; RV32I-SFBILOAD-NEXT:    lw s0, 8(sp) # 4-byte Folded Reload
 ; RV32I-SFBILOAD-NEXT:    lw s1, 4(sp) # 4-byte Folded Reload
@@ -6783,16 +6791,18 @@ define i64 @test_i64_store_64_2(ptr %base, i1 zeroext %x, i64 %b, ptr %base1, i6
 ; RV32I-SFB-NEXT:    addi a0, a0, 32
 ; RV32I-SFB-NEXT:    li a1, 0
 ; RV32I-SFB-NEXT:    call __atomic_load_8
-; RV32I-SFB-NEXT:    sw s1, 0(s2)
-; RV32I-SFB-NEXT:    bnez s5, .LBB87_2
+; RV32I-SFB-NEXT:    beqz s5, .LBB87_2
 ; RV32I-SFB-NEXT:  # %bb.1: # %entry
-; RV32I-SFB-NEXT:    mv a0, s4
+; RV32I-SFB-NEXT:    mv s4, a0
 ; RV32I-SFB-NEXT:  .LBB87_2: # %entry
-; RV32I-SFB-NEXT:    bnez s5, .LBB87_4
+; RV32I-SFB-NEXT:    beqz s5, .LBB87_4
 ; RV32I-SFB-NEXT:  # %bb.3: # %entry
-; RV32I-SFB-NEXT:    mv a1, s3
+; RV32I-SFB-NEXT:    mv s3, a1
 ; RV32I-SFB-NEXT:  .LBB87_4: # %entry
+; RV32I-SFB-NEXT:    sw s1, 0(s2)
 ; RV32I-SFB-NEXT:    sw s0, 4(s2)
+; RV32I-SFB-NEXT:    mv a0, s4
+; RV32I-SFB-NEXT:    mv a1, s3
 ; RV32I-SFB-NEXT:    lw ra, 28(sp) # 4-byte Folded Reload
 ; RV32I-SFB-NEXT:    lw s0, 24(sp) # 4-byte Folded Reload
 ; RV32I-SFB-NEXT:    lw s1, 20(sp) # 4-byte Folded Reload
@@ -6832,16 +6842,18 @@ define i64 @test_i64_store_64_2(ptr %base, i1 zeroext %x, i64 %b, ptr %base1, i6
 ; RV32I-SFBILOAD-NEXT:    addi a0, a0, 32
 ; RV32I-SFBILOAD-NEXT:    li a1, 0
 ; RV32I-SFBILOAD-NEXT:    call __atomic_load_8
-; RV32I-SFBILOAD-NEXT:    sw s1, 0(s2)
-; RV32I-SFBILOAD-NEXT:    bnez s5, .LBB87_2
+; RV32I-SFBILOAD-NEXT:    beqz s5, .LBB87_2
 ; RV32I-SFBILOAD-NEXT:  # %bb.1: # %entry
-; RV32I-SFBILOAD-NEXT:    mv a0, s4
+; RV32I-SFBILOAD-NEXT:    mv s4, a0
 ; RV32I-SFBILOAD-NEXT:  .LBB87_2: # %entry
-; RV32I-SFBILOAD-NEXT:    bnez s5, .LBB87_4
+; RV32I-SFBILOAD-NEXT:    beqz s5, .LBB87_4
 ; RV32I-SFBILOAD-NEXT:  # %bb.3: # %entry
-; RV32I-SFBILOAD-NEXT:    mv a1, s3
+; RV32I-SFBILOAD-NEXT:    mv s3, a1
 ; RV32I-SFBILOAD-NEXT:  .LBB87_4: # %entry
+; RV32I-SFBILOAD-NEXT:    sw s1, 0(s2)
 ; RV32I-SFBILOAD-NEXT:    sw s0, 4(s2)
+; RV32I-SFBILOAD-NEXT:    mv a0, s4
+; RV32I-SFBILOAD-NEXT:    mv a1, s3
 ; RV32I-SFBILOAD-NEXT:    lw ra, 28(sp) # 4-byte Folded Reload
 ; RV32I-SFBILOAD-NEXT:    lw s0, 24(sp) # 4-byte Folded Reload
 ; RV32I-SFBILOAD-NEXT:    lw s1, 20(sp) # 4-byte Folded Reload

@@ -90,7 +90,8 @@ define <8 x i16> @test_abs_gt_v8i16(<8 x i16> %a) nounwind {
 ; SSE2:       # %bb.0:
 ; SSE2-NEXT:    pxor %xmm1, %xmm1
 ; SSE2-NEXT:    psubw %xmm0, %xmm1
-; SSE2-NEXT:    pmaxsw %xmm1, %xmm0
+; SSE2-NEXT:    pmaxsw %xmm0, %xmm1
+; SSE2-NEXT:    movdqa %xmm1, %xmm0
 ; SSE2-NEXT:    retq
 ;
 ; SSSE3-LABEL: test_abs_gt_v8i16:
@@ -133,7 +134,8 @@ define <16 x i8> @test_abs_lt_v16i8(<16 x i8> %a) nounwind {
 ; SSE2:       # %bb.0:
 ; SSE2-NEXT:    pxor %xmm1, %xmm1
 ; SSE2-NEXT:    psubb %xmm0, %xmm1
-; SSE2-NEXT:    pminub %xmm1, %xmm0
+; SSE2-NEXT:    pminub %xmm0, %xmm1
+; SSE2-NEXT:    movdqa %xmm1, %xmm0
 ; SSE2-NEXT:    retq
 ;
 ; SSSE3-LABEL: test_abs_lt_v16i8:
@@ -312,9 +314,11 @@ define <16 x i16> @test_abs_gt_v16i16(<16 x i16> %a) nounwind {
 ; SSE2-NEXT:    pxor %xmm2, %xmm2
 ; SSE2-NEXT:    pxor %xmm3, %xmm3
 ; SSE2-NEXT:    psubw %xmm0, %xmm3
-; SSE2-NEXT:    pmaxsw %xmm3, %xmm0
+; SSE2-NEXT:    pmaxsw %xmm0, %xmm3
 ; SSE2-NEXT:    psubw %xmm1, %xmm2
-; SSE2-NEXT:    pmaxsw %xmm2, %xmm1
+; SSE2-NEXT:    pmaxsw %xmm1, %xmm2
+; SSE2-NEXT:    movdqa %xmm3, %xmm0
+; SSE2-NEXT:    movdqa %xmm2, %xmm1
 ; SSE2-NEXT:    retq
 ;
 ; SSSE3-LABEL: test_abs_gt_v16i16:
@@ -363,9 +367,11 @@ define <32 x i8> @test_abs_lt_v32i8(<32 x i8> %a) nounwind {
 ; SSE2-NEXT:    pxor %xmm2, %xmm2
 ; SSE2-NEXT:    pxor %xmm3, %xmm3
 ; SSE2-NEXT:    psubb %xmm0, %xmm3
-; SSE2-NEXT:    pminub %xmm3, %xmm0
+; SSE2-NEXT:    pminub %xmm0, %xmm3
 ; SSE2-NEXT:    psubb %xmm1, %xmm2
-; SSE2-NEXT:    pminub %xmm2, %xmm1
+; SSE2-NEXT:    pminub %xmm1, %xmm2
+; SSE2-NEXT:    movdqa %xmm3, %xmm0
+; SSE2-NEXT:    movdqa %xmm2, %xmm1
 ; SSE2-NEXT:    retq
 ;
 ; SSSE3-LABEL: test_abs_lt_v32i8:
@@ -850,15 +856,19 @@ define <64 x i8> @test_abs_lt_v64i8(<64 x i8> %a) nounwind {
 ; SSE2-NEXT:    pxor %xmm4, %xmm4
 ; SSE2-NEXT:    pxor %xmm5, %xmm5
 ; SSE2-NEXT:    psubb %xmm0, %xmm5
-; SSE2-NEXT:    pminub %xmm5, %xmm0
-; SSE2-NEXT:    pxor %xmm5, %xmm5
-; SSE2-NEXT:    psubb %xmm1, %xmm5
-; SSE2-NEXT:    pminub %xmm5, %xmm1
-; SSE2-NEXT:    pxor %xmm5, %xmm5
-; SSE2-NEXT:    psubb %xmm2, %xmm5
-; SSE2-NEXT:    pminub %xmm5, %xmm2
+; SSE2-NEXT:    pminub %xmm0, %xmm5
+; SSE2-NEXT:    pxor %xmm6, %xmm6
+; SSE2-NEXT:    psubb %xmm1, %xmm6
+; SSE2-NEXT:    pminub %xmm1, %xmm6
+; SSE2-NEXT:    pxor %xmm7, %xmm7
+; SSE2-NEXT:    psubb %xmm2, %xmm7
+; SSE2-NEXT:    pminub %xmm2, %xmm7
 ; SSE2-NEXT:    psubb %xmm3, %xmm4
-; SSE2-NEXT:    pminub %xmm4, %xmm3
+; SSE2-NEXT:    pminub %xmm3, %xmm4
+; SSE2-NEXT:    movdqa %xmm5, %xmm0
+; SSE2-NEXT:    movdqa %xmm6, %xmm1
+; SSE2-NEXT:    movdqa %xmm7, %xmm2
+; SSE2-NEXT:    movdqa %xmm4, %xmm3
 ; SSE2-NEXT:    retq
 ;
 ; SSSE3-LABEL: test_abs_lt_v64i8:
@@ -919,15 +929,19 @@ define <32 x i16> @test_abs_gt_v32i16(<32 x i16> %a) nounwind {
 ; SSE2-NEXT:    pxor %xmm4, %xmm4
 ; SSE2-NEXT:    pxor %xmm5, %xmm5
 ; SSE2-NEXT:    psubw %xmm0, %xmm5
-; SSE2-NEXT:    pmaxsw %xmm5, %xmm0
-; SSE2-NEXT:    pxor %xmm5, %xmm5
-; SSE2-NEXT:    psubw %xmm1, %xmm5
-; SSE2-NEXT:    pmaxsw %xmm5, %xmm1
-; SSE2-NEXT:    pxor %xmm5, %xmm5
-; SSE2-NEXT:    psubw %xmm2, %xmm5
-; SSE2-NEXT:    pmaxsw %xmm5, %xmm2
+; SSE2-NEXT:    pmaxsw %xmm0, %xmm5
+; SSE2-NEXT:    pxor %xmm6, %xmm6
+; SSE2-NEXT:    psubw %xmm1, %xmm6
+; SSE2-NEXT:    pmaxsw %xmm1, %xmm6
+; SSE2-NEXT:    pxor %xmm7, %xmm7
+; SSE2-NEXT:    psubw %xmm2, %xmm7
+; SSE2-NEXT:    pmaxsw %xmm2, %xmm7
 ; SSE2-NEXT:    psubw %xmm3, %xmm4
-; SSE2-NEXT:    pmaxsw %xmm4, %xmm3
+; SSE2-NEXT:    pmaxsw %xmm3, %xmm4
+; SSE2-NEXT:    movdqa %xmm5, %xmm0
+; SSE2-NEXT:    movdqa %xmm6, %xmm1
+; SSE2-NEXT:    movdqa %xmm7, %xmm2
+; SSE2-NEXT:    movdqa %xmm4, %xmm3
 ; SSE2-NEXT:    retq
 ;
 ; SSSE3-LABEL: test_abs_gt_v32i16:

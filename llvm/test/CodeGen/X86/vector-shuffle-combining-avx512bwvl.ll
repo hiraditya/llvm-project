@@ -50,7 +50,8 @@ define <16 x i16> @combine_vpermt2var_vpermi2var_16i16_as_vperm2(<16 x i16> %x0,
 ; CHECK-LABEL: combine_vpermt2var_vpermi2var_16i16_as_vperm2:
 ; CHECK:       # %bb.0:
 ; CHECK-NEXT:    vpmovsxbw {{.*#+}} ymm2 = [0,31,2,2,4,29,6,27,8,25,10,23,12,21,14,19]
-; CHECK-NEXT:    vpermt2w %ymm1, %ymm2, %ymm0
+; CHECK-NEXT:    vpermi2w %ymm1, %ymm0, %ymm2
+; CHECK-NEXT:    vmovdqa %ymm2, %ymm0
 ; CHECK-NEXT:    ret{{[l|q]}}
   %res0 = call <16 x i16> @llvm.x86.avx512.mask.vpermi2var.hi.256(<16 x i16> %x0, <16 x i16> <i16 0, i16 31, i16 2, i16 29, i16 4, i16 27, i16 6, i16 25, i16 8, i16 23, i16 10, i16 21, i16 12, i16 19, i16 14, i16 17>, <16 x i16> %x1, i16 -1)
   %res1 = call <16 x i16> @llvm.x86.avx512.maskz.vpermt2var.hi.256(<16 x i16> <i16 0, i16 17, i16 2, i16 18, i16 4, i16 19, i16 6, i16 21, i16 8, i16 23, i16 10, i16 25, i16 12, i16 27, i16 14, i16 29>, <16 x i16> %res0, <16 x i16> %res0, i16 -1)
@@ -105,7 +106,8 @@ define <16 x i16> @concat2_permw_v8i16(<8 x i16> %x, <8 x i16> %y) nounwind {
 ; CHECK-NEXT:    # kill: def $xmm1 killed $xmm1 def $ymm1
 ; CHECK-NEXT:    # kill: def $xmm0 killed $xmm0 def $ymm0
 ; CHECK-NEXT:    vpmovsxbw {{.*#+}} ymm2 = [7,0,6,1,5,2,4,3,21,18,20,19,23,16,22,17]
-; CHECK-NEXT:    vpermt2w %ymm1, %ymm2, %ymm0
+; CHECK-NEXT:    vpermi2w %ymm1, %ymm0, %ymm2
+; CHECK-NEXT:    vmovdqa %ymm2, %ymm0
 ; CHECK-NEXT:    ret{{[l|q]}}
   %lo = tail call <8 x i16> @llvm.x86.avx512.permvar.hi.128(<8 x i16> %x, <8 x i16> <i16 7, i16 0, i16 6, i16 1, i16 5, i16 2, i16 4, i16 3>)
   %hi = tail call <8 x i16> @llvm.x86.avx512.permvar.hi.128(<8 x i16> %y, <8 x i16> <i16 5, i16 2, i16 4, i16 3, i16 7, i16 0, i16 6, i16 1>)

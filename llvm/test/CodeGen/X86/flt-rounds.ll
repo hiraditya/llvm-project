@@ -231,11 +231,11 @@ define i32 @multiple_flt_rounds() nounwind {
 ; GISEL-X86-NEXT:    # kill: def $cl killed $cl killed $ecx
 ; GISEL-X86-NEXT:    shrl %cl, %eax
 ; GISEL-X86-NEXT:    andl $3, %eax
-; GISEL-X86-NEXT:    xorl %ebx, %ebx
+; GISEL-X86-NEXT:    xorl %ecx, %ecx
 ; GISEL-X86-NEXT:    cmpl %esi, %eax
-; GISEL-X86-NEXT:    setne %bl
-; GISEL-X86-NEXT:    andl $1, %ebx
-; GISEL-X86-NEXT:    addl %ebp, %ebx
+; GISEL-X86-NEXT:    setne %cl
+; GISEL-X86-NEXT:    andl $1, %ecx
+; GISEL-X86-NEXT:    leal (%ebp,%ecx), %esi
 ; GISEL-X86-NEXT:    movl $2048, (%esp) # imm = 0x800
 ; GISEL-X86-NEXT:    calll fesetround
 ; GISEL-X86-NEXT:    fnstcw {{[0-9]+}}(%esp)
@@ -252,7 +252,7 @@ define i32 @multiple_flt_rounds() nounwind {
 ; GISEL-X86-NEXT:    shll $31, %ecx
 ; GISEL-X86-NEXT:    sarl $31, %ecx
 ; GISEL-X86-NEXT:    xorl %eax, %eax
-; GISEL-X86-NEXT:    cmpl %ecx, %ebx
+; GISEL-X86-NEXT:    cmpl %ecx, %esi
 ; GISEL-X86-NEXT:    setne %al
 ; GISEL-X86-NEXT:    andl $1, %eax
 ; GISEL-X86-NEXT:    addl $12, %esp
@@ -269,7 +269,7 @@ define i32 @multiple_flt_rounds() nounwind {
 ; GISEL-X64-NEXT:    pushq %r14
 ; GISEL-X64-NEXT:    pushq %rbx
 ; GISEL-X64-NEXT:    pushq %rax
-; GISEL-X64-NEXT:    movl $1, %r14d
+; GISEL-X64-NEXT:    movl $1, %r15d
 ; GISEL-X64-NEXT:    movl $2, %ebp
 ; GISEL-X64-NEXT:    movl $1024, %edi # imm = 0x400
 ; GISEL-X64-NEXT:    callq fesetround
@@ -282,10 +282,10 @@ define i32 @multiple_flt_rounds() nounwind {
 ; GISEL-X64-NEXT:    # kill: def $cl killed $cl killed $ecx
 ; GISEL-X64-NEXT:    shrl %cl, %eax
 ; GISEL-X64-NEXT:    andl $3, %eax
-; GISEL-X64-NEXT:    xorl %r15d, %r15d
+; GISEL-X64-NEXT:    xorl %r14d, %r14d
 ; GISEL-X64-NEXT:    cmpl $3, %eax
-; GISEL-X64-NEXT:    setne %r15b
-; GISEL-X64-NEXT:    andl $1, %r15d
+; GISEL-X64-NEXT:    setne %r14b
+; GISEL-X64-NEXT:    andl $1, %r14d
 ; GISEL-X64-NEXT:    xorl %edi, %edi
 ; GISEL-X64-NEXT:    callq fesetround
 ; GISEL-X64-NEXT:    fnstcw {{[0-9]+}}(%rsp)
@@ -299,10 +299,10 @@ define i32 @multiple_flt_rounds() nounwind {
 ; GISEL-X64-NEXT:    xorl %ecx, %ecx
 ; GISEL-X64-NEXT:    cmpl $1, %eax
 ; GISEL-X64-NEXT:    sete %cl
-; GISEL-X64-NEXT:    testl %r15d, %r15d
-; GISEL-X64-NEXT:    cmovel %r14d, %ebp
+; GISEL-X64-NEXT:    testl %r14d, %r14d
+; GISEL-X64-NEXT:    cmovel %r15d, %ebp
 ; GISEL-X64-NEXT:    andl $1, %ecx
-; GISEL-X64-NEXT:    cmovnel %r15d, %ebp
+; GISEL-X64-NEXT:    cmovel %ebp, %r14d
 ; GISEL-X64-NEXT:    movl $3072, %edi # imm = 0xC00
 ; GISEL-X64-NEXT:    callq fesetround
 ; GISEL-X64-NEXT:    fnstcw {{[0-9]+}}(%rsp)
@@ -313,11 +313,11 @@ define i32 @multiple_flt_rounds() nounwind {
 ; GISEL-X64-NEXT:    # kill: def $cl killed $cl killed $ecx
 ; GISEL-X64-NEXT:    shrl %cl, %eax
 ; GISEL-X64-NEXT:    andl $3, %eax
-; GISEL-X64-NEXT:    xorl %r14d, %r14d
+; GISEL-X64-NEXT:    xorl %ecx, %ecx
 ; GISEL-X64-NEXT:    cmpl $0, %eax
-; GISEL-X64-NEXT:    setne %r14b
-; GISEL-X64-NEXT:    andl $1, %r14d
-; GISEL-X64-NEXT:    addl %ebp, %r14d
+; GISEL-X64-NEXT:    setne %cl
+; GISEL-X64-NEXT:    andl $1, %ecx
+; GISEL-X64-NEXT:    leal (%r14,%rcx), %ebp
 ; GISEL-X64-NEXT:    movl $2048, %edi # imm = 0x800
 ; GISEL-X64-NEXT:    callq fesetround
 ; GISEL-X64-NEXT:    fnstcw {{[0-9]+}}(%rsp)
@@ -333,7 +333,7 @@ define i32 @multiple_flt_rounds() nounwind {
 ; GISEL-X64-NEXT:    shll $31, %ecx
 ; GISEL-X64-NEXT:    sarl $31, %ecx
 ; GISEL-X64-NEXT:    xorl %eax, %eax
-; GISEL-X64-NEXT:    cmpl %ecx, %r14d
+; GISEL-X64-NEXT:    cmpl %ecx, %ebp
 ; GISEL-X64-NEXT:    setne %al
 ; GISEL-X64-NEXT:    andl $1, %eax
 ; GISEL-X64-NEXT:    addq $8, %rsp

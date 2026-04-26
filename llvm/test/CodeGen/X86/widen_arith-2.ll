@@ -6,6 +6,7 @@
 define void @update(ptr %dst_i, ptr %src_i, i32 %n) nounwind {
 ; CHECK-LABEL: update:
 ; CHECK:       # %bb.0: # %entry
+; CHECK-NEXT:    pushl %esi
 ; CHECK-NEXT:    subl $12, %esp
 ; CHECK-NEXT:    movl $0, (%esp)
 ; CHECK-NEXT:    pcmpeqd %xmm0, %xmm0
@@ -23,8 +24,9 @@ define void @update(ptr %dst_i, ptr %src_i, i32 %n) nounwind {
 ; CHECK-NEXT:    movl {{[0-9]+}}(%esp), %edx
 ; CHECK-NEXT:    addl %ecx, %edx
 ; CHECK-NEXT:    movl %edx, {{[0-9]+}}(%esp)
-; CHECK-NEXT:    addl {{[0-9]+}}(%esp), %ecx
-; CHECK-NEXT:    movl %ecx, {{[0-9]+}}(%esp)
+; CHECK-NEXT:    movl {{[0-9]+}}(%esp), %esi
+; CHECK-NEXT:    addl %ecx, %esi
+; CHECK-NEXT:    movl %esi, {{[0-9]+}}(%esp)
 ; CHECK-NEXT:    movq {{.*#+}} xmm2 = mem[0],zero
 ; CHECK-NEXT:    psubb %xmm0, %xmm2
 ; CHECK-NEXT:    pand %xmm1, %xmm2
@@ -33,6 +35,7 @@ define void @update(ptr %dst_i, ptr %src_i, i32 %n) nounwind {
 ; CHECK-NEXT:    jmp .LBB0_1
 ; CHECK-NEXT:  .LBB0_3: # %afterfor
 ; CHECK-NEXT:    addl $12, %esp
+; CHECK-NEXT:    popl %esi
 ; CHECK-NEXT:    retl
 entry:
 	%dst_i.addr = alloca ptr

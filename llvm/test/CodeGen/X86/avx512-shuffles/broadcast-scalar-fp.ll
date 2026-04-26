@@ -621,7 +621,7 @@ define <4 x double> @test_masked_double_to_4_mem_mask0(ptr %p, <4 x double> %def
 ; CHECK:       # %bb.0:
 ; CHECK-NEXT:    vxorpd %xmm2, %xmm2, %xmm2
 ; CHECK-NEXT:    vcmpeqpd %ymm2, %ymm1, %k1
-; CHECK-NEXT:    vbroadcastsd (%rdi), %ymm0 {%k1}
+; CHECK-NEXT:    vblendmpd (%rdi){1to4}, %ymm0, %ymm0 {%k1}
 ; CHECK-NEXT:    retq
   %s = load double, ptr %p
   %vec = insertelement <2 x double> undef, double %s, i32 0
@@ -650,7 +650,7 @@ define <4 x double> @test_masked_double_to_4_mem_mask1(ptr %p, <4 x double> %def
 ; CHECK:       # %bb.0:
 ; CHECK-NEXT:    vxorpd %xmm2, %xmm2, %xmm2
 ; CHECK-NEXT:    vcmpeqpd %ymm2, %ymm1, %k1
-; CHECK-NEXT:    vbroadcastsd (%rdi), %ymm0 {%k1}
+; CHECK-NEXT:    vblendmpd (%rdi){1to4}, %ymm0, %ymm0 {%k1}
 ; CHECK-NEXT:    retq
   %s = load double, ptr %p
   %vec = insertelement <2 x double> undef, double %s, i32 0
@@ -679,7 +679,7 @@ define <4 x double> @test_masked_double_to_4_mem_mask2(ptr %p, <4 x double> %def
 ; CHECK:       # %bb.0:
 ; CHECK-NEXT:    vxorpd %xmm2, %xmm2, %xmm2
 ; CHECK-NEXT:    vcmpeqpd %ymm2, %ymm1, %k1
-; CHECK-NEXT:    vbroadcastsd (%rdi), %ymm0 {%k1}
+; CHECK-NEXT:    vblendmpd (%rdi){1to4}, %ymm0, %ymm0 {%k1}
 ; CHECK-NEXT:    retq
   %s = load double, ptr %p
   %vec = insertelement <2 x double> undef, double %s, i32 0
@@ -708,7 +708,7 @@ define <4 x double> @test_masked_double_to_4_mem_mask3(ptr %p, <4 x double> %def
 ; CHECK:       # %bb.0:
 ; CHECK-NEXT:    vxorpd %xmm2, %xmm2, %xmm2
 ; CHECK-NEXT:    vcmpeqpd %ymm2, %ymm1, %k1
-; CHECK-NEXT:    vbroadcastsd (%rdi), %ymm0 {%k1}
+; CHECK-NEXT:    vblendmpd (%rdi){1to4}, %ymm0, %ymm0 {%k1}
 ; CHECK-NEXT:    retq
   %s = load double, ptr %p
   %vec = insertelement <2 x double> undef, double %s, i32 0
@@ -747,7 +747,7 @@ define <8 x double> @test_masked_double_to_8_mem_mask0(ptr %p, <8 x double> %def
 ; CHECK:       # %bb.0:
 ; CHECK-NEXT:    vxorpd %xmm2, %xmm2, %xmm2
 ; CHECK-NEXT:    vcmpeqpd %zmm2, %zmm1, %k1
-; CHECK-NEXT:    vbroadcastsd (%rdi), %zmm0 {%k1}
+; CHECK-NEXT:    vblendmpd (%rdi){1to8}, %zmm0, %zmm0 {%k1}
 ; CHECK-NEXT:    retq
   %s = load double, ptr %p
   %vec = insertelement <2 x double> undef, double %s, i32 0
@@ -776,7 +776,7 @@ define <8 x double> @test_masked_double_to_8_mem_mask1(ptr %p, <8 x double> %def
 ; CHECK:       # %bb.0:
 ; CHECK-NEXT:    vxorpd %xmm2, %xmm2, %xmm2
 ; CHECK-NEXT:    vcmpeqpd %zmm2, %zmm1, %k1
-; CHECK-NEXT:    vbroadcastsd (%rdi), %zmm0 {%k1}
+; CHECK-NEXT:    vblendmpd (%rdi){1to8}, %zmm0, %zmm0 {%k1}
 ; CHECK-NEXT:    retq
   %s = load double, ptr %p
   %vec = insertelement <2 x double> undef, double %s, i32 0
@@ -805,7 +805,7 @@ define <8 x double> @test_masked_double_to_8_mem_mask2(ptr %p, <8 x double> %def
 ; CHECK:       # %bb.0:
 ; CHECK-NEXT:    vxorpd %xmm2, %xmm2, %xmm2
 ; CHECK-NEXT:    vcmpeqpd %zmm2, %zmm1, %k1
-; CHECK-NEXT:    vbroadcastsd (%rdi), %zmm0 {%k1}
+; CHECK-NEXT:    vblendmpd (%rdi){1to8}, %zmm0, %zmm0 {%k1}
 ; CHECK-NEXT:    retq
   %s = load double, ptr %p
   %vec = insertelement <2 x double> undef, double %s, i32 0
@@ -834,7 +834,7 @@ define <8 x double> @test_masked_double_to_8_mem_mask3(ptr %p, <8 x double> %def
 ; CHECK:       # %bb.0:
 ; CHECK-NEXT:    vxorpd %xmm2, %xmm2, %xmm2
 ; CHECK-NEXT:    vcmpeqpd %zmm2, %zmm1, %k1
-; CHECK-NEXT:    vbroadcastsd (%rdi), %zmm0 {%k1}
+; CHECK-NEXT:    vblendmpd (%rdi){1to8}, %zmm0, %zmm0 {%k1}
 ; CHECK-NEXT:    retq
   %s = load double, ptr %p
   %vec = insertelement <2 x double> undef, double %s, i32 0
@@ -873,7 +873,7 @@ define <4 x float> @test_masked_float_to_4_mem_mask0(ptr %p, <4 x float> %defaul
 ; CHECK:       # %bb.0:
 ; CHECK-NEXT:    vxorps %xmm2, %xmm2, %xmm2
 ; CHECK-NEXT:    vcmpeqps %xmm2, %xmm1, %k1
-; CHECK-NEXT:    vbroadcastss (%rdi), %xmm0 {%k1}
+; CHECK-NEXT:    vblendmps (%rdi){1to4}, %xmm0, %xmm0 {%k1}
 ; CHECK-NEXT:    retq
   %s = load float, ptr %p
   %vec = insertelement <2 x float> undef, float %s, i32 0
@@ -902,7 +902,7 @@ define <4 x float> @test_masked_float_to_4_mem_mask1(ptr %p, <4 x float> %defaul
 ; CHECK:       # %bb.0:
 ; CHECK-NEXT:    vxorps %xmm2, %xmm2, %xmm2
 ; CHECK-NEXT:    vcmpeqps %xmm2, %xmm1, %k1
-; CHECK-NEXT:    vbroadcastss (%rdi), %xmm0 {%k1}
+; CHECK-NEXT:    vblendmps (%rdi){1to4}, %xmm0, %xmm0 {%k1}
 ; CHECK-NEXT:    retq
   %s = load float, ptr %p
   %vec = insertelement <2 x float> undef, float %s, i32 0
@@ -931,7 +931,7 @@ define <4 x float> @test_masked_float_to_4_mem_mask2(ptr %p, <4 x float> %defaul
 ; CHECK:       # %bb.0:
 ; CHECK-NEXT:    vxorps %xmm2, %xmm2, %xmm2
 ; CHECK-NEXT:    vcmpeqps %xmm2, %xmm1, %k1
-; CHECK-NEXT:    vbroadcastss (%rdi), %xmm0 {%k1}
+; CHECK-NEXT:    vblendmps (%rdi){1to4}, %xmm0, %xmm0 {%k1}
 ; CHECK-NEXT:    retq
   %s = load float, ptr %p
   %vec = insertelement <2 x float> undef, float %s, i32 0
@@ -960,7 +960,7 @@ define <4 x float> @test_masked_float_to_4_mem_mask3(ptr %p, <4 x float> %defaul
 ; CHECK:       # %bb.0:
 ; CHECK-NEXT:    vxorps %xmm2, %xmm2, %xmm2
 ; CHECK-NEXT:    vcmpeqps %xmm2, %xmm1, %k1
-; CHECK-NEXT:    vbroadcastss (%rdi), %xmm0 {%k1}
+; CHECK-NEXT:    vblendmps (%rdi){1to4}, %xmm0, %xmm0 {%k1}
 ; CHECK-NEXT:    retq
   %s = load float, ptr %p
   %vec = insertelement <2 x float> undef, float %s, i32 0
@@ -999,7 +999,7 @@ define <8 x float> @test_masked_float_to_8_mem_mask0(ptr %p, <8 x float> %defaul
 ; CHECK:       # %bb.0:
 ; CHECK-NEXT:    vxorps %xmm2, %xmm2, %xmm2
 ; CHECK-NEXT:    vcmpeqps %ymm2, %ymm1, %k1
-; CHECK-NEXT:    vbroadcastss (%rdi), %ymm0 {%k1}
+; CHECK-NEXT:    vblendmps (%rdi){1to8}, %ymm0, %ymm0 {%k1}
 ; CHECK-NEXT:    retq
   %s = load float, ptr %p
   %vec = insertelement <2 x float> undef, float %s, i32 0
@@ -1028,7 +1028,7 @@ define <8 x float> @test_masked_float_to_8_mem_mask1(ptr %p, <8 x float> %defaul
 ; CHECK:       # %bb.0:
 ; CHECK-NEXT:    vxorps %xmm2, %xmm2, %xmm2
 ; CHECK-NEXT:    vcmpeqps %ymm2, %ymm1, %k1
-; CHECK-NEXT:    vbroadcastss (%rdi), %ymm0 {%k1}
+; CHECK-NEXT:    vblendmps (%rdi){1to8}, %ymm0, %ymm0 {%k1}
 ; CHECK-NEXT:    retq
   %s = load float, ptr %p
   %vec = insertelement <2 x float> undef, float %s, i32 0
@@ -1057,7 +1057,7 @@ define <8 x float> @test_masked_float_to_8_mem_mask2(ptr %p, <8 x float> %defaul
 ; CHECK:       # %bb.0:
 ; CHECK-NEXT:    vxorps %xmm2, %xmm2, %xmm2
 ; CHECK-NEXT:    vcmpeqps %ymm2, %ymm1, %k1
-; CHECK-NEXT:    vbroadcastss (%rdi), %ymm0 {%k1}
+; CHECK-NEXT:    vblendmps (%rdi){1to8}, %ymm0, %ymm0 {%k1}
 ; CHECK-NEXT:    retq
   %s = load float, ptr %p
   %vec = insertelement <2 x float> undef, float %s, i32 0
@@ -1086,7 +1086,7 @@ define <8 x float> @test_masked_float_to_8_mem_mask3(ptr %p, <8 x float> %defaul
 ; CHECK:       # %bb.0:
 ; CHECK-NEXT:    vxorps %xmm2, %xmm2, %xmm2
 ; CHECK-NEXT:    vcmpeqps %ymm2, %ymm1, %k1
-; CHECK-NEXT:    vbroadcastss (%rdi), %ymm0 {%k1}
+; CHECK-NEXT:    vblendmps (%rdi){1to8}, %ymm0, %ymm0 {%k1}
 ; CHECK-NEXT:    retq
   %s = load float, ptr %p
   %vec = insertelement <2 x float> undef, float %s, i32 0
@@ -1125,7 +1125,7 @@ define <16 x float> @test_masked_float_to_16_mem_mask0(ptr %p, <16 x float> %def
 ; CHECK:       # %bb.0:
 ; CHECK-NEXT:    vxorps %xmm2, %xmm2, %xmm2
 ; CHECK-NEXT:    vcmpeqps %zmm2, %zmm1, %k1
-; CHECK-NEXT:    vbroadcastss (%rdi), %zmm0 {%k1}
+; CHECK-NEXT:    vblendmps (%rdi){1to16}, %zmm0, %zmm0 {%k1}
 ; CHECK-NEXT:    retq
   %s = load float, ptr %p
   %vec = insertelement <2 x float> undef, float %s, i32 0
@@ -1154,7 +1154,7 @@ define <16 x float> @test_masked_float_to_16_mem_mask1(ptr %p, <16 x float> %def
 ; CHECK:       # %bb.0:
 ; CHECK-NEXT:    vxorps %xmm2, %xmm2, %xmm2
 ; CHECK-NEXT:    vcmpeqps %zmm2, %zmm1, %k1
-; CHECK-NEXT:    vbroadcastss (%rdi), %zmm0 {%k1}
+; CHECK-NEXT:    vblendmps (%rdi){1to16}, %zmm0, %zmm0 {%k1}
 ; CHECK-NEXT:    retq
   %s = load float, ptr %p
   %vec = insertelement <2 x float> undef, float %s, i32 0
@@ -1183,7 +1183,7 @@ define <16 x float> @test_masked_float_to_16_mem_mask2(ptr %p, <16 x float> %def
 ; CHECK:       # %bb.0:
 ; CHECK-NEXT:    vxorps %xmm2, %xmm2, %xmm2
 ; CHECK-NEXT:    vcmpeqps %zmm2, %zmm1, %k1
-; CHECK-NEXT:    vbroadcastss (%rdi), %zmm0 {%k1}
+; CHECK-NEXT:    vblendmps (%rdi){1to16}, %zmm0, %zmm0 {%k1}
 ; CHECK-NEXT:    retq
   %s = load float, ptr %p
   %vec = insertelement <2 x float> undef, float %s, i32 0
@@ -1212,7 +1212,7 @@ define <16 x float> @test_masked_float_to_16_mem_mask3(ptr %p, <16 x float> %def
 ; CHECK:       # %bb.0:
 ; CHECK-NEXT:    vxorps %xmm2, %xmm2, %xmm2
 ; CHECK-NEXT:    vcmpeqps %zmm2, %zmm1, %k1
-; CHECK-NEXT:    vbroadcastss (%rdi), %zmm0 {%k1}
+; CHECK-NEXT:    vblendmps (%rdi){1to16}, %zmm0, %zmm0 {%k1}
 ; CHECK-NEXT:    retq
   %s = load float, ptr %p
   %vec = insertelement <2 x float> undef, float %s, i32 0

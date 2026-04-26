@@ -70,10 +70,10 @@ define i8 @all_sign_bit_ashr(i8 %x) {
 define <4 x i32> @all_sign_bit_ashr_vec0(<4 x i32> %x) {
 ; SSE-LABEL: all_sign_bit_ashr_vec0:
 ; SSE:       # %bb.0:
-; SSE-NEXT:    pand {{\.?LCPI[0-9]+_[0-9]+}}(%rip), %xmm0
-; SSE-NEXT:    pxor %xmm1, %xmm1
-; SSE-NEXT:    psubd %xmm0, %xmm1
-; SSE-NEXT:    movdqa %xmm1, %xmm0
+; SSE-NEXT:    movdqa {{.*#+}} xmm1 = [1,1,1,1]
+; SSE-NEXT:    pand %xmm0, %xmm1
+; SSE-NEXT:    pxor %xmm0, %xmm0
+; SSE-NEXT:    psubd %xmm1, %xmm0
 ; SSE-NEXT:    retq
 ;
 ; AVX1-LABEL: all_sign_bit_ashr_vec0:
@@ -99,8 +99,9 @@ define <4 x i32> @all_sign_bit_ashr_vec0(<4 x i32> %x) {
 define <4 x i32> @all_sign_bit_ashr_vec1(<4 x i32> %x) {
 ; SSE-LABEL: all_sign_bit_ashr_vec1:
 ; SSE:       # %bb.0:
-; SSE-NEXT:    pshufd {{.*#+}} xmm1 = xmm0[0,0,0,0]
-; SSE-NEXT:    pand {{\.?LCPI[0-9]+_[0-9]+}}(%rip), %xmm1
+; SSE-NEXT:    pshufd {{.*#+}} xmm0 = xmm0[0,0,0,0]
+; SSE-NEXT:    movdqa {{.*#+}} xmm1 = [1,1,1,1]
+; SSE-NEXT:    pand %xmm0, %xmm1
 ; SSE-NEXT:    pxor %xmm0, %xmm0
 ; SSE-NEXT:    psubd %xmm1, %xmm0
 ; SSE-NEXT:    retq
@@ -131,8 +132,9 @@ define <4 x i32> @all_sign_bit_ashr_vec1(<4 x i32> %x) {
 define <4 x i32> @all_sign_bit_ashr_vec2(<4 x i32> %x) {
 ; SSE-LABEL: all_sign_bit_ashr_vec2:
 ; SSE:       # %bb.0:
-; SSE-NEXT:    pand {{\.?LCPI[0-9]+_[0-9]+}}(%rip), %xmm0
-; SSE-NEXT:    pcmpeqd %xmm1, %xmm1
+; SSE-NEXT:    movdqa {{.*#+}} xmm1 = [1,1,1,1]
+; SSE-NEXT:    pand %xmm0, %xmm1
+; SSE-NEXT:    pcmpeqd %xmm0, %xmm0
 ; SSE-NEXT:    paddd %xmm1, %xmm0
 ; SSE-NEXT:    retq
 ;
@@ -159,8 +161,9 @@ define <4 x i32> @all_sign_bit_ashr_vec2(<4 x i32> %x) {
 define <4 x i32> @all_sign_bit_ashr_vec3(<4 x i32> %x) {
 ; SSE-LABEL: all_sign_bit_ashr_vec3:
 ; SSE:       # %bb.0:
-; SSE-NEXT:    pshufd {{.*#+}} xmm1 = xmm0[0,0,0,0]
-; SSE-NEXT:    pand {{\.?LCPI[0-9]+_[0-9]+}}(%rip), %xmm1
+; SSE-NEXT:    pshufd {{.*#+}} xmm0 = xmm0[0,0,0,0]
+; SSE-NEXT:    movdqa {{.*#+}} xmm1 = [1,1,1,1]
+; SSE-NEXT:    pand %xmm0, %xmm1
 ; SSE-NEXT:    pcmpeqd %xmm0, %xmm0
 ; SSE-NEXT:    paddd %xmm1, %xmm0
 ; SSE-NEXT:    retq

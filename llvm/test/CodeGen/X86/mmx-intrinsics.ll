@@ -1449,8 +1449,9 @@ define i64 @test56(<1 x i64> %a, <1 x i64> %b) nounwind readnone optsize ssp {
 ; X86-NEXT:    movl %ecx, {{[0-9]+}}(%esp)
 ; X86-NEXT:    movl %eax, {{[0-9]+}}(%esp)
 ; X86-NEXT:    movq {{[0-9]+}}(%esp), %mm0
-; X86-NEXT:    pxor {{[0-9]+}}(%esp), %mm0
-; X86-NEXT:    movq %mm0, (%esp)
+; X86-NEXT:    movq {{[0-9]+}}(%esp), %mm1
+; X86-NEXT:    pxor %mm0, %mm1
+; X86-NEXT:    movq %mm1, (%esp)
 ; X86-NEXT:    movl (%esp), %eax
 ; X86-NEXT:    movl {{[0-9]+}}(%esp), %edx
 ; X86-NEXT:    movl %ebp, %esp
@@ -1461,8 +1462,8 @@ define i64 @test56(<1 x i64> %a, <1 x i64> %b) nounwind readnone optsize ssp {
 ; X64:       # %bb.0: # %entry
 ; X64-NEXT:    movq %rsi, %mm0
 ; X64-NEXT:    movq %rdi, %mm1
-; X64-NEXT:    pxor %mm0, %mm1
-; X64-NEXT:    movq %mm1, %rax
+; X64-NEXT:    pxor %mm1, %mm0
+; X64-NEXT:    movq %mm0, %rax
 ; X64-NEXT:    retq
 entry:
   %0 = bitcast <1 x i64> %b to <2 x i32>
@@ -1494,8 +1495,9 @@ define i64 @test55(<1 x i64> %a, <1 x i64> %b) nounwind readnone optsize ssp {
 ; X86-NEXT:    movl %ecx, {{[0-9]+}}(%esp)
 ; X86-NEXT:    movl %eax, {{[0-9]+}}(%esp)
 ; X86-NEXT:    movq {{[0-9]+}}(%esp), %mm0
-; X86-NEXT:    por {{[0-9]+}}(%esp), %mm0
-; X86-NEXT:    movq %mm0, (%esp)
+; X86-NEXT:    movq {{[0-9]+}}(%esp), %mm1
+; X86-NEXT:    por %mm0, %mm1
+; X86-NEXT:    movq %mm1, (%esp)
 ; X86-NEXT:    movl (%esp), %eax
 ; X86-NEXT:    movl {{[0-9]+}}(%esp), %edx
 ; X86-NEXT:    movl %ebp, %esp
@@ -1506,8 +1508,8 @@ define i64 @test55(<1 x i64> %a, <1 x i64> %b) nounwind readnone optsize ssp {
 ; X64:       # %bb.0: # %entry
 ; X64-NEXT:    movq %rsi, %mm0
 ; X64-NEXT:    movq %rdi, %mm1
-; X64-NEXT:    por %mm0, %mm1
-; X64-NEXT:    movq %mm1, %rax
+; X64-NEXT:    por %mm1, %mm0
+; X64-NEXT:    movq %mm0, %rax
 ; X64-NEXT:    retq
 entry:
   %0 = bitcast <1 x i64> %b to <2 x i32>
@@ -1584,8 +1586,9 @@ define i64 @test53(<1 x i64> %a, <1 x i64> %b) nounwind readnone optsize ssp {
 ; X86-NEXT:    movl %ecx, {{[0-9]+}}(%esp)
 ; X86-NEXT:    movl %eax, {{[0-9]+}}(%esp)
 ; X86-NEXT:    movq {{[0-9]+}}(%esp), %mm0
-; X86-NEXT:    pand {{[0-9]+}}(%esp), %mm0
-; X86-NEXT:    movq %mm0, (%esp)
+; X86-NEXT:    movq {{[0-9]+}}(%esp), %mm1
+; X86-NEXT:    pand %mm0, %mm1
+; X86-NEXT:    movq %mm1, (%esp)
 ; X86-NEXT:    movl (%esp), %eax
 ; X86-NEXT:    movl {{[0-9]+}}(%esp), %edx
 ; X86-NEXT:    movl %ebp, %esp
@@ -1596,8 +1599,8 @@ define i64 @test53(<1 x i64> %a, <1 x i64> %b) nounwind readnone optsize ssp {
 ; X64:       # %bb.0: # %entry
 ; X64-NEXT:    movq %rsi, %mm0
 ; X64-NEXT:    movq %rdi, %mm1
-; X64-NEXT:    pand %mm0, %mm1
-; X64-NEXT:    movq %mm1, %rax
+; X64-NEXT:    pand %mm1, %mm0
+; X64-NEXT:    movq %mm0, %rax
 ; X64-NEXT:    retq
 entry:
   %0 = bitcast <1 x i64> %b to <2 x i32>
@@ -1629,8 +1632,9 @@ define i64 @test52(<1 x i64> %a, <1 x i64> %b) nounwind readnone optsize ssp {
 ; X86-NEXT:    movl %ecx, {{[0-9]+}}(%esp)
 ; X86-NEXT:    movl %eax, {{[0-9]+}}(%esp)
 ; X86-NEXT:    movq {{[0-9]+}}(%esp), %mm0
-; X86-NEXT:    pmullw {{[0-9]+}}(%esp), %mm0
-; X86-NEXT:    movq %mm0, (%esp)
+; X86-NEXT:    movq {{[0-9]+}}(%esp), %mm1
+; X86-NEXT:    pmullw %mm0, %mm1
+; X86-NEXT:    movq %mm1, (%esp)
 ; X86-NEXT:    movl (%esp), %eax
 ; X86-NEXT:    movl {{[0-9]+}}(%esp), %edx
 ; X86-NEXT:    movl %ebp, %esp
@@ -1641,8 +1645,8 @@ define i64 @test52(<1 x i64> %a, <1 x i64> %b) nounwind readnone optsize ssp {
 ; X64:       # %bb.0: # %entry
 ; X64-NEXT:    movq %rsi, %mm0
 ; X64-NEXT:    movq %rdi, %mm1
-; X64-NEXT:    pmullw %mm0, %mm1
-; X64-NEXT:    movq %mm1, %rax
+; X64-NEXT:    pmullw %mm1, %mm0
+; X64-NEXT:    movq %mm0, %rax
 ; X64-NEXT:    retq
 entry:
   %0 = bitcast <1 x i64> %b to <4 x i16>
@@ -1672,8 +1676,9 @@ define i64 @test51(<1 x i64> %a, <1 x i64> %b) nounwind readnone optsize ssp {
 ; X86-NEXT:    movl %ecx, {{[0-9]+}}(%esp)
 ; X86-NEXT:    movl %eax, {{[0-9]+}}(%esp)
 ; X86-NEXT:    movq {{[0-9]+}}(%esp), %mm0
-; X86-NEXT:    pmullw {{[0-9]+}}(%esp), %mm0
-; X86-NEXT:    movq %mm0, (%esp)
+; X86-NEXT:    movq {{[0-9]+}}(%esp), %mm1
+; X86-NEXT:    pmullw %mm0, %mm1
+; X86-NEXT:    movq %mm1, (%esp)
 ; X86-NEXT:    movl (%esp), %eax
 ; X86-NEXT:    movl {{[0-9]+}}(%esp), %edx
 ; X86-NEXT:    movl %ebp, %esp
@@ -1684,8 +1689,8 @@ define i64 @test51(<1 x i64> %a, <1 x i64> %b) nounwind readnone optsize ssp {
 ; X64:       # %bb.0: # %entry
 ; X64-NEXT:    movq %rsi, %mm0
 ; X64-NEXT:    movq %rdi, %mm1
-; X64-NEXT:    pmullw %mm0, %mm1
-; X64-NEXT:    movq %mm1, %rax
+; X64-NEXT:    pmullw %mm1, %mm0
+; X64-NEXT:    movq %mm0, %rax
 ; X64-NEXT:    retq
 entry:
   %0 = bitcast <1 x i64> %b to <4 x i16>
@@ -1717,8 +1722,9 @@ define i64 @test50(<1 x i64> %a, <1 x i64> %b) nounwind readnone optsize ssp {
 ; X86-NEXT:    movl %ecx, {{[0-9]+}}(%esp)
 ; X86-NEXT:    movl %eax, {{[0-9]+}}(%esp)
 ; X86-NEXT:    movq {{[0-9]+}}(%esp), %mm0
-; X86-NEXT:    pmulhw {{[0-9]+}}(%esp), %mm0
-; X86-NEXT:    movq %mm0, (%esp)
+; X86-NEXT:    movq {{[0-9]+}}(%esp), %mm1
+; X86-NEXT:    pmulhw %mm0, %mm1
+; X86-NEXT:    movq %mm1, (%esp)
 ; X86-NEXT:    movl (%esp), %eax
 ; X86-NEXT:    movl {{[0-9]+}}(%esp), %edx
 ; X86-NEXT:    movl %ebp, %esp
@@ -1729,8 +1735,8 @@ define i64 @test50(<1 x i64> %a, <1 x i64> %b) nounwind readnone optsize ssp {
 ; X64:       # %bb.0: # %entry
 ; X64-NEXT:    movq %rsi, %mm0
 ; X64-NEXT:    movq %rdi, %mm1
-; X64-NEXT:    pmulhw %mm0, %mm1
-; X64-NEXT:    movq %mm1, %rax
+; X64-NEXT:    pmulhw %mm1, %mm0
+; X64-NEXT:    movq %mm0, %rax
 ; X64-NEXT:    retq
 entry:
   %0 = bitcast <1 x i64> %b to <4 x i16>
@@ -1762,8 +1768,9 @@ define i64 @test49(<1 x i64> %a, <1 x i64> %b) nounwind readnone optsize ssp {
 ; X86-NEXT:    movl %ecx, {{[0-9]+}}(%esp)
 ; X86-NEXT:    movl %eax, {{[0-9]+}}(%esp)
 ; X86-NEXT:    movq {{[0-9]+}}(%esp), %mm0
-; X86-NEXT:    pmaddwd {{[0-9]+}}(%esp), %mm0
-; X86-NEXT:    movq %mm0, (%esp)
+; X86-NEXT:    movq {{[0-9]+}}(%esp), %mm1
+; X86-NEXT:    pmaddwd %mm0, %mm1
+; X86-NEXT:    movq %mm1, (%esp)
 ; X86-NEXT:    movl (%esp), %eax
 ; X86-NEXT:    movl {{[0-9]+}}(%esp), %edx
 ; X86-NEXT:    movl %ebp, %esp
@@ -1774,8 +1781,8 @@ define i64 @test49(<1 x i64> %a, <1 x i64> %b) nounwind readnone optsize ssp {
 ; X64:       # %bb.0: # %entry
 ; X64-NEXT:    movq %rsi, %mm0
 ; X64-NEXT:    movq %rdi, %mm1
-; X64-NEXT:    pmaddwd %mm0, %mm1
-; X64-NEXT:    movq %mm1, %rax
+; X64-NEXT:    pmaddwd %mm1, %mm0
+; X64-NEXT:    movq %mm0, %rax
 ; X64-NEXT:    retq
 entry:
   %0 = bitcast <1 x i64> %b to <4 x i16>
@@ -2157,8 +2164,9 @@ define i64 @test40(<1 x i64> %a, <1 x i64> %b) nounwind readnone optsize ssp {
 ; X86-NEXT:    movl %ecx, {{[0-9]+}}(%esp)
 ; X86-NEXT:    movl %eax, {{[0-9]+}}(%esp)
 ; X86-NEXT:    movq {{[0-9]+}}(%esp), %mm0
-; X86-NEXT:    paddusw {{[0-9]+}}(%esp), %mm0
-; X86-NEXT:    movq %mm0, (%esp)
+; X86-NEXT:    movq {{[0-9]+}}(%esp), %mm1
+; X86-NEXT:    paddusw %mm0, %mm1
+; X86-NEXT:    movq %mm1, (%esp)
 ; X86-NEXT:    movl (%esp), %eax
 ; X86-NEXT:    movl {{[0-9]+}}(%esp), %edx
 ; X86-NEXT:    movl %ebp, %esp
@@ -2169,8 +2177,8 @@ define i64 @test40(<1 x i64> %a, <1 x i64> %b) nounwind readnone optsize ssp {
 ; X64:       # %bb.0: # %entry
 ; X64-NEXT:    movq %rsi, %mm0
 ; X64-NEXT:    movq %rdi, %mm1
-; X64-NEXT:    paddusw %mm0, %mm1
-; X64-NEXT:    movq %mm1, %rax
+; X64-NEXT:    paddusw %mm1, %mm0
+; X64-NEXT:    movq %mm0, %rax
 ; X64-NEXT:    retq
 entry:
   %0 = bitcast <1 x i64> %b to <4 x i16>
@@ -2202,8 +2210,9 @@ define i64 @test39(<1 x i64> %a, <1 x i64> %b) nounwind readnone optsize ssp {
 ; X86-NEXT:    movl %ecx, {{[0-9]+}}(%esp)
 ; X86-NEXT:    movl %eax, {{[0-9]+}}(%esp)
 ; X86-NEXT:    movq {{[0-9]+}}(%esp), %mm0
-; X86-NEXT:    paddusb {{[0-9]+}}(%esp), %mm0
-; X86-NEXT:    movq %mm0, (%esp)
+; X86-NEXT:    movq {{[0-9]+}}(%esp), %mm1
+; X86-NEXT:    paddusb %mm0, %mm1
+; X86-NEXT:    movq %mm1, (%esp)
 ; X86-NEXT:    movl (%esp), %eax
 ; X86-NEXT:    movl {{[0-9]+}}(%esp), %edx
 ; X86-NEXT:    movl %ebp, %esp
@@ -2214,8 +2223,8 @@ define i64 @test39(<1 x i64> %a, <1 x i64> %b) nounwind readnone optsize ssp {
 ; X64:       # %bb.0: # %entry
 ; X64-NEXT:    movq %rsi, %mm0
 ; X64-NEXT:    movq %rdi, %mm1
-; X64-NEXT:    paddusb %mm0, %mm1
-; X64-NEXT:    movq %mm1, %rax
+; X64-NEXT:    paddusb %mm1, %mm0
+; X64-NEXT:    movq %mm0, %rax
 ; X64-NEXT:    retq
 entry:
   %0 = bitcast <1 x i64> %b to <8 x i8>
@@ -2247,8 +2256,9 @@ define i64 @test38(<1 x i64> %a, <1 x i64> %b) nounwind readnone optsize ssp {
 ; X86-NEXT:    movl %ecx, {{[0-9]+}}(%esp)
 ; X86-NEXT:    movl %eax, {{[0-9]+}}(%esp)
 ; X86-NEXT:    movq {{[0-9]+}}(%esp), %mm0
-; X86-NEXT:    paddsw {{[0-9]+}}(%esp), %mm0
-; X86-NEXT:    movq %mm0, (%esp)
+; X86-NEXT:    movq {{[0-9]+}}(%esp), %mm1
+; X86-NEXT:    paddsw %mm0, %mm1
+; X86-NEXT:    movq %mm1, (%esp)
 ; X86-NEXT:    movl (%esp), %eax
 ; X86-NEXT:    movl {{[0-9]+}}(%esp), %edx
 ; X86-NEXT:    movl %ebp, %esp
@@ -2259,8 +2269,8 @@ define i64 @test38(<1 x i64> %a, <1 x i64> %b) nounwind readnone optsize ssp {
 ; X64:       # %bb.0: # %entry
 ; X64-NEXT:    movq %rsi, %mm0
 ; X64-NEXT:    movq %rdi, %mm1
-; X64-NEXT:    paddsw %mm0, %mm1
-; X64-NEXT:    movq %mm1, %rax
+; X64-NEXT:    paddsw %mm1, %mm0
+; X64-NEXT:    movq %mm0, %rax
 ; X64-NEXT:    retq
 entry:
   %0 = bitcast <1 x i64> %b to <4 x i16>
@@ -2292,8 +2302,9 @@ define i64 @test37(<1 x i64> %a, <1 x i64> %b) nounwind readnone optsize ssp {
 ; X86-NEXT:    movl %ecx, {{[0-9]+}}(%esp)
 ; X86-NEXT:    movl %eax, {{[0-9]+}}(%esp)
 ; X86-NEXT:    movq {{[0-9]+}}(%esp), %mm0
-; X86-NEXT:    paddsb {{[0-9]+}}(%esp), %mm0
-; X86-NEXT:    movq %mm0, (%esp)
+; X86-NEXT:    movq {{[0-9]+}}(%esp), %mm1
+; X86-NEXT:    paddsb %mm0, %mm1
+; X86-NEXT:    movq %mm1, (%esp)
 ; X86-NEXT:    movl (%esp), %eax
 ; X86-NEXT:    movl {{[0-9]+}}(%esp), %edx
 ; X86-NEXT:    movl %ebp, %esp
@@ -2304,8 +2315,8 @@ define i64 @test37(<1 x i64> %a, <1 x i64> %b) nounwind readnone optsize ssp {
 ; X64:       # %bb.0: # %entry
 ; X64-NEXT:    movq %rsi, %mm0
 ; X64-NEXT:    movq %rdi, %mm1
-; X64-NEXT:    paddsb %mm0, %mm1
-; X64-NEXT:    movq %mm1, %rax
+; X64-NEXT:    paddsb %mm1, %mm0
+; X64-NEXT:    movq %mm0, %rax
 ; X64-NEXT:    retq
 entry:
   %0 = bitcast <1 x i64> %b to <8 x i8>
@@ -2329,8 +2340,9 @@ define i64 @test36(<1 x i64> %a, <1 x i64> %b) nounwind readnone optsize ssp {
 ; X86-NEXT:    andl $-8, %esp
 ; X86-NEXT:    subl $8, %esp
 ; X86-NEXT:    movq 8(%ebp), %mm0
-; X86-NEXT:    paddq 16(%ebp), %mm0
-; X86-NEXT:    movq %mm0, (%esp)
+; X86-NEXT:    movq 16(%ebp), %mm1
+; X86-NEXT:    paddq %mm0, %mm1
+; X86-NEXT:    movq %mm1, (%esp)
 ; X86-NEXT:    movl (%esp), %eax
 ; X86-NEXT:    movl {{[0-9]+}}(%esp), %edx
 ; X86-NEXT:    movl %ebp, %esp
@@ -2372,8 +2384,9 @@ define i64 @test35(<1 x i64> %a, <1 x i64> %b) nounwind readnone optsize ssp {
 ; X86-NEXT:    movl %ecx, {{[0-9]+}}(%esp)
 ; X86-NEXT:    movl %eax, {{[0-9]+}}(%esp)
 ; X86-NEXT:    movq {{[0-9]+}}(%esp), %mm0
-; X86-NEXT:    paddd {{[0-9]+}}(%esp), %mm0
-; X86-NEXT:    movq %mm0, (%esp)
+; X86-NEXT:    movq {{[0-9]+}}(%esp), %mm1
+; X86-NEXT:    paddd %mm0, %mm1
+; X86-NEXT:    movq %mm1, (%esp)
 ; X86-NEXT:    movl (%esp), %eax
 ; X86-NEXT:    movl {{[0-9]+}}(%esp), %edx
 ; X86-NEXT:    movl %ebp, %esp
@@ -2384,8 +2397,8 @@ define i64 @test35(<1 x i64> %a, <1 x i64> %b) nounwind readnone optsize ssp {
 ; X64:       # %bb.0: # %entry
 ; X64-NEXT:    movq %rsi, %mm0
 ; X64-NEXT:    movq %rdi, %mm1
-; X64-NEXT:    paddd %mm0, %mm1
-; X64-NEXT:    movq %mm1, %rax
+; X64-NEXT:    paddd %mm1, %mm0
+; X64-NEXT:    movq %mm0, %rax
 ; X64-NEXT:    retq
 entry:
   %0 = bitcast <1 x i64> %b to <2 x i32>
@@ -2417,8 +2430,9 @@ define i64 @test34(<1 x i64> %a, <1 x i64> %b) nounwind readnone optsize ssp {
 ; X86-NEXT:    movl %ecx, {{[0-9]+}}(%esp)
 ; X86-NEXT:    movl %eax, {{[0-9]+}}(%esp)
 ; X86-NEXT:    movq {{[0-9]+}}(%esp), %mm0
-; X86-NEXT:    paddw {{[0-9]+}}(%esp), %mm0
-; X86-NEXT:    movq %mm0, (%esp)
+; X86-NEXT:    movq {{[0-9]+}}(%esp), %mm1
+; X86-NEXT:    paddw %mm0, %mm1
+; X86-NEXT:    movq %mm1, (%esp)
 ; X86-NEXT:    movl (%esp), %eax
 ; X86-NEXT:    movl {{[0-9]+}}(%esp), %edx
 ; X86-NEXT:    movl %ebp, %esp
@@ -2429,8 +2443,8 @@ define i64 @test34(<1 x i64> %a, <1 x i64> %b) nounwind readnone optsize ssp {
 ; X64:       # %bb.0: # %entry
 ; X64-NEXT:    movq %rsi, %mm0
 ; X64-NEXT:    movq %rdi, %mm1
-; X64-NEXT:    paddw %mm0, %mm1
-; X64-NEXT:    movq %mm1, %rax
+; X64-NEXT:    paddw %mm1, %mm0
+; X64-NEXT:    movq %mm0, %rax
 ; X64-NEXT:    retq
 entry:
   %0 = bitcast <1 x i64> %b to <4 x i16>
@@ -2462,8 +2476,9 @@ define i64 @test33(<1 x i64> %a, <1 x i64> %b) nounwind readnone optsize ssp {
 ; X86-NEXT:    movl %ecx, {{[0-9]+}}(%esp)
 ; X86-NEXT:    movl %eax, {{[0-9]+}}(%esp)
 ; X86-NEXT:    movq {{[0-9]+}}(%esp), %mm0
-; X86-NEXT:    paddb {{[0-9]+}}(%esp), %mm0
-; X86-NEXT:    movq %mm0, (%esp)
+; X86-NEXT:    movq {{[0-9]+}}(%esp), %mm1
+; X86-NEXT:    paddb %mm0, %mm1
+; X86-NEXT:    movq %mm1, (%esp)
 ; X86-NEXT:    movl (%esp), %eax
 ; X86-NEXT:    movl {{[0-9]+}}(%esp), %edx
 ; X86-NEXT:    movl %ebp, %esp
@@ -2474,8 +2489,8 @@ define i64 @test33(<1 x i64> %a, <1 x i64> %b) nounwind readnone optsize ssp {
 ; X64:       # %bb.0: # %entry
 ; X64-NEXT:    movq %rsi, %mm0
 ; X64-NEXT:    movq %rdi, %mm1
-; X64-NEXT:    paddb %mm0, %mm1
-; X64-NEXT:    movq %mm1, %rax
+; X64-NEXT:    paddb %mm1, %mm0
+; X64-NEXT:    movq %mm0, %rax
 ; X64-NEXT:    retq
 entry:
   %0 = bitcast <1 x i64> %b to <8 x i8>
@@ -2507,8 +2522,9 @@ define i64 @test32(<1 x i64> %a, <1 x i64> %b) nounwind readnone optsize ssp {
 ; X86-NEXT:    movl %ecx, {{[0-9]+}}(%esp)
 ; X86-NEXT:    movl %eax, {{[0-9]+}}(%esp)
 ; X86-NEXT:    movq {{[0-9]+}}(%esp), %mm0
-; X86-NEXT:    psadbw {{[0-9]+}}(%esp), %mm0
-; X86-NEXT:    movq %mm0, (%esp)
+; X86-NEXT:    movq {{[0-9]+}}(%esp), %mm1
+; X86-NEXT:    psadbw %mm0, %mm1
+; X86-NEXT:    movq %mm1, (%esp)
 ; X86-NEXT:    movl (%esp), %eax
 ; X86-NEXT:    movl {{[0-9]+}}(%esp), %edx
 ; X86-NEXT:    movl %ebp, %esp
@@ -2519,8 +2535,8 @@ define i64 @test32(<1 x i64> %a, <1 x i64> %b) nounwind readnone optsize ssp {
 ; X64:       # %bb.0: # %entry
 ; X64-NEXT:    movq %rsi, %mm0
 ; X64-NEXT:    movq %rdi, %mm1
-; X64-NEXT:    psadbw %mm0, %mm1
-; X64-NEXT:    movq %mm1, %rax
+; X64-NEXT:    psadbw %mm1, %mm0
+; X64-NEXT:    movq %mm0, %rax
 ; X64-NEXT:    retq
 entry:
   %0 = bitcast <1 x i64> %b to <8 x i8>
@@ -2550,8 +2566,9 @@ define i64 @test31(<1 x i64> %a, <1 x i64> %b) nounwind readnone optsize ssp {
 ; X86-NEXT:    movl %ecx, {{[0-9]+}}(%esp)
 ; X86-NEXT:    movl %eax, {{[0-9]+}}(%esp)
 ; X86-NEXT:    movq {{[0-9]+}}(%esp), %mm0
-; X86-NEXT:    pminsw {{[0-9]+}}(%esp), %mm0
-; X86-NEXT:    movq %mm0, (%esp)
+; X86-NEXT:    movq {{[0-9]+}}(%esp), %mm1
+; X86-NEXT:    pminsw %mm0, %mm1
+; X86-NEXT:    movq %mm1, (%esp)
 ; X86-NEXT:    movl (%esp), %eax
 ; X86-NEXT:    movl {{[0-9]+}}(%esp), %edx
 ; X86-NEXT:    movl %ebp, %esp
@@ -2562,8 +2579,8 @@ define i64 @test31(<1 x i64> %a, <1 x i64> %b) nounwind readnone optsize ssp {
 ; X64:       # %bb.0: # %entry
 ; X64-NEXT:    movq %rsi, %mm0
 ; X64-NEXT:    movq %rdi, %mm1
-; X64-NEXT:    pminsw %mm0, %mm1
-; X64-NEXT:    movq %mm1, %rax
+; X64-NEXT:    pminsw %mm1, %mm0
+; X64-NEXT:    movq %mm0, %rax
 ; X64-NEXT:    retq
 entry:
   %0 = bitcast <1 x i64> %b to <4 x i16>
@@ -2595,8 +2612,9 @@ define i64 @test30(<1 x i64> %a, <1 x i64> %b) nounwind readnone optsize ssp {
 ; X86-NEXT:    movl %ecx, {{[0-9]+}}(%esp)
 ; X86-NEXT:    movl %eax, {{[0-9]+}}(%esp)
 ; X86-NEXT:    movq {{[0-9]+}}(%esp), %mm0
-; X86-NEXT:    pminub {{[0-9]+}}(%esp), %mm0
-; X86-NEXT:    movq %mm0, (%esp)
+; X86-NEXT:    movq {{[0-9]+}}(%esp), %mm1
+; X86-NEXT:    pminub %mm0, %mm1
+; X86-NEXT:    movq %mm1, (%esp)
 ; X86-NEXT:    movl (%esp), %eax
 ; X86-NEXT:    movl {{[0-9]+}}(%esp), %edx
 ; X86-NEXT:    movl %ebp, %esp
@@ -2607,8 +2625,8 @@ define i64 @test30(<1 x i64> %a, <1 x i64> %b) nounwind readnone optsize ssp {
 ; X64:       # %bb.0: # %entry
 ; X64-NEXT:    movq %rsi, %mm0
 ; X64-NEXT:    movq %rdi, %mm1
-; X64-NEXT:    pminub %mm0, %mm1
-; X64-NEXT:    movq %mm1, %rax
+; X64-NEXT:    pminub %mm1, %mm0
+; X64-NEXT:    movq %mm0, %rax
 ; X64-NEXT:    retq
 entry:
   %0 = bitcast <1 x i64> %b to <8 x i8>
@@ -2640,8 +2658,9 @@ define i64 @test29(<1 x i64> %a, <1 x i64> %b) nounwind readnone optsize ssp {
 ; X86-NEXT:    movl %ecx, {{[0-9]+}}(%esp)
 ; X86-NEXT:    movl %eax, {{[0-9]+}}(%esp)
 ; X86-NEXT:    movq {{[0-9]+}}(%esp), %mm0
-; X86-NEXT:    pmaxsw {{[0-9]+}}(%esp), %mm0
-; X86-NEXT:    movq %mm0, (%esp)
+; X86-NEXT:    movq {{[0-9]+}}(%esp), %mm1
+; X86-NEXT:    pmaxsw %mm0, %mm1
+; X86-NEXT:    movq %mm1, (%esp)
 ; X86-NEXT:    movl (%esp), %eax
 ; X86-NEXT:    movl {{[0-9]+}}(%esp), %edx
 ; X86-NEXT:    movl %ebp, %esp
@@ -2652,8 +2671,8 @@ define i64 @test29(<1 x i64> %a, <1 x i64> %b) nounwind readnone optsize ssp {
 ; X64:       # %bb.0: # %entry
 ; X64-NEXT:    movq %rsi, %mm0
 ; X64-NEXT:    movq %rdi, %mm1
-; X64-NEXT:    pmaxsw %mm0, %mm1
-; X64-NEXT:    movq %mm1, %rax
+; X64-NEXT:    pmaxsw %mm1, %mm0
+; X64-NEXT:    movq %mm0, %rax
 ; X64-NEXT:    retq
 entry:
   %0 = bitcast <1 x i64> %b to <4 x i16>
@@ -2685,8 +2704,9 @@ define i64 @test28(<1 x i64> %a, <1 x i64> %b) nounwind readnone optsize ssp {
 ; X86-NEXT:    movl %ecx, {{[0-9]+}}(%esp)
 ; X86-NEXT:    movl %eax, {{[0-9]+}}(%esp)
 ; X86-NEXT:    movq {{[0-9]+}}(%esp), %mm0
-; X86-NEXT:    pmaxub {{[0-9]+}}(%esp), %mm0
-; X86-NEXT:    movq %mm0, (%esp)
+; X86-NEXT:    movq {{[0-9]+}}(%esp), %mm1
+; X86-NEXT:    pmaxub %mm0, %mm1
+; X86-NEXT:    movq %mm1, (%esp)
 ; X86-NEXT:    movl (%esp), %eax
 ; X86-NEXT:    movl {{[0-9]+}}(%esp), %edx
 ; X86-NEXT:    movl %ebp, %esp
@@ -2697,8 +2717,8 @@ define i64 @test28(<1 x i64> %a, <1 x i64> %b) nounwind readnone optsize ssp {
 ; X64:       # %bb.0: # %entry
 ; X64-NEXT:    movq %rsi, %mm0
 ; X64-NEXT:    movq %rdi, %mm1
-; X64-NEXT:    pmaxub %mm0, %mm1
-; X64-NEXT:    movq %mm1, %rax
+; X64-NEXT:    pmaxub %mm1, %mm0
+; X64-NEXT:    movq %mm0, %rax
 ; X64-NEXT:    retq
 entry:
   %0 = bitcast <1 x i64> %b to <8 x i8>
@@ -2730,8 +2750,9 @@ define i64 @test27(<1 x i64> %a, <1 x i64> %b) nounwind readnone optsize ssp {
 ; X86-NEXT:    movl %ecx, {{[0-9]+}}(%esp)
 ; X86-NEXT:    movl %eax, {{[0-9]+}}(%esp)
 ; X86-NEXT:    movq {{[0-9]+}}(%esp), %mm0
-; X86-NEXT:    pavgw {{[0-9]+}}(%esp), %mm0
-; X86-NEXT:    movq %mm0, (%esp)
+; X86-NEXT:    movq {{[0-9]+}}(%esp), %mm1
+; X86-NEXT:    pavgw %mm0, %mm1
+; X86-NEXT:    movq %mm1, (%esp)
 ; X86-NEXT:    movl (%esp), %eax
 ; X86-NEXT:    movl {{[0-9]+}}(%esp), %edx
 ; X86-NEXT:    movl %ebp, %esp
@@ -2742,8 +2763,8 @@ define i64 @test27(<1 x i64> %a, <1 x i64> %b) nounwind readnone optsize ssp {
 ; X64:       # %bb.0: # %entry
 ; X64-NEXT:    movq %rsi, %mm0
 ; X64-NEXT:    movq %rdi, %mm1
-; X64-NEXT:    pavgw %mm0, %mm1
-; X64-NEXT:    movq %mm1, %rax
+; X64-NEXT:    pavgw %mm1, %mm0
+; X64-NEXT:    movq %mm0, %rax
 ; X64-NEXT:    retq
 entry:
   %0 = bitcast <1 x i64> %b to <4 x i16>
@@ -2775,8 +2796,9 @@ define i64 @test26(<1 x i64> %a, <1 x i64> %b) nounwind readnone optsize ssp {
 ; X86-NEXT:    movl %ecx, {{[0-9]+}}(%esp)
 ; X86-NEXT:    movl %eax, {{[0-9]+}}(%esp)
 ; X86-NEXT:    movq {{[0-9]+}}(%esp), %mm0
-; X86-NEXT:    pavgb {{[0-9]+}}(%esp), %mm0
-; X86-NEXT:    movq %mm0, (%esp)
+; X86-NEXT:    movq {{[0-9]+}}(%esp), %mm1
+; X86-NEXT:    pavgb %mm0, %mm1
+; X86-NEXT:    movq %mm1, (%esp)
 ; X86-NEXT:    movl (%esp), %eax
 ; X86-NEXT:    movl {{[0-9]+}}(%esp), %edx
 ; X86-NEXT:    movl %ebp, %esp
@@ -2787,8 +2809,8 @@ define i64 @test26(<1 x i64> %a, <1 x i64> %b) nounwind readnone optsize ssp {
 ; X64:       # %bb.0: # %entry
 ; X64-NEXT:    movq %rsi, %mm0
 ; X64-NEXT:    movq %rdi, %mm1
-; X64-NEXT:    pavgb %mm0, %mm1
-; X64-NEXT:    movq %mm1, %rax
+; X64-NEXT:    pavgb %mm1, %mm0
+; X64-NEXT:    movq %mm0, %rax
 ; X64-NEXT:    retq
 entry:
   %0 = bitcast <1 x i64> %b to <8 x i8>
@@ -2916,8 +2938,9 @@ define i64 @test22(<1 x i64> %a, <1 x i64> %b) nounwind readnone optsize ssp {
 ; X86-NEXT:    movl %ecx, {{[0-9]+}}(%esp)
 ; X86-NEXT:    movl %eax, {{[0-9]+}}(%esp)
 ; X86-NEXT:    movq {{[0-9]+}}(%esp), %mm0
-; X86-NEXT:    pmulhuw {{[0-9]+}}(%esp), %mm0
-; X86-NEXT:    movq %mm0, (%esp)
+; X86-NEXT:    movq {{[0-9]+}}(%esp), %mm1
+; X86-NEXT:    pmulhuw %mm0, %mm1
+; X86-NEXT:    movq %mm1, (%esp)
 ; X86-NEXT:    movl (%esp), %eax
 ; X86-NEXT:    movl {{[0-9]+}}(%esp), %edx
 ; X86-NEXT:    movl %ebp, %esp
@@ -2928,8 +2951,8 @@ define i64 @test22(<1 x i64> %a, <1 x i64> %b) nounwind readnone optsize ssp {
 ; X64:       # %bb.0: # %entry
 ; X64-NEXT:    movq %rsi, %mm0
 ; X64-NEXT:    movq %rdi, %mm1
-; X64-NEXT:    pmulhuw %mm0, %mm1
-; X64-NEXT:    movq %mm1, %rax
+; X64-NEXT:    pmulhuw %mm1, %mm0
+; X64-NEXT:    movq %mm0, %rax
 ; X64-NEXT:    retq
 entry:
   %0 = bitcast <1 x i64> %b to <4 x i16>
@@ -3031,8 +3054,9 @@ define i64 @test20(<1 x i64> %a, <1 x i64> %b) nounwind readnone optsize ssp {
 ; X86-NEXT:    movl %ecx, {{[0-9]+}}(%esp)
 ; X86-NEXT:    movl %eax, {{[0-9]+}}(%esp)
 ; X86-NEXT:    movq {{[0-9]+}}(%esp), %mm0
-; X86-NEXT:    pmuludq {{[0-9]+}}(%esp), %mm0
-; X86-NEXT:    movq %mm0, (%esp)
+; X86-NEXT:    movq {{[0-9]+}}(%esp), %mm1
+; X86-NEXT:    pmuludq %mm0, %mm1
+; X86-NEXT:    movq %mm1, (%esp)
 ; X86-NEXT:    movl (%esp), %eax
 ; X86-NEXT:    movl {{[0-9]+}}(%esp), %edx
 ; X86-NEXT:    movl %ebp, %esp
@@ -3043,8 +3067,8 @@ define i64 @test20(<1 x i64> %a, <1 x i64> %b) nounwind readnone optsize ssp {
 ; X64:       # %bb.0: # %entry
 ; X64-NEXT:    movq %rsi, %mm0
 ; X64-NEXT:    movq %rdi, %mm1
-; X64-NEXT:    pmuludq %mm0, %mm1
-; X64-NEXT:    movq %mm1, %rax
+; X64-NEXT:    pmuludq %mm1, %mm0
+; X64-NEXT:    movq %mm0, %rax
 ; X64-NEXT:    retq
 entry:
   %0 = bitcast <1 x i64> %b to <2 x i32>
@@ -3490,8 +3514,9 @@ define i64 @test8(<1 x i64> %a, <1 x i64> %b) nounwind readnone optsize ssp {
 ; X86-NEXT:    movl %ecx, {{[0-9]+}}(%esp)
 ; X86-NEXT:    movl %eax, {{[0-9]+}}(%esp)
 ; X86-NEXT:    movq {{[0-9]+}}(%esp), %mm0
-; X86-NEXT:    pmulhrsw {{[0-9]+}}(%esp), %mm0
-; X86-NEXT:    movq %mm0, (%esp)
+; X86-NEXT:    movq {{[0-9]+}}(%esp), %mm1
+; X86-NEXT:    pmulhrsw %mm0, %mm1
+; X86-NEXT:    movq %mm1, (%esp)
 ; X86-NEXT:    movl (%esp), %eax
 ; X86-NEXT:    movl {{[0-9]+}}(%esp), %edx
 ; X86-NEXT:    movl %ebp, %esp
@@ -3502,8 +3527,8 @@ define i64 @test8(<1 x i64> %a, <1 x i64> %b) nounwind readnone optsize ssp {
 ; X64:       # %bb.0: # %entry
 ; X64-NEXT:    movq %rsi, %mm0
 ; X64-NEXT:    movq %rdi, %mm1
-; X64-NEXT:    pmulhrsw %mm0, %mm1
-; X64-NEXT:    movq %mm1, %rax
+; X64-NEXT:    pmulhrsw %mm1, %mm0
+; X64-NEXT:    movq %mm0, %rax
 ; X64-NEXT:    retq
 entry:
   %0 = bitcast <1 x i64> %b to <4 x i16>

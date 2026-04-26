@@ -8,9 +8,9 @@ define zeroext i8 @test_mm512_mask_fpclass_pd_mask(i8 zeroext %__U, <8 x double>
 ; X86-LABEL: test_mm512_mask_fpclass_pd_mask:
 ; X86:       # %bb.0: # %entry
 ; X86-NEXT:    vfpclasspd $4, %zmm0, %k0 # k0 = isNegativeZero(zmm0)
-; X86-NEXT:    kmovw %k0, %eax
-; X86-NEXT:    andb {{[0-9]+}}(%esp), %al
-; X86-NEXT:    # kill: def $al killed $al killed $eax
+; X86-NEXT:    kmovw %k0, %ecx
+; X86-NEXT:    movzbl {{[0-9]+}}(%esp), %eax
+; X86-NEXT:    andb %cl, %al
 ; X86-NEXT:    vzeroupper
 ; X86-NEXT:    retl
 ;
@@ -50,9 +50,9 @@ define zeroext i16 @test_mm512_mask_fpclass_ps_mask(i16 zeroext %__U, <16 x floa
 ; X86-LABEL: test_mm512_mask_fpclass_ps_mask:
 ; X86:       # %bb.0: # %entry
 ; X86-NEXT:    vfpclassps $4, %zmm0, %k0 # k0 = isNegativeZero(zmm0)
-; X86-NEXT:    kmovw %k0, %eax
-; X86-NEXT:    andw {{[0-9]+}}(%esp), %ax
-; X86-NEXT:    # kill: def $ax killed $ax killed $eax
+; X86-NEXT:    kmovw %k0, %ecx
+; X86-NEXT:    movzwl {{[0-9]+}}(%esp), %eax
+; X86-NEXT:    andw %cx, %ax
 ; X86-NEXT:    vzeroupper
 ; X86-NEXT:    retl
 ;

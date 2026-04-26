@@ -11,7 +11,8 @@ define void @fn1() local_unnamed_addr {
 ; CHECK-NEXT:  .LBB0_1: # %if.end
 ; CHECK-NEXT:    # =>This Inner Loop Header: Depth=1
 ; CHECK-NEXT:    movl a+4, %eax
-; CHECK-NEXT:    orl a, %eax
+; CHECK-NEXT:    movl a, %ecx
+; CHECK-NEXT:    orl %eax, %ecx
 ; CHECK-NEXT:    movl $a, f
 ; CHECK-NEXT:    je .LBB0_3
 ; CHECK-NEXT:  # %bb.2: # %if.end

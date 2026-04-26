@@ -38,13 +38,6 @@ entry:
 }
 
 define <4 x i32> @load_zmov_4i32_to_0zzz_volatile(ptr%ptr) {
-; SSE-LABEL: load_zmov_4i32_to_0zzz_volatile:
-; SSE:       # %bb.0: # %entry
-; SSE-NEXT:    movaps (%rdi), %xmm1
-; SSE-NEXT:    xorps %xmm0, %xmm0
-; SSE-NEXT:    movss {{.*#+}} xmm0 = xmm1[0],xmm0[1,2,3]
-; SSE-NEXT:    retq
-;
 ; AVX-LABEL: load_zmov_4i32_to_0zzz_volatile:
 ; AVX:       # %bb.0: # %entry
 ; AVX-NEXT:    vmovaps (%rdi), %xmm0

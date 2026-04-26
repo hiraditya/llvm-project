@@ -9,60 +9,85 @@ define dso_local x86_regcallcc i64 @test_argv64i1(<64 x i1> %x0, <64 x i1> %x1, 
 ; X32:       # %bb.0:
 ; X32-NEXT:    addl %edx, %eax
 ; X32-NEXT:    adcl %edi, %ecx
-; X32-NEXT:    addl {{[0-9]+}}(%esp), %eax
-; X32-NEXT:    adcl {{[0-9]+}}(%esp), %ecx
-; X32-NEXT:    addl {{[0-9]+}}(%esp), %eax
-; X32-NEXT:    adcl {{[0-9]+}}(%esp), %ecx
-; X32-NEXT:    addl {{[0-9]+}}(%esp), %eax
-; X32-NEXT:    adcl {{[0-9]+}}(%esp), %ecx
-; X32-NEXT:    addl {{[0-9]+}}(%esp), %eax
-; X32-NEXT:    adcl {{[0-9]+}}(%esp), %ecx
-; X32-NEXT:    addl {{[0-9]+}}(%esp), %eax
-; X32-NEXT:    adcl {{[0-9]+}}(%esp), %ecx
-; X32-NEXT:    addl {{[0-9]+}}(%esp), %eax
-; X32-NEXT:    adcl {{[0-9]+}}(%esp), %ecx
-; X32-NEXT:    addl {{[0-9]+}}(%esp), %eax
-; X32-NEXT:    adcl {{[0-9]+}}(%esp), %ecx
-; X32-NEXT:    addl {{[0-9]+}}(%esp), %eax
-; X32-NEXT:    adcl {{[0-9]+}}(%esp), %ecx
-; X32-NEXT:    addl {{[0-9]+}}(%esp), %eax
-; X32-NEXT:    adcl {{[0-9]+}}(%esp), %ecx
-; X32-NEXT:    addl {{[0-9]+}}(%esp), %eax
-; X32-NEXT:    adcl {{[0-9]+}}(%esp), %ecx
-; X32-NEXT:    addl {{[0-9]+}}(%esp), %eax
-; X32-NEXT:    adcl {{[0-9]+}}(%esp), %ecx
+; X32-NEXT:    movl {{[0-9]+}}(%esp), %edx
+; X32-NEXT:    addl %eax, %edx
+; X32-NEXT:    movl {{[0-9]+}}(%esp), %eax
+; X32-NEXT:    adcl %ecx, %eax
+; X32-NEXT:    movl {{[0-9]+}}(%esp), %ecx
+; X32-NEXT:    addl %edx, %ecx
+; X32-NEXT:    movl {{[0-9]+}}(%esp), %edx
+; X32-NEXT:    adcl %eax, %edx
+; X32-NEXT:    movl {{[0-9]+}}(%esp), %eax
+; X32-NEXT:    addl %ecx, %eax
+; X32-NEXT:    movl {{[0-9]+}}(%esp), %ecx
+; X32-NEXT:    adcl %edx, %ecx
+; X32-NEXT:    movl {{[0-9]+}}(%esp), %edx
+; X32-NEXT:    addl %eax, %edx
+; X32-NEXT:    movl {{[0-9]+}}(%esp), %eax
+; X32-NEXT:    adcl %ecx, %eax
+; X32-NEXT:    movl {{[0-9]+}}(%esp), %ecx
+; X32-NEXT:    addl %edx, %ecx
+; X32-NEXT:    movl {{[0-9]+}}(%esp), %edx
+; X32-NEXT:    adcl %eax, %edx
+; X32-NEXT:    movl {{[0-9]+}}(%esp), %eax
+; X32-NEXT:    addl %ecx, %eax
+; X32-NEXT:    movl {{[0-9]+}}(%esp), %ecx
+; X32-NEXT:    adcl %edx, %ecx
+; X32-NEXT:    movl {{[0-9]+}}(%esp), %edx
+; X32-NEXT:    addl %eax, %edx
+; X32-NEXT:    movl {{[0-9]+}}(%esp), %eax
+; X32-NEXT:    adcl %ecx, %eax
+; X32-NEXT:    movl {{[0-9]+}}(%esp), %ecx
+; X32-NEXT:    addl %edx, %ecx
+; X32-NEXT:    movl {{[0-9]+}}(%esp), %edx
+; X32-NEXT:    adcl %eax, %edx
+; X32-NEXT:    movl {{[0-9]+}}(%esp), %eax
+; X32-NEXT:    addl %ecx, %eax
+; X32-NEXT:    movl {{[0-9]+}}(%esp), %ecx
+; X32-NEXT:    adcl %edx, %ecx
+; X32-NEXT:    movl {{[0-9]+}}(%esp), %edx
+; X32-NEXT:    addl %eax, %edx
+; X32-NEXT:    movl {{[0-9]+}}(%esp), %edi
+; X32-NEXT:    adcl %ecx, %edi
+; X32-NEXT:    movl {{[0-9]+}}(%esp), %eax
+; X32-NEXT:    addl %edx, %eax
+; X32-NEXT:    movl {{[0-9]+}}(%esp), %ecx
+; X32-NEXT:    adcl %edi, %ecx
 ; X32-NEXT:    retl
 ;
 ; WIN64-LABEL: test_argv64i1:
 ; WIN64:       # %bb.0:
 ; WIN64-NEXT:    addq %rcx, %rax
-; WIN64-NEXT:    addq %rdx, %rax
-; WIN64-NEXT:    addq %rdi, %rax
-; WIN64-NEXT:    leaq (%rsi,%r8), %rcx
-; WIN64-NEXT:    addq %r9, %rcx
+; WIN64-NEXT:    leaq (%rdx,%rdi), %rcx
+; WIN64-NEXT:    addq %rax, %rcx
+; WIN64-NEXT:    leaq (%rsi,%r8), %rax
+; WIN64-NEXT:    addq %r9, %rax
 ; WIN64-NEXT:    addq %rcx, %rax
 ; WIN64-NEXT:    leaq (%r10,%r11), %rcx
 ; WIN64-NEXT:    addq %r12, %rcx
 ; WIN64-NEXT:    addq %r14, %rcx
+; WIN64-NEXT:    addq %rax, %rcx
+; WIN64-NEXT:    addq %r15, %rcx
+; WIN64-NEXT:    movq {{[0-9]+}}(%rsp), %rax
 ; WIN64-NEXT:    addq %rcx, %rax
-; WIN64-NEXT:    addq %r15, %rax
-; WIN64-NEXT:    addq {{[0-9]+}}(%rsp), %rax
 ; WIN64-NEXT:    retq
 ;
 ; LINUXOSX64-LABEL: test_argv64i1:
 ; LINUXOSX64:       # %bb.0:
 ; LINUXOSX64-NEXT:    addq %rcx, %rax
-; LINUXOSX64-NEXT:    addq %rdx, %rax
-; LINUXOSX64-NEXT:    addq %rdi, %rax
-; LINUXOSX64-NEXT:    leaq (%rsi,%r8), %rcx
-; LINUXOSX64-NEXT:    addq %r9, %rcx
+; LINUXOSX64-NEXT:    leaq (%rdx,%rdi), %rcx
+; LINUXOSX64-NEXT:    addq %rax, %rcx
+; LINUXOSX64-NEXT:    leaq (%rsi,%r8), %rax
+; LINUXOSX64-NEXT:    addq %r9, %rax
 ; LINUXOSX64-NEXT:    addq %rcx, %rax
 ; LINUXOSX64-NEXT:    leaq (%r12,%r13), %rcx
 ; LINUXOSX64-NEXT:    addq %r14, %rcx
 ; LINUXOSX64-NEXT:    addq %r15, %rcx
-; LINUXOSX64-NEXT:    addq %rcx, %rax
-; LINUXOSX64-NEXT:    addq {{[0-9]+}}(%rsp), %rax
-; LINUXOSX64-NEXT:    addq {{[0-9]+}}(%rsp), %rax
+; LINUXOSX64-NEXT:    addq %rax, %rcx
+; LINUXOSX64-NEXT:    movq {{[0-9]+}}(%rsp), %rdx
+; LINUXOSX64-NEXT:    addq %rcx, %rdx
+; LINUXOSX64-NEXT:    movq {{[0-9]+}}(%rsp), %rax
+; LINUXOSX64-NEXT:    addq %rdx, %rax
 ; LINUXOSX64-NEXT:    retq
   %y0 = bitcast <64 x i1> %x0 to i64
   %y1 = bitcast <64 x i1> %x1 to i64
@@ -180,13 +205,13 @@ define dso_local i64 @caller_argv64i1() #0 {
 ; LINUXOSX64-NEXT:    movq %rax, %rcx
 ; LINUXOSX64-NEXT:    movq %rax, %rdx
 ; LINUXOSX64-NEXT:    movq %rax, %rdi
+; LINUXOSX64-NEXT:    movq %rax, %rsi
 ; LINUXOSX64-NEXT:    movq %rax, %r8
 ; LINUXOSX64-NEXT:    movq %rax, %r9
 ; LINUXOSX64-NEXT:    movq %rax, %r12
 ; LINUXOSX64-NEXT:    movq %rax, %r13
 ; LINUXOSX64-NEXT:    movq %rax, %r14
 ; LINUXOSX64-NEXT:    movq %rax, %r15
-; LINUXOSX64-NEXT:    movq %rax, %rsi
 ; LINUXOSX64-NEXT:    pushq %rax
 ; LINUXOSX64-NEXT:    .cfi_adjust_cfa_offset 8
 ; LINUXOSX64-NEXT:    pushq %rax
@@ -485,6 +510,7 @@ define dso_local i32 @caller_retv32i1() #0 {
 ; WIN64-NEXT:    .seh_savexmm %xmm6, 0
 ; WIN64-NEXT:    .seh_endprologue
 ; WIN64-NEXT:    callq test_retv32i1
+; WIN64-NEXT:    # kill: def $eax killed $eax def $rax
 ; WIN64-NEXT:    incl %eax
 ; WIN64-NEXT:    vmovaps (%rsp), %xmm6 # 16-byte Reload
 ; WIN64-NEXT:    vmovaps {{[-0-9]+}}(%r{{[sb]}}p), %xmm7 # 16-byte Reload
@@ -501,6 +527,7 @@ define dso_local i32 @caller_retv32i1() #0 {
 ; LINUXOSX64-NEXT:    pushq %rax
 ; LINUXOSX64-NEXT:    .cfi_def_cfa_offset 16
 ; LINUXOSX64-NEXT:    callq test_retv32i1
+; LINUXOSX64-NEXT:    # kill: def $eax killed $eax def $rax
 ; LINUXOSX64-NEXT:    incl %eax
 ; LINUXOSX64-NEXT:    popq %rcx
 ; LINUXOSX64-NEXT:    .cfi_def_cfa_offset 8
@@ -711,7 +738,7 @@ define dso_local i16 @caller_retv16i1() #0 {
 ; WIN64-NEXT:    .seh_savexmm %xmm6, 0
 ; WIN64-NEXT:    .seh_endprologue
 ; WIN64-NEXT:    callq test_retv16i1
-; WIN64-NEXT:    # kill: def $ax killed $ax def $eax
+; WIN64-NEXT:    # kill: def $ax killed $ax def $rax
 ; WIN64-NEXT:    incl %eax
 ; WIN64-NEXT:    # kill: def $ax killed $ax killed $eax
 ; WIN64-NEXT:    vmovaps (%rsp), %xmm6 # 16-byte Reload
@@ -729,7 +756,7 @@ define dso_local i16 @caller_retv16i1() #0 {
 ; LINUXOSX64-NEXT:    pushq %rax
 ; LINUXOSX64-NEXT:    .cfi_def_cfa_offset 16
 ; LINUXOSX64-NEXT:    callq test_retv16i1
-; LINUXOSX64-NEXT:    # kill: def $ax killed $ax def $eax
+; LINUXOSX64-NEXT:    # kill: def $ax killed $ax def $rax
 ; LINUXOSX64-NEXT:    incl %eax
 ; LINUXOSX64-NEXT:    # kill: def $ax killed $ax killed $eax
 ; LINUXOSX64-NEXT:    popq %rcx

@@ -5,9 +5,9 @@
 define i64 @t(i64 %A, i64 %B, ptr %P, ptr%P2) nounwind {
 ; CHECK-LABEL: t:
 ; CHECK:       # %bb.0:
-; CHECK-NEXT:    addq %rsi, %rdi
-; CHECK-NEXT:    movl %edi, (%rdx)
-; CHECK-NEXT:    movslq %edi, %rax
+; CHECK-NEXT:    leaq (%rdi,%rsi), %rax
+; CHECK-NEXT:    movl %eax, (%rdx)
+; CHECK-NEXT:    cltq
 ; CHECK-NEXT:    movq %rax, (%rcx)
 ; CHECK-NEXT:    movl %eax, (%rdx)
 ; CHECK-NEXT:    retq

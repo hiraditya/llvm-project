@@ -8,8 +8,9 @@ define i32 @test1(i32 inreg %x) {
 ; CHECK-NEXT:    movl %eax, %ecx
 ; CHECK-NEXT:    sarl $31, %ecx
 ; CHECK-NEXT:    shrl $28, %ecx
-; CHECK-NEXT:    addl %ecx, %eax
-; CHECK-NEXT:    sarl $4, %eax
+; CHECK-NEXT:    addl %eax, %ecx
+; CHECK-NEXT:    sarl $4, %ecx
+; CHECK-NEXT:    movl %ecx, %eax
 ; CHECK-NEXT:    retl
 entry:
   %div = sdiv i32 %x, 16
@@ -39,8 +40,9 @@ define i32 @test3(i32 inreg %x) optsize {
 ; CHECK-NEXT:    movl %eax, %ecx
 ; CHECK-NEXT:    sarl $31, %ecx
 ; CHECK-NEXT:    shrl $28, %ecx
-; CHECK-NEXT:    addl %ecx, %eax
-; CHECK-NEXT:    sarl $4, %eax
+; CHECK-NEXT:    addl %eax, %ecx
+; CHECK-NEXT:    sarl $4, %ecx
+; CHECK-NEXT:    movl %ecx, %eax
 ; CHECK-NEXT:    retl
 entry:
   %div = sdiv i32 %x, 16

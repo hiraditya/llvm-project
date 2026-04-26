@@ -11,10 +11,10 @@ define i32 @PR122580(ptr %0) {
 ; CHECK-NEXT:    cmpb $0, (%rax)
 ; CHECK-NEXT:    movl $1, %eax
 ; CHECK-NEXT:    movl $878456583, %ecx # imm = 0x345C2F07
-; CHECK-NEXT:    cmovnel %eax, %ecx
-; CHECK-NEXT:    movq g_1032@GOTPCREL(%rip), %rax
-; CHECK-NEXT:    movl $0, (%rax)
-; CHECK-NEXT:    movl %ecx, (%rdi)
+; CHECK-NEXT:    cmovel %ecx, %eax
+; CHECK-NEXT:    movq g_1032@GOTPCREL(%rip), %rcx
+; CHECK-NEXT:    movl $0, (%rcx)
+; CHECK-NEXT:    movl %eax, (%rdi)
 ; CHECK-NEXT:    xorl %eax, %eax
 ; CHECK-NEXT:    retq
 entry:

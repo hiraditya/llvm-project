@@ -9,7 +9,8 @@ define <2 x double> @f(<2 x double> %I) {
 ; CHECK-NEXT:    mulpd %xmm0, %xmm1
 ; CHECK-NEXT:    mulpd %xmm0, %xmm1
 ; CHECK-NEXT:    mulpd %xmm0, %xmm0
-; CHECK-NEXT:    mulpd %xmm1, %xmm0
+; CHECK-NEXT:    mulpd %xmm0, %xmm1
+; CHECK-NEXT:    movapd %xmm1, %xmm0
 ; CHECK-NEXT:    retq
 BB:
   %F = fneg <2 x double> %I

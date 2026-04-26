@@ -14,14 +14,16 @@ define i32 @bzhi32(i32 %x, i32 %y)   {
 ;
 ; X64-LABEL: bzhi32:
 ; X64:       # %bb.0:
-; X64-NEXT:    addl %edi, %edi
-; X64-NEXT:    bzhil %esi, %edi, %eax
+; X64-NEXT:    # kill: def $edi killed $edi def $rdi
+; X64-NEXT:    leal (%rdi,%rdi), %eax
+; X64-NEXT:    bzhil %esi, %eax, %eax
 ; X64-NEXT:    retq
 ;
 ; EGPR-LABEL: bzhi32:
 ; EGPR:       # %bb.0:
-; EGPR-NEXT:    addl %edi, %edi # encoding: [0x01,0xff]
-; EGPR-NEXT:    bzhil %esi, %edi, %eax # EVEX TO VEX Compression encoding: [0xc4,0xe2,0x48,0xf5,0xc7]
+; EGPR-NEXT:    # kill: def $edi killed $edi def $rdi
+; EGPR-NEXT:    leal (%rdi,%rdi), %eax # encoding: [0x8d,0x04,0x3f]
+; EGPR-NEXT:    bzhil %esi, %eax, %eax # EVEX TO VEX Compression encoding: [0xc4,0xe2,0x48,0xf5,0xc0]
 ; EGPR-NEXT:    retq # encoding: [0xc3]
   %x1 = add i32 %x, %x
   %tmp = tail call i32 @llvm.x86.bmi.bzhi.32(i32 %x1, i32 %y)
@@ -89,14 +91,16 @@ define i32 @pdep32(i32 %x, i32 %y)   {
 ;
 ; X64-LABEL: pdep32:
 ; X64:       # %bb.0:
-; X64-NEXT:    addl %esi, %esi
-; X64-NEXT:    pdepl %esi, %edi, %eax
+; X64-NEXT:    # kill: def $esi killed $esi def $rsi
+; X64-NEXT:    leal (%rsi,%rsi), %eax
+; X64-NEXT:    pdepl %eax, %edi, %eax
 ; X64-NEXT:    retq
 ;
 ; EGPR-LABEL: pdep32:
 ; EGPR:       # %bb.0:
-; EGPR-NEXT:    addl %esi, %esi # encoding: [0x01,0xf6]
-; EGPR-NEXT:    pdepl %esi, %edi, %eax # EVEX TO VEX Compression encoding: [0xc4,0xe2,0x43,0xf5,0xc6]
+; EGPR-NEXT:    # kill: def $esi killed $esi def $rsi
+; EGPR-NEXT:    leal (%rsi,%rsi), %eax # encoding: [0x8d,0x04,0x36]
+; EGPR-NEXT:    pdepl %eax, %edi, %eax # EVEX TO VEX Compression encoding: [0xc4,0xe2,0x43,0xf5,0xc0]
 ; EGPR-NEXT:    retq # encoding: [0xc3]
   %y1 = add i32 %y, %y
   %tmp = tail call i32 @llvm.x86.bmi.pdep.32(i32 %x, i32 %y1)
@@ -286,8 +290,9 @@ define i32 @pdep32_knownbits2(i32 %x, i32 %y) {
 ; X86-LABEL: pdep32_knownbits2:
 ; X86:       # %bb.0:
 ; X86-NEXT:    movl $-256, %eax
-; X86-NEXT:    andl {{[0-9]+}}(%esp), %eax
-; X86-NEXT:    pdepl {{[0-9]+}}(%esp), %eax, %eax
+; X86-NEXT:    movl {{[0-9]+}}(%esp), %ecx
+; X86-NEXT:    andl %eax, %ecx
+; X86-NEXT:    pdepl {{[0-9]+}}(%esp), %ecx, %eax
 ; X86-NEXT:    imull %eax, %eax
 ; X86-NEXT:    retl
 ;
@@ -324,14 +329,16 @@ define i32 @pext32(i32 %x, i32 %y)   {
 ;
 ; X64-LABEL: pext32:
 ; X64:       # %bb.0:
-; X64-NEXT:    addl %esi, %esi
-; X64-NEXT:    pextl %esi, %edi, %eax
+; X64-NEXT:    # kill: def $esi killed $esi def $rsi
+; X64-NEXT:    leal (%rsi,%rsi), %eax
+; X64-NEXT:    pextl %eax, %edi, %eax
 ; X64-NEXT:    retq
 ;
 ; EGPR-LABEL: pext32:
 ; EGPR:       # %bb.0:
-; EGPR-NEXT:    addl %esi, %esi # encoding: [0x01,0xf6]
-; EGPR-NEXT:    pextl %esi, %edi, %eax # EVEX TO VEX Compression encoding: [0xc4,0xe2,0x42,0xf5,0xc6]
+; EGPR-NEXT:    # kill: def $esi killed $esi def $rsi
+; EGPR-NEXT:    leal (%rsi,%rsi), %eax # encoding: [0x8d,0x04,0x36]
+; EGPR-NEXT:    pextl %eax, %edi, %eax # EVEX TO VEX Compression encoding: [0xc4,0xe2,0x42,0xf5,0xc0]
 ; EGPR-NEXT:    retq # encoding: [0xc3]
   %y1 = add i32 %y, %y
   %tmp = tail call i32 @llvm.x86.bmi.pext.32(i32 %x, i32 %y1)
@@ -403,9 +410,9 @@ define i32 @mulx32(i32 %x, i32 %y, ptr %p)   {
 ; X64:       # %bb.0:
 ; X64-NEXT:    # kill: def $esi killed $esi def $rsi
 ; X64-NEXT:    # kill: def $edi killed $edi def $rdi
-; X64-NEXT:    addl %edi, %edi
+; X64-NEXT:    leal (%rdi,%rdi), %ecx
 ; X64-NEXT:    leal (%rsi,%rsi), %eax
-; X64-NEXT:    imulq %rdi, %rax
+; X64-NEXT:    imulq %rcx, %rax
 ; X64-NEXT:    movq %rax, %rcx
 ; X64-NEXT:    shrq $32, %rcx
 ; X64-NEXT:    movl %ecx, (%rdx)
@@ -416,9 +423,9 @@ define i32 @mulx32(i32 %x, i32 %y, ptr %p)   {
 ; EGPR:       # %bb.0:
 ; EGPR-NEXT:    # kill: def $esi killed $esi def $rsi
 ; EGPR-NEXT:    # kill: def $edi killed $edi def $rdi
-; EGPR-NEXT:    addl %edi, %edi # encoding: [0x01,0xff]
+; EGPR-NEXT:    leal (%rdi,%rdi), %ecx # encoding: [0x8d,0x0c,0x3f]
 ; EGPR-NEXT:    leal (%rsi,%rsi), %eax # encoding: [0x8d,0x04,0x36]
-; EGPR-NEXT:    imulq %rdi, %rax # encoding: [0x48,0x0f,0xaf,0xc7]
+; EGPR-NEXT:    imulq %rcx, %rax # encoding: [0x48,0x0f,0xaf,0xc1]
 ; EGPR-NEXT:    movq %rax, %rcx # encoding: [0x48,0x89,0xc1]
 ; EGPR-NEXT:    shrq $32, %rcx # encoding: [0x48,0xc1,0xe9,0x20]
 ; EGPR-NEXT:    movl %ecx, (%rdx) # encoding: [0x89,0x0a]
@@ -450,8 +457,8 @@ define i32 @mulx32_load(i32 %x, ptr %y, ptr %p)   {
 ; X64-LABEL: mulx32_load:
 ; X64:       # %bb.0:
 ; X64-NEXT:    # kill: def $edi killed $edi def $rdi
-; X64-NEXT:    leal (%rdi,%rdi), %eax
-; X64-NEXT:    movl (%rsi), %ecx
+; X64-NEXT:    leal (%rdi,%rdi), %ecx
+; X64-NEXT:    movl (%rsi), %eax
 ; X64-NEXT:    imulq %rcx, %rax
 ; X64-NEXT:    movq %rax, %rcx
 ; X64-NEXT:    shrq $32, %rcx
@@ -462,8 +469,8 @@ define i32 @mulx32_load(i32 %x, ptr %y, ptr %p)   {
 ; EGPR-LABEL: mulx32_load:
 ; EGPR:       # %bb.0:
 ; EGPR-NEXT:    # kill: def $edi killed $edi def $rdi
-; EGPR-NEXT:    leal (%rdi,%rdi), %eax # encoding: [0x8d,0x04,0x3f]
-; EGPR-NEXT:    movl (%rsi), %ecx # encoding: [0x8b,0x0e]
+; EGPR-NEXT:    leal (%rdi,%rdi), %ecx # encoding: [0x8d,0x0c,0x3f]
+; EGPR-NEXT:    movl (%rsi), %eax # encoding: [0x8b,0x06]
 ; EGPR-NEXT:    imulq %rcx, %rax # encoding: [0x48,0x0f,0xaf,0xc1]
 ; EGPR-NEXT:    movq %rax, %rcx # encoding: [0x48,0x89,0xc1]
 ; EGPR-NEXT:    shrq $32, %rcx # encoding: [0x48,0xc1,0xe9,0x20]

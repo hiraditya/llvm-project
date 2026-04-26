@@ -128,7 +128,7 @@ define i32 @assertsext_sub_1(i1 signext %cond, i32 %y) {
 ; CHECK:       # %bb.0:
 ; CHECK-NEXT:    # kill: def $esi killed $esi def $rsi
 ; CHECK-NEXT:    # kill: def $edi killed $edi def $rdi
-; CHECK-NEXT:    leal (%rdi,%rsi), %eax
+; CHECK-NEXT:    leal (%rsi,%rdi), %eax
 ; CHECK-NEXT:    retq
   %e = zext i1 %cond to i32
   %r = sub i32 %y, %e

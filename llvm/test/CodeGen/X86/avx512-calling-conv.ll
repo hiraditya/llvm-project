@@ -376,9 +376,9 @@ define i1 @test9(double %a, double %b) {
 define i32 @test10(i32 %a, i32 %b, i1 %cond) {
 ; ALL_X64-LABEL: test10:
 ; ALL_X64:       ## %bb.0:
-; ALL_X64-NEXT:    movl %edi, %eax
+; ALL_X64-NEXT:    movl %esi, %eax
 ; ALL_X64-NEXT:    testb $1, %dl
-; ALL_X64-NEXT:    cmovel %esi, %eax
+; ALL_X64-NEXT:    cmovnel %edi, %eax
 ; ALL_X64-NEXT:    retq
 ;
 ; KNL_X32-LABEL: test10:
@@ -386,15 +386,15 @@ define i32 @test10(i32 %a, i32 %b, i1 %cond) {
 ; KNL_X32-NEXT:    testb $1, {{[0-9]+}}(%esp)
 ; KNL_X32-NEXT:    leal {{[0-9]+}}(%esp), %eax
 ; KNL_X32-NEXT:    leal {{[0-9]+}}(%esp), %ecx
-; KNL_X32-NEXT:    cmovnel %eax, %ecx
-; KNL_X32-NEXT:    movl (%ecx), %eax
+; KNL_X32-NEXT:    cmovel %ecx, %eax
+; KNL_X32-NEXT:    movl (%eax), %eax
 ; KNL_X32-NEXT:    retl
 ;
 ; FASTISEL-LABEL: test10:
 ; FASTISEL:       ## %bb.0:
-; FASTISEL-NEXT:    movl %edi, %eax
+; FASTISEL-NEXT:    movl %esi, %eax
 ; FASTISEL-NEXT:    testb $1, %dl
-; FASTISEL-NEXT:    cmovel %esi, %eax
+; FASTISEL-NEXT:    cmovnel %edi, %eax
 ; FASTISEL-NEXT:    retq
   %c = select i1 %cond, i32 %a, i32 %b
   ret i32 %c
@@ -446,7 +446,8 @@ define i32 @test12(i32 %a1, i32 %a2, i32 %b1) {
 ; ALL_X64-NEXT:    callq _test10
 ; ALL_X64-NEXT:    xorl %ecx, %ecx
 ; ALL_X64-NEXT:    testb $1, %r14b
-; ALL_X64-NEXT:    cmovel %ecx, %eax
+; ALL_X64-NEXT:    cmovnel %eax, %ecx
+; ALL_X64-NEXT:    movl %ecx, %eax
 ; ALL_X64-NEXT:    popq %rbx
 ; ALL_X64-NEXT:    popq %r14
 ; ALL_X64-NEXT:    popq %rbp
@@ -479,7 +480,8 @@ define i32 @test12(i32 %a1, i32 %a2, i32 %b1) {
 ; KNL_X32-NEXT:    calll _test10
 ; KNL_X32-NEXT:    xorl %ecx, %ecx
 ; KNL_X32-NEXT:    testb $1, %bl
-; KNL_X32-NEXT:    cmovel %ecx, %eax
+; KNL_X32-NEXT:    cmovnel %eax, %ecx
+; KNL_X32-NEXT:    movl %ecx, %eax
 ; KNL_X32-NEXT:    addl $16, %esp
 ; KNL_X32-NEXT:    popl %esi
 ; KNL_X32-NEXT:    popl %edi
@@ -508,7 +510,8 @@ define i32 @test12(i32 %a1, i32 %a2, i32 %b1) {
 ; FASTISEL-NEXT:    callq _test10
 ; FASTISEL-NEXT:    xorl %ecx, %ecx
 ; FASTISEL-NEXT:    testb $1, %r14b
-; FASTISEL-NEXT:    cmovel %ecx, %eax
+; FASTISEL-NEXT:    cmovnel %eax, %ecx
+; FASTISEL-NEXT:    movl %ecx, %eax
 ; FASTISEL-NEXT:    popq %rbx
 ; FASTISEL-NEXT:    popq %r14
 ; FASTISEL-NEXT:    popq %rbp
@@ -2327,13 +2330,13 @@ define <7 x i1> @test17(<7 x i1> %a, <7 x i1> %b, <7 x i1> %c, <7 x i1> %d, <7 x
 ; KNL-NEXT:    kmovw %k0, %r10d
 ; KNL-NEXT:    andb $1, %r10b
 ; KNL-NEXT:    andb $1, %r9b
-; KNL-NEXT:    addb %r9b, %r9b
+; KNL-NEXT:    addl %r9d, %r9d
 ; KNL-NEXT:    orb %r10b, %r9b
 ; KNL-NEXT:    andb $1, %r8b
-; KNL-NEXT:    shlb $2, %r8b
+; KNL-NEXT:    leal (,%r8,4), %r8d
 ; KNL-NEXT:    orb %r9b, %r8b
 ; KNL-NEXT:    andb $1, %dil
-; KNL-NEXT:    shlb $3, %dil
+; KNL-NEXT:    leal (,%rdi,8), %edi
 ; KNL-NEXT:    orb %r8b, %dil
 ; KNL-NEXT:    andb $1, %sil
 ; KNL-NEXT:    shlb $4, %sil
@@ -2695,13 +2698,13 @@ define <7 x i1> @test17(<7 x i1> %a, <7 x i1> %b, <7 x i1> %c, <7 x i1> %d, <7 x
 ; SKX-NEXT:    kmovd %k0, %r10d
 ; SKX-NEXT:    andb $1, %r10b
 ; SKX-NEXT:    andb $1, %r9b
-; SKX-NEXT:    addb %r9b, %r9b
+; SKX-NEXT:    addl %r9d, %r9d
 ; SKX-NEXT:    orb %r10b, %r9b
 ; SKX-NEXT:    andb $1, %r8b
-; SKX-NEXT:    shlb $2, %r8b
+; SKX-NEXT:    leal (,%r8,4), %r8d
 ; SKX-NEXT:    orb %r9b, %r8b
 ; SKX-NEXT:    andb $1, %dil
-; SKX-NEXT:    shlb $3, %dil
+; SKX-NEXT:    leal (,%rdi,8), %edi
 ; SKX-NEXT:    orb %r8b, %dil
 ; SKX-NEXT:    andb $1, %sil
 ; SKX-NEXT:    shlb $4, %sil
@@ -3484,13 +3487,13 @@ define <7 x i1> @test17(<7 x i1> %a, <7 x i1> %b, <7 x i1> %c, <7 x i1> %d, <7 x
 ; FASTISEL-NEXT:    kmovd %k0, %r10d
 ; FASTISEL-NEXT:    andb $1, %r10b
 ; FASTISEL-NEXT:    andb $1, %r9b
-; FASTISEL-NEXT:    addb %r9b, %r9b
+; FASTISEL-NEXT:    addl %r9d, %r9d
 ; FASTISEL-NEXT:    orb %r10b, %r9b
 ; FASTISEL-NEXT:    andb $1, %r8b
-; FASTISEL-NEXT:    shlb $2, %r8b
+; FASTISEL-NEXT:    leal (,%r8,4), %r8d
 ; FASTISEL-NEXT:    orb %r9b, %r8b
 ; FASTISEL-NEXT:    andb $1, %dil
-; FASTISEL-NEXT:    shlb $3, %dil
+; FASTISEL-NEXT:    leal (,%rdi,8), %edi
 ; FASTISEL-NEXT:    orb %r8b, %dil
 ; FASTISEL-NEXT:    andb $1, %sil
 ; FASTISEL-NEXT:    shlb $4, %sil

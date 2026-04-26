@@ -41,7 +41,8 @@ define <16 x i8> @insert_i8_firstelt(<16 x i8> %x, i8 %s) {
 ; SSE2-NEXT:    pand %xmm1, %xmm0
 ; SSE2-NEXT:    movd %edi, %xmm2
 ; SSE2-NEXT:    pandn %xmm2, %xmm1
-; SSE2-NEXT:    por %xmm1, %xmm0
+; SSE2-NEXT:    por %xmm0, %xmm1
+; SSE2-NEXT:    movdqa %xmm1, %xmm0
 ; SSE2-NEXT:    retq
 ;
 ; SSE41-LABEL: insert_i8_firstelt:
@@ -156,7 +157,8 @@ define <16 x i8> @insert_i8_secondelt(<16 x i8> %x, i8 %s) {
 ; SSE2-NEXT:    movd %edi, %xmm2
 ; SSE2-NEXT:    psllw $8, %xmm2
 ; SSE2-NEXT:    pandn %xmm2, %xmm1
-; SSE2-NEXT:    por %xmm1, %xmm0
+; SSE2-NEXT:    por %xmm0, %xmm1
+; SSE2-NEXT:    movdqa %xmm1, %xmm0
 ; SSE2-NEXT:    retq
 ;
 ; SSE41-LABEL: insert_i8_secondelt:
@@ -274,11 +276,11 @@ define <16 x i8> @insert_i8_two_elts(<16 x i8> %x, i8 %s) {
 ; SSE2-NEXT:    pand %xmm1, %xmm0
 ; SSE2-NEXT:    movd %edi, %xmm2
 ; SSE2-NEXT:    pandn %xmm2, %xmm1
-; SSE2-NEXT:    por %xmm1, %xmm0
-; SSE2-NEXT:    movdqa {{.*#+}} xmm1 = [255,0,255,255,255,255,255,255,255,255,255,255,255,255,255,255]
-; SSE2-NEXT:    pand %xmm1, %xmm0
+; SSE2-NEXT:    por %xmm0, %xmm1
+; SSE2-NEXT:    movdqa {{.*#+}} xmm0 = [255,0,255,255,255,255,255,255,255,255,255,255,255,255,255,255]
+; SSE2-NEXT:    pand %xmm0, %xmm1
 ; SSE2-NEXT:    psllw $8, %xmm2
-; SSE2-NEXT:    pandn %xmm2, %xmm1
+; SSE2-NEXT:    pandn %xmm2, %xmm0
 ; SSE2-NEXT:    por %xmm1, %xmm0
 ; SSE2-NEXT:    retq
 ;

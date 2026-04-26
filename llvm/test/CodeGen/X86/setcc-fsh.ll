@@ -254,7 +254,8 @@ define <4 x i1> @or_rotl_ne_eq0(<4 x i32> %x, <4 x i32> %y) nounwind {
 ; CHECK:       # %bb.0:
 ; CHECK-NEXT:    pxor %xmm2, %xmm2
 ; CHECK-NEXT:    por %xmm1, %xmm0
-; CHECK-NEXT:    pcmpeqd %xmm2, %xmm0
+; CHECK-NEXT:    pcmpeqd %xmm0, %xmm2
+; CHECK-NEXT:    movdqa %xmm2, %xmm0
 ; CHECK-NEXT:    retq
   %rot = tail call <4 x i32> @llvm.fshl.v4i32(<4 x i32>%x, <4 x i32> %x, <4 x i32> %y)
   %or = or <4 x i32> %y, %rot
@@ -293,8 +294,9 @@ define <4 x i1> @fshl_or2_eq_0(<4 x i32> %x, <4 x i32> %y) {
 ; CHECK:       # %bb.0:
 ; CHECK-NEXT:    pxor %xmm2, %xmm2
 ; CHECK-NEXT:    psrld $7, %xmm1
-; CHECK-NEXT:    por %xmm1, %xmm0
-; CHECK-NEXT:    pcmpeqd %xmm2, %xmm0
+; CHECK-NEXT:    por %xmm0, %xmm1
+; CHECK-NEXT:    pcmpeqd %xmm1, %xmm2
+; CHECK-NEXT:    movdqa %xmm2, %xmm0
 ; CHECK-NEXT:    retq
   %or = or <4 x i32> %x, %y
   %f = call <4 x i32> @llvm.fshl.v4i32(<4 x i32> %x, <4 x i32> %or, <4 x i32> <i32 25, i32 25, i32 25, i32 25>)
@@ -307,8 +309,9 @@ define <4 x i1> @fshl_or2_commute_eq_0(<4 x i32> %x, <4 x i32> %y) {
 ; CHECK:       # %bb.0:
 ; CHECK-NEXT:    pxor %xmm2, %xmm2
 ; CHECK-NEXT:    psrld $7, %xmm1
-; CHECK-NEXT:    por %xmm1, %xmm0
-; CHECK-NEXT:    pcmpeqd %xmm2, %xmm0
+; CHECK-NEXT:    por %xmm0, %xmm1
+; CHECK-NEXT:    pcmpeqd %xmm1, %xmm2
+; CHECK-NEXT:    movdqa %xmm2, %xmm0
 ; CHECK-NEXT:    retq
   %or = or <4 x i32> %y, %x
   %f = call <4 x i32> @llvm.fshl.v4i32(<4 x i32> %x, <4 x i32> %or, <4 x i32> <i32 25, i32 25, i32 25, i32 25>)
@@ -399,10 +402,10 @@ define <4 x i1> @fshl_or2_ne_0(<4 x i32> %x, <4 x i32> %y) {
 ; CHECK:       # %bb.0:
 ; CHECK-NEXT:    pxor %xmm2, %xmm2
 ; CHECK-NEXT:    psrld $27, %xmm1
-; CHECK-NEXT:    por %xmm1, %xmm0
-; CHECK-NEXT:    pcmpeqd %xmm2, %xmm0
-; CHECK-NEXT:    pcmpeqd %xmm1, %xmm1
-; CHECK-NEXT:    pxor %xmm1, %xmm0
+; CHECK-NEXT:    por %xmm0, %xmm1
+; CHECK-NEXT:    pcmpeqd %xmm1, %xmm2
+; CHECK-NEXT:    pcmpeqd %xmm0, %xmm0
+; CHECK-NEXT:    pxor %xmm2, %xmm0
 ; CHECK-NEXT:    retq
   %or = or <4 x i32> %x, %y
   %f = call <4 x i32> @llvm.fshl.v4i32(<4 x i32> %x, <4 x i32> %or, <4 x i32> <i32 5, i32 5, i32 5, i32 5>)
@@ -415,10 +418,10 @@ define <4 x i1> @fshl_or2_commute_ne_0(<4 x i32> %x, <4 x i32> %y) {
 ; CHECK:       # %bb.0:
 ; CHECK-NEXT:    pxor %xmm2, %xmm2
 ; CHECK-NEXT:    psrld $27, %xmm1
-; CHECK-NEXT:    por %xmm1, %xmm0
-; CHECK-NEXT:    pcmpeqd %xmm2, %xmm0
-; CHECK-NEXT:    pcmpeqd %xmm1, %xmm1
-; CHECK-NEXT:    pxor %xmm1, %xmm0
+; CHECK-NEXT:    por %xmm0, %xmm1
+; CHECK-NEXT:    pcmpeqd %xmm1, %xmm2
+; CHECK-NEXT:    pcmpeqd %xmm0, %xmm0
+; CHECK-NEXT:    pxor %xmm2, %xmm0
 ; CHECK-NEXT:    retq
   %or = or <4 x i32> %y, %x
   %f = call <4 x i32> @llvm.fshl.v4i32(<4 x i32> %x, <4 x i32> %or, <4 x i32> <i32 5, i32 5, i32 5, i32 5>)
@@ -483,8 +486,9 @@ define i1 @fshr_or2_commute_ne_0(i16 %x, i16 %y) {
 define i1 @fshl_xor_eq_0(i32 %x, i32 %y) {
 ; CHECK-LABEL: fshl_xor_eq_0:
 ; CHECK:       # %bb.0:
-; CHECK-NEXT:    xorl %edi, %esi
-; CHECK-NEXT:    shldl $2, %edi, %esi
+; CHECK-NEXT:    movl %edi, %eax
+; CHECK-NEXT:    xorl %esi, %eax
+; CHECK-NEXT:    shldl $2, %edi, %eax
 ; CHECK-NEXT:    sete %al
 ; CHECK-NEXT:    retq
   %or = xor i32 %x, %y
@@ -496,9 +500,10 @@ define i1 @fshl_xor_eq_0(i32 %x, i32 %y) {
 define i1 @fshl_or_sgt_0(i32 %x, i32 %y) {
 ; CHECK-LABEL: fshl_or_sgt_0:
 ; CHECK:       # %bb.0:
-; CHECK-NEXT:    orl %edi, %esi
-; CHECK-NEXT:    shldl $2, %edi, %esi
-; CHECK-NEXT:    testl %esi, %esi
+; CHECK-NEXT:    movl %edi, %eax
+; CHECK-NEXT:    orl %esi, %eax
+; CHECK-NEXT:    shldl $2, %edi, %eax
+; CHECK-NEXT:    testl %eax, %eax
 ; CHECK-NEXT:    setg %al
 ; CHECK-NEXT:    retq
   %or = or i32 %x, %y
@@ -510,9 +515,10 @@ define i1 @fshl_or_sgt_0(i32 %x, i32 %y) {
 define i1 @fshl_or_ne_2(i32 %x, i32 %y) {
 ; CHECK-LABEL: fshl_or_ne_2:
 ; CHECK:       # %bb.0:
-; CHECK-NEXT:    orl %edi, %esi
-; CHECK-NEXT:    shldl $2, %edi, %esi
-; CHECK-NEXT:    cmpl $2, %esi
+; CHECK-NEXT:    movl %edi, %eax
+; CHECK-NEXT:    orl %esi, %eax
+; CHECK-NEXT:    shldl $2, %edi, %eax
+; CHECK-NEXT:    cmpl $2, %eax
 ; CHECK-NEXT:    setne %al
 ; CHECK-NEXT:    retq
   %or = or i32 %x, %y

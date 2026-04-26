@@ -14,50 +14,48 @@ define fastcc i32 @S_regrepeat(ptr %startposp, i32 %max, i8 %0, i1 %cmp343) noun
 ; CHECK-NEXT:    sd s0, 16(sp) # 8-byte Folded Spill
 ; CHECK-NEXT:    sd s1, 8(sp) # 8-byte Folded Spill
 ; CHECK-NEXT:    sd s2, 0(sp) # 8-byte Folded Spill
-; CHECK-NEXT:    zext.b a2, a2
-; CHECK-NEXT:    addi a4, a2, -19
-; CHECK-NEXT:    li a5, 2
-; CHECK-NEXT:    mv a0, a1
-; CHECK-NEXT:    bltu a4, a5, .LBB0_4
+; CHECK-NEXT:    zext.b a0, a2
+; CHECK-NEXT:    addi a2, a0, -19
+; CHECK-NEXT:    li a4, 2
+; CHECK-NEXT:    mv s0, a1
+; CHECK-NEXT:    bltu a2, a4, .LBB0_4
 ; CHECK-NEXT:  # %bb.1: # %entry
 ; CHECK-NEXT:    li a1, 1
-; CHECK-NEXT:    bltu a1, a2, .LBB0_8
+; CHECK-NEXT:    bltu a1, a0, .LBB0_9
 ; CHECK-NEXT:  # %bb.2: # %do_exactf
 ; CHECK-NEXT:    andi a3, a3, 1
-; CHECK-NEXT:    beqz a3, .LBB0_10
+; CHECK-NEXT:    beqz a3, .LBB0_7
 ; CHECK-NEXT:  # %bb.3: # %land.rhs251
 ; CHECK-NEXT:    lw zero, 0(zero)
-; CHECK-NEXT:    li s0, 1
-; CHECK-NEXT:    bnez s0, .LBB0_9
+; CHECK-NEXT:    li s1, 1
 ; CHECK-NEXT:    j .LBB0_8
 ; CHECK-NEXT:  .LBB0_4: # %sw.bb336
-; CHECK-NEXT:    mv s1, a0
-; CHECK-NEXT:    li s0, 0
+; CHECK-NEXT:    li s1, 0
 ; CHECK-NEXT:    andi s2, a3, 1
 ; CHECK-NEXT:  .LBB0_5: # %land.rhs345
 ; CHECK-NEXT:    # =>This Inner Loop Header: Depth=1
 ; CHECK-NEXT:    call S_reginclass
 ; CHECK-NEXT:    andi a0, a0, 1
-; CHECK-NEXT:    beqz a0, .LBB0_7
+; CHECK-NEXT:    beqz a0, .LBB0_8
 ; CHECK-NEXT:  # %bb.6: # %while.body350
 ; CHECK-NEXT:    # in Loop: Header=BB0_5 Depth=1
-; CHECK-NEXT:    addiw s0, s0, 1
+; CHECK-NEXT:    addiw s1, s1, 1
 ; CHECK-NEXT:    bnez s2, .LBB0_5
-; CHECK-NEXT:    j .LBB0_8
+; CHECK-NEXT:    j .LBB0_9
 ; CHECK-NEXT:  .LBB0_7:
-; CHECK-NEXT:    mv a0, s1
-; CHECK-NEXT:    bnez s0, .LBB0_9
-; CHECK-NEXT:  .LBB0_8: # %if.else1492
-; CHECK-NEXT:    li a0, 0
-; CHECK-NEXT:  .LBB0_9: # %if.end1497
+; CHECK-NEXT:    li s1, 0
+; CHECK-NEXT:  .LBB0_8: # %sw.epilog1489
+; CHECK-NEXT:    bnez s1, .LBB0_10
+; CHECK-NEXT:  .LBB0_9: # %if.else1492
+; CHECK-NEXT:    li s0, 0
+; CHECK-NEXT:  .LBB0_10: # %if.end1497
+; CHECK-NEXT:    mv a0, s0
 ; CHECK-NEXT:    ld ra, 24(sp) # 8-byte Folded Reload
 ; CHECK-NEXT:    ld s0, 16(sp) # 8-byte Folded Reload
 ; CHECK-NEXT:    ld s1, 8(sp) # 8-byte Folded Reload
 ; CHECK-NEXT:    ld s2, 0(sp) # 8-byte Folded Reload
 ; CHECK-NEXT:    addi sp, sp, 32
 ; CHECK-NEXT:    ret
-; CHECK-NEXT:  .LBB0_10:
-; CHECK-NEXT:    j .LBB0_8
 entry:
   switch i8 %0, label %if.else1492 [
     i8 19, label %sw.bb336

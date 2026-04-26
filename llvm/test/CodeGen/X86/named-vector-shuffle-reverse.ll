@@ -81,7 +81,8 @@ define <2 x i8> @reverse_v2i8(<2 x i8> %a) #0 {
 ; CHECK-NEXT:    movdqa %xmm0, %xmm1
 ; CHECK-NEXT:    psrlw $8, %xmm1
 ; CHECK-NEXT:    psllw $8, %xmm0
-; CHECK-NEXT:    por %xmm1, %xmm0
+; CHECK-NEXT:    por %xmm0, %xmm1
+; CHECK-NEXT:    movdqa %xmm1, %xmm0
 ; CHECK-NEXT:    retq
   %res = call <2 x i8> @llvm.vector.reverse.v2i8(<2 x i8> %a)
   ret <2 x i8> %res

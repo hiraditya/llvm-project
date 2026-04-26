@@ -7,11 +7,18 @@
 ; 0'th element insertion into an SSE register.
 
 define <4 x float> @insert_f32_firstelt(<4 x float> %x, ptr %s.addr) {
-; SSE-LABEL: insert_f32_firstelt:
-; SSE:       # %bb.0:
-; SSE-NEXT:    movss {{.*#+}} xmm1 = mem[0],zero,zero,zero
-; SSE-NEXT:    movss {{.*#+}} xmm0 = xmm1[0],xmm0[1,2,3]
-; SSE-NEXT:    retq
+; SSE2-LABEL: insert_f32_firstelt:
+; SSE2:       # %bb.0:
+; SSE2-NEXT:    movss {{.*#+}} xmm1 = mem[0],zero,zero,zero
+; SSE2-NEXT:    movss {{.*#+}} xmm0 = xmm1[0],xmm0[1,2,3]
+; SSE2-NEXT:    retq
+;
+; SSE41-LABEL: insert_f32_firstelt:
+; SSE41:       # %bb.0:
+; SSE41-NEXT:    movss {{.*#+}} xmm1 = mem[0],zero,zero,zero
+; SSE41-NEXT:    blendps {{.*#+}} xmm1 = xmm1[0],xmm0[1,2,3]
+; SSE41-NEXT:    movaps %xmm1, %xmm0
+; SSE41-NEXT:    retq
 ;
 ; AVX-LABEL: insert_f32_firstelt:
 ; AVX:       # %bb.0:
@@ -46,7 +53,8 @@ define <16 x i8> @insert_i8_firstelt(<16 x i8> %x, ptr %s.addr) {
 ; SSE2-NEXT:    movzbl (%rdi), %eax
 ; SSE2-NEXT:    movd %eax, %xmm2
 ; SSE2-NEXT:    pandn %xmm2, %xmm1
-; SSE2-NEXT:    por %xmm1, %xmm0
+; SSE2-NEXT:    por %xmm0, %xmm1
+; SSE2-NEXT:    movdqa %xmm1, %xmm0
 ; SSE2-NEXT:    retq
 ;
 ; SSE41-LABEL: insert_i8_firstelt:
@@ -168,7 +176,8 @@ define <16 x i8> @insert_i8_secondelt(<16 x i8> %x, ptr %s.addr) {
 ; SSE2-NEXT:    movd %eax, %xmm2
 ; SSE2-NEXT:    psllw $8, %xmm2
 ; SSE2-NEXT:    pandn %xmm2, %xmm1
-; SSE2-NEXT:    por %xmm1, %xmm0
+; SSE2-NEXT:    por %xmm0, %xmm1
+; SSE2-NEXT:    movdqa %xmm1, %xmm0
 ; SSE2-NEXT:    retq
 ;
 ; SSE41-LABEL: insert_i8_secondelt:
@@ -295,11 +304,11 @@ define <16 x i8> @insert_i8_two_elts(<16 x i8> %x, ptr %s.addr) {
 ; SSE2-NEXT:    movzbl (%rdi), %eax
 ; SSE2-NEXT:    movd %eax, %xmm2
 ; SSE2-NEXT:    pandn %xmm2, %xmm1
-; SSE2-NEXT:    por %xmm1, %xmm0
-; SSE2-NEXT:    movdqa {{.*#+}} xmm1 = [255,0,255,255,255,255,255,255,255,255,255,255,255,255,255,255]
-; SSE2-NEXT:    pand %xmm1, %xmm0
+; SSE2-NEXT:    por %xmm0, %xmm1
+; SSE2-NEXT:    movdqa {{.*#+}} xmm0 = [255,0,255,255,255,255,255,255,255,255,255,255,255,255,255,255]
+; SSE2-NEXT:    pand %xmm0, %xmm1
 ; SSE2-NEXT:    psllw $8, %xmm2
-; SSE2-NEXT:    pandn %xmm2, %xmm1
+; SSE2-NEXT:    pandn %xmm2, %xmm0
 ; SSE2-NEXT:    por %xmm1, %xmm0
 ; SSE2-NEXT:    retq
 ;

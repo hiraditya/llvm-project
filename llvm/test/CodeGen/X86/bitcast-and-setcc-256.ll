@@ -23,9 +23,9 @@ define i4 @v4i64(<4 x i64> %a, <4 x i64> %b, <4 x i64> %c, <4 x i64> %d) {
 ; SSE2-SSSE3-NEXT:    pcmpeqd %xmm3, %xmm1
 ; SSE2-SSSE3-NEXT:    pcmpeqd %xmm2, %xmm0
 ; SSE2-SSSE3-NEXT:    shufps {{.*#+}} xmm0 = xmm0[1,3],xmm1[1,3]
-; SSE2-SSSE3-NEXT:    andps %xmm11, %xmm0
+; SSE2-SSSE3-NEXT:    andps %xmm0, %xmm11
 ; SSE2-SSSE3-NEXT:    shufps {{.*#+}} xmm8 = xmm8[1,3],xmm10[1,3]
-; SSE2-SSSE3-NEXT:    orps %xmm0, %xmm8
+; SSE2-SSSE3-NEXT:    orps %xmm11, %xmm8
 ; SSE2-SSSE3-NEXT:    pxor %xmm9, %xmm7
 ; SSE2-SSSE3-NEXT:    pxor %xmm9, %xmm5
 ; SSE2-SSSE3-NEXT:    movdqa %xmm5, %xmm0
@@ -39,9 +39,9 @@ define i4 @v4i64(<4 x i64> %a, <4 x i64> %b, <4 x i64> %c, <4 x i64> %d) {
 ; SSE2-SSSE3-NEXT:    pcmpeqd %xmm7, %xmm5
 ; SSE2-SSSE3-NEXT:    pcmpeqd %xmm6, %xmm4
 ; SSE2-SSSE3-NEXT:    shufps {{.*#+}} xmm4 = xmm4[1,3],xmm5[1,3]
-; SSE2-SSSE3-NEXT:    andps %xmm2, %xmm4
+; SSE2-SSSE3-NEXT:    andps %xmm4, %xmm2
 ; SSE2-SSSE3-NEXT:    shufps {{.*#+}} xmm1 = xmm1[1,3],xmm0[1,3]
-; SSE2-SSSE3-NEXT:    orps %xmm4, %xmm1
+; SSE2-SSSE3-NEXT:    orps %xmm2, %xmm1
 ; SSE2-SSSE3-NEXT:    andps %xmm8, %xmm1
 ; SSE2-SSSE3-NEXT:    movmskps %xmm1, %eax
 ; SSE2-SSSE3-NEXT:    # kill: def $al killed $al killed $eax
@@ -369,13 +369,15 @@ define i8 @v8i32_or_and(<8 x i32> %a, <8 x i32> %b, <8 x i32> %c, <8 x i32> %d, 
 ; SSE2-SSSE3-NEXT:    por %xmm1, %xmm7
 ; SSE2-SSSE3-NEXT:    pcmpgtd %xmm4, %xmm6
 ; SSE2-SSSE3-NEXT:    por %xmm0, %xmm6
-; SSE2-SSSE3-NEXT:    pcmpeqd {{[0-9]+}}(%rsp), %xmm9
-; SSE2-SSSE3-NEXT:    pand %xmm6, %xmm9
-; SSE2-SSSE3-NEXT:    pcmpeqd {{[0-9]+}}(%rsp), %xmm8
-; SSE2-SSSE3-NEXT:    pand %xmm7, %xmm8
-; SSE2-SSSE3-NEXT:    packssdw %xmm8, %xmm9
-; SSE2-SSSE3-NEXT:    packsswb %xmm9, %xmm9
-; SSE2-SSSE3-NEXT:    pmovmskb %xmm9, %eax
+; SSE2-SSSE3-NEXT:    movdqa {{[0-9]+}}(%rsp), %xmm0
+; SSE2-SSSE3-NEXT:    pcmpeqd %xmm9, %xmm0
+; SSE2-SSSE3-NEXT:    pand %xmm6, %xmm0
+; SSE2-SSSE3-NEXT:    movdqa {{[0-9]+}}(%rsp), %xmm1
+; SSE2-SSSE3-NEXT:    pcmpeqd %xmm8, %xmm1
+; SSE2-SSSE3-NEXT:    pand %xmm7, %xmm1
+; SSE2-SSSE3-NEXT:    packssdw %xmm1, %xmm0
+; SSE2-SSSE3-NEXT:    packsswb %xmm0, %xmm0
+; SSE2-SSSE3-NEXT:    pmovmskb %xmm0, %eax
 ; SSE2-SSSE3-NEXT:    # kill: def $al killed $al killed $eax
 ; SSE2-SSSE3-NEXT:    retq
 ;
@@ -514,8 +516,10 @@ define i8 @v8i32_or_vselect(<8 x i32> %a0, <8 x i32> %a1, <8 x i32> %a2) {
 define i8 @v8i32_or_select(<8 x i32> %a0, <8 x i32> %a1, <8 x i32> %a2, <8 x i32> %a3, i1 %a4) {
 ; SSE2-SSSE3-LABEL: v8i32_or_select:
 ; SSE2-SSSE3:       # %bb.0:
-; SSE2-SSSE3-NEXT:    pcmpeqd %xmm0, %xmm2
-; SSE2-SSSE3-NEXT:    pcmpeqd %xmm1, %xmm3
+; SSE2-SSSE3-NEXT:    movdqa %xmm0, %xmm8
+; SSE2-SSSE3-NEXT:    pcmpeqd %xmm2, %xmm8
+; SSE2-SSSE3-NEXT:    movdqa %xmm1, %xmm2
+; SSE2-SSSE3-NEXT:    pcmpeqd %xmm3, %xmm2
 ; SSE2-SSSE3-NEXT:    testb $1, %dil
 ; SSE2-SSSE3-NEXT:    jne .LBB7_1
 ; SSE2-SSSE3-NEXT:  # %bb.2:
@@ -526,12 +530,12 @@ define i8 @v8i32_or_select(<8 x i32> %a0, <8 x i32> %a1, <8 x i32> %a2, <8 x i32
 ; SSE2-SSSE3-NEXT:    pcmpeqd %xmm4, %xmm0
 ; SSE2-SSSE3-NEXT:    packssdw %xmm1, %xmm0
 ; SSE2-SSSE3-NEXT:  .LBB7_3:
-; SSE2-SSSE3-NEXT:    por %xmm3, %xmm7
-; SSE2-SSSE3-NEXT:    por %xmm2, %xmm6
-; SSE2-SSSE3-NEXT:    packssdw %xmm7, %xmm6
-; SSE2-SSSE3-NEXT:    por %xmm0, %xmm6
-; SSE2-SSSE3-NEXT:    packsswb %xmm6, %xmm6
-; SSE2-SSSE3-NEXT:    pmovmskb %xmm6, %eax
+; SSE2-SSSE3-NEXT:    por %xmm7, %xmm2
+; SSE2-SSSE3-NEXT:    por %xmm6, %xmm8
+; SSE2-SSSE3-NEXT:    packssdw %xmm2, %xmm8
+; SSE2-SSSE3-NEXT:    por %xmm0, %xmm8
+; SSE2-SSSE3-NEXT:    packsswb %xmm8, %xmm8
+; SSE2-SSSE3-NEXT:    pmovmskb %xmm8, %eax
 ; SSE2-SSSE3-NEXT:    # kill: def $al killed $al killed $eax
 ; SSE2-SSSE3-NEXT:    retq
 ;
@@ -741,17 +745,17 @@ define i8 @v8f32_xor_and(<8 x float> %a, <8 x float> %b, <8 x float> %c, <8 x fl
 ; SSE2-SSSE3-NEXT:    movaps %xmm5, %xmm2
 ; SSE2-SSSE3-NEXT:    cmpeqps %xmm7, %xmm2
 ; SSE2-SSSE3-NEXT:    cmpunordps %xmm7, %xmm5
-; SSE2-SSSE3-NEXT:    orps %xmm2, %xmm5
-; SSE2-SSSE3-NEXT:    xorps %xmm1, %xmm5
+; SSE2-SSSE3-NEXT:    orps %xmm5, %xmm2
+; SSE2-SSSE3-NEXT:    xorps %xmm1, %xmm2
 ; SSE2-SSSE3-NEXT:    movaps %xmm4, %xmm1
 ; SSE2-SSSE3-NEXT:    cmpeqps %xmm6, %xmm1
 ; SSE2-SSSE3-NEXT:    cmpunordps %xmm6, %xmm4
-; SSE2-SSSE3-NEXT:    orps %xmm1, %xmm4
-; SSE2-SSSE3-NEXT:    xorps %xmm0, %xmm4
+; SSE2-SSSE3-NEXT:    orps %xmm4, %xmm1
+; SSE2-SSSE3-NEXT:    xorps %xmm0, %xmm1
 ; SSE2-SSSE3-NEXT:    cmpltps {{[0-9]+}}(%rsp), %xmm8
-; SSE2-SSSE3-NEXT:    andps %xmm4, %xmm8
+; SSE2-SSSE3-NEXT:    andps %xmm1, %xmm8
 ; SSE2-SSSE3-NEXT:    cmpltps {{[0-9]+}}(%rsp), %xmm9
-; SSE2-SSSE3-NEXT:    andps %xmm5, %xmm9
+; SSE2-SSSE3-NEXT:    andps %xmm2, %xmm9
 ; SSE2-SSSE3-NEXT:    packssdw %xmm9, %xmm8
 ; SSE2-SSSE3-NEXT:    packsswb %xmm8, %xmm8
 ; SSE2-SSSE3-NEXT:    pmovmskb %xmm8, %eax
